@@ -1,0 +1,233 @@
+/* Assets */
+    /* Flat Section */
+        /* Header */
+        .flat-section > [data-id=header] {
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 40px;
+            padding-right: 40px;
+            text-align: center;
+            width: 65%
+        }
+
+/* Components */
+    /* Introduction */
+    #introduction {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        justify-content: space-around
+    }
+        /* Description */
+        #introduction > [data-id=description] {
+            padding-bottom: 30px
+        }
+
+        /* Developer Canvas 0 */
+        #introduction > #developerCanvas0 {
+            background-color: transparent;
+            border: 0;
+            border-radius: 0;
+            flex-grow: 1;
+            margin-bottom: 60px;
+            width: 100%
+        }
+
+        /* Header */
+        #introduction > [data-id=header] {
+            margin-top: 60px
+        }
+
+    /* Jumbotron */
+    #jumbotron {
+        background-color: #000000;
+        background-image: url('../img/jpg/jumbotron-bg.jpg');
+        box-shadow: inset 0 0 0 5000px rgba(0, 0, 0, .5)
+    }
+        /* Buttons Container */
+        #jumbotron > [data-id=buttons-container] {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            height: 25vh;
+            justify-content: center;
+            width: 90%
+        }
+            /* @media */
+                /* Mobile View */
+                @media only all
+                    and (max-width: 425px) {
+                        #jumbotron > [data-id=buttons-container] {
+                            flex-direction: column;
+                            flex-wrap: wrap;
+                            height: 33.3%
+                        }
+                }
+
+                /* (Laptop, Laptop L, 4K) View */
+                @media only all
+                    and (min-width: 1024px) {
+                        #jumbotron > [data-id=buttons-container] {
+                            width: 70%
+                        }
+                }
+
+            /* <button> */
+            #jumbotron > [data-id=buttons-container] > button {
+                align-items: center;
+                background-color: rgba(127, 127, 127, .5);
+                border: 0;
+                border-radius: 5px;
+                color: #FFFFFF;
+                cursor: pointer;
+                display: inline-flex;
+                font-variant: all-petite-caps;
+                font-size: 15px;
+                height: 30px;
+                margin: auto 5px;
+                justify-content: center;
+                opacity: .875;
+                outline: 0 !important;
+                overflow: hidden;
+                padding: 0;
+                transition: .3s ease-in-out;
+                text-overflow: hidden;
+                white-space: pre
+            }
+                /* @media */
+                    /* Mobile View */
+                    @media only all
+                        and (max-width: 425px) {
+                            #jumbotron > [data-id=buttons-container] > button {
+                                display: inline-block;
+                                flex-basis: initial;
+                                flex-grow: initial !important;
+                                margin: 1% 5%;
+                                overflow: hidden;
+                                width: 40%
+                            }
+                    }
+
+                    /* (Laptop, Laptop L, 4K) View */
+                    @media only all
+                        and (min-width: 1024px) {
+                            #jumbotron > [data-id=buttons-container] > button {
+                                font-size: 14px;
+                                zoom: 1.5
+                            }
+                    }
+
+                /* <a> */
+                #jumbotron > [data-id=buttons-container] > button > a {
+                    align-items: center;
+                    display: flex;
+                    height: inherit;
+                    margin: 0;
+                    justify-content: center;
+                    transition: .3s ease-in-out;
+                    user-select: none;
+                    width: 100%
+                }
+                    /* States */
+                        /* Focus */
+                        #jumbotron > [data-id=buttons-container] > button:focus > a,
+                        #jumbotron > [data-id=buttons-container] > button > a:focus {
+                            background-color: rgba(0, 0, 0, .5) !important
+                        }
+
+                        /* Hover */
+                        #jumbotron > [data-id=buttons-container] > button:hover > a,
+                        #jumbotron > [data-id=buttons-container] > button > a:hover {
+                            background-color: rgba(255, 255, 255, .125)
+                        }
+
+                        /* Selection */
+                        #jumbotron > [data-id=buttons-container] > button a::election {
+                            background-color: transparent;
+                            color: inherit;
+                            text-shadow: none
+                        }
+
+        /* Headers Container */
+        #jumbotron > [data-id=headers-container] {
+            color: #FFFFFF;
+            height: 75%;
+            max-width: 100%;
+            justify-content: flex-start !important;
+            overflow: hidden;
+            text-shadow: 0 0 3px rgba(0, 0, 0, .5)
+        }
+            /* @media > Mobile View*/
+            @media only all
+                and (max-width: 425px) {
+                    #jumbotron > [data-id=headers-container] {
+                        height: 66.6%
+                    }
+            }
+
+            /* <span> */
+                /* Cursor */
+                #jumbotron > [data-id=headers-container] span[data-id*=cursor] {
+                    background-color: rgba(255, 255, 255, .1)
+                }
+
+                /* Highlighted */
+                #jumbotron > [data-id=headers-container] span[data-id*=highlighted] {
+                    background-color: rgba(255, 255, 255, .1)
+                }
+
+            /* Header */
+            #jumbotron > [data-id=headers-container] > [data-id=header] {
+                font-family: 'Open Sans', Roboto, 'Calibri Light', Calibri, sans-serif;
+                font-size: 82.5px;
+                font-style: italic;
+                font-weight: normal
+            }
+
+            /* Sub Header */
+            #jumbotron > [data-id=headers-container] > [data-id=subheader] {
+                font-size: 2em
+            }
+                /* @media > (Mobile, Tablet) View */
+                @media only all
+                    and (max-width: 768px) {
+                        #jumbotron > [data-id=headers-container] > [data-id=subheader] {
+                            font-size: 1.875em
+                        }
+                }
+
+                /* <dynamic-text-component> */
+                #jumbotron > [data-id=headers-container] > [data-id=subheader] dynamic-text-component {
+                    padding: 0 5px
+                }
+                    /* Dynamic Text Abbreviation */
+                    #jumbotron > [data-id=headers-container] > [data-id=subheader] dynamic-text-component [data-id=dynamicTextAbbreviation] {
+                        cursor: default;
+                        display: inline;
+                        pointer-events: all;
+                        user-select: text
+                    }
+
+        /* Logo Container */
+        #jumbotron > [data-id=logo-container] {
+            width: 20%
+        }
+            /* @media */
+                /* Mobile View */
+                @media only all
+                    and (max-width: 425px) {
+                        #jumbotron > [data-id=logo-container] {
+                            width: 60%
+                        }
+                }
+
+                /* Tablet View */
+                @media only all
+                    and (max-width: 768px)
+                    and (min-width: 426px) {
+                        #jumbotron > [data-id=logo-container] {
+                            width: 40%
+                        }
+                }

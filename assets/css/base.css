@@ -1,0 +1,169 @@
+/* DOM Elements */
+    /*
+        <accordion-component>,
+        <carousel-component>,
+        <developer-canvas>, <dropdown-component>,
+        <jumbotron-element>
+    */
+    accordion-component,
+    carousel-component,
+    developer-canvas,
+    dropdown-component,
+    jumbotron-element {
+        display: block
+    }
+
+    /* <body>, <html> */
+    body,
+    html {
+        box-shadow: 0 2.5px 2.5px 0 rgba(0, 0, 0, .25)
+    }
+
+    /* <developer-canvas> */
+    developer-canvas {
+        background-color: #FFFFFF;
+        border: 1px solid rgba(127, 127, 127, .675);
+        border-radius: 2px;
+        height: 300px;
+        margin: auto;
+        width: 300px
+    }
+
+    /* <dynamic-text-component> */
+    dynamic-text-component {
+        display: inline;
+        pointer-events: none;
+        user-select: none
+    }
+        /* States > Selection */
+        dynamic-text-component::selection,
+        dynamic-text-component ::selection {
+            background-color: transparent;
+            color: inherit;
+            text-shadow: inherit
+        }
+
+    /* <screen-tip> */
+        /* @media > Mobile View */
+        @media only all
+            and (max-width: 425px) {
+                screen-tip {
+                    display: none !important
+                }
+        }
+
+/* Components */
+    /* Flat Section */
+    .flat-section {
+        background-color: #F7F7F7;
+        color: #333333;
+        max-width: 100%;
+        min-width: 100%
+    }
+        /* Header */
+        .flat-section > [data-id=header] {
+            border-bottom: 3px solid #0056FF;
+            display: block;
+            font-weight: 600;
+            opacity: .825;
+            margin-bottom: 40px;
+            padding-bottom: 6.75px
+        }
+
+    /* Full Page Section */
+    .full-page-section {
+        height: 100%;
+        min-height: 100vh;
+        padding: 0 !important
+    }
+
+    /* Section */
+    .section {
+        display: block;
+        margin: 0;
+        padding: 60px 0;
+        width: 100%
+    }
+        /* Description */
+        .section > [data-id=description] {
+            opacity: .875
+        }
+
+    /* Syntax Highlighted
+            --- NOTE ---
+                @lapys:
+                    - Use the '~' character at the start of a new line
+                        to simulate a tab-spacing.
+
+                    - Use the '\~' character to represent a normal tilde.
+    */
+    code.syntax-highlighted {
+        background-color: #25262B;
+        color: #D5D6DB !important;
+        display: block;
+        font-style: normal;
+        margin: 0;
+        min-width: 30%;
+        padding: 0;
+        speak: none;
+        text-align: left;
+        white-space: pre-line
+    }
+        /* Tab */
+        code.syntax-highlighted [data-id*=tab] {
+            border-left: 1px solid rgba(127, 127, 127, .5)
+        }
+
+        /* Highlight Color */
+        code.syntax-highlighted [data-id*=highlightColor] {
+            color: inherit !important
+        }
+            /* Arithmetic, Symbol */
+            code.syntax-highlighted [data-id*=highlightColor][role=arithmetic],
+            code.syntax-highlighted [data-id*=highlightColor][role=symbol],
+            code.syntax-highlighted [data-id*=tilde][role=arithmetic] {
+                color: #922A49 !important
+            }
+
+            /* Comment */
+            code.syntax-highlighted [data-id*=highlightColor][role=comment] {
+                color: #65666B !important
+            }
+
+            /* Function */
+            code.syntax-highlighted [data-id*=highlightColor][role=function] {
+                color: #7AD149 !important
+            }
+
+            /* Identifier, Miscellaneous */
+            code.syntax-highlighted [data-id*=highlightColor][role=identifier],
+            code.syntax-highlighted [data-id*=highlightColor][role=miscellaneous] {
+                color: #47A8D9 !important
+            }
+
+            /* Name Tag */
+            code.syntax-highlighted [data-id*=highlightColor][role=name-tag] {
+                color: #D68B30 !important
+            }
+
+            /* Numeral */
+            code.syntax-highlighted [data-id*=highlightColor][role=numeral] {
+                color: #D17AD9 !important
+            }
+
+            /* Plain Text */
+            code.syntax-highlighted [data-id*=highlightColor][role=plain-text] {
+                color: #D5D6DB !important
+            }
+
+            /* String */
+            code.syntax-highlighted [data-id*=highlightColor][role=string],
+            code.syntax-highlighted [data-id*=highlightColor][role=string] [data-id*=highlightColor][role=plain-text],
+            code.syntax-highlighted [data-id*=highlightColor][role=string] [data-id*=highlightColor][role=symbol] {
+                color: #D1D97A !important
+            }
+
+        /* Tilde */
+        code.syntax-highlighted [data-id=tilde]::after {
+            content: '~'
+        }
