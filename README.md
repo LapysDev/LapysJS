@@ -90,10 +90,10 @@ Get updates on LapysJS' development and chat with the project maintainers and co
 ## Creators
 **Oluwafunmito Oshodi a.k.a. Lapys**
 
-Facebook - <https://web.facebook.com/FuntoOshodi?_rdc=1&_rdr>
-GitHub - <https://github.com/LapysDev>
-Medium - <https://medium.com/@LapysNights>
-Twitter - <https://twitter.com/Lapys_Arts>
+- Facebook | <https://web.facebook.com/FuntoOshodi?_rdc=1&_rdr>
+- GitHub | <https://github.com/LapysDev>
+- Medium | <https://medium.com/@LapysNights>
+- Twitter | <https://twitter.com/Lapys_Arts>
 
 ## Copyright and license
 Code and documentation copyright 2017 the [Lapys Dev Team](#). Code released under the [MIT License](https://github.com/LapysDev/LapysJS/blob/master/LICENSE).
