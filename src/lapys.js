@@ -6,9 +6,6 @@
     @version: 0.0.1
 */
 (function LapysJSScript(window = window, document = window.document, global, undefined = window.undefined) {
-    /* Strict Mode */
-    'use strict';
-
     /* Window */
         // Absolute
         window.abs || Object.defineProperty(window, 'abs', {
