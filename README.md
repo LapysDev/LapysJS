@@ -8,7 +8,7 @@
   <p align=center>
     Creative, fun and simple front-end library for easier and faster web development.
     <br>
-    <a href=#><strong>Explore Bootstrap docs »</strong></a>
+    <a href=#><strong>Explore LapysJS' Documentation »</strong></a>
     <br>
     <br>
     <a href=#> Blog </a>
@@ -81,7 +81,7 @@ Please first read the [issue guidelines](https://github.com/LapysDev/LapysJS/blo
 If your problem or idea is not addressed yet, [please open a new issue](https://github.com/LapysDev/LapysJS/issues/new).
 
 ## Documentation
-Bootstrap's documentation, included in this repository in the root directory is publicly hosted on GitHub Pages at <#>.
+LapysJS' documentation, included in this repository in the root directory is publicly hosted on GitHub Pages at <#>.
 The documents may also be run locally.
 
 ## Community
