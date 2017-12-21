@@ -69,27 +69,34 @@
     /* Insertion */
     document.body.appendChild(loaderScreen);
 
-    /* Function > On DOM Ready
-            --- NOTE ---
-                @lapys: This is a minified version of the On DOM Ready function in LapysJS.
-    */
-    let onDOMReady=function onDOMReady(){document.readyState==='complete'&&typeof arguments[0]==='function'?setTimeout(arguments[0],parseFloat(arguments[1])):typeof document.addEventListener==='function'?document.addEventListener('DOMContentLoaded',()=>{setTimeout(arguments[0],parseFloat(arguments[1]))}):document.attachEvent('onreadystatechange',()=>{setTimeout(()=>{(document.readyState!=='complete')||arguments[0]()},parseFloat(arguments[1]))})};
+    // Function
+        /* On DOM Ready
+                --- NOTE ---
+                    @lapys: This is a minified version of the On DOM Ready function in LapysJS.
+        */
+        let onDOMReady=function onDOMReady(){document.readyState==='complete'&&typeof arguments[0]==='function'?setTimeout(arguments[0],parseFloat(arguments[1])):typeof document.addEventListener==='function'?document.addEventListener('DOMContentLoaded',()=>{setTimeout(arguments[0],parseFloat(arguments[1]))}):document.attachEvent('onreadystatechange',()=>{setTimeout(()=>{(document.readyState!=='complete')||arguments[0]()},parseFloat(arguments[1]))})},
+
+        // Remove Loader Screen
+        removeLoaderScreen = function removeLoaderScreen() {
+            // Style
+                // <body>
+                !document.body['LapysJS styleOverflowY'] || (document.body.style.overflowY = document.body['LapysJS styleOverflowY']);
+
+                // Loader Screen > Opacity
+                !document.querySelector('[data-id=loaderScreen') || (document.querySelector('[data-id=loaderScreen').style.opacity = 0);
+
+            // Deletion
+            delete document.body['LapysJS styleOverflowY'];
+
+            // Set Timeout
+            setTimeout(() => {
+                // Deletion
+                !document.querySelector('[data-id=loaderScreen') || document.querySelector('[data-id=loaderScreen').remove()
+            }, 3000)
+        };
 
     /* On DOM Ready */
-    onDOMReady(() => {
-        // Style
-            // <body>
-            document.body.style.overflowY = document.body['LapysJS styleOverflowY'];
+    onDOMReady(removeLoaderScreen, 1500);
 
-            // Loader Screen > Opacity
-            document.querySelector('[data-id=loaderScreen').style.opacity = 0;
-
-        // Deletion
-        delete document.body['LapysJS styleOverflowY'];
-
-        // Set Timeout
-        setTimeout(() => {
-            // Deletion
-            document.querySelector('[data-id=loaderScreen').remove()
-        }, 3000)
-    }, 1500)
+    // Set Timeout
+    setTimeout(removeLoaderScreen, 6000)

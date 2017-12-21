@@ -7,13 +7,13 @@
             super();
 
             // Modification > Target
-                // Set Timeout
-                setTimeout(() => {
+                // Timeout
+                timeout(() => {
                     // Class
                     this.addClass('accordion');
 
                     // Data Event Type
-                    this.attr('data-event-type', this.attr('data-event-type') || 'click')
+                    this.dataAttr('event-type', this.dataAttr('event-type') || 'click')
                 })
         }
     };
@@ -26,13 +26,10 @@
             super();
 
             // Modification > Target
-                // Set Timeout
-                setTimeout(() => {
+                // Timeout
+                timeout(() => {
                     // Class
-                    this.addClass('carousel');
-
-                    // Data Auto
-                    this.attr('data-auto', this.attr('data-auto').trim() || 'right_3')
+                    this.addClass('carousel')
                 })
         }
     };
@@ -51,8 +48,8 @@
             super();
 
             // Modification > Target
-                // Set Timeout
-                setTimeout(() => {
+                // Timeout
+                timeout(() => {
                     // Data ID
                     this.setDataAttr('id', 'developerCanvas');
 
@@ -82,16 +79,16 @@
             super();
 
             // Modification > Target
-                // Set Timeout
-                setTimeout(() => {
+                // Timeout
+                timeout(() => {
                     // Class
                     this.addClass('dropdown');
 
                     // Data Event Type
-                    this.attr('data-event-type', this.attr('data-event-type') || 'click');
+                    this.dataAttr('event-type', this.dataAttr('event-type') || 'click');
 
                     // Data ID
-                    this.attr('data-id', this.attr('data-id') || `dropdown${$$('.dropdown', '_length')}`)
+                    this.dataAttr('id', this.dataAttr('id') || `dropdown${$$('.dropdown', '_length')}`)
                 })
         }
     };
@@ -104,8 +101,8 @@
             super();
 
             // Modification > Target
-                // Set Timeout
-                setTimeout(() => {
+                // Timeout
+                timeout(() => {
                     // Class
                     this.addClass('dynamic-text')
                 })
@@ -120,8 +117,8 @@
             super();
 
             // Modification > Target
-                // Set Timeout
-                setTimeout(() => {
+                // Timeout
+                timeout(() => {
                     // Class
                     this.addClass('jumbotron');
 
@@ -306,18 +303,18 @@
             css.link('baseStylesheet', {href: decodeURIComponent(($$(`script[src*='base.js'`, 0) || 'script'.html).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
 
             // Document Stylesheet
-                /* Set Timeout
+                /* Timeout
                         --- NOTE ---
                             @lapys: The Document Script may not be defined yet.
                 */
-                setTimeout(() => {
+                timeout(() => {
                     css.link('documentStylesheet', {href: decodeURIComponent(($$('script[data-id=documentScript', 0) || 'script'.html).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'})
                 });
 
     /* Document */
         // Modification
-            // Fav Icon
-            document.favicon = 'assets/img/ico/icon.ico';
+            // Favicon
+            document.favicon = 'assets/img/ico/icon.ico'
 
             // Title
             document.title = 'LapysJS';
@@ -359,12 +356,29 @@
         registerElement('jumbotron-element', HTMLJumbotronElement);
 
 /* Components */
+    /* Footer */
+        // On DOM Ready
+        onDOMReady(() => {
+            // Insertion
+            (document.main || document.body).insertChild(
+                'end',
+
+                createElement(
+                    'footer',
+                    '.bg-c-darkgray.card.default.flat.no-select.row.text-center[data-id=footer]',
+
+                    `<div> ${app.author} &copy; 2017${date.getFullYear() !== 2017 ? `-${date.getFullYear()}` : ''} </div>` +
+                    `<br>` +
+                    `<small> Some images are copyright of FreePik at <a class=color-aqua href=https://www.freepik.com>www.freepik.com</a> and all ownership goes to the respective authors. </small>`,
+
+                    {style: 'padding: 30px 0; text-indent: 15px'}
+                )
+            )
+        });
+
     /* Syntax Highlighted */
         // Function > Modify Syntax Highlighted Code
-        global.modifySyntaxHighlightedCode = func();
-
-        // On DOM Ready
-        onDOMReady(modifySyntaxHighlightedCode = function modifySyntaxHighlightedCode() {
+        global.modifySyntaxHighlightedCode = function modifySyntaxHighlightedCode() {
             // Initialization > Syntax Highlighted Code
             let syntaxHighlightedCode = $$('code.syntax-highlighted', 'array');
 
@@ -372,10 +386,18 @@
                     Index all Syntax Highlighted Code.
             */
             for (let i = 0; i < syntaxHighlightedCode.length; i += 1) {
+                /* Loop
+                        [for statement]
+
+                    > Modification > (Syntax Highlighted Code > Highlight Color) > Outer HTML
+                */
                 for (let j = syntaxHighlightedCode[i].$$('[data-id=highlightColor', '~length'); j > -1; j -= 1)
                     syntaxHighlightedCode[i].$$('[data-id=highlightColor', j).outerHTML = syntaxHighlightedCode[i].$$('[data-id=highlightColor', j).innerHTML;
 
                 // Modification > Syntax Highlighted Code
+                    // Inner HTML
+                    syntaxHighlightedCode[i].innerHTML = syntaxHighlightedCode[i].innerText;
+
                     // Format
                     ((syntaxHighlightedCode[i].format || '').constructor === Array) || syntaxHighlightedCode[i].def('format', {
                         // Get
@@ -407,26 +429,31 @@
                     });
 
                     // Tab Spacing
-                    (typeof syntaxHighlightedCode[i].tabSpacing === 'string') || syntaxHighlightedCode[i].def('tabSpacing', {
-                        // Get
-                        get: function getTabSpacing() {
-                            // Return
-                            return this.attr('tab-spacing')
-                        },
+                        // Error Handling
+                        try {
+                            (typeof syntaxHighlightedCode[i].tabSpacing === 'string') || syntaxHighlightedCode[i].def('tabSpacing', {
+                                // Get
+                                get: function getTabSpacing() {
+                                    // Return
+                                    return this.attr('tab-spacing')
+                                },
 
-                        // Set
-                        set: function setTabSpacing() {
-                            // Modification > Target > Language
-                            this.attr('tab-spacing', int(arguments[0]) || '')
+                                // Set
+                                set: function setTabSpacing() {
+                                    // Modification > Target > Language
+                                    this.attr('tab-spacing', int(arguments[0]) || '')
+                                }
+                            })
                         }
-                    });
+
+                        catch (error) {};
 
                     // Spell Check
                     syntaxHighlightedCode[i].spellcheck = false;
 
                     // Inner HTML
                     (syntaxHighlightedCode[i].innerHTML[0] !== '\n') || (syntaxHighlightedCode[i].innerHTML = syntaxHighlightedCode[i].innerHTML.replace('\n', ''));
-                        /* Set Timeout
+                        /* Timeout
                                 --- NOTE ---
                                     @lapys: Allow all proper highlighting,
                                         if any to be done.
@@ -436,13 +463,24 @@
                                             -- Ensured newline at the End of Code.
                                                 @lapys: Not really Regular Expression but it is still nice.
                         */
-                        setTimeout(() => {
+                        timeout(() => {
+                            /* Loop
+                                    Index all the Syntax Highlighted Code's Comments.
+                            */
+                            for (let j = 0; j < syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', 'length'); j += 1)
+                                /* Loop
+                                        While
+                                            the Syntax Highlighted Code's Comment still has a non-Comment child element.
+
+                                    > Deletion
+                                */
+                                while (syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', j).$$(':not([role=comment])', 0))
+                                    syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', j).$$(':not([role=comment])', 0).outerHTML = syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', j).$$(':not([role=comment])', 0).innerHTML;
+
                             syntaxHighlightedCode[i].innerHTML = syntaxHighlightedCode[i].innerHTML.replace(/~/g, data => {
                                 // Return
-                                return `<span data-id=tab style='color: transparent !important'>${'*'.repeat(+syntaxHighlightedCode[i].tabSpacing || 4)}</span>`
-                            }).replace(/\n/g, `<span data-id=newline><br></span>`);
-
-                            !syntaxHighlightedCode[i].format.hasElement('ensure-newline-at-eof') || (typeof syntaxHighlightedCode[i].$$('[data-id=newline', (syntaxHighlightedCode[i].$$('[data-id=newline', '~length')).previousElementSibling).attr === 'function' ? syntaxHighlightedCode[i].$$('[data-id=newline', (syntaxHighlightedCode[i].$$('[data-id=newline', '~length')).previousElementSibling).attr('data-id') === 'newline' : false) || (syntaxHighlightedCode[i].$$('[data-id=newline', syntaxHighlightedCode[i].$$('[data-id=newline', '~length')).innerHTML = `<br><br>`)
+                                return `<span data-id=tab style='color: transparent !important'>${'&nbsp;'.repeat(+syntaxHighlightedCode[i].tabSpacing || 4)}</span>`
+                            }).replace(/\n/g, `<span data-id=newline><br></span>`)
                         }, 100);
 
                     /* Content
@@ -585,13 +623,13 @@
                             }).replace(/function(| ){0,}([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,}\(([^\(|^\)]){0,}\)(| ){0,}\{/g, data => {
                                 // Return
                                 return `${data.getBeforeChar('(')}(<span data-id=highlightColor role=name-tag>${data.getAfterChar('(').getBeforeChar(')', 1).replace(/,/g, `<span data-id=highlightColor role=plain-text>,</span>`)}</span>)${data.getAfterChar(')', 1)}`
-                            }).replace(/&lt;/g, `<span data-id=highlightColor role=arithmetic><</span>`).replace(/&gt;/g, `<span data-id=highlightColor role=arithmetic>></span>`).replace(/&amp;/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/&hellip;/g, '...').replace(/~/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/!/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/\*/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/\|/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/:/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/%/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/'([a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
+                            }).replace(/&lt;/g, `<span data-id=highlightColor role=arithmetic><</span>`).replace(/&gt;/g, `<span data-id=highlightColor role=arithmetic>></span>`).replace(/&amp;/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/&hellip;/g, '...').replace(/~/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/!/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/\^/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/\*/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/\|/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/:/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/%/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/'(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
                                 // Return
                                 return `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>`
-                            }).replace(/"([a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, data => {
+                            }).replace(/"(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, data => {
                                 // Return
                                 return `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>`
-                            }).replace(/`([a-z]|[A-Z]|[0-9]|['|"\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}`/g, data => {
+                            }).replace(/`(\n|\t|\r|\b|[a-z]|[A-Z]|[0-9]|['|"\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}`/g, data => {
                                 // Return
                                 return `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>`
                             }).replace(/[0-9]/g, `<span data-id=highlightColor role=numeral>$&</span>`).replace(/const/g, `<span data-id=highlightColor role=identifier>$&</span>`).replace(/let/g, `<span data-id=highlightColor role=identifier>$&</span>`).replace(/var/g, `<span data-id=highlightColor role=identifier>$&</span>`).replace(/function ([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,}\(/g, data => {
@@ -599,20 +637,7 @@
                             }).replace(/(|([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,})(|\.)([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,}\(/g, data => {
                                 // Return
                                 return `<span data-id=highlightColor role=identifier>${data.getBeforeChar('.').getBeforeChar('(')}</span>${data.hasText('.') ? '.' : ''}<span data-id=highlightColor role=function>${`.${data.getAfterChar('.')}`.replace('.', '').replace('(', '')}</span>(`
-                            }).replace(/\.\.\./g, `<span data-id=highlightColor role=comment>$&</span>`);
-
-                            /* Loop
-                                    Index all the Element's Comments.
-                            */
-                            for (let i = 0; i < element.$$('[data-id=highlightColor][role=comment', 'length'); i += 1)
-                                /* Loop
-                                        While
-                                            the Element's Comment still has a non-Comment child element.
-
-                                    > Deletion
-                                */
-                                while (element.$$('[data-id=highlightColor][role=comment', i).$$(':not([role=comment])', 0))
-                                    element.$$('[data-id=highlightColor][role=comment', i).$$(':not([role=comment])', 0).outerHTML = element.$$('[data-id=highlightColor][role=comment', i).$$(':not([role=comment])', 0).innerHTML
+                            }).replace(/\.\.\./g, `<span data-id=highlightColor role=comment>$&</span>`)
                         },
 
                         // Writable
@@ -628,23 +653,38 @@
                 switch (syntaxHighlightedCode[i].language) {
                     // HTML
                     case 'html':
-                        setTimeout(() => {
+                        timeout(() => {
                             (syntaxHighlightedCode[i].highlightHTMLCode || (() => {}))(syntaxHighlightedCode[i])
                         });
                         break;
 
                     // CSS
                     case 'css':
-                        setTimeout(() => {
+                        timeout(() => {
                             (syntaxHighlightedCode[i].highlightCSSCode || (() => {}))(syntaxHighlightedCode[i])
                         });
                         break;
 
                     // JavaScript
                     case 'javascript':
-                        setTimeout(() => {
+                        timeout(() => {
                             (syntaxHighlightedCode[i].highlightJavaScriptCode || (() => {}))(syntaxHighlightedCode[i])
                         })
                 }
             }
-        }, 100)
+
+            // Return
+            return modifySyntaxHighlightedCode
+        };
+
+        // Timeout
+        timeout(() => {
+            // Function > Modify Syntax Highlighted Code
+            modifySyntaxHighlightedCode();
+
+            // Timeout
+            timeout(() => {
+                // On Node Added
+                onNodeAdded(document.body, modifySyntaxHighlightedCode)
+            })
+        })

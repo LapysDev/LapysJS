@@ -1,3 +1,9 @@
+/* DOM Elements */
+    /* <body> */
+    body {
+        transition: .3s ease-in-out
+    }
+
 /* Assets */
     /* Flat Section */
         /* Header */
@@ -11,6 +17,243 @@
         }
 
 /* Components */
+    /* Download */
+    #download {
+        background-attachment: fixed;
+        background-image: url('../img/jpg/download-bg.l-ll-fourk.jpg');
+        background-size: 100% 100%;
+        box-shadow: inset 0 0 0 5000px rgba(0, 0, 0, .5);
+        color: #FFFFFF
+    }
+        /* @media > (Mobile, Tablet) View */
+        @media only all
+            and (max-width: 768px) {
+                #download {
+                    background-image: url('../img/jpg/download-bg.m-t.jpg')
+                }
+        }
+
+        /* States > Hover */
+        #download:hover {
+            box-shadow: inset 0 0 0 5000px rgba(0, 0, 0, .63)
+        }
+
+        /* Content */
+        #download * {
+            text-align: center
+        }
+
+        #download > * {
+            align-items: center;
+            display: flex;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%
+        }
+
+        /* <div> */
+            /* <div> */
+            #download > div > div {
+                padding: 1% 0;
+                width: 33.3%
+            }
+                /* @media > (Mobile, Tablet) View */
+                @media only all
+                    and (max-width: 768px) {
+                        #download > div > div {
+                            min-width: 400px;
+                            width: 75%
+                        }
+                }
+
+                /* States */
+                    /* Active */
+                    #download > div > div:active,
+                    #download > div > div :active {
+                        cursor: pointer !important
+                    }
+
+                    /* Hover */
+                        /* Download Button */
+                        #download > div > div:hover > [data-id=downloadButton] {
+                            background-color: rgba(0, 0, 0, .5);
+                            border-width: 4px;
+                            cursor: default;
+                            transform: rotateX(360deg);
+                            width: 350px
+                        }
+                            /* @media > (Mobile, Tablet) View */
+                            @media only all
+                                and (max-width: 768px) {
+                                    #download > div > div:hover > [data-id=downloadButton] {
+                                        width: 300px
+                                    }
+                            }
+
+                            /* <a> */
+                            #download > div > div:hover > [data-id=downloadButton] > a {
+                                animation: fadeOutFadeIn .6s ease-in-out 0s 1 backwards
+                            }
+
+                /* Download Button */
+                #download > div > div > [data-id=downloadButton] {
+                    background-color: rgba(0, 0, 0, .33);
+                    border: 3px solid;
+                    border-radius: 5px;
+                    color: #FFFFFF;
+                    cursor: pointer;
+                    font-size: 27.5px;
+                    font-weight: bold;
+                    font-variant: all-petite-caps;
+                    margin: auto;
+                    outline: 0 !important;
+                    padding: 7.5px 10px;
+                    padding-bottom: 10px;
+                    width: 150px
+                }
+                    /* @media > (Mobile, Tablet) View */
+                    @media only all
+                        and (max-width: 768px) {
+                            #download > div > div > [data-id=downloadButton] {
+                                font-size: 22.5px
+                            }
+                    }
+
+                    /* <a> */
+                    #download > div > div > [data-id=downloadButton] > a {
+                        cursor: default;
+                        transition: none !important;
+                        white-space: pre
+                    }
+                        /* @keyframes > Fade Out Fade In */
+                        @keyframes fadeOutFadeIn {
+                            0% {
+                                color: transparent;
+                                opacity: 0
+                            }
+
+                            25% {
+                                opacity: 1
+                            }
+
+                            50% {
+                                opacity: 0
+                            }
+
+                            to {
+                                color: inherit;
+                                opacity: 1
+                            }
+                        }
+
+    /* Features */
+    #features {
+        align-items: center;
+        display: flex;
+        justify-content: center
+    }
+        /* Content */
+        #features > * {
+            background-color: #0056FF;
+            color: #FFFFFF
+        }
+
+        /* Feature Cards Carousel */
+        #features > [data-id=featureCardsCarousel] {
+            border: 0
+        }
+            /* Slides Container */
+                /* Slide */
+                #features > [data-id=featureCardsCarousel] > [data-id=slides-container] > .slide {
+                    border: 0;
+                    margin: 0 !important;
+                    padding: 0 !important
+                }
+                    /* Icon */
+                    #features > [data-id=featureCardsCarousel] > [data-id=slides-container] > .slide > [data-id=icon] {
+                        flex-basis: 33.3%;
+                        height: 33.3%
+                    }
+                        /* <img> */
+                        #features > [data-id=featureCardsCarousel] > [data-id=slides-container] > .slide > [data-id=icon] > img {
+                            height: 100% !important;
+                            width: auto !important
+                        }
+
+                    /* Text Content */
+                    #features > [data-id=featureCardsCarousel] > [data-id=slides-container] > .slide > [data-id=textContent] {
+                        padding: 0 15%;
+                        width: 70%
+                    }
+
+                    /* Title */
+                    #features > [data-id=featureCardsCarousel] > [data-id=slides-container] > .slide > [data-id=title] {
+                        font-size: 3em !important;
+                        font-weight: bold !important;
+                        padding-top: 10%
+                    }
+                        /* Content */
+                        #features > [data-id=featureCardsCarousel] > [data-id=slides-container] > .slide > [data-id=title] * {
+                            font: inherit !important;
+                            margin: 0 !important
+                        }
+
+        /* Feature Cards Frame */
+        #features > [data-id=featureCardsFrame] {
+            align-items: flex-start;
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: center;
+            margin: auto;
+            padding: 2.5%;
+            width: 95%
+        }
+            /* Card */
+            #features > [data-id=featureCardsFrame] > .card {
+                border: 0;
+                box-shadow: none !important;
+                cursor: default;
+                flex-grow: 1;
+                margin: 1% .3%;
+                max-width: 33%;
+                user-select: none
+            }
+                /* Content */
+                #features > [data-id=featureCardsFrame] > .card > * {
+                    width: 100%
+                }
+
+                /* Icon */
+                #features > [data-id=featureCardsFrame] > .card > [data-id=icon] {
+                    height: 150px;
+                    margin: auto;
+                    width: 150px
+                }
+
+                /* Text Content */
+                #features > [data-id=featureCardsFrame] > .card > [data-id=textContent] {
+                    font-size: 100%;
+                    padding: 0 10%;
+                    padding-top: 20px;
+                    width: 80%
+                }
+
+                /* Title */
+                #features > [data-id=featureCardsFrame] > .card > [data-id=title] {
+                    font-size: 35px;
+                    font-variant: titling-caps;
+                    font-weight: bold;
+                    height: 100px;
+                    overflow: hidden;
+                    padding: 7.5px 0;
+                    text-align: center
+                }
+                    /* Content */
+                    #features > [data-id=featureCardsFrame] > .card > [data-id=title] * {
+                        font: inherit !important;
+                        margin: 0 !important
+                    }
+
     /* Introduction */
     #introduction {
         align-items: center;
@@ -19,25 +262,169 @@
         flex-wrap: nowrap;
         justify-content: space-around
     }
-        /* Description */
-        #introduction > [data-id=description] {
-            padding-bottom: 30px
+        /* @media > (Mobile, Tablet) View */
+        @media only all
+            and (max-width: 768px) {
+                #introduction {
+                    padding-top: 10px
+                }
+        }
+
+        /* Content */
+        #introduction > * {
+            flex-grow: 1
         }
 
         /* Developer Canvas 0 */
         #introduction > #developerCanvas0 {
+            align-items: center;
             background-color: transparent;
             border: 0;
             border-radius: 0;
-            flex-grow: 1;
-            margin-bottom: 60px;
+            display: flex;
+            flex-direction: row;
+            flex-grow: 2;
+            flex-wrap: nowrap;
+            justify-content: center;
+            margin: auto;
+            margin-bottom: 20px;
+            overflow: hidden;
             width: 100%
         }
+            /* @media */
+                /* Mobile View */
+                @media only all
+                    and (max-width: 768px) {
+                        #introduction > #developerCanvas0 {
+                            font-size: 95%;
+                            zoom: .8
+                        }
+                }
 
-        /* Header */
-        #introduction > [data-id=header] {
-            margin-top: 60px
-        }
+                /* (Mobile, Tablet) View */
+                @media only all
+                    and (max-width: 768px) {
+                        #introduction > #developerCanvas0 {
+                            margin-left: -1%;
+                            width: 102%
+                        }
+                }
+
+            /* Content */
+                /* Not > Carousel Toggle (Previous, Next) Slide Button */
+                    /* @media > (Mobile, Tablet) View */
+                    @media only all
+                        and (max-width: 768px) {
+                            #introduction > #developerCanvas0 > :not([data-id*=carouselToggle]) {
+                                pointer-events: none
+                            }
+                    }
+
+            /* <button> */
+            #introduction > #developerCanvas0 > button {
+                animation: flare 7s ease-in-out 0s infinite backwards;
+                background-color: rgba(0, 0, 0, .1);
+                border: 0;
+                color: rgba(225, 225, 225, .4);
+                flex-basis: 35px;
+                flex-grow: 0;
+                height: 35px;
+                margin-top: 10%;
+                outline: 0 !important;
+                position: absolute;
+                text-align: center;
+                width: 35px;
+                z-index: 3
+            }
+                /* @keyframes > Flare */
+                @keyframes flare {
+                    0% {
+                        box-shadow: 0 0 7.5px 3.25px rgba(255, 255, 255, .45)
+                    }
+
+                    28.5714% {
+                        box-shadow: 0 0 0 0 transparent
+                    }
+                }
+
+                /* States > (Focus, Hover) */
+                #introduction > #developerCanvas0 > button:focus,
+                #introduction > #developerCanvas0 > button:hover {
+                    background-color: rgba(0, 0, 0, .5);
+                    color: #FFFFFF
+                }
+
+                /* Carousel Toggle Next Slide Button */
+                #introduction > #developerCanvas0 > button[data-id=carouselToggleNextSlideButton] {
+                    right: 0
+                }
+
+                /* Carousel Toggle Previous Slide Button */
+                #introduction > #developerCanvas0 > button[data-id=carouselTogglePreviousSlideButton] {
+                    left: 0
+                }
+
+            /* Comparison Table */
+            #introduction > #developerCanvas0 > [data-id=comparisonTable] {
+                flex-basis: 80%;
+                flex-grow: 1;
+                margin: auto;
+                padding: 0;
+                z-index: 2;
+                zoom: .8
+            }
+                /* <tbody> */
+                #introduction > #developerCanvas0 > [data-id=comparisonTable] > tbody,
+                #introduction > #developerCanvas0 > [data-id=comparisonTable] > tbody > tr,
+                #introduction > #developerCanvas0 > [data-id=comparisonTable] > tbody > tr > td,
+                #introduction > #developerCanvas0 > [data-id=comparisonTable] > tbody > tr > td > * {
+                    height: 100%
+                }
+
+                /* <td> */
+                    /* <carousel-component> */
+                    #introduction > #developerCanvas0 > [data-id=comparisonTable] td > carousel-component {
+                        border: 0;
+                        height: 300px !important;
+                        width: 100%
+                    }
+
+                    #introduction > #developerCanvas0 > [data-id=comparisonTable] td > carousel-component,
+                    #introduction > #developerCanvas0 > [data-id=comparisonTable] td > carousel-component * {
+                        pointer-events: none
+                    }
+                        /* Syntax Highlighted */
+                        #introduction > #developerCanvas0 > [data-id=comparisonTable] td > carousel-component .syntax-highlighted {
+                            font-size: 100% !important
+                        }
+
+                    /* <div> */
+                    #introduction > #developerCanvas0 > [data-id=comparisonTable] td > div {
+                        align-items: center;
+                        display: inline-flex;
+                        flex-flow: column wrap;
+                        font-size: 97.5%;
+                        justify-content: center;
+                        outline: 1px solid rgba(127, 127, 127, .1);
+                        padding: 0 5%;
+                        width: 80%
+                    }
+
+                /* <thead> */
+                #introduction > #developerCanvas0 > [data-id=comparisonTable] > thead {
+                    font-size: 150%;
+                    pointer-events: none;
+                    user-select: none
+                }
+
+                /* Syntax Highlighted */
+                #introduction > #developerCanvas0 > [data-id=comparisonTable] .syntax-highlighted {
+                    flex-grow: 1;
+                    font-size: 90%;
+                    margin: 5px auto;
+                    padding: 0 1%;
+                    width: 98%
+                }
 
     /* Jumbotron */
     #jumbotron {
@@ -55,6 +442,39 @@
             justify-content: center;
             width: 90%
         }
+            /* @keyframes */
+                /* Slide Out From Top */
+                @keyframes slideOutFromTop {
+                    0% {
+                        left: 0;
+                        opacity: 0;
+                        position: fixed;
+                        top: 0
+                    }
+
+                    to {
+                        left: 0;
+                        opacity: 1;
+                        position: fixed;
+                        top: -25vh
+                    }
+                }
+
+                /* Slide In From Top */
+                @keyframes slideInFromTop {
+                    0% {
+                        left: 0;
+                        position: fixed;
+                        top: -100px
+                    }
+
+                    to {
+                        left: 0;
+                        position: fixed;
+                        top: 0
+                    }
+                }
+
             /* @media */
                 /* Mobile View */
                 @media only all
@@ -188,13 +608,13 @@
 
             /* Sub Header */
             #jumbotron > [data-id=headers-container] > [data-id=subheader] {
-                font-size: 2em
+                font-size: 25px
             }
-                /* @media > (Mobile, Tablet) View */
+                /* @media > Mobile View */
                 @media only all
-                    and (max-width: 768px) {
+                    and (max-width: 425px) {
                         #jumbotron > [data-id=headers-container] > [data-id=subheader] {
-                            font-size: 1.875em
+                            font-size: 17.5px
                         }
                 }
 
@@ -231,3 +651,27 @@
                             width: 40%
                         }
                 }
+
+    /* Mast Head */
+        /* Content */
+            /* States > Second Child */
+            [data-id=mastHead] > :nth-child(2) {
+                align-items: center;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: center
+            }
+                /* @media > (Mobile, Tablet) View */
+                @media only all
+                    and (max-width: 768px) {
+                        [data-id=mastHead] > :nth-child(2) {
+                            flex-direction: column-reverse
+                        }
+                }
+
+                /* Text Container */
+                    /* Description */
+                    [data-id=mastHead] > :nth-child(2) > [data-id=textContainer] > [data-id=description] {
+                        width: 90%
+                    }

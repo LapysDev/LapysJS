@@ -3,7 +3,7 @@
 <body>
     <!-- Scripts -->
         <!-- Loader Screen Script -->
-        <script defer language=javascript src=assets/js/loader-screen.js type=text/javascript> </script>
+        <script async language=javascript src=assets/js/loader-screen.js type=text/javascript> </script>
 
         <!-- LapysJS Script -->
         <script language=javascript src=src/lapys.js type=text/javascript> </script>
@@ -17,7 +17,7 @@
     <!-- Main -->
     <main>
         <!-- Jumbotron -->
-        <jumbotron-element class='center-flex bg bg-cover full-h' id=jumbotron>
+        <jumbotron-element class='center-flex bg bg-cover bg-fixed full-h' id=jumbotron>
             <!-- Logo Container -->
             <div data-id=logo-container>
                 <!-- Logo -->
@@ -53,8 +53,8 @@
                             insert, insertNewline;
                             type, highlightAll, clearAll;
                             type, navigateCursorBackwards, forwardsDelete'
-                        data-text-function-delay=.75
-                        data-text-function-duration=.3
+                        data-text-function-delay=.6
+                        data-text-function-duration=.6
                         data-text-function-initial-delay=4.25
                     > </dynamic-text-component>
                 </h2>
@@ -63,25 +63,25 @@
             <!-- Buttons Container -->
             <div data-id=buttons-container>
                 <!-- Button 0 -->
-                <button class='col-1 grid-12' data-id=button-0 data-title='Get Started' data-title-style='margin-left: -50px; margin-top: -75px'><a href=#> Get Started </a></button>
+                <button class='col-1 grid-12' data-id=button-0 data-title='A quick how-to for LapysJS.' data-title-style='margin-top: -50px'><a href=#> Get Started </a></button>
 
                 <!-- Button 1 -->
-                <button class='col-1 grid-12' data-id=button-1 data-title=CSS data-title-style='margin-left: -50px; margin-top: -75px'><a href=#> CSS </a></button>
+                <button class='col-1 grid-12' data-id=button-1 data-title='All the latest styles of LapysJS.' data-title-style='margin-top: -50px'><a href=#> CSS </a></button>
 
                 <!-- Button 2 -->
-                <button class='col-1 grid-12' data-id=button-2 data-title=JavaScript data-title-style='margin-left: -50px; margin-top: -75px'><a href=#> JavaScript </a></button>
+                <button class='col-1 grid-12' data-id=button-2 data-title='Is this even JavaScript anymore?' data-title-style='margin-top: -50px'><a href=#> JavaScript </a></button>
 
                 <!-- Button 3 -->
-                <button class='col-1 grid-12 m-del' data-id=button-3 data-title=GitHub data-title-style='margin-left: -50px; margin-top: -75px'><a href=#> GitHub </a></button>
+                <button class='col-1 grid-12 m-del' data-id=button-3 data-title='Join the community!'><a href=https://github.com/LapysDev/LapysJS> GitHub </a></button>
 
                 <!-- Button 4 -->
-                <button class='col-1 grid-12' data-id=button-4 data-title=Updates data-title-style='margin-left: -50px; margin-top: -75px'><a href=#> Updates </a></button>
+                <button class='col-1 grid-12' data-id=button-4 data-title='New crazy features coming soon!' data-title-style='margin-top: -50px'><a href=#> Updates </a></button>
 
                 <!-- Button 5 -->
-                <button class='col-1 grid-12' data-id=button-5 data-title=Themes data-title-style='margin-left: -50px; margin-top: -75px'><a href=#> Themes </a></button>
+                <button class='col-1 grid-12' data-id=button-5 data-title='Many designs to start off your project.' data-title-style='margin-top: -50px'><a href=#> Themes </a></button>
 
                 <!-- Button 6 -->
-                <button class='col-1 grid-12' data-id=button-6 data-title=Projects data-title-style='margin-left: -50px; margin-top: -75px'><a href=#> Projects </a></button>
+                <button class='col-1 grid-12' data-id=button-6 data-title='Major projects the team has worked on.' data-title-style='margin-top: -50px'><a href=#> Projects </a></button>
             </div>
         </jumbotron-element>
 
@@ -100,46 +100,449 @@
             </p>
 
             <!-- Developer Canvas 0 -->
-            <developer-canvas description='For comparing the differences between LapysJS and Vanilla JavaScript' id=developerCanvas0>
-                <table class='responsive table table-flat'>
-                    <thead>
+            <developer-canvas description='For comparing the differences between LapysJS and Vanilla JavaScript' id=developerCanvas0 script='
+                // Event > Target
+                    // Mouse Down, Touch Start
+                    this.setEvent(`mousedown touchstart`, event => {
+                        // Modification > Target > Cursor Position X
+                        this[`LapysJS eventPositionX`] = event.clientX || event.changedTouches[0].clientX
+                    });
+
+                    // Mouse Up, Touch End
+                    this.setEvent(`mouseup touchend`, event => {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (event.constructor === window.MouseEvent) {
+                            /* Logic
+                                    [if:else if:else statement]
+
+                                > Target > Toggle (Previous, Next) Slide
+                            */
+                            if (event.clientX < this[`LapysJS eventPositionX`])
+                                this.children[0].click();
+
+                            else if (event.clientX > this[`LapysJS eventPositionX`])
+                                this.children[~-this.children.length].click()
+                        }
+
+                        else if (event.constructor === window.TouchEvent)
+                            /* Logic
+                                    [if:else if:else statement]
+
+                                > Target > Toggle (Previous, Next) Slide
+                            */
+                            if (event.changedTouches[0].clientX > this[`LapysJS eventPositionX`])
+                                this.children[0].click();
+
+                            else if (event.changedTouches[0].clientX < this[`LapysJS eventPositionX`])
+                                this.children[~-this.children.length].click()
+                    })
+            '>
+                <!-- Carousel Toggle Previous Slide Button
+                            --- NOTE ---
+                                @lapys: For smaller screens only.
+                -->
+                <button class='l-del ll-del fourk-del smooth' data-id=carouselTogglePreviousSlideButton onclick='
+                        for (let i = 0; i < this.nextElementSibling.$$(`carousel-component`, `length`); i += 1)
+                            this.nextElementSibling.$$(`carousel-component`, i).togglePreviousSlide()
+                '>&larr;</button>
+
+                <!-- Comparison Table -->
+                <table class='responsive table' data-id=comparisonTable>
+                    <!-- Head -->
+                    <thead data-id=head>
                         <tr>
                             <th> Regular JavaScript </th>
                             <th> LapysJS </th>
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <!-- Body -->
+                    <tbody data-id=body>
                         <tr>
-                            <th>
-                                <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
-                                    // Add an element to an array.
-                                        ~let array = [];
-                                            ~~array.push(1, 0); // Add it forwards in order.
-                                            ~~array.unshift(2); // Add it backwards in order.
-                                        ~array; // returns [2, 1, 0]
+                            <td>
+                                <!--
+                                            --- NOTE ---
+                                                For smaller screens.
+                                -->
+                                <carousel-component class='l-del ll-del fourk-del'>
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Add an element to an array. */
+                                            ~let array = [];
+                                                ~~// Add it forwards in order.
+                                                ~~array.push(1, 0);
 
-                                    // Get content after/ before a specified splice of text.
-                                        ~let str = 'Hello, World!';
-                                            ~str.slice(0, str.indexOf(',')); // returns 'Hello'
-                                            ~str.slice(str.indexOf(',') + 1); // returns ' World!'
+                                                ~~// Add it backwards in order.
+                                                ~~array.unshift(2);
 
-                                    // Clone any primitive JavaScript value.
-                                        ~Object.assign({}, {name: 'Lapys', age: 21}); // returns {name: 'Lapys', age: 21}
-                                        ~(function someFunction(input = 0) {
-                                            ~~let output = input;
-                                            ~~
-                                            ~~console.log(output)
-                                        ~}).bind({}) // returns function someFunction() { ... }
-                                </code>
-                            </th>
-                            <th>
-                                <div> </div>
-                            </th>
+                                            ~array // returns [2, 1, 0]
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Get content after/ before a specified splice of text. */
+                                            ~let str = 'Hello, World!';
+                                                ~~// returns 'Hello'
+                                                ~~str.slice(0, str.indexOf(','));
+
+                                                ~~// returns ' World!'
+                                                ~~str.slice(str.indexOf(',') + 1)
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Clone any primitive JavaScript value. */
+                                            ~// returns {name: 'Lapys', age: 21}
+                                            ~Object.assign({}, {name: 'Lapys', age: 21});
+
+
+                                            ~// Common-day function.
+                                            ~// returns function someFunction() { ... }
+                                            ~(function someFunction(input) {
+                                                ~~let output = input;
+                                                ~~~
+                                                ~~console.log(output)
+                                            ~}).bind({})
+
+                                    </code>
+                                </carousel-component>
+
+                                <!--
+                                            --- NOTE ---
+                                                For larger screens.
+                                -->
+                                <div class='m-del t-del'>
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Add an element to an array. */
+                                            ~let array = [];
+                                                ~~array.push(1, 0); // Add it forwards in order.
+                                                ~~array.unshift(2); // Add it backwards in order.
+                                            ~array // returns [2, 1, 0]
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Get content after/ before a specified splice of text. */
+                                            ~let str = 'Hello, World!';
+                                                ~~str.slice(0, str.indexOf(',')); // returns 'Hello'
+                                                ~~str.slice(str.indexOf(',') + 1) // returns ' World!'
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Clone any primitive JavaScript value. */
+                                            ~Object.assign({}, {name: 'Lapys', age: 21}); // returns {name: 'Lapys', age: 21}
+
+                                            ~// Common-day function.
+                                            ~(function someFunction(input) {
+                                                ~~let output = input;
+                                                ~~~
+                                                ~~console.log(output)
+                                            ~}).bind({}) // returns function someFunction() { ... }
+
+                                    </code>
+                                </div>
+                            </td>
+
+                            <td>
+                                <!--
+                                            --- NOTE ---
+                                                For smaller screens.
+                                -->
+                                <carousel-component class='l-del ll-del fourk-del'>
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Add an element to an array. */
+                                            ~let array = []
+                                                ~~// Add it forwards in order &amp; return [1, 0].
+                                                ~~.addElementToFront(1, 0)
+
+                                                ~~// Add it backwards in order &amp; return [2, 1, 0].
+                                                ~~.addElementToBack(2);
+
+                                            ~array // returns [2, 1, 0]
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Get content after/ before a specified splice of text. */
+                                            ~let str = 'Hello, World!';
+                                                ~~// returns 'Hello'
+                                                ~~str.getBeforeChar(',');
+
+                                                ~~// returns ' World!'
+                                                ~~str.getAfterChar(',')
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Clone any primitive JavaScript value. */
+                                            ~// returns {name: 'Lapys', age: 21}
+                                            ~({name: 'Lapys', age: 21}).clone();
+
+                                            ~// Alternative way to make functions.
+                                            ~// returns function someFunction() { ... }
+                                            ~func('someFunction', ['input'], `
+                                                ~~let output = input;
+                                                ~~~
+                                                ~~log(output) // just 'log' now...
+                                            ~`).clone()
+
+                                    </code>
+                                </carousel-component>
+
+                                <!--
+                                            --- NOTE ---
+                                                For larger screens.
+                                -->
+                                <div class='m-del t-del'>
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Add an element to an array. */
+                                            ~let array = []
+                                                ~~.addElementToFront(1, 0) // Add it forwards in order &amp; return [1, 0].
+                                                ~~.addElementToBack(2); // Add it backwards in order &amp; return [2, 1, 0].
+                                            ~array // returns [2, 1, 0]
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Get content after/ before a specified splice of text. */
+                                            ~let str = 'Hello, World!';
+                                                ~~str.getBeforeChar(','); // returns 'Hello'
+                                                ~~str.getAfterChar(',') // returns ' World!'
+
+                                    </code>
+
+                                    <code class=syntax-highlighted format=ensure-newline-at-eof language=javascript>
+                                        /* Clone any primitive JavaScript value. */
+                                            ~({name: 'Lapys', age: 21}).clone(); // returns {name: 'Lapys', age: 21}
+
+                                            ~// Alternative way to make functions.
+                                            ~func('someFunction', ['input'], `
+                                                ~~let output = input;
+                                                ~~~
+                                                ~~log(output) // just 'log' now...
+                                            ~`).clone() // returns function someFunction() { ... }
+
+                                    </code>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
+
+                <!-- Carousel Toggle Next Slide Button
+                            --- NOTE ---
+                                @lapys: For smaller screens only.
+                -->
+                <button class='l-del ll-del fourk-del smooth' data-id=carouselToggleNextSlideButton onclick='
+                    for (let i = 0; i < this.previousElementSibling.$$(`carousel-component`, `length`); i += 1)
+                        this.previousElementSibling.$$(`carousel-component`, i).toggleNextSlide()
+                '>&rarr;</button>
             </developer-canvas>
+        </section>
+
+        <!-- Features -->
+        <section class='flat-section full-page-section section' id=features>
+            <!-- Header -->
+            <h1 data-id=header hidden> Features </h1>
+
+            <!-- Feature Cards Carousel -->
+            <carousel-component class='full-h gallery-section l-del ll-del fourk-del' data-buttons data-direction=right data-indicators data-interval=3 data-id=featureCardsCarousel>
+                <!-- Vanilla is Better -->
+                <div class='card center row-grp' data-id=vanillaIsBetter>
+                    <div data-id=icon>
+                        <img alt draggable=false src=assets/img/png/vanilla-code.png>
+                    </div>
+
+                    <div data-id=title>
+                        <h4> Vanilla is Better </h4>
+                    </div>
+
+                    <div data-id=textContent>
+                        <p data-id=description>
+                            With everything coded fresh and pure in LapysJS, the library is completely seamless with any project you work on while
+                            being able to handle all of the processing it does backstage.
+
+                            <br 2>
+
+                            This means no lagging, no buggy components &amp; <strong>more speed</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Creative, New & Experimental -->
+                <div class='card center row-grp' data-id=creativeNewAndExperimental>
+                    <div data-id=icon>
+                        <img alt draggable=false src=assets/img/png/creative-new-experimental.png>
+                    </div>
+
+                    <div data-id=title>
+                        <h4> Creative, New &amp; Experimental </h4>
+                    </div>
+
+                    <div data-id=textContent>
+                        <p data-id=description>
+                            LapysJS is a constantly developing library that tries to be the outlier in the hook
+                            of everyday web development frameworks and other libraries.
+
+                            <br 2>
+
+                            It does this by developing for projects meant to stand out or <br>
+                            <strong>building creative, new components</strong> used only by the budding few.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interoperable -->
+                <div class='card center row-grp' data-id=interoperable>
+                    <div data-id=icon>
+                        <img alt draggable=false src=assets/img/png/interoperable.png>
+                    </div>
+
+                    <div data-id=title>
+                        <h4> Interoperable </h4>
+                    </div>
+
+                    <div data-id=textContent>
+                        <p data-id=description>
+                            LapysJS <strong>uses the current web APIs granted to developers with major polyfills</strong> in areas that could be lacking which overall make processing seamless with the browser.
+                        </p>
+                    </div>
+                </div>
+            </carousel-component>
+
+            <!-- Features Cards Frame -->
+            <section class='full-h gallery-section m-del t-del' data-id=featureCardsFrame>
+                <!-- Vanilla is Better -->
+                <div class=card data-id=vanillaIsBetter>
+                    <div data-id=icon>
+                        <img alt draggable=false src=assets/img/png/vanilla-code.png>
+                    </div>
+
+                    <div data-id=title>
+                        <h4> Vanilla is Better </h4>
+                    </div>
+
+                    <div data-id=textContent>
+                        <p data-id=description>
+                            With everything coded fresh and pure in LapysJS, the library is completely seamless with any project you work on while
+                            being able to handle all of the processing it does backstage.
+
+                            <br 2>
+
+                            This means no lagging, no buggy components &amp; <strong>more speed</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Creative, New & Experimental -->
+                <div class=card data-id=creativeNewAndExperimental>
+                    <div data-id=icon>
+                        <img alt draggable=false src=assets/img/png/creative-new-experimental.png>
+                    </div>
+
+                    <div data-id=title>
+                        <h4> Creative, New &amp; Experimental </h4>
+                    </div>
+
+                    <div data-id=textContent>
+                        <p data-id=description>
+                            LapysJS is a constantly developing library that tries to be the outlier in the hook
+                            of everyday web development frameworks and other libraries.
+
+                            <br 2>
+
+                            It does this by developing for projects meant to stand out or <br>
+                            <strong>building creative, new components</strong> used only by the budding few.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interoperable -->
+                <div class=card data-id=interoperable>
+                    <div data-id=icon>
+                        <img alt draggable=false src=assets/img/png/interoperable.png>
+                    </div>
+
+                    <div data-id=title>
+                        <h4> Interoperable </h4>
+                    </div>
+
+                    <div data-id=textContent>
+                        <p data-id=description>
+                            LapysJS <strong>uses the current web APIs granted to developers with major polyfills</strong> in areas that could be lacking which overall make processing seamless with the browser.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- Download -->
+        <section class='bg center-flex full-page-section no-select section smooth' id=download>
+            <!-- Header -->
+            <h1 data-id=header> What are you waiting for? </h1>
+
+            <div>
+                <div class=center-flex>
+                    <button class='smooth smooth-delay' data-id=downloadButton>
+                        <a class='fill smooth' download='LapysJS' script='
+                            // Event > Target
+                                // Mouse Leave
+                                this.parent.parent.setEvent(`mouseleave`, () => {
+                                    interval(() => {
+                                        (this.innerHTML.length <= `Download`.length) || (this.innerHTML = this.innerHTML.slice(0, -2))
+                                    }, 0, this.innerHTML.removeChar(`Download`).length / 2);
+
+                                    timeout(() => {
+                                        this.innerHTML = `Download`
+                                    }, 1000)
+                                });
+
+                                // Mouse Over
+                                this.parent.parent.setEvent(`mouseover`, () => {
+                                    this.innerHTML = `Download to Get Started!`
+                                });
+
+                            // LapysJS > Component > Image
+                            new LapysJS.component.Image({
+                                /* On Error
+                                        --- NOTE ---
+                                            @lapys: Document is offline.
+                                */
+                                onerror: () => {
+                                    // Modification > Target > Hyperlink Reference
+                                    this.href = `download.zip`
+                                },
+
+                                /* On Load
+                                        --- NOTE ---
+                                            @lapys: Document is online.
+                                */
+                                onload: () => {
+                                    // LapysJS > $ > Request
+                                    LapysJS.$.request(`GET`, `https://github.com/LapysDev/LapysJS/archive/master.zip`, {
+                                        // On Error
+                                        onerror: () => {
+                                            // Modification > Target > Hyperlink Reference
+                                            this.href = `download.zip`
+                                        },
+
+                                        // Onload
+                                        onload: () => {
+                                            // Modification > Target > Hyperlink Reference
+                                            this.href = `https://github.com/LapysDev/LapysJS/archive/master.zip`
+                                        }
+                                    })
+                                },
+
+                                // Source
+                                src: `http://www.google-analytics.com/__utm.gif`
+                            })
+                        '>Download</a>
+                    </button>
+                </div>
+            </div>
         </section>
     </main>
 </body>

@@ -19,7 +19,11 @@
         box-shadow: 0 2.5px 2.5px 0 rgba(0, 0, 0, .25)
     }
 
-    /* <developer-canvas> */
+    /* <developer-canvas>
+            --- NOTE ---
+                @lapys: Developer Canvas' could tend to be heavy on
+                    page performance but they're cool.
+    */
     developer-canvas {
         background-color: #FFFFFF;
         border: 1px solid rgba(127, 127, 127, .675);
@@ -44,6 +48,9 @@
         }
 
     /* <screen-tip> */
+    screen-tip {
+        font-size: 15px !important
+    }
         /* @media > Mobile View */
         @media only all
             and (max-width: 425px) {
@@ -74,7 +81,19 @@
     .full-page-section {
         height: 100%;
         min-height: 100vh;
+        overflow: hidden !important;
         padding: 0 !important
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+        background-color: #F7F7F7;
+        color: #333333;
+        margin: 0;
+        max-width: 100% !important;
+        padding: 0;
+        overflow-x: auto;
+        width: 100%
     }
 
     /* Section */
@@ -99,6 +118,7 @@
     */
     code.syntax-highlighted {
         background-color: #25262B;
+        box-shadow: inset 1px 0 0 0 rgba(127, 127, 127, .5);
         color: #D5D6DB !important;
         display: block;
         font-style: normal;
@@ -109,9 +129,12 @@
         text-align: left;
         white-space: pre-line
     }
-        /* Tab */
-        code.syntax-highlighted [data-id*=tab] {
-            border-left: 1px solid rgba(127, 127, 127, .5)
+        /* States > Selection */
+        code.syntax-highlighted::selection,
+        code.syntax-highlighted ::selection {
+            background-color: rgba(127, 127, 127, .5) !important;
+            color: inherit !important;
+            text-shadow: none !important
         }
 
         /* Highlight Color */
@@ -158,10 +181,18 @@
 
             /* String */
             code.syntax-highlighted [data-id*=highlightColor][role=string],
+            code.syntax-highlighted [data-id*=highlightColor][role=string] [data-id*=highlightColor][role=arithmetic],
+            code.syntax-highlighted [data-id*=highlightColor][role=string] [data-id*=highlightColor][role=function],
+            code.syntax-highlighted [data-id*=highlightColor][role=string] [data-id*=highlightColor][role=identifier],
             code.syntax-highlighted [data-id*=highlightColor][role=string] [data-id*=highlightColor][role=plain-text],
             code.syntax-highlighted [data-id*=highlightColor][role=string] [data-id*=highlightColor][role=symbol] {
                 color: #D1D97A !important
             }
+
+        /* Tab */
+        code.syntax-highlighted [data-id=tab] {
+            border-left: 1px solid rgba(127, 127, 127, .5)
+        }
 
         /* Tilde */
         code.syntax-highlighted [data-id=tilde]::after {

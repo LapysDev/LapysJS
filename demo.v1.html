@@ -45,8 +45,7 @@
 
         <h2>
             <!-- Dynamic Text -->
-            <span
-                class=dynamic-text
+            <span class=dynamic-text
                 data-text="!dlroW,Hello\, ,This is Lapys Speaking...,'SJsypaL :krowemarF ym ot emocleW'"
                 data-text-function='
                     insert, navigateCursorBackwards=7;
@@ -57,6 +56,8 @@
                 data-text-function-delay=.3
                 data-text-function-duration=.675
                 data-text-function-initial-delay=1
+                data-text-function-separator=;
+                data-text-separator=,
             > </span>
         </h2>
 
@@ -89,20 +90,23 @@
             data-name='Media Playlist Plug-In'
             data-description='This is Lapys&rsquo; new age Media Playlist Plug-In.'
         >
-            <div data-description='This is the first video in the playlist.' data-src=assets/media/mp4/video-0.mp4 data-thumbnail=assets/img/jpg/image-1.jpg> </div>
+            <div data-description='This is the first video in the playlist.' data-src=assets/media/mp4/video-0.mp4 data-thumbnail=assets/img/png/icon-0.png> </div>
             <div data-description='This won&rsquo;t be added to the playlist because it does not have a source file.'> </div>
-            <div data-description='This is the second video.' data-src=assets/media/mp4/video-1.mp4 data-thumbnail=assets/img/jpg/image-0.jpg> </div>
+            <div data-description='This is the second video.' data-src=assets/media/mp4/video-1.mp4 data-thumbnail=assets/img/png/icon-4.png> </div>
         </div>
 
-        <!-- Media -->
-        <video
+        <!-- Media
+                    --- UPDATE REQUIRED ---
+                        @lapys: Still very laggy.
+        -->
+        <!-- <video
             class=media
             controls
             muted
             volume=.3
         >
             <source src=assets/media/mp4/video.mp4>
-        </video>
+        </video> -->
 
         <!-- Carousel -->
         <div
@@ -134,6 +138,6 @@
 
     <!-- Scripts -->
         <!-- LapysJS Script -->
-        <script data-enable=html-javascript language=javascript src=src/lapys.js type=text/javascript> </script>
+        <script language=javascript src=src/lapys.js type=text/javascript> </script>
 </body>
 </html>

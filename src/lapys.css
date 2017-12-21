@@ -1206,9 +1206,14 @@
         /* Not > Default */
         canvas:not([default]) {
             display: inline-block;
+            image-rendering: optimizeQuality;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: optimize-contrast;
             min-height: 150px;
             min-width: 300px;
-            user-select: none
+            user-select: none;
+            -ms-interpolation-mode: nearest-neighbor
         }
 
     /* <code> */
@@ -1227,7 +1232,7 @@
     [code],
     code,
     tt {
-        font-family: "Inconsolata", monospace, monospace;
+        font-family: Inconsolata, monospace, monospace;
         font-size: smaller
     }
 
@@ -1632,7 +1637,7 @@
         /* Not > Default */
         listing:not([default]) {
             display: block;
-            font-family: monospace;
+            font-family: Inconsolata, monospace;
             font-size: medium;
             margin-block-start: 3px;
             margin-block-end: 3px;
@@ -1646,7 +1651,7 @@
         pre:not([default]),
         xmp:not([default]) {
             display: block;
-            font-family: monospace;
+            font-family: Inconsolata, monospace;
             margin: 0;
             white-space: pre
         }
@@ -2422,7 +2427,7 @@
     /* <pre> */
         /* Not > Default */
         pre:not([default]) {
-            font-family: monospace;
+            font-family: Inconsolata, monospace;
             overflow: auto
         }
 
@@ -2595,7 +2600,7 @@
                 sample text.
     */
     samp {
-        font-family: Cambria, "Palatino Linotype", monospace
+        font-family: Cambria, 'Palatino Linotype', monospace
     }
 
     /* <select> */
@@ -2903,7 +2908,7 @@
     /* <xmp> */
     xmp {
         display: block;
-        font-family: monospace;
+        font-family: Inconsolata, monospace;
         margin-block-end: .5%;
         margin-block-start: .5%;
         white-space: pre
@@ -4343,6 +4348,7 @@
     }
         /* Background Attachment Preset */
         .bg-a-f,
+        .bg-fixed,
         .background-attachment-fixed {
             background-attachment: fixed !important
         }
@@ -4353,11 +4359,13 @@
         }
 
         .bg-a-l,
+        .bg-local,
         .background-attachment-local {
             background-attachment: local !important
         }
 
         .bg-a-s,
+        .bg-scroll,
         .background-attachment-scroll {
             background-attachment: scroll !important
         }
@@ -8310,7 +8318,7 @@
 
                     https://www.behance.net/gallery/43321903/THE-WOODLANDS-FREE-FONT
             */
-            font-family: "The Woodlands", cursive !important
+            font-family: 'The Woodlands', cursive !important
         }
 
         .fantasy,
@@ -8321,7 +8329,7 @@
 
                     https://www.searchfreefonts.com/font/trajan-pro-bold.htm
             */
-            font-family: "Trajan Pro", fantasy !important
+            font-family: 'Trajan Pro', fantasy !important
         }
 
         .monospace,
@@ -8332,7 +8340,7 @@
 
                     http://www.levien.com/type/myfonts/inconsolata.html
             */
-            font-family: "Inconsolata", monospace !important
+            font-family: Inconsolata, monospace !important
         }
 
         .serif,
@@ -8343,7 +8351,7 @@
 
                     http://www.myfonts.com/fonts/ascender/droid-serif-pro/
             */
-            font-family: "Droid Serif Pro", serif !important
+            font-family: 'Droid Serif Pro', serif !important
         }
 
         .sans-serif,
@@ -8354,7 +8362,7 @@
 
                     https://fonts.google.com/specimen/Open+Sans
             */
-            font-family: "Open Sans", sans-serif !important
+            font-family: 'Open Sans', sans-serif !important
         }
 
         /* Font Size Preset */
@@ -18712,7 +18720,8 @@
         }
 
         .txt-a-e,
-        .text-align-end {
+        .text-align-end,
+        .text-end {
             text-align: end !important
         }
 
@@ -18722,27 +18731,32 @@
         }
 
         .txt-a-l,
-        .text-align-left {
+        .text-align-left,
+        .text-left {
             text-align: left !important
         }
 
         .txt-a-j,
-        .text-align-justify {
+        .text-align-justify,
+        .text-justify {
             text-align: justify !important
         }
 
         .txt-a-mp,
-        .text-align-match-parent {
+        .text-align-match-parent,
+        .text-match-parent {
             text-align: match-parent !important
         }
 
         .txt-a-r,
-        .text-align-right {
+        .text-align-right,
+        .text-right {
             text-align: right !important
         }
 
         .txt-a-s,
-        .text-align-start {
+        .text-align-start,
+        .text-start {
             text-align: start !important
         }
 
@@ -20073,9 +20087,13 @@
     /* Card */
     .crd,
     .card {
-        border: 1px solid #CFCFCF;
         padding: 7.5px 12.5px
     }
+        /* Not > Flat */
+        .crd:not(.flat),
+        .card:not(.flat) {
+            border: 1px solid #CFCFCF
+        }
 
     /* Center */
     .center:not([class*="txt-a-"]):not([class*="text-align-"]) {
@@ -20193,6 +20211,11 @@
                 margin-top: auto
             }
 
+    /* Default */
+    .default {
+        cursor: default !important
+    }
+
     /* Dialog */
     .dialog {
         animation: fadeIn .5s ease-in-out .1s;
@@ -20229,6 +20252,12 @@
         .fill-width {
             width: 100% !important
         }
+
+    /* Flat */
+    .flat {
+        border-radius: 0;
+        box-shadow: none
+    }
 
     /* Full */
         /* Height */
@@ -20330,6 +20359,11 @@
         outline: 1px solid rgba(0, 0, 0, .15)
     }
 
+    /* Pointer */
+    .pointer {
+        cursor: pointer !important
+    }
+
     /* Row */
     .row {
         display: block;
@@ -20359,6 +20393,21 @@
         transition-property: all;
         transition-timing-function: ease-in-out
     }
+        /* Delay */
+        .smooth-delay {
+            animation-delay: .15s;
+            animation-duration: .5s;
+            transition-delay: .1s;
+            transition-duration: .5s
+        }
+
+        /* Lag */
+        .smooth-lag {
+            animation-delay: .3s;
+            animation-duration: 1s;
+            transition-delay: .2s;
+            transition-duration: 1s
+        }
 
     /* Thumbnails */
     .thumbnail {
