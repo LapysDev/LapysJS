@@ -314,7 +314,24 @@
     /* Document */
         // Modification
             // Favicon
-            document.favicon = 'assets/img/ico/icon.ico'
+                // Initialization > Data
+                let data = 'assets/img/ico/icon.ico';
+
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (location.href.getBeforeChar('/', true).endsWith('pages')) {
+                    // Update > Data
+                    data = '../' + data;
+
+                    // CSS > Link
+                    css.link('docsStylesheet', '../assets/css/docs.css');
+
+                    // JS > Source
+                    js.src('docsScript', '../assets/js/docs.js')
+                }
+
+                document.favicon = data;
 
             // Title
             document.title = 'LapysJS';
@@ -676,6 +693,9 @@
             // Return
             return modifySyntaxHighlightedCode
         };
+
+        // Function > Modify Syntax Highlighted Code
+        modifySyntaxHighlightedCode();
 
         // Timeout
         timeout(() => {

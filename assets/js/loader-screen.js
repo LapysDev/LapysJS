@@ -95,8 +95,8 @@
             }, 3000)
         };
 
-    /* On DOM Ready */
-    onDOMReady(removeLoaderScreen, 1500);
+    // On DOM Ready
+    onDOMReady(removeLoaderScreen, 3000);
 
     // Set Timeout
     setTimeout(removeLoaderScreen, 6000)

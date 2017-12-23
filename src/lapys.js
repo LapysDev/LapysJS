@@ -2200,8 +2200,16 @@
                 Object.defineProperty(this, 'error', {
                     // Value
                     value: function error() {
-                        // Console > Error
-                        console.error(`[LapysJS v${VER_NUMBER}] => ${String(arguments[0])}`)
+                        // Throw
+                        throw new (class LapysJSScriptError extends Error {
+                            constructor() {
+                                // Super
+                                super([...arguments]);
+
+                                // Error > Capture Stack Trace
+                                Error.captureStackTrace(this, LapysJSScriptError)
+                            }
+                        })(`\n\t[LapysJS v${VER_NUMBER}] => ${arguments[0]}\r`)
                     }
                 });
 
@@ -3127,26 +3135,26 @@
                 ) {
                     // Error Handling
                     try {
-                        // Initialization > Clone
-                        let clone = {};
-
-                        /* Loop
-                                Index all elements of the Target.
-
-                            > Update > Clone
-                        */
-                        for (let i = 0; i < Object.keys(that).length; i += 1)
-                            clone[Object.keys(that)[i]] = that[Object.keys(that)[i]];
-
                         // Return
-                        return clone
+                        return Object.assign(that, {})
                     }
 
                     catch (error) {
                         // Error Handling
                         try {
+                            // Initialization > Clone
+                            let clone = {};
+
+                            /* Loop
+                                    Index all elements of the Target.
+
+                                > Update > Clone
+                            */
+                            for (let i = 0; i < Object.keys(that).length; i += 1)
+                                clone[Object.keys(that)[i]] = that[Object.keys(that)[i]];
+
                             // Return
-                            return Object.assign({}, that)
+                            return clone
                         }
 
                         catch (error) {
@@ -3189,7 +3197,7 @@
                 */
                 (typeof Object.assign==='function')||Object.defineProperty(Object,'assign',{configurable:true,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: true});
 
-                return Object.assign(arguments[0] || {}, this);
+                return Object.assign(this, arguments[0] || {});
             }
         });
 
@@ -3255,7 +3263,7 @@
                                 this.set = (Arguments[1] || []).set
                         }
 
-                        else if ((Arguments[1] || []).value || Arguments[1]) {
+                        else if (Arguments.length > 0) {
                             // Value
                             this.value = (Arguments[1] || []).value || Arguments[1];
 
@@ -3322,7 +3330,7 @@
             // Value
             value: function keys() {
                 // Return
-                return Object.keys(this || window)
+                return arguments.length > 0 ? Object.keys(this || window)[+String(arguments[0]).replace(/ /g, '')] : Object.keys(this || window)
             }
         });
 
@@ -3370,7 +3378,7 @@
             // Value
             value: function values() {
                 // Return
-                return Object.values(this || window)
+                return arguments.length > 0 ? Object.values(this || window)[+String(arguments[0]).replace(/ /g, '')] : Object.values(this || window)
             }
         });
 
@@ -4411,8 +4419,7 @@
                                     let data = arguments[0];
 
                                     // Update > Data
-                                    !!data || (data = 'no');
-                                    !!!data || (data = 'yes');
+                                    typeof data !== 'string' ? (!!data ? data = 'yes' : data = 'no') : (data !== 'yes' && data !== 'no') ? data = 'yes' : false;
 
                                     /* Logic
                                             If
@@ -4614,7 +4621,10 @@
 
                             /* Logic
                                     If
-                                        Argument 1 is an Object.
+                                        Argument 1 is an Object,
+
+                                    else if
+                                        Argument 1 is a String.
                             */
                             if (typeof arguments[1] === 'object')
                                 /* Loop
@@ -4626,13 +4636,17 @@
                                     LapysJS.permanentData.HTMLLinkElement.setAttribute(Object.keys(arguments[1])[i].replace(/[A-Z]/g, data => {
                                         // Return
                                         return `-${data.toLowerCase()}`
-                                    }), arguments[1][Object.keys(arguments[1])[i]])
+                                    }), arguments[1][Object.keys(arguments[1])[i]]);
+
+                            else if (typeof arguments[1] === 'string')
+                                // Modification > (LapysJS > Permanent Data > HTML Link Element) > Hyperlink Reference
+                                LapysJS.permanentData.HTMLLinkElement.setAttribute('href', arguments[1])
                         };
 
                         // Style
                         this.style = function style() {
                             // Insertion
-                            document.head.appendChild(createElement('style', `[data-id='${arguments[0]}']`, String(arguments[1])))
+                            document.head.appendChild(createElement('style', `[data-id='${arguments[0]}'][media=all][type=text/css`, String(arguments[1])))
                         }
                 })
             });
@@ -4712,17 +4726,20 @@
                         // Script
                         this.script = function script() {
                             // Insertion
-                            document.head.appendChild(createElement('script', `[data-id='${arguments[0]}']`, String(arguments[1])))
+                            document.head.appendChild(createElement('script', `[data-id='${arguments[0]}'][language=javascript][type=text/javascript`, String(arguments[1])))
                         };
 
                         // Source
                         this.src = function source() {
                             // Insertion
-                            document.head.appendChild(LapysJS.permanentData.HTMLScriptElement = createElement('script', `[data-id='${arguments[0]}']`));
+                            document.head.appendChild(LapysJS.permanentData.HTMLScriptElement = createElement('script', `[data-id='${arguments[0]}'][language=javascript][type=text/javascript`));
 
                             /* Logic
                                     If
-                                        Argument 1 is an Object.
+                                        Argument 1 is an Object,
+
+                                    else if
+                                        Argument 1 is a String.
                             */
                             if (typeof arguments[1] === 'object')
                                 /* Loop
@@ -4734,7 +4751,11 @@
                                     LapysJS.permanentData.HTMLScriptElement.setAttribute(Object.keys(arguments[1])[i].replace(/[A-Z]/g, data => {
                                         // Return
                                         return `-${data.toLowerCase()}`
-                                    }), arguments[1][Object.keys(arguments[1])[i]])
+                                    }), arguments[1][Object.keys(arguments[1])[i]]);
+
+                            else if (typeof arguments[1] === 'string')
+                                // Modification > (LapysJS > Permanent Data > HTML Script Element) > Source
+                                LapysJS.permanentData.HTMLScriptElement.setAttribute('src', arguments[1])
                     }
                 })
             });
