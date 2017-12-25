@@ -129,9 +129,6 @@
     };
 
 /* Global Data */
-    // Initialization > Processing Initialization Time
-    let processingInitializationTime = +date;
-
     /* Application */
         // Modification
             // Author
