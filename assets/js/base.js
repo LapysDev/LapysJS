@@ -570,6 +570,10 @@
     /* Sine */
     def('sin', {value: Math.sin, writable: false});
 
+    /* Global */
+        // Name
+        global.name = 'LapysJS';
+
 /* DOM Elements */
     /* All */
         /* {Modify DOM Element Tree} On DOM Ready

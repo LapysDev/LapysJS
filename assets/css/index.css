@@ -7,7 +7,8 @@
 /* Components */
     /* Download */
     #download {
-        background-image: url('../img/jpg/download-bg.jpg');
+        background-image: url('../img/webp/download-bg.webp');
+        background-size: 100% 100%;
         color: #FFFFFF
     }
         /* @media */
@@ -15,7 +16,7 @@
             @media only all
                 and (max-width: 768px) {
                     #download {
-                        background-image: url('../img/jpg/download-bg.m-t.jpg')
+                        background-image: url('../img/webp/download-bg.m-t.webp')
                     }
             }
 
@@ -24,7 +25,7 @@
                 and (max-width: 2056px)
                 and (min-width: 769px) {
                     #download {
-                        background-image: url('../img/jpg/download-bg.l-ll-fourk.jpg')
+                        background-image: url('../img/webp/download-bg.l-ll-fourk.webp')
                     }
             }
 
@@ -60,7 +61,7 @@
         background: #0056FF;
         background: linear-gradient(180deg, #0000FF, #0056FF);
         background-attachment: fixed;
-        background-image: url('../img/jpg/features-bg.jpg');
+        background-image: url('../img/webp/features-bg.webp');
         box-shadow: inset 0 0 2500px 100px #0056FF,
                             inset 0 0 0 5000px rgba(0, 0, 127, .5)
     }
@@ -71,23 +72,23 @@
                     and (max-width: 768px) {
                         @keyframes transitionBackgroundImage {
                             0% {
-                                background-image: url('../img/jpg/features-bg-0.m-t.jpg')
+                                background-image: url('../img/webp/features-bg-0.m-t.webp')
                             }
 
                             25% {
-                                background-image: url('../img/jpg/features-bg-1.m-t.jpg')
+                                background-image: url('../img/webp/features-bg-1.m-t.webp')
                             }
 
                             50% {
-                                background-image: url('../img/jpg/features-bg-2.m-t.jpg')
+                                background-image: url('../img/webp/features-bg-2.m-t.webp')
                             }
 
                             75% {
-                                background-image: url('../img/jpg/features-bg-3.m-t.jpg')
+                                background-image: url('../img/webp/features-bg-3.m-t.webp')
                             }
 
                             to {
-                                background-image: url('../img/jpg/features-bg-0.m-t.jpg')
+                                background-image: url('../img/webp/features-bg-0.m-t.webp')
                             }
                         }
                 }
@@ -98,23 +99,23 @@
                     and (min-width: 769px) {
                         @keyframes transitionBackgroundImage {
                             0% {
-                                background-image: url('../img/jpg/features-bg-0.l-ll-fourk.jpg')
+                                background-image: url('../img/webp/features-bg-0.l-ll-fourk.webp')
                             }
 
                             25% {
-                                background-image: url('../img/jpg/features-bg-1.l-ll-fourk.jpg')
+                                background-image: url('../img/webp/features-bg-1.l-ll-fourk.webp')
                             }
 
                             50% {
-                                background-image: url('../img/jpg/features-bg-2.l-ll-fourk.jpg')
+                                background-image: url('../img/webp/features-bg-2.l-ll-fourk.webp')
                             }
 
                             75% {
-                                background-image: url('../img/jpg/features-bg-3.l-ll-fourk.jpg')
+                                background-image: url('../img/webp/features-bg-3.l-ll-fourk.webp')
                             }
 
                             to {
-                                background-image: url('../img/jpg/features-bg-0.l-ll-fourk.jpg')
+                                background-image: url('../img/webp/features-bg-0.l-ll-fourk.webp')
                             }
                         }
                 }
@@ -144,6 +145,7 @@
                     overflow-x: auto;
                     overflow-y: hidden;
                     padding: 15px;
+                    text-align: left;
                     width: 80%
                 }
 
@@ -153,19 +155,19 @@
     */
     #introduction {
         background-color: #FFFFFF;
-        background-image: url('../img/jpg/introduction-bg.l-ll-fourk.jpg');
+        background-image: url('../img/webp/introduction-bg.l-ll-fourk.webp');
         box-shadow: inset 0 0 0 5000px rgba(255, 255, 255, .825);
         filter: gray;
-        filter: url('data:image/svg+xml;utf8,<svg xmlns=http://www.w3.org/2000/svg><use xlink:href=http://www.w3.org/2000/svg></use><filter id=grayscale><feColorMatrix type=matrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0"></filter></svg>#grayscale');
+       /* filter: url('data:image/svg+xml;utf8,<svg xmlns=http://www.w3.org/2000/svg><use xlink:href=http://www.w3.org/2000/svg></use><filter id=grayscale><feColorMatrix type=matrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0"></filter></svg>#grayscale');
         -moz-filter: url('data:image/svg+xml;utf8,<svg xmlns=http://www.w3.org/2000/svg><use xlink:href=http://www.w3.org/2000/svg></use><filter id=grayscale><feColorMatrix type=matrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0"></filter></svg>#grayscale');
         -o-filter: url('data:image/svg+xml;utf8,<svg xmlns=http://www.w3.org/2000/svg><use xlink:href=http://www.w3.org/2000/svg></use><filter id=grayscale><feColorMatrix type=matrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0"></filter></svg>#grayscale');
-        -webkit-filter: url('data:image/svg+xml;utf8,<svg xmlns=http://www.w3.org/2000/svg><use xlink:href=http://www.w3.org/2000/svg></use><filter id=grayscale><feColorMatrix type=matrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0"></filter></svg>#grayscale')
+        -webkit-filter: url('data:image/svg+xml;utf8,<svg xmlns=http://www.w3.org/2000/svg><use xlink:href=http://www.w3.org/2000/svg></use><filter id=grayscale><feColorMatrix type=matrix values="0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0"></filter></svg>#grayscale')*/
     }
         /* @media > (Mobile, Tablet) View */
         @media only all
             and (max-width: 768px) {
                 #masthead {
-                    background-image: url('../img/jpg/introduction-bg.m-t.jpg')
+                    background-image: url('../img/webp/introduction-bg.m-t.webp')
                 }
         }
 
@@ -456,7 +458,7 @@
 
     /* Mast Head */
     #masthead {
-        background-image: url('../img/jpg/jumbotron-bg-1.l-ll-fourk.jpg');
+        background-image: url('../img/webp/jumbotron-bg-1.l-ll-fourk.webp');
         background-position: top;
         color: #FFFFFF
     }
@@ -464,7 +466,7 @@
         @media only all
             and (max-width: 768px) {
                 #masthead {
-                    background-image: url('../img/jpg/jumbotron-bg-1.m-t.jpg');
+                    background-image: url('../img/webp/jumbotron-bg-1.m-t.webp');
                     flex-direction: column
                 }
         }

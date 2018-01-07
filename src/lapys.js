@@ -5336,7 +5336,7 @@
                         for (let i = 0; i < document.querySelectorAll('[lazy-script').length; i += 1)
                             ((window.innerHeight + window.scrollY) < document.querySelectorAll('[lazy-script')[i].getBoundingClientRect().top) || document.querySelectorAll('[lazy-script')[i--].removeAttribute('lazy-script');
                     })
-                });
+                }, true);
 
             /* <input> */
                 /* Loop
@@ -11681,7 +11681,7 @@
                         for (let i = 0; i < document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]').length; i += 1)
                             (document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].concealOptionBox !== 'function') || document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].concealOptionBox()
                     }, 100)
-                });
+                }, true);
 
                 // Key Down, Key Up
                 setEvent('keydown keyup', function plugInConcealEventSet() {
