@@ -574,6 +574,9 @@
         // Name
         global.name = 'LapysJS';
 
+        // Short Name
+        global.short_name = global.name;
+
 /* DOM Elements */
     /* All */
         /* {Modify DOM Element Tree} On DOM Ready
