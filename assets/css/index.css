@@ -120,6 +120,67 @@
                         }
                 }
 
+        /* @media > (Mobile, Tablet) View */
+        @media only all
+            and (max-width: 768px) {
+                #features {
+                    overflow: hidden
+                }
+        }
+
+        /* (Carousel) Frame */
+        #features > [data-id=carouselFrame] {
+            border: 0;
+            color: #FFFFFF;
+            margin: auto;
+            max-height: 100vh
+        }
+            /* <img> */
+            #features > [data-id=carouselFrame] img {
+                pointer-events: none;
+                transform: scale(.5)
+            }
+
+            /* Buttons Container */
+            #features > [data-id=carouselFrame] [data-id=buttons-container] {
+                margin-top: -250%
+            }
+                /* <button> */
+                #features > [data-id=carouselFrame] [data-id=buttons-container] > button {
+                    background-color: rgba(0, 0, 0, .675);
+                    border: 0;
+                    color: #FFFFFF;
+                    cursor: pointer;
+                    outline: 0 !important;
+                    transition: .3s ease-in-out
+                }
+                    /* States > Hover */
+                    #features > [data-id=carouselFrame] [data-id=buttons-container] > button:hover {
+                        background-color: rgba(0, 0, 0, .825)
+                    }
+
+            /* Indicators Container */
+            #features > [data-id=carouselFrame] [data-id=indicators-container] {
+                margin-top: -230%
+            }
+
+            /* Slide */
+            #features > [data-id=carouselFrame],
+            #features > [data-id=carouselFrame] .slide {
+                background-color: transparent
+            }
+                /* Content */
+                #features > [data-id=carouselFrame] .slide > * {
+                    transform: translateY(-30px)
+                }
+
+            /* Text */
+            #features > [data-id=carouselFrame] [data-id=text] {
+                margin-left: auto;
+                margin-right: auto;
+                width: 90%
+            }
+
         /* Frame */
         #features > [data-id=frame] {
             margin: auto;
@@ -508,7 +569,8 @@
             padding: 0;
             position: fixed;
             top: 0;
-            width: 100%
+            width: 100%;
+            z-index: 2147483645
         }
             /* @keyframes > Shift In From Top */
             @keyframes shiftInFromTop {
