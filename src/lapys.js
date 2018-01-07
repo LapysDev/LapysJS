@@ -1,11 +1,9 @@
 /**
     @author: Lapys Dev Team
-    @currentUpdate: LapysJS' experimental features still debugged and tested,
-                                    LapysJS' plugins still being optimized to spare performance on JavaScript engines.
     @description: LapysJS is a JavaScript library with its independent CSS framework designed to make JavaScript more forgiving and faster to script.
     @version: 0.0.1
 */
-(function LapysJSScript(window = window, document = window.document, global, undefined = window.undefined) {
+(function LapysJSScript(window = window, document = window.document, global, undefined = window.undefined || void 0) {
     /* Window */
         // Absolute
         window.abs || Object.defineProperty(window, 'abs', {
@@ -138,7 +136,7 @@
                             else if
                                 Argument 0 is an Element.
                     */
-                    if (typeof arguments[0] === 'string') {
+                    if (typeof arguments[0] == 'string') {
                         // Insertion
                         (document.body || document.documentElement).appendChild(LapysJS.temporaryData = document.createElement('div'));
 
@@ -160,7 +158,7 @@
 
                     else if (
                         (arguments[0] || []).constructor.name.indexOf('Element') > -1 ||
-                        typeof (arguments[0] || []).tagName === 'string'
+                        typeof (arguments[0] || []).tagName == 'string'
                     )
                         // Insertion
                         data.appendChild(arguments[0]);
@@ -231,7 +229,7 @@
                     @lapys: Other properties within this 'event' variable are to prevent
                         errors in some cases.
         */
-        window.event = window.event || (typeof document.createEvent === 'function' ? document.createEvent('HTMLEvents') : document.createEventObject()) || new (window.Event || class Event {})('');
+        window.event = window.event || (typeof document.createEvent == 'function' ? document.createEvent('HTMLEvents') : document.createEventObject()) || new (window.Event || class Event {})('');
             // Code
             event.code = event.code || '';
 
@@ -322,10 +320,10 @@
                         If
                             Argument 0 is not a Function.
                 */
-                if (typeof arguments[0] !== 'function') {
+                if (typeof arguments[0] != 'function') {
                     try {
                         // Execution
-                        eval(`LapysJS.temporaryData = (function ${str(arguments[0] || '')}(${arguments[1]}) {${arguments[2]}})`);
+                        eval(`LapysJS.temporaryData = (function ${str(arguments[0] || '')}(\n${arguments[1] || ''}\n) {\n${arguments[2] || ''}\n})`);
 
                         // Return
                         return LapysJS.temporaryData
@@ -333,7 +331,7 @@
 
                     catch (error) {
                         // Execution
-                        eval(`LapysJS.temporaryData['${String(arguments[0] || '').replace(/'/g, `\\'`)}'] = (function(${arguments[1]}) {${arguments[2]}})`);
+                        eval(`LapysJS.temporaryData['${String(arguments[0] || '').replace(/'/g, `\\'`)}'] = (function(\n${arguments[1] || ''}\n) {\n${arguments[2] || ''}\n})`);
 
                         // Return
                         return LapysJS.temporaryData[String(arguments[0] || '').replace(/'/g, `\\'`)]
@@ -445,7 +443,7 @@
                 (arguments[0] || []).constructor !== RegExp &&
                 (arguments[0] || []).constructor !== String &&
                 (arguments[0] || []).constructor !== Symbol
-            ) ? typeof arguments[1] === 'function' ? arguments[1]() : arguments[1] : false
+            ) ? typeof arguments[1] == 'function' ? arguments[1]() : arguments[1] : false
         };
 
         // Length
@@ -453,7 +451,7 @@
             // Value
             value: function len() {
                 // Return
-                return +String((typeof arguments[0] !== 'number') || arguments[0]).replace('true', eval(String((typeof (arguments[0] || {length: ''}).length !== 'number') || arguments[0].length).replace('true', void 0)))
+                return +String((typeof arguments[0] != 'number') || arguments[0]).replace('true', eval(String((typeof (arguments[0] || {length: ''}).length != 'number') || arguments[0].length).replace('true', void 0)))
             }
         });
 
@@ -528,6 +526,15 @@
                     eval(String(arguments[0]))
                 }
             });
+
+            // Invert
+            !window.Math || Math.invert || Object.defineProperty(Math, 'invert', {
+                // Value
+                value: function invert() {
+                    // Return
+                    return 1 / arguments[0]
+                }
+            })
 
             // Random > Range
             !window.Math || (Math.random || []).range || Object.defineProperty(Math.random, 'range', {
@@ -745,7 +752,7 @@
                                         If
                                             Argument (0 | 1) is a function.
                                 */
-                                `if (typeof ${['arguments[0]', 'arguments[1]'][i]} === 'function') {` +
+                                `if (typeof ${['arguments[0]', 'arguments[1]'][i]} == 'function') {` +
                                     // Initialization > Content
                                     `let currentContent = ${['document.documentElement', 'arguments[0]'][i]}.outerHTML,` +
                                         // Former Content
@@ -827,7 +834,7 @@
                                         If
                                             Argument 0 is a function.
                                 */
-                                `if (typeof ${['arguments[0]', 'arguments[1]'][i]} === 'function') {` +
+                                `if (typeof ${['arguments[0]', 'arguments[1]'][i]} == 'function') {` +
                                     // Initialization > DOM Nodes Length
                                     `let DOMNodesLength = ${['document', 'arguments[0]'][i]}.getElementsByTagName('*').length,` +
                                         // Former DOM Nodes Length
@@ -874,9 +881,9 @@
             // Value
             value: function onDOMReady() {
                 // Set Timeout | Event > Document
-                document.readyState === 'complete' && typeof arguments[0] === 'function' ?
+                document.readyState === 'complete' && typeof arguments[0] == 'function' ?
                     setTimeout(arguments[0], parseFloat(arguments[1])) :
-                    typeof document.addEventListener === 'function' ?
+                    typeof document.addEventListener == 'function' ?
                         // DOM Content Loaded
                         document.addEventListener('DOMContentLoaded', () => {
                             // Set Timeout
@@ -904,12 +911,12 @@
                 // Error Handling
                 try {
                     // Return
-                    return typeof eval(String(arguments[0])) === 'number' ? eval(String(arguments[0])) : +(String(arguments[0]).replace(/ /g, "").replace(String(arguments[0]).replace(/[0-9]|\./g, ''), '')) || 0
+                    return typeof eval(String(arguments[0])) == 'number' ? eval(String(arguments[0])) : +(String(arguments[0]).replace(/ /g, '').replace(String(arguments[0]).replace(/[0-9]|\./g, ''), '')) || 0
                 }
 
                 catch (error) {
                     // Return
-                    return +(String(arguments[0]).replace(/ /g, "").replace(String(arguments[0]).replace(/[0-9]|\./g, ''), '')) || 0
+                    return +(String(arguments[0]).replace(/ /g, '').replace(String(arguments[0]).replace(/[0-9]|\./g, ''), '')) || 0
                 }
             }
         });
@@ -1151,7 +1158,7 @@
                                                     `data.setAttribute('class', '${['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i].toLowerCase()}');` +
 
                                                     // Inner HTML
-                                                    `data.innerHTML = arguments.length > 0 ? (typeof arguments[0] === 'string' ? arguments[0] : Object(arguments[0]).innerHTML) : '';` +
+                                                    `data.innerHTML = arguments.length > 0 ? (typeof arguments[0] == 'string' ? arguments[0] : Object(arguments[0]).innerHTML) : '';` +
 
                                                 /* Loop
                                                         Iterate twice.
@@ -1209,7 +1216,7 @@
                                             for (let i = 0; i < arguments[0].length; i += 1)
                                                 metadata.appendChild(createElement('li', '', (arguments[0][i] || {innerHTML: void 0}).innerHTML || arguments[0][i], isObject(arguments[0][i], true) ? arguments[0][i] : {}));
 
-                                        else if (typeof arguments[0] === 'string')
+                                        else if (typeof arguments[0] == 'string')
                                             // Insertion
                                             metadata.appendChild(createElement('li', '', arguments[0]));
 
@@ -1295,9 +1302,9 @@
                                                 if (
                                                     Object.keys(arguments[0])[i] === 'image' &&
                                                     (
-                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) === 'boolean' ||
-                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) === 'number' ||
-                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) === 'string'
+                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) == 'boolean' ||
+                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) == 'number' ||
+                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) == 'string'
                                                     )
                                                 )
                                                     // Set Timeout
@@ -1342,7 +1349,7 @@
                                                                     data.querySelectorAll('source')[~-data.querySelectorAll('source').length][Object.keys(arguments[0][Object.keys(arguments[0])[i]][j])[k]] = arguments[0][Object.keys(arguments[0])[i]][j][Object.keys(arguments[0][Object.keys(arguments[0])[i]][j])[k]]
                                                         }
 
-                                                        else if (typeof arguments[0][Object.keys(arguments[0])[i]][j] === 'string')
+                                                        else if (typeof arguments[0][Object.keys(arguments[0])[i]][j] == 'string')
                                                             // Insertion
                                                             data.appendChild(createElement('source', '', '', {srcset: arguments[0][Object.keys(arguments[0])[i]][j]}))
                                                     }
@@ -1352,7 +1359,7 @@
                                                     data[Object.keys(arguments[0])[i]] = arguments[0][Object.keys(arguments[0])[i]]
                                             }
 
-                                        else if (typeof arguments[0] === 'string')
+                                        else if (typeof arguments[0] == 'string')
                                             // Modification > Data > Source
                                             data.constructor === HTMLImageElement ? data.src = arguments[0] : data.appendChild(createElement('img', '', '', {src: arguments[0]}));
 
@@ -1526,7 +1533,7 @@
                                                         }
                                                     }
 
-                                                    else if (typeof arguments[0] === 'string') {
+                                                    else if (typeof arguments[0] == 'string') {
                                                         // Insertion
                                                         this.querySelector('tbody') || this.insertChild('end', document.createElement('tbody'));
 
@@ -1643,7 +1650,7 @@
                                                             this.querySelector('tfoot > tr').insertChild('end', createElement('td', '', String(arguments[0][i])))
                                                     }
 
-                                                    else if (typeof arguments[0] === 'string')
+                                                    else if (typeof arguments[0] == 'string')
                                                         this.querySelector('tfoot').insertChild('begin', createElement('tr', '[data-table-footer-row=""]', `<td>${arguments[0]}</td>`))
                                                 }
                                             });
@@ -1707,7 +1714,7 @@
                                                             this.querySelector('thead').querySelector('tr').insertChild('end', createElement('th', '', String(arguments[0][i])))
                                                     }
 
-                                                    else if (typeof arguments[0] === 'string') {
+                                                    else if (typeof arguments[0] == 'string') {
                                                         // Target > Create THead
                                                         this.createTHead();
 
@@ -1761,9 +1768,9 @@
                                                 if (
                                                     Object.keys(arguments[0])[i] === 'caption' &&
                                                     (
-                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) === 'boolean' ||
-                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) === 'number' ||
-                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) === 'string'
+                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) == 'boolean' ||
+                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) == 'number' ||
+                                                        typeof String(arguments[0][Object.keys(arguments[0])[i]]) == 'string'
                                                     )
                                                 ) {
                                                     // Data > Create Caption
@@ -1776,9 +1783,9 @@
                                                 else if (
                                                     String(Object.keys(arguments[0])[i]) === 'rows' &&
                                                     (
-                                                        typeof String(Object.values(arguments[0])[i]) === 'boolean' ||
-                                                        typeof String(Object.values(arguments[0])[i]) === 'number' ||
-                                                        typeof String(Object.values(arguments[0])[i]) === 'string'
+                                                        typeof String(Object.values(arguments[0])[i]) == 'boolean' ||
+                                                        typeof String(Object.values(arguments[0])[i]) == 'number' ||
+                                                        typeof String(Object.values(arguments[0])[i]) == 'string'
                                                     )
                                                 )
                                                     // Set Timeout
@@ -2104,7 +2111,21 @@
                             Object.defineProperty(this, 'import', {
                                 // Value
                                 value: function Import() {
+                                    // Update > Arguments 1
+                                    (typeof arguments[1] == 'object') || (arguments[1] = {});
 
+                                    /* Logic
+                                            Switch case to Argument 0.
+                                    */
+                                    switch (String(arguments[0])) {
+                                        // Font
+                                        case 'font':
+                                            // CSS > Style
+                                            css.style('CSSFont', `@font-face {` +
+                                                ('name' in arguments[1] ? `font-family: ${String(arguments[1].name || '').indexOf(' ') > -1 ? `'${arguments[1].name}'` : arguments[1].name};` : '') +
+                                                `src: ${'url' in arguments[1] ? `url('${arguments[1].url}') ` : ''}${'format' in arguments[1] ? `format('${arguments[1].format}')` : ''}` +
+                                            `}`)
+                                    }
                                 }
                             });
 
@@ -2509,7 +2530,7 @@
             // Value
             value: function hasElement() {
                 // Initialization > Has Element
-                let hasElement = [];
+                let _hasElement = [];
 
                 /* Loop
                         Index all Arguments.
@@ -2517,10 +2538,10 @@
                     > Update > Has Element
                 */
                 for (let i = 0; i < arguments.length; i += 1)
-                    hasElement.push(this.indexOf(arguments[i]) > -1);
+                    _hasElement.push(this.indexOf(arguments[i]) > -1);
 
                 // Return
-                return hasElement.indexOf(false) < 0
+                return _hasElement.indexOf(false) < 0
             }
          });
 
@@ -2893,117 +2914,111 @@
     /* Function Data */
         /* Get Arguments
                 --- UPDATE REQUIRED ---
-                    @lapys: Needs improvements for more complex functions that contain other functions.
+                    @lapys: Needs improvement on syntax encoding.
 
                 --- WARN ---
                     @lapys: This function is not meant to be used in production environments, yet...
         */
-        Function.prototype.getArguments || Object.defineProperty(Function.prototype, 'getArguments', {
-            // Value
-            value: function getArguments() {
-                // Initialization > (Random, Data)
-                let random = rand(),
-                    data = `${String(this).replace(/\.\.\./g, `lapysjs_horizontal-ellipsis${String(random).slice(2)}`).replace(/\/\*([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\'\"\`\?\@\!\#\%\&\(\)\+\,\-\.\;\$\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\*\//, '').replace(/('|"|`)([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){1,}('|"|`)/g, data => {
-                        // Return
-                        return data[0] + data.slice(data[0].length, -data[~-data.length].length).replace(/()/g, `::lapysjs_*${random}::`).replace(/,/g, `::lapysjs_comma${random}::`) + data[~-data.length]
-                    })}`.split(/,/g);
+        Function.prototype.getArguments || (Function.prototype.getArguments = function getArguments() {
+            // Initialization > (Random, Data)
+            let random = rand(),
+                data = `${String(this).replace(/\.\.\./g, `lapysjs_horizontal-ellipsis${String(random).slice(2)}`).replace(/\/\*([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\'\"\`\?\@\!\#\%\&\(\)\+\,\-\.\;\$\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\*\//, '').replace(/('|"|`)([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){1,}('|"|`)/g, data => {
+                    // Return
+                    return data[0] + data.slice(data[0].length, -data[~-data.length].length).replace(/()/g, `::lapysjs_*${random}::`).replace(/,/g, `::lapysjs_comma${random}::`) + data[~-data.length]
+                })}`.split(/,/g);
+
+            /* Loop
+                    Index all Data.
+
+                > Update > Data
+            */
+            for (let i = 0; i < data.length; i += 1)
+                data[i] = data[i].replace(RegExp(`::lapysjs_comma${random}::`, 'g'), ',').replace(RegExp(`::lapysjs_\\*${random}::`, 'g'), '').trim();
+
+            // Update > Data
+            data[0] = `${data[0]}-`.getAfterChar('(').replace(/  /g, ' ').replace(/  /g, ' ').getBeforeChar(',').getBeforeChar('-');
+            !data[0].replace(/ /g, '').startsWith(')=>') || (data[0] = data[0].getBeforeChar(') =>'));
+            !data[0].replace(/ /g, '').startsWith('){') || (data[0] = data[0].getBeforeChar(') {'));
+
+            /* Error Handling
+                    --- NOTE ---
+                        This particular module is only for special cases
+                        of the first argument being parsed not being valid.
+            */
+            try {
+                // Execution
+                eval(`let ${data[0]}`)
+            }
+
+            catch (error) {
+                // Update > Data
+                data[0] = data[0].getBeforeChar(')')
+            }
+
+            /* Update > Data
+                    --- NOTE ---
+                        The last argument parsed through in Data
+                        has issues when the function is not an arrow function.
+            */
+            (data[0].indexOf('=>') < 0) || (data[0] = (data[0].getBeforeChar('=>') + '=>' + data[0].getAfterChar('=>').getBeforeChar('}') + '}').getBeforeChar('}') + '}');
+            !data[1] || (data[~-data.length] = data[~-data.length].replace(/  /g, ' ').replace(/  /g, ' ').getBeforeChar(') {', true).getBeforeChar(') =>', true));
+
+            // Error Handling
+            try {
+                // Execution
+                eval(`let ${data[~-data.length]}`)
+            }
+
+            catch (error) {
+                // Initialization
+                let string = String(this);
 
                 /* Loop
-                        Index all Data.
+                        Index all cloned.Data.
 
-                    > Update > Data
+                    > Update > String
                 */
-                for (let i = 0; i < data.length; i += 1)
-                    data[i] = data[i].replace(RegExp(`::lapysjs_comma${random}::`, 'g'), ',').replace(RegExp(`::lapysjs_\\*${random}::`, 'g'), '').trim();
+                for (let i = 0; i < [...data].slice(2).length; i += 1)
+                    string = string.replace(',', '');
 
                 // Update > Data
-                data[0] = `${data[0]}-`.getAfterChar('(').replace(/  /g, ' ').replace(/  /g, ' ').getBeforeChar(',').getBeforeChar('-');
-                !data[0].replace(/ /g, '').startsWith(')=>') || (data[0] = data[0].getBeforeChar(') =>'));
-                !data[0].replace(/ /g, '').startsWith('){') || (data[0] = data[0].getBeforeChar(') {'));
-
-                /* Error Handling
-                        --- NOTE ---
-                            This particular module is only for special cases
-                            of the first argument being parsed not being valid.
-                */
-                try {
-                    // Execution
-                    eval(`let ${data[0]}`)
-                }
-
-                catch (error) {
-                    // Update > Data
-                    data[0] = data[0].getBeforeChar(')')
-                }
-
-                /* Update > Data
-                        --- NOTE ---
-                            The last argument parsed through in Data
-                            has issues when the function is not an arrow function.
-                */
-                (data[0].indexOf('=>') < 0) || (data[0] = (data[0].getBeforeChar('=>') + '=>' + data[0].getAfterChar('=>').getBeforeChar('}') + '}').getBeforeChar('}') + '}');
-                !data[1] || (data[~-data.length] = data[~-data.length].replace(/  /g, ' ').replace(/  /g, ' ').getBeforeChar(') {', true).getBeforeChar(') =>', true));
-
-                // Error Handling
-                try {
-                    // Execution
-                    eval(`let ${data[~-data.length]}`)
-                }
-
-                catch (error) {
-                    // Initialization
-                    let string = String(this);
-
-                    /* Loop
-                            Index all cloned.Data.
-
-                        > Update > String
-                    */
-                    for (let i = 0; i < [...data].slice(2).length; i += 1)
-                        string = string.replace(',', '');
-
-                    // Update > Data
-                    data[~-data.length] = string.getAfterChar(',').replace(/ /g, `::lapysjs_${random}::`).getBeforeChar(`)::lapysjs_${random}::{`).replace(RegExp(`::lapysjs_${random}::`, 'g'), ' ').trim()
-                }
-
-                /* Loop
-                        Index all Data.
-
-                    > Update > Data
-                */
-                for (let i = 0; i < data.length; i += 1)
-                    data[i] = data[i].replace(RegExp(`lapysjs_horizontal-ellipsis${String(random).slice(2)}`, 'g'), '...');
-
-                // Return
-                return data
+                data[~-data.length] = string.getAfterChar(',').replace(/ /g, `::lapysjs_${random}::`).getBeforeChar(`)::lapysjs_${random}::{`).replace(RegExp(`::lapysjs_${random}::`, 'g'), ' ').trim()
             }
+
+            /* Loop
+                    Index all Data.
+
+                > Update > Data
+            */
+            for (let i = 0; i < data.length; i += 1)
+                data[i] = data[i].replace(RegExp(`lapysjs_horizontal-ellipsis${String(random).slice(2)}`, 'g'), '...');
+
+            // Return
+            return data
         });
 
         /* Get Body
                 --- UPDATE REQUIRED ---
-                    @lapys: Needs improvements for more complex functions that contain other functions.
+                    @lapys: Needs improvement on syntax encoding.
 
                 --- WARN ---
                     @lapys: This function is not meant to be used in production environments, yet...
         */
-        Function.prototype.getBody || Object.defineProperty(Function.prototype, 'getBody', {
-            // Value
-            value: function getBody() {
-                // Initialization > Data
-                let data = String(this).replace(/,( ){0,}/g, ',').replace(String(this.getArguments()), '');
+        Function.prototype.getBody || (Function.prototype.getBody = function getBody() {
+            // Initialization > Data
+            let data = String(this).replace(/,( ){0,}/g, ',').replace(String(this.getArguments()), '');
 
-                // Update > Data
-                !data.replace(/\{([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\'\"\`\?\@\!\*\/\#\%\&\(\)\+\,\-\.\;\$\^\_\|\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\«\»\ ]|){0,}/g, '{}').match(/=\>( ){0,}([a-z]|_|\$|\{)/g) || (data = data.getAfterChar('=>').trim());
-                data = String((data[0] === '{') || '{').replace('true', '') + data + String((data[~-data.length] === '}') || '}').replace('true', '');
+            // Update > Data
+            !data.replace(/\{([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\'\"\`\?\@\!\*\/\#\%\&\(\)\+\,\-\.\;\$\^\_\|\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\«\»\ ]|){0,}/g, '{}').match(/=\>( ){0,}([a-z]|_|\$|\{)/g) || (data = data.getAfterChar('=>').trim());
+            data = String((data[0] === '{') || '{').replace('true', '') + data + String((data[~-data.length] === '}') || '}').replace('true', '');
 
-                if (data.slice(data[0].length).startsWith('function')) {
-                    data = data.getAfterChar('{');
-                    data = `{${data.getAfterChar('{')}`
-                }
-
-                // Return
-                return data.slice(data[0].length, -data[~-data.length].length).trim()
+            if (data.slice(data[0].length).startsWith('function')) {
+                data = data.getAfterChar('{');
+                data = `{${data.getAfterChar('{')}`
             }
+
+            // Return
+            return data.slice(data[0].length, -data[~-data.length].length).trim()
         });
 
     /* Object Data */
@@ -3193,10 +3208,11 @@
             value: function concat() {
                 /*
                         --- NOTE ---
-                            Minified polyfill for the 'Object.assign' method.
+                            @lapys: Minified polyfill for the 'Object.assign' method.
                 */
-                (typeof Object.assign==='function')||Object.defineProperty(Object,'assign',{configurable:true,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: true});
+                (typeof Object.assign=='function')||Object.defineProperty(Object,'assign',{configurable:true,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: true});
 
+                // Return
                 return Object.assign(this, arguments[0] || {});
             }
         });
@@ -3211,6 +3227,9 @@
                 */
                 let Arguments = [...arguments],
                     data = arguments[0];
+
+                // Update > Data
+                (typeof data != 'number') || (data = String(data));
 
                 /* Logic
                         If
@@ -3264,8 +3283,16 @@
                         }
 
                         else if (Arguments.length > 0) {
-                            // Value
-                            this.value = (Arguments[1] || []).value || Arguments[1];
+                            // Error Handling
+                            try {
+                                // Value
+                                this.value = 'value' in Arguments[1] ? (Arguments[1] || []).value : Arguments[1]
+                            }
+
+                            catch (error) {
+                                // Value
+                                this.value = Arguments[1]
+                            }
 
                             // Writable
                                 /* Logic
@@ -3292,36 +3319,7 @@
             // Value
             value: function empty() {
                 // Return
-                return typeof this === 'number' ? !this : !Object.keys(this)[0] || false
-            }
-        });
-
-        /* For Each
-                --- CONSIDER ---
-                    @lapys: Maybe there should be an Array counterpart/ improvement from this method?
-        */
-        Object.defineProperty(Object.prototype, 'forEach', {
-            // Value
-            value: function forEach() {
-                /* Loop
-                        [for statement]
-
-                    > Error Handling
-                */
-                for (let i = 0; i < (Object.keys(this).length || this); i += 1)
-                    try {
-                        // Function > Function
-                        func(
-                            arguments[0].name || String(arguments[0]).getBeforeChar('(').trim().replace(/[a-z]{0,} /g, '').replace(/\bfunction\b/, ''),
-                            arguments[0].getArguments().addElement(`_lapys = ${i}`),
-                            arguments[0].getBody()
-                        ).apply(this, [i].concat([...arguments].slice(1)))
-                    }
-
-                    catch (error) {
-                        // Function > Argument 0
-                        arguments[0].apply(this, [i].concat([...arguments].slice(1)))
-                    }
+                return typeof this == 'number' ? !this : !Object.keys(this)[0] || false
             }
         });
 
@@ -3584,7 +3582,22 @@
             // Value
             value: function removeChar() {
                 // Return
-                return arguments[0] && arguments.length > 0 ? this.replace(arguments[0].constructor === RegExp ? arguments[0] : RegExp(arguments[0]), '') : this
+                let data = ` ${this}`.slice(' '.length);
+
+                /* Logic
+                        If there are Arguments.
+                */
+                if (arguments[0] && arguments.length > 0)
+                    /* Loop
+                            Index all Arguments.
+
+                        > Update > Data
+                    */
+                    for (let i = 0; i < arguments.length; i += 1)
+                        data = data.replace(arguments[i].constructor === RegExp ? arguments[i] : RegExp(arguments[i]), '');
+
+                // Return
+                return data
             }
         });
 
@@ -3639,7 +3652,7 @@
                             > Update > Data
                         */
                         for (let i = 0; i < data.length; i += 1)
-                            typeof data[i] === 'string' ? data[i] = data[i].replace(RegExp(`::lapysjs_comma${random}::`, 'g'), ',') : false;
+                            typeof data[i] == 'string' ? data[i] = data[i].replace(RegExp(`::lapysjs_comma${random}::`, 'g'), ',') : false;
 
                         // Return
                         return data
@@ -3853,7 +3866,7 @@
                         If
                             the Argument 0 is a function.
                 */
-                if (typeof arguments[0] === 'function') {
+                if (typeof arguments[0] == 'function') {
                     // Function > Argument 0
                     arguments[0]();
 
@@ -4419,7 +4432,7 @@
                                     let data = arguments[0];
 
                                     // Update > Data
-                                    typeof data !== 'string' ? (!!data ? data = 'yes' : data = 'no') : (data !== 'yes' && data !== 'no') ? data = 'yes' : false;
+                                    typeof data != 'string' ? (!!data ? data = 'yes' : data = 'no') : (data !== 'yes' && data !== 'no') ? data = 'yes' : false;
 
                                     /* Logic
                                             If
@@ -4555,7 +4568,7 @@
                             // Get
                             get: function firefox() {
                                 // Return
-                                return !!(typeof InstallTrigger !== 'undefined')
+                                return !!(typeof InstallTrigger != 'undefined')
                             }
                         });
 
@@ -4626,7 +4639,7 @@
                                     else if
                                         Argument 1 is a String.
                             */
-                            if (typeof arguments[1] === 'object')
+                            if (typeof arguments[1] == 'object')
                                 /* Loop
                                         Index all key-values of Argument 1.
 
@@ -4638,7 +4651,7 @@
                                         return `-${data.toLowerCase()}`
                                     }), arguments[1][Object.keys(arguments[1])[i]]);
 
-                            else if (typeof arguments[1] === 'string')
+                            else if (typeof arguments[1] == 'string')
                                 // Modification > (LapysJS > Permanent Data > HTML Link Element) > Hyperlink Reference
                                 LapysJS.permanentData.HTMLLinkElement.setAttribute('href', arguments[1])
                         };
@@ -4741,7 +4754,7 @@
                                     else if
                                         Argument 1 is a String.
                             */
-                            if (typeof arguments[1] === 'object')
+                            if (typeof arguments[1] == 'object')
                                 /* Loop
                                         Index all key-values of Argument 1.
 
@@ -4753,7 +4766,7 @@
                                         return `-${data.toLowerCase()}`
                                     }), arguments[1][Object.keys(arguments[1])[i]]);
 
-                            else if (typeof arguments[1] === 'string')
+                            else if (typeof arguments[1] == 'string')
                                 // Modification > (LapysJS > Permanent Data > HTML Script Element) > Source
                                 LapysJS.permanentData.HTMLScriptElement.setAttribute('src', arguments[1])
                     }
@@ -5144,21 +5157,6 @@
                                 document.querySelector('fav-icon').remove()
                         });
 
-                    /* Data Event */
-                        // On DOM Node Count Change
-                        onDOMNodeCountChange(() => {
-                            /* Loop
-                                    Index all Data-Event-based Elements.
-                            */
-                            for (let i = 0; i < document.querySelectorAll('[data-event-function][data-event-type').length; i += 1) {
-                                // Event > Data-Event-based Element > [Data-Event-based Element > Data Event Function]
-                                (document.querySelectorAll('[data-event-function][data-event-type')[i]['LapysJS pseudoEventSet'] === `${document.querySelectorAll('[data-event-function][data-event-type')[i].__pseudo__.eventType},${document.querySelectorAll('[data-event-function][data-event-type')[i].__pseudo__.eventFunction}`) || document.querySelectorAll('[data-event-function][data-event-type')[i].setEvent(document.querySelectorAll('[data-event-function][data-event-type')[i].getAttribute('data-event-type'), function() { eval(document.querySelectorAll('[data-event-function][data-event-type')[i].getAttribute('data-event-function')) }, false, false);
-
-                                // Modification > Data-Event-based Element > Pseudo Event Set
-                                document.querySelectorAll('[data-event-function][data-event-type')[i]['LapysJS pseudoEventSet'] = `${document.querySelectorAll('[data-event-function][data-event-type')[i].__pseudo__.eventType},${document.querySelectorAll('[data-event-function][data-event-type')[i].__pseudo__.eventFunction}`
-                            }
-                        });
-
                     /* Detect Scroll Overflow */
                         // On DOM Ready
                         onDOMReady(() => {
@@ -5212,7 +5210,7 @@
 
             /* <html> */
                 // Modification > Language
-                (document.documentElement || {lang: 0}).lang = document.documentElement.lang || ((document.documentElement || {lang: 0}).lang || String((navigator || []).languages || '').replace(/, /, ',').replace(/,/g, ', '));
+                (document.documentElement || {}).lang = document.documentElement.lang || ((document.documentElement || {lang: 0}).lang || String((navigator || []).languages || '').replace(/, /, ',').replace(/,/g, ', '));
 
             /* <img>, Lazy Script
                     --- NOTE ---
@@ -5383,7 +5381,7 @@
                                         */
                                         if (element.hasAttribute('data-utc-format'))
                                             /* Logic
-                                                    [switch statement]
+                                                    [switch:case:default statement]
 
                                                 > Modification > Dynamic Time > Inner Text
                                             */
@@ -5482,64 +5480,63 @@
                     --- UPDATE REQUIRED ---
                         @lapys: Better parsing of the 'script' attribute.
             */
-                // On DOM Ready
-                onDOMReady(() => {
+                // On Node Added
+                onNodeAdded(document.body, () => {
                     /* Loop
                             Index all Script Elements.
                     */
-                    for (let i = 0; i < document.querySelectorAll('[script').length; i += 1) {
-                        // Modification > Script > Script
-                        document.querySelectorAll('[script')[i].setAttribute('script', (document.querySelectorAll('[script')[i].getAttribute('script') || '').replace(/[^:]\/\/(.*[^\n])\n/g, '').replace(/\n/g, ''));
+                    for (let i = 0; i < document.querySelectorAll('[script').length; i += 1)
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (!document.querySelectorAll('[script')[i]['LapysJS script']) {
+                            // Modification > Script > Script, Random Attribute Value
+                            document.querySelectorAll('[script')[i].setAttribute('script', (document.querySelectorAll('[script')[i].getAttribute('script') || '').replace(/[^:]\/\/(.*[^\n])\n/g, '').replace(/\n/g, '').replace(/"/g, '`'));
 
-                        setInterval(() => {
-                            /* Logic
-                                    If
-                                        the Script exists.
-                            */
-                            if (document.querySelectorAll('[script')[i])
+                            // Set Interval
+                            setInterval(() => {
                                 /* Logic
-                                        [if:else if:else statements].
+                                        If
+                                            the Script exists.
                                 */
-                                if (document.querySelectorAll('[script')[i].getAttribute('script') !== document.querySelectorAll('[script')[i]['LapysJS script']) {
-                                    // Modification > Script > Script
-                                    document.querySelectorAll('[script')[i]['LapysJS script'] = document.querySelectorAll('[script')[i].getAttribute('script');
+                                if (document.querySelectorAll('[script')[i])
+                                    /* Logic
+                                            [if:else if:else statements].
+                                    */
+                                    if (document.querySelectorAll('[script')[i].getAttribute('script') !== document.querySelectorAll('[script')[i]['LapysJS script']) {
+                                        // Modification
+                                            // Script > Script, Script Element ID
+                                            document.querySelectorAll('[script')[i]['LapysJS script'] = document.querySelectorAll('[script')[i].getAttribute('script');
+                                            document.querySelectorAll('[script')[i]['LapysJS scriptElementID'] || (document.querySelectorAll('[script')[i]['LapysJS scriptElementID'] = Math.random());
 
-                                    // Execution
-                                    eval(
-                                        !document.querySelectorAll('[script')[i].getAttribute('script') || document.querySelectorAll('[script')[i].getAttribute('script').replace(/'(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/, data => {
-                                            // Return
-                                            return data.split(/(?:)/g).join(alphabetString)
-                                        }).replace(/"(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/, data => {
-                                            // Return
-                                            return data.split(/(?:)/g).join(alphabetString)
-                                        }).replace(/`(\t|\r|\b|\n|[a-z]|[A-Z]|[0-9]|[\'\"\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}`/, data => {
-                                            // Return
-                                            return data.split(/(?:)/g).join(alphabetString)
-                                        }).replace(/this/g, `document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script').replace(/"/g, '`')}"]')`).replace(RegExp(alphabetString, 'g'), '')
-                                    )
+                                            // LapysJS > Permanent Data > Script Element
+                                            LapysJS.permanentData[`scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}`] = document.querySelectorAll('[script')[i];
+
+                                        // Execution
+                                        eval(`(document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '')}'] = (function() {\n${document.querySelectorAll('[script')[i].getAttribute('script') ? document.querySelectorAll('[script')[i].getAttribute('script') : ''}\n}); (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '')}'](); delete (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '')}']`)
+                                    }
+                            });
+
+                            // Modification > Script > Script
+                            (typeof document.querySelectorAll('[script')[i].script == 'string') || Object.defineProperty(document.querySelectorAll('[script')[i], 'script', {
+                                // Configurable
+                                configurable: true,
+
+                                // Enumerable
+                                enumerable: true,
+
+                                // Get
+                                get: function getScript() {
+                                    // Return
+                                    return this.getAttribute('script')
+                                },
+
+                                set: function setScript() {
+                                    // Modification > Target > Script
+                                    this.setAttribute('script', arguments[0] || '')
                                 }
-                        });
-
-                        // Modification > Script > Script
-                        (typeof document.querySelectorAll('[script')[i].script === 'string') || Object.defineProperty(document.querySelectorAll('[script')[i], 'script', {
-                            // Configurable
-                            configurable: true,
-
-                            // Enumerable
-                            enumerable: true,
-
-                            // Get
-                            get: function getScript() {
-                                // Return
-                                return this.getAttribute('script')
-                            },
-
-                            set: function setScript() {
-                                // Modification > Target > Script
-                                this.setAttribute('script', arguments[0] || '')
-                            }
-                        })
-                    }
+                            })
+                        }
                 });
 
             /* Modification */
@@ -5671,6 +5668,10 @@
                     Element.prototype.changeElementTag || Object.defineProperty(Element.prototype, 'changeElementTag', {
                         // Value
                         value: function changeElementTag() {
+                            /* Logic
+                                    If
+                                        an Argument is provided.
+                            */
                             if (arguments.length) {
                                 // Error Handling
                                 try {
@@ -5732,32 +5733,48 @@
                     Element.prototype.delAttr ||  Object.defineProperty(Element.prototype, 'delAttr', {
                         // Value
                         value: function delAttr() {
-                            /* Logic
-                                    If
-                                        Argument is '_all'
-                                            and
-                                        the Target has no '_all' attribute.
-                            */
-                            if (
-                                [...arguments][0] === '_all' &&
-                                !this.attributes._all
-                            )
-                                /* Loop
-                                        Index all the Target"s attributes.
-
-                                    > Modification > Target > [Name]
+                            if ((arguments[0] || []).constructor !== window.Attr)
+                                /* Logic
+                                        If
+                                            Argument is '_all'
+                                                and
+                                            the Target has no '_all' attribute.
                                 */
-                                for (let i = 0; i < this.attributes.length; i += 1)
-                                    this.removeAttribute(this.attributes[i--].name);
+                                if (
+                                    [...arguments][0] === '_all' &&
+                                    !this.hasAttribute('_all')
+                                )
+                                    /* Loop
+                                            Index all the Target"s attributes.
+
+                                        > Modification > Target > [Name]
+                                    */
+                                    for (let i = 0; i < this.attributes.length; i += 1)
+                                        this.removeAttribute(this.attributes[i--].name);
+
+                                else
+                                    /* Loop
+                                            Index all Names.
+
+                                        > Modification > Target > [Name]
+                                    */
+                                    for (let i = 0; i < [...arguments].length; i += 1)
+                                        this.removeAttribute([...arguments][i]);
 
                             else
-                                /* Loop
-                                        Index all Names.
+                                // Error Handling
+                                try {
+                                    // Modification > Target > Argument 0
+                                    this.removeAttributeNode(arguments[0])
+                                }
 
-                                    > Modification > Target > [Name]
-                                */
-                                for (let i = 0; i < [...arguments].length; i += 1)
-                                    this.removeAttribute([...arguments][i])
+                                catch (error) {
+                                    // LapysJS > Warn
+                                    LapysJS.warn(error);
+
+                                    // Modification > Target > Argument 0
+                                    this.removeAttribute(arguments[0].name)
+                                }
                         }
                     });
 
@@ -5793,7 +5810,7 @@
                                         )
                                             this.removeAttribute('class');
 
-                                        else if (typeof [...arguments][i] === 'number') {
+                                        else if (typeof [...arguments][i] == 'number') {
                                             /* Logic
                                                     If
                                                         the element has a single class only.
@@ -5802,7 +5819,7 @@
                                             */
                                             if (
                                                 this.getAttribute('class').indexOf(' ') < 0 &&
-                                                [...arguments][i] === 0
+                                                [...arguments][i] == 0
                                             )
                                                 this.removeAttribute('class');
 
@@ -5810,7 +5827,7 @@
                                                 this.setAttribute('class', String(this.getAttribute('class').trim().split(/ /g).removeElement(this.getAttribute('class').trim().split(/ /g)[[...arguments][i]])).replace(/,/g, ' ').trim())
                                         }
 
-                                        else if (typeof [...arguments][i] === 'string')
+                                        else if (typeof [...arguments][i] == 'string')
                                             /* Loop
                                                     Index all Data class values.
 
@@ -5821,7 +5838,7 @@
 
                                         // Modification > Target > Class
                                         this.getAttribute('class') || this.removeAttribute('class')
-                            }
+                                }
                         }
                     });
 
@@ -6005,11 +6022,11 @@
                                         else if
                                             Argument data type is a 'string'.
                                 */
-                                if (typeof [...arguments][i] === 'number')
+                                if (typeof [...arguments][i] == 'number')
                                     // Update > Attributes
                                     Attributes.push(that.getAttribute((that.attributes[[...arguments][i]] || document.createElement('a')).name));
 
-                                else if (typeof [...arguments][i] === 'string')
+                                else if (typeof [...arguments][i] == 'string')
                                     /* Logic
                                             If
                                                 Argument is '_all' and
@@ -6049,23 +6066,6 @@
                         }
                     });
 
-                    // Get Data Attribute
-                    Element.prototype.getDataAttr || Object.defineProperty(Element.prototype, 'getDataAttr', {
-                        // Value
-                        value: function getDataAttr() {
-                            /* Loop
-                                    Index all Arguments.
-
-                                > Update > Arguments
-                            */
-                            for (let i = 0; i < arguments.length; i += 1)
-                                arguments[i] = `data-${arguments[i]}`;
-
-                            // Return
-                            return this.getAttr.apply(this, arguments)
-                        }
-                    });
-
                     // Get CSS
                     Element.prototype.getCSS || Object.defineProperty(Element.prototype, 'getCSS', {
                         // Value
@@ -6088,16 +6088,8 @@
                                     }))
                                 );
 
-                            /* Logic
-                                    If the Array has multiple elements.
-
-                                > Return
-                            */
-                            if (array[1])
-                                return array;
-
                             // Return
-                            return array[0]
+                            return array[1] ? array : array[0]
                         }
                     });
 
@@ -6115,17 +6107,8 @@
                                 // Update > Array
                                 array.push(this.hasAttribute(arguments[i]));
 
-                            /* Logic
-                                    If
-                                        the Array has multiple elements.
-
-                                > Return
-                            */
-                            if (array[1])
-                                return array;
-
                             // Return
-                            return array[0]
+                            return array[1] ? array : array[0]
                         }
                     });
 
@@ -6196,16 +6179,8 @@
                                 top += this.parentPath[i]
                             }
 
-                            /* Logic
-                                    If
-                                        Argument 0 is false.
-
-                                > Return
-                            */
-                            if (!arguments[0] == false)
-                                return left < (innerWidth + pageXOffset) && pageXOffset < (left + this.offsetWidth) && pageYOffset < (this.offsetHeight + top) && top < (innerHeight + pageYOffset);
-
-                            return left >= pageXOffset && (left + this.offsetWidth) <= (pageXOffset + innerWidth) && top >= pageYOffset && (this.offsetHeight + top) <= (pageYOffset + innerHeight)
+                            // Return
+                            return !arguments[0] == false ? left < (innerWidth + pageXOffset) && pageXOffset < (left + this.offsetWidth) && pageYOffset < (this.offsetHeight + top) && top < (innerHeight + pageYOffset) : left >= pageXOffset && (left + this.offsetWidth) <= (pageXOffset + innerWidth) && top >= pageYOffset && (this.offsetHeight + top) <= (pageYOffset + innerHeight)
                         }
                     });
 
@@ -6250,48 +6225,49 @@
                     Element.prototype.setAttr || Object.defineProperty(Element.prototype, 'setAttr', {
                         // Value
                         value: function setAttr() {
-                            // Initialization > Arguments
-                            let Arguments = [...arguments];
-
-                            // Update > (Name, Value)
-                            Arguments[0] = String(Arguments[0]);
-                            Arguments[1] = String(Arguments[1]).replace(/\\,/g, `::lapysjs_${randomString}::`);
-                            Arguments[3] = [...String(Arguments.slice(2))].removeElements(',');
-
                             /* Logic
                                     If
-                                        there is a second Argument.
+                                        Argument 0 is not an Attribute.
                             */
-                            if (arguments.length > 1) {
-                                /* Loop
-                                        Index all Names.
+                            if ((arguments[0] || []).constructor !== window.Attr) {
+                                // Initialization > Arguments
+                                let Arguments = [...arguments];
 
-                                    > Modification > Target > [Name]
+                                // Update > (Name, Value)
+                                Arguments[0] = String(Arguments[0]);
+                                Arguments[1] = String(Arguments[1]).replace(/\\,/g, `::lapysjs_${alphabetString}::`);
+                                Arguments[3] = [...String(Arguments.slice(2))].removeElements(',');
+
+                                /* Logic
+                                        If
+                                            there is a second Argument.
                                 */
-                                for (let i = 0; i < max(Arguments[0].split(/,/g), Arguments[1].split(/,/g).concat(Arguments[3])); i += 1)
-                                    Arguments[0].split(/,/g)[i] ? this.setAttribute(Arguments[0].split(/,/g)[i].trim(), String((Arguments[1].split(/,/g).concat(Arguments[3]) || [])[i] || '').replace(RegExp(`::lapysjs_${alphabetString}::`, 'g'), ',').trim()) : this.setAttribute(Arguments[0].split(/,/g)[~-Arguments[0].split(/,/g).length].trim(), String((Arguments[1].split(/,/g).concat(Arguments[3]) || [])[i] || '').replace(RegExp(`::lapysjs_${alphabetString}::`, 'g'), ',').trim())
+                                if (arguments.length > 1) {
+                                    /* Loop
+                                            Index all Names.
+
+                                        > Modification > Target > [Name]
+                                    */
+                                    for (let i = 0; i < max(Arguments[0].split(/,/g), Arguments[1].split(/,/g).concat(Arguments[3])); i += 1)
+                                        Arguments[0].split(/,/g)[i] ? this.setAttribute(Arguments[0].split(/,/g)[i].trim(), String((Arguments[1].split(/,/g).concat(Arguments[3]) || [])[i] || '').replace(RegExp(`::lapysjs_${alphabetString}::`, 'g'), ',').trim()) : this.setAttribute(Arguments[0].split(/,/g)[~-Arguments[0].split(/,/g).length].trim(), String((Arguments[1].split(/,/g).concat(Arguments[3]) || [])[i] || '').replace(RegExp(`::lapysjs_${alphabetString}::`, 'g'), ',').trim())
+                                }
+
+                                else
+                                    /* Loop
+                                            Index all Names.
+
+                                        > Modification > Target > [Name]
+                                    */
+                                    for (let i = 0; i < max(Arguments[0].split(/,/g), Arguments[1].split(/,/g).concat(Arguments[3])); i += 1)
+                                        Arguments[0].split(/,/g)[i] ? this.setAttribute(Arguments[0].split(/,/g)[i].trim(), '') : this.setAttribute(Arguments[0].split(/,/g)[~-Arguments[0].split(/,/g).length].trim(), '');
+
+                                // Modification > Target > [Name]
+                                !(Arguments[0] === 'class' || Arguments[0] === 'style') || this.setAttribute(Arguments[0], this.getAttribute(Arguments[0]).trim())
                             }
 
                             else
-                                /* Loop
-                                        Index all Names.
-
-                                    > Modification > Target > [Name]
-                                */
-                                for (let i = 0; i < max(Arguments[0].split(/,/g), Arguments[1].split(/,/g).concat(Arguments[3])); i += 1)
-                                    Arguments[0].split(/,/g)[i] ? this.setAttribute(Arguments[0].split(/,/g)[i].trim(), '') : this.setAttribute(Arguments[0].split(/,/g)[~-Arguments[0].split(/,/g).length].trim(), '');
-
-                            // Modification > Target > [Name]
-                            !(Arguments[0] === 'class' || Arguments[0] === 'style') || this.setAttribute(Arguments[0], this.getAttribute(Arguments[0]).trim())
-                        }
-                    });
-
-                    // Set Data Attribute
-                    Element.prototype.setDataAttr || Object.defineProperty(Element.prototype, 'setDataAttr', {
-                        // Value
-                        value: function setDataAttr() {
-                            // Modification > Target > Data [Argument 0]
-                            !String(arguments[0]) || this.setAttr(`data-${String(arguments[0]).toLowerCase()}`, arguments.length > 1 ? arguments[1] : '')
+                                // Modification > Target > Argument 0
+                                this.setAttributeNode(arguments[0].cloneNode(true))
                         }
                     });
 
@@ -6304,25 +6280,17 @@
                         value: function attr() {
                             // Modification > Target > [Argument 0]
                             (arguments.length < 2) || this.setAttr(arguments[0], arguments[1]);
+                            ((arguments[0] || []).constructor !== window.Attr) || this.setAttr(arguments[0]);
 
                             // Return
-                            return this.getAttr(arguments[0])
+                            return this.getAttr(arguments[0].name || arguments[0])
                         }
                     });
 
-                    // Data Attribute
-                    Element.prototype.dataAttr || Object.defineProperty(Element.prototype, 'dataAttr', {
-                        // Value
-                        value: function dataAttr() {
-                            // Modification > Target > [Argument 0]
-                            (arguments.length < 2) || this.setAttr(`data-${arguments[0]}`, arguments[1]);
-
-                            // Return
-                            return this.getAttr(`data-${arguments[0]}`)
-                        }
-                    });
-
-                    // Set CSS
+                    /* Set CSS
+                            --- NOTE ---
+                                @lapys: The object encoder needs update.
+                    */
                     Element.prototype.setCSS || Object.defineProperty(Element.prototype, 'setCSS', {
                         // Value
                         value: function setCSS() {
@@ -6333,19 +6301,56 @@
                             isObject(Arguments[0], true) || ((Arguments[0] || '').constructor === Array) || (Arguments[0] = [Arguments[0]]);
                             isObject(Arguments[0], true) || ((Arguments[1] || '').constructor === Array) || (Arguments[1] = [Arguments[1]]);
 
+                            /* Logic
+                                    If
+                                        Argument 0 is an Object.
+                            */
                             if (isObject(Arguments[0], true)) {
+                                // Initialization > Data, Metadata
                                 let data = [],
                                     metadata = [];
 
+                                /* Loop
+                                        Index Argument 0.
+                                */
                                 for (let i = 0; i < Object.keys(Arguments[0]).length; i += 1) {
-                                    data.push(Object.keys(Arguments[0])[i].replace(/[A-Z]/g, data => {
-                                        // Return
-                                        return `-${data.toLowerCase()}`
-                                    }));
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (isObject(Arguments[0][Object.keys(Arguments[0])[i]], true))
+                                        /* Loop
+                                                [for statement]
 
-                                    metadata.push(Arguments[0][Object.keys(Arguments[0])[i]])
+                                            > Update > Data
+                                        */
+                                        for (let j = 0; j < Object.keys(Arguments[0][Object.keys(Arguments[0])[i]]).length; j += 1)
+                                            data.push(`${Object.keys(Arguments[0])[i]}-${Object.keys(Arguments[0][Object.keys(Arguments[0])[i]])[j]}`);
+
+                                    else if (typeof Object.keys(Arguments[0])[i] == 'string')
+                                        // Update > Data
+                                        data.push(Object.keys(Arguments[0])[i].replace(/[A-Z]/g, data => {
+                                            // Return
+                                            return `-${data.toLowerCase()}`
+                                        }));
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (typeof Arguments[0][Object.keys(Arguments[0])[i]] == 'string')
+                                        // Metadata > Push
+                                        metadata.push(Arguments[0][Object.keys(Arguments[0])[i]]);
+
+                                    else if (isObject(Arguments[0][Object.keys(Arguments[0])[i]], true))
+                                        /* Loop
+                                                [for statement]
+
+                                            > Metadata > Push
+                                        */
+                                        for (let j = 0; j < Object.keys(Arguments[0][Object.keys(Arguments[0])[i]]).length; j += 1)
+                                            metadata.push(Arguments[0][Object.keys(Arguments[0])[i]][Object.keys(Arguments[0][Object.keys(Arguments[0])[i]])[j]])
                                 }
 
+                                // Update > Arguments
                                 Arguments = Arguments.slice(1);
                                 Arguments.unshift(data, metadata)
                             }
@@ -6404,7 +6409,7 @@
                                     If
                                         Argument 1 is a Function.
                             */
-                            if (typeof arguments[1] === 'function')
+                            if (typeof arguments[1] == 'function')
                                 /* Loop
                                         Index all modified Arguments.
                                 */
@@ -6416,9 +6421,9 @@
                                         // Modification > Target > Custom Events
                                         (this || window).customEvents = (this || window).customEvents || {fallback: true};
                                             // [Argument 0]
-                                            (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]] = typeof document.createEvent === 'function' ? document.createEvent('Event') : document.createEventObject();
+                                            (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]] = typeof document.createEvent == 'function' ? document.createEvent('Event') : document.createEventObject();
                                                 // [Argument 0] > Initialize Event
-                                                typeof (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent === 'function' ? (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent(String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j], true, true) : false;
+                                                typeof (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent == 'function' ? (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent(String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j], true, true) : false;
 
                                         // Event > Target > [Argument 0]
                                         (this || window).setEvent(String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j], Object.values([...arguments].slice(1))[i], false)
@@ -6482,7 +6487,7 @@
 
                             // Return
                             return (
-                                typeof window.getEventListeners === 'function' ?
+                                typeof window.getEventListeners == 'function' ?
                                     (new (function LapysJSEventMap() {
                                         /* Loop
                                                 Index all Event Listeners.
@@ -6513,7 +6518,7 @@
                                     --- UPDATE REQUIRED ---
                                         @lapys: Fallback should be able to track Event handlers.
                             */
-                            let data = typeof window.getEventListeners === 'function' ?
+                            let data = typeof window.getEventListeners == 'function' ?
                                 new (function LapysJSEventMap() {
                                     // Update > Meta Data
                                     metadata = true;
@@ -6566,19 +6571,19 @@
 
                                     that.setAttribute('data-fullscreen', '');
 
-                                    (typeof that.requestFullscreen !== 'function') || that.requestFullscreen();
-                                    (typeof that.mozRequestFullScreen !== 'function') || that.mozRequestFullScreen();
-                                    (typeof that.msRequestFullscreen !== 'function') || that.msRequestFullscreen();
-                                    (typeof that.webkitRequestFullScreen !== 'function') || that.webkitRequestFullScreen()
+                                    (typeof that.requestFullscreen != 'function') || that.requestFullscreen();
+                                    (typeof that.mozRequestFullScreen != 'function') || that.mozRequestFullScreen();
+                                    (typeof that.msRequestFullscreen != 'function') || that.msRequestFullscreen();
+                                    (typeof that.webkitRequestFullScreen != 'function') || that.webkitRequestFullScreen()
                                 }
 
                                 else {
                                     that.removeAttribute('data-fullscreen');
 
-                                    (typeof document.exitFullscreen !== 'function') || document.exitFullscreen();
-                                    (typeof document.mozCancelFullScreen !== 'function') || document.mozCancelFullScreen();
-                                    (typeof document.msExitFullscreen !== 'function') || document.msExitFullscreen();
-                                    (typeof document.webkitCancelFullScreen !== 'function') || document.webkitCancelFullScreen()
+                                    (typeof document.exitFullscreen != 'function') || document.exitFullscreen();
+                                    (typeof document.mozCancelFullScreen != 'function') || document.mozCancelFullScreen();
+                                    (typeof document.msExitFullscreen != 'function') || document.msExitFullscreen();
+                                    (typeof document.webkitCancelFullScreen != 'function') || document.webkitCancelFullScreen()
                                 }
                             }
 
@@ -6593,17 +6598,18 @@
                     EventTarget.prototype.observeEvent || Object.defineProperty(EventTarget.prototype, 'observeEvent', {
                         // Value
                         value: function observeEvent() {
-                            // Initialization > (Data, Metadata)
+                            // Initialization > (Data, Metadata, Target)
                             let data = (arguments[0] || '').constructor === Array ? arguments[0] : [arguments[0]],
-                                metadata = [...arguments].slice(1);
+                                metadata = [...arguments].slice(1),
+                                that = this;
 
                             // Event > Target > [Metadata 0]
                             !(
                                 (data[0] || []).constructor.name.indexOf('Element') > -1 ||
-                                typeof (data[0] || []).tagName === 'string'
+                                typeof (data[0] || []).tagName == 'string'
                             ) || this.setEvent(String(metadata[0]), function observeEvent(event) {
                                 // Function > Metadata 1
-                                (data.indexOf(event.path[0]) < 0) || metadata[1]()
+                                (data.indexOf(event.path[0]) < 0) || metadata[1].call(that, event)
                             }, metadata[2], metadata[3])
                         }
                     });
@@ -6612,14 +6618,15 @@
                     EventTarget.prototype.observeEventByQuerySelector || Object.defineProperty(EventTarget.prototype, 'observeEventByQuerySelector', {
                         // Value
                         value: function observeEventByQuerySelector() {
-                            // Initialization > (Data, Metadata)
+                            // Initialization > (Data, Metadata, Target)
                             let data = String(arguments[0]),
-                                metadata = [...arguments].slice(1);
+                                metadata = [...arguments].slice(1),
+                                that = this;
 
                             // Event > Target > [Metadata 0]
                             this.setEvent(String(metadata[0]), function observeEvent(event) {
                                 // Function > Metadata 1
-                                ([...document.querySelectorAll(data)].indexOf(event.path[0]) < 0) || metadata[1]()
+                                ([...document.querySelectorAll(data)].indexOf(event.path[0]) < 0) || metadata[1].call(that, event)
                             }, metadata[2], metadata[3])
                         }
                     });
@@ -6664,7 +6671,7 @@
 
                                     > Return
                                 */
-                                if (typeof arguments[1] === 'number')
+                                if (typeof arguments[1] == 'number')
                                     return ((this === window ? document : this) || document).querySelectorAll(String(arguments[0]))[parseInt(arguments[1])];
 
                                 else if (!((this === window ? document : this) || document).querySelectorAll(String(arguments[0]))[1])
@@ -6710,7 +6717,7 @@
 
                                     else if (
                                         (that.$$.apply(that, [[...arguments][0]])[0] || that.$$.apply(that, [[...arguments][0]])).tagName === document.documentElement.tagName &&
-                                        typeof that.$$.apply(that, [...arguments]) === 'number'
+                                        typeof that.$$.apply(that, [...arguments]) == 'number'
                                     )
                                         result = [...arguments].indexOf('~length') > -1 ? 0 : 1;
 
@@ -6772,7 +6779,7 @@
                                         If
                                             Document.prototype.createEvent is defined.
                                 */
-                                if (typeof document.createEvent === 'function') {
+                                if (typeof document.createEvent == 'function') {
                                     // Initialization > Event
                                     let event = document.createEvent('HTMLEvents');
 
@@ -6788,6 +6795,8 @@
                                     (this || window).fireEvent(`on ${Arguments[i]}`)
                             }
                     });
+                        // Trigger
+                        EventTarget.prototype.trigger || Object.defineProperty(EventTarget.prototype, 'trigger', {value: EventTarget.prototype.runEvent});
 
                     // Set Event
                     EventTarget.prototype.setEvent ||  Object.defineProperty(EventTarget.prototype, 'setEvent', {
@@ -6885,7 +6894,7 @@
                                 });
 
                                 // Event > Target > [Data]
-                                typeof document.addEventListener === 'function' ?
+                                typeof document.addEventListener == 'function' ?
                                     (this || window).addEventListener(String(data).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[i].replace(/ /g, ''), arguments[1], !!arguments[2], !!arguments[3]) :
                                     (this || window).attachEvent(String(data).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[i].replace(/ /g, ''), arguments[1], !!arguments[2], !!arguments[3])
                             }
@@ -6893,45 +6902,42 @@
                     });
 
                     // Delete
-                    Node.prototype.delete || Object.defineProperty(Node.prototype, 'delete', {
-                        // Value
-                        value: function Delete() {
-                            // Error Handling
-                            try {
-                                // Deletion
-                                this.remove()
-                            }
+                    Node.prototype.delete || (Node.prototype.delete = function Delete() {
+                        // Error Handling
+                        try {
+                            // Deletion
+                            this.remove()
+                        }
 
-                            catch (error) {
-                                // Initialization > Target
-                                let that = this;
+                        catch (error) {
+                            // Initialization > Target
+                            let that = this;
 
-                                // Set Timeout
-                                setTimeout(() => {
-                                    // Error Handling
+                            // Set Timeout
+                            setTimeout(() => {
+                                // Error Handling
+                                try {
                                     try {
+                                        // Deletion
+                                        that.remove()
+                                    }
+
+                                    catch (error) {
+                                        // Error Handling
                                         try {
                                             // Deletion
-                                            that.remove()
+                                            that.parentNode.removeChild(that)
                                         }
 
                                         catch (error) {
-                                            // Error Handling
-                                            try {
-                                                // Deletion
-                                                that.parentNode.removeChild(that)
-                                            }
-
-                                            catch (error) {
-                                                // LapysJS > Error
-                                                LapysJS.error(error)
-                                            }
+                                            // LapysJS > Error
+                                            LapysJS.error(error)
                                         }
                                     }
+                                }
 
-                                    catch (error) {}
-                                })
-                            }
+                                catch (error) {}
+                            })
                         }
                     });
 
@@ -7344,7 +7350,7 @@
                             // Return
                             return new (function LapysJSPseudoAttributesList() {
                                 // Initialization > LapysJS Pseudo Attributes List
-                                let LapysJSPseudoAttributesList = new (function LapysJSPseudoAttributesList() {});
+                                let _LapysJSPseudoAttributesList = new (function LapysJSPseudoAttributesList() {});
 
                                 /* Loop
                                         Index all Target's data sets.
@@ -7406,10 +7412,10 @@
                                         Object.keys(that.dataset)[i] === 'unknown' ||
                                         ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-time') > -1 && Object.keys(that.dataset)[i] === 'utcFormat')
                                     )
-                                        LapysJSPseudoAttributesList[Object.keys(that.dataset)[i].replace(/(h|H)(t|T)(m|M)(l|L)/g, 'HTML')] = that.dataset[Object.keys(that.dataset)[i]];
+                                        _LapysJSPseudoAttributesList[Object.keys(that.dataset)[i].replace(/(h|H)(t|T)(m|M)(l|L)/g, 'HTML')] = that.dataset[Object.keys(that.dataset)[i]];
 
                                 // Modification > LapysJS Pseudo Attributes List
-                                Object.defineProperty(LapysJSPseudoAttributesList, '__pseudo__', {
+                                Object.defineProperty(_LapysJSPseudoAttributesList, '__pseudo__', {
                                     // Configurable
                                     configurable: true,
 
@@ -7428,8 +7434,8 @@
 
                                     > Modification > Target > [LapysJS Pseudo Attributes List > Element]
                                 */
-                                for (let i = 0; i < Object.keys(LapysJSPseudoAttributesList).length; i += 1)
-                                    Object.defineProperty(this, Object.keys(LapysJSPseudoAttributesList)[i], {
+                                for (let i = 0; i < Object.keys(_LapysJSPseudoAttributesList).length; i += 1)
+                                    Object.defineProperty(this, Object.keys(_LapysJSPseudoAttributesList)[i], {
                                         // Configurable
                                         configurable: true,
 
@@ -7439,13 +7445,13 @@
                                         // Get
                                         get: function getPseudo() {
                                             // Return
-                                            return LapysJSPseudoAttributesList[Object.keys(LapysJSPseudoAttributesList)[i]]
+                                            return _LapysJSPseudoAttributesList[Object.keys(_LapysJSPseudoAttributesList)[i]]
                                         },
 
                                         // Set
                                         set: function setPseudo() {
                                             // Modification > Target > [Data...]
-                                            that.setAttribute(`data-${Object.keys(LapysJSPseudoAttributesList)[i].replace(/[A-Z]/g, data => {
+                                            that.setAttribute(`data-${Object.keys(_LapysJSPseudoAttributesList)[i].replace(/[A-Z]/g, data => {
                                                 return `-${data.toLowerCase()}`
                                             })}`, arguments[0])
                                         }
@@ -7533,7 +7539,7 @@
                                 if (!accordion[i]['LapysJS isModified']) {
                                     // Function > Accordion
                                         // Close
-                                        typeof accordion[i]['LapysJS close'] === 'function' || Object.defineProperty(accordion[i], 'LapysJS close', {
+                                        (typeof accordion[i]['LapysJS close'] == 'function') || Object.defineProperty(accordion[i], 'LapysJS close', {
                                             // Value
                                             value: function close() {
                                                 // Modification > Target
@@ -7547,7 +7553,7 @@
                                         accordion[i]['LapysJS close']();
 
                                         // Open
-                                        typeof accordion[i]['LapysJS open'] === 'function' || Object.defineProperty(accordion[i], 'LapysJS open', {
+                                        (typeof accordion[i]['LapysJS open'] == 'function') || Object.defineProperty(accordion[i], 'LapysJS open', {
                                             // Value
                                             value: function open() {
                                                 // Modification > Target
@@ -7654,6 +7660,14 @@
                 (function LapysJSScriptCarousel() {
                     // Initialization > Carousel
                     let carousel = document.querySelectorAll('.carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)');
+
+                    /* Loop
+                            Index all Carousel.
+
+                        > Insertion
+                    */
+                    for (let i = 0; i < carousel.length; i += 1)
+                        carousel[i].children[0] || carousel[i].appendChild(document.createElement('div'));
 
                     // On Node Added
                     onNodeAdded(document.body, function LapysJSScriptNewCarousel() {
@@ -7870,35 +7884,35 @@
 
                                     // Toggle Slide
                                     Object.defineProperty(carousel[i], 'toggleSlide', {
-                                    // Value
-                                    value: function toggleSlide() {
-                                        // Initialization > Data
-                                        let data = parseNumber(String(arguments[0]).replace(/ /g, ''));
+                                        // Value
+                                        value: function toggleSlide() {
+                                            // Initialization > Data
+                                            let data = parseNumber(String(arguments[0]).replace(/ /g, ''));
 
-                                        /* Loop
-                                                Index all Target's Slides.
-                                        */
-                                        for (let i = 0; i < this.slides.length; i += 1) {
+                                            /* Loop
+                                                    Index all Target's Slides.
+                                            */
+                                            for (let i = 0; i < this.slides.length; i += 1) {
+                                                // Modification > Slide > Data Active
+                                                this.slides[i].removeAttribute('data-active');
+
+                                                // Style > Slide
+                                                    // Display
+                                                    (this.slides[i].getCSS('display').indexOf('inline') < 0) || (this.slides[i].setCSS('display', this.slides[i].getCSS('display').replace('inline-', '') + ' !important'));
+
+                                                    // Left
+                                                    (i >= data) || this.slides[i].setCSS('left', `-${this.offset.left - this.slides[i].offset.width}px`);
+                                                    (i !== data) || this.slides[i].setCSS('left', `0px`);
+                                                    (i <= data) || this.slides[i].setCSS('left', `${this.offset.right}px`);
+
+                                                    // Top
+                                                    this.slides[i].setCSS('top', `-${this.slides[i].offset.height * i}px`)
+                                                }
+
                                             // Modification > Slide > Data Active
-                                            this.slides[i].removeAttribute('data-active');
-
-                                            // Style > Slide
-                                                // Display
-                                                (this.slides[i].getCSS('display').indexOf('inline') < 0) || (this.slides[i].setCSS('display', this.slides[i].getCSS('display').replace('inline-', '') + ' !important'));
-
-                                                // Left
-                                                (i >= data) || this.slides[i].setCSS('left', `-${this.offset.left - this.slides[i].offset.width}px`);
-                                                (i !== data) || this.slides[i].setCSS('left', `0px`);
-                                                (i <= data) || this.slides[i].setCSS('left', `${this.offset.right}px`);
-
-                                                // Top
-                                                this.slides[i].setCSS('top', `-${this.slides[i].offset.height * i}px`)
-                                            }
-
-                                        // Modification > Slide > Data Active
-                                        this.slides[data].setAttribute('data-active', '')
-                                    }
-                                });
+                                            this.slides[data].setAttribute('data-active', '')
+                                        }
+                                    });
 
                             /* Loop
                                     Index all the Carousel's children.
@@ -8015,10 +8029,10 @@
 
                                             > Target > Toggle (Previous, Next) Slide
                                         */
-                                        if (event.clientX < this['LapysJS eventPositionX'])
+                                        if (event.clientX < this['LapysJS eventPositionX'] - (innerWidth * (45 / 100)))
                                             this.togglePreviousSlide();
 
-                                        else if (event.clientX > this['LapysJS eventPositionX'])
+                                        else if (event.clientX > this['LapysJS eventPositionX'] + (innerWidth * (45 / 100)))
                                             this.toggleNextSlide()
                                     }
 
@@ -8028,10 +8042,10 @@
 
                                             > Target > Toggle (Previous, Next) Slide
                                         */
-                                        if (event.changedTouches[0].clientX > this['LapysJS eventPositionX'])
+                                        if (event.changedTouches[0].clientX > this['LapysJS eventPositionX'] + (innerWidth * (45 / 100)))
                                             this.togglePreviousSlide();
 
-                                        else if (event.changedTouches[0].clientX < this['LapysJS eventPositionX'])
+                                        else if (event.changedTouches[0].clientX < this['LapysJS eventPositionX'] - (innerWidth * (45 / 100)))
                                             this.toggleNextSlide()
                                 });
 
@@ -8079,7 +8093,7 @@
                                     the browser will be stuck processing an infinite loop.
                     */
                     setTimeout(() => {
-                        // On Node Change --- CHECKPOINT --- This THING lags!!!
+                        // On Node Change
                         onNodeChange(document.body, function LapysJSScriptCorrectCarousel() {
                             /* Loop
                                         Index all Carousel.
@@ -8661,7 +8675,7 @@
                             if (!dropdown[i]['LapysJS isModified']) {
                                 // Function > Dropdown
                                     // Close
-                                    typeof dropdown[i]['LapysJS close'] === 'function' || Object.defineProperty(dropdown[i], 'LapysJS close', {
+                                    (typeof dropdown[i]['LapysJS close'] == 'function') || Object.defineProperty(dropdown[i], 'LapysJS close', {
                                         // Value
                                         value: function close() {
                                             // Modification > Target
@@ -8686,7 +8700,7 @@
                                     dropdown[i]['LapysJS close']();
 
                                     // Open
-                                    typeof dropdown[i]['LapysJS open'] === 'function' || Object.defineProperty(dropdown[i], 'LapysJS open', {
+                                    (typeof dropdown[i]['LapysJS open'] == 'function') || Object.defineProperty(dropdown[i], 'LapysJS open', {
                                         // Value
                                         value: function open() {
                                             // Modification > Target
@@ -8724,6 +8738,9 @@
                 /* Dynamic Text
                         --- CONSIDER ---
                             @lapys: A 'text-unhighlighting' function would be nice to work with.
+
+                        --- UPDATE REQUIRED ---
+                            @lapys: Multiple Dynamic Texts on the page should not cause errors as it does now.
                 */
                     // On Node Change
                     onNodeChange(document.body, function LapysJSScriptNewDynamicText() {
@@ -8950,15 +8967,15 @@
                                         */
                                         if (arguments[0] === 'forward')
                                             // Insertion
-                                            this.querySelector('span[data-id*=cursor').insertAdjacentHTML('afterend', '<span data-id=newline><br></span>');
+                                            this.querySelector('span[data-id*=cursor').insertAdjacentHTML('afterend', `<span data-id=newline style='display: block !important'><br></span>`);
 
                                         else if (arguments[0] === 'backward')
                                             // Insertion
-                                            this.querySelector('span[data-id*=cursor').insertAdjacentHTML('beforebegin', '<span data-id=newline><br></span>');
+                                            this.querySelector('span[data-id*=cursor').insertAdjacentHTML('beforebegin', `<span data-id=newline style='display: block !important'><br></span>`);
 
                                         else {
                                             // Modification > Target > Inner HTML
-                                            this.innerHTML += '<span data-id=newline><br></span>';
+                                            this.innerHTML += `<span data-id=newline style='display: block !important'><br></span>`;
 
                                             /* Loop
                                                     While
@@ -9077,7 +9094,7 @@
                                                 else if
                                                     Argument 0 is an Array.
                                         */
-                                        if (typeof arguments[0] === 'string')
+                                        if (typeof arguments[0] == 'string')
                                             // Modification > Target > Data Text
                                             this.setAttribute('data-text', arguments[0]);
 
@@ -9191,20 +9208,8 @@
                                                         for (let i = 0; i < data.length; i += 1)
                                                             data[i] = data[i].replace(RegExp(randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, ''), 'g'), element.getAttribute('data-text-separator'));
 
-                                                        /* Logic
-                                                                If
-                                                                    Miscellaneous is any of the following.
-                                                        */
-                                                        if (
-                                                            miscellaneous === 'clearAll' ||
-                                                            miscellaneous === 'highlightAll' ||
-                                                            miscellaneous === 'insertNewline'
-                                                        )
-                                                            // Return
-                                                            return 1;
-
                                                         // Return
-                                                        return data[index].length
+                                                        return miscellaneous === 'clearAll' || miscellaneous === 'highlightAll' || miscellaneous === 'insertNewline' ? 1 : data[index].length
                                                     })(this, i, data[i][j]),
 
                                                     // Name
@@ -9225,7 +9230,7 @@
                                                 else if
                                                     Argument 0 is an Array.
                                         */
-                                        if (typeof arguments[0] === 'string')
+                                        if (typeof arguments[0] == 'string')
                                             // Modification > Target > Data Text Function
                                             this.setAttribute('data-text-function', arguments[0]);
 
@@ -9253,7 +9258,7 @@
 
                                                         > Update > Data
                                                     */
-                                                    if (typeof arguments[0][i][j] === 'string')
+                                                    if (typeof arguments[0][i][j] == 'string')
                                                         data += arguments[0][i][j] + this.getAttribute('data-text-separator');
 
                                                     else if ((arguments[0][i][j] || []).constructor === Object)
@@ -9389,7 +9394,7 @@
 
                                         > Modification > Dynamic Text > (Data Text) Function
                                     */
-                                    if (typeof min.getObject(document.getElementsByClassName('dynamic-text')[i]['LapysJS text'], document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'])[0] === 'string')
+                                    if (typeof min.getObject(document.getElementsByClassName('dynamic-text')[i]['LapysJS text'], document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'])[0] == 'string')
                                         document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text', (document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text') || '') + document.getElementsByClassName('dynamic-text')[i]['LapysJS textSeparator']);
 
                                     else if ((min.getObject(document.getElementsByClassName('dynamic-text')[i]['LapysJS text'], document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'])[0] || '').constructor === Array)
@@ -9401,9 +9406,6 @@
                                             --- NOTE ---
                                                 @lapys: This interval is set to twentieth of a second to simulate real-time
                                                     for each Dynamic Text.
-
-                                            --- UPDATE REQUIRED ---
-                                                @lapys: This interval is a bit on the slow side, any reason why?
                                     */
                                     setInterval(() => {
                                         /* Loop
@@ -9576,7 +9578,7 @@
                             if (!mediaPlaylist[i]['LapysJS isModified']) {
                                 // Function > Media Playlist
                                     // Toggle Previous Media
-                                    (typeof mediaPlaylist[i].togglePreviousMedia === 'function') || Object.defineProperty(mediaPlaylist[i], 'togglePreviousMedia', {
+                                    (typeof mediaPlaylist[i].togglePreviousMedia == 'function') || Object.defineProperty(mediaPlaylist[i], 'togglePreviousMedia', {
                                         // Value
                                         value: function togglePreviousMedia() {
                                             // Initialization > Data
@@ -9607,7 +9609,7 @@
                                     });
 
                                     // Toggle Next Media
-                                    (typeof mediaPlaylist[i].toggleNextMedia === 'function') || Object.defineProperty(mediaPlaylist[i], 'toggleNextMedia', {
+                                    (typeof mediaPlaylist[i].toggleNextMedia == 'function') || Object.defineProperty(mediaPlaylist[i], 'toggleNextMedia', {
                                         // Value
                                         value: function toggleNextMedia() {
                                             // Initialization > Data
@@ -9638,7 +9640,7 @@
                                     });
 
                                     // Toggle Media
-                                    (typeof mediaPlaylist[i].toggleMedia === 'function') || Object.defineProperty(mediaPlaylist[i], 'toggleMedia', {
+                                    (typeof mediaPlaylist[i].toggleMedia == 'function') || Object.defineProperty(mediaPlaylist[i], 'toggleMedia', {
                                         // Value
                                         value: function toggleMedia() {
                                             // Initialization > Data
@@ -9942,7 +9944,7 @@
                                                                     this.parentPath[i].containers.media.content.querySelector('[data-id=media').paused ? this.innerHTML = '&#10074;&#10074;' : this.innerHTML = '&blacktriangleright;';
 
                                                                     // Target > Parent Element > Media Container > Content > Media > (Toggle Play-Pause State | (Play | Pause))
-                                                                    typeof this.parentPath[i].containers.media.content.querySelector('[data-id=media')['LapysJS togglePlayPauseState'] === 'function' ? this.parentPath[i].containers.media.content.querySelector('[data-id=media')['LapysJS togglePlayPauseState']() : (this.parentPath[i].containers.media.content.querySelector('[data-id=media').paused ? this.parentPath[i].containers.media.content.querySelector('[data-id=media').play() : this.parentPath[i].containers.media.content.querySelector('[data-id=media').pause());
+                                                                    typeof this.parentPath[i].containers.media.content.querySelector('[data-id=media')['LapysJS togglePlayPauseState'] == 'function' ? this.parentPath[i].containers.media.content.querySelector('[data-id=media')['LapysJS togglePlayPauseState']() : (this.parentPath[i].containers.media.content.querySelector('[data-id=media').paused ? this.parentPath[i].containers.media.content.querySelector('[data-id=media').play() : this.parentPath[i].containers.media.content.querySelector('[data-id=media').pause());
 
                                                                     // Break
                                                                     break
@@ -9953,7 +9955,7 @@
                                                 // Content
                                                     // Media
                                                         // Double Click
-                                                        ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] || (typeof mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS toggleScreenState'] === 'function') || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('dblclick', mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').invokeFullscreen);
+                                                        ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] || (typeof mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS toggleScreenState'] == 'function') || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('dblclick', mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').invokeFullscreen);
                                                         ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || (mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] = true);
 
                                                         // Ended
@@ -10047,7 +10049,7 @@
 
                                     // Modification > Media Playlist > Source
                                         // Description
-                                        (typeof mediaPlaylist[i].sources[j].description === 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'description', {
+                                        (typeof mediaPlaylist[i].sources[j].description == 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'description', {
                                             // Configurable
                                             configurable: true,
 
@@ -10068,7 +10070,7 @@
                                         });
 
                                         // Source
-                                        (typeof mediaPlaylist[i].sources[j].src === 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'src', {
+                                        (typeof mediaPlaylist[i].sources[j].src == 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'src', {
                                             // Configurable
                                             configurable: true,
 
@@ -10220,7 +10222,7 @@
                                 if (!media[i]['LapysJS isModified']) {
                                     // Modification > Media
                                         // Controls Panel
-                                        (typeof (media[i].controlsPanel || []).tagName === 'string' && isObject(media[i].controlsPanel, false)) || Object.defineProperty(media[i], 'controlsPanel', {
+                                        (typeof (media[i].controlsPanel || []).tagName == 'string' && isObject(media[i].controlsPanel, false)) || Object.defineProperty(media[i], 'controlsPanel', {
                                             // Configurable
                                             configurable: true,
 
@@ -10248,7 +10250,7 @@
                                         });
 
                                         // End Time
-                                        (typeof media[i].endTime === 'number') || Object.defineProperty(media[i], 'endTime', {
+                                        (typeof media[i].endTime == 'number') || Object.defineProperty(media[i], 'endTime', {
                                             // Configurable
                                             configurable: true,
 
@@ -10263,7 +10265,7 @@
                                         });
 
                                         // Start Time
-                                        (typeof media[i].startTime === 'number') || Object.defineProperty(media[i], 'startTime', {
+                                        (typeof media[i].startTime == 'number') || Object.defineProperty(media[i], 'startTime', {
                                             // Configurable
                                             configurable: true,
 
@@ -10968,7 +10970,7 @@
                                             Argument 0 is an Element.
                                 */
                                 if (
-                                    typeof (arguments[0] || []).tagName === 'string' &&
+                                    typeof (arguments[0] || []).tagName == 'string' &&
                                     !isObject(arguments[0], false)
                                 ) {
                                     // Initialization > (Arguments, Target)
@@ -11108,11 +11110,8 @@
                                         (top + that.offset.height <= innerHeight) || (top = innerHeight - that.offset.height);
                                         (top >= 0) || (top = that.offset.height);
 
-                                        // Style > Target > (Left, Pointer Events, Opacity, Top)
-                                        that.setCSS('left', `${left}px !important`);
-                                        that.setCSS('pointer-events', 'none !important');
-                                        that.style.opacity = 1;
-                                        that.setCSS('top', `${top}px !important`);
+                                        // Modification > Target > Style
+                                        that.setAttribute('style', `left: ${left}px !important; pointer-events: none !important; opacity: 1 !important; top: ${top}px !important`);
 
                                         // Modification > Target > (Class, Style)
                                         !Arguments[0].hasAttribute('data-title-class') || that.setAttribute('class', Arguments[0].getAttribute('data-title-class'));
@@ -11555,7 +11554,7 @@
                                         that.removeAttribute('class');
                                         that.removeAttribute('style')
                                     }, 1000)
-                                }, +(String(!(typeof (arguments[0] || []).tagName === 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1000)
+                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1000)
                             }
                         });
 
@@ -11577,7 +11576,7 @@
                                                 Data is an Element.
                                     */
                                     if (
-                                        typeof (data || []).tagName === 'string' &&
+                                        typeof (data || []).tagName == 'string' &&
                                         !isObject(data, false)
                                     ) {
                                         // Modification > Target
@@ -11590,12 +11589,12 @@
                                             // Style
                                             data.hasAttribute('data-toast-style') || that.setAttribute('style', (that.getAttribute('style') || '') + (that.getAttribute('style') ? ';' : '') + data.getAttribute('data-toast-style'))
                                     }
-                                }, +(String(!(typeof (arguments[0] || []).tagName === 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1000)
+                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1000)
                             }
                         });
 
                     // Event > Toast > Click
-                    (typeof toast.onclick === 'function') || (toast.onclick = function conceal() {
+                    (typeof toast.onclick == 'function') || (toast.onclick = function conceal() {
                         // Target > Conceal
                         this.conceal(createElement('div', '[data-toast-delay=.1][data-toast-duration=.3'))
                     });
@@ -11734,6 +11733,22 @@
                             !document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[j].optionBox || document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[j].optionBox.removeAttribute('data-selected')
                         }, (((parseNumber((document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].optionBox || {getCSS: () => { return 0 }}).getCSS('transition-delay')) + parseNumber((document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].optionBox || {getCSS: () => { return 0 }}).getCSS('transition-duration'))) * 1000) || 0) + 300)
                     }
+                });
+
+                (document.body || document.documentElement).observeEventByQuerySelector('button[href', 'click', function buttonHyperlinkEventSet(event) {
+                    // Initialization > Data
+                    let data = document.createElement('a');
+
+                    /* Loop
+                            Index Target's attributes.
+
+                        > Modification > Data > [Event Path > Attribute > Name]
+                    */
+                    for (let i = 0; i < event.path[0].attributes.length; i += 1)
+                        data.setAttribute(event.path[0].attributes[i].name, event.path[0].attributes[i].value);
+
+                    // Data > Click
+                    data.click()
                 });
 
                 // Key Down, Mouse Up

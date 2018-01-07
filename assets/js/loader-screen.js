@@ -92,11 +92,11 @@
             setTimeout(() => {
                 // Deletion
                 !document.querySelector('[data-id=loaderScreen') || document.querySelector('[data-id=loaderScreen').remove()
-            }, 3000)
+            }, +String(arguments[1]).replace(/ /g, '') / (Math.random() * 10 > 5 ? 3 : 4) || 3000)
         };
 
     // On DOM Ready
-    onDOMReady(removeLoaderScreen, 3000);
+    onDOMReady(removeLoaderScreen, 1500);
 
     // Set Timeout
     setTimeout(removeLoaderScreen, 6000)

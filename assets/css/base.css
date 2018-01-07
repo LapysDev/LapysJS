@@ -1,4 +1,13 @@
 /* DOM Elements */
+    /* All */
+    * {
+        position: relative
+    }
+        /* Pseudo > Web Kit Scrollbar */
+        ::-webkit-scrollbar {
+            transition: .3s ease-in-out
+        }
+
     /*
         <accordion-component>,
         <carousel-component>,
@@ -24,7 +33,7 @@
                 @lapys: Developer Canvas' could tend to be heavy on
                     page performance but they're cool.
     */
-    developer-canvas {
+    developer-canvas:not(.default) {
         background-color: #FFFFFF;
         border: 1px solid rgba(127, 127, 127, .675);
         border-radius: 2px;
@@ -47,11 +56,33 @@
             text-shadow: inherit
         }
 
+    /* <logo-element> */
+    logo-element {
+        border: 0;
+        display: inline-block;
+        height: auto;
+        max-width: 100%;
+        vertical-align: middle
+    }
+        /* Content */
+        logo-element * {
+            all: inherit
+        }
+
     /* <screen-tip> */
     screen-tip {
-        font-size: 15px !important
+        background-color: rgba(255, 255, 255, .9);
+        border: .5px solid;
+        border-radius: 1px;
+        box-shadow: inset 0 0 0 5000px rgba(0, 0, 0, .025);
+        color: #0056FF;
+        font-size: 15px;
+        font-weight: 400
     }
-        /* @media > Mobile View */
+        /* @media > Mobile View
+                --- NOTE ---
+                    @lapys: The screen tip is no visible on mobile devices.
+        */
         @media only all
             and (max-width: 425px) {
                 screen-tip {
@@ -60,6 +91,34 @@
         }
 
 /* Components */
+    /* Footer */
+    footer#footer {
+        background-color: #333333;
+        color: #FFFFFF
+    }
+        /* <a> */
+        footer#footer a {
+            color: #0078FF !important
+        }
+
+/* Assets */
+    /* Bend */
+    .bend,
+    .cite,
+    .em,
+    .i,
+    .q,
+    address,
+    cite,
+    em,
+    i,
+    output,
+    q,
+    table th,
+    var {
+        font-style: oblique
+    }
+
     /* Flat Section */
     .flat-section {
         background-color: #F7F7F7;
@@ -97,8 +156,11 @@
     }
 
     /* Section */
+    .section:not(.column-group):not(.col-grp):not(.flex):not(.row-group):not(.row-grp) {
+        display: block
+    }
+
     .section {
-        display: block;
         margin: 0;
         padding: 60px 0;
         width: 100%
