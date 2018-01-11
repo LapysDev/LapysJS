@@ -13,7 +13,7 @@
 <body>
     <!-- Scripts -->
         <!-- Loader Screen Script -->
-        <script async src=assets/js/loader-screen.js type=text/javascript> </script>
+        <script async src=assets/js/loader-screen.min.js type=text/javascript> </script>
 
         <!-- LapysJS Script -->
         <script src=src/lapys.min.js type=text/javascript> </script>
@@ -51,7 +51,9 @@
             </developer-canvas>
 
             <!-- Top Section -->
-            <div class='col-1 grid-2 m-col-0 m-grid-2 t-col-0 t-grid-2 z-1' data-id=topSection style='bottom: 5%'> <logo-element class='smooth text-right' img-class='no-select responsive' img-draggable=false> </logo-element> </div>
+            <div class='col-1 grid-2 m-col-0 m-grid-2 t-col-0 t-grid-2 z-1' data-id=topSection style='bottom: 5%'>
+                <logo-element class='smooth text-right' img-class='no-select responsive' img-draggable=false> </logo-element>
+            </div>
 
             <!-- Mid Section -->
             <div class='col-1 smooth-delay z-3' data-id=midSection style='bottom: 5%'>
@@ -83,13 +85,11 @@
             </div>
 
             <!-- Bottom Section -->
-            <div class='absolute center col-grp m-col-1 t-col-1 z-2' data-id=bottomSection style='bottom: 0'>
-                <!-- Get Started -->
-                <a class='col-1 upper' data-id=getStarted data-title='A quick guide to using LapysJS.' data-title-style='margin-top: -65px' href=pages/get-started.html> Get Started </a>
-
-                <!-- GitHub -->
-                <a class='col-1 upper' data-id=github data-title='Check out our source-code!' data-title-style='margin-top: -65px' href=https://github.com/LapysDev/LapysJS> GitHub </a>
-            </div>
+            <div class='absolute center col-grp m-col-1 t-col-1 z-2' data-id=bottomSection script='
+                for (let i = 0; i < len(NAVIGATION_LINKS); i += 1)
+                    if (NAVIGATION_LINKS[i].value != `Download`)
+                        this.innerHTML += `<a class="col-1 upper" data-id=${NAVIGATION_LINKS[i].value[0].lower() + NAVIGATION_LINKS[i].value.slice(1).removeChar(/ /g)} href="${((NAVIGATION_LINKS[i].hyperlink.hasText(`http`) ? `` : DYNAMIC_ASSETS_URL) + NAVIGATION_LINKS[i].hyperlink)}"> ${NAVIGATION_LINKS[i].value} </a>`
+            ' style='bottom: 0'> </div>
         </jumbotron-element>
 
         <!-- Introduction -->
@@ -456,7 +456,7 @@
 
             <div class='center col-1 grid-2'>
                 <!-- Download -->
-                <button class='border-radius-minimal no-select pointer smooth' data-id=download href=download/LapysJS.zip> Download </button>
+                <button class='border-radius-minimal no-select pointer smooth' data-id=download id=downloadButton href=download/LapysJS.zip> Download </button>
             </div>
         </section>
     </main>

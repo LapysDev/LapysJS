@@ -8,6 +8,12 @@
             transition: .3s ease-in-out
         }
 
+        /* (Not > <body>) > <a> */
+        :not(body) a,
+        a {
+            text-decoration: none
+        }
+
     /*
         <accordion-component>,
         <carousel-component>,
@@ -155,6 +161,12 @@
         width: 100%
     }
 
+    /* Pre-formatted Text */
+    .pre {
+        border: 1px solid rgba(127, 127, 127, .5);
+        padding: 12.5px
+    }
+
     /* Section */
     .section:not(.column-group):not(.col-grp):not(.flex):not(.row-group):not(.row-grp) {
         display: block
@@ -203,21 +215,23 @@
         code.syntax-highlighted [data-id*=highlightColor] {
             color: inherit !important
         }
-            /* Arithmetic, Symbol */
+            /* Arithmetic, Element Tag Name, Symbol */
             code.syntax-highlighted [data-id*=highlightColor][role=arithmetic],
+            code.syntax-highlighted [data-id*=highlightColor][role=element-tag-name],
             code.syntax-highlighted [data-id*=highlightColor][role=symbol],
             code.syntax-highlighted [data-id*=tilde][role=arithmetic] {
                 color: #922A49 !important
             }
 
+            /* Attribute, Function */
+            code.syntax-highlighted [data-id*=highlightColor][role=attribute],
+            code.syntax-highlighted [data-id*=highlightColor][role=function] {
+                color: #7AD149 !important
+            }
+
             /* Comment */
             code.syntax-highlighted [data-id*=highlightColor][role=comment] {
                 color: #65666B !important
-            }
-
-            /* Function */
-            code.syntax-highlighted [data-id*=highlightColor][role=function] {
-                color: #7AD149 !important
             }
 
             /* Identifier, Miscellaneous */

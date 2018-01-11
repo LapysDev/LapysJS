@@ -31,14 +31,15 @@
 - [Copyright and license](#copyright-and-license)
 
 ## Quick start
-To get started with LapysJS:
-- Clone the repository and download the source files.
+LapysJS currently only has one (1) way to get started:
 
-Read the [Getting started page](#) for information on the library's contents, examples & templates and more.
+- by downloading the `.zip` file from the [website](https://lapysdev.github.io/LapysJS/)
+- or cloning its repository from [GitHub](https://github.com/LapysDev/LapysJS).
+
+Read the [Getting started page](https://lapysdev.github.io/LapysJS/pages/get-started.html) for information on the library's contents, examples & templates and more.
 
 ## What's included
-Within the download you will find the following directories and files,
-logically grouping common assets and providing both compiled and minified variations.
+Once downloaded, unzip the `.zip` file to review the skeleton of the library (LapysJS).
 
 You should see something like this:
 

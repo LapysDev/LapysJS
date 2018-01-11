@@ -6,7 +6,7 @@
 (function LapysJSScript(window = window, document = window.document, global, undefined = window.undefined || void 0) {
     /* Window */
         // Absolute
-        window.abs || Object.defineProperty(window, 'abs', {
+        (typeof window.abs == 'function') || Object.defineProperty(window, 'abs', {
             // Value
             value: (Math || new (function Math() {
                 // Modification > Target > Absolute
@@ -22,7 +22,7 @@
                     @lapys: Made for converting HTMLCollections and NodeLists into arrays,
                         Very similar to the Array function object.
         */
-        window.array || Object.defineProperty(window.constructor.prototype, 'array', {
+        (typeof window.array == 'function') || Object.defineProperty(window.constructor.prototype, 'array', {
             // Value
             value: function array() {
                 // Initialization > Data
@@ -63,7 +63,7 @@
         });
 
         // Boolean
-        window.bool || Object.defineProperty(window.constructor.prototype, 'bool', {
+        (typeof window.bool == 'function') || Object.defineProperty(window.constructor.prototype, 'bool', {
             // Value
             value: function bool() {
                 // Return
@@ -72,7 +72,7 @@
         });
 
         // Cube Root
-        window.cbrt || Object.defineProperty(window.constructor.prototype, 'cbrt', {
+        (typeof window.cbrt == 'function') || Object.defineProperty(window.constructor.prototype, 'cbrt', {
             // Value
             value: function cbrt() {
                 // Return
@@ -87,7 +87,7 @@
         });
 
         // Ceiling
-        window.ceil || Object.defineProperty(window.constructor.prototype, 'ceil', {
+        (typeof window.ceil == 'function') || Object.defineProperty(window.constructor.prototype, 'ceil', {
             // Value
             value: function ceil() {
                 // Return
@@ -108,11 +108,126 @@
             }
         });
 
+        // Check
+        (typeof window.check == 'function') || Object.defineProperty(window.constructor.prototype, 'check', {
+            // Value
+            value: function check() {
+                // Initialization > Arguments
+                let Arguments = [...arguments];
+
+                // Error Handling
+                try {
+                    // Return
+                    return new LapysJSCondition(!!Arguments[0])
+                }
+
+                catch (error) {
+                    // Return
+                    return new (window.LapysJSCondition = function LapysJSCondition() {
+                        // Initialization > Arguments, Target
+                        let _Arguments = [...arguments],
+                            that = this;
+
+                        // Modification > Target
+                            // Condition
+                            this.condition = _Arguments.length > 0 ? _Arguments[0] : Arguments[0];
+
+                        // Function
+                            // Target
+                                // On Fail
+                                Object.defineProperty(this, 'onfail', {
+                                    // Value
+                                    value: (function() {
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > Return
+                                        */
+                                        if (typeof Arguments[2] == 'function')
+                                            return Arguments[2];
+
+                                        else if (typeof _Arguments[2] == 'function')
+                                            return Arguments[2];
+
+                                        // Return
+                                        return function onfail() {}
+                                    })()
+                                });
+
+                                // On Success
+                                Object.defineProperty(this, 'onsuccess', {
+                                    // Value
+                                    value: (function() {
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > Return
+                                        */
+                                        if (typeof Arguments[1] == 'function')
+                                            return Arguments[1];
+
+                                        else if (typeof _Arguments[1] == 'function')
+                                            return Arguments[1];
+
+                                        // Return
+                                        return function onsuccess() {}
+                                    })()
+                                });
+
+                            // Set Value
+                            function setValue() {
+                                // Modification > Target > Value
+                                typeof that.condition == 'function' ? that.value = !!that.condition() : that.value = !!that.condition
+                            };
+                            setValue();
+
+                            // Check Value
+                            (function checkValue() {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (
+                                    (
+                                        typeof Arguments[1] == 'function' ||
+                                        typeof _Arguments[1] == 'function'
+                                    ) ||
+                                    (
+                                        typeof Arguments[2] == 'function' ||
+                                        typeof _Arguments[2] == 'function'
+                                    )
+                                ) {
+                                    // Set Value
+                                    setValue();
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (
+                                        (typeof that.condition == 'function' ? that.condition() : that.condition) == false &&
+                                        that.value == false
+                                    ) {
+                                        // Target > On Fail
+                                        (typeof that.onfail != 'function') || that.onfail();
+
+                                        // Request Animation Frame
+                                        (window.requestAnimationFrame || window.webkitRequestAnimationFrame)(checkValue);
+                                    }
+
+                                    else
+                                        // Target > On Success
+                                        (typeof that.onsuccess != 'function') || that.onsuccess()
+                                }
+                            })()
+                    })
+                }
+            }
+        });
+
         // Clear
-        window.clear || Object.defineProperty(window.constructor.prototype, 'clear', {value: console.clear});
+        (typeof window.clear == 'function') || Object.defineProperty(window.constructor.prototype, 'clear', {value: console.clear});
 
         // Compare
-        window.compare || Object.defineProperty(window.constructor.prototype, 'compare', {
+        (typeof window.compare == 'function') || Object.defineProperty(window.constructor.prototype, 'compare', {
             // Value
             value: function compare() {
                 // Return
@@ -121,7 +236,7 @@
         });
 
         // Create Document Fragment
-        window.createDocumentFragment || Object.defineProperty(window.constructor.prototype, 'createDocumentFragment', {
+        (typeof window.createDocumentFragment == 'function') || Object.defineProperty(window.constructor.prototype, 'createDocumentFragment', {
             // Value
             value: function createDocumentFragment() {
                 // Error Handling
@@ -175,7 +290,7 @@
         });
 
         // Create Element
-        window.createElement || Object.defineProperty(window.constructor.prototype, 'createElement', {
+        (typeof window.createElement == 'function') || Object.defineProperty(window.constructor.prototype, 'createElement', {
             // Value
             value: function createElement() {
                 // Error Handling
@@ -214,7 +329,7 @@
                     @lapys: A very minor alternative to the 'console.dir' or 'console.log' method.
                         Although later it might have additional purposes.
         */
-        console.print || (console.print = function print() {
+        (typeof console.print == 'function') || (console.print = function print() {
             /* Loop
                     Index all Arguments.
 
@@ -253,7 +368,7 @@
             event.shiftKey = event.shiftKey;
 
         // Date
-        window.date || Object.defineProperty(window, 'date', {
+        ((window.date || []).constructor == Date) || Object.defineProperty(window, 'date', {
             // Configurable
             configurable: true,
 
@@ -263,7 +378,7 @@
             // Get
             get: function date() {
                 // Return
-                return window.Date ? (new Date) : null
+                return window.Date ? new Date : null
             }
         });
 
@@ -273,7 +388,7 @@
             > Execution
         */
         for (let i = 0; i < ['dp', 'prec'].length; i += 1)
-            eval(`window.${['dp', 'prec'][i]} || Object.defineProperty(window.constructor.prototype, '${['dp', 'prec'][i]}', {` +
+            eval(`(typeof window.${['dp', 'prec'][i]} == 'function') || Object.defineProperty(window.constructor.prototype, '${['dp', 'prec'][i]}', {` +
                 // Value
                 `value: function ${['dp', 'prec'][i]}() {` +
                     // Return
@@ -288,10 +403,10 @@
             `})`);
 
         // Float
-        window.float || Object.defineProperty(window.constructor.prototype, 'float', {value: Number.parseFloat});
+        (typeof window.float == 'function') || Object.defineProperty(window.constructor.prototype, 'float', {value: Number.parseFloat});
 
         // Floor
-        window.floor || Object.defineProperty(window.constructor.prototype, 'floor', {
+        (typeof window.floor == 'function') || Object.defineProperty(window.constructor.prototype, 'floor', {
             // Value
             value: function floor() {
                 // Return
@@ -313,7 +428,7 @@
         });
 
         // Function
-        window.func || Object.defineProperty(window.constructor.prototype, 'func', {
+        (typeof window.func == 'function') || Object.defineProperty(window.constructor.prototype, 'func', {
             // Value
             value: function func() {
                 /* Logic
@@ -344,7 +459,7 @@
         });
 
          // Get Query String By Name
-        window.getQueryParameterByName || (window.getQueryParameterByName = function getParameterByName(name, url) {
+        (typeof window.getQueryParameterByName == 'function') || (window.getQueryParameterByName = function getParameterByName(name, url) {
             // Initialization > Arguments
             let Arguments = arguments;
 
@@ -369,7 +484,7 @@
                 --- NOTE ---
                     @lapys: Allow a reference name for the global object.
         */
-        window.global || Object.defineProperty(window.constructor.prototype, 'global', {
+        ((window.global || []).constructor == Window) || Object.defineProperty(window.constructor.prototype, 'global', {
             // Configurable
             configurable: true,
 
@@ -384,10 +499,10 @@
         });
 
         // Integer
-        window.int || Object.defineProperty(window.constructor.prototype, 'int', {value: Number.parseInt});
+        (typeof window.int == 'function') || Object.defineProperty(window.constructor.prototype, 'int', {value: Number.parseInt});
 
         // Interval
-        window.interval || Object.defineProperty(window.constructor.prototype, 'interval', {
+        (typeof window.interval == 'function') || Object.defineProperty(window.constructor.prototype, 'interval', {
             // Value
             value: function interval() {
                 // Initialization > Arguments
@@ -427,7 +542,7 @@
                 // Set Timeout
                 setTimeout(intervalFunction, Arguments[1])
             }
-        })
+        });
 
         /* Is Object
                 --- WARN ---
@@ -447,7 +562,7 @@
         };
 
         // Length
-        window.len || Object.defineProperty(window.constructor.prototype, 'len', {
+        (typeof window.len == 'function') || Object.defineProperty(window.constructor.prototype, 'len', {
             // Value
             value: function len() {
                 // Return
@@ -456,7 +571,7 @@
         });
 
         // Location > Query Parameters
-        !window.Location || Location.prototype.queryParameters || Object.defineProperty(Location.prototype, 'queryParameters', {
+        !window.Location || (typeof Location.prototype.queryParameters == 'function') || Object.defineProperty(Location.prototype, 'queryParameters', {
             // Configurable
             configurable: true,
 
@@ -492,7 +607,7 @@
         });
 
         // Log
-        window.log || (window.log = console.log);
+        (typeof window.log == 'function') || (window.log = console.log);
 
         /* JSON
                 --- NOTE ---
@@ -707,7 +822,7 @@
             });
 
         // Objectify
-        window.objectify || Object.defineProperty(window.constructor.prototype, 'objectify', {
+        (typeof window.objectify == 'function') || Object.defineProperty(window.constructor.prototype, 'objectify', {
             // Value
             value: function objectify() {
                 // Return
@@ -725,7 +840,7 @@
             */
             for (let i = 0; i < 2; i += 1)
                 eval(
-                    `window.${['onDOMChange', 'onNodeChange'][i]} || Object.defineProperty(window.constructor.prototype, '${['onDOMChange', 'onNodeChange'][i]}', {` +
+                    `(typeof window.${['onDOMChange', 'onNodeChange'][i]} == 'function') || Object.defineProperty(window.constructor.prototype, '${['onDOMChange', 'onNodeChange'][i]}', {` +
                         // Value
                         `value: function ${['onDOMChange', 'onNodeChange'][i]}() {` +
                             // Error Handling
@@ -811,7 +926,7 @@
                 */
                 for (let j = 0; j < 3; j += 1)
                     eval(
-                        `window.${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]} || Object.defineProperty(window.constructor.prototype, '${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]}', {` +
+                        `(typeof window.${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]} == 'function') || Object.defineProperty(window.constructor.prototype, '${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]}', {` +
                             // Value
                             `value: function ${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]}() {` +
                                 ([['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onDOMNodeCountChange' || [['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onNodeCountChange' ? `try {` +
@@ -877,7 +992,7 @@
                     )
 
         // On DOM Ready
-        window.onDOMReady || Object.defineProperty(window.constructor.prototype, 'onDOMReady', {
+        Object.defineProperty(window.constructor.prototype, 'onDOMReady', {
             // Value
             value: function onDOMReady() {
                 // Set Timeout | Event > Document
@@ -905,7 +1020,7 @@
                 --- NOTE ---
                     @lapys: Useful for converting measurements to raw numbers.
         */
-        window.parseNumber || Object.defineProperty(window.constructor.prototype, 'parseNumber', {
+        (typeof window.parseNumber == 'function') || Object.defineProperty(window.constructor.prototype, 'parseNumber', {
             // Value
             value: function parseNumber() {
                 // Error Handling
@@ -922,10 +1037,10 @@
         });
 
         // PI
-        window.PI || Object.defineProperty(window.constructor.prototype, 'PI', {value: (Math || new (function Math() { this.PI = 3.141592653589793 })).PI});
+        (typeof window.PI == 'number') || Object.defineProperty(window.constructor.prototype, 'PI', {value: (Math || new (function Math() { this.PI = 3.141592653589793 })).PI});
 
         // Power
-        window.pow || Object.defineProperty(window.constructor.prototype, 'pow', {
+        (typeof window.pow == 'function') || Object.defineProperty(window.constructor.prototype, 'pow', {
             // Value
             value: function pow() {
                 // Return
@@ -934,7 +1049,7 @@
         });
 
         // Random
-        window.rand || Object.defineProperty(window.constructor.prototype, 'rand', {
+        (typeof window.rand == 'function') || Object.defineProperty(window.constructor.prototype, 'rand', {
             // Value
             value: function random() {
                 // Return
@@ -943,7 +1058,7 @@
         });
 
         // Redirect
-        window.redirect || Object.defineProperty(window.constructor.prototype, 'redirect', {
+        (typeof window.redirect == 'function') || Object.defineProperty(window.constructor.prototype, 'redirect', {
             // Value
             value: function redirect() {
                 // Location > Assign
@@ -952,7 +1067,7 @@
         });
 
         // Regular Expression
-        window.regex || Object.defineProperty(window.constructor.prototype, 'regex', {
+        (typeof window.regex == 'function') || Object.defineProperty(window.constructor.prototype, 'regex', {
             // Value
             value: function regex() {
                 // Return
@@ -963,7 +1078,7 @@
             window.reg = regex;
 
         // Register Element
-        window.registerElement || Object.defineProperty(window.constructor.prototype, 'registerElement', {
+        (typeof window.registerElement == 'function') || Object.defineProperty(window.constructor.prototype, 'registerElement', {
             // Value
             value: function registerElement() {
                 /* Logic
@@ -999,7 +1114,7 @@
         });
 
         // Reload
-        window.reload || Object.defineProperty(window.constructor.prototype, 'reload', {
+        (typeof window.reload == 'function') || Object.defineProperty(window.constructor.prototype, 'reload', {
             // Value
             value: function reload() {
                 // Location > Reload
@@ -1011,7 +1126,7 @@
                 --- WARN ---
                     Should be defined after 'ceil' and 'floor' functions.
         */
-        window.round || Object.defineProperty(window.constructor.prototype, 'round', {
+        (typeof window.round == 'function') || Object.defineProperty(window.constructor.prototype, 'round', {
             // Value
             value: (Math || new (function Math() {
                 // Modification > Target > Round
@@ -1023,7 +1138,7 @@
         });
 
         // Square Root
-        window.sqrt || Object.defineProperty(window.constructor.prototype, 'sqrt', {
+        (typeof window.sqrt == 'function') || Object.defineProperty(window.constructor.prototype, 'sqrt', {
             // Value
             value: function sqrt() {
                 // Return
@@ -1032,7 +1147,7 @@
         });
 
         // String
-        window.str || Object.defineProperty(window.constructor.prototype, 'str', {
+        (typeof window.str == 'function') || Object.defineProperty(window.constructor.prototype, 'str', {
             // Value
             value: function str() {
                 // Return
@@ -1041,7 +1156,7 @@
         });
 
         // Timeout
-        window.timeout || Object.defineProperty(window.constructor.prototype, 'timeout', {
+        (typeof window.timeout == 'function') || Object.defineProperty(window.constructor.prototype, 'timeout', {
             // Value
             value: function timeout() {
                 setTimeout(arguments[0], parseNumber(arguments[1]) || void 0)
@@ -1049,10 +1164,10 @@
         });
 
         // Warn
-        window.warn || (window.warn = console.warn);
+        (typeof window.warn == 'function') || (window.warn = console.warn);
 
         // Write
-        window.write || (window.write = function write() {
+        (typeof window.write == 'function') || (window.write = function write() {
             // Document > Write
             document.write.apply(document, [...arguments])
         });
@@ -2398,12 +2513,12 @@
                     setInterval(() => {
                         // Update > LapysJS > Temporary Data
                         !LapysJS.temporaryData || (LapysJS.temporaryData = void 0)
-                    }, 60000)
+                    }, 6e4)
             });
 
     /* Array Data */
         // Add Element
-        Array.prototype.addElement || Object.defineProperty(Array.prototype, 'addElement', {
+        (typeof Array.prototype.addElement == 'function') || Object.defineProperty(Array.prototype, 'addElement', {
             // Value
             value: function addElement() {
                 /* Loop
@@ -2420,7 +2535,7 @@
         });
 
         // Add Element To Back
-        Array.prototype.addElementToBack || Object.defineProperty(Array.prototype, 'addElementToBack', {
+        (typeof Array.prototype.addElementToBack == 'function') || Object.defineProperty(Array.prototype, 'addElementToBack', {
             // Value
             value: function addElementToBack() {
                 /* Loop
@@ -2437,7 +2552,7 @@
         });
 
         // Add Element To Front
-        Array.prototype.addElementToFront || Object.defineProperty(Array.prototype, 'addElementToFront', {
+        (typeof Array.prototype.addElementToFront == 'function') || Object.defineProperty(Array.prototype, 'addElementToFront', {
             // Value
             value: function addElementToFront() {
                 /* Loop
@@ -2454,7 +2569,7 @@
         });
 
         // Get Common Element
-        Array.prototype.getCommonElement || Object.defineProperty(Array.prototype, 'getCommonElement', {
+        (typeof Array.prototype.getCommonElement == 'function') || Object.defineProperty(Array.prototype, 'getCommonElement', {
             // Value
             value: function getCommonElement() {
                 // Initialization > (Data, Limit, Result)
@@ -2507,7 +2622,7 @@
         });
 
         // Get Repeated Elements
-        Array.prototype.getRepeatedElements || Object.defineProperty(Array.prototype, 'getRepeatedElements', {
+        (typeof Array.prototype.getRepeatedElements == 'function') || Object.defineProperty(Array.prototype, 'getRepeatedElements', {
             // Value
             value: function getRepeatedElements() {
                 // Initialization > Repeated Elements
@@ -2526,7 +2641,7 @@
         });
 
          // Has Element
-         Array.prototype.hasElement || Object.defineProperty(Array.prototype, 'hasElement', {
+         (typeof Array.prototype.hasElement == 'function') || Object.defineProperty(Array.prototype, 'hasElement', {
             // Value
             value: function hasElement() {
                 // Initialization > Has Element
@@ -2549,7 +2664,7 @@
                 --- NOTE ---
                     Build for Internet Explorer 7 and 8.
         */
-        Array.prototype.indexOf || Object.defineProperty(Array.prototype, 'indexOf', {
+        (typeof Array.prototype.indexOf == 'function') || Object.defineProperty(Array.prototype, 'indexOf', {
             // Value
             value: function indexOf() {
                 /* --- NOTE ---
@@ -2563,7 +2678,7 @@
                 --- NOTE ---
                     Build for Internet Explorer 7 and 8.
         */
-        Array.prototype.lastIndexOf || Object.defineProperty(Array.prototype, 'lastIndexOf', {
+        (typeof Array.prototype.lastIndexOf == 'function') || Object.defineProperty(Array.prototype, 'lastIndexOf', {
             // Value
             value: function lastIndexOf() {
                 /* --- NOTE ---
@@ -2574,7 +2689,7 @@
         });
 
         // Remove Common Elements
-        Array.prototype.removeCommonElements || Object.defineProperty(Array.prototype, 'removeCommonElements', {
+        (typeof Array.prototype.removeCommonElements == 'function') || Object.defineProperty(Array.prototype, 'removeCommonElements', {
             // Value
             value: function removeCommonElements() {
                 // Return
@@ -2586,7 +2701,7 @@
                 --- NOTE ---
                     Removes the first instance specified element of an array.
         */
-        Array.prototype.removeElement || Object.defineProperty(Array.prototype, 'removeElement', {
+        (typeof Array.prototype.removeElement == 'function') || Object.defineProperty(Array.prototype, 'removeElement', {
             // Value
             value: function removeElement() {
                 /* Loop
@@ -2602,7 +2717,7 @@
         });
 
         // Remove Element From Back
-        Array.prototype.removeElementFromBack || Object.defineProperty(Array.prototype, 'removeElementFromBack', {
+        (typeof Array.prototype.removeElementFromBack == 'function') || Object.defineProperty(Array.prototype, 'removeElementFromBack', {
             // Value
             value: function removeElementFromBack() {
                 /* Loop
@@ -2621,7 +2736,7 @@
                 --- NOTE ---
                     Removes the last instance specified element of an array.
         */
-         Array.prototype.removeElementFromFront || Object.defineProperty(Array.prototype, 'removeElementFromFront', {
+         (typeof Array.prototype.removeElementFromFront == 'function') || Object.defineProperty(Array.prototype, 'removeElementFromFront', {
             // Value
             value: function removeElementFromFront() {
                 /* Loop
@@ -2637,7 +2752,7 @@
          });
 
         // Remove Elements
-        Array.prototype.removeElements || Object.defineProperty(Array.prototype, 'removeElements', {
+        (typeof Array.prototype.removeElements == 'function') || Object.defineProperty(Array.prototype, 'removeElements', {
             // Value
             value: function removeElements() {
                 // Initialization > (Arguments, Target)
@@ -2668,7 +2783,7 @@
         });
 
         // Remove Falsy Elements
-        Array.prototype.removeFalsyElements || Object.defineProperty(Array.prototype, 'removeFalsyElements', {
+        (typeof Array.prototype.removeFalsyElements == 'function') || Object.defineProperty(Array.prototype, 'removeFalsyElements', {
             // Value
             value: function removeFalsyElements() {
                 // Return
@@ -2677,7 +2792,7 @@
          });
 
         // Remove Repeated Elements
-         Array.prototype.removeRepeatedElements || Object.defineProperty(Array.prototype, 'removeRepeatedElements', {
+         (typeof Array.prototype.removeRepeatedElements == 'function') || Object.defineProperty(Array.prototype, 'removeRepeatedElements', {
             // Value
             value: function removeRepeatedElements() {
                 // Initialization > (Target, Scanned Element, Delete Elements)
@@ -2713,7 +2828,7 @@
          });
 
         // Remove Truthy Elements
-        Array.prototype.removeTruthyElements || Object.defineProperty(Array.prototype, 'removeTruthyElements', {
+        (typeof Array.prototype.removeTruthyElements == 'function') || Object.defineProperty(Array.prototype, 'removeTruthyElements', {
             // Value
             value: function removeTruthyElements() {
                 // Return
@@ -2725,7 +2840,7 @@
          });
 
         // Replace Common Elements
-        Array.prototype.replaceCommonElements || Object.defineProperty(Array.prototype, 'replaceCommonElements', {
+        (typeof Array.prototype.replaceCommonElements == 'function') || Object.defineProperty(Array.prototype, 'replaceCommonElements', {
             // Value
             value: function replaceCommonElements() {
                 // Initialization > Data
@@ -2745,7 +2860,7 @@
         });
 
         // Replace Element
-        Array.prototype.replaceElement || Object.defineProperty(Array.prototype, 'replaceElement', {
+        (typeof Array.prototype.replaceElement == 'function') || Object.defineProperty(Array.prototype, 'replaceElement', {
             // Value
             value: function replaceElement() {
                 /* Logic
@@ -2764,7 +2879,7 @@
         });
 
         // Replace Element From Back
-        Array.prototype.replaceElementFromBack || Object.defineProperty(Array.prototype, 'replaceElementFromBack', {
+        (typeof Array.prototype.replaceElementFromBack == 'function') || Object.defineProperty(Array.prototype, 'replaceElementFromBack', {
             // Value
             value: function replaceElementFromBack() {
                 /* Logic
@@ -2783,7 +2898,7 @@
         });
 
         // Replace Element From Front
-        Array.prototype.replaceElementFromFront || Object.defineProperty(Array.prototype, 'replaceElementFromFront', {
+        (typeof Array.prototype.replaceElementFromFront == 'function') || Object.defineProperty(Array.prototype, 'replaceElementFromFront', {
             // Value
             value: function replaceElementFromFront() {
                 /* Logic
@@ -2802,7 +2917,7 @@
         });
 
         // Replace Elements
-        Array.prototype.replaceElements || Object.defineProperty(Array.prototype, 'replaceElements', {
+        (typeof Array.prototype.replaceElements == 'function') || Object.defineProperty(Array.prototype, 'replaceElements', {
             // Value
             value: function replaceElements() {
                 /* Loop
@@ -2823,7 +2938,7 @@
         });
 
         // Replace Falsy Elements
-        Array.prototype.replaceFalsyElements || Object.defineProperty(Array.prototype, 'replaceFalsyElements', {
+        (typeof Array.prototype.replaceFalsyElements == 'function') || Object.defineProperty(Array.prototype, 'replaceFalsyElements', {
             // Value
             value: function replaceFalsyElements() {
                 // Initialization > Array
@@ -2857,7 +2972,7 @@
         });
 
         // Replace Repeated Elements
-        Array.prototype.replaceRepeatedElements || Object.defineProperty(Array.prototype, 'replaceRepeatedElements', {
+        (typeof Array.prototype.replaceRepeatedElements == 'function') || Object.defineProperty(Array.prototype, 'replaceRepeatedElements', {
             // Value
             value: function replaceRepeatedElements() {
                 // Initialization > Array
@@ -2877,7 +2992,7 @@
         });
 
         // Replace Truthy Elements
-        Array.prototype.replaceTruthyElements || Object.defineProperty(Array.prototype, 'replaceTruthyElements', {
+        (typeof Array.prototype.replaceTruthyElements == 'function') || Object.defineProperty(Array.prototype, 'replaceTruthyElements', {
             // Value
             value: function replaceTruthyElements() {
                 // Initialization > Array
@@ -2919,7 +3034,7 @@
                 --- WARN ---
                     @lapys: This function is not meant to be used in production environments, yet...
         */
-        Function.prototype.getArguments || (Function.prototype.getArguments = function getArguments() {
+        (typeof Function.prototype.getArguments == 'function') || (Function.prototype.getArguments = function getArguments() {
             // Initialization > (Random, Data)
             let random = rand(),
                 data = `${String(this).replace(/\.\.\./g, `lapysjs_horizontal-ellipsis${String(random).slice(2)}`).replace(/\/\*([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\'\"\`\?\@\!\#\%\&\(\)\+\,\-\.\;\$\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\*\//, '').replace(/('|"|`)([a-z]|[A-Z]|[0-9]|[\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){1,}('|"|`)/g, data => {
@@ -3004,7 +3119,7 @@
                 --- WARN ---
                     @lapys: This function is not meant to be used in production environments, yet...
         */
-        Function.prototype.getBody || (Function.prototype.getBody = function getBody() {
+        (typeof Function.prototype.getBody == 'function') || (Function.prototype.getBody = function getBody() {
             // Initialization > Data
             let data = String(this).replace(/,( ){0,}/g, ',').replace(String(this.getArguments()), '');
 
@@ -3023,7 +3138,7 @@
 
     /* Object Data */
         // Clone
-        Object.prototype.clone || Object.defineProperty(Object.prototype, 'clone', {
+        (typeof Object.prototype.clone == 'function') || Object.defineProperty(Object.prototype, 'clone', {
             // Value
             value: function clone() {
                 // Initialization > Target
@@ -3203,7 +3318,7 @@
         });
 
         // Concatenate
-        Object.prototype.concat || Object.defineProperty(Object.prototype, 'concat', {
+        (typeof Object.prototype.concat == 'function') || Object.defineProperty(Object.prototype, 'concat', {
             // Value
             value: function concat() {
                 /*
@@ -3218,7 +3333,7 @@
         });
 
         // Define
-        Object.prototype.def || Object.defineProperty(Object.prototype, 'def', {
+        (typeof Object.prototype.def == 'function') || Object.defineProperty(Object.prototype, 'def', {
             // Value
             value: function defineProperty() {
                 /* Initialization > (Arguments, Data)
@@ -3315,7 +3430,7 @@
         });
 
         // Empty
-        Object.prototype.empty || Object.defineProperty(Object.prototype, 'empty', {
+        (typeof Object.prototype.empty == 'function') || Object.defineProperty(Object.prototype, 'empty', {
             // Value
             value: function empty() {
                 // Return
@@ -3324,7 +3439,7 @@
         });
 
         // Keys
-        Object.prototype.keys || Object.defineProperty(Object.prototype, 'keys', {
+        (typeof Object.prototype.keys == 'function') || Object.defineProperty(Object.prototype, 'keys', {
             // Value
             value: function keys() {
                 // Return
@@ -3344,11 +3459,17 @@
             get: function __name__() {
                 // Return
                 return this.constructor.name
-            }
+            },
+
+            /* Set
+                    -- CONSIDER --
+                        @lapys: Create a 'setter' for SaveFrom.Net`s tampermonkey`s web browser extension.
+            */
+            set: function __name__() {}
         });
 
         // Undefine
-        Object.prototype.undef || Object.defineProperty(Object.prototype, 'undef', {
+        (typeof Object.prototype.undef == 'function') || Object.defineProperty(Object.prototype, 'undef', {
             // Value
             value: function undefine() {
                 /* Initialization > Data
@@ -3372,7 +3493,7 @@
         });
 
         // Values
-        Object.prototype.values || Object.defineProperty(Object.prototype, 'values', {
+        (typeof Object.prototype.values == 'function') || Object.defineProperty(Object.prototype, 'values', {
             // Value
             value: function values() {
                 // Return
@@ -3402,7 +3523,7 @@
 
     /* String Data */
         // Capitalize
-        String.prototype.capital || Object.defineProperty(String.prototype, 'capital', {
+        (typeof String.prototype.capital == 'function') || Object.defineProperty(String.prototype, 'capital', {
             // Value
             value: function capital() {
                 // Return
@@ -3414,7 +3535,7 @@
         });
 
         // Count
-        String.prototype.count || Object.defineProperty(String.prototype, 'count', {
+        (typeof String.prototype.count == 'function') || Object.defineProperty(String.prototype, 'count', {
             // Value
             value: function count() {
                 // Return
@@ -3438,7 +3559,7 @@
         });
 
         // Get After Character/ Text
-        String.prototype.getAfterChar || (String.prototype.getAfterChar = function getAfterChar() {
+        (typeof String.prototype.getAfterChar == 'function') || (String.prototype.getAfterChar = function getAfterChar() {
             /* Logic
                     Switch Argument 0 data type case to
                         'number' and 'string'.
@@ -3458,7 +3579,7 @@
         });
 
         // Get Before Character/ Text
-        String.prototype.getBeforeChar || (String.prototype.getBeforeChar = function getBeforeChar() {
+        (typeof String.prototype.getBeforeChar == 'function') || (String.prototype.getBeforeChar = function getBeforeChar() {
             /* Logic
                     Switch Argument 0 data type case to
                         'number' and 'string'.
@@ -3479,7 +3600,7 @@
         });
 
         // Has Text
-        String.prototype.hasText || Object.defineProperty(String.prototype, 'hasText', {
+        (typeof String.prototype.hasText == 'function') || Object.defineProperty(String.prototype, 'hasText', {
             // Value
             value: function hasText() {
                 // Initialization > Data
@@ -3563,13 +3684,13 @@
                 --- NOTE ---
                     @lapys: Shorter form of 'String.toLowerCase' method.
         */
-        String.prototype.lower || (String.prototype.lower = function lower() {
+        (typeof String.prototype.lower == 'function') || (String.prototype.lower = function lower() {
             // Return
             return this.toLowerCase()
         });
 
         // Reverse
-        Object.defineProperty(String.prototype, 'reverse', {
+        (typeof String.prototype.reverse == 'function') || Object.defineProperty(String.prototype, 'reverse', {
             // Value
             value: function reverse() {
                 // Return
@@ -3578,7 +3699,7 @@
         });
 
         // Remove Character/ Text
-        String.prototype.removeChar || Object.defineProperty(String.prototype, 'removeChar', {
+        (typeof String.prototype.removeChar == 'function') || Object.defineProperty(String.prototype, 'removeChar', {
             // Value
             value: function removeChar() {
                 // Return
@@ -3602,7 +3723,7 @@
         });
 
         // To Array
-        String.prototype.toArray || Object.defineProperty(String.prototype, 'toArray', {
+        (typeof String.prototype.toArray == 'function') || Object.defineProperty(String.prototype, 'toArray', {
             // Value
             value: function toArray() {
                 // Initialization > Random
@@ -3669,7 +3790,7 @@
                 --- UPDATE REQUIRED ---
                     Should be able to parse more complex JSON objects.
         */
-        String.prototype.toObject || Object.defineProperty(String.prototype, 'toObject', {
+        (typeof String.prototype.toObject == 'function') || Object.defineProperty(String.prototype, 'toObject', {
             // Value
             value: function toObject() {
                 // Error Handling
@@ -3748,7 +3869,7 @@
         });
 
         // To String Array
-        String.prototype.toStringArray || Object.defineProperty(String.prototype, 'toStringArray', {
+        (typeof String.prototype.toStringArray == 'function') || Object.defineProperty(String.prototype, 'toStringArray', {
             // Value
             value: function toStringArray() {
                 // Initialization > Random
@@ -3768,11 +3889,94 @@
             }
         });
 
+        // Trim Character
+        (typeof String.prototype.trimChar == 'function') || Object.defineProperty(String.prototype, 'trimChar', {
+            // Value
+            value: function trimChar() {
+                // Initialization > Data
+                let data = (' ' + this).slice(1);
+
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (arguments.length > 0) {
+                    /* Loop
+                            [do:while statement]
+
+                        > Update > Data
+                    */
+                    while (data.startsWith(String(arguments[0])))
+                        data = data.slice(String(arguments[0]).length);
+
+                    /* Loop
+                            [do:while statement]
+
+                        > Update > Data
+                    */
+                    while (data.endsWith(String(arguments[0])))
+                        data = data.slice(0, -String(arguments[0]).length)
+                }
+
+                // Return
+                return String(data)
+            }
+        });
+
+        // Trim Left Character
+        (typeof String.prototype.trimLeftChar == 'function') || Object.defineProperty(String.prototype, 'trimLeftChar', {
+            // Value
+            value: function trimLeftChar() {
+                // Initialization > Data
+                let data = (' ' + this).slice(1);
+
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (arguments.length > 0) {
+                    /* Loop
+                            [do:while statement]
+
+                        > Update > Data
+                    */
+                    while (data.startsWith(String(arguments[0])))
+                        data = data.slice(String(arguments[0]).length)
+                }
+
+                // Return
+                return String(data)
+            }
+        });
+
+        // Trim Right Character
+        (typeof String.prototype.trimRightChar == 'function') || Object.defineProperty(String.prototype, 'trimRightChar', {
+            // Value
+            value: function trimRightChar() {
+                // Initialization > Data
+                let data = (' ' + this).slice(1);
+
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (arguments.length > 0) {
+                    /* Loop
+                            [do:while statement]
+
+                        > Update > Data
+                    */
+                    while (data.endsWith(String(arguments[0])))
+                        data = data.slice(0, -String(arguments[0]).length)
+                }
+
+                // Return
+                return String(data)
+            }
+        });
+
         /* Upper
                 --- NOTE ---
                     @lapys: Shorter form of 'String.toUpperCase' method.
         */
-        String.prototype.upper || (String.prototype.upper = function upper() {
+        (typeof String.prototype.upper == 'function') || (String.prototype.upper = function upper() {
             // Return
             return this.toUpperCase()
         });
@@ -3795,64 +3999,7 @@
                         @lapys: Used for creating random String sets.
                             Mostly used in Regular Expressions within the following modules.
             */
-            let createRandomAlphaNumericString = function createRandomAlphaNumericString(length = 1, allowSpecialCharacters = false, allowNumericCharacters = false) {
-                /* Logic
-                        [if:else if:else statement]
-                */
-                if (!allowSpecialCharacters) {
-                    // Initialization > (Character Array, String)
-                    let characterArray = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`-=[]\\;\',./*!@#$%^&()_+{}|:"<>?',
-                        string = '';
-
-                    /* Loop
-                            Iterate over the specified Length.
-
-                        > Update > String
-                    */
-                    for (let i = 0; i < length; i += 1)
-                        string += characterArray[parseInt(Math.random() * characterArray.length)];
-
-                    // Return
-                    return string
-                }
-
-                else if (
-                    allowSpecialCharacters &&
-                    !allowNumericCharacters
-                ) {
-                    // Initialization > (Character Array, String)
-                    let characterArray = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
-                        string = '';
-
-                    /* Loop
-                            Iterate over the specified Length.
-
-                        > Update > String
-                    */
-                    for (let i = 0; i < length; i += 1)
-                        string += characterArray[parseInt(Math.random() * characterArray.length)];
-
-                    // Return
-                    return string
-                }
-
-                else {
-                    // Initialization > (Character Array, String)
-                    let characterArray = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
-                        string = '';
-
-                    /* Loop
-                            Iterate over the specified Length.
-
-                        > Update > String
-                    */
-                    for (let i = 0; i < length; i += 1)
-                        string += characterArray[parseInt(Math.random() * characterArray.length)];
-
-                    // Return
-                    return string
-                }
-            };
+            let createRandomAlphaNumericString=function createRandomAlphaNumericString(length=1,allowSpecialCharacters=false,allowNumericCharacters=false){if(!allowSpecialCharacters){let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`-=[]\\;\',./*!@#$%^&()_+{}|:"<>?',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}else if(allowSpecialCharacters&&!allowNumericCharacters){let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}else{let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}},
 
             /* Run Interval
                     --- NOTE ---
@@ -3861,24 +4008,12 @@
 
                             Also, it's mostly used for the Dynamic Time elements.
             */
-            let runInterval = function runInterval() {
-                /* Logic
-                        If
-                            the Argument 0 is a function.
-                */
-                if (typeof arguments[0] == 'function') {
-                    // Function > Argument 0
-                    arguments[0]();
-
-                    // Set Interval > Function > Argument 0
-                    setInterval(arguments[0], parseFloat(arguments[1]))
-                }
-            };
+            runInterval=function runInterval(){if(typeof arguments[0]=='function'){arguments[0]();setInterval(arguments[0],parseFloat(arguments[1]))}},
 
         /* Initialization */
             // (Complete, Random, Alphabet) String
-            let completeString = '\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/0123456789\:\;\<\=\>\?\@\A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z\[\]\^\_\`\ab\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\tu\vwx\y\z\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\$\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ',
-                randomString = `lapysjs${createRandomAlphaNumericString(parseInt(Math.abs('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`-=[]\\;\',./*!@#$%^&()_+{}|:"<>?'.length - ((new Date).getMilliseconds() / 10))))}`,
+            completeString = '\!\"\#\$\%\&\'\(\)\*\+\,\-\.\/0123456789\:\;\<\=\>\?\@\A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z\[\]\^\_\`\ab\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\tu\vwx\y\z\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\$\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ',
+                randomString = `lapysjs${createRandomAlphaNumericString(parseInt(Math.abs('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`-[]/;,.*!@#$%^&()_+{}|:<>?'.length - ((new Date).getMilliseconds() / 10))))}`.replace(/\\/g, ''),
                 alphabetString = randomString.replace(/[`\-=\[\]\\;',\./\*!@#\$%^\&\(\)_\+\{\}|\:"\<\>?]/g, '');
 
         /* Custom Data */
@@ -5491,7 +5626,7 @@
                         */
                         if (!document.querySelectorAll('[script')[i]['LapysJS script']) {
                             // Modification > Script > Script, Random Attribute Value
-                            document.querySelectorAll('[script')[i].setAttribute('script', (document.querySelectorAll('[script')[i].getAttribute('script') || '').replace(/[^:]\/\/(.*[^\n])\n/g, '').replace(/\n/g, '').replace(/"/g, '`'));
+                            document.querySelectorAll('[script')[i].setAttribute('script', (document.querySelectorAll('[script')[i].getAttribute('script') || '').replace(/[^:]\/\/(.*[^\n])\n/g, '').replace(/\n/g, ''));
 
                             // Set Interval
                             setInterval(() => {
@@ -5513,7 +5648,7 @@
                                             LapysJS.permanentData[`scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}`] = document.querySelectorAll('[script')[i];
 
                                         // Execution
-                                        eval(`(document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '')}'] = (function() {\n${document.querySelectorAll('[script')[i].getAttribute('script') ? document.querySelectorAll('[script')[i].getAttribute('script') : ''}\n}); (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '')}'](); delete (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '')}']`)
+                                        eval(`try { (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] = (function() {var global = window;\n${document.querySelectorAll('[script')[i].getAttribute('script') ? document.querySelectorAll('[script')[i].getAttribute('script') : ''}\n}); (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'](); delete (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] } catch (error) { LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] = (function() {var global = window;\n${document.querySelectorAll('[script')[i].getAttribute('script') ? document.querySelectorAll('[script')[i].getAttribute('script') : ''}\n}); LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'](); delete LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] }`)
                                     }
                             });
 
@@ -7911,7 +8046,10 @@
 
                                             // Modification > Slide > Data Active
                                             this.slides[data].setAttribute('data-active', '')
-                                        }
+                                        },
+
+                                        // Writable
+                                        writable: true
                                     });
 
                             /* Loop
@@ -8655,7 +8793,7 @@
 
                                 catch (error) {}
                         })
-                    }, LapysJS.permanentData.pluginScriptDelay = 3000)
+                    }, LapysJS.permanentData.pluginScriptDelay = 3e3)
                 })();
 
                 // Dropdown
@@ -9532,7 +9670,7 @@
                                         */
                                         intervalCounter += .1
                                     }, 50)
-                                }, (+(document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function-initial-delay') || '').replace(/ /g, '') * 1000) || (document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDelay'] * 1000));
+                                }, (+(document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function-initial-delay') || '').replace(/ /g, '') * 1e3) || (document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDelay'] * 1e3));
 
                                 // Modification > Dynamic Text > Once
                                 document.getElementsByClassName('dynamic-text')[i]['LapysJS once'] = true
@@ -9751,7 +9889,7 @@
                                 onDOMReady(() => {
                                     // Media Playlist > Toggle Media
                                     mediaPlaylist[i].toggleMedia(0)
-                                }, 3000);
+                                }, 3e3);
 
                                 // Modification > Media Playlist > Is Modified
                                 mediaPlaylist[i]['LapysJS isModified'] = true
@@ -10168,7 +10306,7 @@
                                     })))
                             }
                         })
-                    }, LapysJS.permanentData. pluginScriptDelay = 3000)
+                    }, LapysJS.permanentData. pluginScriptDelay = 3e3)
                 })();
 
                 /* Media
@@ -10957,7 +11095,7 @@
                                     // Modification > Target > (Class, Style)
                                     that.removeAttribute('class');
                                     that.removeAttribute('style')
-                                }, (parseNumber(this.getCSS('transition-delay')) + parseNumber(this.getCSS('transition-duration'))) * 1000)
+                                }, (parseNumber(this.getCSS('transition-delay')) + parseNumber(this.getCSS('transition-duration'))) * 1e3)
                             }
                         });
 
@@ -11388,7 +11526,7 @@
                                         else if (that.getAttribute('data-do-not-blur') == 'true')
                                             // Modification > Target > Data Do Not Blur
                                             that.removeAttribute('data-do-not-blur')
-                                    }, (((parseNumber(this.optionBox.getCSS('transition-delay')) + parseNumber(this.optionBox.getCSS('transition-duration'))) * 1000) || 0) + 1000)
+                                    }, (((parseNumber(this.optionBox.getCSS('transition-delay')) + parseNumber(this.optionBox.getCSS('transition-duration'))) * 1e3) || 0) + 1e3)
                                 });
 
                                 // Event
@@ -11553,8 +11691,8 @@
                                         that.innerHTML = '';
                                         that.removeAttribute('class');
                                         that.removeAttribute('style')
-                                    }, 1000)
-                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1000)
+                                    }, 1e3)
+                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1e3)
                             }
                         });
 
@@ -11589,7 +11727,7 @@
                                             // Style
                                             data.hasAttribute('data-toast-style') || that.setAttribute('style', (that.getAttribute('style') || '') + (that.getAttribute('style') ? ';' : '') + data.getAttribute('data-toast-style'))
                                     }
-                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1000)
+                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1e3)
                             }
                         });
 
@@ -11622,7 +11760,7 @@
                                     setTimeout(() => {
                                         // Toast > Conceal
                                         toast.conceal(that)
-                                    }, +(this.getAttribute('data-toast-duration') || '3').replace(/ /g, '') * 1000)
+                                    }, +(this.getAttribute('data-toast-duration') || '3').replace(/ /g, '') * 1e3)
                                 });
 
                                 // Modification > Toast Element > Is Modified
@@ -11702,6 +11840,14 @@
                 // Resize
                 setEvent('resize', function resizeMediaControlsPanel() {
                     /* Loop
+                            Index all Carousel.
+
+                        > Carousel > Toggle Slide.
+                    */
+                    for (let i = 0; i < document.querySelectorAll('.carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)').length; i += 1)
+                        !document.querySelectorAll('.carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)')[i].activeSlide || document.querySelectorAll('.carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)')[i].toggleSlide(+document.querySelectorAll('.carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)')[i].activeSlide.getAttribute('data-slide-index'));
+
+                    /* Loop
                             Index all Media Controls Panel.
 
                         > Modification > (Media Control Panel > <style>) > Inner HTML
@@ -11731,7 +11877,7 @@
                         setTimeout(() => {
                             // Modification > (Select Box > Option Box) > Data Selected
                             !document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[j].optionBox || document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[j].optionBox.removeAttribute('data-selected')
-                        }, (((parseNumber((document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].optionBox || {getCSS: () => { return 0 }}).getCSS('transition-delay')) + parseNumber((document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].optionBox || {getCSS: () => { return 0 }}).getCSS('transition-duration'))) * 1000) || 0) + 300)
+                        }, (((parseNumber((document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].optionBox || {getCSS: () => { return 0 }}).getCSS('transition-delay')) + parseNumber((document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].optionBox || {getCSS: () => { return 0 }}).getCSS('transition-duration'))) * 1e3) || 0) + 300)
                     }
                 });
 

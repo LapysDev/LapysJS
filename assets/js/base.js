@@ -262,6 +262,24 @@
         writable: false
     });
 
+    /* Navigation Links */
+    def('NAVIGATION_LINKS', {
+        // Value
+        value: [
+            // Get Started
+            new (function NavigationLink() { this.hyperlink = `${DYNAMIC_ASSETS_URL}pages/get-started.html`; this.value = 'Get Started' }),
+
+            // Git Hub
+            new (function NavigationLink() { this.hyperlink = 'https://github.com/LapysDev/LapysJS'; this.value = 'GitHub' }),
+
+            // Download
+            new (function NavigationLink() { this.hyperlink = `${DYNAMIC_ASSETS_URL}download/LapysJS.zip`; this.value = 'Download' })
+        ],
+
+        // Writable
+        writable: false
+    });
+
     /* Application */
         // Modification
             // Author
@@ -496,7 +514,7 @@
                 writable: false
             });
 
-            // Height
+            // Set Height
             HTMLCanvasElement.prototype.def('setHeight', {
                 // Value
                 value: function() {
@@ -509,7 +527,7 @@
                 writable: false
             });
 
-            // Width
+            // Set Width
             HTMLCanvasElement.prototype.def('setWidth', {
                 // Value
                 value: function() {
@@ -520,6 +538,17 @@
 
                 // Writable
                 writable: false
+            });
+
+    /* HTML Link Element */
+        // Modification > HTML Link Element
+            // Cross Origin
+            (typeof HTMLLinkElement.prototype.crossorigin == 'string') || HTMLLinkElement.prototype.def('crossorigin', {
+                // Set
+                set: function setCrossOrigin() {
+                    // Modification > Target > Cross Origin
+                    this.attr('crossorigin', str(arguments[0]))
+                }
             });
 
     /* Cosine */
@@ -539,7 +568,7 @@
                             @lapys: The Document Script may not be defined yet.
                 */
                 timeout(() => {
-                    !$$('script[data-id=documentScript', 0) || css.link('documentStylesheet', {href: DYNAMIC_ASSETS_URL + decodeURIComponent(($$('script[data-id=documentScript', 0) || 'script'.html).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'})
+                    !$$('script[data-id=documentScript', 0) || css.link('documentStylesheet', {href: decodeURIComponent(($$('script[data-id=documentScript', 0) || 'script'.html).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'})
                 });
 
     /* Document */
@@ -560,6 +589,18 @@
 
             // Open Sans
             LapysJS.$.import('font', {format: 'truetype', name: 'Open Sans', url: `${DYNAMIC_ASSETS_URL}assets/fonts/open-sans.ttf`});
+
+    /* Percent */
+    def('perc', {
+        // Value
+        value: function() {
+            // Return
+            return (arguments[0] || 0) / 100
+        },
+
+        // Writable
+        writable: false
+    });
 
     /* PI 2 */
     def('PI2', {value: PI * 2, writable: false});
@@ -586,6 +627,14 @@
                         - Reduce the size of the DOM.
         */
         onDOMReady(function modifyDOMElementTree() {
+            /* Loop
+                    [do:while statement]
+
+                > Modification > <link> > Cross Origin
+            */
+            while ($$(`link[href*='css'][rel=stylesheet]:not([crossorigin=anonymous])`, 0))
+                $$(`link[href*='css'][rel=stylesheet]:not([crossorigin=anonymous])`, 0).crossorigin = 'anonymous';
+
             /* Loop
                     [do:while statement]
 
@@ -859,7 +908,7 @@
         // On DOM Ready
         onDOMReady(() => {
             // Insertion
-            (document.main || document.body).insertChild('end', createElement('footer', '.card.center-text.flat.no-select#footer[data-id=footer',
+            (document.main || document.body).insertChild('end', document.footer = createElement('footer', '.card.center-text.flat.no-select#footer[data-id=footer',
                 `<div> ${app.author} &copy; 2017${date.getFullYear() > 2017 ? ` - ${date.getFullYear()}` : ''} </div>` +
                 `<br>` +
                 `<small> Some images are copyright of <strong>FreePik</strong> at <a href=https://www.freepik.com>www.freepik.com</a> and all ownership goes to the respective authors. </small>`, {
@@ -892,9 +941,6 @@
                         syntaxHighlightedCode[i].$$('[data-id=highlightColor', j).outerHTML = syntaxHighlightedCode[i].$$('[data-id=highlightColor', j).innerHTML;
 
                     // Modification > Syntax Highlighted Code
-                        // Inner HTML
-                        syntaxHighlightedCode[i].innerHTML = syntaxHighlightedCode[i].innerText;
-
                         // Format
                         ((syntaxHighlightedCode[i].format || '').constructor === Array) || syntaxHighlightedCode[i].def('format', {
                             // Get
@@ -1006,8 +1052,14 @@
                             > Modification > Syntax Highlighted Code > Language
                         */
                         if (
-                            syntaxHighlightedCode[i].content.hasText('<!--', '-->') ||
-                            syntaxHighlightedCode[i].content.hasText('<', '/>')
+                            (
+                                syntaxHighlightedCode[i].content.hasText('<!--', '-->') ||
+                                syntaxHighlightedCode[i].content.hasText('&lt;!--', '--&gt;')
+                            ) ||
+                            (
+                                syntaxHighlightedCode[i].content.hasText('<', '/>') ||
+                                syntaxHighlightedCode[i].content.hasText('&lt;', '/&gt;')
+                            )
                         )
                             syntaxHighlightedCode[i].language = 'html';
 
@@ -1077,8 +1129,61 @@
                             syntaxHighlightedCode[i].language = 'javascript';
 
                     // Function > Syntax Highlighted Code
+                        // Highlight HTML Code
+                        (typeof syntaxHighlightedCode[i].highlightHTMLCode == 'function') || syntaxHighlightedCode[i].def('highlightHTMLCode', {
+                            // Value
+                            value: function highlightHTMLCode(element = 'a'.html) {
+                                // Initialization > Random
+                                let randomString = str(rand()).replace('.', '');
+
+                                /* Modification > Element > Inner HTML
+                                        --- NOTE ---
+                                            @lapys:
+                                                - Regular Expression Modification List
+                                                    -- Highlighted all Element Attributes.
+                                                    -- Highlighted all Element Tag Names.
+                                                    -- Highlighted all Strings.
+                                                    -- Highlighted all Comments.
+                                */
+                                element.innerHTML = element.innerHTML.replace(/\&gt;/g, '>').replace(/([a-z]|:){1,}([a-z]|\-|:){0,}='(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]){0,}'/g, data => {
+                                    // Return
+                                    return `<:span: data-id="highlightColor" role="attribute">${data.getBeforeChar('=')}=</:span:>${data.getAfterChar('=')}`
+                                }).replace(/([a-z]|:){1,}([a-z]|\-|:){0,}=(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»]){1,}(\>| )/g, data => {
+                                    // Initialization > Result
+                                    let result = data.hasText('</span>') || data.hasText('</:span:>') ? data : `<:span: data-id=highlightColor role=attribute>${data.getBeforeChar('=')}=</:span:>'${data.getAfterChar('=').getBeforeChar(data.endsWith(' ') ? ' ' : '>', true)}'${data.lastChar == ' ' ? ' ' : '>'}`;
+
+                                    // Modification > Result
+                                    !result.endsWith(`>'`) || (result = result.slice(0, -len(`>'`)) + `'>`);
+                                    !result.endsWith(`>' `) || (result = result.slice(0, -len(`>' `)) + `'> `);
+                                    !result.endsWith('>"') || (result = result.slice(0, -len('>"')) + '">');
+                                    !result.endsWith('>" ') || (result = result.slice(0, -len('>" ')) + '"> ');
+
+                                    // Return
+                                    return result
+                                }).replace(/(\<|\&lt;)(\/|)([a-z]){1,}([a-z]|\-){0,}(\>| )/g, data => {
+                                    // Return
+                                    return `${data.hasText('/') ? '&lt;/' : '&lt;'}<span data-id=highlightColor role=element-tag-name>${data.getAfterChar(data.hasText('/') ? '/' : '&lt;').getBeforeChar(data.lastChar == ' ' ? ' ' : '>', true)}</span>${data.lastChar}`
+                                }).replace(/\<(\/|):([a-z]){1,}([a-z]|\-){0,}:(\>| )/g, data => {
+                                    // Return
+                                    return data.removeChar(/:/g)
+                                }).replace(/'(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
+                                    // Return
+                                    return data.firstChar == data.lastChar ? `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>` : data
+                                }).replace(/"(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, data => {
+                                    // Return
+                                    return data.firstChar == data.lastChar ? `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>` : data
+                                }).replace(/(\<|\&lt;)!\-\-((\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|)[^(\<\!\-\-|\&lt;\!\-\-)])[^\-\-\>]{0,}\-\-\>/g, data => {
+                                    // Return
+                                    return `<span data-id=highlightColor role=comment>${data}</span>`
+                                })
+                            },
+
+                            // Writable
+                            writable: false
+                        });
+
                         // Highlight JavaScript Code
-                        (typeof syntaxHighlightedCode[i].highlightJavaScriptCode === 'function') || syntaxHighlightedCode[i].def('highlightJavaScriptCode', {
+                        (typeof syntaxHighlightedCode[i].highlightJavaScriptCode == 'function') || syntaxHighlightedCode[i].def('highlightJavaScriptCode', {
                             // Value
                             value: function highlightJavaScriptCode(element = 'a'.html) {
                                 // Initialization > Random
@@ -1088,7 +1193,7 @@
                                         --- NOTE ---
                                             @lapys:
                                                 - Regular Expression Modification List
-                                                    -- Highlighted all Arrow Functions (=>)
+                                                    -- Highlighted all Arrow Functions (=>).
                                                     -- Highlighted all Potential Breakers (-, +, =).
                                                     -- Highlighted all Comments.
                                                         --- Highlighted all Single-Line Comments.
@@ -1179,9 +1284,6 @@
 
         // On DOM Ready
         onDOMReady(function() {
-            // Modify Syntax Highlighted Code
-            modifySyntaxHighlightedCode();
-
             // Timeout
             timeout(function() {
                 // Modify Syntax Highlighted Code

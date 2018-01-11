@@ -406,77 +406,6 @@
         border-bottom: 1px dotted
     }
 
-    /* <address>, <article>, <aside>,
-        <blockquote>, <body>,
-        <caption>, <center>, <col>, <colgroup>,
-        <dd>, <dir>, <div>, <dl>, <dt>,
-        <fieldset>, <figcaption>, <figure>, <footer>, <form>,
-        <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <header>, <hgroup>, <hr>, <html>,
-        <legend>, <li>, <listing>,
-        <main>, <marquee>, <menu>,
-        <nav>, <noframes>,
-        <ol>,
-        <p>, <plaintext>, <pre>,
-        <section>, <summary>,
-        <table>, <tbody>, <td>, <tfoot>, <th>, <thead>, <tr>,
-        <ul>,
-        <xmp>
-    */
-    address,
-    article,
-    aside,
-    blockquote,
-    body,
-    caption,
-    center,
-    col,
-    colgroup,
-    dd,
-    dir,
-    div,
-    dl,
-    dt,
-    fieldset,
-    figcaption,
-    figure,
-    footer,
-    form,
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    header,
-    hgroup,
-    hr,
-    html,
-    legend,
-    li,
-    listing,
-    main,
-    marquee,
-    menu,
-    nav,
-    noframes,
-    ol,
-    p,
-    plaintext,
-    pre,
-    section,
-    summary,
-    table,
-    tbody,
-    td,
-    tfoot,
-    th,
-    thead,
-    tr,
-    ul,
-    xmp {
-        unicode-bidi: isolate
-    }
-
     /* <applet> */
     applet {
         color: #FFFFFF
@@ -799,15 +728,6 @@
         code::selection {
             color: #FF3300
         }
-
-    /* <code>, <listing>, <pre>, <tt>, <xmp> */
-    code,
-    listing,
-    pre,
-    tt,
-    xmp {
-        font-size: smaller
-    }
 
     /* <details> */
         /* <summary> */
@@ -1500,15 +1420,6 @@
         line-height: 1.1;
         -webkit-margin-after: 0;
         -webkit-margin-before: 0
-    }
-
-    /* <plaintext>, <pre> */
-    plaintext,
-    pre {
-        background-color: #EFEFEF;
-        color: #454545;
-        page-break-inside: avoid;
-        width: auto
     }
 
     /* <pre>, <span> */
@@ -2960,6 +2871,80 @@
         white-space: pre
     }
 
+    .pre,
+    address,
+    article,
+    aside,
+    blockquote,
+    body,
+    caption,
+    center,
+    col,
+    colgroup,
+    dd,
+    dir,
+    div,
+    dl,
+    dt,
+    fieldset,
+    figcaption,
+    figure,
+    footer,
+    form,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    header,
+    hgroup,
+    hr,
+    html,
+    legend,
+    li,
+    listing,
+    main,
+    marquee,
+    menu,
+    nav,
+    noframes,
+    ol,
+    p,
+    plaintext,
+    pre,
+    section,
+    summary,
+    table,
+    tbody,
+    td,
+    tfoot,
+    th,
+    thead,
+    tr,
+    ul,
+    xmp {
+        unicode-bidi: isolate
+    }
+
+    .pre,
+    code,
+    listing,
+    pre,
+    tt,
+    xmp {
+        font-size: smaller
+    }
+
+    .pre,
+    plaintext,
+    pre {
+        background-color: #EFEFEF;
+        color: #454545;
+        page-break-inside: avoid;
+        width: auto
+    }
+
     /* Pointer */
     .accordion [data-id=header],
     .carousel > [data-id=buttons-container] > .button,
@@ -3509,6 +3494,11 @@
                 background-size: cover
             }
 
+            /* Full */
+            .bg-full {
+                background-size: 100% 100%
+            }
+
             /* Inherit */
             .background-size-inherit,
             .bg-s-inherit,
@@ -3626,6 +3616,7 @@
             /* Minimal */
             .bdr-rd-min,
             .border-radius-minimal,
+            .pre,
             applet,
             dl.block-list > li,
             input[type*=date]::before,
@@ -3744,6 +3735,7 @@
         .media-playlist > [data-id=media-container] > [data-id=media-information] > [data-id=description],
         .media-playlist > [data-id=media-container] > [data-id=media-information] > [data-id=name],
         .media-playlist > [data-id=source-container] > .media-playlist-source,
+        .pre,
         .responsive img,
         .responsive picture,
         .responsive table,
@@ -3906,6 +3898,7 @@
         .display-inline-block,
         .dynamic-text span,
         .inline-block,
+        .pre,
         audio,
         audio.media + div[data-id=media-controls-panel] :not(style),
         audio.media + div[data-id=media-controls-panel] [data-id=media-controls-panel-play][hidden],
@@ -4208,6 +4201,7 @@
             .font-fam-mono,
             .font-mono,
             .monospace,
+            .pre,
             code,
             listing,
             pre,
@@ -4257,6 +4251,7 @@
         /* Auto */
         .overflow-auto,
         .ovflow-a,
+        .pre,
         pre,
         textarea {
             overflow: auto

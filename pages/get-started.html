@@ -1,3 +1,4 @@
+<!-- DOWNLOAD THE LATEST GDC VIDEO; WATCH RECENT MUMBO JUMBO VIDEO -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,10 +10,10 @@
 <body>
     <!-- Scripts -->
         <!-- Loader Screen Script -->
-        <script async language=javascript src=../assets/js/loader-screen.js type=text/javascript> </script>
+        <script async language=javascript src=../assets/js/loader-screen.min.js type=text/javascript> </script>
 
         <!-- LapysJS Script -->
-        <script language=javascript src=../src/lapys.js type=text/javascript> </script>
+        <script language=javascript src=../src/lapys.min.js type=text/javascript> </script>
 
         <!-- Base Script -->
         <script language=javascript src=../assets/js/base.js type=text/javascript> </script>
@@ -22,14 +23,233 @@
 
     <!-- Main -->
     <main>
-        <!-- Jumbotron -->
-        <jumbotron-element id=jumbotron>
-            <!-- Header -->
-            <h1 data-id=header> Get Started with LapysJS </h1>
+        <!-- Header Navigation Bar -->
+        <nav class='col-grp fill-w fixed no-overflow z-5' role=header-navigation-bar style='left: 0; top: 0'>
+            <div class='center col-1 fill-h flex m-col-3 t-col-3' style='justify-content: space-between'>
+                <!-- <logo-element>
+                            --- CONSIDER ---
+                                @lapys: Should a blue logo really be on a blue background.
+                -->
+                <logo-element class='center flex' hidden> </logo-element>
+                <a class=single-line href=../index.html> Lapys JS </a>
+            </div>
 
-            <!-- Sub Header  -->
-            <h2 data-id=subheader> A quick dive-through into the specifics behind LapysJS </h2>
-        </jumbotron-element>
+            <div class='center col-grp fill-h flex grid-2' script='
+                for (let i = 0; i < len(NAVIGATION_LINKS); i += 1)
+                    if (NAVIGATION_LINKS[i].value != `Get Started`)
+                        this.innerHTML += `<a class="center flex upper" data-id=${NAVIGATION_LINKS[i].value[0].lower() + NAVIGATION_LINKS[i].value.slice(1).removeChar(/ /g)} href="${((NAVIGATION_LINKS[i].hyperlink.hasText(`http`) ? `` : DYNAMIC_ASSETS_URL) + NAVIGATION_LINKS[i].hyperlink)}" style="justify-content: center"> ${NAVIGATION_LINKS[i].value} </a>`;
+
+                this.addClass(`col-${len(NAVIGATION_LINKS) <= 12 ? len(NAVIGATION_LINKS) : 5}`);
+                this.setCSS(`max-width`, `initial`)
+            '> </div>
+        </nav>
+
+        <!-- Page Carousel -->
+        <developer-canvas class='center default fill full-h no-overflow' id=pageCarousel script='let that = this; invokeEvent(`resize`, function() { innerWidth > 425 ? timeout(function() { that.height = (innerHeight + (document.footer.offset.height * perc(5)) - document.footer.offset.height) }, 10) : that.delStyle(`height`) })'>
+            <div class='col-grp fill fixed' id=background>
+                <carousel-component class=fill data-id=content role=backdrop style='transform: rotate(180deg)'>
+                    <div> </div>
+                    <div class='center fill row-grp' style='background-color: #0078FF; color: #FFFFFF'>
+                        <div class=col-1> </div>
+
+                        <!-- Header -->
+                        <h1 class=col-1 data-id=header> About LapysJS <hr style='width: 75%'> </h1>
+
+                        <!-- Text -->
+                        <p class='col-1 no-overflow text-left' data-id=text style='width: 75%'>
+                            LapysJS was initially a personal passion project that tried to bring out the dynamic and fun in the professional side of web development
+                            but now is a client-side library devoted to making everyday syntax as easy and fluid as possible &ndash; even for simple projects as well.
+                        </p>
+
+                        <!-- Link -->
+                        <button class='border-radius-minimal col-1 hidden no-touch smooth' data-id=link> View More </button>
+
+                        <div class='col-1 m-del t-del'> </div>
+                    </div>
+
+                    <div class='center fill row-grp' style='background-color: #4B0082; color: #FFFFFF'>
+                        <div class=col-1> </div>
+
+                        <!-- Header -->
+                        <h1 class=col-1 data-id=header> Download <hr style='width: 75%'> </h1>
+
+                        <!-- Text -->
+                        <p class='center col-1 no-overflow text-left' data-id=text style='width: 100%'>
+                            <small class='block fill no-overflow smooth-lag' onclick='this.setCSS({opacity: `0`, pointerEvents: `none`}); this.nextElementSibling.setCSS({opacity: `.75`, pointerEvents: `all`})' style='display: block; width: 75%'>
+                                LapysJS currently only has one (1) way to get started:
+
+                                <br 2>
+
+                                by downloading the <code>.zip</code> file from the <a href=../index.html#downloadButton>website</a> <br>
+                                or cloning its repository from <a href=https://github.com/LapysDev/LapysJS target=_blank>GitHub</a>.
+                            </small>
+
+                            <code class='absolute block fill-w smooth-lag syntax-highlighted' language=html onmouseleave='this.setCSS({opacity: `0`, pointerEvents: `none`}); this.previousElementSibling.delStyle(`opacity`, `pointer-events`)' style='height: 225px; left: 0; opacity: 0; margin: auto; overflow-x: auto; pointer-events: none; right: 0; top: 0; width: 90%'>
+                                &lt;!-- Latest compiled &amp; minified version. --&gt;
+                                &lt;link crossorigin=anonymous href=https://github.com/LapysDev/LapysJS/blob/master/lapys.min.css media=all rel=stylesheet&gt;
+
+                                &lt;script crossorigin=anonymous src=https://github.com/LapysDev/LapysJS/blob/master/lapys.min.js&gt; &lt;/script&gt;
+                            </code>
+                        </p>
+
+                        <!-- Link -->
+                        <button class='border-radius-minimal col-1 hidden no-touch smooth' data-id=link> View More </button>
+
+                        <div class='col-1 m-del t-del'> </div>
+                    </div>
+
+                    <div class='center fill row-grp' style='background-color: #DC143C; color: #FFFFFF'>
+                        <div class=col-1> </div>
+
+                        <!-- Header -->
+                        <h1 class=col-1 data-id=header> What&rsquo;s included <hr style='width: 75%'> </h1>
+
+                        <!-- Text -->
+                        <p class='center col-12 grid-2 text-left' data-id=text style='max-width: 100%; width: 100%'>
+                            <span class='no-overflow smooth-delay' style='display: inline-block; margin-left: 12.5%; width: 75%'>Once downloaded, unzip the <code>.zip</code> file to review the skeleton of the library (LapysJS). <br> You should see something like this:</span>
+
+                            <span class='pre small smooth-lag' onmouseleave='this.setCSS({height: `50%`, marginTop: `12.5px`}); this.previousElementSibling.delStyle(`height`, `opacity`)' onmouseover='if (innerWidth > 768) { this.setCSS({height: `95%`, marginTop: `-${this.previousElementSibling.offset.height}px`}); this.previousElementSibling.setCSS({height:`0`, opacity: `0`}) }' script='this.innerHTML = this.innerHTML' style='display: block; height: 50%; margin-top: 12.5px; overflow: auto; width: 90%'>LapysJS/
+├── assets/
+│   ├── css/
+|   |   └── # List of CSS files.
+│   ├── img/
+│   |   ├── ico/
+|   |   |   └── icon.ico
+│   |   ├── jpg/
+|   |   |   └── # List of JPEG images.
+│   |   ├── png/
+|   |   |   ├── no-image/
+|   |   |   |   └── # List of PNG 'not found' images.
+|   |   |   └── # List of PNG icons.
+│   ├── js/
+|   |   └── # List of JavaScript files.
+|   └── media/
+|   |   └── mp4/
+|   |       └── # List of MP4 Test Videos.
+└── src/
+|   ├── lapys.css
+|   ├── lapys.min.css
+|   ├── lapys.js
+└── lapys.min.js</span>
+                        </p>
+
+                        <!-- Link -->
+                        <button class='border-radius-minimal col-1 hidden no-touch smooth' data-id=link> View More </button>
+
+                        <div class='col-1 m-del t-del'> </div>
+                    </div>
+
+                    <div class='center fill row-grp' style='background: #FF9800 !important; color: #FFFFFF'>
+                        <div class=col-1> </div>
+
+                        <!-- Header -->
+                        <h1 class=col-1 data-id=header> <small>Starter Template</small> <hr style='width: 75%'> </h1>
+
+                        <!-- Text -->
+                        <p class='center col-12 grid-2 no-overflow text-left' data-id=text style='height: 100%; max-height: 20%; max-width: 100%; width: 100%'>
+                            <span class='no-overflow smooth-delay' style='display: block; height: 100%; max-height: 110px; max-width: 90%; opacity: 1; width: 90%'>
+                                You can begin with this basic HTML template &ndash; or modify the template. <br>
+                                <span class=m-del>Don&rsquo;t forget you can also customize the template and other examples we provide to adapt them to suit your needs.</span>
+                            </span>
+
+                            <code class='block smooth-delay syntax-highlighted' contenteditable=true language=html onblur='this.delAttr(`data-focus`); this.highlightHTMLCode(this)' onclick='this.onmouseleave = func()' onfocus='this.click(); this.attr(`data-focus`, `true`); this.parent.parent.parent.parent.toggleSlide = func(); this.innerText = this.innerText.replace(/</g, `&lt;`)' onmouseover='this.click(); if (innerWidth > 425) { this.setCSS({maxHeight: `100%`}); this.previousElementSibling.setCSS({height: `0`, opacity: `0`}) }' style='height: 100%; margin: auto; max-height: 47.5%; overflow-x: auto; width: 90%'>
+                                &lt;!DOCTYPE html>
+                                &lt;html lang="en">
+                                  &lt;head>
+                                    &lt;meta charset="utf-8">
+                                    &lt;meta http-equiv="X-UA-Compatible" content="IE=edge">
+                                    &lt;meta name="viewport" content="width=device-width, initial-scale=1">
+                                    &lt;!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+                                    &lt;title>Bootstrap 101 Template&lt;/title>
+
+                                    &lt;!-- Bootstrap -->
+                                    &lt;link href="css/bootstrap.min.css" rel="stylesheet">
+
+                                    &lt;!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+                                    &lt;!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+                                    &lt;!--[if lt IE 9]>
+                                      &lt;script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js">&lt;/script>
+                                      &lt;script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js">&lt;/script>
+                                    &lt;![endif]-->
+                                  &lt;/head>
+                                  &lt;body>
+                                    &lt;h1>Hello, world!&lt;/h1>
+
+                                    &lt;!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+                                    &lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js">&lt;/script>
+                                    &lt;!-- Include all compiled plugins (below), or include individual files as needed -->
+                                    &lt;script src="js/bootstrap.min.js">&lt;/script>
+                                  &lt;/body>
+                                &lt;/html>
+                            </code>
+                        </p>
+
+                        <!-- Link -->
+                        <button class='border-radius-minimal col-1 hidden no-touch smooth' data-id=link> View More </button>
+
+                        <div class='col-1 m-del t-del'> </div>
+                    </div>
+                </carousel-component>
+
+                <carousel-component class='fill no-touch' data-id=media role=backdrop>
+                    <div> </div>
+                    <div class='bg bg-full' style='background-image: url(../assets/img/png/no-image/image3.png)'> </div>
+                    <div class='bg bg-full' style='background-image: url(../assets/img/png/no-image/image3.png)'> </div>
+                    <div class='bg bg-full' style='background-image: url(../assets/img/png/no-image/image3.png)'> </div>
+                    <div class='bg bg-full' style='background-image: url(../assets/img/png/no-image/image3.png)'> </div>
+                </carousel-component>
+            </div>
+
+            <carousel-component class='fill no-select no-touch' script='
+                let that = this;
+
+                document.body.setEvent(`keydown`, function() {
+                    LapysJS.permanentData.keyPressed = true;
+
+                    if (!$$(`[data-focus`, 0)) {
+                        if (
+                            event.code == `ArrowLeft` ||
+                            event.code == `ArrowUp`
+                        )
+                            for (let i = 0; i < $$(`carousel-component:not(.no-carousel)`, `length`); i += 1)
+                                $$(`carousel-component:not(.no-carousel)`, i).togglePreviousSlide();
+
+                        else if (
+                            event.code == `ArrowDown` ||
+                            event.code == `ArrowRight`
+                        )
+                            for (let i = 0; i < $$(`carousel-component:not(.no-carousel)`, `length`); i += 1)
+                                $$(`carousel-component:not(.no-carousel)`, i).toggleNextSlide();
+
+                        else if (event.code == `End`)
+                            for (let i = 0; i < $$(`carousel-component:not(.no-carousel)`, `length`); i += 1)
+                                $$(`carousel-component:not(.no-carousel)`, i).toggleSlide(~-$$(`carousel-component:not(.no-carousel)`, i).slides.length);
+
+                        else if (event.code == `Home`)
+                            for (let i = 0; i < $$(`carousel-component:not(.no-carousel)`, `length`); i += 1)
+                                $$(`carousel-component:not(.no-carousel)`, i).toggleSlide(0)
+                    }
+                })
+            '>
+                <!-- Section 0 -->
+                <section class='center flex' data-id=section0>
+                    <!-- Header -->
+                    <h1 class='no-select no-touch' data-id=header style='width: 90%'> Quick Startup to Using LapysJS </h1>
+                </section>
+
+                <!-- Section 1 -->
+                <section class='center flex' data-id=section1> </section>
+
+                <!-- Section 2 -->
+                <section class='center flex' data-id=section2> </section>
+
+                <!-- Section 3 -->
+                <section class='center flex' data-id=section3> </section>
+
+                <!-- Section 4 -->
+                <section class='center flex' data-id=section4> </section>
+            </carousel-component>
+        </developer-canvas>
     </main>
 </body>
 </html>
