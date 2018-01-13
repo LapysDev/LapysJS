@@ -2196,9 +2196,7 @@
         .column-group:not([class*=col-]):not([class*=grid-]),
         .jumbotron,
         .row-grp:not([class*=col-]):not([class*=grid-]),
-        .row-grp > *,
         .row-group:not([class*=col-]):not([class*=grid-]),
-        .row-group > *,
         audio.media + div[data-id=media-controls-panel] [data-id=media-controls-panel-timeline],
         audio.media + div[data-id=media-controls-panel] [data-id=media-controls-panel-volumeBar][data-close=false][data-open=true],
         video.media + div[data-id=media-controls-panel] [data-id=media-controls-panel-timeline],
@@ -2677,6 +2675,12 @@
         animation: none
     }
 
+    /* No Delay */
+    .no-delay {
+        animation-delay: 0s;
+        transition-delay: 0s
+    }
+
     /* No Float */
     .badge,
     .no-float,
@@ -3067,7 +3071,6 @@
 
     /* Smooth */
     .smooth {
-        animation-delay: .1s;
         animation-direction: normal;
         animation-duration: .3s;
         animation-fill-mode: backwards;
@@ -3077,37 +3080,54 @@
         transition-property: all;
         transition-timing-function: ease-in-out
     }
+        /* Not > No Delay */
+        .smooth:not(.no-delay) {
+            animation-delay: .1s
+        }
+
         /* Delay */
         .smooth-delay {
-            animation-delay: .15s;
             animation-duration: .5s;
-            transition-delay: .1s;
             transition-duration: .5s
         }
+            /* Not > No Delay */
+            .smooth-delay:not(.no-delay) {
+                animation-delay: .15s;
+                transition-delay: .1s
+            }
 
         /* Lag */
         .smooth-lag {
-            animation-delay: .3s;
             animation-duration: 1s;
-            transition-delay: .2s;
             transition-duration: 1s
         }
+            /* Not > No Delay */
+            .smooth-lag:not(.no-delay) {
+                animation-delay: .3s;
+                transition-delay: .2s
+            }
 
          /* Quick */
         .smooth-quick {
-            animation-delay: .05s;
             animation-duration: .1s;
             transition-delay: 0s;
             transition-duration: .1s
         }
+            /* Not > No Delay */
+            .smooth-quick:not(.no-delay) {
+                animation-delay: .05s
+            }
 
         /* Instant */
         .smooth-instant {
-            animation-delay: .025s;
             animation-duration: .05s;
             transition-delay: 0s;
             transition-duration: .05s
         }
+            /* Not > No Delay */
+            .smooth-instant:not(.no-delay) {
+                animation-delay: .025s
+            }
 
     /* Speak */
     .speak,
@@ -3587,6 +3607,7 @@
             .carousel > [data-id=indicators-container] > .indicator,
             .circle,
             .media-playlist > [data-id=media-container] > [data-id=media-console] > button,
+            .round,
             audio.media + div[data-id=media-controls-panel] [data-id=media-controls-panel-play],
             input[type=color],
             input[type=radio],

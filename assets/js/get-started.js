@@ -1,3 +1,16 @@
+/* Global Data */
+    /* Document */
+        // Title
+        document.title += ' | Get Started';
+
+    /* Lapys */
+        // Permanent Data
+            // Active Slide
+            LapysJS.permanentData.activeSlide = [0, 0, 0];
+
+            // Single Quote
+            LapysJS.permanentData.singleQuote = `'`;
+
 /* Components */
     /* Page Carousel */
         /* Check
@@ -14,6 +27,12 @@
             let pageCarousel = $$('#pageCarousel', 0);
                 // Background
                 pageCarousel.background = pageCarousel.$$('#background', 0);
+
+                // Interval
+                interval(function() {
+                    for (let i = 0; i < len(pageCarousel.background.children); i += 1)
+                        pageCarousel.background.children[i].delAttr('data-selected')
+                }, 333);
 
             /* Check
                     --- WARN ---
@@ -41,10 +60,10 @@
                         > <carousel-component> > Toggle Slide
                     */
                     for (let i = 0; i < $$(`carousel-component:not(.no-carousel)`, `length`); i += 1)
-                       $$(`carousel-component:not(.no-carousel)`, i).toggleSlide(~-len($$(`carousel-component:not(.no-carousel)`, i).slides));
+                       $$(`carousel-component:not(.no-carousel)`, i).toggleSlide(1);
 
                     // Timeout
-                    true || timeout(function() {
+                    timeout(function() {
                         /* Loop
                                 Index all <carousel-component>.
 
@@ -58,6 +77,37 @@
         });
 
 /* Events */
+    /* [Element] */
+        // Check
+            // Key Down
+            check(function() {
+                // Return
+                return !!$$(`iframe[src='about:blank']`, 0) && !!$$('.syntax-highlighted[onclick', 0)
+            }, function() {
+                // Timeout
+                timeout(function() {
+                    $$('.syntax-highlighted[onclick').invokeEvent('keyup', function() {
+                        // <iframe> > Content Window > Document
+                            // Open
+                            $$(`iframe[src='about:blank']`).contentWindow.document.open();
+
+                            // Write
+                            $$(`iframe[src='about:blank']`).contentWindow.document.write(str(this.innerText).replace(/\&lt;/g, '<').replace(/\&nbsp;/g, ' ').replace(/~/g, '    '));
+
+                            // Document Element > Inner HTML
+                            $$(`iframe[src='about:blank']`).contentWindow.document.documentElement.innerHTML = $$(`iframe[src='about:blank']`).contentWindow.document.documentElement.innerHTML.replace(/\&lt;/g, '<').replace(/\&nbsp;/g, ' ').replace(/~/g, '    ');
+
+                            // Insertion
+                            !$$(`iframe[src='about:blank']`).contentWindow.document.querySelector('body').querySelector('title') || $$(`iframe[src='about:blank']`).contentWindow.document.documentElement.querySelector('head').appendChild($$(`iframe[src='about:blank']`).contentWindow.document.querySelector('body').querySelector('title'));
+                                /* Loop
+                                        [for statement]
+                                */
+                                for (let i = ~-$$(`iframe[src='about:blank']`).contentWindow.document.querySelector('body').querySelectorAll('link, meta').length; i > -1; i -= 1)
+                                    $$(`iframe[src='about:blank']`).contentWindow.document.documentElement.querySelector('head').appendChild($$(`iframe[src='about:blank']`).contentWindow.document.querySelector('body').querySelectorAll('link, meta')[i])
+                    })
+                }, 1000)
+            });
+
     /* <body> */
         // Click
         document.body.setEvent(`click`, function(event) {

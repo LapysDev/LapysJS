@@ -29,7 +29,21 @@
                 // Timeout
                 timeout(() => {
                     // Class
-                    this.addClass('carousel')
+                    this.addClass('carousel');
+
+                    // On Node Count Change
+                    onNodeCountChange(this, () => {
+                        /* Loop
+                                Index all Target's Slides.
+
+                            > Deletion
+                        */
+                        for (let i = 0; i < len(this.slides); i += 1)
+                            !(
+                                this.slides[i].tagName == 'BODY' ||
+                                this.slides[i].tagName == 'HEAD'
+                            ) || this.slides[i].delete()
+                    })
                 })
         }
     };
@@ -266,8 +280,14 @@
     def('NAVIGATION_LINKS', {
         // Value
         value: [
-            // Get Started
+            /* Get Started
+                    --- UPDATE REQUIRED ---
+                        @lapys: Minified HTML needs improvement.
+            */
             new (function NavigationLink() { this.hyperlink = `${DYNAMIC_ASSETS_URL}pages/get-started.html`; this.value = 'Get Started' }),
+
+            // Documentation
+            new (function NavigationLink() { this.hyperlink = `${DYNAMIC_ASSETS_URL}pages/docs.min.html`; this.value = 'Documentation' }),
 
             // Git Hub
             new (function NavigationLink() { this.hyperlink = 'https://github.com/LapysDev/LapysJS'; this.value = 'GitHub' }),
@@ -771,11 +791,11 @@
         // Event > Window > Resize
         invokeEvent('resize', function() {
              // Insertion
-            (innerWidth >= 320) || $$('.dialog#reorientateDeviceDialog') || document.body.insertChild('end', new LapysJS.component.Dialog({
+            (innerWidth > 321) || $$('.dialog#reorientateDeviceDialog', 0) || document.body.insertChild('end', new LapysJS.component.Dialog({
                 CSSSelector: '.center.fill.flex-reverse.fixed.no-select.no-touch#reorientateDeviceDialog',
                 innerHTML:
                     // Header
-                    `<h1 class=well data-id=header style='background-color: rgba(0, 0, 0, .075); border: 0; box-shadow: none; font-size: 1.75em'> Sorry, but you can not view this page with your current device. </h1>` +
+                    `<h1 class='no-overflow well' data-id=header style='background-color: rgba(0, 0, 0, .075); border: 0; box-shadow: none; font-size: 1.75em'> Sorry, but you can not view this page with your current device. </h1>` +
 
                     // Sub Header
                     `<h2 data-id=subheader style='font-size: 1em'> Try re-orientating your device for another result. </h2>` +
@@ -808,11 +828,11 @@
                     `<style type=text/css>` +
                         // Components > Re-Orientate Device Dialog
                             // @media
-                            `@media only all` +
-                                `and (max-width: 319px) {` +
+                            `@media only all ` +
+                                `and (min-width: 320px) {` +
                                     // Re-Orientate Device Dialog
                                     `.dialog#reorientateDeviceDialog {` +
-                                        `opacity: 0` +
+                                        `opacity: 0 !important` +
                                     `}` +
                             `}` +
                     `</style>`,
@@ -908,12 +928,12 @@
         // On DOM Ready
         onDOMReady(() => {
             // Insertion
-            (document.main || document.body).insertChild('end', document.footer = createElement('footer', '.card.center-text.flat.no-select#footer[data-id=footer',
+            (document.main || document.body).insertChild('end', document.footer = createElement('footer', '.card.center-text.flat.grid-1.no-select#footer[data-id=footer',
                 `<div> ${app.author} &copy; 2017${date.getFullYear() > 2017 ? ` - ${date.getFullYear()}` : ''} </div>` +
                 `<br>` +
                 `<small> Some images are copyright of <strong>FreePik</strong> at <a href=https://www.freepik.com>www.freepik.com</a> and all ownership goes to the respective authors. </small>`, {
                     // Style
-                    style: 'padding: 30px 0; text-indent: 15px'
+                    style: 'box-shadow: 0 5000px 0 5000px #333333; padding: 30px 0; text-indent: 15px'
                 }
             ))
         });
@@ -1140,32 +1160,37 @@
                                         --- NOTE ---
                                             @lapys:
                                                 - Regular Expression Modification List
-                                                    -- Highlighted all Element Attributes.
                                                     -- Highlighted all Element Tag Names.
+                                                    -- Highlighted all Element Attributes.
+                                                    -- Highlighted HTML Document Type Declaration.
                                                     -- Highlighted all Strings.
                                                     -- Highlighted all Comments.
+                                                    -- Highlighted all HTML Entities.
                                 */
-                                element.innerHTML = element.innerHTML.replace(/\&gt;/g, '>').replace(/([a-z]|:){1,}([a-z]|\-|:){0,}='(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]){0,}'/g, data => {
+                                element.innerHTML = element.innerHTML.replace(/</g, '&lt;').replace(/\&gt;/g, '>').replace(/&lt;(\/|)([a-z]){1,}([a-z]|[0-9]|\-){0,}(\>| )/g, data => {
                                     // Return
-                                    return `<:span: data-id="highlightColor" role="attribute">${data.getBeforeChar('=')}=</:span:>${data.getAfterChar('=')}`
-                                }).replace(/([a-z]|:){1,}([a-z]|\-|:){0,}=(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»]){1,}(\>| )/g, data => {
-                                    // Initialization > Result
-                                    let result = data.hasText('</span>') || data.hasText('</:span:>') ? data : `<:span: data-id=highlightColor role=attribute>${data.getBeforeChar('=')}=</:span:>'${data.getAfterChar('=').getBeforeChar(data.endsWith(' ') ? ' ' : '>', true)}'${data.lastChar == ' ' ? ' ' : '>'}`;
-
-                                    // Modification > Result
-                                    !result.endsWith(`>'`) || (result = result.slice(0, -len(`>'`)) + `'>`);
-                                    !result.endsWith(`>' `) || (result = result.slice(0, -len(`>' `)) + `'> `);
-                                    !result.endsWith('>"') || (result = result.slice(0, -len('>"')) + '">');
-                                    !result.endsWith('>" ') || (result = result.slice(0, -len('>" ')) + '"> ');
-
+                                    return `&lt;${data.hasText('/') ? '/' : ''}::element-tag-name::${data.getAfterChar(`&lt;${data.hasText('/') ? '/' : ''}`).getBeforeChar(data.lastChar == '>' ? '>' : ' ', true)}::/element-tag-name::${data.lastChar}`
+                                }).replace(/(([a-z]){1,}([a-z]|[0-9]|\-){0,}=(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»]){1,}|([a-z]){1,}([a-z]|[0-9]|\-){0,}=(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»]){1,})/g, data => {
                                     // Return
-                                    return result
-                                }).replace(/(\<|\&lt;)(\/|)([a-z]){1,}([a-z]|\-){0,}(\>| )/g, data => {
+                                    return `${data.getBeforeChar('=')}='${data.getAfterChar('=')}'`
+                                }).replace(/([a-z]){1,}([a-z]|[0-9]|\-){0,}=('|")(\>| )/g, data => {
                                     // Return
-                                    return `${data.hasText('/') ? '&lt;/' : '&lt;'}<span data-id=highlightColor role=element-tag-name>${data.getAfterChar(data.hasText('/') ? '/' : '&lt;').getBeforeChar(data.lastChar == ' ' ? ' ' : '>', true)}</span>${data.lastChar}`
-                                }).replace(/\<(\/|):([a-z]){1,}([a-z]|\-){0,}:(\>| )/g, data => {
+                                    return `${data.getBeforeChar('=')}=''${data.lastChar}`
+                                }).replace(/([a-z]){1,}([a-z]|[0-9]|\-){0,}='(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
                                     // Return
-                                    return data.removeChar(/:/g)
+                                    return `<span data-id=highlightColor role=attribute>${data.getBeforeChar('=')}=</span>${data.getAfterChar('=')}`
+                                }).replace(/([a-z]){1,}([a-z]|[0-9]|\-){0,}="(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, data => {
+                                    // Return
+                                    return `<span data-id=highlightColor role=attribute>${data.getBeforeChar('=')}=</span>${data.getAfterChar('=')}`
+                                }).replace(/::element\-tag\-name::/g, data => {
+                                    // Return
+                                    return `<span data-id=highlightColor role=element-tag-name>`
+                                }).replace(/::\/element\-tag\-name::/g, data => {
+                                    // Return
+                                    return `</span>`
+                                }).replace(/&lt;!DOCTYPE html>/g, data => {
+                                    // Return
+                                    return `<span style=filter:grayscale(.5)>${data.getBeforeChar('DOCTYPE')}<span data-id=highlightColor role=element-tag-name>DOCTYPE</span>${data.getAfterChar('DOCTYPE')}</span>`
                                 }).replace(/'(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
                                     // Return
                                     return data.firstChar == data.lastChar ? `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>` : data
@@ -1175,6 +1200,9 @@
                                 }).replace(/(\<|\&lt;)!\-\-((\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|)[^(\<\!\-\-|\&lt;\!\-\-)])[^\-\-\>]{0,}\-\-\>/g, data => {
                                     // Return
                                     return `<span data-id=highlightColor role=comment>${data}</span>`
+                                }).replace(/\&(#|)([a-z]|[0-9]){3,};/g, data => {
+                                    // Return
+                                    return `<span data-id=highlightColor role=text-entity>${data}</span>`
                                 })
                             },
 
@@ -1289,4 +1317,22 @@
                 // Modify Syntax Highlighted Code
                 modifySyntaxHighlightedCode()
             }, (LapysJS.permanentData.pluginScriptDelay || 3000) + (LapysJS.permanentData.pluginScriptDelay / 2 || 1500))
+        })
+
+/* Events */
+    // Window
+        // Load
+        setEvent('load', function() {
+            // Target > Stop
+            this.stop()
+        });
+
+    // Document
+        // DOM Content Loaded
+        document.setEvent('DOMContentLoaded', function() {
+            // Timeout
+            timeout(function() {
+                // Stop
+                stop()
+            }, 1.5e4)
         })

@@ -245,8 +245,9 @@
                 color: #D68B30 !important
             }
 
-            /* Numeral */
-            code.syntax-highlighted [data-id*=highlightColor][role=numeral] {
+            /* Numeral, Text Entity */
+            code.syntax-highlighted [data-id*=highlightColor][role=numeral],
+            code.syntax-highlighted [data-id*=highlightColor][role=text-entity] {
                 color: #D17AD9 !important
             }
 

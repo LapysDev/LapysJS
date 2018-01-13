@@ -12,7 +12,7 @@
                 // Modification > Target > Absolute
                 this.abs = function abs() {
                     // Return
-                    return +String((arguments[0] >= 0) || -arguments[0]).replace('true', arguments[0])
+                    return +String((arguments[0] > -1) || -arguments[0]).replace('true', arguments[0])
                 }
             })).abs
         });
@@ -203,8 +203,8 @@
                                             [if:else if:else statement]
                                     */
                                     if (
-                                        (typeof that.condition == 'function' ? that.condition() : that.condition) == false &&
-                                        that.value == false
+                                        (typeof that.condition == 'function' ? that.condition() : that.condition) == !!0 &&
+                                        that.value == !!0
                                     ) {
                                         // Target > On Fail
                                         (typeof that.onfail != 'function') || that.onfail();
@@ -235,6 +235,35 @@
             }
         });
 
+        // Copy
+        (typeof window.copy == 'function') || Object.defineProperty(window.constructor.prototype, 'copy', {
+            // Value
+            value: function copy() {
+                // Initialization > Data
+                let data = document.createElement('textarea');
+
+                // Modification > Data > Value
+                data.setAttribute('value', arguments.length > 0 ? String(arguments[0]) : '');
+                data.value = arguments.length > 0 ? String(arguments[0]) : '';
+
+                // Insertion
+                document.body.appendChild(data);
+
+                // Data > (Focus, Select)
+                data.focus();
+                data.select();
+
+                // Document > Execute Command
+                document.execCommand('copy');
+
+                // Data > Blur
+                data.blur();
+
+                // Deletion
+                document.body.removeChild(data)
+            }
+        });
+
         // Create Document Fragment
         (typeof window.createDocumentFragment == 'function') || Object.defineProperty(window.constructor.prototype, 'createDocumentFragment', {
             // Value
@@ -253,7 +282,7 @@
                     */
                     if (typeof arguments[0] == 'string') {
                         // Insertion
-                        (document.body || document.documentElement).appendChild(LapysJS.temporaryData = document.createElement('div'));
+                        (document.body || document.documentElement).appendChild(LapysJS.temporaryData = document.createElement('html'));
 
                         // Modification > (LapysJS > Temporary Data) > Inner HTML
                         LapysJS.temporaryData.innerHTML = arguments[0];
@@ -355,8 +384,8 @@
                     --- NOTE ---
                         @lapys: This is to know that this is a fallback Event object.
             */
-            !window.Event || (Event.prototype.fallback = false);
-            event.constructor.prototype.fallback = true;
+            !window.Event || (Event.prototype.fallback = !!0);
+            event.constructor.prototype.fallback = !0;
 
             // Meta Key
             event.metaKey = event.metaKey;
@@ -370,10 +399,10 @@
         // Date
         ((window.date || []).constructor == Date) || Object.defineProperty(window, 'date', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function date() {
@@ -396,9 +425,9 @@
                         // Modification > Target > Absolute
                         `this.abs = function abs() {` +
                             // Return
-                            `return +String((arguments[0] >= 0) || -arguments[0]).replace('true', arguments[0])` +
+                            `return +String((arguments[0] > -1) || -arguments[0]).replace('true', arguments[0])` +
                         `}` +
-                    `})).abs(+String((arguments[1] <= 20) || 20).replace('true', arguments[1]))))` +
+                    `})).abs(+String((arguments[1] < 21) || 20).replace('true', arguments[1]))))` +
                 `}` +
             `})`);
 
@@ -486,10 +515,10 @@
         */
         ((window.global || []).constructor == Window) || Object.defineProperty(window.constructor.prototype, 'global', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function global() {
@@ -558,7 +587,7 @@
                 (arguments[0] || []).constructor !== RegExp &&
                 (arguments[0] || []).constructor !== String &&
                 (arguments[0] || []).constructor !== Symbol
-            ) ? typeof arguments[1] == 'function' ? arguments[1]() : arguments[1] : false
+            ) ? typeof arguments[1] == 'function' ? arguments[1]() : arguments[1] : !!0
         };
 
         // Length
@@ -573,10 +602,10 @@
         // Location > Query Parameters
         !window.Location || (typeof Location.prototype.queryParameters == 'function') || Object.defineProperty(Location.prototype, 'queryParameters', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function queryParameters() {
@@ -615,7 +644,7 @@
         */
         window.JSON = window.JSON || new (function JSON() {
             // Fallback
-            this.fallback = true;
+            this.fallback = !0;
 
             // Parse
             this.parse = () => {};
@@ -627,7 +656,7 @@
                     --- NOTE ---
                         @lapys: This property is also to define that the default JSON object is not a fallback.
             */
-            JSON.fallback || (JSON.fallback = false);
+            JSON.fallback || (JSON.fallback = !!0);
 
         // Math
             /* Evaluate
@@ -659,7 +688,7 @@
                     let data = this() * (max(parseFloat(arguments[0]), parseFloat(arguments[1])) - min(parseFloat(arguments[0]), parseFloat(arguments[1]))) + min(parseFloat(arguments[0]), parseFloat(arguments[1]));
 
                     // Return
-                    return +String((data <= max(parseFloat(arguments[0]), parseFloat(arguments[1]))) || max(parseFloat(arguments[0]), parseFloat(arguments[1]))).replace('true', String((data >= min(parseFloat(arguments[0]), parseFloat(arguments[1]))) || min(parseFloat(arguments[0]), parseFloat(arguments[1]))).replace('true', data))
+                    return +String((data < (max(parseFloat(arguments[0]), parseFloat(arguments[1]))) + 1) || max(parseFloat(arguments[0]), parseFloat(arguments[1]))).replace('true', String((data > ~-min(parseFloat(arguments[0]), parseFloat(arguments[1]))) || min(parseFloat(arguments[0]), parseFloat(arguments[1]))).replace('true', data))
                 }
             });
 
@@ -693,7 +722,7 @@
                             > Update > Result
                         */
                         for (let i = 0; i < [...arguments].length; i += 1)
-                            (result >= (([...arguments][i] || {length: ''}).length || [...arguments][i])) || (result = ([...arguments][i] || {length: ''}).length || [...arguments][i]);
+                            (result > ~-(([...arguments][i] || {length: ''}).length || [...arguments][i])) || (result = ([...arguments][i] || {length: ''}).length || [...arguments][i]);
 
                         // Return
                         return result
@@ -742,7 +771,7 @@
                             > Update > Result
                         */
                         for (let i = 0; i < [...arguments].length; i += 1)
-                            (result <= (([...arguments][i] || {length: ''}).length || [...arguments][i])) || (result = ([...arguments][i] || {length: ''}).length || [...arguments][i]);
+                            (result < (([...arguments][i] || {length: ''}).length || [...arguments][i]) + 1) || (result = ([...arguments][i] || {length: ''}).length || [...arguments][i]);
 
                         // Return
                         return result
@@ -779,13 +808,13 @@
         // Navigator
         window.navigator || (window.navigator = new (function Navigator() {
             // Fallback
-            this.constructor.fallback = true
+            this.constructor.fallback = !0
         }));
             /* Fallback
                     --- NOTE ---
                         @lapys: The same reason used for the JSON.fallback property is applied here as well.
             */
-            !window.Navigator || (Navigator.prototype.fallback = false);
+            !window.Navigator || (Navigator.prototype.fallback = !!0);
 
         // Number
             // Set Timeout
@@ -800,7 +829,7 @@
                 });
                     // Modification
                         // Float
-                        Object.defineProperty(window.constructor.prototype.number, 'float', {
+                        window.number.float || Object.defineProperty(window.constructor.prototype.number, 'float', {
                             // Value
                             value: function float() {
                                 // Return
@@ -809,7 +838,7 @@
                         });
 
                         // Integer
-                        Object.defineProperty(window.constructor.prototype.number, 'int', {
+                        window.number.int || Object.defineProperty(window.constructor.prototype.number, 'int', {
                             // Value
                             value: function int() {
                                 // Return
@@ -856,7 +885,7 @@
                                 `new MutationObserver(function() {` +
                                     // Function > Argument (0 | 1)
                                     `${['Arguments[0]', 'Arguments[1]'][i]}.apply(this, [...Arguments].slice(${[1, 2][i]}))` +
-                                `}).observe(${['document.documentElement', 'Arguments[0]'][i]}, { childList: true, outerHTML: true, subtree: true })` +
+                                `}).observe(${['document.documentElement', 'Arguments[0]'][i]}, { childList: !0, outerHTML: !0, subtree: !0 })` +
                             `}` +
 
                             `catch (error) {` +
@@ -941,7 +970,7 @@
                                     `new MutationObserver(function() {` +
                                         // Function > Argument (0 | 1)
                                         `${['Arguments[0]', 'Arguments[1]'][i]}.apply(this, [...Arguments].slice(${[1, 2][i]}))` +
-                                    `}).observe(${['document.documentElement', 'arguments[0]'][i]}, { childList: true, outerHTML: true, subtree: true })` +
+                                    `}).observe(${['document.documentElement', 'arguments[0]'][i]}, { childList: !0, outerHTML: !0, subtree: !0 })` +
                                 `}` +
                                 `catch (error) {` : '') +
 
@@ -989,10 +1018,10 @@
                                 ([['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onDOMNodeCountChange' || [['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onNodeCountChange' ? '}' : '') +
                             `}` +
                         `})`
-                    )
+                    );
 
         // On DOM Ready
-        Object.defineProperty(window.constructor.prototype, 'onDOMReady', {
+        (typeof window.onDOMReady == 'function') || Object.defineProperty(window.constructor.prototype, 'onDOMReady', {
             // Value
             value: function onDOMReady() {
                 // Set Timeout | Event > Document
@@ -1132,7 +1161,7 @@
                 // Modification > Target > Round
                 this.round = function round() {
                     // Return
-                    return +String((String(arguments[0]).getAfterChar('.')[0] <= 4) || ceil(arguments[0])).replace('true', floor(arguments[0]))
+                    return +String((String(arguments[0]).getAfterChar('.')[0] < 5) || ceil(arguments[0])).replace('true', floor(arguments[0]))
                 }
             })).round
         });
@@ -1283,7 +1312,7 @@
                                                             If
                                                                 Argument [Loop Counter] is an Object.
                                                     */
-                                                    `if (isObject(arguments[i], true))` +
+                                                    `if (isObject(arguments[i], !0))` +
                                                         /* Loop
                                                                 Index Argument [Loop Counter]
 
@@ -1329,7 +1358,7 @@
                                                 > Insertion
                                             */
                                             for (let i = 0; i < arguments[0].length; i += 1)
-                                                metadata.appendChild(createElement('li', '', (arguments[0][i] || {innerHTML: void 0}).innerHTML || arguments[0][i], isObject(arguments[0][i], true) ? arguments[0][i] : {}));
+                                                metadata.appendChild(createElement('li', '', (arguments[0][i] || {innerHTML: void 0}).innerHTML || arguments[0][i], isObject(arguments[0][i], !0) ? arguments[0][i] : {}));
 
                                         else if (typeof arguments[0] == 'string')
                                             // Insertion
@@ -1339,7 +1368,7 @@
                                                 If
                                                     Argument 2 is an Object.
                                         */
-                                        if (isObject(arguments[2], true))
+                                        if (isObject(arguments[2], !0))
                                             /* Loop
                                                     Index Argument 2.
 
@@ -1532,7 +1561,7 @@
 
                                                         else
                                                             // Insertion
-                                                            this.insertChild('end', createElement(`t${arguments[0]}`, '', arguments[1] || ''));
+                                                            this.appendChild(createElement(`t${arguments[0]}`, '', arguments[1] || ''));
 
                                                     else
                                                         // LapysJS > Error
@@ -1543,10 +1572,10 @@
                                             // Body
                                             Object.defineProperty(data, 'body', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function getBody() {
@@ -1609,7 +1638,7 @@
                                                     */
                                                     if ((arguments[0] || '').constructor === Array) {
                                                         // Insertion
-                                                        this.querySelector('tbody') || this.insertChild('end', document.createElement('tbody'));
+                                                        this.querySelector('tbody') || this.appendChild(document.createElement('tbody'));
 
                                                         // Modification > Target > <tbody> > Inner HTML
                                                         this.querySelector('tbody').innerHTML = '';
@@ -1619,7 +1648,7 @@
                                                         */
                                                         for (let i = 0; i < arguments[0].length; i += 1) {
                                                             // Insertion
-                                                            (this.querySelector('tbody') || this).insertChild('end', 'tr'.html);
+                                                            (this.querySelector('tbody') || this).appendChild('tr'.html);
 
                                                             /* Logic
                                                                     If
@@ -1632,7 +1661,7 @@
                                                                     > Insertion
                                                                 */
                                                                 for (let j = 0; j < arguments[0][i].length; j += 1)
-                                                                    this.querySelectorAll('tr')[~-this.querySelectorAll('tr').length].insertChild('end', createElement('td', '', String(arguments[0][i][j])));
+                                                                    this.querySelectorAll('tr')[~-this.querySelectorAll('tr').length].appendChild(createElement('td', '', String(arguments[0][i][j])));
 
                                                             else {
                                                                 /* Loop
@@ -1650,7 +1679,7 @@
 
                                                     else if (typeof arguments[0] == 'string') {
                                                         // Insertion
-                                                        this.querySelector('tbody') || this.insertChild('end', document.createElement('tbody'));
+                                                        this.querySelector('tbody') || this.appendChild(document.createElement('tbody'));
 
                                                         // Modification > Target > <tbody> > Inner HTML
                                                         this.querySelector('tbody').innerHTML = `<tr><td>${arguments[0]}</td></tr>`
@@ -1661,10 +1690,10 @@
                                             // Columns
                                             Object.defineProperty(data, 'columns', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function getColumns() {
@@ -1730,10 +1759,10 @@
                                             // Foot
                                             Object.defineProperty(data, 'foot', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function getFoot() {
@@ -1762,7 +1791,7 @@
                                                             > Insertion
                                                         */
                                                         for (let i = 0; i < arguments[0].length; i += 1)
-                                                            this.querySelector('tfoot > tr').insertChild('end', createElement('td', '', String(arguments[0][i])))
+                                                            this.querySelector('tfoot > tr').appendChild(createElement('td', '', String(arguments[0][i])))
                                                     }
 
                                                     else if (typeof arguments[0] == 'string')
@@ -1782,10 +1811,10 @@
                                             // Head
                                             Object.defineProperty(data, 'head', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function getHead() {
@@ -1826,7 +1855,7 @@
                                                             > Insertion
                                                         */
                                                         for (let i = 0; i < arguments[0].length; i += 1)
-                                                            this.querySelector('thead').querySelector('tr').insertChild('end', createElement('th', '', String(arguments[0][i])))
+                                                            this.querySelector('thead').querySelector('tr').appendChild(createElement('th', '', String(arguments[0][i])))
                                                     }
 
                                                     else if (typeof arguments[0] == 'string') {
@@ -1941,7 +1970,7 @@
                                                 > Modification > (Data > Row) > Column Span
                                             */
                                             for (let i = 0; i < data.rows.length; i += 1)
-                                                (data.rows[i]._$('td, th', 'array').length >= max.apply(max, columnLengths)) || (data.rows[i]._$('td, th', 'array')[~-data.rows[i]._$('td, th', 'array').length] || document.createElement('td')).setAttribute('colspan', (max.apply(max, columnLengths) - data.rows[i]._$('td, th', 'array').length) + 1)
+                                                (data.rows[i]._$('td, th', 'array').length > ~-max.apply(max, columnLengths)) || (data.rows[i]._$('td, th', 'array')[~-data.rows[i]._$('td, th', 'array').length] || document.createElement('td')).setAttribute('colspan', (max.apply(max, columnLengths) - data.rows[i]._$('td, th', 'array').length) + 1)
                                         }
 
                                         // On DOM Node Count Change
@@ -1970,7 +1999,7 @@
                                                                 this.tagName === 'TBODY' ||
                                                                 this.tagName === 'THEAD'
                                                             )
-                                                                this.insertChild('end', createElement('tr', `[data-id='${arguments[0]}']`));
+                                                                this.appendChild(createElement('tr', `[data-id='${arguments[0]}']`));
 
                                                             else if (this.tagName === 'TFOOT')
                                                                 this.querySelector('tr') || this.insertChild('begin', document.createElement('tr'))
@@ -2046,15 +2075,15 @@
                                                                     columnLengths.push(this.parentElement.parentElement.querySelectorAll('tr')[i]._$('td, th', 'array').length);
 
                                                                 // Insertion
-                                                                this.insertChild('end', createElement(`${this.parentElement.tagName === 'THEAD' ? 'th' : 'td'}`, '', arguments.length > 0 ? String(arguments[0]) : ''));
+                                                                this.appendChild(createElement(`${this.parentElement.tagName === 'THEAD' ? 'th' : 'td'}`, '', arguments.length > 0 ? String(arguments[0]) : ''));
 
                                                                 // Modification > (Target > (<td>, <th>)) > Column Span
-                                                                (this.querySelectorAll('td, th').length >= max.apply(max, columnLengths)) || this.querySelectorAll('td, th')[~-this.querySelectorAll('td, th').length].setAttribute('colspan', (max.apply(max, columnLengths) - this.querySelectorAll('td, th').length) + 1)
+                                                                (this.querySelectorAll('td, th').length > ~-max.apply(max, columnLengths)) || this.querySelectorAll('td, th')[~-this.querySelectorAll('td, th').length].setAttribute('colspan', (max.apply(max, columnLengths) - this.querySelectorAll('td, th').length) + 1)
                                                             }
 
                                                             else
                                                                 // Insertion
-                                                                this.insertChild('end', createElement(`${this.parentElement.tagName === 'THEAD' ? 'th' : 'td'}`, arguments.length > 1 ? `[colspan='${arguments[1]}']` : '', arguments.length > 0 ? String(arguments[0]) : ''))
+                                                                this.appendChild(createElement(`${this.parentElement.tagName === 'THEAD' ? 'th' : 'td'}`, arguments.length > 1 ? `[colspan='${arguments[1]}']` : '', arguments.length > 0 ? String(arguments[0]) : ''))
                                                         }
                                                     });
 
@@ -2151,10 +2180,10 @@
                 */
                 Object.defineProperty(this.constructor.prototype, 'debug', {
                     // Configurable
-                    configurable: true,
+                    configurable: !0,
 
                     // Enumerable
-                    enumerable: true,
+                    enumerable: !0,
 
                     // Get
                     get: function debug() {
@@ -2184,7 +2213,7 @@
                                 // Insert Child
                                 this.insertChild = (function() {
                                     // Insertion
-                                    document.body.insertChild('end', 'div'.html);
+                                    document.body.appendChild('div'.html);
 
                                     // Return
                                     return $$('div', $$('div', '~length'))
@@ -2216,6 +2245,41 @@
                     // Value
                     value: new (function LapysJSDollarObject() {
                         // Modification > Target
+                            /* Anchor
+                                    --- NOTE ---
+                                        @lapys: This function simulates the click event of
+                                            a generic but usually modified hypertext link.
+                            */
+                            Object.defineProperty(this, 'anchor', {
+                                // Value
+                                value: function anchor() {
+                                    // Initialization > Data
+                                    let data = document.createElement('a');
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (arguments.length > 0) {
+                                        // Modification > Data > Hyperlink Reference
+                                        data.href = String(arguments[0]);
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if ((arguments[1] || []).constructor == Object)
+                                            /* Loop
+                                                    [for statement]
+
+                                                > Modification > Data > [Argument 1]
+                                            */
+                                            for (let i = 0; i < Object.keys(arguments[1]).length; i += 1)
+                                                data[Object.keys(arguments[1])] = arguments[1][Object.keys(arguments[1])]
+                                    }
+
+                                    data.click()
+                                }
+                            });
+
                             /* Import
                                     --- NOTE ---
                                         @lapys: This function serves as a means of importing
@@ -2267,7 +2331,7 @@
                                     */
                                     if ('withCredentials' in _XMLHttpRequest)
                                         // XML HTTP Request > Open
-                                        _XMLHttpRequest.open(String(arguments[0]), String(arguments[1]), true);
+                                        _XMLHttpRequest.open(String(arguments[0]), String(arguments[1]), !0);
 
                                     else if (window.XDomainRequest) {
                                         // Update > XML HTTP Request
@@ -2367,7 +2431,7 @@
                 });
 
                 // Executed
-                this.executed = false;
+                this.executed = !!0;
 
                 // Experimental Features
                 Object.defineProperty(this, 'experimentalFeatures', {value: ['data-focus', 'element-index', 'html-javascript', 'style-attributes']});
@@ -2398,10 +2462,10 @@
                     // Disable
                     Object.defineProperty(this.script.constructor.prototype, 'disable', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Set
                         set: function disable() {
@@ -2421,16 +2485,16 @@
                     // Enable
                     Object.defineProperty(this.script.constructor.prototype, 'enable', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Set
                         set: function enable() {
                             // Initialization > (Array, Error, Repeated Element)
                             let array = `${(this.getAttribute('data-enable') || '')} ${arguments[0]}`.split(/ /g),
-                                error = false,
+                                error = !!0,
                                 repeatedElements = array.getRepeatedElements();
 
                             // Update > Array
@@ -2463,7 +2527,7 @@
                                         LapysJS.error(`'${array[j]}' is not an experimental feature of LapysJS.`);
 
                                         // Update > Error
-                                        error = true;
+                                        error = !0;
 
                                         // Break
                                         break arrayValidation
@@ -2477,10 +2541,10 @@
                     // Enabled
                     Object.defineProperty(this.script.constructor.prototype, 'enabled', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function enabled() {
@@ -2502,7 +2566,7 @@
                 });
 
                 // Ready
-                this.ready = false;
+                this.ready = !!0;
 
                 // Temporary Data
                     /* Set Interval
@@ -2656,7 +2720,7 @@
                     _hasElement.push(this.indexOf(arguments[i]) > -1);
 
                 // Return
-                return _hasElement.indexOf(false) < 0
+                return _hasElement.indexOf(!!0) < 0
             }
          });
 
@@ -2956,14 +3020,14 @@
                         While
                             A 'truthy' value is still detected.
                 */
-                while (array.indexOf(false) > -1) {
+                while (array.indexOf(!!0) > -1) {
                     /* Update > (Target, Array)
                             --- WARN ---
                                 @lapys: Update the Array after the Target to prevent logical runtime errors and to prevent an infinite loop.
                     */
-                    this.splice(array.indexOf(false), 1);
-                    this.splice(array.indexOf(false), 0, arguments[0]);
-                    array[array.indexOf(false)] = true
+                    this.splice(array.indexOf(!!0), 1);
+                    this.splice(array.indexOf(!!0), 0, arguments[0]);
+                    array[array.indexOf(!!0)] = !0
                 }
 
                 // Return
@@ -3010,15 +3074,15 @@
                         While
                             A 'truthy' value is still detected.
                 */
-                while (array.indexOf(true) > -1) {
+                while (array.indexOf(!0) > -1) {
                     /* Update > (Target, Array)
                             --- WARN ---
                                 Update the Array after the Target to prevent logical runtime errors.
                                 Update the Array as well to prevent an infinite loop.
                     */
-                    this.splice(array.indexOf(true), 1);
-                    this.splice(array.indexOf(true), 0, arguments[0]);
-                    array[array.indexOf(true)] = false
+                    this.splice(array.indexOf(!0), 1);
+                    this.splice(array.indexOf(!0), 0, arguments[0]);
+                    array[array.indexOf(!0)] = !!0
                 }
 
                 // Return
@@ -3076,7 +3140,7 @@
                         has issues when the function is not an arrow function.
             */
             (data[0].indexOf('=>') < 0) || (data[0] = (data[0].getBeforeChar('=>') + '=>' + data[0].getAfterChar('=>').getBeforeChar('}') + '}').getBeforeChar('}') + '}');
-            !data[1] || (data[~-data.length] = data[~-data.length].replace(/  /g, ' ').replace(/  /g, ' ').getBeforeChar(') {', true).getBeforeChar(') =>', true));
+            !data[1] || (data[~-data.length] = data[~-data.length].replace(/  /g, ' ').replace(/  /g, ' ').getBeforeChar(') {', !0).getBeforeChar(') =>', !0));
 
             // Error Handling
             try {
@@ -3154,7 +3218,7 @@
                 )
                     /* Logic
                             If
-                                Argument 0 is false.
+                                Argument 0 is !!0.
 
                         > Return
                     */
@@ -3184,7 +3248,7 @@
                 else if ((that || []).constructor === Function) {
                     /* Logic
                             If
-                                Argument 0 is false.
+                                Argument 0 is !!0.
                     */
                     if (!arguments[0])
                         // Error Handling
@@ -3207,7 +3271,7 @@
                     ((that || []).outerHTML || 'l')[0] === '<'
                 ) {
                     // Initialization > Clone
-                    let clone = that.cloneNode(false);
+                    let clone = that.cloneNode(!!0);
 
                     /* Logic
                             If
@@ -3240,7 +3304,7 @@
                         > Modification > Clone > [...]
                     */
                     for (let i = 0; i < that.attributes.length; i += 1)
-                        clone.setAttributeNode(that.attributes[i].cloneNode(true));
+                        clone.setAttributeNode(that.attributes[i].cloneNode(!0));
 
                     // Return
                     return clone
@@ -3261,7 +3325,7 @@
                 else if (
                     (that || []).constructor === Object ||
                     (that || []).__proto__.__proto__.constructor === Object ||
-                    isObject(that, true)
+                    isObject(that, !0)
                 ) {
                     // Error Handling
                     try {
@@ -3325,7 +3389,7 @@
                         --- NOTE ---
                             @lapys: Minified polyfill for the 'Object.assign' method.
                 */
-                (typeof Object.assign=='function')||Object.defineProperty(Object,'assign',{configurable:true,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: true});
+                (typeof Object.assign=='function')||Object.defineProperty(Object,'assign',{configurable:!0,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: !0});
 
                 // Return
                 return Object.assign(this, arguments[0] || {});
@@ -3374,7 +3438,7 @@
                                         this.configurable = (Arguments[1] || []).configurable;
 
                                     else
-                                        this.configurable = true;
+                                        this.configurable = !0;
 
                                 // Enumerable
                                     /* Logic
@@ -3388,7 +3452,7 @@
                                         this.enumerable = (Arguments[1] || []).enumerable;
 
                                     else
-                                        this.enumerable = true;
+                                        this.enumerable = !0;
 
                                 // Get
                                 this.get = (Arguments[1] || []).get;
@@ -3417,7 +3481,7 @@
                                     this.writable = (Arguments[1] || []).writable;
 
                                 else
-                                    this.writable = true
+                                    this.writable = !0
                         }
                     }));
 
@@ -3434,7 +3498,7 @@
             // Value
             value: function empty() {
                 // Return
-                return typeof this == 'number' ? !this : !Object.keys(this)[0] || false
+                return typeof this == 'number' ? !this : !Object.keys(this)[0] || !!0
             }
         });
 
@@ -3450,10 +3514,10 @@
         // Name
         Object.prototype.__name__ || Object.defineProperty(Object.prototype, '__name__', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function __name__() {
@@ -3509,10 +3573,10 @@
         */
         Object.defineProperty(Function.prototype, 'lapys', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function lapys() {
@@ -3546,10 +3610,10 @@
         // First Character
         String.prototype.firstChar || Object.defineProperty(String.prototype, 'firstChar', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function firstChar() {
@@ -3612,20 +3676,20 @@
                     > Update > Data
                 */
                 for (let i = 0; i < arguments.length; i += 1)
-                    data.push(!((this.indexOf(str(arguments[i])) < 0) || false));
+                    data.push(!((this.indexOf(str(arguments[i])) < 0) || !!0));
 
                 // Return
-                return data.indexOf(false) < 0
+                return data.indexOf(!!0) < 0
             }
         });
 
         // HTML
         String.prototype.html || Object.defineProperty(String.prototype, 'html', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function html() {
@@ -3651,10 +3715,10 @@
         */
         String.prototype.isRegistered || Object.defineProperty(String.prototype, 'isRegistered', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function isRegistered() {
@@ -3668,10 +3732,10 @@
         // Last Character
         String.prototype.lastChar || Object.defineProperty(String.prototype, 'lastChar', {
             // Configurable
-            configurable: true,
+            configurable: !0,
 
             // Enumerable
-            enumerable: true,
+            enumerable: !0,
 
             // Get
             get: function getLastChar() {
@@ -3773,7 +3837,7 @@
                             > Update > Data
                         */
                         for (let i = 0; i < data.length; i += 1)
-                            typeof data[i] == 'string' ? data[i] = data[i].replace(RegExp(`::lapysjs_comma${random}::`, 'g'), ',') : false;
+                            typeof data[i] == 'string' ? data[i] = data[i].replace(RegExp(`::lapysjs_comma${random}::`, 'g'), ',') : !!0;
 
                         // Return
                         return data
@@ -3809,7 +3873,7 @@
                     */
                     if (
                         this.indexOf('{') > -1 &&
-                        this.indexOf('}') >= this.indexOf('{') &&
+                        this.indexOf('}') > ~-this.indexOf('{') &&
                         this.indexOf(':') > -1
                     )
                         that = that.slice('{'.length, -'}'.length);
@@ -3999,7 +4063,7 @@
                         @lapys: Used for creating random String sets.
                             Mostly used in Regular Expressions within the following modules.
             */
-            let createRandomAlphaNumericString=function createRandomAlphaNumericString(length=1,allowSpecialCharacters=false,allowNumericCharacters=false){if(!allowSpecialCharacters){let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`-=[]\\;\',./*!@#$%^&()_+{}|:"<>?',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}else if(allowSpecialCharacters&&!allowNumericCharacters){let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}else{let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}},
+            let createRandomAlphaNumericString=function createRandomAlphaNumericString(length=1,allowSpecialCharacters=!!0,allowNumericCharacters=!!0){if(!allowSpecialCharacters){let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`-=[]\\;\',./*!@#$%^&()_+{}|:"<>?',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}else if(allowSpecialCharacters&&!allowNumericCharacters){let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}else{let characterArray='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',string='';for(let i=0;i<length;i+=1)string+=characterArray[parseInt(Math.random()*characterArray.length)];return string}},
 
             /* Run Interval
                     --- NOTE ---
@@ -4035,10 +4099,10 @@
                         // Author
                         Object.defineProperty(this.constructor.prototype, 'author', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getAuthor() {
@@ -4057,10 +4121,10 @@
                         // Cache Control
                         Object.defineProperty(this.constructor.prototype, 'cacheControl', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getCacheControl() {
@@ -4079,10 +4143,10 @@
                         // Character Set
                         Object.defineProperty(this.constructor.prototype, 'charset', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getCharset() {
@@ -4107,10 +4171,10 @@
                         // Copyright
                         Object.defineProperty(this.constructor.prototype, 'copyright', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getCopyright() {
@@ -4129,10 +4193,10 @@
                         // Description
                         Object.defineProperty(this.constructor.prototype, 'description', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getDescription() {
@@ -4157,10 +4221,10 @@
                         // Keywords
                         Object.defineProperty(this.constructor.prototype, 'keywords', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getKeywords() {
@@ -4179,10 +4243,10 @@
                         // Name
                         Object.defineProperty(this.constructor.prototype, 'name', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getName() {
@@ -4215,10 +4279,10 @@
                         // Robots
                         Object.defineProperty(this.constructor.prototype, 'robots', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getRobots() {
@@ -4237,10 +4301,10 @@
                         // Theme Color
                         Object.defineProperty(this.constructor.prototype, 'themeColor', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getThemeColor() {
@@ -4267,10 +4331,10 @@
                             // Height
                             Object.defineProperty(this.viewport, 'height', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getHeight() {
@@ -4315,10 +4379,10 @@
                             // Initial Scale
                             Object.defineProperty(this.viewport, 'initialScale', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getInitialScale() {
@@ -4367,10 +4431,10 @@
                             // Maximum Scale
                             Object.defineProperty(this.viewport, 'maximumScale', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getMaximumScale() {
@@ -4419,10 +4483,10 @@
                             // Minimal UI
                             Object.defineProperty(this.viewport, 'minimalUI', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getMinimalUI() {
@@ -4478,10 +4542,10 @@
                             // Minimum Scale
                             Object.defineProperty(this.viewport, 'minimumScale', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getMinimumScale() {
@@ -4530,10 +4594,10 @@
                             // Target Density DPI
                             Object.defineProperty(this.viewport, 'targetDensityDPI', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getTargetDensityDPI() {
@@ -4550,10 +4614,10 @@
                             // User Scalable
                             Object.defineProperty(this.viewport, 'userScalable', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getUserScalable() {
@@ -4567,7 +4631,7 @@
                                     let data = arguments[0];
 
                                     // Update > Data
-                                    typeof data != 'string' ? (!!data ? data = 'yes' : data = 'no') : (data !== 'yes' && data !== 'no') ? data = 'yes' : false;
+                                    typeof data != 'string' ? (!!data ? data = 'yes' : data = 'no') : (data !== 'yes' && data !== 'no') ? data = 'yes' : !!0;
 
                                     /* Logic
                                             If
@@ -4604,10 +4668,10 @@
                             // Width
                             Object.defineProperty(this.viewport, 'width', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getWidth() {
@@ -4652,10 +4716,10 @@
                         // Version
                         Object.defineProperty(this, 'version', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getVersion() {
@@ -4680,10 +4744,10 @@
                         // Chrome
                         Object.defineProperty(this, 'chrome', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function chrome() {
@@ -4695,10 +4759,10 @@
                         // Firefox
                         Object.defineProperty(this, 'firefox', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function firefox() {
@@ -4710,25 +4774,25 @@
                         // Internet Explorer
                         Object.defineProperty(this, 'internetExplorer', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function internetExplorer() {
                                 // Return
-                                return !!(/*@cc_on!@*/ false || !!document.documentMode)
+                                return !!(/*@cc_on!@*/ !!0 || !!document.documentMode)
                             }
                         });
 
                         // Opera
                         Object.defineProperty(this, 'opera', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function opera() {
@@ -4740,10 +4804,10 @@
                         // Safari
                         Object.defineProperty(this, 'safari', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function safari() {
@@ -4807,10 +4871,10 @@
                         // Full Name
                         Object.defineProperty(this, 'fullName', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function fullName() {
@@ -4822,10 +4886,10 @@
                         // Name
                         Object.defineProperty(this, 'name', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function name() {
@@ -4837,10 +4901,10 @@
                         // Type
                         Object.defineProperty(this, 'type', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function type() {
@@ -4854,10 +4918,10 @@
             // HTML Document Type
             constructor.prototype.HTMLDoctype || Object.defineProperty(constructor.prototype, 'HTMLDoctype', {
                 // Configurable
-                configurable: true,
+                configurable: !0,
 
                 // Enumerable
-                enumerable: true,
+                enumerable: !0,
 
                 // Get
                 get: function HTMLDoctype() {
@@ -4916,10 +4980,10 @@
                         // Macintosh
                         Object.defineProperty(this, 'macintosh', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function macintosh() {
@@ -4931,10 +4995,10 @@
                         // Linux
                         Object.defineProperty(this, 'linux', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function linux() {
@@ -4946,10 +5010,10 @@
                         // Unix
                         Object.defineProperty(this, 'unix', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function unix() {
@@ -4961,10 +5025,10 @@
                         // Windows
                         Object.defineProperty(this, 'windows', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function windows() {
@@ -4979,10 +5043,10 @@
             // Fav Icon
             Document.prototype.favicon || (Object.defineProperty(Document.prototype, 'favicon', {
                 // Configurable
-                configurable: true,
+                configurable: !0,
 
                 // Enumerable
-                enumerable: true,
+                enumerable: !0,
 
                 // Get
                 get: function getFavicon() {
@@ -5000,10 +5064,10 @@
             // Main
             Document.prototype.main || Object.defineProperty(Document.prototype, 'main', {
                 // Configurable
-                configurable: true,
+                configurable: !0,
 
                 // Enumerable
-                enumerable: true,
+                enumerable: !0,
 
                 // Get
                 get: function main() {
@@ -5015,10 +5079,10 @@
             // Title (Element)
             Document.prototype.titleElement || Object.defineProperty(Document.prototype, 'titleElement', {
                 // Configurable
-                configurable: true,
+                configurable: !0,
 
                 // Enumerable
-                enumerable: true,
+                enumerable: !0,
 
                 // Get
                 get: function title() {
@@ -5082,10 +5146,10 @@
                                 // Modification > <access-value> > Value
                                 Object.defineProperty(new (document.createElement('access-value')).constructor().constructor.prototype, 'value', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getValue() {
@@ -5138,7 +5202,7 @@
                                         --- NOTE ---
                                             @lapys: Sadly, we can't delete off the <key-command> elements, yet...
                                 */
-                                document.getElementsByTagName('key-command')[i].hidden = true
+                                document.getElementsByTagName('key-command')[i].hidden = !0
                             }
                         });
 
@@ -5146,10 +5210,10 @@
                             // Function
                             Object.defineProperty(new (document.createElement('key-command')).constructor().constructor.prototype, 'function', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getFunction() {
@@ -5167,10 +5231,10 @@
                             // Key
                             Object.defineProperty(new (document.createElement('key-command')).constructor().constructor.prototype, 'key', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getKey() {
@@ -5192,10 +5256,10 @@
                         // Modification > Length
                         Object.defineProperty(new (document.createElement('lorem-ipsum')).constructor().constructor.prototype, 'len', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getLength() {
@@ -5259,10 +5323,10 @@
                         // Modification > Source
                         Object.defineProperty(new (document.createElement('fav-icon')).constructor().constructor.prototype, 'src', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function getSrc() {
@@ -5367,7 +5431,7 @@
                                         the <img> is in view.
                         */
                         for (let i = 0; i < document.querySelectorAll('img[lazy-load').length; i += 1)
-                            if ((window.innerHeight + window.scrollY) >= document.querySelectorAll('img[lazy-load')[i].getBoundingClientRect().top) {
+                            if ((window.innerHeight + window.scrollY) > ~-document.querySelectorAll('img[lazy-load')[i].getBoundingClientRect().top) {
                                 // Modification > <img> > (Lazy Loaded, Source)
                                 document.querySelectorAll('img[lazy-load')[i].setAttribute('lazy-loaded', '');
                                 document.querySelectorAll('img[lazy-load')[i].src = document.querySelectorAll('img[lazy-load')[i].getAttribute('lazy-load')
@@ -5430,7 +5494,7 @@
 
                                 // Remove
                                 document.querySelectorAll('[lazy-script')[i]['LapysJS remove'] = document.querySelectorAll('[lazy-script')[i].remove.clone();
-                                document.querySelectorAll('[lazy-script')[i].remove = () => { document.querySelectorAll('[lazy-script')[i]['LapysJS toBeRemoved'] = true }
+                                document.querySelectorAll('[lazy-script')[i].remove = () => { document.querySelectorAll('[lazy-script')[i]['LapysJS toBeRemoved'] = !0 }
                         };
 
                         /* Loop
@@ -5441,7 +5505,7 @@
                                         the element is in view.
                         */
                         for (let i = 0; i < document.querySelectorAll('[lazy-script').length; i += 1)
-                            if ((window.innerHeight + window.scrollY) >= document.querySelectorAll('[lazy-script')[i].getBoundingClientRect().top) {
+                            if ((window.innerHeight + window.scrollY) > ~-document.querySelectorAll('[lazy-script')[i].getBoundingClientRect().top) {
                                 // Modification > Element > Lazy Scripted
                                 document.querySelectorAll('[lazy-script')[i].setAttribute('lazy-scripted', '');
 
@@ -5471,7 +5535,7 @@
                         for (let i = 0; i < document.querySelectorAll('[lazy-script').length; i += 1)
                             ((window.innerHeight + window.scrollY) < document.querySelectorAll('[lazy-script')[i].getBoundingClientRect().top) || document.querySelectorAll('[lazy-script')[i--].removeAttribute('lazy-script');
                     })
-                }, true);
+                }, !0);
 
             /* <input> */
                 /* Loop
@@ -5655,10 +5719,10 @@
                             // Modification > Script > Script
                             (typeof document.querySelectorAll('[script')[i].script == 'string') || Object.defineProperty(document.querySelectorAll('[script')[i], 'script', {
                                 // Configurable
-                                configurable: true,
+                                configurable: !0,
 
                                 // Enumerable
-                                enumerable: true,
+                                enumerable: !0,
 
                                 // Get
                                 get: function getScript() {
@@ -5732,11 +5796,11 @@
                                     hasClass.push(this.getAttribute('class').trim().split(/ /g).indexOf(inputClass[i]) > -1);
 
                                 // Return
-                                return hasClass.indexOf(false) < 0
+                                return hasClass.indexOf(!!0) < 0
                             }
 
                             // Return
-                            return false
+                            return !!0
                         }
                     });
 
@@ -5759,7 +5823,7 @@
                                 */
                                 for (let j = 0; j < Arguments[i].split(/ /g).length; j += 1)
                                     // Update > Name
-                                    ((this.getAttribute('class') || '').trim().split(/ /g).indexOf(Arguments[i].split(/ /g)[j]) <= -1) || (Arguments[i] = Arguments[i].replace(Arguments[i].split(/ /g)[j], ''));
+                                    ((this.getAttribute('class') || '').trim().split(/ /g).indexOf(Arguments[i].split(/ /g)[j]) < 0) || (Arguments[i] = Arguments[i].replace(Arguments[i].split(/ /g)[j], ''));
 
                                 // Update > Arguments
                                 Arguments[i] = Arguments[i].trim();
@@ -5794,7 +5858,7 @@
                                     'class',
                                     (`${(this.getAttribute('class') || '')} ${Arguments[i]}`).trim()
                                 );
-                                (Arguments[i] !== '' && void Arguments[i] === false) || (this.getAttribute('class') || this.removeAttribute('class'))
+                                (Arguments[i] !== '' && void Arguments[i] === !!0) || (this.getAttribute('class') || this.removeAttribute('class'))
                             }
                         }
                     });
@@ -5857,10 +5921,10 @@
                         value: function close() {
                             // Modification > Target
                                 // Data Close
-                                this.setAttribute('data-close', true);
+                                this.setAttribute('data-close', !0);
 
                                 // Data Open
-                                this.setAttribute('data-open', false)
+                                this.setAttribute('data-open', !!0)
                         }
                     });
 
@@ -6315,7 +6379,7 @@
                             }
 
                             // Return
-                            return !arguments[0] == false ? left < (innerWidth + pageXOffset) && pageXOffset < (left + this.offsetWidth) && pageYOffset < (this.offsetHeight + top) && top < (innerHeight + pageYOffset) : left >= pageXOffset && (left + this.offsetWidth) <= (pageXOffset + innerWidth) && top >= pageYOffset && (this.offsetHeight + top) <= (pageYOffset + innerHeight)
+                            return !arguments[0] == !!0 ? left < (innerWidth + pageXOffset) && pageXOffset < (left + this.offsetWidth) && pageYOffset < (this.offsetHeight + top) && top < (innerHeight + pageYOffset) : left > ~-pageXOffset && (left + this.offsetWidth) < (pageXOffset + innerWidth + 1) && top > ~-pageYOffset && (this.offsetHeight + top) < (pageYOffset + innerHeight + 1)
                         }
                     });
 
@@ -6334,10 +6398,10 @@
                         value: function open() {
                             // Modification > Target
                                 // Data Close
-                                this.setAttribute('data-close', false);
+                                this.setAttribute('data-close', !!0);
 
                                 // Data Open
-                                this.setAttribute('data-open', true)
+                                this.setAttribute('data-open', !0)
                         }
                     });
 
@@ -6402,7 +6466,7 @@
 
                             else
                                 // Modification > Target > Argument 0
-                                this.setAttributeNode(arguments[0].cloneNode(true))
+                                this.setAttributeNode(arguments[0].cloneNode(!0))
                         }
                     });
 
@@ -6433,14 +6497,14 @@
                             let Arguments = [...arguments];
 
                             // Update > Argument (0, 1)
-                            isObject(Arguments[0], true) || ((Arguments[0] || '').constructor === Array) || (Arguments[0] = [Arguments[0]]);
-                            isObject(Arguments[0], true) || ((Arguments[1] || '').constructor === Array) || (Arguments[1] = [Arguments[1]]);
+                            isObject(Arguments[0], !0) || ((Arguments[0] || '').constructor === Array) || (Arguments[0] = [Arguments[0]]);
+                            isObject(Arguments[0], !0) || ((Arguments[1] || '').constructor === Array) || (Arguments[1] = [Arguments[1]]);
 
                             /* Logic
                                     If
                                         Argument 0 is an Object.
                             */
-                            if (isObject(Arguments[0], true)) {
+                            if (isObject(Arguments[0], !0)) {
                                 // Initialization > Data, Metadata
                                 let data = [],
                                     metadata = [];
@@ -6452,7 +6516,7 @@
                                     /* Logic
                                             [if:else if:else statement]
                                     */
-                                    if (isObject(Arguments[0][Object.keys(Arguments[0])[i]], true))
+                                    if (isObject(Arguments[0][Object.keys(Arguments[0])[i]], !0))
                                         /* Loop
                                                 [for statement]
 
@@ -6475,7 +6539,7 @@
                                         // Metadata > Push
                                         metadata.push(Arguments[0][Object.keys(Arguments[0])[i]]);
 
-                                    else if (isObject(Arguments[0][Object.keys(Arguments[0])[i]], true))
+                                    else if (isObject(Arguments[0][Object.keys(Arguments[0])[i]], !0))
                                         /* Loop
                                                 [for statement]
 
@@ -6554,14 +6618,14 @@
                                     */
                                     for (let j = 0; j < String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g).length; j += 1) {
                                         // Modification > Target > Custom Events
-                                        (this || window).customEvents = (this || window).customEvents || {fallback: true};
+                                        (this || window).customEvents = (this || window).customEvents || {fallback: !0};
                                             // [Argument 0]
                                             (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]] = typeof document.createEvent == 'function' ? document.createEvent('Event') : document.createEventObject();
                                                 // [Argument 0] > Initialize Event
-                                                typeof (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent == 'function' ? (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent(String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j], true, true) : false;
+                                                typeof (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent == 'function' ? (this || window).customEvents[String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j]].initEvent(String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j], !0, !0) : !!0;
 
                                         // Event > Target > [Argument 0]
-                                        (this || window).setEvent(String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j], Object.values([...arguments].slice(1))[i], false)
+                                        (this || window).setEvent(String(arguments[0]).replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g)[j], Object.values([...arguments].slice(1))[i], !!0)
                                 }
                         }
                     });
@@ -6656,7 +6720,7 @@
                             let data = typeof window.getEventListeners == 'function' ?
                                 new (function LapysJSEventMap() {
                                     // Update > Meta Data
-                                    metadata = true;
+                                    metadata = !0;
 
                                     /* Loop
                                             Index all Event Listeners.
@@ -6831,7 +6895,7 @@
                                 // Error Handling
                                 try {
                                     // Initialization > (Target, Result)
-                                    let that = (this === window || !this ? document : this).cloneNode(true),
+                                    let that = (this === window || !this ? document : this).cloneNode(!0),
                                         result;
 
                                     /* Loop
@@ -6848,7 +6912,7 @@
                                         > Update > Result
                                     */
                                     if ((that.$$.apply(that, [...arguments])[0] || document.head).tagName === document.documentElement.tagName)
-                                        result = [document.documentElement.clone(true)];
+                                        result = [document.documentElement.clone(!0)];
 
                                     else if (
                                         (that.$$.apply(that, [[...arguments][0]])[0] || that.$$.apply(that, [[...arguments][0]])).tagName === document.documentElement.tagName &&
@@ -6857,7 +6921,7 @@
                                         result = [...arguments].indexOf('~length') > -1 ? 0 : 1;
 
                                     else
-                                        result = (that.$$.apply(that, [...arguments])[0] || document.head).tagName === document.documentElement.tagName ? [document.documentElement.clone(true)] : that.$$.apply(that, [...arguments]);
+                                        result = (that.$$.apply(that, [...arguments])[0] || document.head).tagName === document.documentElement.tagName ? [document.documentElement.clone(!0)] : that.$$.apply(that, [...arguments]);
 
                                     /* Loop
                                             Index all Target's children.
@@ -6919,7 +6983,7 @@
                                     let event = document.createEvent('HTMLEvents');
 
                                     // Event > Initialize Event
-                                    event.initEvent(String(Arguments[i]), false, true);
+                                    event.initEvent(String(Arguments[i]), !!0, !0);
 
                                     // Target > Dispatch Event
                                     (this || window).dispatchEvent(event)
@@ -7084,7 +7148,7 @@
                                     --- NOTE ---
                                         Minified polyfill for the 'ParentNode.prepend' method.
                             */
-                            (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:true,enumerable:true,value:function prepend(){var argArr=Array.prototype.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:true})})})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
+                            (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:!0,enumerable:!0,value:function prepend(){var argArr=Array.prototype.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:!0})})})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
 
                             // Insertion > Element
                             this[(str((arguments[0] !== 'begin') || str((!this.prepend || 'prepend')).replace('true', 'cloneNode')).replace('true', str((arguments[0] !== 'end') || str((!this.append || 'append')).replace('true', 'appendChild')).replace('true', '')) || 'cloneNode')](arguments[1])
@@ -7097,96 +7161,97 @@
                     */
                     Element.prototype.CSSSelector || Object.defineProperty(Element.prototype, 'CSSSelector', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function getCSSSelector() {
                             // Initialization
-                                // Target
-                                let that = this;
+                                // CSS Selector, Target
+                                let CSSSelector = '',
+                                    that = this;
 
-                                // CSS Selector
-                                let CSSSelector = (
-                                    that.tagName.toLowerCase() +
-                                    (() => {
-                                        // Initialization > Classes
-                                        let Classes = '';
+                            // Update > CSS Selector
+                            CSSSelector = (
+                                that.tagName.toLowerCase() +
+                                (() => {
+                                    // Initialization > Classes
+                                    let Classes = '';
 
-                                        /* Logic
-                                                If the Target has a class.
+                                    /* Logic
+                                            If the Target has a class.
+                                    */
+                                    if (that.getAttribute('class'))
+                                        /* Loop
+                                                Index all the Target's class nodes.
                                         */
-                                        if (that.getAttribute('class'))
-                                            /* Loop
-                                                    Index all the Target's class nodes.
-                                            */
-                                            for (let i = 0; i < that.getAttribute('class').split(/ /g).length; i += 1)
-                                                /* Logic
-                                                        If
-                                                            the class node has any 'unusual''characters.
-
-                                                    > Update > Classes
-                                                */
-                                                if (that.getAttribute('class').split(/ /g)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
-                                                    Classes += `[class='${that.getAttribute('class').split(/ /g)[i]}']`;
-
-                                                else
-                                                    Classes += `.${that.getAttribute('class').split(/ /g)[i]}`;
-
-                                        // Return
-                                        return Classes
-                                    })() +
-
-                                    // ID
-                                    (() => {
-                                        /* Logic
-                                                If
-                                                    the Target has an ID.
-                                        */
-                                        if (that.id)
+                                        for (let i = 0; i < that.getAttribute('class').split(/ /g).length; i += 1)
                                             /* Logic
                                                     If
-                                                        the Target ID has any 'unusual''characters.
+                                                        the class node has any 'unusual''characters.
 
-                                                > Return
+                                                > Update > Classes
                                             */
-                                            if (that.id.replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
-                                                return `[id='${that.id}']`;
+                                            if (that.getAttribute('class').split(/ /g)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
+                                                Classes += `[class='${that.getAttribute('class').split(/ /g)[i]}']`;
 
                                             else
-                                                // Return
-                                                return `#${that.id}`;
+                                                Classes += `.${that.getAttribute('class').split(/ /g)[i]}`;
 
-                                        // Return
-                                        return ''
-                                    })() +
+                                    // Return
+                                    return Classes
+                                })() +
 
-                                    // Attributes
-                                    (() => {
-                                        // Initialization > Attributes
-                                        let thatAttributes = '';
+                                // ID
+                                (() => {
+                                    /* Logic
+                                            If
+                                                the Target has an ID.
+                                    */
+                                    if (that.id)
+                                        /* Logic
+                                                If
+                                                    the Target ID has any 'unusual''characters.
 
-                                        /* Loop
-                                                Index the element"s attributes.
+                                            > Return
                                         */
-                                        for (let i = 0; i < that.attributes.length; i += 1)
-                                            /* Logic
-                                                    If
-                                                        the attribute name is not 'class' and 'id'.
-                                            */
-                                            if (
-                                                that.attributes[i].name !== 'class' &&
-                                                that.attributes[i].name !== 'id'
-                                            )
-                                                // Update > Attributes
-                                                thatAttributes += `[${that.attributes[i].name}='${(that.attributes[i].value || '').replace(/'/g, "\"")}']`;
+                                        if (that.id.replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
+                                            return `[id='${that.id}']`;
 
-                                        // Return
-                                        return thatAttributes
-                                    })()
-                                );
+                                        else
+                                            // Return
+                                            return `#${that.id}`;
+
+                                    // Return
+                                    return ''
+                                })() +
+
+                                // Attributes
+                                (() => {
+                                    // Initialization > Attributes
+                                    let thatAttributes = '';
+
+                                    /* Loop
+                                            Index the element"s attributes.
+                                    */
+                                    for (let i = 0; i < that.attributes.length; i += 1)
+                                        /* Logic
+                                                If
+                                                    the attribute name is not 'class' and 'id'.
+                                        */
+                                        if (
+                                            that.attributes[i].name !== 'class' &&
+                                            that.attributes[i].name !== 'id'
+                                        )
+                                            // Update > Attributes
+                                            thatAttributes += `[${that.attributes[i].name}='${(that.attributes[i].value || '').replace(/'/g, "\"")}']`;
+
+                                    // Return
+                                    return thatAttributes
+                                })()
+                            );
 
                             // Return
                             return CSSSelector.replace(/=\'\'/g, '')
@@ -7282,10 +7347,10 @@
                     // Parent
                     Element.prototype.parent || Object.defineProperty(Element.prototype, 'parent', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function parent() {
@@ -7297,10 +7362,10 @@
                     // Parent Path
                     document.createElement('a').parentPath || Object.defineProperty(Element.prototype, 'parentPath', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function parentPath() {
@@ -7335,10 +7400,10 @@
                     // Previous Element Siblings
                     Element.prototype.previousElementSiblings || Object.defineProperty(Element.prototype, 'previousElementSiblings', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function previousElementSiblings() {
@@ -7351,20 +7416,20 @@
                                 > Update > Result
                             */
                             for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
-                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) >= [...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) > ~-[...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
 
                             // Return
-                            return result
+                            return result.length > 0 ? result : null
                         }
                     });
 
                     // Next Element Siblings
                     Element.prototype.nextElementSiblings || Object.defineProperty(Element.prototype, 'nextElementSiblings', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function nextElementSiblings() {
@@ -7377,7 +7442,7 @@
                                 > Update > Result
                             */
                             for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
-                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) <= [...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) < ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) + 1) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
 
                             // Return
                             return result
@@ -7387,10 +7452,10 @@
                     // Role
                     Element.prototype.role || Object.defineProperty(Element.prototype, 'role', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function getRole() {
@@ -7408,10 +7473,10 @@
                     // Siblings
                     Element.prototype.siblings || Object.defineProperty(Element.prototype, 'siblings', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function getSiblings() {
@@ -7436,10 +7501,10 @@
                     // Height
                     Element.prototype.height || Object.defineProperty(HTMLElement.prototype, 'height', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function getHeight() {
@@ -7457,10 +7522,10 @@
                     // Offset
                     Element.prototype.offset || (Object.defineProperty(HTMLElement.prototype, 'offset', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function offset() {
@@ -7472,10 +7537,10 @@
                     // Pseudo
                     Element.prototype.__pseudo__ || Object.defineProperty(HTMLElement.prototype, '__pseudo__', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function getPseudo() {
@@ -7552,10 +7617,10 @@
                                 // Modification > LapysJS Pseudo Attributes List
                                 Object.defineProperty(_LapysJSPseudoAttributesList, '__pseudo__', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function __pseudo__() {
@@ -7572,10 +7637,10 @@
                                 for (let i = 0; i < Object.keys(_LapysJSPseudoAttributesList).length; i += 1)
                                     Object.defineProperty(this, Object.keys(_LapysJSPseudoAttributesList)[i], {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function getPseudo() {
@@ -7598,10 +7663,10 @@
                     // Width
                     Element.prototype.width || Object.defineProperty(HTMLElement.prototype, 'width', {
                         // Configurable
-                        configurable: true,
+                        configurable: !0,
 
                         // Enumerable
-                        enumerable: true,
+                        enumerable: !0,
 
                         // Get
                         get: function getWidth() {
@@ -7679,10 +7744,10 @@
                                             value: function close() {
                                                 // Modification > Target
                                                     // Data Close
-                                                    this.setAttribute('data-close', true);
+                                                    this.setAttribute('data-close', !0);
 
                                                     // Data Open
-                                                    this.setAttribute('data-open', false)
+                                                    this.setAttribute('data-open', !!0)
                                             }
                                         });
                                         accordion[i]['LapysJS close']();
@@ -7693,10 +7758,10 @@
                                             value: function open() {
                                                 // Modification > Target
                                                     // Data Close
-                                                    this.setAttribute('data-close', false);
+                                                    this.setAttribute('data-close', !!0);
 
                                                     // Data Open
-                                                    this.setAttribute('data-open', true)
+                                                    this.setAttribute('data-open', !0)
                                             }
                                         });
 
@@ -7714,10 +7779,10 @@
                                             // Content
                                             Object.defineProperty(accordion[i], 'content', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function content() {
@@ -7729,10 +7794,10 @@
                                             // Header
                                             Object.defineProperty(accordion[i], 'header', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function header() {
@@ -7748,10 +7813,10 @@
                                                 for (let j = 0; j < accordion[i].children.length; j += 1)
                                                     !(accordion[i].children[j].getAttribute('data-id') === 'content' || accordion[i].children[j].getAttribute('data-id') === 'header') || Object.defineProperty(accordion[i].children[j], 'accordion', {
                                                         // Configurable
-                                                        configurable: true,
+                                                        configurable: !0,
 
                                                         // Enumerable
-                                                        enumerable: true,
+                                                        enumerable: !0,
 
                                                         // Get
                                                         get: function accordion() {
@@ -7787,7 +7852,7 @@
                                     });
 
                                     // Modification > Accordion > Is Modified
-                                    accordion[i]['LapysJS isModified'] = true
+                                    accordion[i]['LapysJS isModified'] = !0
                                 }
                     });
 
@@ -7822,10 +7887,10 @@
                                     // Active Slide
                                     Object.defineProperty(carousel[i], 'activeSlide', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function activeSlide() {
@@ -7837,10 +7902,10 @@
                                     // Buttons
                                     Object.defineProperty(carousel[i], 'buttons', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function buttons() {
@@ -7851,10 +7916,10 @@
                                                 // Left
                                                 Object.defineProperty(data, 'left', {
                                                     // Configurable
-                                                    configurable: true,
+                                                    configurable: !0,
 
                                                     // Enumerable
-                                                    enumerable: true,
+                                                    enumerable: !0,
 
                                                     // Get
                                                     get: function getLeft() {
@@ -7872,10 +7937,10 @@
                                                 // Right
                                                 Object.defineProperty(data, 'right', {
                                                     // Configurable
-                                                    configurable: true,
+                                                    configurable: !0,
 
                                                     // Enumerable
-                                                    enumerable: true,
+                                                    enumerable: !0,
 
                                                     // Get
                                                     get: function getRight() {
@@ -7898,10 +7963,10 @@
                                     // Containers
                                     Object.defineProperty(carousel[i], 'containers', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function containers() {
@@ -7924,10 +7989,10 @@
                                     // Direction
                                     Object.defineProperty(carousel[i], 'direction', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function getDirection() {
@@ -7945,10 +8010,10 @@
                                     // Indicators
                                     Object.defineProperty(carousel[i], 'indicators', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function getIndicators() {
@@ -7966,10 +8031,10 @@
                                     // Interval
                                     Object.defineProperty(carousel[i], 'interval', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function getInterval() {
@@ -7987,10 +8052,10 @@
                                     // Slides
                                     Object.defineProperty(carousel[i], 'slides', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function slides() {
@@ -8036,9 +8101,9 @@
                                                     (this.slides[i].getCSS('display').indexOf('inline') < 0) || (this.slides[i].setCSS('display', this.slides[i].getCSS('display').replace('inline-', '') + ' !important'));
 
                                                     // Left
-                                                    (i >= data) || this.slides[i].setCSS('left', `-${this.offset.left - this.slides[i].offset.width}px`);
+                                                    (i > ~-data) || this.slides[i].setCSS('left', `-${this.offset.left - this.slides[i].offset.width}px`);
                                                     (i !== data) || this.slides[i].setCSS('left', `0px`);
-                                                    (i <= data) || this.slides[i].setCSS('left', `${this.offset.right}px`);
+                                                    (i < data + 1) || this.slides[i].setCSS('left', `${this.offset.right}px`);
 
                                                     // Top
                                                     this.slides[i].setCSS('top', `-${this.slides[i].offset.height * i}px`)
@@ -8049,7 +8114,7 @@
                                         },
 
                                         // Writable
-                                        writable: true
+                                        writable: !0
                                     });
 
                             /* Loop
@@ -8153,7 +8218,7 @@
                                 // Mouse Down, Touch Start
                                 carousel[i].setEvent('mousedown touchstart', function carouselUserGesture_SwipeToggleSlide(event) {
                                     // Modification > Target > Cursor Position X
-                                    this['LapysJS eventPositionX'] = event.clientX || event.changedTouches[0].clientX
+                                    (carousel[i].getAttribute('class').trim().split(/ /g).indexOf('no-swipe') > -1) || (this['LapysJS eventPositionX'] = event.clientX || event.changedTouches[0].clientX)
                                 });
 
                                 // Mouse Up, Touch End
@@ -8161,30 +8226,34 @@
                                     /* Logic
                                             [if:else if:else statement]
                                     */
-                                    if (event.constructor === window.MouseEvent) {
+                                    if (carousel[i].getAttribute('class').trim().split(/ /g).indexOf('no-swipe') < 0)
                                         /* Logic
                                                 [if:else if:else statement]
-
-                                            > Target > Toggle (Previous, Next) Slide
                                         */
-                                        if (event.clientX < this['LapysJS eventPositionX'] - (innerWidth * (45 / 100)))
-                                            this.togglePreviousSlide();
+                                        if (event.constructor === window.MouseEvent) {
+                                            /* Logic
+                                                    [if:else if:else statement]
 
-                                        else if (event.clientX > this['LapysJS eventPositionX'] + (innerWidth * (45 / 100)))
-                                            this.toggleNextSlide()
-                                    }
+                                                > Target > Toggle (Previous, Next) Slide
+                                            */
+                                            if (event.clientX < this['LapysJS eventPositionX'] - (innerWidth * (45 / 100)))
+                                                this.togglePreviousSlide();
 
-                                    else if (event.constructor === window.TouchEvent)
-                                        /* Logic
-                                                [if:else if:else statement]
+                                            else if (event.clientX > this['LapysJS eventPositionX'] + (innerWidth * (45 / 100)))
+                                                this.toggleNextSlide()
+                                        }
 
-                                            > Target > Toggle (Previous, Next) Slide
-                                        */
-                                        if (event.changedTouches[0].clientX > this['LapysJS eventPositionX'] + (innerWidth * (45 / 100)))
-                                            this.togglePreviousSlide();
+                                        else if (event.constructor === window.TouchEvent)
+                                            /* Logic
+                                                    [if:else if:else statement]
 
-                                        else if (event.changedTouches[0].clientX < this['LapysJS eventPositionX'] - (innerWidth * (45 / 100)))
-                                            this.toggleNextSlide()
+                                                > Target > Toggle (Previous, Next) Slide
+                                            */
+                                            if (event.changedTouches[0].clientX > this['LapysJS eventPositionX'] + (innerWidth * (45 / 100)))
+                                                this.togglePreviousSlide();
+
+                                            else if (event.changedTouches[0].clientX < this['LapysJS eventPositionX'] - (innerWidth * (45 / 100)))
+                                                this.toggleNextSlide()
                                 });
 
                             /* Set Interval
@@ -8218,7 +8287,7 @@
                             carousel[i].toggleSlide(0);
 
                             // Modification > Carousel > Is Modified
-                            carousel[i]['LapysJS isModified'] = true
+                            carousel[i]['LapysJS isModified'] = !0
                         }
                     });
 
@@ -8481,10 +8550,10 @@
                                         // Modification > Button > Carousel
                                         carousel[i].buttons[j].carousel || Object.defineProperty(carousel[i].buttons[j], 'carousel', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function carousel() {
@@ -8529,7 +8598,7 @@
                                                 // Target > Carousel > Toggle Next Slide
                                                 this.carousel.toggleNextSlide()
                                         });
-                                        carousel[i].buttons[j]['LapysJS carouselSlideToggleEventSet'] = true
+                                        carousel[i].buttons[j]['LapysJS carouselSlideToggleEventSet'] = !0
                                     }
 
                                     /* Logic
@@ -8544,10 +8613,10 @@
                                             // Modification > Indicator > Carousel
                                             carousel[i].indicators[j].carousel || Object.defineProperty(carousel[i].indicators[j], 'carousel', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function carousel() {
@@ -8580,7 +8649,7 @@
                                                 // Target > Carousel > Toggle Slide
                                                 this.carousel.toggleSlide(+(this.getAttribute('data-slide-index') || '').replace(/ /g, ''))
                                             });
-                                            carousel[i].indicators[j]['LapysJS carouselSlideToggleEventSet'] = true
+                                            carousel[i].indicators[j]['LapysJS carouselSlideToggleEventSet'] = !0
                                         }
 
                                     /* Loop
@@ -8818,10 +8887,10 @@
                                         value: function close() {
                                             // Modification > Target
                                                 // Data Close
-                                                this.setAttribute('data-close', true);
+                                                this.setAttribute('data-close', !0);
 
                                                 // Data Open
-                                                this.setAttribute('data-open', false);
+                                                this.setAttribute('data-open', !!0);
 
                                             /* Loop
                                                     [for statement]
@@ -8829,10 +8898,10 @@
                                                 > Modification > (Dropdown > Content) > Hidden
                                             */
                                             for (let i = 0; i < document.querySelectorAll(`[data-id='${this.getAttribute('data-id')}']`).length; i += 1)
-                                                document.querySelectorAll(`[data-id='${this.getAttribute('data-id')}']`)[i].hidden = true;
+                                                document.querySelectorAll(`[data-id='${this.getAttribute('data-id')}']`)[i].hidden = !0;
 
                                             // Modification > Target > Hidden
-                                            this.hidden = false
+                                            this.hidden = !!0
                                         }
                                     });
                                     dropdown[i]['LapysJS close']();
@@ -8843,10 +8912,10 @@
                                         value: function open() {
                                             // Modification > Target
                                                 // Data Close
-                                                this.setAttribute('data-close', false);
+                                                this.setAttribute('data-close', !!0);
 
                                                 // Data Open
-                                                this.setAttribute('data-open', true);
+                                                this.setAttribute('data-open', !0);
 
                                             /* Loop
                                                     [for statement]
@@ -8854,14 +8923,14 @@
                                                 > Modification > (Dropdown > Content) > Hidden
                                             */
                                             for (let i = 0; i < document.querySelectorAll(`[data-id='${this.getAttribute('data-id')}']`).length; i += 1)
-                                                document.querySelectorAll(`[data-id='${this.getAttribute('data-id')}']`)[i].hidden = false
+                                                document.querySelectorAll(`[data-id='${this.getAttribute('data-id')}']`)[i].hidden = !!0
                                         }
                                     });
 
                                 // Event > Dropdown > ([Data Event Type] | Click)
                                 dropdown[i].setEvent((dropdown[i].getAttribute('data-event-type') || 'click').trim(), function toggleDropdown() {
                                     // Modification > Target > Toggle
-                                    (this.getAttribute('data-open') !== 'true') || (this['LapysJS toggle'] = true);
+                                    (this.getAttribute('data-open') !== 'true') || (this['LapysJS toggle'] = !0);
 
                                     // Toggle
                                     this['LapysJS toggle'] ? this['LapysJS close']() : this['LapysJS open']();
@@ -8869,7 +8938,7 @@
                                 });
 
                                 // Modification > Dropdown > Is Modified
-                                dropdown[i]['LapysJS isModified'] = true
+                                dropdown[i]['LapysJS isModified'] = !0
                             }
                     });
 
@@ -9165,7 +9234,7 @@
                                             */
                                             if (arguments[0] === 'forward') {
                                                 this.querySelector('[data-id*=cursor').remove();
-                                                this.insertChild('end', createElement('span', '[data-id=cursor]'))
+                                                this.appendChild(createElement('span', '[data-id=cursor]'))
                                             }
 
                                             else if (arguments[0] === 'backward') {
@@ -9188,10 +9257,10 @@
                                 // Text
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS text', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getText() {
@@ -9257,10 +9326,10 @@
                                 // Text Cursor Position
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textCursorPosition', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getTextCursorPosition() {
@@ -9278,10 +9347,10 @@
                                 // Text Format
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFormat', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getTextFormat() {
@@ -9309,10 +9378,10 @@
                                 // Text Function
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunction', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getTextFunction() {
@@ -9415,10 +9484,10 @@
                                 // Text Function Delay
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunctionDelay', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getTextFunctionDelay() {
@@ -9436,10 +9505,10 @@
                                 // Text Function Duration
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunctionDuration', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getTextFunctionDuration() {
@@ -9457,10 +9526,10 @@
                                 // Text Function Separator
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunctionSeparator', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getTextFunctionSeparator() {
@@ -9478,10 +9547,10 @@
                                 // Text Separator
                                 Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textSeparator', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function getTextSeparator() {
@@ -9600,9 +9669,9 @@
                                                                     or
                                                                 the Text Modified Counter is equal to the current text function's length.
                                                     */
-                                                    if (textModifiedCounter >= currentTextFunction.length) {
+                                                    if (textModifiedCounter > ~-currentTextFunction.length) {
                                                         // Dynamic Text > Update > Is In Delay
-                                                        document.getElementsByClassName('dynamic-text')[i]['LapysJS isInDelay'] = true;
+                                                        document.getElementsByClassName('dynamic-text')[i]['LapysJS isInDelay'] = !0;
 
                                                         // Update > Current Text Character Iterator
                                                         currentTextCharacterIterator = intervalCounter = 0
@@ -9615,7 +9684,7 @@
                                                         If
                                                             the Interval Counter is greater than the Dynamic Text's text function delay.
                                                 */
-                                                if (intervalCounter >= document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDelay']) {
+                                                if (intervalCounter > ~-document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDelay']) {
                                                     // Update
                                                         // Current Text Function Indexer
                                                         currentTextFunctionIndexer += 1;
@@ -9653,7 +9722,7 @@
                                                         currentText = document.getElementsByClassName('dynamic-text')[i]['LapysJS text'][textIndexer];
 
                                                     // Dynamic Text > Update > Is In Delay
-                                                    document.getElementsByClassName('dynamic-text')[i]['LapysJS isInDelay'] = false;
+                                                    document.getElementsByClassName('dynamic-text')[i]['LapysJS isInDelay'] = !!0;
 
                                                     // Update > Interval Counter
                                                     intervalCounter = 0
@@ -9673,7 +9742,7 @@
                                 }, (+(document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function-initial-delay') || '').replace(/ /g, '') * 1e3) || (document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDelay'] * 1e3));
 
                                 // Modification > Dynamic Text > Once
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS once'] = true
+                                document.getElementsByClassName('dynamic-text')[i]['LapysJS once'] = !0
                             }
                         }
                     });
@@ -9732,7 +9801,7 @@
                                                 */
                                                 if (decodeURIComponent(this.containers.media.content.querySelector('[data-id=media').src).indexOf(decodeURIComponent(this.sources[i].src)) > -1) {
                                                     // Update > Data
-                                                    data = true;
+                                                    data = !0;
 
                                                     // Target > Toggle Media
                                                     this.sources[i - 1] ? this.toggleMedia(i - 1) : this.toggleMedia(~-this.sources.length);
@@ -9763,7 +9832,7 @@
                                                 */
                                                 if (decodeURIComponent(this.containers.media.content.querySelector('[data-id=media').src).indexOf(decodeURIComponent(this.sources[i].src)) > -1) {
                                                     // Update > Data
-                                                    data = true;
+                                                    data = !0;
 
                                                     // Target > Toggle Media
                                                     this.sources[i + 1] ? this.toggleMedia(i + 1) : this.toggleMedia(0);
@@ -9808,10 +9877,10 @@
                                     // Containers
                                     Object.defineProperty(mediaPlaylist[i], 'containers', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function containers() {
@@ -9831,10 +9900,10 @@
                                     // Media
                                     Object.defineProperty(mediaPlaylist[i], 'media', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function media() {
@@ -9846,10 +9915,10 @@
                                     // Sources
                                     Object.defineProperty(mediaPlaylist[i], 'sources', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function sources() {
@@ -9892,7 +9961,7 @@
                                 }, 3e3);
 
                                 // Modification > Media Playlist > Is Modified
-                                mediaPlaylist[i]['LapysJS isModified'] = true
+                                mediaPlaylist[i]['LapysJS isModified'] = !0
                             }
                     });
 
@@ -9958,10 +10027,10 @@
                                             // Content
                                             mediaPlaylist[i].containers.media.content || Object.defineProperty(mediaPlaylist[i].containers.media, 'content', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function content() {
@@ -9973,10 +10042,10 @@
                                             // Information
                                             mediaPlaylist[i].containers.media.information || Object.defineProperty(mediaPlaylist[i].containers.media, 'information', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function information() {
@@ -9988,10 +10057,10 @@
                                             // Console
                                             mediaPlaylist[i].containers.media.console || Object.defineProperty(mediaPlaylist[i].containers.media, 'console', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function console() {
@@ -10022,7 +10091,7 @@
                                                                     break
                                                                 }
                                                         });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=load')['LapysJS loadMediaPlaylistCurrentMediaEventSet'] = true;
+                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=load')['LapysJS loadMediaPlaylistCurrentMediaEventSet'] = !0;
 
                                                     // Next
                                                         // Click
@@ -10043,7 +10112,7 @@
                                                                     break
                                                                 }
                                                         });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=next')['LapysJS toggleNextMediaEventSet'] = true;
+                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=next')['LapysJS toggleNextMediaEventSet'] = !0;
 
                                                     // Previous
                                                         // Click
@@ -10064,7 +10133,7 @@
                                                                     break
                                                                 }
                                                         });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=previous')['LapysJS togglePreviousMediaEventSet'] = true;
+                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=previous')['LapysJS togglePreviousMediaEventSet'] = !0;
 
                                                     // Play-Pause
                                                         // Click
@@ -10088,13 +10157,13 @@
                                                                     break
                                                                 }
                                                         });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=play-pause')['LapysJS togglePlayPauseStateMediaPlaylistCurrentMediaEventSet'] = true;
+                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=play-pause')['LapysJS togglePlayPauseStateMediaPlaylistCurrentMediaEventSet'] = !0;
 
                                                 // Content
                                                     // Media
                                                         // Double Click
                                                         ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] || (typeof mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS toggleScreenState'] == 'function') || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('dblclick', mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').invokeFullscreen);
-                                                        ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || (mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] = true);
+                                                        ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || (mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] = !0);
 
                                                         // Ended
                                                         mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS endedEventSet'] || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('ended', function() {
@@ -10114,7 +10183,7 @@
                                                                     break
                                                                 }
                                                         });
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS endedEventSet'] = true;
+                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS endedEventSet'] = !0;
 
                                                         // Pause
                                                         mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS pauseEventSet'] || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('pause', function() {
@@ -10134,7 +10203,7 @@
                                                                     break
                                                                 }
                                                         });
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS pauseEventSet'] = true;
+                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS pauseEventSet'] = !0;
 
                                                         // Playing
                                                         mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS playingEventSet'] || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('playing', function() {
@@ -10154,7 +10223,7 @@
                                                                     break
                                                                 }
                                                         });
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS playingEventSet'] = true
+                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS playingEventSet'] = !0
                                     }
                                 };
 
@@ -10183,16 +10252,16 @@
                                                 break
                                             }
                                     });
-                                    mediaPlaylist[i].sources[j]['LapysJS mediaPlaylistToggleMediaEventSet'] = true;
+                                    mediaPlaylist[i].sources[j]['LapysJS mediaPlaylistToggleMediaEventSet'] = !0;
 
                                     // Modification > Media Playlist > Source
                                         // Description
                                         (typeof mediaPlaylist[i].sources[j].description == 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'description', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function getSource() {
@@ -10210,10 +10279,10 @@
                                         // Source
                                         (typeof mediaPlaylist[i].sources[j].src == 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'src', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function getSource() {
@@ -10302,7 +10371,7 @@
                                 while (!mediaPlaylist[i].containers.media.content.querySelector('[data-id=media'))
                                     mediaPlaylist[i].containers.media.content.appendChild(createElement('video', `[controls=''][data-id=media`, '', new (function Object() {
                                         // Modification > Target > Class
-                                        mediaPlaylist[i].getAttribute('data-media-format') ? this.className = mediaPlaylist[i].getAttribute('data-media-format') : false
+                                        mediaPlaylist[i].getAttribute('data-media-format') ? this.className = mediaPlaylist[i].getAttribute('data-media-format') : !!0
                                     })))
                             }
                         })
@@ -10336,7 +10405,7 @@
                                 document.querySelectorAll('[data-id=media-controls-panel')[i]['LapysJS toBeDeleted'].push((document.querySelectorAll('[data-id=media-controls-panel')[i].previousElementSiblings[j].getAttribute('class') || '').trim().split(/ /g).indexOf('media') > -1);
 
                             // Deletion
-                            (document.querySelectorAll('[data-id=media-controls-panel')[i]['LapysJS toBeDeleted'].indexOf(true) > -1) || document.querySelectorAll('[data-id=media-controls-panel')[i].remove()
+                            (document.querySelectorAll('[data-id=media-controls-panel')[i]['LapysJS toBeDeleted'].indexOf(!0) > -1) || document.querySelectorAll('[data-id=media-controls-panel')[i].remove()
                         }
                     });
 
@@ -10360,12 +10429,12 @@
                                 if (!media[i]['LapysJS isModified']) {
                                     // Modification > Media
                                         // Controls Panel
-                                        (typeof (media[i].controlsPanel || []).tagName == 'string' && isObject(media[i].controlsPanel, false)) || Object.defineProperty(media[i], 'controlsPanel', {
+                                        (typeof (media[i].controlsPanel || []).tagName == 'string' && isObject(media[i].controlsPanel, !!0)) || Object.defineProperty(media[i], 'controlsPanel', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function controlsPanel() {
@@ -10390,10 +10459,10 @@
                                         // End Time
                                         (typeof media[i].endTime == 'number') || Object.defineProperty(media[i], 'endTime', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function endTime() {
@@ -10405,10 +10474,10 @@
                                         // Start Time
                                         (typeof media[i].startTime == 'number') || Object.defineProperty(media[i], 'startTime', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function startTime() {
@@ -10500,7 +10569,7 @@
                                         media[i].setEvent('ended', function() {
                                             // Modification > (Target > Controls Panel > Components > Play-Pause Reload) > Inner HTML
                                             this.controlsPanel.components.playPauseReload.innerHTML = this.getAttribute('data-playpause-button-html') || '&#8635;';
-                                            this.controlsPanel.components.play.hidden = false
+                                            this.controlsPanel.components.play.hidden = !!0
                                         });
 
                                         // Loaded Data
@@ -10512,13 +10581,13 @@
                                         // Paused
                                         media[i].setEvent('pause', function() {
                                             // Modification > (Target > Controls Panel > Components > Play) > Hidden
-                                            this.controlsPanel.components.play.hidden = false
+                                            this.controlsPanel.components.play.hidden = !!0
                                         });
 
                                         // Playing
                                         media[i].setEvent('playing', function() {
                                             // Modification > (Target > Controls Panel > Components > Play) > Hidden
-                                            this.controlsPanel.components.play.hidden = true
+                                            this.controlsPanel.components.play.hidden = !0
                                         });
 
                                         // Seeking
@@ -10618,7 +10687,7 @@
                                     }, 200);
 
                                     // Modification > Media > Is Modified
-                                    media[i]['LapysJS isModified'] = true
+                                    media[i]['LapysJS isModified'] = !0
                                 }
                         });
 
@@ -10690,10 +10759,10 @@
                                             // Components
                                             Object.defineProperty(media[i].controlsPanel, 'components', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function components() {
@@ -10719,10 +10788,10 @@
                                                             // Format
                                                             Object.defineProperty(data.timeline, 'format', {
                                                                 // Configurable
-                                                                configurable: true,
+                                                                configurable: !0,
 
                                                                 // Enumerable
-                                                                enumerable: true,
+                                                                enumerable: !0,
 
                                                                 // Get
                                                                 get: function format() {
@@ -10750,10 +10819,10 @@
                                             // Media
                                             Object.defineProperty(media[i].controlsPanel, 'media', {
                                                 // Configurable
-                                                configurable: true,
+                                                configurable: !0,
 
                                                 // Enumerable
-                                                enumerable: true,
+                                                enumerable: !0,
 
                                                 // Get
                                                 get: function media() {
@@ -10835,7 +10904,7 @@
                                                     this.parentElement.media.controlsPanel.components.playPauseReload.click();
 
                                                     // Modification > Target > Hidden
-                                                    !this.paused ? this.hidden = true : this.hidden = false
+                                                    !this.paused ? this.hidden = !0 : this.hidden = !!0
                                                 });
 
                                             // Play-Pause-Reload
@@ -10925,19 +10994,19 @@
                                             if (media[i].controlsPanel.scrollWidth > media[i].offset.width) {
                                                 // Modification > (Media > Controls Panel > Components)
                                                     // Fullscreen > Hidden
-                                                    media[i].controlsPanel.components.fullscreen.hidden = true;
+                                                    media[i].controlsPanel.components.fullscreen.hidden = !0;
 
                                                     // Current Time > Hidden
-                                                    media[i].controlsPanel.components.timeline.currentTime.hidden = true;
+                                                    media[i].controlsPanel.components.timeline.currentTime.hidden = !0;
 
                                                     // Duration > Hidden
-                                                    media[i].controlsPanel.components.timeline.duration.hidden = true
+                                                    media[i].controlsPanel.components.timeline.duration.hidden = !0
                                             }
                                         }, 500)
                                     }
 
                                     // Modification > Media > Controls
-                                    !media[i].controls || (media[i].controls = false);
+                                    !media[i].controls || (media[i].controls = !!0);
 
                                     // Media > Set Volume
                                     media[i].getVolume() || media[i].setVolume(media[i].controlsPanel.components.volume.bar.value / 100);
@@ -10951,7 +11020,7 @@
                                     */
                                     if (media[i].muted) {
                                         // Modification > Media > Muted
-                                        media[i].muted = false;
+                                        media[i].muted = !!0;
                                         media[i].removeAttribute('muted');
 
                                         // Media > Set Volume
@@ -10979,10 +11048,10 @@
                                 // Modification > Placeholder > Placeholder Element
                                 Object.defineProperty(placeholder[i], 'placeholderElement', {
                                     // Configurable
-                                    configurable: true,
+                                    configurable: !0,
 
                                     // Enumerable
-                                    enumerable: true,
+                                    enumerable: !0,
 
                                     // Get
                                     get: function placeholderElement() {
@@ -11022,7 +11091,7 @@
                                     });
 
                                 // Modification > Placeholder > Is Modified
-                                placeholder[i]['LapysJS isModified'] = true
+                                placeholder[i]['LapysJS isModified'] = !0
                             }
 
                         // Initialization > Placeholder Element
@@ -11040,7 +11109,7 @@
                                 placeholderElement[i].hasAttribute('data-selected') ? placeholderElement[i].delStyle('opacity', 'position') : placeholderElement[i].style.position = 'absolute';
 
                             // Deletion
-                            (placeholderElement[i].nextElementSibling || {hasAttribute: () => { return false }}).hasAttribute('data-placeholder') || placeholderElement[i].remove()
+                            (placeholderElement[i].nextElementSibling || {hasAttribute: () => { return !!0 }}).hasAttribute('data-placeholder') || placeholderElement[i].remove()
                         }
                     });
 
@@ -11071,7 +11140,7 @@
                                 if (
                                     (
                                         (arguments[0] || []).tagName &&
-                                        !isObject(arguments[0], false)
+                                        !isObject(arguments[0], !!0)
                                     ) &&
                                     (arguments[0] || [])['LapysJS title']
                                 ) {
@@ -11109,7 +11178,7 @@
                                 */
                                 if (
                                     typeof (arguments[0] || []).tagName == 'string' &&
-                                    !isObject(arguments[0], false)
+                                    !isObject(arguments[0], !!0)
                                 ) {
                                     // Initialization > (Arguments, Target)
                                     let Arguments = arguments,
@@ -11137,7 +11206,7 @@
                                             top = Arguments[1].constructor.name.indexOf('Event') > -1 ? LapysJS.permanentData.mouseCoordinateY + ((int(rand(1, 10)) > 5 ? -1 : 1) * rand(1, 5)) + 20 : Arguments[0].offset.top;
 
                                         // Update > Coordinates
-                                        (coordinates.length <= 2) || (coordinates.length = 2);
+                                        (coordinates.length < 3) || (coordinates.length = 2);
 
                                         /* Logic
                                                 If
@@ -11243,10 +11312,10 @@
                                                 --- NOTE ---
                                                     @lapys: This prevents the tool-tip from spilling out the screen.
                                         */
-                                        (left + that.offset.width <= innerWidth) || (left = innerWidth - that.offset.width);
-                                        (left >= 0) || (left = that.offset.width);
-                                        (top + that.offset.height <= innerHeight) || (top = innerHeight - that.offset.height);
-                                        (top >= 0) || (top = that.offset.height);
+                                        (left + that.offset.width < innerWidth + 1) || (left = innerWidth - that.offset.width);
+                                        (left > -1) || (left = that.offset.width);
+                                        (top + that.offset.height < innerHeight + 1) || (top = innerHeight - that.offset.height);
+                                        (top > -1) || (top = that.offset.height);
 
                                         // Modification > Target > Style
                                         that.setAttribute('style', `left: ${left}px !important; pointer-events: none !important; opacity: 1 !important; top: ${top}px !important`);
@@ -11289,7 +11358,7 @@
                                     });
 
                                 // Modification > Titled Element > Is Data Titled
-                                titleElement[i]['LapysJS isDataTitled'] = true
+                                titleElement[i]['LapysJS isDataTitled'] = !0
                             }
 
                         /* Loop
@@ -11307,10 +11376,10 @@
                         // Modification > (Screen > Tip | Document > Screen Tip)
                         Object.defineProperty(window.screen ? screen : document, window.screen ? 'tip' : 'screenTip', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function() {
@@ -11410,10 +11479,10 @@
                                     // Current Selected Option
                                     Object.defineProperty(selectBox[i], 'currentSelectedOption', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function currentSelectedOption() {
@@ -11437,10 +11506,10 @@
                                     // Option Box
                                     Object.defineProperty(selectBox[i], 'optionBox', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function optionBox() {
@@ -11451,10 +11520,10 @@
                                         // Options
                                         Object.defineProperty(selectBox[i].optionBox, 'options', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function options() {
@@ -11466,10 +11535,10 @@
                                         // Select Box
                                         Object.defineProperty(selectBox[i].optionBox, 'selectBox', {
                                             // Configurable
-                                            configurable: true,
+                                            configurable: !0,
 
                                             // Enumerable
-                                            enumerable: true,
+                                            enumerable: !0,
 
                                             // Get
                                             get: function optionBox() {
@@ -11481,10 +11550,10 @@
                                     // Options
                                     Object.defineProperty(selectBox[i], 'options', {
                                         // Configurable
-                                        configurable: true,
+                                        configurable: !0,
 
                                         // Enumerable
-                                        enumerable: true,
+                                        enumerable: !0,
 
                                         // Get
                                         get: function options() {
@@ -11545,7 +11614,7 @@
                                             */
                                             if (event.code.indexOf('Shift') > -1) {
                                                 // Modification > Target > Data Do Not Blur
-                                                this.setAttribute('data-do-not-blur', true);
+                                                this.setAttribute('data-do-not-blur', !0);
 
                                                 // Set Timeout
                                                 setTimeout(() => {
@@ -11559,7 +11628,7 @@
                                             */
                                             if (event.code === 'Tab') {
                                                 // Modification > Target > Data Do Not Blur
-                                                this.setAttribute('data-do-not-blur', true);
+                                                this.setAttribute('data-do-not-blur', !0);
 
                                                 // Target > Toggle (Previous | Next) Option
                                                 (this['LapysJS formerKeyPressed'] || '').indexOf('Shift') > -1 ? this.togglePreviousOption() : this.toggleNextOption();
@@ -11657,7 +11726,7 @@
                                         });
 
                                 // Modification > Select Box > Is Modified
-                                selectBox[i]['LapysJS isModified'] = true
+                                selectBox[i]['LapysJS isModified'] = !0
                             }
                     });
 
@@ -11692,7 +11761,7 @@
                                         that.removeAttribute('class');
                                         that.removeAttribute('style')
                                     }, 1e3)
-                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1e3)
+                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], !!0)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1e3)
                             }
                         });
 
@@ -11715,7 +11784,7 @@
                                     */
                                     if (
                                         typeof (data || []).tagName == 'string' &&
-                                        !isObject(data, false)
+                                        !isObject(data, !!0)
                                     ) {
                                         // Modification > Target
                                             // Inner HTML
@@ -11727,7 +11796,7 @@
                                             // Style
                                             data.hasAttribute('data-toast-style') || that.setAttribute('style', (that.getAttribute('style') || '') + (that.getAttribute('style') ? ';' : '') + data.getAttribute('data-toast-style'))
                                     }
-                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], false)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1e3)
+                                }, +(String(!(typeof (arguments[0] || []).tagName == 'string' && !isObject(arguments[0], !!0)) || arguments[0].getAttribute('data-toast-delay')).replace('true', '0') || '0').replace(/ /g, '') * 1e3)
                             }
                         });
 
@@ -11764,7 +11833,7 @@
                                 });
 
                                 // Modification > Toast Element > Is Modified
-                                toastElement[i]['LapysJS isModified'] = true
+                                toastElement[i]['LapysJS isModified'] = !0
                             }
 
                         /* Loop
@@ -11782,10 +11851,10 @@
                         // Modification > (Screen > Toast | Document > Screen Toast)
                         Object.defineProperty(window.screen ? screen : document, window.screen ? 'toast' : 'screenToast', {
                             // Configurable
-                            configurable: true,
+                            configurable: !0,
 
                             // Enumerable
-                            enumerable: true,
+                            enumerable: !0,
 
                             // Get
                             get: function() {
@@ -11819,7 +11888,7 @@
                         for (let i = 0; i < document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]').length; i += 1)
                             (document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].concealOptionBox !== 'function') || document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]')[i].concealOptionBox()
                     }, 100)
-                }, true);
+                }, !0);
 
                 // Key Down, Key Up
                 setEvent('keydown keyup', function plugInConcealEventSet() {
@@ -11944,7 +12013,7 @@
                         --- WARN ---
                             @lapys: The LapysJS Script function must run only once.
                 */
-                LapysJS.executed = true;
+                LapysJS.executed = !0;
 
                 // Ready
                 LapysJS.ready = LapysJS.executed
