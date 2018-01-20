@@ -1,52 +1,101 @@
-/* Global Data */
-    /* Document */
-        // Title
-        document.title += ' | Client-Side Web Library';
+/* Logic
+        If
+            LapysJS is Ready.
+*/
+if ('ready' in window.LapysJS) {
+    /* Global Data */
+        /* LapysJS */
+            // Script
+                // Enable
+                check(function() {
+                    // Return
+                    return 'experimentalFeatures' in LapysJS
+                }, function() {
+                    // LapysJS > Script > Enable
+                    LapysJS.script.enable = 'html-javascript'
+                });
 
-    // {Header Navigation Bar Construction} On DOM Ready
-    onDOMReady(function headerNavigationBarConstruction() {
-        /* Components */
-            /* Mast Head */
-                // Definition > Header Navigation Bar
-                let headerNavigationBar = $$('#masthead').sections.bottom;
+        /* Allow Particles JS Script */
+        def('ALLOW_PARTICLES_JS_SCRIPT', {
+            /* Value
+                    --- NOTE ---
+                        @lapys: Set to 'true' to use the ParticleJS script,
+                            and 'false' to do otherwise.
+            */
+            value: (function() {
+                // Initialization > Default
+                let Default = true;
 
-        /* Event */
-            // Resize, Scroll
-            invokeEvent('resize scroll', function() {
                 /* Logic
-                        If
-                            Scroll Y is greater than Inner Height
-                                or
-                            Scroll Y equals the Inner Height.
+                        [switch:case:default statement]
+
+                    > Return
                 */
-                if (scrollY >= innerHeight) {
-                    // Modification
-                        // Header Navigation Bar > (Class, Role)
-                        headerNavigationBar.addClass('card', 'smooth', 'z-5');
-                        headerNavigationBar.role = 'header-navigation-bar';
+                switch (getQueryParameterByName('allowParticlesJSScript')) {
+                    // False
+                    case 'false':
+                        return false;
+                        break;
 
-                    /* Loop
-                            Index the Header Navigation Bar's children.
+                    // True
+                    case 'true':
+                        return true;
+                        break;
 
-                        > Modification > (Header Navigation Bar > Children) > Data Title Style
-                    */
-                    for (let i = 0; i < len(headerNavigationBar.children); i += 1)
-                        headerNavigationBar.children[i].attr('data-title-style', `margin-left: -30px; margin-top: ${headerNavigationBar.offset.height}px`);
+                    // Null
+                    case null:
+                        return Default
                 }
 
-                else {
-                    // Modification
-                        // Header Navigation Bar > (Class, Role)
-                        headerNavigationBar.delClass('card', 'smooth', 'z-5');
-                        headerNavigationBar.role = '';
+                // Return
+                return Default
+            })(),
 
-                    /* Loop
-                            Index the Header Navigation Bar's children.
+            // Writable
+            writable: false
+        });
 
-                        > Modification > (Header Navigation Bar > Children) > Data Title Style
-                    */
-                    for (let i = 0; i < len(headerNavigationBar.children); i += 1)
-                        headerNavigationBar.children[i].attr('data-title-style', `margin-left: -30px; margin-top: ${-65}px`);
+        /* Allow Dynamic Text Initialization Script */
+        def('ALLOW_DYNAMIC_TEXT_INIT_SCRIPT', {
+            /* Value
+                    --- NOTE ---
+                        @lapys: Set to 'true' to use the Dynamic Text initialization script,
+                            and 'false' to do otherwise.
+            */
+            value: (function() {
+                // Initialization > Default
+                let Default = true;
+
+                /* Logic
+                        [switch:case:default statement]
+
+                    > Return
+                */
+                switch (getQueryParameterByName('allowDynamicTextInitScript')) {
+                    // False
+                    case 'false':
+                        return false;
+                        break;
+
+                    // True
+                    case 'true':
+                        return true;
+                        break;
+
+                    // Null
+                    case null:
+                        return Default
                 }
-            })
-    })
+
+                // Return
+                return Default
+            })(),
+
+            // Writable
+            writable: false
+        });
+
+        /* Document */
+            // Title
+            document.title += ' | Client-Side Web Library'
+}

@@ -1,0 +1,90 @@
+/* Assets */
+    /* Buttons */
+    [class*='button'] {
+        cursor: pointer;
+        display: inline-block;
+        letter-spacing: .5px;
+        text-decoration: none;
+        word-spacing: 3.3px
+    }
+        /* Transparent */
+        .transparent-button {
+            align-items: center;
+            border-radius: 3.3px;
+            display: inline-flex;
+            justify-content: center;
+            padding: 10px
+        }
+            /* Not */
+                /* Header Navigation Bar > Content */
+                .transparent-button:not([role=header-navigation-bar] > *) {
+                    max-width: 200px;
+                    min-width: 200px;
+                    width: 200px
+                }
+
+            /* States */
+                /* Hover */
+                    /* 0 */
+                    .button-0.transparent-button:hover {
+                        background-color: rgba(0, 0, 0, .825)
+                    }
+
+            /* 0 */
+            .button-0.transparent-button {
+                background-color: rgba(0, 0, 0, .65);
+                color: #FFFFFF;
+                text-shadow: 0 0 1.5px rgba(0, 0, 0, .5)
+            }
+
+    /* Flag */
+    [class*=-flag] {
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px
+    }
+        /* Pseudo > Before */
+        [class*=-flag]::before {
+            align-items: center;
+            border-radius: 50%;
+            box-shadow: 0 1.5px 3px 0 rgba(0, 0, 0, .15);
+            content: '';
+            display: inline-flex;
+            font-size: 22.5px;
+            font-weight: 600;
+            height: 35px;
+            left: auto;
+            letter-spacing: -1px;
+            line-height: .5;
+            justify-content: center;
+            margin: auto;
+            padding: 7px;
+            position: absolute;
+            right: auto;
+            transform: translateY(-17.5px);
+            width: 35px;
+            z-index: 14
+        }
+
+        /* Code */
+        .code-flag {
+            border-left: 5px solid #00C853
+        }
+            /* Pseudo > Before */
+            .code-flag::before {
+                background-color: #00C853;
+                color: #FFFFFF;
+                content: '</>';
+                font-family: 'Roboto Mono', Inconsolata, monospace
+            }
+
+        /* Notepad */
+        .notepad-flag {
+            border-left: 5px solid #FFEA00
+        }
+            /* Pseudo > Before */
+            .notepad-flag::before {
+                background-color: #FFEA00;
+                color: #F57F17;
+                content: '\f02d';
+                font-family: sans-serif
+            }

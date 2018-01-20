@@ -208,11 +208,6 @@
             }
         }
 
-        /* @-ms-viewport */
-        @-ms-viewport {
-            width: device-width
-        }
-
         /* Not */
             /* <body> > <a> */
             :not(body) a {
@@ -791,7 +786,12 @@
         shape-rendering: auto;
         touch-action: auto;
         unicode-bidi: embed;
-        user-select: text;
+        user-select: text
+    }
+
+    embed:not(.fill):not(.fill-w),
+    iframe:not(.fill):not(.fill-w),
+    object:not(.fill):not(.fill-w) {
         width: 80%
     }
 
@@ -1453,12 +1453,14 @@
         /* Pseudo */
             /* Mozilla Progress Bar */
             progress[value]::-moz-progress-bar {
-                background-color: #0000FF
+                background-color: #0000FF;
+                overflow: hidden
             }
 
             /* Web Kit Progress Value */
             progress[value]::-webkit-progress-value {
-                background-color: #0000FF
+                background-color: #0000FF;
+                overflow: hidden
             }
 
     /* <q> */
@@ -2035,6 +2037,15 @@
             width: 0
         }
 
+    /* Curtain */
+    .curtain {
+        opacity: 0
+    }
+        /* States > Hover */
+        .curtain:hover {
+            opacity: 1
+        }
+
     /* Default */
     [readonly],
     .default,
@@ -2077,11 +2088,11 @@
                 background-color: #333333;
                 height: inherit;
                 max-height: 100%;
-                max-width: 2px;
+                max-width: 1px;
                 min-height: 100%;
-                min-width: 2px;
+                min-width: 1px;
                 padding: 0;
-                width: 2px
+                width: 1px
             }
                 /* @keyframes > Pulse */
                 @keyframes pulse {
@@ -2100,7 +2111,10 @@
 
                 /* Pseudo > Before */
                 .dynamic-text span[data-id*=cursor]::before {
-                    content: ' '
+                    content: ' ';
+                    display: inline-block;
+                    height: inherit;
+                    width: inherit
                 }
 
             /* Highlighted */
@@ -2242,7 +2256,8 @@
     [default]:not(
         audio):not(
         video),
-    .initial {
+    .initial,
+    .no-style {
         all: initial
     }
 
@@ -2846,6 +2861,11 @@
         transition: none
     }
 
+    /* Opaque */
+    .opaque {
+        opacity: 1
+    }
+
     /* Pane */
     .pane {
         background-color: #FFFFFF;
@@ -3149,6 +3169,30 @@
         position: static
     }
 
+    /* Sticky */
+    .sticky {
+        position: sticky
+    }
+        /* Bottom */
+        .sticky-bottom {
+            bottom: 0
+        }
+
+        /* Left */
+        .sticky-left {
+            left: 0
+        }
+
+        /* Right */
+        .sticky-right {
+            right: 0
+        }
+
+        /* Top */
+        .sticky-top {
+            top: 0
+        }
+
     /* Table */
     table.table {
         font-family: Roboto, 'Open Sans', 'Calibri Light';
@@ -3251,6 +3295,11 @@
         .thumbnail:hover {
             filter: brightness(.75)
         }
+
+    /* Transparent */
+    .transparent {
+        opacity: 0
+    }
 
     /* Upper */
     .upper,
@@ -4228,7 +4277,7 @@
             pre,
             tt,
             xmp {
-                font-family: Inconsolata, monospace, monospace
+                font-family: 'Roboto Mono', Inconsolata, monospace, monospace
             }
 
             /* Sans Serif */
@@ -4296,8 +4345,6 @@
         input[type*=date]::before,
         marker,
         pattern,
-        progress[value]::-moz-progress-bar,
-        progress[value]::-webkit-progress-bar,
         svg:not(:root),
         symbol,
         textarea::placeholder,

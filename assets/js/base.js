@@ -1,1338 +1,1857 @@
-/* Classes */
-    /* HTML Accordion Component */
-    class HTMLAccordionComponent extends HTMLElement {
-        // Constructor
-        constructor() {
-            // Super
-            super();
+/* Logic
+        If
+            LapysJS is Ready.
+*/
+if ('ready' in window.LapysJS) {
+    /* Global Data */
+        /* String */
+            // Parse HTML Entities to Text
+            (getType(String.prototype.parseHTMLEntitiesToText) == 'function') || String.prototype.def('parseHTMLEntitiesToText', {
+                // Value
+                value: function parseHTMLEntitiesToText() {
+                    // Return
+                    return createElement('span', '', this).textContent
+                },
 
-            // Modification > Target
-                // Timeout
-                timeout(() => {
-                    // Class
-                    this.addClass('accordion');
+                // Writable
+                writable: false
+            });
 
-                    // Data Event Type
-                    this.attr('data-event-type', this.attr('data-event-type') || 'click')
-                })
-        }
-    };
-
-    /* HTML Carousel Component */
-    class HTMLCarouselComponent extends HTMLElement {
-        // Constructor
-        constructor() {
-            // Super
-            super();
-
-            // Modification > Target
-                // Timeout
-                timeout(() => {
-                    // Class
-                    this.addClass('carousel');
-
-                    // On Node Count Change
-                    onNodeCountChange(this, () => {
-                        /* Loop
-                                Index all Target's Slides.
-
-                            > Deletion
-                        */
-                        for (let i = 0; i < len(this.slides); i += 1)
-                            !(
-                                this.slides[i].tagName == 'BODY' ||
-                                this.slides[i].tagName == 'HEAD'
-                            ) || this.slides[i].delete()
-                    })
-                })
-        }
-    };
-
-    /* HTML Developer Canvas Element
-            --- NOTE ---
-                @lapys: The point of developer canvases are to
-                    allow a developer creatively express oneself,
-
-                    and not necessarily build components or functions that are within convention.
-    */
-    class HTMLDeveloperCanvasElement extends HTMLElement {
-        // Constructor
-        constructor() {
-            // Super
-            super();
-
-            // Modification > Target
-                /* Delete
-                        --- NOTE ---
-                            @lapys: Developer Canvases can not be deleted normally.
-                */
-                this.delete = func();
-
-                // Timeout
-                timeout(() => {
-                    // Data ID
-                    this.setAttr('data-id', 'developerCanvas');
-
-                    // Description
-                    this.def('description', {
-                        // Get
-                        get: function getDescription() {
-                            // Return
-                            return this.attr('description')
-                        },
-
-                        // Set
-                        set: function setDescription() {
-                            // Modification > Target > Description
-                            this.attr('description', arguments[0] || '')
-                        }
-                    })
-                })
-        }
-    }
-
-    /* HTML Dropdown Component */
-    class HTMLDropdownComponent extends HTMLElement {
-        // Constructor
-        constructor() {
-            // Super
-            super();
-
-            // Modification > Target
-                // Timeout
-                timeout(() => {
-                    // Class
-                    this.addClass('dropdown');
-
-                    // Data Event Type
-                    this.attr('data-event-type', this.attr('data-event-type') || 'click');
-
-                    // Data ID
-                    this.attr('data-id', this.attr('data-id') || `dropdown${$$('.dropdown', '_length')}`)
-                })
-        }
-    };
-
-    /* HTML Dynamic Text Component */
-    class HTMLDynamicTextComponent extends HTMLElement {
-        // Constructor
-        constructor() {
-            // Super
-            super();
-
-            // Modification > Target
-                // Timeout
-                timeout(() => {
-                    // Class
-                    this.addClass('dynamic-text')
-                })
-        }
-    };
-
-    /* HTML Jumbotron Element */
-    class HTMLJumbotronElement extends HTMLElement {
-        // Constructor
-        constructor() {
-            // Super
-            super();
-
-            // Modification > Target
-                // Timeout
-                timeout(() => {
-                    // Class
-                    this.addClass('jumbotron');
-
-                    // Style > Overflow
-                    this.setCSS('overflow', 'hidden')
-                });
-
-                // Sections
-                this.def('sections', {
-                    get: function() {
-                        // Initialization > Data
-                        let data = [...this.children];
-
-                        /* Loop
-                                Index Data.
-
-                            > Deletion
-                        */
-                        for (let i = 0; i < len(data); i += 1)
-                            !(
-                                !(data[i].attr('data-id') || '').hasText('bottomSection') &&
-                                !(data[i].attr('data-id') || '').hasText('midSection') &&
-                                !(data[i].attr('data-id') || '').hasText('topSection')
-                            ) || (data[i].attr('data-id') || '').hasText('Section') || data[i].delete();
-
-                        // Modification > Data > (Bottom, Middle, Top) Section
-                        data.bottom = data[data.indexOf(this.$$('[data-id=bottomSection', 0))] || null;
-                        data.mid = data[data.indexOf(this.$$('[data-id=midSection', 0))] || null;
-                        data.top = data[data.indexOf(this.$$('[data-id=topSection', 0))] || null;
-
-                        // Return
-                        return data
-                    }
-                })
-
-                // Bottom Section
-                this.def('bottomSection', {
-                    get: function() {
-                        // Return
-                        return this.sections.bottom
-                    }
-                });
-
-                // Middle Section
-                this.def('midSection', {
-                    get: function() {
-                        // Return
-                        return this.sections.mid
-                    }
-                });
-
-                // Top Section
-                this.def('topSection', {
-                    get: function() {
-                        // Return
-                        return this.sections.top
-                    }
-                })
-        }
-    };
-
-    /* HTML Logo Element */
-    class HTMLLogoElement extends HTMLElement {
-        // Constructor
-        constructor() {
-            // Super
-            super();
-
-            // Modification > Target
-                // Timeout
-                timeout(() => {
-                    // Class
-                    this.addClass('logo', 'responsive');
-
-                    // Data ID
-                    this.attr('data-id', 'logo')
-                });
-
-                // Image
-                this.def('image', {
-                    // Get
-                    get: function() {
-                        // Return
-                        return this.$$('img', 0)
-                    },
-
-                    // Set
-                    set: function() {
-                        // Insertion
-                        this.$$('img', 0) || this.insertChild('begin', new LapysJS.component.Image());
-
-                        // Modification > (Target > <img>) > Source
-                        this.$$('img', 0).src = str(arguments[0])
-                    }
-                });
-
-                // Source
-                this.def('src', {
-                    // Get
-                    get: function() {
-                        // Return
-                        return (this.$$('img', 0) || {src: ''}).src
-                    },
-
-                    // Set
-                    set: function() {
-                        // Modification > (Target > <img>) > Source
-                        (this.$$('img', 0) || {src: ''}).src = str(arguments[0])
-                    }
-                });
-        }
-    };
-
-/* Global Data */
-    /* Dynamic Assets URL */
-    def('DYNAMIC_ASSETS_URL', {
-        // Value
-        value: (function() {
-            // Initialization > Data
-            let data = '';
-
-            /* Logic
-                    [if:else if:else statement]
-
-                > Update > Data
+        /* Processing Load Time */
+        def('PROCESSING_LOAD_TIME', 0);
+            /* {Increment Processing Load Time} Check
+                    --- NOTE ---
+                        @lapys: Increment the Load Time of Processing
+                            until the Document is completely loaded.
             */
-            if (location.href.getBeforeChar('/', true).endsWith('pages'))
-                data = `../${data}`;
+            check(function incrementPROCESSING_LOAD_TIME() {
+                // Update > Processing Load Time
+                PROCESSING_LOAD_TIME += 1;
 
-            // Return
-            return data
-        })(),
+                // Return
+                return document.readyState == 'complete'
+            });
 
-        // Writable
-        writable: false
-    });
-
-    /* Navigation Links */
-    def('NAVIGATION_LINKS', {
-        // Value
-        value: [
-            /* Get Started
-                    --- UPDATE REQUIRED ---
-                        @lapys: Minified HTML needs improvement.
+        /* Allow Alternative Resource Files */
+        def('ALLOW_ALTERNATIVE_RESOURCE_FILES', {
+            /* Value
+                    --- NOTE ---
+                        @lapys: Set to 'true' to have the current script add assumed files to the project,
+                            set to 'false' otherwise.
             */
-            new (function NavigationLink() { this.hyperlink = `${DYNAMIC_ASSETS_URL}pages/get-started.html`; this.value = 'Get Started' }),
+            value: true,
 
-            // Documentation
-            new (function NavigationLink() { this.hyperlink = `${DYNAMIC_ASSETS_URL}pages/docs.min.html`; this.value = 'Documentation' }),
+            // Writable
+            writable: false
+        });
 
-            // Git Hub
-            new (function NavigationLink() { this.hyperlink = 'https://github.com/LapysDev/LapysJS'; this.value = 'GitHub' }),
+        /* Application */
+            // Modification > Application
+                // Author
+                app.author = 'Lapys Dev Team';
 
-            // Download
-            new (function NavigationLink() { this.hyperlink = `${DYNAMIC_ASSETS_URL}download/LapysJS.zip`; this.value = 'Download' })
-        ],
+                // Cache Control
+                app.cacheControl = 'cache';
 
-        // Writable
-        writable: false
-    });
+                // Character Set
+                app.charset = document.characterSet || 'UTF-8';
 
-    /* Application */
-        // Modification
-            // Author
-            app.author = 'Lapys Dev Team';
+                // Copyright
+                app.copyright = 'Lapys Dev Team';
 
-            // Cache Control
-            app.cacheControl = 'cache';
+                // Description
+                app.description = 'Client-Side Web Library';
 
-            // Character Set
-            app.charset = 'UTF-8';
+                // Keywords
+                app.keywords = 'Lapys, Lapys Dev, LapysJS';
 
-            // Color
-            app.color = new (function ApplicationColor() {
-                // Initialization > Component to Hexadecimal
-                let componentToHex = function componentToHex() {
-                    // Return
-                    return len((arguments[0] || '').toString(16)) == 1 ? `0${(arguments[0] || '').toString(16)}` : (arguments[0] || '').toString(16)
-                };
+                // Name
+                app.name = 'LapysJS';
 
-                // Primary
-                    // Background Color
-                    this.primaryBackgroundColor = '#0056FF';
+                // Robots
+                app.robots = 'none';
 
-                    // Foreground Color
-                    this.primaryForegroundColor = '#EFEFEF';
+                // Theme Color
+                app.themeColor = '#0023FF';
 
-                // Secondary
-                    // Background Color
-                    this.secondaryBackgroundColor = '#F7F7F7';
+                // Viewport
+                    // Height
+                    app.viewport.height = 'device-height';
 
-                    // Foreground Color
-                    this.secondaryForegroundColor = '#333333';
+                    // Initial Scale
+                    app.viewport.initialScale = 1;
 
-                // To Hexadecimal
-                this.constructor.prototype.toHex = function toHex() {
-                    // Initialization > Color Sequence
-                    let colorSequence = (() => {
-                        /* Logic
-                                If
-                                    Argument 0 contains 'rgba',
+                    // Maximum Scale
+                    check(function() { return !!window.num }, function() { app.viewport.maximumScale = num(app.viewport.initialScale) * 2 });
 
-                                else if
-                                    Argument 0 contains 'rgb'.
+                    // Minimal U.I.
+                    app.viewport.minimalUI = true;
 
-                            > Return
-                        */
-                        if ((arguments[0] || '').hasText('rgba'))
-                            return arguments[0].getAfterChar('rgba(').getBeforeChar(')').replace(/ /g, '').split(/,/g);
+                    // Minimum Scale
+                    check(function() { return !!window.num }, function() { app.viewport.minimumScale = num(app.viewport.initialScale) / 2 });
 
-                        else if ((arguments[0] || '').hasText('rgb'))
-                            return arguments[0].getAfterChar('rgb(').getBeforeChar(')').replace(/ /g, '').split(/,/g).concat(['1']);
+                    // Target Density D.P.I.
+                    app.viewport.targetDensityDPI = 96;
 
-                        // Return
-                        return []
-                    })();
+                    // User Scalable
+                    app.viewport.userScalable = true;
 
-                    // Return
-                    return `#${componentToHex(colorSequence[0])}${componentToHex(colorSequence[1])}${componentToHex(colorSequence[2])}`
-                };
+                    // Width
+                    app.viewport.width = 'device-width';
 
-                // To RGB
-                this.constructor.prototype.toRGB = function toRGB() {
-                    // Initialization > Color Sequence
-                    let colorSequence;
+        /* Minify Asset Files */
+        def('MINIFY_ASSET_FILES', {
+            /* Value
+                    --- NOTE ---
+                        @lapys: Set to 'true' to use the minified CSS and JS asset files,
+                            set to 'false' to use CSS and JS asset files as they are.
+            */
+            value: false,
 
-                    /* Logic
-                            If
-                                The Argument 0 is a Hexadecimal.
-                    */
-                    if (
-                        (arguments[0] || '').hasText('#') ||
-                        /^#([A-Fa-f0-9]{3}){1, 2}$/.test(arguments[0] || '')
-                    ) {
-                        // Update > Color Sequence
-                        colorSequence = (arguments[0] || '').substring(1).split('');
-                        (len(colorSequence) !== 3) || (colorSequence = [
-                            colorSequence[0], colorSequence[0],
-                            colorSequence[1], colorSequence[1],
-                            colorSequence[2], colorSequence[2]
-                        ]);
-                        colorSequence = `0x${colorSequence.join('')}`;
+            // Writable
+            writable: false
+        });
 
-                        // Return
-                        return `rgb(${[(colorSequence >> 16) & 255, (colorSequence >> 8) & 255, colorSequence & 255].join(',')})`.replace(/,/g, ', ')
-                    }
+        /* Reveal Elements Bounding Box */
+        def('REVEAL_ELEMENTS_BOUNDING_BOX', {
+            /* Value
+                    --- NOTE ---
+                        @lapys: Set to 'true' to display all elements` bounding boxes through CSS outlines,
+                            set to 'false' otherwise.
+            */
+            value: (function() {
+                /* Logic
+                        [switch:case:default statement]
 
-                    else
-                        // LapysJS > Error
-                        LapysJS.error(`Illegal value parsed to 'toRGB' or 'toRGBA' method.`);
-
-                    // Return
-                    return ''
-                };
-
-                // To RGBA
-                this.constructor.prototype.toRGBA = function toRGBA() {
-                    // Return
-                    return `${this.toRGB(arguments[0] || '').replace('rgb', 'rgba').slice(0, -len(')'))}, ${arguments[1] || 1})`
-                }
-            });
-
-            // Copyright
-            app.copyright = 'Lapys Dev Team';
-
-            // Description
-            app.description = 'LapysJS is a client-side CSS-JavaScript library designed to make web programming faster and more forgiving to build with.';
-
-            // Font
-            app.font = new (function ApplicationFont() {
-                // Family
-                this.family = 'Calibri Light';
-
-                // Line Height
-                this.lineHeight = '1.2375';
-
-                // Size
-                this.size = '17px';
-
-                // Style
-                this.style = 'normal';
-
-                // Variant
-                this.variant = 'normal';
-
-                // Weight
-                this.weight = 'normal'
-            });
-
-            // Keywords
-            app.keywords = 'JavaScript Library, LapysJS, Simple Syntax, Web Client-Side Library';
-
-            // Robots
-            app.robots = 'none';
-
-            // Theme Color
-            app.themeColor = app.color.primaryBackgroundColor;
-
-            // Viewport
-                // Height
-                app.viewport.height = 'device-height';
-
-                // Initial Scale
-                app.viewport.initialScale = 1;
-
-                // Maximum Scale
-                app.viewport.maximumScale = 2;
-
-                // Minimal UI (User Interface)
-                app.viewport.minimalUI = true;
-
-                // Minimum Scale
-                app.viewport.minimumScale = .1;
-
-                // Target Density DPI
-                app.viewport.targetDensityDPI = 96;
-
-                // User Scalable
-                app.viewport.userScalable = true;
-
-                // Width
-                app.viewport.width = 'device-width';
-
-    /* HTML Canvas Element */
-        // Modification > HTML Canvas Element
-            // Draw
-            HTMLCanvasElement.prototype.def('draw', {
-                // Value
-                value: function() {
-                    /* Logic
-                            If
-                                the Target has a 2D Rendering Context.
-                    */
-                    if (this.renderingContext2D) {
-                        // Target > Rendering Context 2D > Begin Path
-                        this.renderingContext2D.beginPath();
-
-                        /* Logic
-                                If
-                                    Argument 0 is a Function,
-
-                                else if
-                                    Argument 0 is a String.
-                        */
-                        if (typeof arguments[0] === 'function')
-                            // Function > Argument 0
-                            arguments[0].apply(this, [...arguments].slice(1).addElementToBack(this.renderingContext2D));
-
-                        else if (typeof arguments[0] === 'string')
-                            // Execution
-                            eval(`(function(context) {${arguments[0]}})()`);
-
-                        // Target > Rendering Context 2D > Close Path
-                        this.renderingContext2D.closePath()
-                    }
-
-                    else
-                        // LapysJS > Error
-                        LapysJS.error(`HTMLCanvasElement missing 'renderingContext2D' property.`)
-                },
-
-                // Writable
-                writable: false
-            });
-
-            // Erase
-            HTMLCanvasElement.prototype.def('erase', {
-                // Value
-                value: function() {
-                    /* Logic
-                            If
-                                the Target has a 2D Rendering Context.
-                    */
-                    if (this.renderingContext2D) {
-                        /* Logic
-                                Switch case to Argument 0.
-                        */
-                        switch (str(arguments[0])) {
-                            // Rectangle
-                            case 'rect':
-                                // Target > Clear Rectangle
-                                this.renderingContext2D.clearRect.apply(this.renderingContext2D, [...arguments].slice(1));
-                                break
-                        }
-                    }
-
-                    else
-                        // LapysJS > Error
-                        LapysJS.error(`HTMLCanvasElement missing 'renderingContext2D' property.`)
-                },
-
-                // Writable
-                writable: false
-            });
-
-            // Set Height
-            HTMLCanvasElement.prototype.def('setHeight', {
-                // Value
-                value: function() {
-                    // Modification > Target > Height
-                    this.attr('height', num(arguments[0]));
-                    this.height = num(arguments[0])
-                },
-
-                // Writable
-                writable: false
-            });
-
-            // Set Width
-            HTMLCanvasElement.prototype.def('setWidth', {
-                // Value
-                value: function() {
-                    // Modification > Target > Width
-                    this.attr('width', num(arguments[0]));
-                    this.width = num(arguments[0])
-                },
-
-                // Writable
-                writable: false
-            });
-
-    /* HTML Link Element */
-        // Modification > HTML Link Element
-            // Cross Origin
-            (typeof HTMLLinkElement.prototype.crossorigin == 'string') || HTMLLinkElement.prototype.def('crossorigin', {
-                // Set
-                set: function setCrossOrigin() {
-                    // Modification > Target > Cross Origin
-                    this.attr('crossorigin', str(arguments[0]))
-                }
-            });
-
-    /* Cosine */
-    def('cos', {value: Math.cos, writable: false});
-
-    /* CSS */
-        // Link
-            // LapysJS Stylesheet
-            $$(`link[href*='lapys.min.css'`) || $$(`link[href*='lapys.css'`) || css.link('LapysJSStylesheet', {href: decodeURIComponent(LapysJS.script.src.replace(/js/g, 'css')) || `${DYNAMIC_ASSETS_URL}src/lapys.css`, media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-            // Base Stylesheet
-            $$(`link[href*='base.css'`) || css.link('baseStylesheet', {href: decodeURIComponent(($$(`script[src*='base.js'`, 0) || 'script'.html).src.replace(/js/g, 'css')) || `${DYNAMIC_ASSETS_URL}assets/css/base.css`, media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-            // Document Stylesheet
-                /* Timeout
-                        --- NOTE ---
-                            @lapys: The Document Script may not be defined yet.
+                    > Return
                 */
-                timeout(() => {
-                    !$$('script[data-id=documentScript', 0) || css.link('documentStylesheet', {href: decodeURIComponent(($$('script[data-id=documentScript', 0) || 'script'.html).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'})
-                });
+                switch (getQueryParameterByName('revealElementsBoundingBox')) {
+                    // False
+                    case 'false':
+                        return false;
+                        break;
 
-    /* Document */
-        // Modification
-            // Favicon
-            document.favicon = `${DYNAMIC_ASSETS_URL}assets/img/ico/icon.ico`;
+                    // True
+                    case 'true':
+                        return true;
+                        break;
+
+                    // Null
+                    case null:
+                        return false
+                }
+
+                // Return
+                return false
+            })(),
+
+            // Writable
+            writable: false
+        });
+
+        /* CSS */
+            // Link
+                // LapysJS Stylesheet
+                !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('LapysJSStylesheet', {href: decodeURIComponent(LapysJS.script.src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
+
+                // Base Stylesheet
+                !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('baseStylesheet', {href: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/js/g, 'css')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'});
+
+                // Documents Stylesheet
+                !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('docsStylesheet', {href: decodeURIComponent($$('link[data-id=baseStylesheet').href.replace(/base./g, 'docs.')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'})
+
+                // Document Stylesheet
+                !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('documentStylesheet', {href: decodeURIComponent($$('link[data-id=baseStylesheet').href.replace(/base./g, (file.name || 'index') + '.')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'});
+
+            // Style
+                // Reveal Elements Bounding Box
+                !REVEAL_ELEMENTS_BOUNDING_BOX || css.style('revealElementsBoundingBoxOptionsStylesheet', ':nth-child(odd) { outline: 1px solid blue } :nth-child(even) { outline: 1px solid red }');
+
+        /* Dynamic Assets URL */
+        def('DYNAMIC_ASSETS_URL', {
+            // Value
+            value: (function() {
+                // Initialization > Data
+                let data = '';
+
+                /* Logic
+                        [if:else if:else statement]
+
+                    > Update > Data
+                */
+                if (location.href.hasText('LapysJS/pages/'))
+                    data = `../${data}`;
+
+                // Return
+                return data
+            })(),
+
+            // Writable
+            writable: false
+        });
+
+        /* Document */
+            // Favorite Icon
+            !ALLOW_ALTERNATIVE_RESOURCE_FILES || (document.favicon = `${DYNAMIC_ASSETS_URL}assets/img/ico/icon.ico`);
 
             // Title
-            document.title = 'LapysJS';
+            document.title = app.name || 'LapysJS';
 
-    /* LapysJS */
-        // $ > Import
-            // Calibri
-            LapysJS.$.import('font', {format: 'truetype', name: 'Calibri', url: `${DYNAMIC_ASSETS_URL}assets/fonts/calibri.ttf`});
+        /* Epsilon */
+        def('EPSILON', {
+            // Value
+            value: Number.EPSILON,
 
-            // Calibri Light
-            LapysJS.$.import('font', {format: 'truetype', name: 'Calibri Light', url: `${DYNAMIC_ASSETS_URL}assets/fonts/calibri-light.ttf`});
-
-            // Open Sans
-            LapysJS.$.import('font', {format: 'truetype', name: 'Open Sans', url: `${DYNAMIC_ASSETS_URL}assets/fonts/open-sans.ttf`});
-
-    /* Percent */
-    def('perc', {
-        // Value
-        value: function() {
-            // Return
-            return (arguments[0] || 0) / 100
-        },
-
-        // Writable
-        writable: false
-    });
-
-    /* PI 2 */
-    def('PI2', {value: PI * 2, writable: false});
-
-    /* Request Animation Frame */
-    global.requestAnimationFrame = global.requestAnimationFrame || global.webkitRequestAnimationFrame || global.msRequestAnimationFrame || global.mozRequestAnimationFrame;
-
-    /* Sine */
-    def('sin', {value: Math.sin, writable: false});
-
-    /* Global */
-        // Name
-        global.name = 'LapysJS';
-
-        // Short Name
-        global.short_name = global.name;
-
-/* DOM Elements */
-    /* All */
-        /* {Modify DOM Element Tree} On DOM Ready
-                --- NOTE ---
-                    @lapys:
-                        - Catch imported elements.
-                        - Reduce the size of the DOM.
-        */
-        onDOMReady(function modifyDOMElementTree() {
-            /* Loop
-                    [do:while statement]
-
-                > Modification > <link> > Cross Origin
-            */
-            while ($$(`link[href*='css'][rel=stylesheet]:not([crossorigin=anonymous])`, 0))
-                $$(`link[href*='css'][rel=stylesheet]:not([crossorigin=anonymous])`, 0).crossorigin = 'anonymous';
-
-            /* Loop
-                    [do:while statement]
-
-                > Deletion
-            */
-            while ($$('head br', 0))
-                $$('head br', 0).delete();
-
-            /* Loop
-                    [do:while statement]
-
-                > Deletion
-            */
-            while ($$('script', 0))
-                $$('script', 0).delete()
+            // Writable
+            writable: false
         });
 
-    /* <accordion-component> */
-        // Registration
-        registerElement('accordion-component', HTMLAccordionComponent);
+        /* JavaScript */
+            // Source
+                /* Documents Script
+                        --- NOTE ---
+                            @lapys:
+                                While the Base Script is meant for consistency across all
+                                forms of projects,
 
-    /* <body> */
-        // Style > <body>
-        document.body.setCSS({
-            // Background Color
-            backgroundColor: app.color.secondaryBackgroundColor,
+                                the Docs (Documents) Scripts is meant for additional functions
+                                specific to the current project.
+                */
+                !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('docsScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, 'docs.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'});
 
-            // Color
-            color: app.color.secondaryForegroundColor,
+                // Document Script
+                !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('documentScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, (file.name || 'index') + '.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'});
 
-            // Font
-            font: {
-                // Family
-                family: app.font.family,
+        /* LapysJS */
+            // $
+                // Import
+                    // Font
+                        // Calibri Light
+                        LapysJS.$.import('font', {format: 'truetype', name: 'Calibri Light', url: `${DYNAMIC_ASSETS_URL}assets/fonts/calibri-light.ttf`});
 
-                // Size
-                size: `${parseNumber(app.font.size)}px`,
+                        // Calibri
+                        LapysJS.$.import('font', {format: 'truetype', name: 'Calibri', url: `${DYNAMIC_ASSETS_URL}assets/fonts/calibri.ttf`});
 
-                // Style
-                style: app.font.style,
+                        // Droid Serif
+                        LapysJS.$.import('font', {format: 'truetype', name: 'Droid Serif', url: `${DYNAMIC_ASSETS_URL}assets/fonts/droid-serif.ttf`});
 
-                // Variant
-                variant: app.font.variant,
+                        // Open Sans
+                        LapysJS.$.import('font', {format: 'truetype', name: 'Open Sans', url: `${DYNAMIC_ASSETS_URL}assets/fonts/open-sans.ttf`});
 
-                // Weight
-                weight: app.font.weight
-            },
+                        // Roboto Mono
+                        LapysJS.$.import('font', {format: 'truetype', name: 'Roboto Mono', url: `${DYNAMIC_ASSETS_URL}assets/fonts/roboto-mono.ttf`});
 
-            // Line Height
-            lineHeight: app.font.lineHeight
+                        // The Woodlands
+                        LapysJS.$.import('font', {format: 'truetype', name: 'The Woodlands', url: `${DYNAMIC_ASSETS_URL}assets/fonts/the-woodlands.ttf`});
+
+                        // Trajan Pro
+                        LapysJS.$.import('font', {name: 'Trajan Pro', url: `${DYNAMIC_ASSETS_URL}assets/fonts/trajan-pro.otf`});
+
+        /* Maximum Safe Integer */
+        def('MAX_SAFE_INT', {
+            // Value
+            value: Number.MAX_SAFE_INTEGER,
+
+            // Writable
+            writable: false
         });
 
-    /* <bottom>, <top> */
-        // On Node Ready
-        onNodeAdded(document.body, element => {
-            // Insertion
-            element.$$('bottom#bottom', 0) || element.insertChild('end', createElement('bottom', '#bottom'));
-            while (element.children[~-len(element.children)] !== element.$$('bottom#bottom', 0)) element.insertBefore(element.children[~-len(element.children)], $$('bottom#bottom', 0));
+        /* Maximum Number */
+        def('MAX_NUM', {
+            // Value
+            value: Number.MAX_VALUE,
 
-            element.$$('top#top', 0) || element.insertChild('begin', createElement('top', '#top'));
-            while (element.children[0] !== element.$$('top#top', 0)) element.insertBefore($$('top#top', 0), element.children[0])
-        }, document.body);
+            // Writable
+            writable: false
+        });
 
-    /* <canvas> */
-        // On Node Added
-        onNodeAdded(document.body, function() {
-            /* Loop
-                    Index all <canvas>.
+        /* Minimum Safe Integer */
+        def('MIN_SAFE_INT', {
+            // Value
+            value: Number.MIN_SAFE_INTEGER,
 
-                > Modification > <canvas> > Rendering Context 2D
-            */
-            for (let i = 0; i < $$('canvas', 'length'); i += 1)
-                if (($$('canvas', i).renderingContext2D || []).constructor !== CanvasRenderingContext2D) {
-                    $$('canvas', i).def('renderingContext2D', {
+            // Writable
+            writable: false
+        });
+
+        /* Minimum Number */
+        def('MIN_NUM', {
+            // Value
+            value: Number.MIN_VALUE,
+
+            // Writable
+            writable: false
+        });
+
+        /* Navigation Links */
+        def('NAVIGATION_LINKS', {
+            // Value
+            value: new (function NavigationLinksArray() {
+                // Initialization > Data
+                let data = [
+                    // Get Started
+                    new (function NavigationLink() {
+                        // Modification > Target > (...)
+                        this.href = `${DYNAMIC_ASSETS_URL}pages/get-started.html`;
+                        this.target = '_self';
+                        this.title = 'Let&rsquo;s begin shall we?'.parseHTMLEntitiesToText();
+                        this.textContent = 'Get Started'
+                    }),
+
+                    // GitHub
+                    new (function NavigationLink() {
+                        // Modification > Target > (...)
+                        this.href = 'https://github.com/LapysDev/LapysJS';
+                        this.target = '_blank';
+                        this.title = 'See how the library&rsquo;s doing.'.parseHTMLEntitiesToText();
+                        this.textContent = 'GitHub'
+                    })
+                ];
+
+                /* Loop
+                        Index Data.
+
+                    > Modification > Target > [Data]
+                */
+                for (let i = 0; i < len(data); i += 1)
+                    this.def(i, {
                         // Value
-                        value: $$('canvas', i).getContext('2d'),
+                        value: data[i],
 
                         // Writable
                         writable: false
                     });
-                        // Modification
-                            // Fill Color
-                            $$('canvas', i).renderingContext2D.def('fillColor', {
-                                // Value
-                                value: function() {
-                                    // Modification > Target > Fill (Style, Text)
-                                    this.fillStyle = str(arguments[0]);
-                                    this.fillText = str(arguments[0]);
 
-                                    // Target > Stroke
-                                    this.fill()
-                                },
+                // Modification > Target > Length
+                this.def('length', {
+                    // Value
+                    value: len(data),
 
-                                // Writable
-                                writable: false
-                            })
+                    // Writable
+                    writable: false
+                })
+            }),
 
-                            // Stroke Color
-                            $$('canvas', i).renderingContext2D.def('strokeColor', {
-                                // Value
-                                value: function() {
-                                    // Modification > Target > Stroke (Style, Text)
-                                    this.strokeStyle = str(arguments[0]);
-                                    this.strokeText = str(arguments[0]);
+            // Writable
+            writable: false
+        });
 
-                                    // Target > Stroke
-                                    this.stroke()
-                                },
+        /* Number */
+            // Percent
+            (getType(Number.prototype.perc) == 'function') || Number.prototype.def('perc', {
+                // Value
+                value: function percent() {
+                    // Return
+                    return getType(this) == 'number' ? this * (arguments[0] / 100) : arguments[0] / 100
+                },
 
-                                // Writable
-                                writable: false
-                            })
+                // Writable
+                writable: false
+            });
+
+        /* Percent */
+        def('perc', {
+            // Value
+            value: function percent() {
+                // Return
+                return getType(this) == 'number' ? this * (arguments[0] / 100) : arguments[0] / 100
+            },
+
+            // Writable
+            writable: false
+        });
+
+        /* Supports Web GL */
+        def('SUPPORTS_WEBGL', {
+            // Get
+            get: function SUPPORTS_WEBGL() {
+                // Return
+                return ('canvas'.html.getContext('webgl') || 'canvas'.html.getContext('experimental-webgl')) && ('canvas'.html.getContext('webgl') || 'canvas'.html.getContext('experimental-webgl')) instanceof window.WebGLRenderingContext
+            }
+        });
+
+    /* Classes */
+        /* HTML Access Value Element */
+        def('HTMLAccessValueElement', {
+            // Value
+            value: class HTMLAccessValueElement extends HTMLElement {
+                // Constructor
+                constructor() {
+                    // Super
+                    !registerElement() || super();
+
+                    // Return
+                    return registerElement() ? void 0 : createElement('access-value')
                 }
-        });
-
-    /* <carousel-component> */
-        // Registration
-        registerElement('carousel-component', HTMLCarouselComponent);
-
-    /* <developer-canvas> */
-        // Registration
-        registerElement('developer-canvas', HTMLDeveloperCanvasElement);
-
-    /* <dialog>
-            --- UPDATE REQUIRED ---
-                @lapys: Needs to function.
-    */
-         // Function > Re-Orientate Device
-        global.reorientateDevice = function reorientateDevice() {
-            // Alert
-            alert('Sorry, permission is not provided to re-orientate this device.')
-        };
-
-        // Event > Window > Resize
-        invokeEvent('resize', function() {
-             // Insertion
-            (innerWidth > 321) || $$('.dialog#reorientateDeviceDialog', 0) || document.body.insertChild('end', new LapysJS.component.Dialog({
-                CSSSelector: '.center.fill.flex-reverse.fixed.no-select.no-touch#reorientateDeviceDialog',
-                innerHTML:
-                    // Header
-                    `<h1 class='no-overflow well' data-id=header style='background-color: rgba(0, 0, 0, .075); border: 0; box-shadow: none; font-size: 1.75em'> Sorry, but you can not view this page with your current device. </h1>` +
-
-                    // Sub Header
-                    `<h2 data-id=subheader style='font-size: 1em'> Try re-orientating your device for another result. </h2>` +
-
-                    // Re-Orientate Device
-                    `<button class='flat smooth upper' id=reorientateDevice onclick=reorientateDevice()>` +
-                        `Button` +
-
-                        // Document Stylesheet
-                        `<style type=text/css>` +
-                            // Components
-                                // Re-Orientate Device
-                                `#reorientateDevice {` +
-                                    `background-color: ${app.themeColor};` +
-                                    `border: 0;` +
-                                    `border-radius: 2.5px;` +
-                                    `color: #FFFFFF;` +
-                                    `cursor: pointer;` +
-                                    `font-size: 110%;` +
-                                    `padding: 7.5px 15px` +
-                                `}` +
-                                    // States > Hover
-                                    `#reorientateDevice:hover {` +
-                                        `box-shadow: inset 0 0 0 500px rgba(0, 0, 0, .1)` +
-                                    `}` +
-                        `</style>` +
-                    `</button>` +
-
-                    // Document Stylesheet
-                    `<style type=text/css>` +
-                        // Components > Re-Orientate Device Dialog
-                            // @media
-                            `@media only all ` +
-                                `and (min-width: 320px) {` +
-                                    // Re-Orientate Device Dialog
-                                    `.dialog#reorientateDeviceDialog {` +
-                                        `opacity: 0 !important` +
-                                    `}` +
-                            `}` +
-                    `</style>`,
-                style: 'color: #565656'
-            }));
-        });
-
-    /* <dropdown-component> */
-        // Registration
-        registerElement('dropdown-component', HTMLDropdownComponent);
-
-    /* <dynamic-text-component> */
-        // Registration
-        registerElement('dynamic-text-component', HTMLDynamicTextComponent);
-
-    /* <jumbotron-element> */
-        // Registration
-        registerElement('jumbotron-element', HTMLJumbotronElement);
-
-        // On DOM Ready
-        onDOMReady(function() {
-            /* Loop
-                    Index all <jumbotron-element>.
-
-                > Insertion
-            */
-            for (let i = 0; i < $$('jumbotron-element', 'length'); i += 1) {
-                $$('jumbotron-element', i).sections.top || $$('jumbotron-element', i).insertChild('end', createElement('div', '[data-id=topSection'));
-                $$('jumbotron-element', i).sections.mid || $$('jumbotron-element', i).insertChild('end', createElement('div', '[data-id=midSection'));
-                $$('jumbotron-element', i).sections.bottom || $$('jumbotron-element', i).insertChild('end', createElement('div', '[data-id=bottomSection'))
             }
         });
 
-    /* <logo-element> */
-        // Registration
-        registerElement('logo-element', HTMLLogoElement);
-
-        // On DOM Ready
-        onDOMReady(function() {
-            /* Loop
-                    Index all <logo-element>.
-            */
-            for (let i = 0; i < $$('logo-element', 'length'); i += 1) {
-                // Insertion
-                $$('logo-element', i).image || $$('logo-element', i).insertChild('begin', new LapysJS.component.Image());
-
-                // Modification > <logo-element> > Source
-                $$('logo-element', i).src = $$('logo-element', i).src || $$('logo-element', i).attr('src') || `${DYNAMIC_ASSETS_URL}assets/img/png/icon.png`;
-                $$('logo-element', i).delAttr('src')
-            }
-        });
-
-        // On Node Added
-        onNodeAdded(document.body, function() {
-            /* Loop
-                    Index all <logo-element>.
-            */
-            for (let i = 0; i < $$('logo-element', 'length'); i += 1) {
-                // Insertion
-                $$('logo-element', i).image || $$('logo-element', i).insertChild('begin', new LapysJS.component.Image());
-
-                /* Loop
-                        Index the <logo-element>`s attributes.
-                */
-                for (let j = 0; j < len($$('logo-element', i).attributes); j += 1)
+        /* HTML Accordion Component */
+        def('HTMLAccordionComponent', {
+            // Value
+            value: class HTMLAccordionComponent extends HTMLElement {
+                // Constructor
+                constructor() {
                     /* Logic
-                            If the attribute begins with 'img-'.
+                            [if:else if:else statement]
                     */
-                    if ($$('logo-element', i).attributes[j].name.startsWith('img-')) {
-                        // Modification
-                            // (<logo-element> > Image) > [Attribute]
-                            $$('logo-element', i).image.attr($$('logo-element', i).attributes[j].name.slice(len('img-')), $$('logo-element', i).attributes[j].value);
+                    if (registerElement()) {
+                        // Super
+                        super();
 
-                            // <logo-element> > [Attribute]
-                            $$('logo-element', i).delAttr($$('logo-element', i).attributes[j--])
+                        // Initialization > Target
+                        let that = this;
+
+                        // Timeout
+                        timeout(function() {
+                            // Modification > Target > Class
+                            that.addClass('accordion')
+                        })
                     }
-            }
-        });
 
-    /* <script> */
-        /* Loop
-                Index all <script>
+                    // Return
+                    return registerElement() ? void 0 : createElement('accordion-component', '.accordion[data-event-type=click')
+                };
 
-            > Modification > <script> > Language
-        */
-        for (let i = 0; i < $$(`script[type='text/javascript'`, 'length'); i += 1) {
-            $$(`script[type='text/javascript'`, i).attr('language', 'javascript');
-            $$(`script[type='text/javascript'`, i).language = 'javascript'
-        }
-
-/* Components */
-    /* Footer */
-        // On DOM Ready
-        onDOMReady(() => {
-            // Insertion
-            (document.main || document.body).insertChild('end', document.footer = createElement('footer', '.card.center-text.flat.grid-1.no-select#footer[data-id=footer',
-                `<div> ${app.author} &copy; 2017${date.getFullYear() > 2017 ? ` - ${date.getFullYear()}` : ''} </div>` +
-                `<br>` +
-                `<small> Some images are copyright of <strong>FreePik</strong> at <a href=https://www.freepik.com>www.freepik.com</a> and all ownership goes to the respective authors. </small>`, {
-                    // Style
-                    style: 'box-shadow: 0 5000px 0 5000px #333333; padding: 30px 0; text-indent: 15px'
+                // Connected Callback
+                connectedCallback() {
+                    // Modification > Target > Data Event Type
+                    this.attr('data-event-type', 'click')
                 }
-            ))
+            },
+
+            // Writable
+            writable: false
         });
 
-    /* Syntax Highlighted */
-        // Function > Modify Syntax Highlighted Code
-        global.modifySyntaxHighlightedCode = function modifySyntaxHighlightedCode() {
-            // Initialization > Syntax Highlighted Code
-            let syntaxHighlightedCode = $$('code.syntax-highlighted', 'array');
+        /* HTML Carousel Component */
+        def('HTMLCarouselComponent', {
+            // Value
+            value: class HTMLCarouselComponent extends HTMLElement {
+                // Constructor
+                constructor() {
+                    /* Logic
+                            [if:else if:else statement]
+                    */
+                    if (registerElement()) {
+                        // Super
+                        super();
 
-            /* Loop
-                    Index all Syntax Highlighted Code.
-            */
-            for (let i = 0; i < len(syntaxHighlightedCode); i += 1)
-                /* Logic
-                        [if:else if:else statement]
+                        // Initialization > Target
+                        let that = this;
+
+                        // Timeout
+                        timeout(function() {
+                            // Modification > Target > Class
+                            that.addClass('carousel')
+                        })
+                    }
+
+                    // Return
+                    return registerElement() ? void 0 : createElement('carousel-component', '.carousel[data-buttons][data-indicators')
+                };
+
+                // Connected Callback
+                connectedCallback() {
+                    // Modification > Target
+                        // Data Buttons
+                        this.setAttr('data-buttons');
+
+                        // Data Indicators
+                        this.setAttr('data-indicators')
+                }
+            },
+
+            // Writable
+            writable: false
+        });
+
+        /* HTML Dropdown Component */
+        def('HTMLDropdownComponent', {
+            // Value
+            value: class HTMLDropdownComponent extends HTMLElement {
+                /* Constructor
+                        --- NOTE ---
+                            @lapys: Is called when the 'new' operator is used
+                                with the class.
                 */
-                if (!syntaxHighlightedCode[i]['LapysJS isModified']) {
+                constructor() {
+                    /* Logic
+                            [if:else if:else statement]
+                    */
+                    if (registerElement()) {
+                        // Super
+                        super();
+
+                        // Initialization > Target
+                        let that = this;
+
+                        // Timeout
+                        timeout(function() {
+                            // Modification > Target > Class
+                            that.addClass('dropdown')
+                        })
+                    }
+
+                    // Return
+                    return registerElement() ? void 0 : createElement('dropdown-component', '.dropdown[data-event-type=click')
+                };
+
+                /* Connected Callback
+                        --- NOTE ---
+                            @lapys: Is called when an instance of the class
+                                is inserted in the DOM.
+                */
+                connectedCallback() {
+                    // Modification > Target > Data Event Type
+                    this.attr('data-event-type', 'click')
+                }
+            },
+
+            // Writable
+            writable: false
+        });
+
+        /* HTML DynamicText Component */
+        def('HTMLDynamicTextComponent', {
+            // Value
+            value: class HTMLDynamicTextComponent extends HTMLElement {
+                // Constructor
+                constructor() {
+                    /* Logic
+                            [if:else if:else statement]
+                    */
+                    if (registerElement()) {
+                        // Super
+                        super();
+
+                        // Initialization > Target
+                        let that = this;
+
+                        // Timeout
+                        timeout(function() {
+                            // Modification > Target > Class
+                            that.addClass('dynamic-text')
+                        })
+                    }
+
+                    // Return
+                    return registerElement() ? void 0 : createElement('dynamic-text-component', '.dynamic-text')
+                };
+
+                // Connected Callback
+                connectedCallback() {
+                    // Modification > Target
+                        // Data Text Function Separator
+                        this.attr('data-text-function-separator', this.attr('data-text-function-separator') || ';');
+
+                        // Data Text Separator
+                        this.attr('data-text-separator', this.attr('data-text-separator') || ',')
+                }
+            },
+
+            // Writable
+            writable: false
+        });
+
+        /* HTML Jumbotron Element */
+        def('HTMLJumbotronElement', {
+            // Value
+            value: class HTMLJumbotronElement extends HTMLElement {
+                // Constructor
+                constructor() {
+                    // Initialization > Data
+                    let result = registerElement() ? 'jumbotron-element' : createElement('jumbotron-element', '.jumbotron');
+
+                    /* Logic
+                            [if:else if:else statement]
+                    */
+                    if (registerElement()) {
+                        // Super
+                        super();
+
+                        // Initialization > Target
+                        let that = this;
+
+                        // Timeout
+                        timeout(function() {
+                            // Modification > Target
+                                // Class
+                                that.addClass('jumbotron');
+
+                                // Sections
+                                (getType(that.sections) == 'array') || that.def('sections', {
+                                    // Get
+                                    get: function sections() {
+                                        // Initialization > (Data, Metadata, Target)
+                                        let data = [...this.children],
+                                            metadata = [],
+                                            that = this;
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Metadata
+                                        */
+                                        for (let i = 0; i < len(data); i += 1) {
+                                            (data[i] != this.$$('[data-id=bottomSection', 0)) || metadata.push(this.$$('[data-id=bottomSection', 0));
+                                            (data[i] != this.$$('[data-id=midSection', 0)) || metadata.push(this.$$('[data-id=midSection', 0));
+                                            (data[i] != this.$$('[data-id=topSection', 0)) || metadata.push(this.$$('[data-id=topSection', 0))
+                                        }
+
+                                        // Modification > Metadata
+                                            // Bottom
+                                            metadata.def('bottom', {
+                                                // Get
+                                                get: function bottom() {
+                                                    // Return
+                                                    return metadata[metadata.indexOf(that.$$('[data-id=bottomSection', 0))] || null
+                                                }
+                                            });
+
+                                            // Mid
+                                            metadata.def('mid', {
+                                                // Get
+                                                get: function mid() {
+                                                    // Return
+                                                    return metadata[metadata.indexOf(that.$$('[data-id=midSection', 0))] || null
+                                                }
+                                            });
+
+                                            // Top
+                                            metadata.def('top', {
+                                                // Get
+                                                get: function top() {
+                                                    // Return
+                                                    return metadata[metadata.indexOf(that.$$('[data-id=topSection', 0))] || null
+                                                }
+                                            });
+
+                                        // Return
+                                        return metadata
+                                    }
+                                });
+                                    // Bottom Section
+                                    ('bottomSection' in that) || that.def('bottomSection', {
+                                        // Get
+                                        get: function bottomSection() {
+                                            // Return
+                                            return this.sections.bottom
+                                        }
+                                    });
+                                        // Foot
+                                        ('foot' in that) || that.def('foot', {
+                                            // Get
+                                            get: function foot() {
+                                                // Return
+                                                return this.sections.bottom
+                                            }
+                                        });
+
+                                    // Mid Section
+                                    ('midSection' in that) || that.def('midSection', {
+                                        // Get
+                                        get: function midSection() {
+                                            // Return
+                                            return this.sections.mid
+                                        }
+                                    });
+                                        // Body
+                                        ('body' in that) || that.def('body', {
+                                            // Get
+                                            get: function body() {
+                                                // Return
+                                                return this.sections.mid
+                                            }
+                                        });
+
+                                    // Top Section
+                                    ('topSection' in that) || that.def('topSection', {
+                                        // Get
+                                        get: function topSection() {
+                                            // Return
+                                            return this.sections.top
+                                        }
+                                    });
+                                        // Head
+                                        ('head' in that) || that.def('head', {
+                                            // Get
+                                            get: function head() {
+                                                // Return
+                                                return this.sections.top
+                                            }
+                                        })
+                        })
+                    }
+
+                    else {
+                        // Modification > Data
+                            // Sections
+                            (getType(result.sections) == 'array') || result.def('sections', {
+                                // Get
+                                get: function sections() {
+                                    // Initialization > (Data, Metadata, Target)
+                                    let data = [...this.children],
+                                        metadata = [],
+                                        that = this;
+
+                                    /* Loop
+                                            Index Data.
+
+                                        > Update > Metadata
+                                    */
+                                    for (let i = 0; i < len(data); i += 1) {
+                                        (data[i] != this.$$('[data-id=bottomSection', 0)) || metadata.push(this.$$('[data-id=bottomSection', 0));
+                                        (data[i] != this.$$('[data-id=midSection', 0)) || metadata.push(this.$$('[data-id=midSection', 0));
+                                        (data[i] != this.$$('[data-id=topSection', 0)) || metadata.push(this.$$('[data-id=topSection', 0))
+                                    }
+
+                                    // Modification > Metadata
+                                        // Bottom
+                                        metadata.def('bottom', {
+                                            // Get
+                                            get: function bottom() {
+                                                // Return
+                                                return metadata[metadata.indexOf(that.$$('[data-id=bottomSection', 0))] || null
+                                            }
+                                        });
+
+                                        // Mid
+                                        metadata.def('mid', {
+                                            // Get
+                                            get: function mid() {
+                                                // Return
+                                                return metadata[metadata.indexOf(that.$$('[data-id=midSection', 0))] || null
+                                            }
+                                        });
+
+                                        // Top
+                                        metadata.def('top', {
+                                            // Get
+                                            get: function top() {
+                                                // Return
+                                                return metadata[metadata.indexOf(that.$$('[data-id=topSection', 0))] || null
+                                            }
+                                        });
+
+                                    // Return
+                                    return metadata
+                                }
+                            });
+                                // Bottom Section
+                                result.def('bottomSection', {
+                                    // Get
+                                    get: function bottomSection() {
+                                        // Return
+                                        return this.sections.bottom
+                                    }
+                                });
+                                    // Foot
+                                    result.def('foot', {
+                                        // Get
+                                        get: function foot() {
+                                            // Return
+                                            return this.sections.bottom
+                                        }
+                                    });
+
+                                // Mid Section
+                                result.def('midSection', {
+                                    // Get
+                                    get: function midSection() {
+                                        // Return
+                                        return this.sections.mid
+                                    }
+                                });
+                                    // Body
+                                    result.def('body', {
+                                        // Get
+                                        get: function body() {
+                                            // Return
+                                            return this.sections.mid
+                                        }
+                                    });
+
+                                // Top Section
+                                result.def('topSection', {
+                                    // Get
+                                    get: function topSection() {
+                                        // Return
+                                        return this.sections.top
+                                    }
+                                });
+                                    // Head
+                                    result.def('head', {
+                                        // Get
+                                        get: function head() {
+                                            // Return
+                                            return this.sections.top
+                                        }
+                                    })
+                    }
+
+                    // Return
+                    return registerElement() ? void 0 : (result.hasClass('jumbotron') ? result : createElement('jumbotron-element', '.jumbotron'))
+                }
+            },
+
+            // Writable
+            writable: false
+        });
+
+    /* DOM Elements */
+        /* <access-value> */
+            // Registration
+            !registerElement() || registerElement('access-value', HTMLAccessValueElement);
+
+            // On Node Added
+            onNodeAdded(document.body, function() {
+                /* Loop
+                        Index <access-value>.
+
+                    > Modification > <access-value> > Outer HTML
+                */
+                while ($$('access-value', 0))
+                    $$('access-value', 0).outerHTML = eval($$('access-value', 0).attr('value') || '')
+            });
+
+        /* <accordion-component> */
+            // Registration
+            !registerElement() || registerElement('accordion-component', HTMLAccordionComponent);
+
+            // On Node Added
+            registerElement() || onNodeAdded(document.body, function() {
+                /* Loop
+                        Index <accordion-component>.
+
+                    > Modification > <accordion-component>
+                */
+                while ($$('accordion-component:not(.accordion)', 0)) {
+                    // Data Event Type
+                    $$('accordion-component:not(.accordion)', 0).attr('data-event-type', 'click');
+
+                    // Class
+                    $$('accordion-component:not(.accordion)', 0).addClass('accordion')
+                }
+            });
+
+        /* <body> */
+            // Check
+            check(function() {
+                // Return
+                return !!document.body
+            }, function() {
+                // Modification > <body>
+                    // Class
+                    document.body.addClass('sans-serif');
+
+                    // Style
+                    document.body.setCSS({
+                        // Font
+                        font: {
+                            // Family
+                            family: '"Open Sans", "Calibri Light", "Droid Serif", sans-serif'
+                        }
+                    })
+            });
+
+        /* <carousel-component> */
+            /* Loop
+                    Index <carousel-component>.
+
+                > Modification > <carousel-component>
+            */
+            while ($$('carousel-component:not(.carousel)', 0)) {
+                // Data Buttons
+                $$('carousel-component:not(.carousel)', 0).setAttr('data-buttons');
+
+                // Data Indicators
+                $$('carousel-component:not(.carousel)', 0).setAttr('data-indicators');
+
+                // Class
+                $$('carousel-component:not(.carousel)', 0).addClass('carousel')
+            }
+
+            // Registration
+            !registerElement() || registerElement('carousel-component', HTMLCarouselComponent);
+
+            // On Node Added
+            registerElement() || onNodeAdded(document.body, function() {
+                /* Loop
+                        Index <carousel-component>.
+
+                    > Modification > <carousel-component>
+                */
+                while ($$('carousel-component:not(.carousel)', 0)) {
+                    // Data Buttons
+                    $$('carousel-component:not(.carousel)', 0).setAttr('data-buttons');
+
+                    // Data Indicators
+                    $$('carousel-component:not(.carousel)', 0).setAttr('data-indicators');
+
+                    // Class
+                    $$('carousel-component:not(.carousel)', 0).addClass('carousel')
+                }
+            });
+
+        /* <dropdown-component> */
+            // Registration
+            !registerElement() || registerElement('dropdown-component', HTMLDropdownComponent);
+
+            // On Node Added
+            registerElement() || onNodeAdded(document.body, function() {
+                /* Loop
+                        Index <dropdown-component>.
+
+                    > Modification > <dropdown-component>
+                */
+                while ($$('dropdown-component:not(.dropdown)', 0)) {
+                    // Data Event Type
+                    $$('dropdown-component:not(.dropdown)', 0).attr('data-event-type', 'click');
+
+                    // Class
+                    $$('dropdown-component:not(.dropdown)', 0).addClass('dropdown')
+                }
+            });
+
+        /* <dynamic-text-component> */
+            // Registration
+            !registerElement() || registerElement('dynamic-text-component', HTMLDynamicTextComponent);
+
+            // On Node Added
+            registerElement() || onNodeAdded(document.body, function() {
+                /* Loop
+                        Index <dynamic-text-component>.
+
+                    > Modification > <dynamic-text-component>
+                */
+                while ($$('dynamic-text-component:not(.dynamic-text)', 0)) {
+                    // Data Text Function Separator
+                    $$('dynamic-text-component:not(.dynamic-text)', 0).attr('data-text-function-separator', $$('dynamic-text-component:not(.dynamic-text)', 0).attr('data-text-function-separator') || ';');
+
+                    // Data Text Separator
+                    $$('dynamic-text-component:not(.dynamic-text)', 0).attr('data-text-separator', $$('dynamic-text-component:not(.dynamic-text)', 0).attr('data-text-separator') || ',');
+
+                    // Class
+                    $$('dynamic-text-component:not(.dynamic-text)', 0).addClass('dynamic-text')
+                }
+            });
+
+        /* <jumbotron-element> */
+            // Registration
+            !registerElement() || registerElement('jumbotron-element', HTMLJumbotronElement);
+
+            // On Node Added
+            registerElement() || onNodeAdded(document.body, function() {
+                /* Loop
+                        Index <jumbotron-element>.
+
+                    > Modification > <jumbotron-element>
+                */
+                while ($$('jumbotron-element:not(.jumbotron)', 0)) {
+                    // Modification > <jumbotron-element>
+                        // Sections
+                        (getType($$('jumbotron-element:not(.jumbotron)', 0).sections) == 'array') || $$('jumbotron-element:not(.jumbotron)', 0).def('sections', {
+                            // Get
+                            get: function sections() {
+                                // Initialization > (Data, Metadata, Target)
+                                let data = Array.from(this.children),
+                                    metadata = [],
+                                    that = this;
+
+                                /* Loop
+                                        Index Data.
+
+                                    > Update > Metadata
+                                */
+                                for (let i = 0; i < len(data); i += 1) {
+                                    (data[i] != this.$$('[data-id=bottomSection', 0)) || metadata.push(this.$$('[data-id=bottomSection', 0));
+                                    (data[i] != this.$$('[data-id=midSection', 0)) || metadata.push(this.$$('[data-id=midSection', 0));
+                                    (data[i] != this.$$('[data-id=topSection', 0)) || metadata.push(this.$$('[data-id=topSection', 0))
+                                }
+
+                                // Modification > Metadata
+                                    // Bottom
+                                    metadata.def('bottom', {
+                                        // Get
+                                        get: function bottom() {
+                                            // Return
+                                            return metadata[metadata.indexOf(that.$$('[data-id=bottomSection', 0))] || null
+                                        }
+                                    });
+
+                                    // Mid
+                                    metadata.def('mid', {
+                                        // Get
+                                        get: function mid() {
+                                            // Return
+                                            return metadata[metadata.indexOf(that.$$('[data-id=midSection', 0))] || null
+                                        }
+                                    });
+
+                                    // Top
+                                    metadata.def('top', {
+                                        // Get
+                                        get: function top() {
+                                            // Return
+                                            return metadata[metadata.indexOf(that.$$('[data-id=topSection', 0))] || null
+                                        }
+                                    });
+
+                                // Return
+                                return metadata
+                            }
+                        });
+                            // Bottom Section
+                            ('bottomSection' in $$('jumbotron-element:not(.jumbotron)', 0)) || $$('jumbotron-element:not(.jumbotron)', 0).def('bottomSection', {
+                                // Get
+                                get: function bottomSection() {
+                                    // Return
+                                    return this.sections.bottom
+                                }
+                            });
+                                // Foot
+                                ('foot' in $$('jumbotron-element:not(.jumbotron)', 0)) || $$('jumbotron-element:not(.jumbotron)', 0).def('foot', {
+                                    // Get
+                                    get: function foot() {
+                                        // Return
+                                        return this.sections.bottom
+                                    }
+                                });
+
+                            // Mid Section
+                            ('midSection' in $$('jumbotron-element:not(.jumbotron)', 0)) || $$('jumbotron-element:not(.jumbotron)', 0).def('midSection', {
+                                // Get
+                                get: function midSection() {
+                                    // Return
+                                    return this.sections.mid
+                                }
+                            });
+                                // Body
+                                ('body' in $$('jumbotron-element:not(.jumbotron)', 0)) || $$('jumbotron-element:not(.jumbotron)', 0).def('body', {
+                                    // Get
+                                    get: function body() {
+                                        // Return
+                                        return this.sections.mid
+                                    }
+                                });
+
+                            // Top Section
+                            ('topSection' in $$('jumbotron-element:not(.jumbotron)', 0)) || $$('jumbotron-element:not(.jumbotron)', 0).def('topSection', {
+                                // Get
+                                get: function topSection() {
+                                    // Return
+                                    return this.sections.top
+                                }
+                            });
+                                // Head
+                                ('head' in $$('jumbotron-element:not(.jumbotron)', 0)) || $$('jumbotron-element:not(.jumbotron)', 0).def('head', {
+                                    // Get
+                                    get: function head() {
+                                        // Return
+                                        return this.sections.top
+                                    }
+                                });
+
+                        // Class
+                        $$('jumbotron-element:not(.jumbotron)', 0).addClass('jumbotron')
+                }
+            });
+
+    /* Functions */
+        /* (Console) > Log */
+        console.log(`[${app.name}] =>\n`);
+        console.log(`    Allow_Alternative_Resource_Files`, ALLOW_ALTERNATIVE_RESOURCE_FILES);
+        console.log(`    Dynamic_Assets_URL`, `"${DYNAMIC_ASSETS_URL}"`);
+        console.log(`    Minify_Asset_Files`, MINIFY_ASSET_FILES);
+        console.log(`    Navigation_Links`, NAVIGATION_LINKS);
+        console.log(`    Reveal_Elements_BoundingBox`, REVEAL_ELEMENTS_BOUNDING_BOX);
+        console.log(`    Supports_WebGL`, SUPPORTS_WEBGL);
+        console.log(`    $location`, location.href.getAfterChar('LapysJS'));
+
+        /* Polyfills
+                --- NOTE ---
+                    @lapys: All polyfills are compressed or minified.
+        */
+            // Text Content
+            Object.defineProperty&&Object.getOwnPropertyDescriptor&&Object.getOwnPropertyDescriptor(Element.prototype,"textContent")&&!Object.getOwnPropertyDescriptor(Element.prototype,"textContent").get&&function(){var a=Object.getOwnPropertyDescriptor(Element.prototype,"innerText");Object.defineProperty(Element.prototype,"textContent",{get:function(){return a.get.call(this)},set:function(b){return a.set.call(this,b)}})}();
+
+        /* {Modify DOM Elements} On Node Added */
+        onNodeAdded(document.body, function modifyDOMElements() {
+            // DOM Elements
+                // <script>
                     /* Loop
                             [for statement]
 
-                        > Modification > (Syntax Highlighted Code > Highlight Color) > Outer HTML
+                        > Modification > <script> > Language
                     */
-                    for (let j = syntaxHighlightedCode[i].$$('[data-id=highlightColor', '~length'); j > -1; j -= 1)
-                        syntaxHighlightedCode[i].$$('[data-id=highlightColor', j).outerHTML = syntaxHighlightedCode[i].$$('[data-id=highlightColor', j).innerHTML;
+                    for (let i = 0; i < $$('script[language', 'length'); i += 1)
+                        $$('script[language', i).delAttr('language');
 
-                    // Modification > Syntax Highlighted Code
-                        // Format
-                        ((syntaxHighlightedCode[i].format || '').constructor === Array) || syntaxHighlightedCode[i].def('format', {
-                            // Get
-                            get: function getFormat() {
-                                // Return
-                                return (this.attr('format') || '').trim().split(/ /g)
-                            },
-
-                            // Set
-                            set: function setFormat() {
-                                // Modification > Target > Language
-                                this.attr('format', (arguments[0] || '').toString().replace(/,/g, ' ').replace(/  /g, ' ').replace(/  /g, ' '))
-                            }
-                        });
-
-                        // Language
-                        (typeof syntaxHighlightedCode[i].language === 'string') || syntaxHighlightedCode[i].def('language', {
-                            // Get
-                            get: function getLanguage() {
-                                // Return
-                                return this.attr('language')
-                            },
-
-                            // Set
-                            set: function setLanguage() {
-                                // Modification > Target > Language
-                                this.attr('language', arguments[0] || '')
-                            }
-                        });
-
-                        // Tab Spacing
-                            // Error Handling
-                            try {
-                                (typeof syntaxHighlightedCode[i].tabSpacing === 'string') || syntaxHighlightedCode[i].def('tabSpacing', {
-                                    // Get
-                                    get: function getTabSpacing() {
-                                        // Return
-                                        return this.attr('tab-spacing')
-                                    },
-
-                                    // Set
-                                    set: function setTabSpacing() {
-                                        // Modification > Target > Language
-                                        this.attr('tab-spacing', int(arguments[0]) || '')
-                                    }
-                                })
-                            }
-
-                            catch (error) {};
-
-                        // Spell Check
-                        syntaxHighlightedCode[i].spellcheck = false;
-
-                        // Inner HTML
-                        (syntaxHighlightedCode[i].innerHTML[0] !== '\n') || (syntaxHighlightedCode[i].innerHTML = syntaxHighlightedCode[i].innerHTML.replace('\n', ''));
-                            /* Timeout
-                                    --- NOTE ---
-                                        @lapys: Allow all proper highlighting,
-                                            if any to be done.
-
-                                            - Regular Expression Modification List
-                                                -- Replaced all Tildes with 'Tabs'.
-                                                -- Ensured newline at the End of Code.
-                                                    @lapys: Not really Regular Expression but it is still nice.
-                            */
-                            timeout(() => {
-                                /* Loop
-                                        Index all the Syntax Highlighted Code's Comments.
-                                */
-                                for (let j = 0; j < syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', 'length'); j += 1)
-                                    /* Loop
-                                            While
-                                                the Syntax Highlighted Code's Comment still has a non-Comment child element.
-
-                                        > Deletion
-                                    */
-                                    while (syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', j).$$(':not([role=comment])', 0))
-                                        syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', j).$$(':not([role=comment])', 0).outerHTML = syntaxHighlightedCode[i].$$('[data-id=highlightColor][role=comment', j).$$(':not([role=comment])', 0).innerHTML;
-
-                                syntaxHighlightedCode[i].innerHTML = syntaxHighlightedCode[i].innerHTML.replace(/~/g, data => {
-                                    // Return
-                                    return `<span data-id=tab style='color: transparent !important'>${'&nbsp;'.repeat(+syntaxHighlightedCode[i].tabSpacing || 4)}</span>`
-                                }).replace(/\n/g, `<span data-id=newline><br></span>`)
-                            }, 100);
-
-                        /* Content
-                                --- NOTE ---
-                                    @lapys: This represents a modified version of the element's source code (Inner Text).
-                                        - Regular Expression Modification List
-                                            -- Strings were replaced.
-                                            -- Strings were replaced.
-                                            -- Strings were replaced.
-                        */
-                        syntaxHighlightedCode[i].content = syntaxHighlightedCode[i].innerText.replace(/'([a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, '').replace(/"([a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, '').replace(/`([a-z]|[A-Z]|[0-9]|['|"\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}`/g, '');
-
+            // Function
+                // Create Button
+                function createButton(element, innerHTML = '', properties = {}) {
                     /* Logic
-                            If
-                                the Syntax Highlighted Code's Language is null.
-
-                            --- NOTE ---
-                                @lapys: It's best to specify the language being used
-                                    than slowing down the browser with this procedural automation
-                                    for detecting the language.
+                            [if:else if:else statement]
                     */
-                    if (syntaxHighlightedCode[i].language === null)
-                        /* Logic
-                                [if:else if:else statement]
+                    if ((element.attr('data-id') || '').hasText('text')) {
+                        // Insertion
+                        element.insertAdjacentHTML('afterend', `<button data-id=button>${innerHTML}</button>`);
 
-                            > Modification > Syntax Highlighted Code > Language
-                        */
-                        if (
-                            (
-                                syntaxHighlightedCode[i].content.hasText('<!--', '-->') ||
-                                syntaxHighlightedCode[i].content.hasText('&lt;!--', '--&gt;')
-                            ) ||
-                            (
-                                syntaxHighlightedCode[i].content.hasText('<', '/>') ||
-                                syntaxHighlightedCode[i].content.hasText('&lt;', '/&gt;')
-                            )
-                        )
-                            syntaxHighlightedCode[i].language = 'html';
-
-                        else if (
-                            (
-                                (
-                                    syntaxHighlightedCode[i].content.hasText('/*', '*/') &&
-                                    !syntaxHighlightedCode[i].content.hasText('.')
-                                ) ||
-                                (
-                                    syntaxHighlightedCode[i].content.hasText('{', '}') &&
-                                    (
-                                        syntaxHighlightedCode[i].content.hasText(':') ||
-                                        syntaxHighlightedCode[i].content.hasText(':', ';') ||
-                                        syntaxHighlightedCode[i].content.hasText('@', ';')
-                                    )
-                                )
-                            ) &&
-                            (
-                                !syntaxHighlightedCode[i].content.hasText('[') &&
-                                !syntaxHighlightedCode[i].content.hasText(']') &&
-                                !syntaxHighlightedCode[i].content.hasText('<') &&
-                                !syntaxHighlightedCode[i].content.hasText('=>') &&
-                                !syntaxHighlightedCode[i].content.hasText('$') &&
-                                !syntaxHighlightedCode[i].content.hasText('_') &&
-                                !syntaxHighlightedCode[i].content.replace(/\/\*([a-z]|[A-Z]|[0-9]|[\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\*\//g, '').hasText('/') &&
-                                !syntaxHighlightedCode[i].content.replace(/\/\*([a-z]|[A-Z]|[0-9]|[\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\*\//g, '').hasText('*')
-                            )
-                        )
-                            syntaxHighlightedCode[i].language = 'css';
-
-                        else if (
-                            (
-                                (
-                                    syntaxHighlightedCode[i].content.hasText('//') ||
-                                    syntaxHighlightedCode[i].content.hasText('/*', '*/')
-                                ) ||
-                                (
-                                    syntaxHighlightedCode[i].content.hasText('(', ')') ||
-                                    syntaxHighlightedCode[i].content.hasText('[', ']') ||
-                                    syntaxHighlightedCode[i].content.hasText('{', '}')
-                                ) ||
-                                (
-                                    syntaxHighlightedCode[i].content.hasText('.') ||
-                                    syntaxHighlightedCode[i].content.hasText(',') ||
-                                    syntaxHighlightedCode[i].content.hasText(':') ||
-                                    syntaxHighlightedCode[i].content.hasText(';') ||
-                                    syntaxHighlightedCode[i].content.hasText('?') ||
-                                    syntaxHighlightedCode[i].content.hasText('!') ||
-                                    syntaxHighlightedCode[i].content.hasText('+') ||
-                                    syntaxHighlightedCode[i].content.hasText('-') ||
-                                    syntaxHighlightedCode[i].content.hasText('*') ||
-                                    syntaxHighlightedCode[i].content.hasText('/') ||
-                                    syntaxHighlightedCode[i].content.hasText('<') ||
-                                    syntaxHighlightedCode[i].content.hasText('>') ||
-                                    syntaxHighlightedCode[i].content.hasText('=') ||
-                                    syntaxHighlightedCode[i].content.hasText('$')
-                                )
-                            ) &&
-                            (
-                                !syntaxHighlightedCode[i].content.replace(/\/\*([a-z]|[A-Z]|[0-9]|[\'\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\+\,\-\.\;\$\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\*\//g, '').hasText('#') &&
-                                !syntaxHighlightedCode[i].content.replace(/\/\*([a-z]|[A-Z]|[0-9]|[\'\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\+\,\-\.\;\$\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\*\//g, '').hasText('^') &&
-                                !syntaxHighlightedCode[i].innerHTML.replace(/\/\/([a-z]|[A-Z]|[0-9]|[\'\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\*\(\)\+\,\-\.\;\$\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}(\<span data\-id=('|"|`)newline('|"|`)|\<span)/g, '').replace(/'([a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, '').replace(/"([a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, '').replace(/`([a-z]|[A-Z]|[0-9]|['|"\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}`/g, '').hasText('#') &&
-                                !syntaxHighlightedCode[i].innerHTML.replace(/\/\/([a-z]|[A-Z]|[0-9]|[\'\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\*\(\)\+\,\-\.\;\$\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}(\<span data\-id=('|"|`)newline('|"|`)|\<span)/g, '').replace(/'([a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, '').replace(/"([a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, '').replace(/`([a-z]|[A-Z]|[0-9]|['|"\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}`/g, '').hasText('^')
-                            )
-                        )
-                            syntaxHighlightedCode[i].language = 'javascript';
-
-                    // Function > Syntax Highlighted Code
-                        // Highlight HTML Code
-                        (typeof syntaxHighlightedCode[i].highlightHTMLCode == 'function') || syntaxHighlightedCode[i].def('highlightHTMLCode', {
-                            // Value
-                            value: function highlightHTMLCode(element = 'a'.html) {
-                                // Initialization > Random
-                                let randomString = str(rand()).replace('.', '');
-
-                                /* Modification > Element > Inner HTML
-                                        --- NOTE ---
-                                            @lapys:
-                                                - Regular Expression Modification List
-                                                    -- Highlighted all Element Tag Names.
-                                                    -- Highlighted all Element Attributes.
-                                                    -- Highlighted HTML Document Type Declaration.
-                                                    -- Highlighted all Strings.
-                                                    -- Highlighted all Comments.
-                                                    -- Highlighted all HTML Entities.
-                                */
-                                element.innerHTML = element.innerHTML.replace(/</g, '&lt;').replace(/\&gt;/g, '>').replace(/&lt;(\/|)([a-z]){1,}([a-z]|[0-9]|\-){0,}(\>| )/g, data => {
-                                    // Return
-                                    return `&lt;${data.hasText('/') ? '/' : ''}::element-tag-name::${data.getAfterChar(`&lt;${data.hasText('/') ? '/' : ''}`).getBeforeChar(data.lastChar == '>' ? '>' : ' ', true)}::/element-tag-name::${data.lastChar}`
-                                }).replace(/(([a-z]){1,}([a-z]|[0-9]|\-){0,}=(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»]){1,}|([a-z]){1,}([a-z]|[0-9]|\-){0,}=(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»]){1,})/g, data => {
-                                    // Return
-                                    return `${data.getBeforeChar('=')}='${data.getAfterChar('=')}'`
-                                }).replace(/([a-z]){1,}([a-z]|[0-9]|\-){0,}=('|")(\>| )/g, data => {
-                                    // Return
-                                    return `${data.getBeforeChar('=')}=''${data.lastChar}`
-                                }).replace(/([a-z]){1,}([a-z]|[0-9]|\-){0,}='(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=attribute>${data.getBeforeChar('=')}=</span>${data.getAfterChar('=')}`
-                                }).replace(/([a-z]){1,}([a-z]|[0-9]|\-){0,}="(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=attribute>${data.getBeforeChar('=')}=</span>${data.getAfterChar('=')}`
-                                }).replace(/::element\-tag\-name::/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=element-tag-name>`
-                                }).replace(/::\/element\-tag\-name::/g, data => {
-                                    // Return
-                                    return `</span>`
-                                }).replace(/&lt;!DOCTYPE html>/g, data => {
-                                    // Return
-                                    return `<span style=filter:grayscale(.5)>${data.getBeforeChar('DOCTYPE')}<span data-id=highlightColor role=element-tag-name>DOCTYPE</span>${data.getAfterChar('DOCTYPE')}</span>`
-                                }).replace(/'(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
-                                    // Return
-                                    return data.firstChar == data.lastChar ? `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>` : data
-                                }).replace(/"(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, data => {
-                                    // Return
-                                    return data.firstChar == data.lastChar ? `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>` : data
-                                }).replace(/(\<|\&lt;)!\-\-((\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|)[^(\<\!\-\-|\&lt;\!\-\-)])[^\-\-\>]{0,}\-\-\>/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=comment>${data}</span>`
-                                }).replace(/\&(#|)([a-z]|[0-9]){3,};/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=text-entity>${data}</span>`
-                                })
-                            },
-
-                            // Writable
-                            writable: false
-                        });
-
-                        // Highlight JavaScript Code
-                        (typeof syntaxHighlightedCode[i].highlightJavaScriptCode == 'function') || syntaxHighlightedCode[i].def('highlightJavaScriptCode', {
-                            // Value
-                            value: function highlightJavaScriptCode(element = 'a'.html) {
-                                // Initialization > Random
-                                let randomString = str(rand()).replace('.', '');
-
-                                /* Modification > Element > Inner HTML
-                                        --- NOTE ---
-                                            @lapys:
-                                                - Regular Expression Modification List
-                                                    -- Highlighted all Arrow Functions (=>).
-                                                    -- Highlighted all Potential Breakers (-, +, =).
-                                                    -- Highlighted all Comments.
-                                                        --- Highlighted all Single-Line Comments.
-                                                        --- Highlighted all Multi-Line Comments.
-                                                    -- Highlighted all Arithmetic Symbols (Tildes as well).
-                                                    -- Highlighted all HTML Entity Identifiers (&lt; &gt;, &amp;, &hellip;).
-                                                    -- Highlighted all Symbols.
-                                                    -- Highlighted all Numbers.
-                                                    -- Highlighted all Strings.
-                                                        @lapys: Doing this first prevents all other Highlighted components from breaking.
-
-                                                    -- Highlighted all Numbers.
-                                                    -- Highlighted all Identifiers (const, let, var).
-                                                    -- Highlighted all Functions (function).
-                                                    -- Highlighted all Functions & Methods.
-                                                    -- Highlighted all Horizontal Ellipsis.
-                                */
-                                element.innerHTML = element.innerHTML.replace(/=&gt;/g, `::lapysjs_arrowFunctionIdentifier${randomString}::`).replace(/\-/g, `<span data-id${randomString}highlightColor role${randomString}arithmetic>$&</span>`).replace(/\+/g, `<span data-id${randomString}highlightColor role${randomString}arithmetic>$&</span>`).replace(/=/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(RegExp(`data\\-id${randomString}highlightColor`, 'g'), data => {
-                                    // Return
-                                    return data.replace(randomString, '=')
-                                }).replace(RegExp(`role${randomString}arithmetic`, 'g'), data => {
-                                    // Return
-                                    return data.replace(randomString, '=')
-                                }).replace(/\/\/(.*[^\n])\n/g, `<span data-id=highlightColor role=comment>$&</span>`).replace(/\/\*.*([^\/|^\*])\*\//g, `<span data-id=highlightColor role=comment>$&</span>`).replace(/\\~/g, `<span data-id=tilde role=arithmetic></span>`).replace(/( |[0-9]|[a-z]|[A-Z]|\$|_|\])\//g, data => {
-                                    // Return
-                                    return `${data.replace('/', '')}<span data-id=highlightColor role=arithmetic>/</span>`
-                                }).replace(RegExp(`(|([a-z]|[A-Z]|\\$|_)([a-z]|[A-Z]|[0-9]|\\$|_){1,} )::lapysjs_arrowFunctionIdentifier${randomString}::`, 'g'), data => {
-                                    return `${data.hasText(' ') ? (data.getBeforeChar(' ') ? `<span data-id=highlightColor role=name-tag>${data.getBeforeChar(' ')}</span>` : '') : ''}${data.hasText(' ') ? ' ' : ''}<span data-id=highlightColor role=miscellaneous>=></span>`
-                                }).replace(/function(| ){0,}([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,}\(([^\(|^\)]){0,}\)(| ){0,}\{/g, data => {
-                                    // Return
-                                    return `${data.getBeforeChar('(')}(<span data-id=highlightColor role=name-tag>${data.getAfterChar('(').getBeforeChar(')', 1).replace(/,/g, `<span data-id=highlightColor role=plain-text>,</span>`)}</span>)${data.getAfterChar(')', 1)}`
-                                }).replace(/&lt;/g, `<span data-id=highlightColor role=arithmetic><</span>`).replace(/&gt;/g, `<span data-id=highlightColor role=arithmetic>></span>`).replace(/&amp;/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/&hellip;/g, '...').replace(/~/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/!/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/\^/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/\*/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/\|/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/:/g, `<span data-id=highlightColor role=symbol>$&</span>`).replace(/%/g, `<span data-id=highlightColor role=arithmetic>$&</span>`).replace(/'(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\"\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}'/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>`
-                                }).replace(/"(\t|\r|\b|[a-z]|[A-Z]|[0-9]|[\'\`\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}"/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>`
-                                }).replace(/`(\n|\t|\r|\b|[a-z]|[A-Z]|[0-9]|['|"\\\:\[\]\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}`/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=string>${data[0]}${data.slice(1, -1)}${data.lastChar}</span>`
-                                }).replace(/[0-9]/g, `<span data-id=highlightColor role=numeral>$&</span>`).replace(/const/g, `<span data-id=highlightColor role=identifier>$&</span>`).replace(/let/g, `<span data-id=highlightColor role=identifier>$&</span>`).replace(/var/g, `<span data-id=highlightColor role=identifier>$&</span>`).replace(/function ([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,}\(/g, data => {
-                                    return `<span data-id=highlightColor role=identifier>function</span> <span data-id=highlightColor role=function>${data.slice(len('function '), -len('('))}</span>(`
-                                }).replace(/(|([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,})(|\.)([a-z]|[A-Z]|\$|_)([a-z]|[A-Z]|[0-9]|\$|_){1,}\(/g, data => {
-                                    // Return
-                                    return `<span data-id=highlightColor role=identifier>${data.getBeforeChar('.').getBeforeChar('(')}</span>${data.hasText('.') ? '.' : ''}<span data-id=highlightColor role=function>${`.${data.getAfterChar('.')}`.replace('.', '').replace('(', '')}</span>(`
-                                }).replace(/\.\.\./g, `<span data-id=highlightColor role=comment>$&</span>`)
-                            },
-
-                            // Writable
-                            writable: false
-                        });
-
-                    /* Logic
-                            Switch case to
-                                Syntax Highlighted Code's Language.
-
-                        > Syntax Highlighted Code > Highlight ([Case]) Code
-                    */
-                    switch (syntaxHighlightedCode[i].language) {
-                        // HTML
-                        case 'html':
-                            timeout(() => {
-                                (syntaxHighlightedCode[i].highlightHTMLCode || (() => {}))(syntaxHighlightedCode[i])
-                            });
-                            break;
-
-                        // CSS
-                        case 'css':
-                            timeout(() => {
-                                (syntaxHighlightedCode[i].highlightCSSCode || (() => {}))(syntaxHighlightedCode[i])
-                            });
-                            break;
-
-                        // JavaScript
-                        case 'javascript':
-                            timeout(() => {
-                                (syntaxHighlightedCode[i].highlightJavaScriptCode || (() => {}))(syntaxHighlightedCode[i])
-                            })
+                        // Create Object
+                        createObject(element.nextElementSibling, properties)
                     }
 
-                    // Modification > Syntax Highlighted Code > Is Modified
-                    syntaxHighlightedCode[i]['LapysJS isModified'] = true
-                }
+                    else
+                        // Insertion
+                        element.parent.insertChild('end', createElement('button', '[data-id=button', str(innerHTML), properties))
+                };
 
-            // Return
-            return modifySyntaxHighlightedCode
-        };
+                // Create Header
+                function createHeader(element, innerHTML = '', properties = {}) {
+                    if ((element.attr('data-id') || '').hasText('subheader')) {
+                        // Insertion
+                        element.insertAdjacentHTML('beforebegin', `<div data-id=header>${innerHTML}</div>`);
 
-        // On DOM Ready
-        onDOMReady(function() {
-            // Timeout
-            timeout(function() {
-                // Modify Syntax Highlighted Code
-                modifySyntaxHighlightedCode()
-            }, (LapysJS.permanentData.pluginScriptDelay || 3000) + (LapysJS.permanentData.pluginScriptDelay / 2 || 1500))
-        })
+                        // Create Object
+                        createObject(element.previousElementSibling, properties)
+                    }
 
-/* Events */
-    // Window
-        // Load
-        setEvent('load', function() {
-            // Target > Stop
-            this.stop()
+                    else
+                        // Insertion
+                        element.parent.insertChild('begin', createElement('div', '[data-id=header', str(innerHTML), properties))
+                };
+
+                // Create Sub Header
+                function createSubHeader(element, innerHTML = '', properties = {}) {
+                    /* Logic
+                            [if:else if:else statement]
+                    */
+                    if ((element.attr('data-id') || '').hasText('button')) {
+                        // Initialization > Data
+                        let data = element.parent._$(`[data-id*='text'`) ? element.parent._$(`[data-id*='text'`) : element;
+
+                        // Insertion
+                        data.insertAdjacentHTML('beforebegin', `<div data-id=subheader>${innerHTML}</div>`);
+
+                        // Crete Object
+                        createObject(data.previousElementSibling, properties)
+                    }
+
+                    else if ((element.attr('data-id') || '').hasText('header')) {
+                        // Insertion
+                        element.insertAdjacentHTML('afterend', `<div data-id=subheader>${innerHTML}</div>`);
+
+                        // Create Object
+                        createObject(element.nextElementSibling, properties)
+                    }
+
+                    else if ((element.attr('data-id') || '').hasText('text')) {
+                        // Insertion
+                        element.insertAdjacentHTML('beforebegin', `<div data-id=subheader>${innerHTML}</div>`);
+
+                        // Create Object
+                        createObject(element.previousElementSibling, properties)
+                    }
+                };
+
+                // Create Text
+                function createText(element, innerHTML = '', properties = {}) {
+                    /* Logic
+                            [if:else if:else statement]
+                    */
+                    if ((element.attr('data-id') || '').hasText('button')) {
+                        // Insertion
+                        element.insertAdjacentHTML('beforebegin', `<span data-id=text>${innerHTML}</span>`);
+
+                        // Create Object
+                        createObject(element.previousElementSibling, properties)
+                    }
+
+                    else if ((element.attr('data-id') || '').hasText('header')) {
+                        // Initialization > Data
+                        let data = element.parent._$(`[data-id*='subheader'`) ? element.parent._$(`[data-id*='subheader'`) : element;
+
+                        // Insertion
+                        data.insertAdjacentHTML('afterend', `<span data-id=text>${innerHTML}</span>`);
+
+                        // Create Object
+                        createObject(data.nextElementSibling, properties)
+                    }
+
+                    else if ((element.attr('data-id') || '').hasText('subheader')) {
+                        // Insertion
+                        element.insertAdjacentHTML('afterend', `<span data-id=text>${innerHTML}</span>`);
+
+                        // Create Object
+                        createObject(element.nextElementSibling, properties)
+                    }
+                };
+
+                // Assets
+                    // Button
+                    (function button() {
+                        /* Loop
+                                Index Buttons.
+                        */
+                        for (let i = 0; i < $$(`[data-id*='button'`, 'length'); i += 1)
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (!$$(`[data-id*='button'`, i)['LapysJS isAltered']) {
+                                // Modification > Button
+                                    // Button
+                                    $$(`[data-id*='button'`, i).def('button', {
+                                        // Get
+                                        get: function button() {
+                                            // Return
+                                            return this
+                                        }
+                                    });
+
+                                    // Header
+                                    $$(`[data-id*='button'`, i).def('header', {
+                                        // Get
+                                        get: function header() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='header'`, 0) || null
+                                        }
+                                    });
+
+                                    // Sub Header
+                                    $$(`[data-id*='button'`, i).def('subheader', {
+                                        // Get
+                                        get: function subheader() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='subheader'`, 0) || null
+                                        }
+                                    });
+
+                                    // Text
+                                    $$(`[data-id*='button'`, i).def('text', {
+                                        // Get
+                                        get: function text() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='text'`, 0) || null
+                                        }
+                                    });
+
+                                    // Content
+                                    $$(`[data-id*='button'`, i).def('content', {
+                                        // Get
+                                        get: function getContent() {
+                                            // Return
+                                            return this.textContent
+                                        },
+
+                                        // Set
+                                        set: function setContent() {
+                                            // Modification > Target > Text Content
+                                            this.textContent = arguments[0]
+                                        }
+                                    });
+
+                                    // Create Header
+                                    $$(`[data-id*='button'`, i).def('createHeader', {
+                                        // Value
+                                        value: function() {
+                                            // Create Header
+                                            createHeader(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create SubHeader
+                                    $$(`[data-id*='button'`, i).def('createSubHeader', {
+                                        // Value
+                                        value: function() {
+                                            // Create SubHeader
+                                            createSubHeader(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create Text
+                                    $$(`[data-id*='button'`, i).def('createText', {
+                                        // Value
+                                        value: function() {
+                                            // Create Text
+                                            createText(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Hyperlink
+                                    $$(`[data-id*='button'`, i).def('hyperlink', {
+                                        // Get
+                                        get: function getHyperlink() {
+                                            // Return
+                                            return this.attr('href')
+                                        },
+
+                                        // Set
+                                        set: function setHyperlink() {
+                                            // Modification > Target > Hyperlink Reference
+                                            this.attr('href', arguments[0])
+                                        }
+                                    });
+
+                                    // Hyperlink Reference
+                                    $$(`[data-id*='button'`, i).def('href', {
+                                        // Get
+                                        get: function getHyperlinkReference() {
+                                            // Return
+                                            return this.attr('href')
+                                        },
+
+                                        // Set
+                                        set: function setHyperlinkReference() {
+                                            // Modification > Target > Hyperlink Reference
+                                            this.attr('href', arguments[0])
+                                        }
+                                    });
+
+                                    // Tool Tip
+                                    $$(`[data-id*='button'`, i).def('tooltip', {
+                                        // Get
+                                        get: function getTooltip() {
+                                            // Return
+                                            return this.attr('data-title')
+                                        },
+
+                                        // Set
+                                        set: function setTooltip() {
+                                            // Modification > Target > Data Title
+                                            this.attr('data-title', arguments[0])
+                                        }
+                                    });
+
+                                    // Is Altered
+                                    $$(`[data-id*='button'`, i)['LapysJS isAltered'] = true
+                            }
+                    })();
+
+                    // Header
+                    (function header() {
+                        /* Loop
+                                Index Headers.
+                        */
+                        for (let i = 0; i < $$(`[data-id*='header'`, 'length'); i += 1)
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (!$$(`[data-id*='header'`, i)['LapysJS isAltered']) {
+                                // Modification > Header
+                                    // Button
+                                    $$(`[data-id*='header'`, i).def('button', {
+                                        // Get
+                                        get: function button() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='button'`, 0) || null
+                                        }
+                                    });
+
+                                    // Header
+                                    $$(`[data-id*='header'`, i).def('header', {
+                                        // Get
+                                        get: function header() {
+                                            // Return
+                                            return this
+                                        }
+                                    });
+
+                                    // Sub Header
+                                    $$(`[data-id*='header'`, i).def('subheader', {
+                                        // Get
+                                        get: function subheader() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='subheader'`, 0) || null
+                                        }
+                                    });
+
+                                    // Text
+                                    $$(`[data-id*='header'`, i).def('text', {
+                                        // Get
+                                        get: function text() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='text'`, 0) || null
+                                        }
+                                    });
+
+                                    // Content
+                                    $$(`[data-id*='header'`, i).def('content', {
+                                        // Get
+                                        get: function getContent() {
+                                            // Return
+                                            return this.textContent
+                                        },
+
+                                        // Set
+                                        set: function setContent() {
+                                            // Modification > Target > Text Content
+                                            this.textContent = arguments[0]
+                                        }
+                                    });
+
+                                    // Create Button
+                                    $$(`[data-id*='header'`, i).def('createButton', {
+                                        // Value
+                                        value: function() {
+                                            // Create Button
+                                            createButton(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create SubHeader
+                                    $$(`[data-id*='header'`, i).def('createSubHeader', {
+                                        // Value
+                                        value: function() {
+                                            // Create SubHeader
+                                            createSubHeader(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create Text
+                                    $$(`[data-id*='header'`, i).def('createText', {
+                                        // Value
+                                        value: function() {
+                                            // Create Text
+                                            createText(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Description
+                                    $$(`[data-id*='header'`, i).def('description', {
+                                        // Get
+                                        get: function getDescription() {
+                                            // Return
+                                            return this.attr('description')
+                                        },
+
+                                        // Set
+                                        set: function setDescription() {
+                                            // Modification > Target > Description
+                                            this.attr('description', arguments[0])
+                                        }
+                                    });
+
+                                    // Hyperlink
+                                    $$(`[data-id*='header'`, i).def('hyperlink', {
+                                        // Get
+                                        get: function getHyperlink() {
+                                            // Return
+                                            return this.attr('href')
+                                        },
+
+                                        // Set
+                                        set: function setHyperlink() {
+                                            // Modification > Target > Hyperlink Reference
+                                            this.attr('href', arguments[0])
+                                        }
+                                    });
+
+                                    // Hyperlink Reference
+                                    $$(`[data-id*='header'`, i).def('href', {
+                                        // Get
+                                        get: function getHyperlinkReference() {
+                                            // Return
+                                            return this.attr('href')
+                                        },
+
+                                        // Set
+                                        set: function setHyperlinkReference() {
+                                            // Modification > Target > Hyperlink Reference
+                                            this.attr('href', arguments[0])
+                                        }
+                                    });
+
+                                    // Is Altered
+                                    $$(`[data-id*='header'`, i)['LapysJS isAltered'] = true
+                            }
+                    })();
+
+                    // Sub Header
+                    (function subHeader() {
+                        /* Loop
+                                Index SubHeaders.
+                        */
+                        for (let i = 0; i < $$(`[data-id*='subheader'`, 'length'); i += 1)
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (!$$(`[data-id*='subheader'`, i)['LapysJS isAltered']) {
+                                // Modification > Header
+                                    // Button
+                                    $$(`[data-id*='subheader'`, i).def('button', {
+                                        // Get
+                                        get: function button() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='button'`, 0) || null
+                                        }
+                                    });
+
+                                    // Header
+                                    $$(`[data-id*='subheader'`, i).def('header', {
+                                        // Get
+                                        get: function header() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='header'`, 0) || null
+                                        }
+                                    });
+
+                                    // Sub Header
+                                    $$(`[data-id*='subheader'`, i).def('subheader', {
+                                        // Get
+                                        get: function subheader() {
+                                            // Return
+                                            return this
+                                        }
+                                    });
+
+                                    // Text
+                                    $$(`[data-id*='subheader'`, i).def('text', {
+                                        // Get
+                                        get: function text() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='text'`, 0) || null
+                                        }
+                                    });
+
+                                    // Content
+                                    $$(`[data-id*='subheader'`, i).def('content', {
+                                        // Get
+                                        get: function getContent() {
+                                            // Return
+                                            return this.textContent
+                                        },
+
+                                        // Set
+                                        set: function setContent() {
+                                            // Modification > Target > Text Content
+                                            this.textContent = arguments[0]
+                                        }
+                                    });
+
+                                    // Create Button
+                                    $$(`[data-id*='subheader'`, i).def('createButton', {
+                                        // Value
+                                        value: function() {
+                                            // Create Button
+                                            createButton(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create SubHeader
+                                    $$(`[data-id*='subheader'`, i).def('createSubHeader', {
+                                        // Value
+                                        value: function() {
+                                            // Create SubHeader
+                                            createSubHeader(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create Text
+                                    $$(`[data-id*='subheader'`, i).def('createText', {
+                                        // Value
+                                        value: function() {
+                                            // Create Text
+                                            createText(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Is Altered
+                                    $$(`[data-id*='subheader'`, i)['LapysJS isAltered'] = true
+                            }
+                    })();
+
+                    // Text
+                    (function text() {
+                        /* Loop
+                                Index Text.
+                        */
+                        for (let i = 0; i < $$(`[data-id*='text'`, 'length'); i += 1)
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (!$$(`[data-id*='text'`, i)['LapysJS isAltered']) {
+                                // Modification > Header
+                                    // Button
+                                    $$(`[data-id*='text'`, i).def('button', {
+                                        // Get
+                                        get: function button() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='button'`, 0) || null
+                                        }
+                                    });
+
+                                    // Header
+                                    $$(`[data-id*='text'`, i).def('header', {
+                                        // Get
+                                        get: function header() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='header'`, 0) || null
+                                        }
+                                    });
+
+                                    // Sub Header
+                                    $$(`[data-id*='text'`, i).def('subheader', {
+                                        // Get
+                                        get: function subheader() {
+                                            // Return
+                                            return this.parent.$$(`[data-id*='subheader'`, 0) || null
+                                        }
+                                    });
+
+                                    // Text
+                                    $$(`[data-id*='text'`, i).def('text', {
+                                        // Get
+                                        get: function text() {
+                                            // Return
+                                            return this
+                                        }
+                                    });
+
+                                    // Content
+                                    $$(`[data-id*='text'`, i).def('content', {
+                                        // Get
+                                        get: function getContent() {
+                                            // Return
+                                            return this.textContent
+                                        },
+
+                                        // Set
+                                        set: function setContent() {
+                                            // Modification > Target > Text Content
+                                            this.textContent = arguments[0]
+                                        }
+                                    });
+
+                                    // Create Button
+                                    $$(`[data-id*='text'`, i).def('createButton', {
+                                        // Value
+                                        value: function() {
+                                            // Create Button
+                                            createButton(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create Dummy Text
+                                    $$(`[data-id*='text'`, i).def('createDummyText', {
+                                        // Value
+                                        value: function createDummyText() {
+                                            /* Logic
+                                                    [switch:case:default statement]
+
+                                                > Modification > Target > Inner HTML
+                                            */
+                                            switch (arguments[0]) {
+                                                // 1
+                                                case 1:
+                                                    this.innerHTML = (function() {
+                                                        // Initialization > Data
+                                                        data = '';
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Update > Data
+                                                        */
+                                                        for (let i = 0; i < len(' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   ') * (int(rand(14, 16)) * .25); i += 1)
+                                                            data += rand(1, 10) > 9 ? '&nbsp;' : ' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   '[int(rand(0, len(' '.repeat(106))))];
+
+                                                        // Return
+                                                        return '.' + data + '.'
+                                                    })();
+                                                    break;
+
+                                                // 2
+                                                case 2:
+                                                    this.innerHTML = (function() {
+                                                        // Initialization > Data
+                                                        data = '';
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Update > Data
+                                                        */
+                                                        for (let i = 0; i < len(' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   ') * (int(rand(14, 16)) * .5); i += 1)
+                                                            data += rand(1, 10) > 9 ? '&nbsp;' : ' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   '[int(rand(0, len(' '.repeat(106))))];
+
+                                                        // Return
+                                                        return '.' + data + '.'
+                                                    })();
+                                                    break;
+
+                                                // 3
+                                                case 3:
+                                                    this.innerHTML = (function() {
+                                                        // Initialization > Data
+                                                        data = '';
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Update > Data
+                                                        */
+                                                        for (let i = 0; i < len(' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   ') * (int(rand(14, 16)) * 1); i += 1)
+                                                            data += rand(1, 10) > 9 ? '&nbsp;' : ' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   '[int(rand(0, len(' '.repeat(106))))];
+
+                                                        // Return
+                                                        return '.' + data + '.'
+                                                    })();
+                                                    break;
+
+                                                // 4
+                                                case 4:
+                                                    this.innerHTML = (function() {
+                                                        // Initialization > Data
+                                                        data = '';
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Update > Data
+                                                        */
+                                                        for (let i = 0; i < len(' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   ') * (int(rand(14, 16)) * 1.5); i += 1)
+                                                            data += rand(1, 10) > 9 ? '&nbsp;' : ' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   '[int(rand(0, len(' '.repeat(106))))];
+
+                                                        // Return
+                                                        return '.' + data + '.'
+                                                    })();
+                                                    break;
+
+                                                // 5
+                                                case 5:
+                                                    this.innerHTML = (function() {
+                                                        // Initialization > Data
+                                                        data = '';
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Update > Data
+                                                        */
+                                                        for (let i = 0; i < len(' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   ') * (int(rand(14, 16)) * 2); i += 1)
+                                                            data += rand(1, 10) > 9 ? '&nbsp;' : ' A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z   '[int(rand(0, len(' '.repeat(106))))];
+
+                                                        // Return
+                                                        return '.' + data + '.'
+                                                    })()
+                                            }
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create SubHeader
+                                    $$(`[data-id*='text'`, i).def('createSubHeader', {
+                                        // Value
+                                        value: function() {
+                                            // Create SubHeader
+                                            createSubHeader(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Create Text
+                                    $$(`[data-id*='text'`, i).def('createText', {
+                                        // Value
+                                        value: function() {
+                                            // Create Text
+                                            createText(this, arguments[0], arguments[1])
+                                        },
+
+                                        // Writable
+                                        writable: false
+                                    });
+
+                                    // Is Altered
+                                    $$(`[data-id*='text'`, i)['LapysJS isAltered'] = true
+                            }
+                    })()
         });
 
-    // Document
-        // DOM Content Loaded
-        document.setEvent('DOMContentLoaded', function() {
-            // Timeout
-            timeout(function() {
-                // Stop
-                stop()
-            }, 1.5e4)
-        })
+        /* On DOM Ready */
+        onDOMReady(function() {
+            // Function
+                /* Stop Loading Document
+                        --- NOTE ---
+                            @lapys: When the DOM is ready,
+                                stop the page from still loading after 10 seconds.
+                */
+                (function stopLoadingDocument() {
+                    // Global > Stop
+                    global.stop();
+                })();
+
+                /* Modify DOM Structure
+                        --- NOTE ---
+                            @lapys: Modify some parts of the DOM to make
+                                it lighter. e.g.: Removing unnecessary elements.
+                */
+                (function modifyDOMStructure() {
+                    /* Loop
+                            [do:while statement]
+
+                            --- NOTE ---
+                                @lapys: Remove all non-head element based elements.
+
+                        > Deletion
+                    */
+                    while (document.head.$$(':not(link):not(meta):not(script):not(style):not(title)', 0))
+                        document.head.$$(':not(link):not(meta):not(script):not(style):not(title)', 0).delete();
+
+                    /* Loop
+                            [do:while statement]
+
+                            --- NOTE ---
+                                @lapys: Remove all scripts,
+                                    scripts are not used anymore after they have been executed.
+
+                        > Deletion
+                    */
+                    while ($$(`script:not([src*='lapys.'])`, 0))
+                        $$(`script:not([src*='lapys.'])`, 0).delete()
+                })()
+        }, 1e4);
+
+        /* {Stop Loading Document} Timeout
+                --- NOTE ---
+                    @lapys: Stop the page from loading after 15 seconds.
+        */
+        timeout(function stopLoadingDocument() {
+            // Global > Stop
+            global.stop()
+        }, 1.5e4)
+}

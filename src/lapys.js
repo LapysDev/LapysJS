@@ -115,111 +115,103 @@
                 // Initialization > Arguments
                 let Arguments = [...arguments];
 
-                // Error Handling
-                try {
-                    // Return
-                    return new LapysJSCondition(!!Arguments[0])
-                }
+                // Return
+                return new (function LapysJSCondition() {
+                    // Initialization > Arguments, Target
+                    let _Arguments = [...arguments],
+                        that = this;
 
-                catch (error) {
-                    // Return
-                    return new (window.LapysJSCondition = function LapysJSCondition() {
-                        // Initialization > Arguments, Target
-                        let _Arguments = [...arguments],
-                            that = this;
+                    // Modification > Target
+                        // Condition
+                        this.condition = _Arguments.length > 0 ? _Arguments[0] : Arguments[0];
 
-                        // Modification > Target
-                            // Condition
-                            this.condition = _Arguments.length > 0 ? _Arguments[0] : Arguments[0];
+                    // Function
+                        // Target
+                            // On Fail
+                            Object.defineProperty(this, 'onfail', {
+                                // Value
+                                value: (function() {
+                                    /* Logic
+                                            [if:else if:else statement]
 
-                        // Function
-                            // Target
-                                // On Fail
-                                Object.defineProperty(this, 'onfail', {
-                                    // Value
-                                    value: (function() {
-                                        /* Logic
-                                                [if:else if:else statement]
+                                        > Return
+                                    */
+                                    if (typeof Arguments[2] == 'function')
+                                        return Arguments[2];
 
-                                            > Return
-                                        */
-                                        if (typeof Arguments[2] == 'function')
-                                            return Arguments[2];
+                                    else if (typeof _Arguments[2] == 'function')
+                                        return Arguments[2];
 
-                                        else if (typeof _Arguments[2] == 'function')
-                                            return Arguments[2];
+                                    // Return
+                                    return function onfail() {}
+                                })()
+                            });
 
-                                        // Return
-                                        return function onfail() {}
-                                    })()
-                                });
+                            // On Success
+                            Object.defineProperty(this, 'onsuccess', {
+                                // Value
+                                value: (function() {
+                                    /* Logic
+                                            [if:else if:else statement]
 
-                                // On Success
-                                Object.defineProperty(this, 'onsuccess', {
-                                    // Value
-                                    value: (function() {
-                                        /* Logic
-                                                [if:else if:else statement]
+                                        > Return
+                                    */
+                                    if (typeof Arguments[1] == 'function')
+                                        return Arguments[1];
 
-                                            > Return
-                                        */
-                                        if (typeof Arguments[1] == 'function')
-                                            return Arguments[1];
+                                    else if (typeof _Arguments[1] == 'function')
+                                        return Arguments[1];
 
-                                        else if (typeof _Arguments[1] == 'function')
-                                            return Arguments[1];
+                                    // Return
+                                    return function onsuccess() {}
+                                })()
+                            });
 
-                                        // Return
-                                        return function onsuccess() {}
-                                    })()
-                                });
+                        // Set Value
+                        function setValue() {
+                            // Modification > Target > Value
+                            typeof that.condition == 'function' ? that.value = !!that.condition() : that.value = !!that.condition
+                        };
+                        setValue();
 
-                            // Set Value
-                            function setValue() {
-                                // Modification > Target > Value
-                                typeof that.condition == 'function' ? that.value = !!that.condition() : that.value = !!that.condition
-                            };
-                            setValue();
+                        // Check Value
+                        (function checkValue() {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (
+                                (
+                                    typeof Arguments[1] == 'function' ||
+                                    typeof _Arguments[1] == 'function'
+                                ) ||
+                                (
+                                    typeof Arguments[2] == 'function' ||
+                                    typeof _Arguments[2] == 'function'
+                                )
+                            ) {
+                                // Set Value
+                                setValue();
 
-                            // Check Value
-                            (function checkValue() {
                                 /* Logic
                                         [if:else if:else statement]
                                 */
                                 if (
-                                    (
-                                        typeof Arguments[1] == 'function' ||
-                                        typeof _Arguments[1] == 'function'
-                                    ) ||
-                                    (
-                                        typeof Arguments[2] == 'function' ||
-                                        typeof _Arguments[2] == 'function'
-                                    )
+                                    (typeof that.condition == 'function' ? that.condition() : that.condition) == !!0 &&
+                                    that.value == !!0
                                 ) {
-                                    // Set Value
-                                    setValue();
+                                    // Target > On Fail
+                                    (typeof that.onfail != 'function') || that.onfail();
 
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (
-                                        (typeof that.condition == 'function' ? that.condition() : that.condition) == !!0 &&
-                                        that.value == !!0
-                                    ) {
-                                        // Target > On Fail
-                                        (typeof that.onfail != 'function') || that.onfail();
-
-                                        // Request Animation Frame
-                                        (window.requestAnimationFrame || window.webkitRequestAnimationFrame)(checkValue);
-                                    }
-
-                                    else
-                                        // Target > On Success
-                                        (typeof that.onsuccess != 'function') || that.onsuccess()
+                                    // Request Animation Frame
+                                    requestAnimationFrame(checkValue);
                                 }
-                            })()
-                    })
-                }
+
+                                else
+                                    // Target > On Success
+                                    (typeof that.onsuccess != 'function') || that.onsuccess()
+                            }
+                        })()
+                })
             }
         });
 
@@ -233,6 +225,21 @@
                 // Return
                 return Object.is.apply(this, [...arguments])
             }
+        });
+
+        /* Console > Print
+                --- NOTE ---
+                    @lapys: A very minor alternative to the 'console.dir' or 'console.log' method.
+                        Although later it might have additional purposes.
+        */
+        (typeof console.print == 'function') || (console.print = function print() {
+            /* Loop
+                    Index all Arguments.
+
+                > Console > Directory
+            */
+            for (let i = 0; i < arguments.length; i += 1)
+                console.dir(arguments[i])
         });
 
         // Copy
@@ -282,7 +289,7 @@
                     */
                     if (typeof arguments[0] == 'string') {
                         // Insertion
-                        (document.body || document.documentElement).appendChild(LapysJS.temporaryData = document.createElement('html'));
+                        (document.body || document.documentElement).appendChild(LapysJS.temporaryData = document.createElement(typeof arguments[1] == 'string' ? arguments[1] : 'html'));
 
                         // Modification > (LapysJS > Temporary Data) > Inner HTML
                         LapysJS.temporaryData.innerHTML = arguments[0];
@@ -351,22 +358,40 @@
                     LapysJS.error(error)
                 }
             }
-         });
-
-        /* Console > Print
-                --- NOTE ---
-                    @lapys: A very minor alternative to the 'console.dir' or 'console.log' method.
-                        Although later it might have additional purposes.
-        */
-        (typeof console.print == 'function') || (console.print = function print() {
-            /* Loop
-                    Index all Arguments.
-
-                > Console > Directory
-            */
-            for (let i = 0; i < arguments.length; i += 1)
-                console.dir(arguments[i])
         });
+
+        // Create Object
+        (typeof window.createObject == 'function') || Object.defineProperty(window.constructor.prototype, 'createObject', {
+            // Value
+            value: function createObject() {
+                // Initialization > (Data, Metadata)
+                let data = arguments.length > 0 ? arguments[0] : {},
+                    metadata = typeof arguments[1] == 'object' ? arguments[1] : {};
+
+                /* Loop
+                        [for statement]
+                */
+                for (let i = 0; i < Object.keys(metadata).length; i += 1)
+                    // Error Handling
+                    try {
+                        data[Object.keys(metadata)[i]] = metadata[Object.keys(metadata)[i]];
+                    }
+
+                    catch (error) {
+                        // LapysJS > Warn
+                        LapysJS.warn(error)
+                    }
+
+                // Return
+                return data
+            }
+        });
+
+        /* Custom Elements
+                --- NOTE ---
+                    @lapys: This serves as a pseudo polyfill for the Custom Elements v1 standardization.
+        */
+        (typeof window.customElements == 'object') || (window.customElements = window.customElements || {define: document.registerElement});
 
         /* Event
                 --- NOTE ---
@@ -885,7 +910,7 @@
                                 `new MutationObserver(function() {` +
                                     // Function > Argument (0 | 1)
                                     `${['Arguments[0]', 'Arguments[1]'][i]}.apply(this, [...Arguments].slice(${[1, 2][i]}))` +
-                                `}).observe(${['document.documentElement', 'Arguments[0]'][i]}, { childList: !0, outerHTML: !0, subtree: !0 })` +
+                                `}).observe(${['document.documentElement', 'Arguments[0]'][i]}, { attributes: !0, childList: !0, outerHTML: !0, subtree: !0 })` +
                             `}` +
 
                             `catch (error) {` +
@@ -1111,34 +1136,45 @@
             // Value
             value: function registerElement() {
                 /* Logic
-                        If
-                            Argument 0 is not an Array
-                                and
-                            Argument 1 is not an Array,
-
-                        else if
-                            Argument 0 is an Array
-                                and
-                            Argument 1 is an Array.
+                        [if:else if:else statement]
                 */
-                if (
-                    (arguments[0] || '').constructor !== Array &&
-                    (arguments[1] || '').constructor !== Array
-                )
-                    // Custom Elements > Define
-                    (window.customElements || {define: () => {}}).define(String(arguments[0] || ''), arguments[1] || class HTMLCustomElement extends HTMLElement {});
+                if (arguments.length > 0) {
+                    // Initialization > Data
+                    let data = arguments[0];
 
-                else if (
-                    (arguments[0] || '').constructor === Array &&
-                    (arguments[1] || '').constructor === Array
-                )
-                    /* Loop
-                            [for statement]
+                    /* Logic
+                            If
+                                Argument 0 is not an Array
+                                    and
+                                Argument 1 is not an Array,
 
-                        > Custom Elements > Define
+                            else if
+                                Argument 0 is an Array
+                                    and
+                                Argument 1 is an Array.
                     */
-                    for (let i = 0; i < max(arguments[0].length, arguments[1].length); i += 1)
-                        (window.customElements || {define: () => {}}).define(String(arguments[0][i] || ''), arguments[1][i] || class HTMLCustomElement extends HTMLElement {})
+                    if (
+                        (arguments[0] || '').constructor != Array &&
+                        (arguments[1] || '').constructor != Array
+                    )
+                        // Initialization > Metadata
+                        'define' in window.customElements ? window.customElements.define(String(arguments[0]), arguments[1] || class HTMLCustomElement extends HTMLElement {}) : (typeof document.registerElement == 'function' ? document.registerElement(String(arguments[0]), arguments[1] || class HTMLCustomElement extends HTMLElement {}) : LapysJS.error(`'${data}' could not be added to the customElementRegistry because CustomElements v1 is not yet supported in this browser.`));
+
+                    else if (
+                        (arguments[0] || '').constructor == Array &&
+                        (arguments[1] || '').constructor == Array
+                    )
+                        /* Loop
+                                [for statement]
+
+                            > Custom Elements > Define
+                        */
+                        for (let i = 0; i < max(arguments[0].length, arguments[1].length); i += 1)
+                            'define' in window.customElements ? window.customElements.define(String(arguments[0][i]), arguments[1][i] || class HTMLCustomElement extends HTMLElement {}) : (typeof document.registerElement == 'function' ? document.registerElement(String(arguments[0][i]), arguments[1][i] || class HTMLCustomElement extends HTMLElement {}) : LapysJS.error(`'${data}' could not be added to the customElementRegistry because CustomElements v1 is not yet supported in this browser.`))
+                }
+
+                // Return
+                return !!window.CustomElementRegistry
             }
         });
 
@@ -1150,6 +1186,37 @@
                 location.reload.apply(location, [...arguments])
             }
         });
+
+        // Repeat
+        (typeof window.repeat == 'function') || Object.defineProperty(window.constructor.prototype, 'repeat', {
+            // Value
+            value: function repeat() {
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (
+                    typeof arguments[0] == 'function' &&
+                    typeof arguments[1] == 'number'
+                )
+                    /* Loop
+                            [for statement]
+
+                        > Function > Argument 0
+                    */
+                    for (let i = 0; i < arguments[1]; i += 1)
+                        arguments[0].apply(this, [...arguments].slice(2));
+
+                else if (
+                    typeof arguments[0] == 'function' &&
+                    arguments.length < 2
+                )
+                    // Request Animation Frame
+                    requestAnimationFrame(arguments[0]);
+            }
+        });
+
+        // Request Animation Frame
+        window.constructor.prototype.requestAnimationFrame = requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.mozRequestAnimationFrame;
 
         /* Round
                 --- WARN ---
@@ -1188,7 +1255,195 @@
         (typeof window.timeout == 'function') || Object.defineProperty(window.constructor.prototype, 'timeout', {
             // Value
             value: function timeout() {
+                // Set Timeout
                 setTimeout(arguments[0], parseNumber(arguments[1]) || void 0)
+            }
+        });
+
+        // (Get) Type (Of)
+        (typeof window.getType == 'function') || Object.defineProperty(window.constructor.prototype, 'getType', {
+            // Value
+            value: function getType() {
+                /* Logic
+                        If
+                            there is an Argument.
+                */
+                if (
+                    arguments.length > 0 &&
+                    arguments[0] !== null &&
+                    arguments[0] !== void 0
+                )
+                    /* Logic
+                            Switch case to Argument 0's constructor.
+
+                        > Return
+                    */
+                    switch (arguments[0].constructor) {
+                        // Array
+                        case Array:
+                            return 'array';
+                            break;
+
+                        // Array Buffer
+                        case window.ArrayBuffer:
+                            return 'array-buffer';
+                            break;
+
+                        // Attribute
+                        case window.Attr:
+                            return 'attribute';
+                            break;
+
+                        // Boolean
+                        case Boolean:
+                            return 'boolean';
+                            break;
+
+                        // Function
+                        case Function:
+                            return 'function';
+                            break;
+
+                        // HTML AllCollection
+                        case window.HTMLAllCollection:
+                            return 'html-all-collection';
+                            break;
+
+                        // HTML Collection
+                        case window.HTMLCollection:
+                            return 'html-collection';
+                            break;
+
+                        // Node
+                        case window.Node:
+                            return 'node';
+                            break;
+
+                        // Node Filter
+                        case window.NodeFilter:
+                            return 'node-filter';
+                            break;
+
+                        // Node Iterator
+                        case window.NodeIterator:
+                            return 'node-iterator';
+                            break;
+
+                        // Node List
+                        case window.NodeList:
+                            return 'node-list';
+                            break;
+
+                        // Notification
+                        case window.Notification:
+                            return 'notification';
+                            break;
+
+                        // Number
+                        case Number:
+                            return 'number';
+                            break;
+
+                        // Object
+                        case Object:
+                            return 'json';
+                            break;
+
+                        // Regular Expression
+                        case RegExp:
+                            return 'regex';
+                            break;
+
+                        // String
+                        case String:
+                            return 'string';
+                            break;
+
+                        // Symbol
+                        case window.Symbol:
+                            return 'symbol';
+                            break;
+
+                        // XML Serializer
+                        case window.XMLSerializer:
+                            return 'xml-serializer';
+                            break
+                    }
+
+                else
+                    /* Logic
+                            [if:else if:else statement]
+
+                        > Return
+                    */
+                    if (typeof arguments[0] == 'number')
+                        return 'number';
+
+                    else if (typeof arguments[0] == 'undefined')
+                        return 'undefined';
+
+                    else if (arguments[0] === null)
+                        return 'null';
+
+                    else if (
+                        (
+                            (arguments[0] || []).constructor.name.indexOf('Element') > -1 ||
+                            (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('Element') > -1
+                        ) &&
+                        typeof arguments[0].tagName == 'string'
+                    )
+                        return 'element';
+
+                    else if (
+                        (arguments[0] || []).constructor.name.indexOf('Event') > -1 ||
+                        (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('Event') > -1
+                    )
+                        return 'event';
+
+                    else if (
+                        (arguments[0] || []).constructor.name.indexOf('EventTarget') > -1 ||
+                        (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('EventTarget') > -1
+                    )
+                        return 'event-target';
+
+                    else if (
+                        (arguments[0] || []).constructor.name.indexOf('Context') > -1 ||
+                        (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('Context') > -1
+                    )
+                        return 'context';
+
+                    else if (
+                        (arguments[0] || []).constructor.name.indexOf('XMLHttpRequest') > -1 ||
+                        (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('XMLHttpRequest') > -1
+                    )
+                        return 'xml-http-request';
+
+                    else if (
+                        (arguments[0] || []).constructor.name.indexOf('DOM') > -1 ||
+                        (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('DOM') > -1
+                    )
+                        return 'dom-object';
+
+                    else if (
+                        (arguments[0] || []).constructor.name.indexOf('SVG') > -1 ||
+                        (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('SVG') > -1
+                    )
+                        return 'svg';
+
+                    else if (
+                        (arguments[0] || []).constructor.name.indexOf('WebGL') > -1 ||
+                        (arguments[0] || []).__proto__.__proto__.constructor.name.indexOf('WebGL') > -1
+                    )
+                        return 'web-gl';
+
+                    else if ((arguments[0] || []).constructor.name.indexOf('Document') > -1)
+                        return 'document';
+
+                    else if ((arguments[0] || []).constructor.name.indexOf('Window') > -1)
+                        return 'window';
+
+                // Return
+                return arguments.length > 0 ? (!(arguments[0] !== null && arguments[0] !== void 0) || (arguments[0].constructor.name[0] + arguments[0].constructor.name.slice(1).replace(/[A-Z]/g, data => { return `-${data.toLowerCase()}` }))) : 'undefined'
             }
         });
 
@@ -1342,7 +1597,7 @@
                                     constructor() {
                                         // Initialization > (Data, Metadata)
                                         let data = document.createElement(arguments[1] === 'no-order' ? 'ul' : arguments[1] === 'order' ? 'ol' : 'ul'),
-                                            metadata = createDocumentFragment();
+                                            metadata = createDocumentFragment('', 'div');
 
                                         /* Logic
                                                 If
@@ -2256,6 +2511,9 @@
                                     // Initialization > Data
                                     let data = document.createElement('a');
 
+                                    // Insertion
+                                    document.body.appendChild(data);
+
                                     /* Logic
                                             [if:else if:else statement]
                                     */
@@ -2276,7 +2534,11 @@
                                                 data[Object.keys(arguments[1])] = arguments[1][Object.keys(arguments[1])]
                                     }
 
-                                    data.click()
+                                    // Data > Click
+                                    data.click();
+
+                                    // Deletion
+                                    document.body.removeChild(data)
                                 }
                             });
 
@@ -2387,6 +2649,12 @@
                                     value: _$
                                 });
 
+                                // Query Selector
+                                Object.defineProperty(this, 'querySelector', {
+                                    // Value
+                                    value: $$
+                                });
+
                                 // Query Selector (All)
                                 Object.defineProperty(this, '$', {
                                     // Value
@@ -2400,16 +2668,56 @@
                 Object.defineProperty(this, 'error', {
                     // Value
                     value: function error() {
-                        // Throw
-                        throw new (class LapysJSScriptError extends Error {
-                            constructor() {
-                                // Super
-                                super([...arguments]);
+                        /* Initialization > Data
+                                --- NOTE ---
+                                    @lapys: Prevent compressors and minifiers from redacting the name
+                                        of the Error.
+                        */
+                        let data = 'LapysJSScriptError';
 
-                                // Error > Capture Stack Trace
-                                Error.captureStackTrace(this, LapysJSScriptError)
+                        // Error Handling
+                        try {
+                            // Execution
+                            eval(`throw new (class ${data} extends Error {constructor(){super([...arguments]);Error.captureStackTrace(this,${data})}})('\n    [LapysJS v${VER_NUMBER}] => ${arguments[0]}\r')`)
+                        }
+
+                        catch (error) {
+                            // Error Handling
+                            try {
+                                // Execution
+                                eval(`throw new (class ${data} extends Error {})('\n[LapysJS v${VER_NUMBER}] => ${arguments[0]}\r')`)
                             }
-                        })(`\n\t[LapysJS v${VER_NUMBER}] => ${arguments[0]}\r`)
+
+                            catch (error) {
+                                // Error Handling
+                                try {
+                                    // Throw
+                                    throw new (class LapysJSScriptError extends Error {
+                                        // Constructor
+                                        constructor() {
+                                            // Super
+                                            super([...arguments]);
+
+                                            // Error > Capture Stack Trace
+                                            Error.captureStackTrace(this, LapysJSScriptError)
+                                        }
+                                    })(`\n    [LapysJS v${VER_NUMBER}] => ${arguments[0]}\r`)
+                                }
+
+                                catch (error) {
+                                    // Error Handling
+                                    try {
+                                        // Throw
+                                        throw new (class LapysJSScriptError extends Error {})(`\n    [LapysJS v${VER_NUMBER}] => ${arguments[0]}\r`)
+                                    }
+
+                                    catch (error) {
+                                        // Console > Error
+                                        console.error(`\n    [LapysJS v${VER_NUMBER}] => ${arguments[0]}\r`)
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
 
@@ -2434,10 +2742,7 @@
                 this.executed = !!0;
 
                 // Experimental Features
-                Object.defineProperty(this, 'experimentalFeatures', {value: ['data-focus', 'element-index', 'html-javascript', 'style-attributes']});
-                    // Modification > (All, Null)
-                    Object.defineProperty(this.experimentalFeatures, 'all', {value: 'all'});
-                    Object.defineProperty(this.experimentalFeatures, 'null', {value: 'null'});
+                Object.defineProperty(this, 'experimentalFeatures', {value: ['data-focus']});
 
                 // Name (Title)
                 Object.defineProperty(this, 'name', {value: 'LapysJS'});
@@ -2448,14 +2753,11 @@
                 // Permanent Data
                 Object.defineProperty(this.constructor.prototype, 'permanentData', {value: {}});
 
-                /* Script
-                        --- WARN ---
-                            This property can easily be voided by file modifications.
-
-                            The 'data-enable' attribute that comes with the <script> element is
-                            not dynamic and must be pre-decided for now.
-                */
-                Object.defineProperty(this, 'script', {value: document.querySelector("script[src*='lapys.'][src*='.js']") || ((document.scripts || [])[~-(document.scripts || [0]).length] || document.querySelectorAll('script')[~-document.querySelectorAll('script').length])});
+                // Script
+                Object.defineProperty(this, 'script', {
+                    // Value
+                    value: document.currentScript || document.querySelector("script[src*='lapys.'][src*='.js']") || document.getElementsByTagName('script')[~-document.getElementsByTagName('script').length]
+                });
                     // Data Enable
                     ((this.script.getAttribute('data-enable') || '').indexOf('null') < 0) || this.script.removeAttribute('data-enable');
 
@@ -2469,16 +2771,7 @@
 
                         // Set
                         set: function disable() {
-                            /* Loop
-                                    Index all elements of Argument 0.
-
-                                > Modification > Target > Data Enable
-                            */
-                            for (let i = 0; i < arguments[0].split(/ /g).length; i += 1)
-                                ((this.getAttribute('data-enable') || '').indexOf(arguments[0].split(/ /g)[i]) < 0) || this.setAttribute('data-enable', (this.getAttribute('data-enable') || '').replace(RegExp(arguments[0].split(/ /g)[i], 'g'), '').trim());
-
-                            // Modification > Target > Data Enable
-                            this.getAttribute('data-enable') || this.removeAttribute('data-enable')
+                            this.setAttribute('data-enable', this.getAttribute('data-enable').replace(RegExp(`\b${arguments[0]}\b`, 'g'), '').replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g).removeRepeatedElements().join(' '))
                         }
                     });
 
@@ -2492,49 +2785,16 @@
 
                         // Set
                         set: function enable() {
-                            // Initialization > (Array, Error, Repeated Element)
-                            let array = `${(this.getAttribute('data-enable') || '')} ${arguments[0]}`.split(/ /g),
-                                error = !!0,
-                                repeatedElements = array.getRepeatedElements();
+                            /* Logic
+                                    [if:else if:else statement]
 
-                            // Update > Array
-                            array = array.removeFalsyElements().removeRepeatedElements();
-
-                            /* Loop
-                                    Index all elements of Repeated Elements.
-
-                                > Update > Array
+                                > Modification > (LapysJS > Script) > Data Enable
                             */
-                            for (let i = 0; i < repeatedElements.length; i += 1)
-                                array = array.addElementToFront(repeatedElements[i]);
+                            if (typeof arguments[0] == 'string')
+                                this.setAttribute('data-enable', arguments[0].replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g).removeRepeatedElements().join(' '));
 
-                            /* Loop => [Array Validation]
-                                    --- NOTE ---
-                                        Index all experimental features of LapysJS.
-                            */
-                            arrayValidation:
-                            for (let i = 0; i < LapysJS.experimentalFeatures.concat(['all', 'null']).length; i += 1)
-                                /* Loop
-                                        Index all elements of Array.
-                                */
-                                for (let j = 0; j < array.length; j += 1)
-                                    /* Logic
-                                            If
-                                                a member of Array is not in LapysJS Experimental Features.
-                                    */
-                                    if (LapysJS.experimentalFeatures.concat(['all', 'null']).indexOf(array[j]) < 0) {
-                                        // LapysJS > Error
-                                        LapysJS.error(`'${array[j]}' is not an experimental feature of LapysJS.`);
-
-                                        // Update > Error
-                                        error = !0;
-
-                                        // Break
-                                        break arrayValidation
-                                    };
-
-                            // Modification > Target > Data Enable
-                            error || this.setAttribute('data-enable', String(array.sort()).replace(/,/g, ' ').trim())
+                            else if ((arguments[0] || []).constructor == Array)
+                                this.setAttribute('data-enable', arguments[0].join(' ').trim().replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g).removeRepeatedElements().join(' '))
                         }
                     });
 
@@ -3693,19 +3953,8 @@
 
             // Get
             get: function html() {
-                /* Error Handling
-                        --- WARN ---
-                            @lapys: This is necessary. Trust me.
-                */
-                try {
-                    // Return
-                    return document.createElement(this)
-                }
-
-                catch (error) {
-                    // LapysJS > Error
-                    LapysJS.error(error)
-                }
+                // Return
+                return this != '' ? document.createElement(this) : null
             }
         });
 
@@ -3722,10 +3971,13 @@
 
             // Get
             get: function isRegistered() {
-                // Return
-                return document.createElement(this).toString().slice(0, -']'.length).endsWith('Element') &&
+                /* Return
+                        --- NOTE ---
+                            Error Handling is not safe here.
+                */
+                return this != '' ? document.createElement(this).toString().slice(0, -']'.length).endsWith('Element') &&
                     (document.createElement(this).toString().indexOf('HTMLUnknownElement') < 0) &&
-                    (document.createElement(this).constructor !== HTMLElement)
+                    (document.createElement(this).constructor !== HTMLElement) : false
             }
         });
 
@@ -5040,7 +5292,7 @@
             });
 
         /* Document */
-            // Fav Icon
+            // Favorite Icon
             Document.prototype.favicon || (Object.defineProperty(Document.prototype, 'favicon', {
                 // Configurable
                 configurable: !0,
@@ -5051,13 +5303,13 @@
                 // Get
                 get: function getFavicon() {
                     // Return
-                    return [...document.querySelectorAll(`link[href][rel=icon][type], link[href][rel='shortcut icon']`)]
+                    return [...document.querySelectorAll(`link[href][rel*='icon']`)]
                 },
 
                 // Set
                 set: function setFavicon() {
                     // Insertion
-                    document.head.appendChild(createDocumentFragment(`<link href='${arguments[0]}' rel=icon type=image/png><br><link href='${arguments[0]}' rel='shortcut icon'>`))
+                    document.head.appendChild(createDocumentFragment(`<link href='${arguments[0]}' rel=icon type=image/${String(arguments[0]).getAfterChar('.', !0) || 'x-icon'}><link href='${arguments[0]}' rel='shortcut icon'><link href='${arguments[0]}' rel=icon type=image/vnd.microsoft.icon><link href='${arguments[0]}' rel=apple-touch-icon-precomposed>`, `div`))
                 }
             }));
 
@@ -5093,286 +5345,36 @@
 
         /* DOM Elements */
             /* Data Focus */
-                /* Logic
-                        If
-                            the LapysJS script has 'all' enabled
-                                or
-                            the LapysJS script has 'data-focus' enabled.
-                */
-                if (
-                    LapysJS.script.enabled.indexOf('all') > -1 ||
-                    LapysJS.script.enabled.indexOf('data-focus') > -1
-                )
-                    // On DOM Ready
-                    onDOMReady(() => {
-                        // Event > <body> > Mouse Up
-                        document.body.setEvent('mouseup', function LapysJSDataFocusFeatureEvent(event) {
-                            /* Loop
-                                    While
-                                        there is a Data Focus element left.
-
-                                > Modification > Data Focus Element > Data Focus
-                            */
-                            while (document.querySelector('[data-focus'))
-                                document.querySelector('[data-focus').removeAttribute('data-focus');
-
-                            // Modification > Event Path > Data Focus
-                            event.path[0].setAttribute('data-focus', '')
-                        })
-                    });
-
-            /* HTML JavaScript */
-                /* Logic
-                        If
-                            the LapysJS script has 'all' enabled
-                                or
-                            the LapysJS script has 'html-javascript' enabled.
-                */
-                if (
-                    LapysJS.script.enabled.indexOf('all') > -1 ||
-                    LapysJS.script.enabled.indexOf('html-javascript') > -1
-                ) {
-                    /* <access-value>
-                            --- NOTE ---
-                                @lapys: Outputs evaluated JavaScript values to the DOM.
+                // Set Timeout
+                setTimeout(function() {
+                    /* Logic
+                            If
+                                the LapysJS script has 'all' enabled
+                                    or
+                                the LapysJS script has 'data-focus' enabled.
                     */
+                    if (
+                        LapysJS.script.enabled.indexOf('all') > -1 ||
+                        LapysJS.script.enabled.indexOf('data-focus') > -1
+                    )
                         // On DOM Ready
                         onDOMReady(() => {
-                            // On DOM Node Count Change
-                            onDOMNodeCountChange(() => {
-                                // Registration
-                                (!window.customElements || (document.createElement('access-value').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('access-value', class HTMLAccessValueElement extends HTMLElement {}));
-
-                                // Modification > <access-value> > Value
-                                Object.defineProperty(new (document.createElement('access-value')).constructor().constructor.prototype, 'value', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getValue() {
-                                        // Return
-                                        return this.getAttribute('value')
-                                    },
-
-                                    // Set
-                                    set: function setValue() {
-                                        // Modification > Target > Value
-                                        this.setAttribute('value', arguments[0])
-                                    }
-                                });
-
+                            // Event > <body> > Mouse Up
+                            document.body.setEvent('mouseup', function LapysJSDataFocusFeatureEvent(event) {
                                 /* Loop
                                         While
-                                            There is an <access-value> element left.
-                                */
-                                while (document.querySelector('access-value'))
-                                    // Error Handling
-                                    try {
-                                        // Update > <access-value> > Outer HTML
-                                        document.querySelector('access-value').outerHTML = eval(document.querySelector('access-value').value)
-                                    }
+                                            there is a Data Focus element left.
 
-                                    catch (error) {
-                                        // Update > <access-value> > Outer HTML
-                                        document.querySelector('access-value').outerHTML = `[LapysJS ${LapysJS.version}] => SyntaxError: Error evaluating parsed value.`
-                                    }
+                                    > Modification > Data Focus Element > Data Focus
+                                */
+                                while (document.querySelector('[data-focus'))
+                                    document.querySelector('[data-focus').removeAttribute('data-focus');
+
+                                // Modification > Event Path > Data Focus
+                                (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).setAttribute('data-focus', '')
                             })
-                        });
-
-                    // <key-command>
-                        // Registration
-                        (!window.customElements || (document.createElement('key-command').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('key-command', class HTMLKeyCommandElement extends HTMLElement {}));
-
-                        // On DOM Ready
-                        onDOMReady(() => {
-                            /* Loop
-                                    Index all <key-command> elements.
-                            */
-                            for (let i = 0; i < document.getElementsByTagName('key-command').length; i += 1) {
-                                // Event > <html> > Key Down
-                                !document.getElementsByTagName('key-command')[i].getAttribute('data-event-key') || document.documentElement.setEvent('keydown', function HTMLKeyCommandElementEvent(event) {
-                                    // Execution
-                                    (event.code !== document.getElementsByTagName('key-command')[i].getAttribute('data-event-key')) || eval(`(function(event) {${document.getElementsByTagName('key-command')[i].getAttribute('data-event-function')}})()`)
-                                });
-
-                                /* Modification > <key-command> > Hidden
-                                        --- NOTE ---
-                                            @lapys: Sadly, we can't delete off the <key-command> elements, yet...
-                                */
-                                document.getElementsByTagName('key-command')[i].hidden = !0
-                            }
-                        });
-
-                        // Modification
-                            // Function
-                            Object.defineProperty(new (document.createElement('key-command')).constructor().constructor.prototype, 'function', {
-                                // Configurable
-                                configurable: !0,
-
-                                // Enumerable
-                                enumerable: !0,
-
-                                // Get
-                                get: function getFunction() {
-                                    // Return
-                                    return this.getAttribute('data-event-function')
-                                },
-
-                                // Set
-                                set: function setFunction(data) {
-                                    // Modification > Target > Data Event Function
-                                    this.setAttribute('data-event-function', data)
-                                }
-                            });
-
-                            // Key
-                            Object.defineProperty(new (document.createElement('key-command')).constructor().constructor.prototype, 'key', {
-                                // Configurable
-                                configurable: !0,
-
-                                // Enumerable
-                                enumerable: !0,
-
-                                // Get
-                                get: function getKey() {
-                                    // Return
-                                    return this.getAttribute('data-event-key')
-                                },
-
-                                // Set
-                                set: function setKey(data) {
-                                    // Modification > Target > Data Event Key
-                                    this.setAttribute('data-event-key', data)
-                                }
-                            });
-
-                    // <lorem-ipsum>
-                        // Registration
-                        (!customElements ||  (document.createElement('lorem-ipsum').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('lorem-ipsum', class HTMLLoremIpsumElement extends HTMLElement {}));
-
-                        // Modification > Length
-                        Object.defineProperty(new (document.createElement('lorem-ipsum')).constructor().constructor.prototype, 'len', {
-                            // Configurable
-                            configurable: !0,
-
-                            // Enumerable
-                            enumerable: !0,
-
-                            // Get
-                            get: function getLength() {
-                                // Return
-                                return +this.getAttribute('length').replace(/ /g, '')
-                            },
-
-                            set: function setLength() {
-                                // Modification > Target > Length
-                                this.setAttribute('length', String(arguments[0]).replace(/ /g, ''))
-                            }
-                        });
-
-                        // On DOM Node Count Change
-                        onDOMNodeCountChange(() => {
-                            /* Loop
-                                    While
-                                        there is a <lorem-ipsum> element left.
-                            */
-                            while (document.querySelector('lorem-ipsum'))
-                                // Modification > <lorem-ipsum> > Outer HTML
-                                    /* Logic
-                                            Switch case to <lorem-ipsum> Length.
-                                    */
-                                    switch (document.querySelector('lorem-ipsum').len) {
-                                        // 1
-                                        case 1:
-                                            document.querySelector('lorem-ipsum').outerHTML = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit.';
-                                            break;
-
-                                        // 2
-                                        case 2:
-                                            document.querySelector('lorem-ipsum').outerHTML = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa.';
-                                            break;
-
-                                        // 3
-                                        case 3:
-                                            document.querySelector('lorem-ipsum').outerHTML = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.';
-                                            break;
-
-                                        // 4
-                                        case 4:
-                                            document.querySelector('lorem-ipsum').outerHTML = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.';
-                                            break;
-
-                                        // 5
-                                        case 5:
-                                            document.querySelector('lorem-ipsum').outerHTML = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc.';
-                                            break;
-
-                                        // [Default]
-                                        default:
-                                            document.querySelector('lorem-ipsum').outerHTML = ''
-                                    }
-                        });
-
-                    // <fav-icon>
-                        // Registration
-                        (!window.customElements || (document.createElement('fav-icon').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('fav-icon', class HTMLFavIconElement extends HTMLElement {}));
-
-                        // Modification > Source
-                        Object.defineProperty(new (document.createElement('fav-icon')).constructor().constructor.prototype, 'src', {
-                            // Configurable
-                            configurable: !0,
-
-                            // Enumerable
-                            enumerable: !0,
-
-                            // Get
-                            get: function getSrc() {
-                                // Return
-                                return this.getAttribute('src')
-                            },
-
-                            // Set
-                            set: function setSrc() {
-                                // Modification > Target > Source
-                                this.setAttribute('src', String(arguments[0]))
-                            }
-                        });
-
-                        // Insertion
-                        !document.querySelector('fav-icon[src]') || document.head.appendChild(createDocumentFragment(`<link href='${document.querySelector('fav-icon').src}' rel='icon' type='image/png'><br><link href='${document.querySelector('fav-icon').src}' rel='shortcut icon'>`))
-
-                        // On DOM Node Count Change
-                        onDOMNodeCountChange(() => {
-                            /* Loop
-                                    While
-                                        there is a <fav-icon> element left.
-
-                                > Deletion
-                            */
-                            while (document.querySelector('fav-icon'))
-                                document.querySelector('fav-icon').remove()
-                        });
-
-                    /* Detect Scroll Overflow */
-                        // On DOM Ready
-                        onDOMReady(() => {
-                            // Function > Modify Detect Scroll Overflow Elements
-                            let modifyDetectScrollOverflowElements = function modifyDetectScrollOverflowElements() {
-                                /* Loop
-                                        Index all Detect Scroll Overflow Elements.
-
-                                    > Modification > Data Scroll Overflow
-                                */
-                                for (let i = 0; i < document.getElementsByClassName('detect-scroll-overflow').length; i += 1)
-                                    document.getElementsByClassName('detect-scroll-overflow')[i].setAttribute('data-scroll-overflow', document.getElementsByClassName('detect-scroll-overflow')[i].scrollHeight > document.getElementsByClassName('detect-scroll-overflow')[i].getBoundingClientRect().height)
-                            };
-                            onDOMChange(modifyDetectScrollOverflowElements);
-                            setEvent('resize', modifyDetectScrollOverflowElements)
                         })
-                }
+                });
 
             /* <br>, <wbr> */
                 // On DOM Node Added
@@ -5712,12 +5714,12 @@
                                             LapysJS.permanentData[`scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}`] = document.querySelectorAll('[script')[i];
 
                                         // Execution
-                                        eval(`try { (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] = (function() {var global = window;\n${document.querySelectorAll('[script')[i].getAttribute('script') ? document.querySelectorAll('[script')[i].getAttribute('script') : ''}\n}); (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'](); delete (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] } catch (error) { LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] = (function() {var global = window;\n${document.querySelectorAll('[script')[i].getAttribute('script') ? document.querySelectorAll('[script')[i].getAttribute('script') : ''}\n}); LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'](); delete LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] }`)
+                                        eval(`try { (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] = (function() {var global = window;\n${document.querySelectorAll('[script')[i].getAttribute('script') || ''}\n}); (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'](); delete (document.querySelector('[script="${document.querySelectorAll('[script')[i].getAttribute('script')}"') || LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}'])['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] } catch (error) { LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] = (function() {var global = window;\n${document.querySelectorAll('[script')[i].getAttribute('script') || ''}\n}); LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'](); delete LapysJS.permanentData['scriptElement:${document.querySelectorAll('[script')[i]['LapysJS scriptElementID']}']['${randomString.replace(/'/g, '\\`').replace(/\\u/g, data => { return data.slice('\\'.length) })}'] }`)
                                     }
                             });
 
                             // Modification > Script > Script
-                            (typeof document.querySelectorAll('[script')[i].script == 'string') || Object.defineProperty(document.querySelectorAll('[script')[i], 'script', {
+                            ('script' in document.querySelectorAll('[script')[i]) || Object.defineProperty(document.querySelectorAll('[script')[i], 'script', {
                                 // Configurable
                                 configurable: !0,
 
@@ -5961,19 +5963,8 @@
                                         this.removeAttribute([...arguments][i]);
 
                             else
-                                // Error Handling
-                                try {
-                                    // Modification > Target > Argument 0
-                                    this.removeAttributeNode(arguments[0])
-                                }
-
-                                catch (error) {
-                                    // LapysJS > Warn
-                                    LapysJS.warn(error);
-
-                                    // Modification > Target > Argument 0
-                                    this.removeAttribute(arguments[0].name)
-                                }
+                                // Modification > Target > Argument 0
+                                this.removeAttribute(arguments[0].name)
                         }
                     });
 
@@ -6416,57 +6407,36 @@
                         }
                     });
 
-                    /* Set Attribute
-                            --- UPDATE REQUIRED ---
-                                @lapys: Should also apply to String-value-based attributes such as
-                                    attribute-name='"Hello, World!" is a String, right?'
-                    */
+                    // Set Attribute
                     Element.prototype.setAttr || Object.defineProperty(Element.prototype, 'setAttr', {
                         // Value
                         value: function setAttr() {
                             /* Logic
-                                    If
-                                        Argument 0 is not an Attribute.
+                                    [if:else if:else statement]
                             */
-                            if ((arguments[0] || []).constructor !== window.Attr) {
-                                // Initialization > Arguments
-                                let Arguments = [...arguments];
+                            if (typeof arguments[0] == 'string')
+                                // Modification > Target > [Argument 0]
+                                this.setAttribute(arguments[0], arguments.length > 1 ? arguments[1] : '');
 
-                                // Update > (Name, Value)
-                                Arguments[0] = String(Arguments[0]);
-                                Arguments[1] = String(Arguments[1]).replace(/\\,/g, `::lapysjs_${alphabetString}::`);
-                                Arguments[3] = [...String(Arguments.slice(2))].removeElements(',');
-
-                                /* Logic
-                                        If
-                                            there is a second Argument.
+                            else if ((arguments[0] || '').constructor == Array)
+                                /* Loop
+                                        [for statement]
                                 */
-                                if (arguments.length > 1) {
-                                    /* Loop
-                                            Index all Names.
+                                for (let i = 0; i < arguments[0].length; i += 1)
+                                    // Modification > Target > [Argument 0]
+                                    this.setAttribute(arguments[0][i], arguments[1][i]);
 
-                                        > Modification > Target > [Name]
-                                    */
-                                    for (let i = 0; i < max(Arguments[0].split(/,/g), Arguments[1].split(/,/g).concat(Arguments[3])); i += 1)
-                                        Arguments[0].split(/,/g)[i] ? this.setAttribute(Arguments[0].split(/,/g)[i].trim(), String((Arguments[1].split(/,/g).concat(Arguments[3]) || [])[i] || '').replace(RegExp(`::lapysjs_${alphabetString}::`, 'g'), ',').trim()) : this.setAttribute(Arguments[0].split(/,/g)[~-Arguments[0].split(/,/g).length].trim(), String((Arguments[1].split(/,/g).concat(Arguments[3]) || [])[i] || '').replace(RegExp(`::lapysjs_${alphabetString}::`, 'g'), ',').trim())
-                                }
+                            else if (isObject(arguments[0]))
+                                /* Loop
+                                        [for statement]
+                                */
+                                for (let i = 0; i < Object.keys(arguments[0]).length; i += 1)
+                                    // Modification > Target > [Argument 0]
+                                    this.setAttribute(Object.keys(arguments[0])[i], arguments[0][Object.keys(arguments[0])[i]]);
 
-                                else
-                                    /* Loop
-                                            Index all Names.
-
-                                        > Modification > Target > [Name]
-                                    */
-                                    for (let i = 0; i < max(Arguments[0].split(/,/g), Arguments[1].split(/,/g).concat(Arguments[3])); i += 1)
-                                        Arguments[0].split(/,/g)[i] ? this.setAttribute(Arguments[0].split(/,/g)[i].trim(), '') : this.setAttribute(Arguments[0].split(/,/g)[~-Arguments[0].split(/,/g).length].trim(), '');
-
-                                // Modification > Target > [Name]
-                                !(Arguments[0] === 'class' || Arguments[0] === 'style') || this.setAttribute(Arguments[0], this.getAttribute(Arguments[0]).trim())
-                            }
-
-                            else
-                                // Modification > Target > Argument 0
-                                this.setAttributeNode(arguments[0].cloneNode(!0))
+                            else if ((arguments[0] || '').constructor == window.Attr)
+                                // Modification > Target > [Argument 0]
+                                this.setAttribute(arguments[0].name, arguments[0].value)
                         }
                     });
 
@@ -6808,7 +6778,7 @@
                                 typeof (data[0] || []).tagName == 'string'
                             ) || this.setEvent(String(metadata[0]), function observeEvent(event) {
                                 // Function > Metadata 1
-                                (data.indexOf(event.path[0]) < 0) || metadata[1].call(that, event)
+                                (data.indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement))) < 0) || metadata[1].call(that, event)
                             }, metadata[2], metadata[3])
                         }
                     });
@@ -6825,7 +6795,7 @@
                             // Event > Target > [Metadata 0]
                             this.setEvent(String(metadata[0]), function observeEvent(event) {
                                 // Function > Metadata 1
-                                ([...document.querySelectorAll(data)].indexOf(event.path[0]) < 0) || metadata[1].call(that, event)
+                                ([...document.querySelectorAll(data)].indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement))) < 0) || metadata[1].call(that, event)
                             }, metadata[2], metadata[3])
                         }
                     });
@@ -7168,93 +7138,101 @@
 
                         // Get
                         get: function getCSSSelector() {
-                            // Initialization
-                                // CSS Selector, Target
-                                let CSSSelector = '',
-                                    that = this;
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (this != Element.prototype) {
+                                // Initialization
+                                    // CSS Selector, Target
+                                    let CSSSelector = '',
+                                        that = this;
 
-                            // Update > CSS Selector
-                            CSSSelector = (
-                                that.tagName.toLowerCase() +
-                                (() => {
-                                    // Initialization > Classes
-                                    let Classes = '';
+                                // Update > CSS Selector
+                                CSSSelector = (
+                                    that.tagName.toLowerCase() +
+                                    (() => {
+                                        // Initialization > Classes
+                                        let Classes = '';
 
-                                    /* Logic
-                                            If the Target has a class.
-                                    */
-                                    if (that.getAttribute('class'))
-                                        /* Loop
-                                                Index all the Target's class nodes.
+                                        /* Logic
+                                                If the Target has a class.
                                         */
-                                        for (let i = 0; i < that.getAttribute('class').split(/ /g).length; i += 1)
+                                        if (that.getAttribute('class'))
+                                            /* Loop
+                                                    Index all the Target's class nodes.
+                                            */
+                                            for (let i = 0; i < that.getAttribute('class').split(/ /g).length; i += 1)
+                                                /* Logic
+                                                        If
+                                                            the class node has any 'unusual''characters.
+
+                                                    > Update > Classes
+                                                */
+                                                if (that.getAttribute('class').split(/ /g)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
+                                                    Classes += `[class='${that.getAttribute('class').split(/ /g)[i]}']`;
+
+                                                else
+                                                    Classes += `.${that.getAttribute('class').split(/ /g)[i]}`;
+
+                                        // Return
+                                        return Classes
+                                    })() +
+
+                                    // ID
+                                    (() => {
+                                        /* Logic
+                                                If
+                                                    the Target has an ID.
+                                        */
+                                        if (that.id)
                                             /* Logic
                                                     If
-                                                        the class node has any 'unusual''characters.
+                                                        the Target ID has any 'unusual''characters.
 
-                                                > Update > Classes
+                                                > Return
                                             */
-                                            if (that.getAttribute('class').split(/ /g)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
-                                                Classes += `[class='${that.getAttribute('class').split(/ /g)[i]}']`;
+                                            if (that.id.replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
+                                                return `[id='${that.id}']`;
 
                                             else
-                                                Classes += `.${that.getAttribute('class').split(/ /g)[i]}`;
+                                                // Return
+                                                return `#${that.id}`;
 
-                                    // Return
-                                    return Classes
-                                })() +
+                                        // Return
+                                        return ''
+                                    })() +
 
-                                // ID
-                                (() => {
-                                    /* Logic
-                                            If
-                                                the Target has an ID.
-                                    */
-                                    if (that.id)
-                                        /* Logic
-                                                If
-                                                    the Target ID has any 'unusual''characters.
+                                    // Attributes
+                                    (() => {
+                                        // Initialization > Attributes
+                                        let thatAttributes = '';
 
-                                            > Return
+                                        /* Loop
+                                                Index the element"s attributes.
                                         */
-                                        if (that.id.replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
-                                            return `[id='${that.id}']`;
+                                        for (let i = 0; i < that.attributes.length; i += 1)
+                                            /* Logic
+                                                    If
+                                                        the attribute name is not 'class' and 'id'.
+                                            */
+                                            if (
+                                                that.attributes[i].name !== 'class' &&
+                                                that.attributes[i].name !== 'id'
+                                            )
+                                                // Update > Attributes
+                                                thatAttributes += `[${that.attributes[i].name}='${(that.attributes[i].value || '').replace(/'/g, "\"")}']`;
 
-                                        else
-                                            // Return
-                                            return `#${that.id}`;
+                                        // Return
+                                        return thatAttributes
+                                    })()
+                                );
 
-                                    // Return
-                                    return ''
-                                })() +
-
-                                // Attributes
-                                (() => {
-                                    // Initialization > Attributes
-                                    let thatAttributes = '';
-
-                                    /* Loop
-                                            Index the element"s attributes.
-                                    */
-                                    for (let i = 0; i < that.attributes.length; i += 1)
-                                        /* Logic
-                                                If
-                                                    the attribute name is not 'class' and 'id'.
-                                        */
-                                        if (
-                                            that.attributes[i].name !== 'class' &&
-                                            that.attributes[i].name !== 'id'
-                                        )
-                                            // Update > Attributes
-                                            thatAttributes += `[${that.attributes[i].name}='${(that.attributes[i].value || '').replace(/'/g, "\"")}']`;
-
-                                    // Return
-                                    return thatAttributes
-                                })()
-                            );
+                                // Return
+                                return CSSSelector.replace(/=\'\'/g, '')
+                            }
 
                             // Return
-                            return CSSSelector.replace(/=\'\'/g, '')
+                            return null
                         },
 
                         /* Set
@@ -7354,8 +7332,15 @@
 
                         // Get
                         get: function parent() {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (this != Element.prototype)
+                                // Return
+                                return this.parentElement || this.parentNode;
+
                             // Return
-                            return this.parentElement || this.parentNode
+                            return null
                         }
                     });
 
@@ -7407,19 +7392,27 @@
 
                         // Get
                         get: function previousElementSiblings() {
-                            // Initialization > Result
-                            let result = [];
-
-                            /* Loop
-                                    [for statement]
-
-                                > Update > Result
+                            /* Logic
+                                    [if:else if:else statement]
                             */
-                            for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
-                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) > ~-[...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+                            if (this != Element.prototype) {
+                                // Initialization > Result
+                                let result = [];
+
+                                /* Loop
+                                        [for statement]
+
+                                    > Update > Result
+                                */
+                                for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
+                                    ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) > ~-[...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+
+                                // Return
+                                return result.length > 0 ? result : null
+                            }
 
                             // Return
-                            return result.length > 0 ? result : null
+                            return null
                         }
                     });
 
@@ -7433,19 +7426,27 @@
 
                         // Get
                         get: function nextElementSiblings() {
-                            // Initialization > Result
-                            let result = [];
-
-                            /* Loop
-                                    [for statement]
-
-                                > Update > Result
+                            /* Logic
+                                    [if:else if:else statement]
                             */
-                            for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
-                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) < ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) + 1) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+                            if (this != Element.prototype) {
+                                // Initialization > Result
+                                let result = [];
+
+                                /* Loop
+                                        [for statement]
+
+                                    > Update > Result
+                                */
+                                for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
+                                    ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) < ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) + 1) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+
+                                // Return
+                                return result
+                            }
 
                             // Return
-                            return result
+                            return null
                         }
                     });
 
@@ -7459,8 +7460,15 @@
 
                         // Get
                         get: function getRole() {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (this != Element.prototype)
+                                // Return
+                                return this.getAttribute('role') || '';
+
                             // Return
-                            return this.getAttribute('role') || ''
+                            return null
                         },
 
                         // Set
@@ -7480,21 +7488,29 @@
 
                         // Get
                         get: function getSiblings() {
-                            // Initialization > (Target, Array)
-                            let that = this,
-                                array = [];
-
-                            /* Loop
-                                    Index all Target's Parent's Children.
+                            /* Logic
+                                    [if:else if:else statement]
                             */
-                            for (let i = 0; i < this.parentElement.children.length; i += 1)
-                                array.push(this.parentElement.children[i]);
+                            if (this != Element.prototype) {
+                                // Initialization > (Target, Array)
+                                let that = this,
+                                    array = [];
+
+                                /* Loop
+                                        Index all Target's Parent's Children.
+                                */
+                                for (let i = 0; i < this.parentElement.children.length; i += 1)
+                                    array.push(this.parentElement.children[i]);
+
+                                // Return
+                                return array.filter(data => {
+                                    // Return
+                                    return data !== that
+                                })
+                            }
 
                             // Return
-                            return array.filter(data => {
-                                // Return
-                                return data !== that
-                            })
+                            return null
                         }
                     });
 
@@ -7599,7 +7615,9 @@
                                             ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] === 'textFunction') ||
                                             ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] === 'textFunctionDelay') ||
                                             ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] === 'textFunctionDuration') ||
+                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] === 'textFunctionInit') ||
                                             ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] === 'textFunctionInitialDelay') ||
+                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] === 'textFunctionIterationCount') ||
                                             ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] === 'textFunctionSeparator')
                                         ) ||
                                         Object.keys(that.dataset)[i] === 'title' ||
@@ -7725,135 +7743,135 @@
                 // Accordion
                     // On Node Added
                     onNodeAdded(document.body, function LapysJSScriptNewAccordion() {
-                            // Initialization > Accordion
-                            let accordion = document.querySelectorAll('.accordion:not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)');
+                        // Initialization > Accordion
+                        let accordion = document.querySelectorAll('.accordion:not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)');
 
-                            /* Loop
-                                    Index all Accordions.
+                        /* Loop
+                                Index all Accordions.
+                        */
+                        for (let i = 0; i < accordion.length; i += 1)
+                            /* Logic
+                                    If
+                                        the Accordion is not modified.
                             */
-                            for (let i = 0; i < accordion.length; i += 1)
-                                /* Logic
-                                        If
-                                            the Accordion is not modified.
-                                */
-                                if (!accordion[i]['LapysJS isModified']) {
-                                    // Function > Accordion
-                                        // Close
-                                        (typeof accordion[i]['LapysJS close'] == 'function') || Object.defineProperty(accordion[i], 'LapysJS close', {
-                                            // Value
-                                            value: function close() {
-                                                // Modification > Target
-                                                    // Data Close
-                                                    this.setAttribute('data-close', !0);
+                            if (!accordion[i]['LapysJS isModified']) {
+                                // Function > Accordion
+                                    // Close
+                                    (typeof accordion[i]['LapysJS close'] == 'function') || Object.defineProperty(accordion[i], 'LapysJS close', {
+                                        // Value
+                                        value: function close() {
+                                            // Modification > Target
+                                                // Data Close
+                                                this.setAttribute('data-close', !0);
 
-                                                    // Data Open
-                                                    this.setAttribute('data-open', !!0)
-                                            }
-                                        });
-                                        accordion[i]['LapysJS close']();
+                                                // Data Open
+                                                this.setAttribute('data-open', !!0)
+                                        }
+                                    });
+                                    accordion[i]['LapysJS close']();
 
-                                        // Open
-                                        (typeof accordion[i]['LapysJS open'] == 'function') || Object.defineProperty(accordion[i], 'LapysJS open', {
-                                            // Value
-                                            value: function open() {
-                                                // Modification > Target
-                                                    // Data Close
-                                                    this.setAttribute('data-close', !!0);
+                                    // Open
+                                    (typeof accordion[i]['LapysJS open'] == 'function') || Object.defineProperty(accordion[i], 'LapysJS open', {
+                                        // Value
+                                        value: function open() {
+                                            // Modification > Target
+                                                // Data Close
+                                                this.setAttribute('data-close', !!0);
 
-                                                    // Data Open
-                                                    this.setAttribute('data-open', !0)
-                                            }
-                                        });
-
-                                    /* Logic
-                                            If
-                                                the Accordion has at least a Content
-                                                    and
-                                                the Accordion has at least a Header.
-                                    */
-                                    if (
-                                        accordion[i].querySelector('[data-id=content') &&
-                                        accordion[i].querySelector('[data-id=header')
-                                    )
-                                        // Modification > Accordion
-                                            // Content
-                                            Object.defineProperty(accordion[i], 'content', {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function content() {
-                                                    // Return
-                                                    return [...this.querySelectorAll('[data-id=content')]
-                                                }
-                                            });
-
-                                            // Header
-                                            Object.defineProperty(accordion[i], 'header', {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function header() {
-                                                    // Return
-                                                    return this.querySelector('[data-id=header')
-                                                }
-                                            });
-                                                /* Loop
-                                                        Index all Content and Header.
-
-                                                    > Modification > (Content, Header) > Accordion
-                                                */
-                                                for (let j = 0; j < accordion[i].children.length; j += 1)
-                                                    !(accordion[i].children[j].getAttribute('data-id') === 'content' || accordion[i].children[j].getAttribute('data-id') === 'header') || Object.defineProperty(accordion[i].children[j], 'accordion', {
-                                                        // Configurable
-                                                        configurable: !0,
-
-                                                        // Enumerable
-                                                        enumerable: !0,
-
-                                                        // Get
-                                                        get: function accordion() {
-                                                            // Initialization > Data
-                                                            let data;
-
-                                                            /* Loop
-                                                                    Index all the Target's parents.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Target Parent is an Accordion.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('accordion') > -1) {
-                                                                    // Update > Data
-                                                                    data = this.parentPath[i];
-
-                                                                    // Break
-                                                                    break
-                                                                }
-
-                                                            // Return
-                                                            return data || this.parentElement
-                                                        }
-                                                    });
-
-                                    // Event > Accordion > Click
-                                    accordion[i].setEvent((accordion[i].getAttribute('data-event-type') || 'click').trim(), function toggleAccordion() {
-                                        // Toggle
-                                        this['LapysJS toggle'] ? this['LapysJS close']() : this['LapysJS open']();
-                                        this['LapysJS toggle'] = !this['LapysJS toggle']
+                                                // Data Open
+                                                this.setAttribute('data-open', !0)
+                                        }
                                     });
 
-                                    // Modification > Accordion > Is Modified
-                                    accordion[i]['LapysJS isModified'] = !0
-                                }
+                                /* Logic
+                                        If
+                                            the Accordion has at least a Content
+                                                and
+                                            the Accordion has at least a Header.
+                                */
+                                if (
+                                    accordion[i].querySelector('[data-id=content') &&
+                                    accordion[i].querySelector('[data-id=header')
+                                )
+                                    // Modification > Accordion
+                                        // Content
+                                        Object.defineProperty(accordion[i], 'content', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function content() {
+                                                // Return
+                                                return [...this.querySelectorAll('[data-id=content')]
+                                            }
+                                        });
+
+                                        // Header
+                                        Object.defineProperty(accordion[i], 'header', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function header() {
+                                                // Return
+                                                return this.querySelector('[data-id=header')
+                                            }
+                                        });
+                                            /* Loop
+                                                    Index all Content and Header.
+
+                                                > Modification > (Content, Header) > Accordion
+                                            */
+                                            for (let j = 0; j < accordion[i].children.length; j += 1)
+                                                !(accordion[i].children[j].getAttribute('data-id') === 'content' || accordion[i].children[j].getAttribute('data-id') === 'header') || Object.defineProperty(accordion[i].children[j], 'accordion', {
+                                                    // Configurable
+                                                    configurable: !0,
+
+                                                    // Enumerable
+                                                    enumerable: !0,
+
+                                                    // Get
+                                                    get: function accordion() {
+                                                        // Initialization > Data
+                                                        let data;
+
+                                                        /* Loop
+                                                                Index all the Target's parents.
+                                                        */
+                                                        for (let i = 0; i < this.parentPath.length; i += 1)
+                                                            /* Logic
+                                                                    If
+                                                                        the Target Parent is an Accordion.
+                                                            */
+                                                            if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('accordion') > -1) {
+                                                                // Update > Data
+                                                                data = this.parentPath[i];
+
+                                                                // Break
+                                                                break
+                                                            }
+
+                                                        // Return
+                                                        return data || this.parentElement
+                                                    }
+                                                });
+
+                                // Event > Accordion > Click
+                                accordion[i].setEvent((accordion[i].getAttribute('data-event-type') || 'click').trim(), function toggleAccordion() {
+                                    // Toggle
+                                    this['LapysJS toggle'] ? this['LapysJS close']() : this['LapysJS open']();
+                                    this['LapysJS toggle'] = !this['LapysJS toggle']
+                                });
+
+                                // Modification > Accordion > Is Modified
+                                accordion[i]['LapysJS isModified'] = !0
+                            }
                     });
 
                 // Carousel
@@ -7910,7 +7928,7 @@
                                         // Get
                                         get: function buttons() {
                                             // Initialization > (Data, Target)
-                                            let data = [...(this.containers.buttons || {children: []}).children],
+                                            let data = Array.from((this.containers.buttons || {children: []}).children),
                                                 that = this;
 
                                                 // Left
@@ -7971,7 +7989,7 @@
                                         // Get
                                         get: function containers() {
                                             // Initialization > Data
-                                            let data = [...this.children];
+                                            let data = Array.from(this.children);
                                                 // Buttons
                                                 data.buttons = data[data.indexOf(this.querySelector('[data-id=buttons-container'))] || null;
 
@@ -8065,7 +8083,7 @@
                                     });
 
                                     // Toggle Next Slide
-                                    Object.defineProperty(carousel[i], 'toggleNextSlide', {
+                                    (typeof carousel[i].toggleNextSlide == 'function') || Object.defineProperty(carousel[i], 'toggleNextSlide', {
                                         // Value
                                         value: function toggleNextSlide() {
                                             // Modification > Target > Toggle Slide
@@ -8074,7 +8092,7 @@
                                     });
 
                                     // Toggle Previous Slide
-                                    Object.defineProperty(carousel[i], 'togglePreviousSlide', {
+                                    (typeof carousel[i].togglePreviousSlide == 'function') || Object.defineProperty(carousel[i], 'togglePreviousSlide', {
                                         // Value
                                         value: function togglePreviousSlide() {
                                             // Modification > Target > Toggle Slide
@@ -8083,7 +8101,7 @@
                                     });
 
                                     // Toggle Slide
-                                    Object.defineProperty(carousel[i], 'toggleSlide', {
+                                    (typeof carousel[i].toggleSlide == 'function') || Object.defineProperty(carousel[i], 'toggleSlide', {
                                         // Value
                                         value: function toggleSlide() {
                                             // Initialization > Data
@@ -8136,7 +8154,7 @@
                                         --- NOTE ---
                                             @lapys: This represents the Carousel's Slides Container.
                                 */
-                                data.appendChild(createDocumentFragment(carousel[i].innerHTML));
+                                data.appendChild(createDocumentFragment(carousel[i].innerHTML, 'div'));
 
                             // Modification > Carousel > Inner HTML
                             carousel[i].innerHTML = data.outerHTML;
@@ -8151,13 +8169,14 @@
                                     // Insertion
                                     carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(
                                         (carousel[i].getAttribute('data-buttons-left-html') || `<button class='button button-0' data-id=left-button>&larr;</button>`) +
-                                        (carousel[i].getAttribute('data-buttons-right-html') || `<button class='button button-1' data-id=right-button>&rarr;</button>`)
+                                        (carousel[i].getAttribute('data-buttons-right-html') || `<button class='button button-1' data-id=right-button>&rarr;</button>`),
+                                        'div'
                                     ))
                                 }
 
                                 catch (error) {
                                     // Insertion
-                                    carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(`<button class='button button-0' data-id=left-button>&larr;</button><button class='button button-1' data-id=right-button>&rarr;</button>`))
+                                    carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(`<button class='button button-0' data-id=left-button>&larr;</button><button class='button button-1' data-id=right-button>&rarr;</button>`, 'div'))
                                 }
 
                             /* Insertion
@@ -8183,7 +8202,7 @@
 
                                             // Return
                                             return data
-                                        })(carousel[i])
+                                        })(carousel[i]), 'div'
                                     ))
                                 }
 
@@ -8204,7 +8223,7 @@
 
                                             // Return
                                             return data
-                                        })(carousel[i])
+                                        })(carousel[i]), 'div'
                                     ))
                                 }
 
@@ -8342,7 +8361,7 @@
                                     */
                                     while (
                                         !carousel[i].hasAttribute('data-buttons') &&
-                                        [...carousel[i].children].indexOf(carousel[i].querySelector('[data-id=buttons-container')) > -1
+                                        Array.from(carousel[i].children).indexOf(carousel[i].querySelector('[data-id=buttons-container')) > -1
                                     )
                                         /* Loop
                                                 Index all the Carousel's child elements.
@@ -8368,7 +8387,7 @@
                                     */
                                     while (
                                         !carousel[i].hasAttribute('data-indicators') &&
-                                        [...carousel[i].children].indexOf(carousel[i].querySelector('[data-id=indicators-container')) > -1
+                                        Array.from(carousel[i].children).indexOf(carousel[i].querySelector('[data-id=indicators-container')) > -1
                                     )
                                         /* Loop
                                                 Index all the Carousel's child elements.
@@ -8390,7 +8409,7 @@
                                             While
                                                 the Carousel's first child element is not a Container.
                                     */
-                                    while ([...carousel[i].children].indexOf(carousel[i].querySelector(':first-child:not(.container)')) > -1) {
+                                    while (Array.from(carousel[i].children).indexOf(carousel[i].querySelector(':first-child:not(.container)')) > -1) {
                                         // Initialization > Loop Counter
                                         let j = i;
 
@@ -8435,8 +8454,8 @@
                                             [do:while statement]
                                     */
                                     injectNewSlide: while (
-                                        [...carousel[i].children].indexOf(carousel[i].querySelector(':not(.container)')) > -1 ||
-                                        [...carousel[i].children].indexOf(carousel[i].querySelectorAll(':not(.container)')[~-carousel[i].querySelectorAll(':not(.container)').length]) > -1
+                                        Array.from(carousel[i].children).indexOf(carousel[i].querySelector(':not(.container)')) > -1 ||
+                                        Array.from(carousel[i].children).indexOf(carousel[i].querySelectorAll(':not(.container)')[~-carousel[i].querySelectorAll(':not(.container)').length]) > -1
                                     )
                                         /* Loop
                                                 Pre-index all the Carousel's children.
@@ -8862,12 +8881,12 @@
 
                                 catch (error) {}
                         })
-                    }, LapysJS.permanentData.pluginScriptDelay = 3e3)
+                    }, LapysJS.permanentData.pluginScriptDelay = typeof LapysJS.permanentData.pluginScriptDelay == 'number' ? LapysJS.permanentData.pluginScriptDelay : 3e3)
                 })();
 
                 // Dropdown
                     // On Node Added
-                    onDOMNodeAdded(document.body, function LapysJSScriptNewDropdown() {
+                    onNodeAdded(document.body, function LapysJSScriptNewDropdown() {
                         // Initialization
                         let dropdown = document.querySelectorAll('.dropdown:not(.accordion):not(.carousel):not(.dynamic-text):not(.media):not(input):not(textarea)');
 
@@ -8943,939 +8962,39 @@
                     });
 
                 /* Dynamic Text
-                        --- CONSIDER ---
-                            @lapys: A 'text-unhighlighting' function would be nice to work with.
-
                         --- UPDATE REQUIRED ---
-                            @lapys: Multiple Dynamic Texts on the page should not cause errors as it does now.
+                            @lapys:
+                                - A proper delay attribute and property that functions.
+                                - Dynamic Text should be very toggle-able (whether it automates or not).
                 */
-                    // On Node Change
-                    onNodeChange(document.body, function LapysJSScriptNewDynamicText() {
+                (function LapysJSScriptDynamicText() {
+                    // On Node Added
+                    onNodeAdded(document.body, function LapysJSScriptNewDynamicText() {
+                        // Initialization
+                        let dynamicText = document.querySelectorAll('.dynamic-text:not(.accordion):not(.carousel):not(.dropdown):not(.media):not(input):not(textarea)');
+
                         /* Loop
-                                Index all Dynamic Texts.
+                                Index all Dynamic Text.
                         */
-                        for (let i = 0; i < document.getElementsByClassName('dynamic-text').length; i += 1) {
-                            // Modification > Dynamic Text
-                                // Data Text Cursor Position
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-cursor-position', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-cursor-position') || 0);
-
-                                // Data Text Format
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-format', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-format') || '');
-
-                                // Data Text Function
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-function', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function') || '');
-
-                                // Data Text Function Delay
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-function-delay', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function-delay') || 2);
-
-                                // Data Text Function Duration
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-function-duration', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function-duration') || 3);
-
-                                // Data Text Function Separator
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-function-separator', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function-separator') || ';');
-
-                                // Data Text Separator
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-separator', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-separator') || ',');
-
-                                // Data Text
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text', (document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text') || '').replace(RegExp(`\\\\${document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-separator')}`, 'g'), randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')));
-                                    // Data Text Format
-                                        /* Pre-format
-                                                --- NOTE ---
-                                                    Removes all newlines within the Dynamic Text's 'data-text' attribute.
-                                        */
-                                        (` ${document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-format')} `.indexOf(' pre ') < 0) || document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text').replace(/\n/g, ''));
-
-                                        /* Trim
-                                                --- NOTE ---
-                                                    Removes all trailing white-spaces at the beginning and end of each
-                                                    text within the Dynamic Text's 'data-text' attribute.
-                                        */
-                                            // Initialization > Array
-                                            let array = [];
-
-                                            /* Logic
-                                                    If
-                                                        the Dynamic Text's format's 'trim' option is active.
-                                            */
-                                            if (` ${document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-format')} `.indexOf(' trim ') > -1) {
-                                                /* Loop
-                                                        [for statement]
-
-                                                    > Update > Array
-                                                */
-                                                for (let j = 0; j < document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text').split(RegExp(document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-separator'), 'g')).length; j += 1)
-                                                    array.push(document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text').split(RegExp(document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-separator'), 'g'))[j].replace(/,/g, `::lapysjs_comma${randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')}::`).trim());
-
-                                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text', String(array).replace(/,/g, document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-separator')).replace(RegExp(`::lapysjs_comma${randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')}::`, 'g'), ','))
-                                            }
-
-                                // Data Text
-                                document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text', document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text').replace(RegExp(randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, ''), 'g'), `\\${document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-separator')}`));
-
-                                // Backwards Delete
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS backwardsDelete'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS backwardsDelete', {
-                                    // Value
-                                    value: function backwardsDelete() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        // Deletion
-                                        this.querySelector('span[data-id*=cursor').previousElementSibling.remove()
-                                    }
-                                });
-
-                                // Backwards Insert
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS backwardsInsert'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS backwardsInsert', {
-                                    // Value
-                                    value: function backwardsInsert() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor').insertAdjacentHTML('beforebegin', `<span>${String(arguments[0])}</span>`)
-                                    }
-                                });
-
-                                // Clear All
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS clearAll'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS clearAll', {
-                                    // Value
-                                    value: function clearAll() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        // Modification > Target > Inner HTML
-                                        this.innerHTML = '<span data-id=cursor> </span>'
-                                    }
-                                });
-
-                                // Forwards Delete
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS forwardsDelete'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS forwardsDelete', {
-                                    // Value
-                                    value: function forwardsDelete() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        // Deletion
-                                        this.querySelector('span[data-id*=cursor').nextElementSibling.remove()
-                                    }
-                                });
-
-                                // Forwards Insert
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS forwardsInsert'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS forwardsInsert', {
-                                    // Value
-                                    value: function forwardsInsert() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor').insertAdjacentHTML('afterend', `<span>${String(arguments[0])}</span>`)
-                                    }
-                                });
-
-                                // Highlight
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS highlight'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS highlight', {
-                                    // Value
-                                    value: function highlight() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        // Initialization > Data
-                                        let data = this.querySelector('[data-id*=cursor');
-
-                                        // Error Handling
-                                        try {
-                                            /* Logic
-                                                    If
-                                                        Argument 0 is 'backward',
-
-                                                    else if
-                                                        Argument 0 is 'forward'.
-                                            */
-                                            if (arguments[0] === 'backward') {
-                                                // Update > Data
-                                                data = data.previousElementSibling;
-
-                                                /* Loop
-                                                        While
-                                                            Data is not highlighted
-                                                                and
-                                                            Data is not its parent's first child.
-
-                                                    > Update > Data
-                                                */
-                                                while (
-                                                    (data.getAttribute('data-id') || '').indexOf('highlighted') > -1 &&
-                                                    data !== data.parentElement.querySelector('span')
-                                                )
-                                                    data = data.previousElementSibling || data.parentElement.querySelector('span')
-                                            }
-
-                                            else if (arguments[0] === 'forward') {
-                                                // Update > Data
-                                                data = data.nextElementSibling;
-
-                                                /* Loop
-                                                        While
-                                                            Data is not highlighted
-                                                                and
-                                                            Data is not its parent's last child.
-
-                                                    > Update > Data
-                                                */
-                                                while (
-                                                    (data.getAttribute('data-id') || '').indexOf('highlighted') > -1 &&
-                                                    data !== data.parentElement.querySelectorAll('span')[~-data.parentElement.querySelectorAll('span').length]
-                                                )
-                                                    data = data.nextElementSibling || data.parentElement.querySelectorAll('span')[~-data.parentElement.querySelectorAll('span').length]
-                                            }
-
-                                            // Modification > Data > Data ID
-                                            ((data.getAttribute('data-id') || '').indexOf('highlighted') > 0) || data.setAttribute('data-id', (data.getAttribute('data-id') || '') + (data.getAttribute('data-id') ? ' highlighted' : 'highlighted'))
-                                        }
-
-                                        catch (error) {
-                                            // LapysJS > Error
-                                            LapysJS.error(error)
-                                        }
-                                    }
-                                });
-
-                                // Highlight All
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS highlightAll'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS highlightAll', {
-                                    // Value
-                                    value: function highlightAll() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        /* Loop
-                                                Index all Target's <span>'s.
-
-                                            > Modification > <span> > Data ID
-                                        */
-                                        for (let i = 0; i < this.getElementsByTagName('span').length; i += 1)
-                                            this.getElementsByTagName('span')[i].setAttribute('data-id', (this.getElementsByTagName('span')[i].getAttribute('data-id') || '') + (this.getElementsByTagName('span')[i].getAttribute('data-id') ? ' highlighted' : 'highlighted'))
-                                    }
-                                });
-
-                                // Insert Newline
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS insertNewline'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS insertNewline', {
-                                    // Value
-                                    value: function insertNewline() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        /* Logic
-                                                If
-                                                    Argument 0 is 'forward',
-
-                                                else if
-                                                    Argument 0 is 'backward'.
-                                        */
-                                        if (arguments[0] === 'forward')
-                                            // Insertion
-                                            this.querySelector('span[data-id*=cursor').insertAdjacentHTML('afterend', `<span data-id=newline style='display: block !important'><br></span>`);
-
-                                        else if (arguments[0] === 'backward')
-                                            // Insertion
-                                            this.querySelector('span[data-id*=cursor').insertAdjacentHTML('beforebegin', `<span data-id=newline style='display: block !important'><br></span>`);
-
-                                        else {
-                                            // Modification > Target > Inner HTML
-                                            this.innerHTML += `<span data-id=newline style='display: block !important'><br></span>`;
-
-                                            /* Loop
-                                                    While
-                                                        The Target's last child element is not the cursor.
-
-                                                > Target > Navigate Cursor
-                                            */
-                                            while (this.querySelectorAll('span')[~-this.querySelectorAll('span').length] !== this.querySelector('span[data-id*=cursor'))
-                                                this['LapysJS navigateCursor']('forward')
-                                        }
-                                    }
-                                });
-
-                                // Navigate Cursor
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS navigateCursor'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS navigateCursor', {
-                                    // Value
-                                    value: function navigateCursor() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'));
-
-                                        // Error Handling
-                                        try {
-                                            /* Logic
-                                                    Switch case to Argument 0.
-
-                                                > Insertion
-                                            */
-                                            switch (String(arguments[0])) {
-                                                // Backward
-                                                case 'backward':
-                                                    this.insertBefore(this.querySelector('[data-id*=cursor'), this.querySelector('[data-id*=cursor').previousElementSibling);
-                                                    break;
-
-                                                // Forward
-                                                case 'forward':
-                                                    this.insertBefore(this.querySelector('[data-id*=cursor').nextElementSibling, this.querySelector('[data-id*=cursor'))
-                                            }
-                                        }
-
-                                        catch (error) {
-                                            /* Logic
-                                                    If
-                                                        Argument 0 is 'forward',
-
-                                                    else if
-                                                        Argument 0 is 'backward'.
-
-                                                > (Deletion, Insertion)
-                                            */
-                                            if (arguments[0] === 'forward') {
-                                                this.querySelector('[data-id*=cursor').remove();
-                                                this.appendChild(createElement('span', '[data-id=cursor]'))
-                                            }
-
-                                            else if (arguments[0] === 'backward') {
-                                                this.querySelector('[data-id*=cursor').remove();
-                                                this.insertChild('begin', createElement('span', '[data-id=cursor]'))
-                                            }
-                                        }
-                                    }
-                                });
-
-                                // Pause
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS pause'] || Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS pause', {
-                                    // Value
-                                    value: function pause() {
-                                        // Insertion
-                                        this.querySelector('span[data-id*=cursor') || this.insertChild('begin', createElement('span', '[data-id=cursor'))
-                                    }
-                                });
-
-                                // Text
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS text', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getText() {
-                                        // Initialization > Array
-                                        let array = this.getAttribute('data-text').replace(RegExp(`\\\\${this.getAttribute('data-text-separator')}`, 'g'), randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')).split(RegExp(this.getAttribute('data-text-separator'), 'g'));
-
-                                        /* Loop
-                                                Index all elements of the Array.
-
-                                            > Update > Array
-                                        */
-                                        for (let i = 0; i < array.length; i += 1)
-                                            array[i] = array[i].replace(RegExp(randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, ''), 'g'), this.getAttribute('data-text-separator'));
-
-                                        // Return
-                                        return array
-                                    },
-
-                                    // Set
-                                    set: function setText() {
-                                        /* Logic
-                                                If
-                                                    Argument 0 is an Object.
-                                        */
-                                        if ((arguments[0] || []).constructor === Object)
-                                            // Error Handling
-                                            try {
-                                                // Update > Argument 0
-                                                arguments[0] = Object.values(arguments[0])
-                                            }
-
-                                            catch (error) {}
-
-                                        /* Logic
-                                                If
-                                                    Argument 0 is a String,
-
-                                                else if
-                                                    Argument 0 is an Array.
-                                        */
-                                        if (typeof arguments[0] == 'string')
-                                            // Modification > Target > Data Text
-                                            this.setAttribute('data-text', arguments[0]);
-
-                                        else if ((arguments[0] || '').constructor === Array) {
-                                            // Initialization > Array
-                                            let array = arguments[0];
-
-                                            /* Loop
-                                                    Index all elements of Array.
-
-                                                > Update > Array
-                                            */
-                                            for (let i = 0; i < array.length; i += 1)
-                                                array[i] = array[i].replace(/,/g, `::lapysjs_comma${randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')}::`);
-
-                                            // Modification > Target > Data Text
-                                            this.setAttribute('data-text', String(array).replace(RegExp(`\\\\${this.getAttribute('data-text-separator')}`, 'g'), randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')).replace(/,/g, this.getAttribute('data-text-separator')).replace(RegExp(`::lapysjs_comma${randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')}::`, 'g'), ',').replace(RegExp(randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, ''), 'g'), `\\${this.getAttribute('data-text-separator')}`))
-                                        }
-                                    }
-                                });
-
-                                // Text Cursor Position
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textCursorPosition', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getTextCursorPosition() {
-                                        // Return
-                                        return [...this.querySelectorAll('span')].indexOf(this.querySelector('[data-id*=cursor'))
-                                    },
-
-                                    // Set
-                                    set: function setTextCursorPosition() {
-                                        // Modification > Target > Data Text Cursor Position
-                                        this.setAttribute('data-text-cursor-position', String(arguments[0]).replace(/ /g, ''))
-                                    }
-                                });
-
-                                // Text Format
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFormat', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getTextFormat() {
-                                        // Initialization > Array
-                                        let array = this.getAttribute('data-text-format').trim().replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g);
-
-                                        /* Loop
-                                                Index all elements of the Array.
-
-                                            > Update > Array
-                                        */
-                                        for (let i = 0; i < array.length; i += 1)
-                                            array[i] = array[i].replace(/ /g, '');
-
-                                        // Return
-                                        return array
-                                    },
-
-                                    set: function setTextFormat() {
-                                        // Modification > Target > Data Text Format
-                                        this.setAttribute('data-text-format', String(arguments[0]).replace(/,/g, ' ').trim().replace(/  /g, ' ').replace(/  /g, ' '))
-                                    }
-                                });
-
-                                // Text Function
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunction', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getTextFunction() {
-                                        // Initialization > Data
-                                        let data = this.getAttribute('data-text-function').replace(/delete/g, 'backwardsDelete').replace(/insertNewline/g, `::lapysjs_i-n${randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')}::`).replace(/insert/g, 'forwardsInsert').replace(RegExp(`::lapysjs_i-n${randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')}::`, 'g'), 'insertNewline').replace(/type/g, 'backwardsInsert').replace(/ /g, '').replace(/\n/g, '').split(RegExp(this.getAttribute('data-text-function-separator'), 'g'));
-
-                                        /* Loop
-                                                Index all Data.
-                                        */
-                                        for (let i = 0; i < data.length; i += 1) {
-                                            // Update > Data
-                                            data[i] = data[i].split(RegExp(this.getAttribute('data-text-separator'), 'g'));
-
-                                            /* Loop
-                                                    Index all Data's elements.
-
-                                                > Update > Data
-                                            */
-                                            for (let j = 0; j < data[i].length; j += 1)
-                                                data[i][j] = {
-                                                    // Length
-                                                    length: +data[i][j].getAfterChar('=') || ((element, index, miscellaneous) => {
-                                                        // Initialization > Data
-                                                        let data = element.getAttribute('data-text').replace(RegExp(`\\\\${element.getAttribute('data-text-separator')}`, 'g'), randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, '')).split(RegExp(element.getAttribute('data-text-separator'), 'g'));
-
-                                                        /* Loop
-                                                                [for statement]
-
-                                                            > Update > Data
-                                                        */
-                                                        for (let i = 0; i < data.length; i += 1)
-                                                            data[i] = data[i].replace(RegExp(randomString.replace(/[~!@#$%^&\*\(\)_\+\{\}|:"'\<\>?`\-=\[\]\\;,\.\/]/g, ''), 'g'), element.getAttribute('data-text-separator'));
-
-                                                        // Return
-                                                        return miscellaneous === 'clearAll' || miscellaneous === 'highlightAll' || miscellaneous === 'insertNewline' ? 1 : data[index].length
-                                                    })(this, i, data[i][j]),
-
-                                                    // Name
-                                                    name: data[i][j].getBeforeChar('=')
-                                                }
-                                        }
-
-                                        // Return
-                                        return data
-                                    },
-
-                                    // Set
-                                    set: function setTextFunction() {
-                                        /* Logic
-                                                If
-                                                    Argument 0 is a String,
-
-                                                else if
-                                                    Argument 0 is an Array.
-                                        */
-                                        if (typeof arguments[0] == 'string')
-                                            // Modification > Target > Data Text Function
-                                            this.setAttribute('data-text-function', arguments[0]);
-
-                                        else if (
-                                            (arguments[0] || '').constructor === Array &&
-                                            (arguments[0][0] || '').constructor === Array
-                                        ) {
-                                            // Initialization > Data
-                                            let data = '';
-
-                                            /* Loop
-                                                    Index all Argument 0's elements.
-                                            */
-                                            for (let i = 0; i < arguments[0].length; i += 1) {
-                                                /* Loop
-                                                        Index all Argument 0's elements' elements.
-                                                */
-                                                for (let j = 0; j < arguments[0][i].length; j += 1)
-                                                    /* Logic
-                                                            If
-                                                                the element is a String,
-
-                                                            else if
-                                                                the element is an Object.
-
-                                                        > Update > Data
-                                                    */
-                                                    if (typeof arguments[0][i][j] == 'string')
-                                                        data += arguments[0][i][j] + this.getAttribute('data-text-separator');
-
-                                                    else if ((arguments[0][i][j] || []).constructor === Object)
-                                                        data += arguments[0][i][j].name + arguments[0][i][j].length ? '=' : '' + (arguments[0][i][j].length || '') + this.getAttribute('data-text-separator');
-
-                                                // Update > Data
-                                                data += this.getAttribute('data-text-function-separator')
-                                            }
-
-                                            // Modification > Target > Data Text Function
-                                            this.setAttribute('data-text-function', data.slice(0, -this.getAttribute('data-text-function-separator').length))
-                                        }
-                                    }
-                                });
-
-                                // Text Function Delay
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunctionDelay', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getTextFunctionDelay() {
-                                        // Return
-                                        return +this.getAttribute('data-text-function-delay').replace(/ /g, '')
-                                    },
-
-                                    // Set
-                                    set: function setTextFunctionDelay() {
-                                        // Modification > Target > Data Text Function Delay
-                                        this.setAttribute('data-text-function-delay', String(arguments[0]))
-                                    }
-                                });
-
-                                // Text Function Duration
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunctionDuration', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getTextFunctionDuration() {
-                                        // Return
-                                        return +this.getAttribute('data-text-function-duration').replace(/ /g, '')
-                                    },
-
-                                    // Set
-                                    set: function setTextFunctionDuration() {
-                                        // Modification > Target > Data Text Function Duration
-                                        this.setAttribute('data-text-function-duration', String(arguments[0]))
-                                    }
-                                });
-
-                                // Text Function Separator
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textFunctionSeparator', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getTextFunctionSeparator() {
-                                        // Return
-                                        return this.getAttribute('data-text-function-separator').replace(/ /g, '')
-                                    },
-
-                                    // Set
-                                    set: function setTextFunctionSeparator() {
-                                        // Modification > Target > Data Text Function Separator
-                                        this.setAttribute('data-text-function-separator', String(arguments[0]).replace(/ /g, '')[0])
-                                    }
-                                });
-
-                                // Text Separator
-                                Object.defineProperty(document.getElementsByClassName('dynamic-text')[i].constructor.prototype, 'LapysJS textSeparator', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function getTextSeparator() {
-                                        // Return
-                                        return this.getAttribute('data-text-separator').replace(/ /g, '')
-                                    },
-
-                                    // Set
-                                    set: function setTextSeparator() {
-                                        // Modification > Target > Data Text Separator
-                                        this.setAttribute('data-text-separator', String(arguments[0]).replace(/ /g, '')[0])
-                                    }
-                                });
-
+                        for (let i = 0; i < dynamicText.length; i += 1)
                             /* Logic
                                     If
-                                        the Dynamic Text has not been altered once.
-
-                                    --- NOTE ---
-                                        This is used to allow this module run only once.
+                                        the Dynamic Text is not Modified.
                             */
-                            if (!document.getElementsByClassName('dynamic-text')[i]['LapysJS once']) {
-                                /* Initialization > Interval Counter
+                            if (!dynamicText[i]['LapysJS isModified']) {
+                                /* Initialization > Getter Property Limit
                                         --- NOTE ---
-                                            - Interval Counter acts with the 'setInterval' function as an alternative form of time interval.
-                                            - The words 'Indexer' or 'Iterator' are inter-changed.
+                                            @lapys: This defines the limit of quantity of data items
+                                                to be iterated over whilst processing the Dynamic Text.
                                 */
-                                let textIndexer = 0,
-                                    currentText = document.getElementsByClassName('dynamic-text')[i]['LapysJS text'][textIndexer || 0],
-                                    currentTextCharacterIterator = 0,
-                                    currentTextFunctionIndexer = 0,
-                                    currentTextFunctionSequenceIterator = 0,
-                                    currentTextFunction = document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'][currentTextFunctionSequenceIterator || 0][currentTextFunctionIndexer || 0],
-                                    intervalCounter = 0,
-                                    textModifiedCounter = 0;
+                                let getterPropertyLimit = 7;
 
-                                /* Loop
-                                        While
-                                            The Dynamic Text's texts and text functions do not have equal number of sets.
-                                */
-                                while (document.getElementsByClassName('dynamic-text')[i]['LapysJS text'].length !== document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'].length)
-                                    /* Logic
-                                            If
-                                                the culprit is the texts,
+                                // Modification > Dynamic Text
+                                    // Automating
+                                    dynamicText[i].automating = !!0;
 
-                                            else if
-                                                the culprit is the text functions.
-
-                                        > Modification > Dynamic Text > (Data Text) Function
-                                    */
-                                    if (typeof min.getObject(document.getElementsByClassName('dynamic-text')[i]['LapysJS text'], document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'])[0] == 'string')
-                                        document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text', (document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text') || '') + document.getElementsByClassName('dynamic-text')[i]['LapysJS textSeparator']);
-
-                                    else if ((min.getObject(document.getElementsByClassName('dynamic-text')[i]['LapysJS text'], document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'])[0] || '').constructor === Array)
-                                        document.getElementsByClassName('dynamic-text')[i].setAttribute('data-text-function', (document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function') || '') + document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionSeparator'] + 'pause');
-
-                                // Set Timeout
-                                setTimeout(() => {
-                                    /* Set Interval
-                                            --- NOTE ---
-                                                @lapys: This interval is set to twentieth of a second to simulate real-time
-                                                    for each Dynamic Text.
-                                    */
-                                    setInterval(() => {
-                                        /* Loop
-                                                Index all Dynamic Texts.
-                                        */
-                                        for (let i = 0; i < document.getElementsByClassName('dynamic-text').length; i += 1)
-                                            /* Logic
-                                                    If
-                                                        the Dynamic Text is in delay.
-                                            */
-                                            if (!document.getElementsByClassName('dynamic-text')[i]['LapysJS isInDelay']) {
-                                                /* Logic
-                                                        If
-                                                            Interval Counter is greater than the Dynamic Text's text function duration divided by the current text function's length.
-                                                */
-                                                if (intervalCounter > document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDuration'] / currentTextFunction.length) {
-                                                    /* Logic
-                                                            [if:else if:else statement]
-                                                    */
-                                                    if (
-                                                        String(currentTextFunction.name).indexOf('highlightB') < 0 &&
-                                                        String(currentTextFunction.name).indexOf('highlightF') < 0 &&
-                                                        String(currentTextFunction.name).indexOf('navigateCursor') < 0
-                                                    )
-                                                        // Dynamic Text > [...]
-                                                        document.getElementsByClassName('dynamic-text')[i][`LapysJS ${String(currentTextFunction.name)}`](currentText[currentTextCharacterIterator]);
-
-                                                    else if (String(currentTextFunction.name) === 'highlightBackwards')
-                                                        // Dynamic Text > Highlight
-                                                        document.getElementsByClassName('dynamic-text')[i]['LapysJS highlight']('backward');
-
-                                                    else if (String(currentTextFunction.name) === 'highlightForwards')
-                                                        // Dynamic Text > Highlight
-                                                        document.getElementsByClassName('dynamic-text')[i]['LapysJS highlight']('forward');
-
-                                                    else if (String(currentTextFunction.name) === 'navigateCursorBackwards')
-                                                        // Dynamic Text > Navigate Cursor
-                                                        document.getElementsByClassName('dynamic-text')[i]['LapysJS navigateCursor']('backward');
-
-                                                    else if (String(currentTextFunction.name) === 'navigateCursorForwards')
-                                                        // Dynamic Text > Navigate Cursor
-                                                        document.getElementsByClassName('dynamic-text')[i]['LapysJS navigateCursor']('forward');
-
-                                                    // Update
-                                                        // Current Text Character Iterator
-                                                        currentTextCharacterIterator += 1;
-
-                                                        // Text Modified Counter
-                                                        textModifiedCounter += 1;
-
-                                                    /* Logic
-                                                            If
-                                                                the Text Modified Counter is greater than the current text function's length
-                                                                    or
-                                                                the Text Modified Counter is equal to the current text function's length.
-                                                    */
-                                                    if (textModifiedCounter > ~-currentTextFunction.length) {
-                                                        // Dynamic Text > Update > Is In Delay
-                                                        document.getElementsByClassName('dynamic-text')[i]['LapysJS isInDelay'] = !0;
-
-                                                        // Update > Current Text Character Iterator
-                                                        currentTextCharacterIterator = intervalCounter = 0
-                                                    }
-                                                }
-                                            }
-
-                                            else {
-                                                /* Logic
-                                                        If
-                                                            the Interval Counter is greater than the Dynamic Text's text function delay.
-                                                */
-                                                if (intervalCounter > ~-document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDelay']) {
-                                                    // Update
-                                                        // Current Text Function Indexer
-                                                        currentTextFunctionIndexer += 1;
-
-                                                        // Current Text Function Sequence Iterator
-                                                        (currentTextFunctionSequenceIterator < document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'].length) || (currentTextFunctionSequenceIterator = 0);
-
-                                                    /* Logic
-                                                            If
-                                                                the Current Text Function Indexer is greater than the Dynamic Text's text function's length.
-                                                    */
-                                                    if (currentTextFunctionIndexer > ~-document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'][currentTextFunctionSequenceIterator].length) {
-                                                        // Update
-                                                            // Current Text Function Indexer
-                                                            currentTextFunctionIndexer = 0;
-
-                                                            // Current Text Function Sequence Iterator
-                                                            currentTextFunctionSequenceIterator += 1;
-
-                                                            // Text Indexer
-                                                            textIndexer += 1
-                                                    }
-
-                                                    // Update
-                                                        // Current Text Function Sequence Iterator
-                                                        (currentTextFunctionSequenceIterator < document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'].length) || (currentTextFunctionSequenceIterator = 0);
-
-                                                        // Current Text Function
-                                                        currentTextFunction = document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunction'][currentTextFunctionSequenceIterator][currentTextFunctionIndexer];
-
-                                                        // Text Indexer
-                                                        (textIndexer < document.getElementsByClassName('dynamic-text')[i]['LapysJS text'].length) || (textIndexer = 0);
-
-                                                        // Current Text
-                                                        currentText = document.getElementsByClassName('dynamic-text')[i]['LapysJS text'][textIndexer];
-
-                                                    // Dynamic Text > Update > Is In Delay
-                                                    document.getElementsByClassName('dynamic-text')[i]['LapysJS isInDelay'] = !!0;
-
-                                                    // Update > Interval Counter
-                                                    intervalCounter = 0
-                                                }
-
-                                                // Update > Text Modified Counter
-                                                textModifiedCounter = 0
-                                            }
-
-                                        /* Update > Interval Counter
-                                                --- NOTE ---
-                                                    The Interval Counter has to be updated after
-                                                    all but the last modules within the interval are run.
-                                        */
-                                        intervalCounter += .1
-                                    }, 50)
-                                }, (+(document.getElementsByClassName('dynamic-text')[i].getAttribute('data-text-function-initial-delay') || '').replace(/ /g, '') * 1e3) || (document.getElementsByClassName('dynamic-text')[i]['LapysJS textFunctionDelay'] * 1e3));
-
-                                // Modification > Dynamic Text > Once
-                                document.getElementsByClassName('dynamic-text')[i]['LapysJS once'] = !0
-                            }
-                        }
-                    });
-
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptCorrectDynamicText() {
-                        /* Loop
-                                Index all Dynamic Texts.
-                        */
-                        for (let i = 0; i < document.getElementsByClassName('dynamic-text').length; i += 1) {
-                            // Insertion
-                            document.getElementsByClassName('dynamic-text')[i].querySelector('span[data-id*=cursor') || document.getElementsByClassName('dynamic-text')[i].appendChild(createElement('span', '[data-id=cursor]'));
-
-                            /* Deletion
-                                    --- NOTE ---
-                                        @lapys: This allows the Dynamic Text only contain <span> elements.
-                            */
-                            !document.getElementsByClassName('dynamic-text')[i].querySelector(':not(span)') || document.getElementsByClassName('dynamic-text')[i].querySelector(':not(span)').remove()
-                        }
-                    });
-
-                // Media Playlist
-                (function LapysJSScriptMediaPlaylist() {
-                    // Initialization > Media Playlist
-                    let mediaPlaylist = document.querySelectorAll('.media-playlist:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)');
-
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptNewMediaPlaylist() {
-                        // Update > Media Playlist
-                        mediaPlaylist = document.querySelectorAll('.media-playlist:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)');
-
-                        /* Loop
-                                Index all Media Playlist.
-                        */
-                        for (let i = 0; i < mediaPlaylist.length; i += 1)
-                            /* Logic
-                                    If
-                                        the Media Playlist is not modified.
-                            */
-                            if (!mediaPlaylist[i]['LapysJS isModified']) {
-                                // Function > Media Playlist
-                                    // Toggle Previous Media
-                                    (typeof mediaPlaylist[i].togglePreviousMedia == 'function') || Object.defineProperty(mediaPlaylist[i], 'togglePreviousMedia', {
-                                        // Value
-                                        value: function togglePreviousMedia() {
-                                            // Initialization > Data
-                                            let data;
-
-                                            /* Loop
-                                                    Index all the Target's Sources.
-                                            */
-                                            for (let i = 0; i < this.sources.length; i += 1)
-                                                /* Logic
-                                                        If
-                                                            the Target's Media Containers contains the indexed Source.
-                                                */
-                                                if (decodeURIComponent(this.containers.media.content.querySelector('[data-id=media').src).indexOf(decodeURIComponent(this.sources[i].src)) > -1) {
-                                                    // Update > Data
-                                                    data = !0;
-
-                                                    // Target > Toggle Media
-                                                    this.sources[i - 1] ? this.toggleMedia(i - 1) : this.toggleMedia(~-this.sources.length);
-
-                                                    // Break
-                                                    break
-                                                }
-
-                                            // Target > Toggle Media
-                                            data || this.toggleMedia(~-this.sources.length)
-                                        }
-                                    });
-
-                                    // Toggle Next Media
-                                    (typeof mediaPlaylist[i].toggleNextMedia == 'function') || Object.defineProperty(mediaPlaylist[i], 'toggleNextMedia', {
-                                        // Value
-                                        value: function toggleNextMedia() {
-                                            // Initialization > Data
-                                            let data;
-
-                                            /* Loop
-                                                    Index all the Target's Sources.
-                                            */
-                                            for (let i = 0; i < this.sources.length; i += 1)
-                                                /* Logic
-                                                        If
-                                                            the Target's Media Containers contains the indexed Source.
-                                                */
-                                                if (decodeURIComponent(this.containers.media.content.querySelector('[data-id=media').src).indexOf(decodeURIComponent(this.sources[i].src)) > -1) {
-                                                    // Update > Data
-                                                    data = !0;
-
-                                                    // Target > Toggle Media
-                                                    this.sources[i + 1] ? this.toggleMedia(i + 1) : this.toggleMedia(0);
-
-                                                    // Break
-                                                    break
-                                                }
-
-                                            // Target > Toggle Media
-                                            data || this.toggleMedia(0)
-                                        }
-                                    });
-
-                                    // Toggle Media
-                                    (typeof mediaPlaylist[i].toggleMedia == 'function') || Object.defineProperty(mediaPlaylist[i], 'toggleMedia', {
-                                        // Value
-                                        value: function toggleMedia() {
-                                            // Initialization > Data
-                                            let data = +String(arguments[0]).replace(/ /g, '');
-
-                                            // Modification > (Target > Media Container > Content > Media) > Source
-                                            this.sources[data] ? this.containers.media.content.querySelector('[data-id=media').src = this.sources[data].src : this.containers.media.content.querySelector('[data-id=media').src = this.sources[0].src;
-
-                                            /* Loop
-                                                    Index all Target's Sources.
-
-                                                > Modification > (Target > Source) > Data Selected
-                                            */
-                                            for (let i = 0; i < this.sources.length; i += 1)
-                                                this.sources[i].removeAttribute('data-selected');
-
-                                            // Modification
-                                                // (Target > Source) > Data Selected
-                                                (this.sources[data] || this.sources[0]).setAttribute('data-selected', '');
-
-                                                // (Target > Media Container > Information > Description) > Inner HTML
-                                                !this.sources[0].hasAttribute('data-description') || ((this.containers.media.information.querySelector('[data-id=description') || []).innerHTML = this.sources[data] ? (this.sources[data].getAttribute('data-description') || '&nbsp;') : (this.sources[0].getAttribute('data-description') || '&nbsp;'))
-                                        }
-                                    });
-
-                                // Function > Media Playlist
-                                    // Containers
-                                    Object.defineProperty(mediaPlaylist[i], 'containers', {
+                                    // Characters
+                                    Object.defineProperty(dynamicText[i], 'characters', {
                                         // Configurable
                                         configurable: !0,
 
@@ -9883,1152 +9002,1481 @@
                                         enumerable: !0,
 
                                         // Get
-                                        get: function containers() {
-                                            // Initialization > Data
-                                            let data = [...this.children];
-                                                // Media
-                                                data.media = data[data.indexOf(this.querySelector('[data-id=media-container'))];
+                                        get: function characters() {
+                                            // Return
+                                            return [...this.children]
+                                        }
+                                    });
 
-                                                // Source
-                                                data.source = data[data.indexOf(this.querySelector('[data-id=source-container'))];
+                                    // Cursor
+                                    Object.defineProperty(dynamicText[i], 'cursor', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function cursor() {
+                                            // Return
+                                            return this.querySelector(`span[data-id*='cursor'`)
+                                        }
+                                    });
+
+                                    // Cursor Position
+                                    Object.defineProperty(dynamicText[i], 'cursorPosition', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function getCursorPosition() {
+                                            // Return
+                                            return [...this.children].indexOf(this.cursor)
+                                        },
+
+                                        // Set
+                                        set: function setCursorPosition() {
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (this.children[parseNumber(arguments[0])])
+                                                /* Loop
+                                                        [do:while statement]
+                                                */
+                                                while (this.cursorPosition != parseNumber(arguments[0]))
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (this.cursorPosition < parseNumber(arguments[0])) {
+                                                        // Insertion
+                                                        this.children[parseNumber(arguments[0])].insertAdjacentHTML('afterend', '<span data-id=cursor></span>');
+
+                                                        // Deletion
+                                                        this.querySelector(`span[data-id*='cursor'`).remove()
+                                                    }
+
+                                                    else if (this.cursorPosition > parseNumber(arguments[0]))
+                                                        // Insertion
+                                                        this.insertBefore(this.cursor, this.children[parseNumber(arguments[0])])
+                                        }
+                                    });
+
+                                    // Data Text Format
+                                    dynamicText[i].setAttribute('data-text-format', dynamicText[i].getAttribute('data-text-format') || 'normal');
+
+                                    // Data Text
+                                    dynamicText[i].setAttribute('data-text', createDocumentFragment(`<span>${dynamicText[i].getAttribute('data-text') || ''}</span>`, 'div').querySelector('span').textContent || createDocumentFragment(`<span>${dynamicText[i].getAttribute('data-text') || ''}</span>`, 'div').querySelector('span').innerText || '');
+                                        // Text
+                                        ((dynamicText[i].getAttribute('data-text') || '').match(RegExp(dynamicText[i].getAttribute('data-text-separator'), 'g')) || []).length > getterPropertyLimit ? (function(element) {
+                                            // Function > Text
+                                            function text(element) {
+                                                // Modification > Element > Text
+                                                element['LapysJS text'] = (function(element) {
+                                                    // Initialization > (Data, Metadata, Array)
+                                                    let data = ` ${element.getAttribute('data-text')}`.slice(' '.length).replace(RegExp(`\\\\${element.getAttribute('data-text-separator')}`, 'g'), alphabetString),
+                                                        metadata = [],
+                                                        array = [];
+
+                                                    /* Loop
+                                                            [for statement]
+                                                    */
+                                                    for (let i = 0; i < data.split(RegExp(element.getAttribute('data-text-separator'), 'g')).length; i += 1) {
+                                                        // Initialization > Result
+                                                        let result = data.split(RegExp(element.getAttribute('data-text-separator'), 'g'))[i];
+
+                                                        // Update > Result
+                                                        (element.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('no-white-space') < 0) || (result = result.replace(/ /g, ''));
+                                                        (element.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('pre') < 0) || (result = result.trimChar('\n'));
+                                                        (element.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('trim') < 0) || (result = result.trim());
+                                                        (element.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('trim-left') < 0) || (result = result.trimLeft());
+                                                        (element.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('trim-right') < 0) || (result = result.trimRight());
+
+                                                        // Update
+                                                            // Result
+                                                            result = result.replace(RegExp(alphabetString, 'g'), element.getAttribute('data-text-separator'));
+
+                                                            // Metadata
+                                                            metadata.push(result)
+                                                    }
+
+                                                    /* Loop
+                                                            [for statement]
+
+                                                        > Update > Array
+                                                    */
+                                                    for (let i = 0; i < metadata.length; i += 1)
+                                                        array.push(metadata[i].split(/(?:)/g));
+
+                                                    // Return
+                                                    return array
+                                                })(element)
+                                            };
+                                            text(element);
+
+                                            // {Text} > Mutation Observe
+                                            new MutationObserver(function() { text(element) }).observe(element, { attributes: !0 })
+                                        })(dynamicText[i]) : Object.defineProperty(dynamicText[i], 'LapysJS text', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function text() {
+                                                // Initialization > (Data, Metadata, Array)
+                                                let data = ` ${this.getAttribute('data-text')}`.slice(' '.length).replace(RegExp(`\\\\${this.getAttribute('data-text-separator')}`, 'g'), alphabetString),
+                                                    metadata = [],
+                                                    array = [];
+
+                                                /* Loop
+                                                        [for statement]
+                                                */
+                                                for (let i = 0; i < data.split(RegExp(this.getAttribute('data-text-separator'), 'g')).length; i += 1) {
+                                                    // Initialization > Result
+                                                    let result = data.split(RegExp(this.getAttribute('data-text-separator'), 'g'))[i];
+
+                                                    // Update > Result
+                                                    (this.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('no-white-space') < 0) || (result = result.replace(/ /g, ''));
+                                                    (this.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('pre') < 0) || (result = result.trimChar('\n'));
+                                                    (this.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('trim') < 0) || (result = result.trim());
+                                                    (this.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('trim-left') < 0) || (result = result.trimLeft());
+                                                    (this.getAttribute('data-text-format').replace(/  /g, ' ').trim().split(/ /g).indexOf('trim-right') < 0) || (result = result.trimRight());
+
+                                                    // Update
+                                                        // Result
+                                                        result = result.replace(RegExp(alphabetString, 'g'), this.getAttribute('data-text-separator'));
+
+                                                        // Metadata
+                                                        metadata.push(result)
+                                                }
+
+                                                /* Loop
+                                                        [for statement]
+
+                                                    > Update > Array
+                                                */
+                                                for (let i = 0; i < metadata.length; i += 1)
+                                                    array.push(metadata[i].split(/(?:)/g));
+
+                                                // Return
+                                                return array
+                                            }
+                                        });
+
+                                    // Data Text Function
+                                    dynamicText[i].setAttribute('data-text-function', (dynamicText[i].getAttribute('data-text-function') || 'pause').replace(/\bclear\b/g, 'deleteAll').replace(/\bclearAll\b/g, 'deleteAll').replace(/\bdelete\b/g, 'deleteBackwards').replace(/\binsert\b/g, 'insertForwards').replace(/\binsertNewline\b/g, 'insertNewlineBackwards').replace(/\btype\b/g, 'insertBackwards').replace(/\bunshift\b/g, 'deleteForwards'));
+                                        // Text Function
+                                        (((dynamicText[i].getAttribute('data-text-function') || '').match(RegExp(dynamicText[i].getAttribute('data-text-separator'), 'g')) || []).length > (getterPropertyLimit * 2) || ((dynamicText[i].getAttribute('data-text-function') || '').match(RegExp(dynamicText[i].getAttribute('data-text-function-separator'), 'g')) || []).length > getterPropertyLimit) ? (function(element) {
+                                            // Function > Text Function
+                                            function textFunction(element) {
+                                                // Modification > Element > Text Function
+                                                element['LapysJS textFunction'] = (function(element) {
+                                                    // Initialization > (Data, Metadata, Array)
+                                                    let data =  element.getAttribute('data-text-function').replace(/ /g, '').replace(/\n/g, ''),
+                                                        metadata = [],
+                                                        array = [];
+
+                                                    /* Loop
+                                                            [for statement]
+
+                                                        > Update > Metadata
+                                                    */
+                                                    for (let i = 0; i < data.split(RegExp(element.getAttribute('data-text-function-separator'), 'g')).length; i += 1)
+                                                        metadata.push(data.split(RegExp(element.getAttribute('data-text-function-separator'), 'g'))[i]);
+
+                                                    /* Loop
+                                                            [for statement]
+
+                                                        > Update > Array
+                                                    */
+                                                    for (let i = 0; i < metadata.length; i += 1)
+                                                        array.push([metadata[i]]);
+
+                                                    /* Loop
+                                                            [for statement]
+
+                                                        > Update > Array
+                                                    */
+                                                    for (let i = 0; i < array.length; i += 1) {
+                                                        array[i] = array[i].concat(array[i][0].split(RegExp(element.getAttribute('data-text-separator'), 'g'))).slice(1);
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Update > Array
+                                                        */
+                                                        for (let j = 0; j < array[i].length; j += 1)
+                                                            array[i][j] = {
+                                                                // Length
+                                                                length: (function(that) {
+                                                                    /* Logic
+                                                                            [if:else if:else statement]
+
+                                                                        > Return
+                                                                    */
+                                                                    if (array[i][j].hasText('='))
+                                                                        return parseNumber(array[i][j].getAfterChar('=')) || that['LapysJS text'][i].length;
+
+                                                                    else if (
+                                                                        array[i][j].getBeforeChar('=') == 'deleteAll' ||
+                                                                        array[i][j].getBeforeChar('=') == 'highlightAllCharacters' ||
+                                                                        array[i][j].getBeforeChar('=') == 'insertNewlineBackwards' ||
+                                                                        array[i][j].getBeforeChar('=') == 'insertNewlineForwards' ||
+                                                                        array[i][j].getBeforeChar('=') == 'navigateCursorToEnd' ||
+                                                                        array[i][j].getBeforeChar('=') == 'navigateCursorToStart' ||
+                                                                        array[i][j].getBeforeChar('=') == 'unhighlightAllCharacters'
+                                                                    )
+                                                                        return 1;
+
+                                                                    else if (array[i][j].getBeforeChar('=') == 'pause')
+                                                                        return parseNumber(that['LapysJS text'][i].length / 2);
+
+                                                                    // Return
+                                                                    return that['LapysJS text'][i].length
+                                                                })(element),
+
+                                                                // Name
+                                                                name: String(array[i][j].getBeforeChar('=')),
+
+                                                                // Special
+                                                                special: (function(that) {
+                                                                    /* Logic
+                                                                            [if:else if:else statement]
+
+                                                                        > Return
+                                                                    */
+                                                                    if (
+                                                                        array[i][j].getBeforeChar('=') == 'navigateCursor' ||
+                                                                        array[i][j].getBeforeChar('=') == 'navigateCursorToPosition'
+                                                                    )
+                                                                        return true;
+
+                                                                    // Return
+                                                                    return false
+                                                                })(element)
+                                                            }
+                                                    }
+
+                                                    // Return
+                                                    return array
+                                                })(element)
+                                            };
+                                            textFunction(element);
+
+                                            // {Text Function} > Mutation Observe
+                                            new MutationObserver(function() { textFunction(element) }).observe(dynamicText[i], { attributes: !0 })
+                                        })(dynamicText[i]) :  Object.defineProperty(dynamicText[i], 'LapysJS textFunction', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function textFunction() {
+                                                // Initialization > (Data, Metadata, Array)
+                                                let data =  this.getAttribute('data-text-function').replace(/ /g, '').replace(/\n/g, ''),
+                                                    metadata = [],
+                                                    array = [];
+
+                                                /* Loop
+                                                        [for statement]
+
+                                                    > Update > Metadata
+                                                */
+                                                for (let i = 0; i < data.split(RegExp(this.getAttribute('data-text-function-separator'), 'g')).length; i += 1)
+                                                    metadata.push(data.split(RegExp(this.getAttribute('data-text-function-separator'), 'g'))[i]);
+
+                                                /* Loop
+                                                        [for statement]
+
+                                                    > Update > Array
+                                                */
+                                                for (let i = 0; i < metadata.length; i += 1)
+                                                    array.push([metadata[i]]);
+
+                                                /* Loop
+                                                        [for statement]
+
+                                                    > Update > Array
+                                                */
+                                                for (let i = 0; i < array.length; i += 1) {
+                                                    array[i] = array[i].concat(array[i][0].split(RegExp(this.getAttribute('data-text-separator'), 'g'))).slice(1);
+
+                                                    /* Loop
+                                                            [for statement]
+
+                                                        > Update > Array
+                                                    */
+                                                    for (let j = 0; j < array[i].length; j += 1)
+                                                        array[i][j] = {
+                                                            // Length
+                                                            length: (function(that) {
+                                                                /* Logic
+                                                                        [if:else if:else statement]
+
+                                                                    > Return
+                                                                */
+                                                                if (array[i][j].hasText('='))
+                                                                    return parseNumber(array[i][j].getAfterChar('=')) || that['LapysJS text'][i].length;
+
+                                                                else if (
+                                                                    array[i][j].getBeforeChar('=') == 'deleteAll' ||
+                                                                    array[i][j].getBeforeChar('=') == 'highlightAllCharacters' ||
+                                                                    array[i][j].getBeforeChar('=') == 'insertNewlineBackwards' ||
+                                                                    array[i][j].getBeforeChar('=') == 'insertNewlineForwards' ||
+                                                                    array[i][j].getBeforeChar('=') == 'navigateCursorToEnd' ||
+                                                                    array[i][j].getBeforeChar('=') == 'navigateCursorToStart' ||
+                                                                    array[i][j].getBeforeChar('=') == 'unhighlightAllCharacters'
+                                                                )
+                                                                    return 1;
+
+                                                                else if (array[i][j].getBeforeChar('=') == 'pause')
+                                                                    return parseNumber(that['LapysJS text'][i].length / 2);
+
+                                                                // Return
+                                                                return that['LapysJS text'][i].length
+                                                            })(this),
+
+                                                            // Name
+                                                            name: String(array[i][j].getBeforeChar('=')),
+
+                                                            // Special
+                                                            special: (function(that) {
+                                                                /* Logic
+                                                                        [if:else if:else statement]
+
+                                                                    > Return
+                                                                */
+                                                                if (
+                                                                    array[i][j].getBeforeChar('=') == 'navigateCursor' ||
+                                                                    array[i][j].getBeforeChar('=') == 'navigateCursorToPosition'
+                                                                )
+                                                                    return true;
+
+                                                                // Return
+                                                                return false
+                                                            })(this)
+                                                        }
+                                                }
+
+                                                // Return
+                                                return array
+                                            }
+                                        });
+
+                                    // Data Text Function Delay
+                                    dynamicText[i].setAttribute('data-text-function-delay', dynamicText[i].getAttribute('data-text-function-delay') || '0');
+                                        // Text Function Delay
+                                        Object.defineProperty(dynamicText[i], 'LapysJS textFunctionDelay', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function textFunctionDelay() {
+                                                // Return
+                                                return +this.getAttribute('data-text-function-delay').replace(/ /g, '').replace(/\n/g, '')
+                                            }
+                                        });
+
+                                    // Data Text Function Duration
+                                    dynamicText[i].setAttribute('data-text-function-duration', dynamicText[i].getAttribute('data-text-function-duration') || '0');
+                                        // Text Function Duration
+                                        Object.defineProperty(dynamicText[i], 'LapysJS textFunctionDuration', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function textFunctionDuration() {
+                                                // Return
+                                                return +this.getAttribute('data-text-function-duration').replace(/ /g, '').replace(/\n/g, '')
+                                            }
+                                        });
+
+                                    // Data Text Function Initialize
+                                    dynamicText[i].setAttribute('data-text-function-init', dynamicText[i].getAttribute('data-text-function-init') || (!!dynamicText[i].getAttribute('data-text') && dynamicText[i].getAttribute('data-text-function') != 'pause' && dynamicText[i].getAttribute('data-text-function-delay') != '0' && dynamicText[i].getAttribute('data-text-function-duration') != '0' && dynamicText[i].getAttribute('data-text-function-iteration-count') != '0' ? 'true' : 'false'));
+                                        // Text Function Initialize
+                                        Object.defineProperty(dynamicText[i], 'LapysJS textFunctionInit', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function getTextFunctionInit() {
+                                                /* Logic
+                                                        [switch:case:default statement]
+
+                                                    > Return
+                                                */
+                                                switch (this.getAttribute('data-text-function-init')) {
+                                                    // False
+                                                    case 'false':
+                                                        return false;
+                                                        break;
+
+                                                    // True
+                                                    case 'true':
+                                                        return true
+                                                }
+                                            },
+
+                                            // Set
+                                            set: function setTextFunctionInit() {
+                                                // Modification > Target > Data Text Function Initialize
+                                                this.setAttribute('data-text-function-init', !!arguments[0])
+                                            }
+                                        });
+
+                                    // Data Text Function Initial Delay
+                                    dynamicText[i].setAttribute('data-text-function-initial-delay', dynamicText[i].getAttribute('data-text-function-initial-delay') || '0');
+                                        // Text Function Initial Delay
+                                        Object.defineProperty(dynamicText[i], 'LapysJS textFunctionInitialDelay', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function textFunctionInitialDelay() {
+                                                // Return
+                                                return +this.getAttribute('data-text-function-initial-delay').replace(/ /g, '').replace(/\n/g, '')
+                                            }
+                                        });
+
+                                    // Data Text Function Iteration Count
+                                    dynamicText[i].setAttribute('data-text-function-iteration-count', dynamicText[i].getAttribute('data-text-function-iteration-count') || 'infinite');
+                                        // Text Function Iteration Count
+                                        Object.defineProperty(dynamicText[i], 'LapysJS textFunctionIterationCount', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function textFunctionIterationCount() {
+                                                // Initialization > Data
+                                                let data = !this.getAttribute('data-text-function-iteration-count').replace(/[0-9]/g, '') ? +this.getAttribute('data-text-function-iteration-count').replace(/ /g, '').replace(/\n/g, '') : this.getAttribute('data-text-function-iteration-count');
+
+                                                // Return
+                                                return typeof data == 'number' ? data : (function(data) {
+                                                    /* Logic
+                                                            [switch:case:default statement]
+
+                                                        > Return
+                                                    */
+                                                    switch (data) {
+                                                        // Infinite
+                                                        case 'infinite':
+                                                            return Infinity
+                                                    }
+                                                })(data)
+                                            }
+                                        });
+
+                                    // Data Text Function Separator
+                                    dynamicText[i].setAttribute('data-text-function-separator', dynamicText[i].getAttribute('data-text-function-separator') || ';');
+                                        // Text Function Separator
+                                        Object.defineProperty(dynamicText[i], 'LapysJS textFunctionSeparator', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function textFunctionSeparator() {
+                                                // Return
+                                                return this.getAttribute('data-text-function-separator')[0]
+                                            }
+                                        });
+
+                                    // Data Text Separator
+                                    dynamicText[i].setAttribute('data-text-separator', dynamicText[i].getAttribute('data-text-separator') || ',');
+                                        // Text Separator
+                                        Object.defineProperty(dynamicText[i], 'LapysJS textSeparator', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Get
+                                            get: function textSeparator() {
+                                                // Return
+                                                return this.getAttribute('data-text-separator')[0]
+                                            }
+                                        });
+
+                                    // Highlighted Characters
+                                    Object.defineProperty(dynamicText[i], 'highlightedCharacters', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function getCharacters() {
+                                            // Initialization > Data
+                                            let data = [];
+
+                                            /* Loop
+                                                    Index Target's child elements.
+
+                                                > Update > Data
+                                            */
+                                            for (let i = 0; i < this.children.length; i += 1)
+                                                ((this.children[i].getAttribute('data-id') || '').indexOf('highlighted') < 0) || data.push(this.children[i]);
 
                                             // Return
                                             return data
                                         }
                                     });
 
-                                    // Media
-                                    Object.defineProperty(mediaPlaylist[i], 'media', {
-                                        // Configurable
-                                        configurable: !0,
+                                    // Inner HTML
+                                    dynamicText[i].innerHTML = '';
 
-                                        // Enumerable
-                                        enumerable: !0,
+                                    // In Pause
+                                    dynamicText[i]['LapysJS inPause'] = false;
 
-                                        // Get
-                                        get: function media() {
-                                            // Return
-                                            return this.containers.media.querySelector('[data-id=media')
-                                        }
-                                    });
+                                    // Current Text Function Index
+                                    dynamicText[i]['LapysJS currentTextFunctionIndex'] =
 
-                                    // Sources
-                                    Object.defineProperty(mediaPlaylist[i], 'sources', {
-                                        // Configurable
-                                        configurable: !0,
+                                    // Current Text Function Sequence Index
+                                    dynamicText[i]['LapysJS currentTextFunctionSequenceIndex'] =
 
-                                        // Enumerable
-                                        enumerable: !0,
+                                    // Current Text Index
+                                    dynamicText[i]['LapysJS currentTextIndex'] =
 
-                                        // Get
-                                        get: function sources() {
-                                            // Return
-                                            return [...this.containers.source.children]
-                                        }
-                                    });
+                                    // Current Text Character Index
+                                    dynamicText[i]['LapysJS currentTextCharacterIndex'] =
 
-                                /* Loop
-                                        Index all the Media Playlist's child elements.
+                                    // Text Function Character Length Limit
+                                    dynamicText[i]['LapysJS textFunctionCharacterLengthLimit'] =
 
-                                    > Modification > (Media Playlist > Child Element) > Outer HTML
-                                */
-                                for (let j = 0; j < mediaPlaylist[i].children.length; j += 1)
-                                    mediaPlaylist[i].children[j].outerHTML =  `<div class=media-playlist-source ${(mediaPlaylist[i].children[j].getAttribute('data-src') || mediaPlaylist[i].children[j].getAttribute('src')) ? `data-src=${mediaPlaylist[i].children[j].getAttribute('data-src') || mediaPlaylist[i].children[j].getAttribute('src')}` : ''}${mediaPlaylist[i].children[j].getAttribute('data-description') ? ` data-description='${mediaPlaylist[i].children[j].getAttribute('data-description')}'` : ''}${mediaPlaylist[i].children[j].getAttribute('data-thumbnail') ? ` style='background-image: url("${mediaPlaylist[i].children[j].getAttribute('data-thumbnail')}")'` : ''}> </div>`;
+                                    // Text Function Iteration Count Index
+                                    dynamicText[i]['LapysJS textFunctionIterationCountIndex'] =
 
-                                /* Loop
-                                        Index all the Media Playlist's child elements.
+                                    // Text Animation Interval
+                                    dynamicText[i]['LapysJS textAnimationInterval'] = 0;
 
-                                    > Deletion
-                                */
-                                for (let j = 0; j < mediaPlaylist[i].children.length; j += 1)
-                                    mediaPlaylist[i].children[j].hasAttribute('data-src') || mediaPlaylist[i].children[j].remove();
-
-                                // Initialization > Data
-                                let data = createElement('div', '.container[data-id=source-container');
-                                    /* Insertion
+                                    /* On Automate
                                             --- NOTE ---
-                                                @lapys: This represents the Media Playlist's Source Container.
+                                                @lapys: The following are pseudo event handlers & listeners.
+                                                    - This is called when the Dynamic Text begins automation.
                                     */
-                                    data.appendChild(createDocumentFragment(mediaPlaylist[i].innerHTML));
+                                    dynamicText[i].onautomate = dynamicText[i].onautomate || null;
 
-                                // Modification > Media Playlist > Inner HTML
-                                mediaPlaylist[i].innerHTML = data.outerHTML;
-
-                                // On DOM Ready
-                                onDOMReady(() => {
-                                    // Media Playlist > Toggle Media
-                                    mediaPlaylist[i].toggleMedia(0)
-                                }, 3e3);
-
-                                // Modification > Media Playlist > Is Modified
-                                mediaPlaylist[i]['LapysJS isModified'] = !0
-                            }
-                    });
-
-                    // SetTimeout
-                    setTimeout(() => {
-                        // On Node Change
-                        onNodeChange(document.body, function LapysJSScriptCorrectMediaPlaylist() {
-                            /* Loop
-                                    Index all Media Playlist.
-                            */
-                            for (let i = 0; i < mediaPlaylist.length; i += 1) {
-                                /* Function > Insert Media Container
-                                        --- NOTE ---
-                                            @lapys:
-                                                - This represents the Media Playlist's Media Container.
-                                                - The Media Playlist parameter is for the sake of simplicity.
-                                */
-                                function insertMediaContainer(mediaPlaylist) {
-                                    /* Loop
-                                            While
-                                                the Media Playlist does not have Media Container.
+                                    /* On Function Change
+                                            --- NOTE ---
+                                                @lapys: This is called when the Dynamic Text changes function.
                                     */
-                                    while (!mediaPlaylist[i].containers.media) {
-                                        // Insertion
-                                        mediaPlaylist[i].containers.media || mediaPlaylist[i].insertChild('begin', createElement(
-                                            'div', '.container[data-id=media-container',
+                                    dynamicText[i].onfunctionchange = dynamicText[i].onfunctionchange || null;
 
-                                            /* Media Content */
-                                            `<div data-id=media-content>` +
-                                                /* Media */
-                                                `<video ${mediaPlaylist[i].getAttribute('data-media-format') ? `class='${mediaPlaylist[i].getAttribute('data-media-format')}' ` : ''}controls data-id=media> </video>` +
-                                            `</div>` +
+                                    /* On Sequence Change
+                                            --- NOTE ---
+                                                @lapys: This is called when the Dynamic Text changes function sequence or text.
+                                    */
+                                    dynamicText[i].onsequencechange = dynamicText[i].onsequencechange || null;
 
-                                            /* Media Information */
-                                            `<div data-id=media-information>` +
-                                                /* Name */
-                                                `<a data-id=name> ${mediaPlaylist[i].getAttribute('data-name') || '&nbsp;'} </a>` +
+                                    /* On Type
+                                            --- NOTE ---
+                                                @lapys: Would have been called 'keyin' or 'onkeyin'.
+                                                    - This is called when the Dynamic Text 'types'.
+                                    */
+                                    dynamicText[i].ontype = dynamicText[i].ontype || null;
 
-                                                /* Description
-                                                        --- NOTE ---
-                                                            @lapys: The Description is only inserted into the DOM based on specific conditions.
-                                                */
-                                                (mediaPlaylist[i].hasAttribute('data-description') ? `<p data-id=description> ${(mediaPlaylist[i].sources[0] || document.createElement('a')).getAttribute('data-description') || mediaPlaylist[i].getAttribute('data-description')} </p>` : '') +
-                                            `</div>` +
+                                // Function
+                                    // Dynamic Text
+                                        // Pause
+                                        (typeof dynamicText[i].pause == 'function') || Object.defineProperty(dynamicText[i], 'pause', {
+                                            // Value
+                                            value: function pause() {}
+                                        });
 
-                                            /* Media Console */
-                                            `<div data-id=media-console>` +
-                                                /* Previous */
-                                                `<button data-id=previous data-title=Previous data-title-coordinate=top> &blacktriangleleft;&blacktriangleleft; </button>` +
-
-                                                /* Play-Pause */
-                                                `<button data-id=play-pause data-title='Play/ Pause' data-title-coordinate=top> &blacktriangleright; </button>` +
-
-                                                /* Load */
-                                                `<button data-id=load data-title=Stop data-title-coordinate=top> &bull; </button>` +
-
-                                                /* Next */
-                                                `<button data-id=next data-title=Next data-title-coordinate=top> &blacktriangleright;&blacktriangleright; </button>` +
-                                            `</div>`
-                                        ));
-
-                                        // Modification > (Media Playlist > Media Container)
-                                            // Content
-                                            mediaPlaylist[i].containers.media.content || Object.defineProperty(mediaPlaylist[i].containers.media, 'content', {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function content() {
-                                                    // Return
-                                                    return this.children[[...this.children].indexOf(this.querySelector('[data-id=media-content'))];
-                                                }
-                                            });
-
-                                            // Information
-                                            mediaPlaylist[i].containers.media.information || Object.defineProperty(mediaPlaylist[i].containers.media, 'information', {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function information() {
-                                                    // Return
-                                                    return this.children[[...this.children].indexOf(this.querySelector('[data-id=media-information'))];
-                                                }
-                                            });
-
-                                            // Console
-                                            mediaPlaylist[i].containers.media.console || Object.defineProperty(mediaPlaylist[i].containers.media, 'console', {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function console() {
-                                                    // Return
-                                                    return this.children[[...this.children].indexOf(this.querySelector('[data-id=media-console'))];
-                                                }
-                                            });
-
-                                        // Event
-                                            // Media Playlist > Media Container
-                                                // Console
-                                                    // Load
-                                                        // Click
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=load')['LapysJS loadMediaPlaylistCurrentMediaEventSet'] || mediaPlaylist[i].containers.media.console.querySelector('[data-id=load').setEvent('click', function load() {
-                                                            /* Loop
-                                                                    Index all Target's parent elements.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Parent Element is a Media Playlist.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                                    // Target > Parent Element > Media Container > Content > Media > Load
-                                                                    this.parentPath[i].containers.media.content.querySelector('[data-id=media').load();
-
-                                                                    // Break
-                                                                    break
-                                                                }
-                                                        });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=load')['LapysJS loadMediaPlaylistCurrentMediaEventSet'] = !0;
-
-                                                    // Next
-                                                        // Click
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=next')['LapysJS toggleNextMediaEventSet'] || mediaPlaylist[i].containers.media.console.querySelector('[data-id=next').setEvent('click', function toggleNextMedia() {
-                                                            /* Loop
-                                                                    Index all the Target's parent elements.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Parent Element is a Media Playlist.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                                    // Target > Parent Element > Toggle Next Media
-                                                                    this.parentPath[i].toggleNextMedia();
-
-                                                                    // Break
-                                                                    break
-                                                                }
-                                                        });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=next')['LapysJS toggleNextMediaEventSet'] = !0;
-
-                                                    // Previous
-                                                        // Click
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=previous')['LapysJS togglePreviousMediaEventSet'] || mediaPlaylist[i].containers.media.console.querySelector('[data-id=previous').setEvent('click', function togglePreviousMedia() {
-                                                            /* Loop
-                                                                    Index all the Target's parent elements.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Parent Element is a Media Playlist.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                                    // Target > Parent Element > Toggle Previous Media
-                                                                    this.parentPath[i].togglePreviousMedia();
-
-                                                                    // Break
-                                                                    break
-                                                                }
-                                                        });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=previous')['LapysJS togglePreviousMediaEventSet'] = !0;
-
-                                                    // Play-Pause
-                                                        // Click
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=play-pause')['LapysJS togglePlayPauseStateMediaPlaylistCurrentMediaEventSet'] || mediaPlaylist[i].containers.media.console.querySelector('[data-id=play-pause').setEvent('click', function togglePlayPauseState() {
-                                                            /* Loop
-                                                                    Index all the Target's parent elements.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Parent Element is a Media Playlist.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                                    // Modification > Target > Inner HTML
-                                                                    this.parentPath[i].containers.media.content.querySelector('[data-id=media').paused ? this.innerHTML = '&#10074;&#10074;' : this.innerHTML = '&blacktriangleright;';
-
-                                                                    // Target > Parent Element > Media Container > Content > Media > (Toggle Play-Pause State | (Play | Pause))
-                                                                    typeof this.parentPath[i].containers.media.content.querySelector('[data-id=media')['LapysJS togglePlayPauseState'] == 'function' ? this.parentPath[i].containers.media.content.querySelector('[data-id=media')['LapysJS togglePlayPauseState']() : (this.parentPath[i].containers.media.content.querySelector('[data-id=media').paused ? this.parentPath[i].containers.media.content.querySelector('[data-id=media').play() : this.parentPath[i].containers.media.content.querySelector('[data-id=media').pause());
-
-                                                                    // Break
-                                                                    break
-                                                                }
-                                                        });
-                                                        mediaPlaylist[i].containers.media.console.querySelector('[data-id=play-pause')['LapysJS togglePlayPauseStateMediaPlaylistCurrentMediaEventSet'] = !0;
-
-                                                // Content
-                                                    // Media
-                                                        // Double Click
-                                                        ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] || (typeof mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS toggleScreenState'] == 'function') || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('dblclick', mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').invokeFullscreen);
-                                                        ((mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').getAttribute('class') || '').trim().split(/ /g).indexOf('media') < 0) || (mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS double-clickEventSet'] = !0);
-
-                                                        // Ended
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS endedEventSet'] || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('ended', function() {
-                                                            /* Loop
-                                                                    Index all the Target' parent elements.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Parent Element is a Media Playlist.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                                    // Modification > (Target > Parent Element > Media Container > Console > Play-Pause) > Inner HTML
-                                                                    this.parentPath[i].containers.media.console.querySelector('[data-id=play-pause').innerHTML = '&#8635;';
-
-                                                                    // Break
-                                                                    break
-                                                                }
-                                                        });
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS endedEventSet'] = !0;
-
-                                                        // Pause
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS pauseEventSet'] || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('pause', function() {
-                                                            /* Loop
-                                                                    Index all the Target' parent elements.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Parent Element is a Media Playlist.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                                    // Modification > (Target > Parent Element > Media Container > Console > Play-Pause) > Inner HTML
-                                                                    this.parentPath[i].containers.media.console.querySelector('[data-id=play-pause').innerHTML = '&blacktriangleright;';
-
-                                                                    // Break
-                                                                    break
-                                                                }
-                                                        });
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS pauseEventSet'] = !0;
-
-                                                        // Playing
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS playingEventSet'] || mediaPlaylist[i].containers.media.content.querySelector('[data-id=media').setEvent('playing', function() {
-                                                            /* Loop
-                                                                    Index all the Target' parent elements.
-                                                            */
-                                                            for (let i = 0; i < this.parentPath.length; i += 1)
-                                                                /* Logic
-                                                                        If
-                                                                            the Parent Element is a Media Playlist.
-                                                                */
-                                                                if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                                    // Modification > (Target > Parent Element > Media Container > Console > Play-Pause) > Inner HTML
-                                                                    this.parentPath[i].containers.media.console.querySelector('[data-id=play-pause').innerHTML = '&#10074;&#10074;';
-
-                                                                    // Break
-                                                                    break
-                                                                }
-                                                        });
-                                                        mediaPlaylist[i].containers.media.content.querySelector('[data-id=media')['LapysJS playingEventSet'] = !0
-                                    }
-                                };
-
-                                // Insert Media Container
-                                insertMediaContainer(mediaPlaylist);
-
-                                /* Loop
-                                        Index all the Media Playlist's Sources.
-                                */
-                                for (let j = 0; j < mediaPlaylist[i].sources.length; j += 1) {
-                                    // Event > (Media Playlist > Source) > Click
-                                    mediaPlaylist[i].sources[j]['LapysJS mediaPlaylistToggleMediaEventSet'] || mediaPlaylist[i].sources[j].setEvent('click', function mediaPlaylistToggleMediaEventSet() {
-                                        /* Loop
-                                                Index all the Target' parent elements.
-                                        */
-                                        for (let i = 0; i < this.parentPath.length; i += 1)
-                                            /* Logic
-                                                    If
-                                                        the Parent Element is a Media Playlist.
-                                            */
-                                            if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1) {
-                                                // Target > Parent Element > Toggle Media
-                                                this.parentPath[i].toggleMedia([...this.parentElement.children].indexOf(this));
-
-                                                // Break
-                                                break
-                                            }
-                                    });
-                                    mediaPlaylist[i].sources[j]['LapysJS mediaPlaylistToggleMediaEventSet'] = !0;
-
-                                    // Modification > Media Playlist > Source
-                                        // Description
-                                        (typeof mediaPlaylist[i].sources[j].description == 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'description', {
-                                            // Configurable
-                                            configurable: !0,
-
-                                            // Enumerable
-                                            enumerable: !0,
-
-                                            // Get
-                                            get: function getSource() {
-                                                // Return
-                                                return this.getAttribute('data-description') || ''
-                                            },
-
-                                            // Set
-                                            set: function setSource() {
-                                                // Modification > Target > Data Source
-                                                this.setAttribute('data-description', arguments[0])
+                                        // Delete All (Characters)
+                                        (typeof dynamicText[i].deleteAll == 'function') || Object.defineProperty(dynamicText[i], 'deleteAll', {
+                                            // Value
+                                            value: function deleteAll() {
+                                                // Modification > Target > Inner HTML
+                                                this.innerHTML = `<span data-id=cursor></span>`
                                             }
                                         });
 
-                                        // Source
-                                        (typeof mediaPlaylist[i].sources[j].src == 'string') || Object.defineProperty(mediaPlaylist[i].sources[j], 'src', {
-                                            // Configurable
-                                            configurable: !0,
-
-                                            // Enumerable
-                                            enumerable: !0,
-
-                                            // Get
-                                            get: function getSource() {
-                                                // Return
-                                                return this.getAttribute('data-src') || ''
-                                            },
-
-                                            // Set
-                                            set: function setSource() {
-                                                // Modification > Target > Data Source
-                                                this.setAttribute('data-src', arguments[0])
+                                        // Delete (Character) Backwards
+                                        (typeof dynamicText[i].deleteBackwards == 'function') || Object.defineProperty(dynamicText[i], 'deleteBackwards', {
+                                            // Value
+                                            value: function deleteBackwards() {
+                                                // Deletion
+                                                !this.cursor.previousElementSibling || this.cursor.previousElementSibling.delete()
                                             }
-                                        })
-                                }
+                                        });
 
-                                /* Loop
-                                        While
-                                            the Media Playlist's Media Container's Content is non-existent.
-                                */
-                                while (!mediaPlaylist[i].containers.media.content) {
-                                    // Initialization > (Data, Media Playlist)
-                                    let data = [...mediaPlaylist[i].sources].indexOf(mediaPlaylist[i].containers.source.querySelector('[data-selected')),
-                                        MediaPlaylist = mediaPlaylist[i];
+                                        // Delete Backwards (Overflow)
+                                        (typeof dynamicText[i].deleteBackwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'deleteBackwardsOverflow', {
+                                            // Value
+                                            value: function deleteBackwardsOverflow() {
+                                                // Target > Delete (Backwards | Forwards)
+                                                !this.querySelector(`:not([data-id*='cursor'])`) || this.cursor.previousElementSibling ? this.deleteBackwards() : this.deleteForwards()
+                                            }
+                                        });
 
-                                    // Insertion
-                                    !mediaPlaylist[i].containers.media.insertChild('begin', createElement('div', '[data-id=media-content', `<video ${mediaPlaylist[i].getAttribute('data-media-format') ? `class='${mediaPlaylist[i].getAttribute('data-media-format')}' ` : ''}controls data-id=media> </video>`));
+                                        // Delete (Character) Forwards
+                                        (typeof dynamicText[i].deleteForwards == 'function') || Object.defineProperty(dynamicText[i], 'deleteForwards', {
+                                            // Value
+                                            value: function deleteForwards() {
+                                                // Deletion
+                                                !this.cursor.nextElementSibling || this.cursor.nextElementSibling.delete()
+                                            }
+                                        });
 
-                                    // Set Timeout
-                                    setTimeout(() => {
-                                        // Media Playlist > Toggle Media
-                                        MediaPlaylist.toggleMedia(data)
-                                    })
-                                }
+                                        // Delete Forwards (Overflow)
+                                        (typeof dynamicText[i].deleteForwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'deleteForwardsOverflow', {
+                                            // Value
+                                            value: function deleteForwardsOverflow() {
+                                                // Target > Delete (Forwards | Backwards)
+                                                !this.querySelector(`:not([data-id*='cursor'])`) || this.cursor.nextElementSibling ? this.deleteForwards() : this.deleteBackwards()
+                                            }
+                                        });
 
-                                /* Loop
-                                        While
-                                            the Media Playlist's Media Container's Console is non-existent
-                                                or
-                                            the Media Playlist's Media Container's Information is non-existent.
-                                */
-                                while (
-                                    !mediaPlaylist[i].containers.media.console ||
-                                    !mediaPlaylist[i].containers.media.information
-                                ) {
-                                    // Initialization > (Data, Media Playlist)
-                                    let data = [...mediaPlaylist[i].sources].indexOf(mediaPlaylist[i].containers.source.querySelector('[data-selected')),
-                                        MediaPlaylist = mediaPlaylist[i];
-
-                                    // Deletion
-                                    mediaPlaylist[i].containers.media.remove();
-
-                                    // Insert Media Container
-                                    insertMediaContainer(mediaPlaylist);
-
-                                    // Set Timeout
-                                    setTimeout(() => {
-                                        // Media Playlist > Toggle Media
-                                        MediaPlaylist.toggleMedia(data)
-                                    })
-                                }
-
-                                /* Loop
-                                        While
-                                            the Media Playlist's Source Container contains a non-Media Playlist Source.
-
-                                    > Modification > (Media Playlist > Source Container > [Element]) > Class
-                                */
-                                while (mediaPlaylist[i].containers.source.querySelector(':not(.media-playlist-source)'))
-                                    mediaPlaylist[i].containers.source.querySelector(':not(.media-playlist-source)').addClass('media-playlist-source');
-
-                                /* Loop
-                                        While
-                                            the Media Playlist's Source Container contains a non-Sourced Element.
-
-                                    > Deletion
-                                */
-                                while (mediaPlaylist[i].containers.source.querySelector(':not([data-src])'))
-                                    mediaPlaylist[i].containers.source.querySelector(':not([data-src])').remove();
-
-                                /* Loop
-                                        While
-                                            the Media Playlist's Media Container's Content does not have a Media.
-
-                                    > Insertion
-                                */
-                                while (!mediaPlaylist[i].containers.media.content.querySelector('[data-id=media'))
-                                    mediaPlaylist[i].containers.media.content.appendChild(createElement('video', `[controls=''][data-id=media`, '', new (function Object() {
-                                        // Modification > Target > Class
-                                        mediaPlaylist[i].getAttribute('data-media-format') ? this.className = mediaPlaylist[i].getAttribute('data-media-format') : !!0
-                                    })))
-                            }
-                        })
-                    }, LapysJS.permanentData. pluginScriptDelay = 3e3)
-                })();
-
-                /* Media
-                        --- WARN ---
-                            @lapys: All Media must be modified after all Media Playlists are constructed.
-
-                        --- UPDATE REQUIRED ---
-                            @lapys:
-                                - Maybe we could do with less intervals and less lagging?
-                                - The fullscreen functionality could use a little more work.
-                */
-                    // On Node Change
-                    onNodeChange(document.body, function LapysJSScriptCorrectMedia() {
-                        /* Loop
-                                Index all Media Control Panels.
-                        */
-                        for (let i = 0; i < document.querySelectorAll('[data-id=media-controls-panel').length; i += 1) {
-                            // Modification > Media Control Panel > To Be Deleted
-                            document.querySelectorAll('[data-id=media-controls-panel')[i]['LapysJS toBeDeleted'] = [];
-
-                            /* Loop
-                                    Index all the Media Control Panel's previous element siblings.
-
-                                > Modification > Media Control Panel > To Be Deleted
-                            */
-                            for (let j = 0; j < document.querySelectorAll('[data-id=media-controls-panel')[i].previousElementSiblings.length; j += 1)
-                                document.querySelectorAll('[data-id=media-controls-panel')[i]['LapysJS toBeDeleted'].push((document.querySelectorAll('[data-id=media-controls-panel')[i].previousElementSiblings[j].getAttribute('class') || '').trim().split(/ /g).indexOf('media') > -1);
-
-                            // Deletion
-                            (document.querySelectorAll('[data-id=media-controls-panel')[i]['LapysJS toBeDeleted'].indexOf(!0) > -1) || document.querySelectorAll('[data-id=media-controls-panel')[i].remove()
-                        }
-                    });
-
-                    (function LapysJSScriptMedia() {
-                         // Initialization > Media
-                        let media = document.querySelectorAll('.media:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(input):not(textarea)');
-
-                        // On Node Added
-                        onNodeAdded(document.body, function LapysJSScriptNewMedia() {
-                            // Update > Media
-                            media = document.querySelectorAll('.media:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(input):not(textarea)');
-
-                            /* Loop
-                                    Index all Media.
-                            */
-                            for (let i = 0; i < media.length; i += 1)
-                                /* Logic
-                                        If
-                                            the Media is not modified.
-                                */
-                                if (!media[i]['LapysJS isModified']) {
-                                    // Modification > Media
-                                        // Controls Panel
-                                        (typeof (media[i].controlsPanel || []).tagName == 'string' && isObject(media[i].controlsPanel, !!0)) || Object.defineProperty(media[i], 'controlsPanel', {
-                                            // Configurable
-                                            configurable: !0,
-
-                                            // Enumerable
-                                            enumerable: !0,
-
-                                            // Get
-                                            get: function controlsPanel() {
+                                        // Highlight All Characters
+                                        (typeof dynamicText[i].highlightAllCharacters == 'function') || Object.defineProperty(dynamicText[i], 'highlightAllCharacters', {
+                                            // Value
+                                            value: function highlightAllCharacters() {
                                                 /* Loop
-                                                        Index all the Target's next element siblings.
+                                                        [do:while statement]
+
+                                                    > Modification > [Element] > Data ID
                                                 */
-                                                for (let i = 0; i < this.nextElementSiblings.length; i += 1)
-                                                    /* logic
-                                                            If
-                                                                the Next Element Sibling is a Media Controls Panel.
-                                                    */
-                                                    if (this.nextElementSiblings[i].getAttribute('data-id') === 'media-controls-panel') {
-                                                        // Return
-                                                        return this.nextElementSiblings[i];
-
-                                                        // Break
-                                                        break
-                                                    }
+                                                while (this.querySelector(`:not([data-id*='highlighted'])`))
+                                                    this.querySelector(`:not([data-id*='highlighted'])`).setAttribute('data-id', this.querySelector(`:not([data-id*='highlighted'])`).getAttribute('data-id') ? this.querySelector(`:not([data-id*='highlighted'])`).getAttribute('data-id') + ' highlighted' : 'highlighted')
                                             }
                                         });
 
-                                        // End Time
-                                        (typeof media[i].endTime == 'number') || Object.defineProperty(media[i], 'endTime', {
-                                            // Configurable
-                                            configurable: !0,
-
-                                            // Enumerable
-                                            enumerable: !0,
-
-                                            // Get
-                                            get: function endTime() {
-                                                // Return
-                                                return this.duration
-                                            }
-                                        });
-
-                                        // Start Time
-                                        (typeof media[i].startTime == 'number') || Object.defineProperty(media[i], 'startTime', {
-                                            // Configurable
-                                            configurable: !0,
-
-                                            // Enumerable
-                                            enumerable: !0,
-
-                                            // Get
-                                            get: function startTime() {
-                                                // Return
-                                                return 0
-                                            }
-                                        });
-
-                                    // Function > Media
-                                        // Get Volume
-                                        Object.defineProperty(media[i], 'getVolume', {
+                                        // Highlight Character Backwards
+                                        (typeof dynamicText[i].highlightCharacterBackwards == 'function') || Object.defineProperty(dynamicText[i], 'highlightCharacterBackwards', {
                                             // Value
-                                            value: function getVolume() {
-                                                // Return
-                                                return this.volume || +this.getAttribute('volume').replace(/ /g, '')
-                                            }
-                                        });
+                                            value: function highlightCharacterBackwards() {
+                                                // Initialization > Data
+                                                let data = this.cursor.previousElementSibling;
 
-                                        // Invoke Fullscreen
-                                        Object.defineProperty(media[i], 'LapysJS invokeFullscreen', {
-                                            // Value
-                                            value: function invokeFullscreen() {
-                                                // (Target > Controls Panel > Components > Fullscreen) > Click
-                                                this.controlsPanel.components.fullscreen.click()
-                                            }
-                                        });
-
-                                        // Load
-                                        Object.defineProperty(media[i], 'LapysJS load', {
-                                            // Value
-                                            value: function load() {
-                                                // Initialization > Target
-                                                let that = this;
-
-                                                // Function > Check Target Is Playing
-                                                function checkTargetIsPlaying() {
-                                                    /* Logic
-                                                            If
-                                                                the Target is playing.
-                                                    */
-                                                    if (
-                                                        that.currentTime > 0 &&
-                                                        !that.paused &&
-                                                        that.readyState > 2
-                                                    ) {
-                                                        // Clear Interval
-                                                        clearInterval(checkTargetIsPlayingInterval);
-
-                                                        // Modification > Target > Current Time
-                                                        that.currentTime = 0;
-
-                                                        // Target > Pause
-                                                        that.pause()
-                                                    }
-                                                }
-
-                                                // Initialization > Check Target Is Playing Interval
-                                                let checkTargetIsPlayingInterval = setInterval(checkTargetIsPlaying)
-                                            }
-                                        });
-
-                                        // Set Volume
-                                        Object.defineProperty(media[i], 'setVolume', {
-                                            // Value
-                                            value: function setVolume() {
-                                                // Modification > Target > Volume
-                                                this.setAttribute('volume', parseNumber(arguments[0]));
-                                                this.volume = parseNumber(arguments[0])
-                                            }
-                                        });
-
-                                        // Toggle Play-Pause State
-                                        Object.defineProperty(media[i], 'LapysJS togglePlayPauseState', {
-                                            // Value
-                                            value: function togglePlayPauseState() {
-                                                // Target > (Play | Pause)
-                                                this.paused ? this.play() : this.pause()
-                                            }
-                                        });
-
-                                    // Event > Media
-                                        // Double Click
-                                        media[i].setEvent('dblclick', function() {
-                                            // (Target > Controls Panel > Components > Fullscreen) > Click
-                                            this.controlsPanel.components.fullscreen.click()
-                                        });
-
-                                        // Ended
-                                        media[i].setEvent('ended', function() {
-                                            // Modification > (Target > Controls Panel > Components > Play-Pause Reload) > Inner HTML
-                                            this.controlsPanel.components.playPauseReload.innerHTML = this.getAttribute('data-playpause-button-html') || '&#8635;';
-                                            this.controlsPanel.components.play.hidden = !!0
-                                        });
-
-                                        // Loaded Data
-                                        media[i].setEvent('loadeddata', function() {
-                                            // Target > Current Time
-                                            this.currentTime = 0
-                                        });
-
-                                        // Paused
-                                        media[i].setEvent('pause', function() {
-                                            // Modification > (Target > Controls Panel > Components > Play) > Hidden
-                                            this.controlsPanel.components.play.hidden = !!0
-                                        });
-
-                                        // Playing
-                                        media[i].setEvent('playing', function() {
-                                            // Modification > (Target > Controls Panel > Components > Play) > Hidden
-                                            this.controlsPanel.components.play.hidden = !0
-                                        });
-
-                                        // Seeking
-                                        media[i].setEvent('seeking', function() {
-                                            // Modification > (Target > Controls Panel > Components > Play-Pause Reload) > Inner HTML
-                                            !this.controlsPanel || (this.controlsPanel.components.playPauseReload.innerHTML = this.getAttribute('data-playpause-button-html') || '&#10074;&#10074;')
-                                        });
-
-                                    // Set Interval
-                                    setInterval(() => {
-                                        // Modification > (Target > Controls Panel > Components > (Play-Pause Reload, Timeline > Seeker)) > (Inner HTML, Value)
-                                        (parseInt(media[i].currentTime) !== parseInt(media[i].duration)) || (media[i].controlsPanel.components.playPauseReload.innerHTML = media[i].getAttribute('data-playpause-button-html') || '&#8635;');
-                                        !media[i].controlsPanel || (media[i].controlsPanel.components.timeline.seeker.value = parseInt(media[i].currentTime));
-
-                                        // (Target > Controls Panel > Components > Fullscreen) > Click
-                                        !(screen.height !== innerHeight && (document.documentElement.hasAttribute('data-fullscreen') && (media[i].getCSS('height') === '100%' && media[i].getCSS('left') === '0px' && media[i].getCSS('position') === 'fixed' && media[i].getCSS('right') === '0px' && media[i].getCSS('width') === '100%' && media[i].getCSS('z-index') == 2147483643))) || media[i].controlsPanel.components.fullscreen.click();
-
-                                        // Style > (Media > Controls Panel (> Components > Play)) > Margin (Left, Top)
-                                        !media[i].controlsPanel || media[i].controlsPanel.components.play.setCSS('margin-top', `-${((media[i].offset.height - media[i].controlsPanel.components.play.offset.height) / 2) + 50}px`);
-                                        !media[i].controlsPanel || media[i].controlsPanel.setCSS('margin-left', `${media[i].offset.left}px`);
-
-                                        /* Loop
-                                                Index all Media Controls Panel.
-
-                                            > Modification > (Media Control Panel > <style>) > Inner HTML
-                                        */
-                                        !media[i].controlsPanel || ((media[i].controlsPanel.querySelector('style') || []).innerHTML = (
-                                            `[data-id=media-controls-panel][lapysjs-random-attribute='${media[i].controlsPanel.getAttribute('lapysjs-random-attribute')}'] {` +
-                                                `width: ${media[i].getCSS('width')}`+
-                                            `}`
-                                        ))
-                                    }, 500);
-
-                                    // Set Timeout
-                                    setTimeout(() => {
-                                        // Initialization > Data
-                                        let data = media[i].controlsPanel.components.timeline.format;
-
-                                        /* Loop
-                                                [while statement]
-
-                                            > Update > Data
-                                        */
-                                        while (
-                                            data.length &&
-                                            (
-                                                data[0] !== 'segmented' &&
-                                                data[0] !== 'standard'
-                                            )
-                                        )
-                                            data = data.removeElement(data[0]);
-
-                                        // Set Interval
-                                        !data[0] || setInterval(() => {
-                                            /* Logic
-                                                    If
-                                                        the Media exists.
-
-                                                    --- NOTE ---
-                                                        @lapys: This is important because if the Media gets deleted
-                                                            it should be recognized within this interval.
-
-                                                            Any better solution to this recursive problem would be appreciated.
-                                            */
-                                            if (
-                                                media[i] &&
-                                                (media[i] || []).controlsPanel
-                                            )
-                                                /* Logic
-                                                        If
-                                                            the Media's Controls Panel's Components exists.
-                                                */
-                                                if (media[i].controlsPanel.components)
+                                                // Function > Check Previous Element Sibling
+                                                (function checkPreviousElementSibling(that) {
                                                     /* Logic
                                                             [if:else if:else statement]
-
-                                                            --- CONSIDER ---
-                                                                @lapys: A 'switch' statement might not be necessary for future updates.
                                                     */
-                                                    if (data[0] === 'segmented') {
-                                                        /* Modification > (Media > Controls Panel > Components > Timeline > (Current Time, Duration)) > Inner HTML
-                                                                --- NOTE ---
-                                                                    @lapys: This is the syntax logic used:
-                                                                        let Data = <number>;
-                                                                        [Math.floor(parseInt(Data, 10) / 3600) % 24, Math.floor(parseInt(Data, 10) / 60) % 60, parseInt(Data, 10) % 60].map(data => data < 10 ? '0' + data : data).filter((data, index) => data !== '00' || index > 0).join(':')
-                                                        */
-                                                        media[i].controlsPanel.components.timeline.currentTime.innerHTML = [Math.floor(parseInt(media[i].currentTime, 10) / 3600) % 24, Math.floor(parseInt(media[i].currentTime, 10) / 60) % 60, parseInt(media[i].currentTime, 10) % 60].map(data => data < 10 ? '0' + data : data).filter((data, index) => data !== '00' || index > 0).join(':').length > 5 ? [Math.floor(parseInt(media[i].currentTime, 10) / 3600) % 24, Math.floor(parseInt(media[i].currentTime, 10) / 60) % 60, parseInt(media[i].currentTime, 10) % 60].map(data => data < 10 ? '0' + data : data).filter((data, index) => data !== '00' || index > 0).join(':') : `00:${[Math.floor(parseInt(media[i].currentTime, 10) / 3600) % 24, Math.floor(parseInt(media[i].currentTime, 10) / 60) % 60, parseInt(media[i].currentTime, 10) % 60].map(data => data < 10 ? '0' + data : data).filter((data, index) => data !== '00' || index > 0).join(':')}`;
-                                                        media[i].controlsPanel.components.timeline.duration.innerHTML = [Math.floor(parseInt(media[i].duration, 10) / 3600) % 24, Math.floor(parseInt(media[i].duration, 10) / 60) % 60, parseInt(media[i].duration, 10) % 60].map(data => data < 10 ? '0' + data : data).filter((data, index) => data !== '00' || index > 0).join(':').length > 5 ? [Math.floor(parseInt(media[i].duration, 10) / 3600) % 24, Math.floor(parseInt(media[i].duration, 10) / 60) % 60, parseInt(media[i].duration, 10) % 60].map(data => data < 10 ? '0' + data : data).filter((data, index) => data !== '00' || index > 0).join(':') : `00:${[Math.floor(parseInt(media[i].duration, 10) / 3600) % 24, Math.floor(parseInt(media[i].duration, 10) / 60) % 60, parseInt(media[i].duration, 10) % 60].map(data => data < 10 ? '0' + data : data).filter((data, index) => data !== '00' || index > 0).join(':')}`
-                                                    }
-
-                                                    else if (data[0] === 'standard') {
-                                                        // Modification > (Media > Controls Panel > Components > Timeline > (Current Time, Duration)) > Inner HTML
-                                                        media[i].controlsPanel.components.timeline.currentTime.innerHTML = data.indexOf('integer') > -1 ? parseInt(media[i].currentTime) : media[i].currentTime;
-                                                        media[i].controlsPanel.components.timeline.duration.innerHTML = data.indexOf('integer') > -1 ? parseInt(media[i].duration) : media[i].duration
-                                                    }
-                                        }, 100)
-                                    }, 200);
-
-                                    // Modification > Media > Is Modified
-                                    media[i]['LapysJS isModified'] = !0
-                                }
-                        });
-
-                        // On Node Change
-                        onNodeChange(document.body, function LapysJSScriptCorrectMedia() {
-                            /* Loop
-                                    Index all Media.
-                            */
-                            for (let i = 0; i < media.length; i += 1)
-                                /* Set Timeout
-                                        --- WARN ---
-                                            @lapys: The timeout prevents the duration of the Media
-                                                from being miscalculated.
-                                */
-                                setTimeout(() => {
-                                    /* Loop
-                                            While
-                                                the Media does not have a Controls Panel.
-                                    */
-                                    while (!media[i].controlsPanel) {
-                                        // Initialization > Random
-                                        let random = rand();
-
-                                        // Insertion
-                                        media[i].insertAdjacentHTML(
-                                            'afterend',
-
-                                            /* Media Controls Panel */
-                                            `<div data-id=media-controls-panel lapysjs-random-attribute='${random}'>` +
-                                                `<style hidden type=text/css>` +
-                                                    `[data-id=media-controls-panel][lapysjs-random-attribute='${random}'] {` +
-                                                        `width: ${media[i].getCSS('width')}`+
-                                                    `}` +
-                                                `</style>` +
-
-                                                /* Play */
-                                                `<button data-id=media-controls-panel-play> ${media[i].getAttribute('data-play-button-html') || '&blacktriangleright;'} </button>` +
-
-                                                /* Play-Pause Reload */
-                                                `<button data-id=media-controls-panel-playPauseReload> ${media[i].getAttribute('data-playpause-button-html') || '&blacktriangleright;'} </button>` +
-
-                                                /* Timeline */
-                                                `<div data-format='segmented' data-id=media-controls-panel-timeline>` +
-                                                    /* Current Time */
-                                                    `<div data-id=media-controls-panel-currenttime> --:-- </div>` +
-
-                                                    /* Seeker */
-                                                    `<input data-id=media-controls-panel-seeker${media[i].duration ? ` max=${parseInt(media[i].duration)}` : ''} min=0 type=range value=0>` +
-
-                                                    /* Duration */
-                                                    `<div data-id=media-controls-panel-duration> --:-- </div>` +
-                                                `</div>` +
-
-                                                /* Volume */
-                                                `<div data-id=media-controls-panel-volume>` +
-                                                    /* Mute */
-                                                    `<button data-id=media-controls-panel-mute> ${media[i].getAttribute('data-mute-button-html') || '&#128266;'} </button>` +
-
-                                                    /* Volume Bar */
-                                                    `<input data-id=media-controls-panel-volumeBar max=100 min=0 type=range value=${parseNumber(media[i].getAttribute('volume')) * 100 || 0}>` +
-                                                `</div>` +
-
-                                                /* Fullscreen */
-                                                `<button data-id=media-controls-panel-fullscreen> ${media[i].getAttribute('data-fullscreen-button-html') || '&#9645;'} </button>` +
-                                            `</div>`
-                                        );
-
-                                        // Modification > (Media > Controls Panel)
-                                            // Components
-                                            Object.defineProperty(media[i].controlsPanel, 'components', {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function components() {
-                                                    // Initialization > Data
-                                                    let data = new (function LapysJSMediaControlsPanelComponentList() {});
-                                                        // Fullscreen
-                                                        data.fullscreen = this.querySelector('[data-id=media-controls-panel-fullscreen');
-
-                                                        // Play
-                                                        data.play = this.querySelector('[data-id=media-controls-panel-play');
-
-                                                        // Play-Pause Reload
-                                                        data.playPauseReload = this.querySelector('[data-id=media-controls-panel-playPauseReload');
-
-                                                        // Timeline
-                                                        data.timeline = this.querySelector('[data-id=media-controls-panel-timeline');
-                                                            // Current Time
-                                                            data.timeline.currentTime = data.timeline.querySelector('[data-id=media-controls-panel-currenttime');
-
-                                                            // Duration
-                                                            data.timeline.duration = data.timeline.querySelector('[data-id=media-controls-panel-duration');
-
-                                                            // Format
-                                                            Object.defineProperty(data.timeline, 'format', {
-                                                                // Configurable
-                                                                configurable: !0,
-
-                                                                // Enumerable
-                                                                enumerable: !0,
-
-                                                                // Get
-                                                                get: function format() {
-                                                                    // Return
-                                                                    return (this.getAttribute('data-format') || '').trim().split(/ /g)
-                                                                }
-                                                            });
-
-                                                            // Seeker
-                                                            data.timeline.seeker = data.timeline.querySelector('[data-id=media-controls-panel-seeker');
-
-                                                        // Volume
-                                                        data.volume = this.querySelector('[data-id=media-controls-panel-volume');
-                                                            // (Volume) Bar
-                                                            data.volume.bar = data.volume.querySelector('[data-id=media-controls-panel-volumeBar');
-
-                                                            // Mute
-                                                            data.volume.mute = data.volume.querySelector('[data-id=media-controls-panel-mute');
-
-                                                    // Return
-                                                    return data
-                                                }
-                                            });
-
-                                            // Media
-                                            Object.defineProperty(media[i].controlsPanel, 'media', {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function media() {
-                                                    /* Loop
-                                                            Index all the Target's Previous Element Siblings.
-                                                    */
-                                                    for (let i = 0; i < this.previousElementSiblings.length; i += 1)
+                                                    if (data != null)
                                                         /* Logic
-                                                                If
-                                                                    the Previous Element Sibling is a Media.
+                                                                [if:else if:else statement]
                                                         */
-                                                        if ((this.previousElementSiblings[i].getAttribute('class') || '').trim().split(/ /g).indexOf('media') > -1) {
-                                                            // Return
-                                                            return this.previousElementSiblings[i];
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') < 0) {
+                                                            // Modification
+                                                                // Data > Data ID
+                                                                data.setAttribute('data-id', data.getAttribute('data-id') ? data.getAttribute('data-id') + ' highlighted' : 'highlighted');
 
-                                                            // Break
-                                                            break
+                                                                // Target > Cursor Position
+                                                                that.cursorPosition -= 1
                                                         }
-                                                }
-                                            });
 
-                                        // Event > (Media > Controls Panel > Components)
-                                            // Fullscreen
-                                                // Click
-                                                media[i].controlsPanel.components.fullscreen.setEvent('click', function toggleFullscreen() {
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.previousElementSibling;
+
+                                                            // Request Animation Frame
+                                                            requestAnimationFrame(checkPreviousElementSibling)
+                                                        }
+                                                })(this)
+                                            }
+                                        });
+
+                                        // Highlight Character Backwards (Overflow)
+                                        (typeof dynamicText[i].highlightCharacterBackwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'highlightCharacterBackwardsOverflow', {
+                                            // Value
+                                            value: function highlightCharacterBackwardsOverflow() {
+                                                // Initialization > Data
+                                                let data = this.cursor.previousElementSibling;
+
+                                                // Function > Check Previous Element Sibling
+                                                (function checkPreviousElementSibling(that) {
                                                     /* Logic
-                                                            If
-                                                                <html> is on Fullscreen.
+                                                            [if:else if:else statement]
                                                     */
-                                                    if (document.documentElement.hasAttribute('data-fullscreen')) {
-                                                        // Style > (Target > Parent Element > Media) > (Height, Left, Position, Top, Width, Z-Index)
-                                                        this.parentElement.media.delStyle('height', 'left', 'position', 'top', 'width', 'z-index');
+                                                    if (data != null)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') < 0) {
+                                                            // Modification > Data > Data ID
+                                                            data.setAttribute('data-id', data.getAttribute('data-id') ? data.getAttribute('data-id') + ' highlighted' : 'highlighted');
 
-                                                        // Modification > (Target > Parent Element > Media) > Style
-                                                        this.parentElement.media.getAttribute('style') || this.parentElement.media.removeAttribute('style');
+                                                            // Target > Cursor Position
+                                                            !that.children || (that.cursorPosition = Array.from(that.children).indexOf(data))
+                                                        }
 
-                                                        // Style > (Target > Parent Element) > (Bottom, Left, Position, Width, Z-Index)
-                                                        this.parentElement.delStyle('bottom', 'left', 'position', 'width', 'z-index');
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.previousElementSibling;
 
-                                                        // Modification > (Target > Parent Element) > Style
-                                                        this.parentElement.getAttribute('style') || this.parentElement.removeAttribute('style');
-                                                    }
+                                                            // Request Animation Frame
+                                                            requestAnimationFrame(checkPreviousElementSibling)
+                                                        }
 
                                                     else {
-                                                        /* Set Timeout
-                                                                --- NOTE ---
-                                                                    @lapys: This timeout is here for legitimate reasons I cannot remember, honestly.
-                                                        */
-                                                        setTimeout(() => {
-                                                            // Style > (Target > Parent Element > Media) > (Height, Left, Position, Top, Width, Z-Index)
-                                                            this.parentElement.media.setCSS('height', '100% !important');
-                                                            this.parentElement.media.setCSS('left', '0 !important');
-                                                            this.parentElement.media.setCSS('position', 'fixed !important');
-                                                            this.parentElement.media.setCSS('top', '0 !important');
-                                                            this.parentElement.media.setCSS('width', '100% !important');
-                                                            this.parentElement.media.setCSS('z-index', '2147483643 !important');
+                                                        // Update > Data
+                                                        data = that.lastElementChild != that.cursor ? that.lastElementChild : that.lastElementChild.previousElementSibling;
 
-                                                            // Style > (Target > Parent Element) > (Bottom, Left, Position, Width, Z-Index)
-                                                            this.parentElement.setCSS('bottom', '0 !important');
-                                                            this.parentElement.setCSS('left', '0 !important');
-                                                            this.parentElement.setCSS('position', 'fixed !important');
-                                                            this.parentElement.setCSS('width', '100% !important');
-                                                            this.parentElement.setCSS('z-index', '2147483644 !important')
-                                                        }, 100)
+                                                        // Request Animation Frame
+                                                        (data == null) || requestAnimationFrame(checkPreviousElementSibling)
                                                     }
+                                                })(this)
+                                            }
+                                        });
 
-                                                    /* <html> Invoke Fullscreen
-                                                            --- NOTE ---
-                                                                @lapys: The  '1' there is a truthy value which will prevent
-                                                                    LapysJS from alerting the browser from alerting the user about fullscreen mode.
-                                                    */
-                                                    document.documentElement.invokeFullscreen(1)
-                                                });
+                                        // Highlight Character Forwards
+                                        (typeof dynamicText[i].highlightCharacterForwards == 'function') || Object.defineProperty(dynamicText[i], 'highlightCharacterForwards', {
+                                            // Value
+                                            value: function highlightCharacterForwards() {
+                                                // Initialization > Data
+                                                let data = this.cursor.nextElementSibling;
 
-                                            // Play
-                                                // Click
-                                                media[i].controlsPanel.components.play.setEvent('click', function togglePlayState() {
-                                                    // (Target > Parent Element > Media > Controls Panel > Components > Play-Pause-Reload) > Click
-                                                    this.parentElement.media.controlsPanel.components.playPauseReload.click();
-
-                                                    // Modification > Target > Hidden
-                                                    !this.paused ? this.hidden = !0 : this.hidden = !!0
-                                                });
-
-                                            // Play-Pause-Reload
-                                                // Click
-                                                media[i].controlsPanel.components.playPauseReload.setEvent('click', function togglePlayPauseState() {
-                                                    // Modification > (Target > Parent Element > Media) > Current Time
-                                                    !(this.parentElement.media.ended || parseInt(this.parentElement.media.currentTime) === parseInt(this.parentElement.media.duration)) || (this.parentElement.media.currentTime = 0);
-
-                                                    // (Target > Parent Element > Media) > Toggle Play-Pause State
-                                                    this.parentElement.media['LapysJS togglePlayPauseState']();
-
-                                                    // Modification > Target > Inner HTML
-                                                    this.parentElement.media.paused ? this.innerHTML = '&blacktriangleright;' : this.innerHTML = '&#10074;&#10074;';
-                                                    !this.parentElement.hasAttribute('data-playpause-button-html') || (this.innerHTML = this.parentElement.media.getAttribute('data-playpause-button-html'))
-                                                });
-
-                                            // Timeline > Seeker
-                                                // Update
-                                                media[i].controlsPanel.components.timeline.seeker.setEvent('_update', function toggleVolume() {
-                                                    // Modification > (Target > Parent Element > Parent Element > Media) > cURRENT tIME
-                                                    this.parentElement.parentElement.media.currentTime = this.value
-                                                });
-
-                                            // Volume > Bar
-                                                // Mouse Leave
-                                                media[i].controlsPanel.components.volume.bar.setEvent('mouseleave', function toggleVolume() {
-                                                    // Target > Close
-                                                    this.close()
-                                                });
-
-                                                // Mouse Over
-                                                media[i].controlsPanel.components.volume.bar.setEvent('mouseover', function toggleVolume() {
-                                                    // Target > Open
-                                                    this.open()
-                                                });
-
-                                                // Update
-                                                media[i].controlsPanel.components.volume.bar.setEvent('_update', function toggleVolume() {
-                                                    // (Target > Parent Element > Parent Element > Media) > Set Volume
-                                                    this.parentElement.parentElement.media.setVolume(this.value / 100)
-                                                });
-
-                                            // Volume > Mute
-                                                // Click
-                                                media[i].controlsPanel.components.volume.mute.setEvent('click', function toggleMutedState() {
+                                                // Function > Check Next Element Sibling
+                                                (function checkNextElementSibling(that) {
                                                     /* Logic
                                                             [if:else if:else statement]
                                                     */
-                                                    if (this.parentElement.parentElement.media.getVolume()) {
-                                                        // Modification > (Target > Parent Element > Parent Element > Media) > Former Volume
-                                                        this.parentElement.parentElement.media['LapysJS formerVolume'] = this.parentElement.parentElement.media.getVolume() || 1;
+                                                    if (data != null)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') < 0) {
+                                                            // Modification > Data > Data ID
+                                                            data.setAttribute('data-id', data.getAttribute('data-id') ? data.getAttribute('data-id') + ' highlighted' : 'highlighted');
 
-                                                        // (Target > Parent Element > Parent Element > Media) > Set Volume
-                                                        this.parentElement.parentElement.media.setVolume(0)
+                                                            // Target > Cursor Position
+                                                            that.cursorPosition += 1
+                                                        }
+
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.nextElementSibling;
+
+                                                            // Request Animation Frame
+                                                            requestAnimationFrame(checkNextElementSibling)
+                                                        }
+                                                })(this)
+                                            }
+                                        });
+
+                                        // Highlight Character Forwards (Overflow)
+                                        (typeof dynamicText[i].highlightCharacterForwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'highlightCharacterForwardsOverflow', {
+                                            // Value
+                                            value: function highlightCharacterForwardsOverflow() {
+                                                // Initialization > Data
+                                                let data = this.cursor.nextElementSibling;
+
+                                                // Function > Check Next Element Sibling
+                                                (function checkNextElementSibling(that) {
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (data != null)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') < 0) {
+                                                            // Modification > Data > Data ID
+                                                            data.setAttribute('data-id', data.getAttribute('data-id') ? data.getAttribute('data-id') + ' highlighted' : 'highlighted');
+
+                                                            // Target > Cursor Position
+                                                            !that.children || (that.cursorPosition = Array.from(that.children).indexOf(data))
+                                                        }
+
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.nextElementSibling;
+
+                                                            // Check Previous Element Sibling
+                                                            requestAnimationFrame(checkNextElementSibling)
+                                                        }
+
+                                                    else {
+                                                        // Update > Data
+                                                        data = that.firstElementChild != that.cursor ? that.firstElementChild : that.firstElementChild.nextElementSibling;
+
+                                                        // Request Animation Frame
+                                                        (data == null) || requestAnimationFrame(checkNextElementSibling)
+                                                    }
+                                                })(this)
+                                            }
+                                        });
+
+                                        // Insert (Character) Backwards
+                                        (typeof dynamicText[i].insertBackwards == 'function') || Object.defineProperty(dynamicText[i], 'insertBackwards', {
+                                            // Value
+                                            value: function insertBackwards() {
+                                                // Insertion
+                                                (arguments.length < 1) || this.cursor.insertAdjacentHTML('beforebegin', `<span>${arguments[0]}</span>`)
+                                            }
+                                        });
+
+                                        // Insert (Character) Forwards
+                                        (typeof dynamicText[i].insertForwards == 'function') || Object.defineProperty(dynamicText[i], 'insertForwards', {
+                                            // Value
+                                            value: function insertForwards() {
+                                                // Insertion
+                                                (arguments.length < 1) || this.cursor.insertAdjacentHTML('afterend', `<span>${arguments[0]}</span>`)
+                                            }
+                                        });
+
+                                        // Insert Newline Backwards
+                                        (typeof dynamicText[i].insertNewlineBackwards == 'function') || Object.defineProperty(dynamicText[i], 'insertNewlineBackwards', {
+                                            // Value
+                                            value: function insertNewlineBackwards() {
+                                                // Insertion
+                                                this.cursor.insertAdjacentHTML('beforebegin', `<span><br></span>`)
+                                            }
+                                        });
+
+                                        // Insert Newline Forwards
+                                        (typeof dynamicText[i].insertNewlineForwards == 'function') || Object.defineProperty(dynamicText[i], 'insertNewlineForwards', {
+                                            // Value
+                                            value: function insertNewlineForwards() {
+                                                // Insertion
+                                                this.cursor.insertAdjacentHTML('afterend', `<span><br></span>`)
+                                            }
+                                        });
+
+                                        // Navigate Cursor
+                                        (typeof dynamicText[i].navigateCursor == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursor', {
+                                            // Value
+                                            value: function navigateCursor() {
+                                                /* Logic
+                                                        [if:else if:else statement]
+                                                */
+                                                if (arguments.length > 0)
+                                                    /* Logic
+                                                            [if:else if:else statement]
+
+                                                        > Modification > Target > Cursor Position
+                                                    */
+                                                    if (this.cursorPosition < parseNumber(arguments[0]))
+                                                        this.cursorPosition += 1;
+
+                                                    else if (this.cursorPosition > parseNumber(arguments[0]))
+                                                        this.cursorPosition -= 1
+                                            }
+                                        });
+
+                                        // Navigate Cursor Backwards
+                                        (typeof dynamicText[i].navigateCursorBackwards == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursorBackwards', {
+                                            // Value
+                                            value: function navigateCursorBackwards() {
+                                                // Modification > Target > Cursor Position
+                                                this.cursorPosition -= 1
+                                            }
+                                        });
+
+                                        // Navigate Cursor Backwards (Overflow)
+                                        (typeof dynamicText[i].navigateCursorBackwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursorBackwardsOverflow', {
+                                            // Value
+                                            value: function navigateCursorBackwardsOverflow() {
+                                                // Modification > Target > Cursor Position
+                                                this.cursorPosition == 0 ? this.cursorPosition = ~-this.characters.length : this.cursorPosition -= 1
+                                            }
+                                        });
+
+                                        // Navigate Cursor Forwards
+                                        (typeof dynamicText[i].navigateCursorForwards == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursorForwards', {
+                                            // Value
+                                            value: function navigateCursorForwards() {
+                                                // Modification > Target > Cursor Position
+                                                this.cursorPosition += 1
+                                            }
+                                        });
+
+                                        // Navigate Cursor Forwards (Overflow)
+                                        (typeof dynamicText[i].navigateCursorForwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursorForwardsOverflow', {
+                                            // Value
+                                            value: function navigateCursorForwardsOverflow() {
+                                                // Modification > Target > Cursor Position
+                                                this.cursorPosition == ~-this.characters.length ? this.cursorPosition = 0 : this.cursorPosition += 1
+                                            }
+                                        });
+
+                                        // Navigate Cursor To End
+                                        (typeof dynamicText[i].navigateCursorToEnd == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursorToEnd', {
+                                            // Value
+                                            value: function navigateCursorToEnd() {
+                                                // Modification > Target > Cursor Position
+                                                this.cursorPosition = ~-this.characters.length
+                                            }
+                                        });
+
+                                        // Navigate Cursor To Position
+                                        (typeof dynamicText[i].navigateCursorToPosition == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursorToPosition', {
+                                            // Value
+                                            value: function navigateCursorToPosition() {
+                                                // Modification > Target > Cursor Position
+                                                this.cursorPosition = parseNumber(arguments[0])
+                                            }
+                                        });
+
+                                        // Navigate Cursor To Start
+                                        (typeof dynamicText[i].navigateCursorToStart == 'function') || Object.defineProperty(dynamicText[i], 'navigateCursorToStart', {
+                                            // Value
+                                            value: function navigateCursorToStart() {
+                                                // Modification > Target > Cursor Position
+                                                this.cursorPosition = 0
+                                            }
+                                        });
+
+                                        // Unhighlight All Characters
+                                        (typeof dynamicText[i].unhighlightAllCharacters == 'function') || Object.defineProperty(dynamicText[i], 'unhighlightAllCharacters', {
+                                            // Value
+                                            value: function unhighlightAllCharacters() {
+                                                /* Loop
+                                                        [do:while statement]
+
+                                                    > Modification > Target > [Element] > Data ID
+                                                */
+                                                while (this.querySelector(`[data-id*='highlighted'`))
+                                                    this.querySelector(`[data-id*='highlighted'`).setAttribute('data-id', this.querySelector(`[data-id*='highlighted'`).getAttribute('data-id').replace('highlighted', '').trim())
+                                            }
+                                        });
+
+                                        // Unhighlight Character Backwards
+                                        (typeof dynamicText[i].unhighlightCharacterBackwards == 'function') || Object.defineProperty(dynamicText[i], 'unhighlightCharacterBackwards', {
+                                            // Value
+                                            value: function unhighlightCharacterBackwards() {
+                                                // Initialization > Data
+                                                let data = this.cursor.previousElementSibling;
+
+                                                // Function > Check Previous Element Sibling
+                                                (function checkPreviousElementSibling(that) {
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (data != null)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') > -1) {
+                                                            // Modification > Data > Data ID
+                                                            data.removeAttribute('data-id');
+
+                                                            // Target > Cursor Position
+                                                            that.cursorPosition -= 1
+                                                        }
+
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.previousElementSibling;
+
+                                                            // Request Animation Frame
+                                                            requestAnimationFrame(checkPreviousElementSibling)
+                                                        }
+                                                })(this)
+                                            }
+                                        });
+
+                                        // Unhighlight Character Backwards (Overflow)
+                                        (typeof dynamicText[i].unhighlightCharacterBackwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'unhighlightCharacterBackwardsOverflow', {
+                                            // Value
+                                            value: function unhighlightCharacterBackwardsOverflow(that) {
+                                                // Initialization > Data
+                                                let data = this.cursor.previousElementSibling;
+
+                                                // Function > Check Previous Element Sibling
+                                                (function checkPreviousElementSibling(that) {
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (data != null)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') > -1) {
+                                                            // Modification > Data > Data ID
+                                                            data.removeAttribute('data-id');
+
+                                                            // Target > Cursor Position
+                                                            !that.children || (that.cursorPosition = Array.from(that.children).indexOf(data))
+                                                        }
+
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.previousElementSibling;
+
+                                                            // Request Animation Frame
+                                                            requestAnimationFrame(checkPreviousElementSibling)
+                                                        }
+
+                                                    else {
+                                                        // Update > Data
+                                                        data = this.cursor != this.lastElementChild ? this.lastElementChild : this.lastElementChild.previousElementSibling;
+
+                                                        // Request Animation Frame
+                                                        (data == null) || requestAnimationFrame(checkPreviousElementSibling)
+                                                    }
+                                                })(this)
+                                            }
+                                        });
+
+                                        // Unhighlight Character Forwards
+                                        (typeof dynamicText[i].unhighlightCharacterForwards == 'function') || Object.defineProperty(dynamicText[i], 'unhighlightCharacterForwards', {
+                                            // Value
+                                            value: function unhighlightCharacterForwards(that) {
+                                                // Initialization > Data
+                                                let data = this.cursor.nextElementSibling;
+
+                                                // Function > Check Next Element Sibling
+                                                (function checkNextElementSibling(that) {
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (data != null)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') > -1) {
+                                                            // Modification > Data > Data ID
+                                                            data.removeAttribute('data-id');
+
+                                                            // Target > Cursor Position
+                                                            that.cursorPosition += 1
+                                                        }
+
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.nextElementSibling;
+
+                                                            // Request Animation Frame
+                                                            requestAnimationFrame(checkNextElementSibling)
+                                                        }
+                                                })(this)
+                                            }
+                                        });
+
+                                        // Unhighlight Character Forwards (Overflow)
+                                        (typeof dynamicText[i].unhighlightCharacterForwardsOverflow == 'function') || Object.defineProperty(dynamicText[i], 'unhighlightCharacterForwardsOverflow', {
+                                            // Value
+                                            value: function unhighlightCharacterForwardsOverflow(that) {
+                                                // Initialization > Data
+                                                let data = this.cursor.nextElementSibling;
+
+                                                // Function > Check Next Element Sibling
+                                                (function checkNextElementSibling(that) {
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (data != null)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if ((data.getAttribute('data-id') || '').indexOf('highlighted') > -1) {
+                                                            // Modification > Data > Data ID
+                                                            data.removeAttribute('data-id');
+
+                                                            // Target > Cursor Position
+                                                            !that.children || (that.cursorPosition = Array.from(that.children).indexOf(data))
+                                                        }
+
+                                                        else {
+                                                            // Update > Data
+                                                            data = data.nextElementSibling;
+
+                                                            // Request Animation Frame
+                                                            requestAnimationFrame(checkNextElementSibling)
+                                                        }
+
+                                                    else {
+                                                        // Update > Data
+                                                        data = this.cursor != this.firstElementChild ? this.firstElementChild : this.firstElementChild.nextElementSibling;
+
+                                                        // Request Animation Frame
+                                                        (data == null) || requestAnimationFrame(checkNextElementSibling)
+                                                    }
+                                                })(this)
+                                            }
+                                        });
+
+                                    // Pause
+                                    function pause(element = dynamicText[i], timeout = 0) {
+                                        // Update > Element > In Pause
+                                        element['LapysJS inPause'] = true;
+
+                                        // sSet Timeout
+                                        setTimeout(function() {
+                                            // Update > Element > In Pause
+                                            element['LapysJS inPause'] = false
+                                        }, timeout)
+                                    };
+
+                                    // Automate
+                                    function automate(element = dynamicText[i]) {
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (element['LapysJS textFunctionInit']) {
+                                            // Modification > Element > Automating
+                                            element.automating = !0;
+
+                                            // Execution
+                                            !element.hasAttribute('onautomate') || eval(`(function(event = createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element})) {\n${element.getAttribute('onautomate')}\n})()`);
+
+                                            // Element > On Automate
+                                            (typeof element.onautomate != 'function') || element.onautomate(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (element.getEvent('automate') != null)
+                                                /* Loop
+                                                        [for statement]
+
+                                                    > (Element > Get Event > Automate) > Listener
+                                                */
+                                                for (let i = 0; i < element.getEvent('automate').length; i += 1)
+                                                    element.getEvent('automate')[i].listener(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                            /* Function > Type */
+                                            !(element.getAttribute('data-text') != ' ' && element.getAttribute('data-text-function') != 'pause') || (function type() {
+                                                /* Logic
+                                                        [if:else if:else statement]
+                                                */
+                                                if (dynamicText[i]['LapysJS textFunctionInit']) {
+                                                    // Execution
+                                                    !element.hasAttribute('ontype') || eval(`(function(event = createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element})) {\n${element.getAttribute('ontype')}\n})()`);
+
+                                                    // Element > On Automate
+                                                    (typeof element.ontype != 'function') || element.ontype(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (element.getEvent('type') != null)
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > (Element > Get Event > Automate) > Listener
+                                                        */
+                                                        for (let i = 0; i < element.getEvent('type').length; i += 1)
+                                                            element.getEvent('type')[i].listener(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                    /* Update > Dynamic Text > Text Animation Interval
+                                                            --- NOTE ---
+                                                                @lapys: Increments the Text Animation Interval to
+                                                                    match up real-time milliseconds-seconds to determine how
+                                                                    long to process each function depending on the current text accessed.
+                                                    */
+                                                    element['LapysJS inPause'] || (element['LapysJS textAnimationInterval'] += (1 / 60));
+
+                                                    /* Logic
+                                                            [if:else if:else statement]
+
+                                                            --- NOTE ---
+                                                                @lapys: Change the character.
+                                                    */
+                                                    if (element['LapysJS textAnimationInterval'] >= (element['LapysJS textFunctionDuration'] / element['LapysJS text'][element['LapysJS currentTextIndex']].length)) {
+                                                        // Execution
+                                                        !element.hasAttribute('oncharacterchange') || eval(`(function(event = createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element})) {\n${element.getAttribute('oncharacterchange')}\n})()`);
+
+                                                        // Element > On Character Change
+                                                        (typeof element.oncharacterchange != 'function') || element.oncharacterchange(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if (element.getEvent('characterchange') != null)
+                                                            /* Loop
+                                                                    [for statement]
+
+                                                                > (Element > Get Event > Character Change) > Listener
+                                                            */
+                                                            for (let i = 0; i < element.getEvent('characterchange').length; i += 1)
+                                                                element.getEvent('characterchange')[i].listener(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                        // Pause
+                                                        !(
+                                                            element['LapysJS textFunctionCharacterLengthLimit'] > element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].length - 2 &&
+                                                            !(element['LapysJS textFunctionCharacterLengthLimit'] > ~-element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].length)
+                                                        ) || pause(element, element['LapysJS textFunctionDelay'] * 1e3);
+
+                                                        // Update > Dynamic Text
+                                                            /* Logic
+                                                                    [if:else if:else statement]
+
+                                                                    --- NOTE ---
+                                                                        @lapys: Change the function.
+                                                            */
+                                                            if (element['LapysJS textFunctionCharacterLengthLimit'] > ~-element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].length) {
+                                                                // Execution
+                                                                !element.hasAttribute('onfunctionchange') || eval(`(function(event = createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element})) {\n${element.getAttribute('onfunctionchange')}\n})()`);
+
+                                                                // Element > On Function Change
+                                                                (typeof element.onfunctionchange != 'function') || element.onfunctionchange(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                                /* Logic
+                                                                        [if:else if:else statement]
+                                                                */
+                                                                if (element.getEvent('functionchange') != null)
+                                                                    /* Loop
+                                                                            [for statement]
+
+                                                                        > (Element > Get Event > Function Change) > Listener
+                                                                    */
+                                                                    for (let i = 0; i < element.getEvent('functionchange').length; i += 1)
+                                                                        element.getEvent('functionchange')[i].listener(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                                // Update > Element > Current Text Function Index
+                                                                element['LapysJS currentTextFunctionIndex'] += 1;
+
+                                                                /* Logic
+                                                                        [if:else if:else statement]
+
+                                                                        --- NOTE ---
+                                                                            @lapys: Change the Function Sequence.
+                                                                */
+                                                                if (element['LapysJS currentTextFunctionIndex'] > ~-element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']].length) {
+                                                                    // Execution
+                                                                    !element.hasAttribute('onsequencechange') || eval(`(function(event = createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element})) {\n${element.getAttribute('onsequencechange')}\n})()`);
+
+                                                                    // Element > On Sequence Change
+                                                                    (typeof element.onsequencechange != 'function') || element.onsequencechange(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                                    /* Logic
+                                                                            [if:else if:else statement]
+                                                                    */
+                                                                    if (element.getEvent('sequencechange') != null)
+                                                                        /* Loop
+                                                                                [for statement]
+
+                                                                            > (Element > Get Event > Sequence Change) > Listener
+                                                                        */
+                                                                        for (let i = 0; i < element.getEvent('sequencechange').length; i += 1)
+                                                                            element.getEvent('sequencechange')[i].listener(createObject(new (class AutomationEvent extends Event {})(''), {currentTarget: element, path: element.parentPath, srcElement: element, target: element}));
+
+                                                                    // Update > Element > Current Text Function Sequence Index
+                                                                    element['LapysJS currentTextFunctionSequenceIndex'] += 1;
+
+                                                                    /* Logic
+                                                                            [if:else if:else statement]
+
+                                                                        > Update > Element
+                                                                    */
+                                                                    if (element['LapysJS currentTextFunctionSequenceIndex'] > ~-element['LapysJS textFunction'].length) {
+                                                                        // Current Text Function Sequence Index
+                                                                        element['LapysJS currentTextFunctionSequenceIndex'] = 0;
+
+                                                                        // Text Function Iteration CountIndex
+                                                                        element['LapysJS textFunctionIterationCountIndex'] += .5
+                                                                    }
+
+                                                                    // Update > Element > Current Text Index
+                                                                    element['LapysJS currentTextIndex'] += 1;
+
+                                                                    /* Logic
+                                                                            [if:else if:else statement]
+
+                                                                        > Update > Element
+                                                                    */
+                                                                    if (element['LapysJS currentTextIndex'] > ~-element['LapysJS text'].length) {
+                                                                        // Current Text Index
+                                                                        element['LapysJS currentTextIndex'] = 0;
+
+                                                                        // Text Function Iteration Count Index
+                                                                        element['LapysJS textFunctionIterationCountIndex'] += .5
+                                                                    }
+
+                                                                    // Update > Element > Current Text Function Index
+                                                                    element['LapysJS currentTextFunctionIndex'] = 0
+                                                                }
+
+                                                                // Update > Element > Text Function Character Length Limit
+                                                                element['LapysJS textFunctionCharacterLengthLimit'] = 0
+                                                            }
+
+                                                            // Element > [Text Function]
+                                                            element[element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].name](element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].special ? element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].length : element['LapysJS text'][element['LapysJS currentTextIndex']][element['LapysJS currentTextCharacterIndex']]);
+
+                                                            /* Current Text Character Index
+                                                                    --- NOTE ---
+                                                                        @lapys: Increment the next character to be used.
+                                                            */
+                                                            (element['LapysJS currentTextCharacterIndex'] < element['LapysJS text'][element['LapysJS currentTextIndex']].length) || (element['LapysJS currentTextCharacterIndex'] = 0);
+                                                            !(element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].name == 'insertBackwards' || element['LapysJS textFunction'][element['LapysJS currentTextFunctionSequenceIndex']][element['LapysJS currentTextFunctionIndex']].name == 'insertForwards') || (element['LapysJS currentTextCharacterIndex'] += 1);
+                                                            (element['LapysJS currentTextCharacterIndex'] < element['LapysJS text'][element['LapysJS currentTextIndex']].length) || (element['LapysJS currentTextCharacterIndex'] = 0);
+
+                                                            /* Text Function Character Length Limit
+                                                                    --- NOTE ---
+                                                                        @lapys: Determine how many characters the function
+                                                                            will be called for.
+                                                            */
+                                                            element['LapysJS textFunctionCharacterLengthLimit'] += 1;
+
+                                                            /* Text Animation Interval
+                                                                    --- NOTE ---
+                                                                        @lapys: Reset the Typing animation.
+                                                            */
+                                                            element['LapysJS textAnimationInterval'] = 0
                                                     }
 
-                                                    else
-                                                        // (Target > Parent Element > Parent Element > Media) > Set Volume
-                                                        this.parentElement.parentElement.media.setVolume(this.parentElement.parentElement.media['LapysJS formerVolume']);
+                                                    // Modification > Element > Data Text Function
+                                                    (element['LapysJS textFunctionIterationCount'] == Infinity) || (element['LapysJS textFunctionIterationCountIndex'] > element['LapysJS textFunctionIterationCount']) || element.getAttribute('data-text-function').startsWith('pause') || (element.setAttribute('data-text-function', 'pause, ' + element.getAttribute('data-text-function')));
 
-                                                    // Modification > (Target > Next Element Sibling) > Value
-                                                    this.nextElementSibling.value = this.parentElement.parentElement.media.getVolume() * 100
-                                                });
+                                                    // Request Animation Frame
+                                                    (element['LapysJS textFunctionIterationCountIndex'] > element['LapysJS textFunctionIterationCount'] - 1) || requestAnimationFrame(type)
+                                                }
+                                            })()
+                                        }
+                                    };
 
-                                                // Mouse Leave
-                                                media[i].controlsPanel.components.volume.mute.setEvent('mouseleave', function displayVolumeBar() {
-                                                    // (Target > Next Element Sibling) > Close
-                                                    this.nextElementSibling.close()
-                                                });
-
-                                                // Mouse Over
-                                                media[i].controlsPanel.components.volume.mute.setEvent('mouseover', function displayVolumeBar() {
-                                                    // (Target > Next Element Sibling) > Open
-                                                    this.nextElementSibling.open()
-                                                });
-
-                                        /* Set Timeout
-                                                --- NOTE ---
-                                                    @lapys: This timeout tests if the Media is too small
-                                                        for a Controls Panel and reduces the UI components of the Control Panel.
+                                    // Update
+                                    function update() {
+                                        /* Logic
+                                                [if:else if:else statement]
                                         */
-                                        setTimeout(() => {
+                                        if (
+                                            !dynamicText[i].automating &&
+                                            dynamicText[i]['LapysJS textFunctionInit']
+                                        ) {
+                                            // Automate
+                                            automate(dynamicText[i]);
+
+                                            // Request Animation Frame
+                                            requestAnimationFrame(update)
+                                        }
+                                    };
+
+                                    // Main
+                                    (function main() {
+                                        /* Loop
+                                                [do:while statement]
+
+                                            > Deletion
+                                        */
+                                        while (dynamicText[i].querySelectorAll(`span[data-id*='cursor'`)[1])
+                                            dynamicText[i].querySelectorAll(`span[data-id*='cursor'`)[1].remove();
+
+                                        // Insertion
+                                        dynamicText[i].querySelector(`span[data-id*='cursor'`) || dynamicText[i].insertChild('begin', createElement('span', '[data-id=cursor'));
+
+                                        // Modification > Dynamic Text > Cursor > Data ID
+                                        dynamicText[i].cursor.setAttribute('data-id', dynamicText[i].cursor.getAttribute('data-id').replace('highlighted', '').trim());
+
+                                        /* Loop
+                                                [do:while statement]
+
+                                            > Modification > Dynamic Text > [Element] > Data ID
+                                        */
+                                        while (dynamicText[i].querySelector(`[data-id=''`))
+                                            dynamicText[i].querySelector(`[data-id=''`).removeAttribute('data-id');
+
+                                        /* Loop
+                                                [do:while statement]
+
+                                            > Deletion
+                                        */
+                                        while (dynamicText[i].querySelector(':not(br):not(span)'))
+                                            dynamicText[i].querySelector(':not(br):not(span)').delete();
+
+                                        // Request Animation Frame
+                                        requestAnimationFrame(main)
+                                    })();
+
+                                    // {Initialize} Timeout
+                                    setTimeout(function init() {
+                                        // Function > Check Initialize
+                                        function checkInit() {
                                             /* Logic
-                                                    If
-                                                        the Media's Control Panel's scroll width is greater than the Media's width.
+                                                    [if:else if:else statement]
                                             */
-                                            if (media[i].controlsPanel.scrollWidth > media[i].offset.width) {
-                                                // Modification > (Media > Controls Panel > Components)
-                                                    // Fullscreen > Hidden
-                                                    media[i].controlsPanel.components.fullscreen.hidden = !0;
+                                            if (
+                                                dynamicText[i]['LapysJS textFunctionInit'] &&
+                                                dynamicText[i]['LapysJS textFunctionInit'] !== dynamicText[i]['LapysJS formerTextFunctionInit']
+                                            ) {
+                                                // Modification > Dynamic Text
+                                                    // Former Text Function Initialize
+                                                    dynamicText[i]['LapysJS formerTextFunctionInit'] = dynamicText[i]['LapysJS textFunctionInit'];
 
-                                                    // Current Time > Hidden
-                                                    media[i].controlsPanel.components.timeline.currentTime.hidden = !0;
+                                                    // Inner HTML
+                                                    dynamicText[i].innerHTML = '<span data-id=cursor></span>';
 
-                                                    // Duration > Hidden
-                                                    media[i].controlsPanel.components.timeline.duration.hidden = !0
+                                                    // In Pause
+                                                    dynamicText[i]['LapysJS inPause'] = false;
+
+                                                    // Current Text Function Index
+                                                    dynamicText[i]['LapysJS currentTextFunctionIndex'] =
+
+                                                    // Current Text Function Sequence Index
+                                                    dynamicText[i]['LapysJS currentTextFunctionSequenceIndex'] =
+
+                                                    // Current Text Index
+                                                    dynamicText[i]['LapysJS currentTextIndex'] =
+
+                                                    // Current Text Character Index
+                                                    dynamicText[i]['LapysJS currentTextCharacterIndex'] =
+
+                                                    // Text Function Character Length Limit
+                                                    dynamicText[i]['LapysJS textFunctionCharacterLengthLimit'] =
+
+                                                    // Text Function Iteration Count Index
+                                                    dynamicText[i]['LapysJS textFunctionIterationCountIndex'] =
+
+                                                    // Text Animation Interval
+                                                    dynamicText[i]['LapysJS textAnimationInterval'] = 0;
+
+                                                    // Cursor > Delete
+                                                    dynamicText[i].cursor.delete = Function();
+
+                                                // Update | Request Animation Frame
+                                                typeof +dynamicText[i].getAttribute('data-text-function-iteration-count') == 'number' && dynamicText[i].getAttribute('data-text-function-iteration-count') != 'infinite' ? repeat(update, +dynamicText[i].getAttribute('data-text-function-iteration-count')) : ((dynamicText[i].getAttribute('data-text-function-iteration-count') != 'infinite') || requestAnimationFrame(update));
+
+                                                // {Update} Mutation Observer
+                                                ('formerTextFunctionInit' in dynamicText[i]) || new MutationObserver(function() { (typeof +dynamicText[i].getAttribute('data-text-function-iteration-count') != 'number') || repeat(update, +dynamicText[i].getAttribute('data-text-function-iteration-count')) }).observe(dynamicText[i], {attributes: !0})
                                             }
-                                        }, 500)
-                                    }
 
-                                    // Modification > Media > Controls
-                                    !media[i].controls || (media[i].controls = !!0);
+                                            else
+                                                // Request Animation Frame
+                                                requestAnimationFrame(checkInit)
+                                        };
 
-                                    // Media > Set Volume
-                                    media[i].getVolume() || media[i].setVolume(media[i].controlsPanel.components.volume.bar.value / 100);
+                                        // Check Initialize
+                                        checkInit();
 
-                                    // Modification > Media > Former Volume
-                                    media[i]['LapysJS formerVolume'] || (media[i]['LapysJS formerVolume'] = media[i].getVolume());
+                                        /* {Detect Text Function Initialize} Mutation Observer
+                                                --- NOTE ---
+                                                    @lapys: This is to detect whether or not the Dynamic Text
+                                                        is being toggled.
+                                        */
+                                        new MutationObserver(function detectTextFunctioninit() {
+                                            // Check Initialize
+                                            checkInit();
 
-                                    /* Logic
-                                            If
-                                                Media is muted.
-                                    */
-                                    if (media[i].muted) {
-                                        // Modification > Media > Muted
-                                        media[i].muted = !!0;
-                                        media[i].removeAttribute('muted');
+                                            // Update > Dynamic Text > Former Text Function Initialize
+                                            dynamicText[i]['LapysJS formerTextFunctionInit'] = dynamicText[i]['LapysJS textFunctionInit']
+                                        }).observe(dynamicText[i], {attributes: !0});
+                                    }, dynamicText[i]['LapysJS textFunctionInitialDelay'] * 1e3);
 
-                                        // Media > Set Volume
-                                        media[i].setVolume(0)
-                                    }
-                                }, 100)
-                        })
-                    })();
+                                // Modification > Dynamic Text > Is Modified
+                                dynamicText[i]['LapysJS isModified'] = !0
+                            }
+                    })
+                })();
 
                 // Placeholder
                     // On Node Added
@@ -11115,7 +10563,7 @@
 
                 // Screen Tip
                     // Registration
-                    (!window.customElements || (document.createElement('screen-tip').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('screen-tip', class HTMLScreenTipElement extends HTMLElement {}));
+                    ((typeof window.customElements != 'function') || (typeof document.registerElement != 'function') || (document.createElement('screen-tip').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('screen-tip', class HTMLScreenTipElement extends HTMLElement {}));
 
                     // Initialization > (Screen Tip, Title Element)
                     let screenTip = document.createElement('screen-tip'),
@@ -11716,7 +11164,7 @@
                                             this.setAttribute('data-selected', '');
 
                                             // Modification > (Target > Select Box) > Value
-                                            ([...this.children].indexOf(event.path[0]) < 0) || (this.selectBox.value = this.children[[...this.children].indexOf(event.path[0])].getAttribute('data-value') || this.children[[...this.children].indexOf(event.path[0])].innerHTML)
+                                            ([...this.children].indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement))) < 0) || (this.selectBox.value = this.children[[...this.children].indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)))].getAttribute('data-value') || this.children[[...this.children].indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)))].innerHTML)
                                         });
 
                                         // Mouse Move
@@ -11735,7 +11183,7 @@
                             @lapys: For messaging users in a subtle non-distracting method.
                 */
                     // Registration
-                    (!window.customElements || (document.createElement('screen-toast').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('screen-toast', class HTMLToastElement extends HTMLElement {}));
+                    ((typeof window.customElements != 'function') || (typeof document.registerElement != 'function') || (document.createElement('screen-toast').constructor !== HTMLElement) || (customElements || {define: () => {}}).define('screen-toast', class HTMLToastElement extends HTMLElement {}));
 
                     // Initialization > (Toast, Toast Element)
                     let toast = document.createElement('screen-toast'),
@@ -11954,16 +11402,22 @@
                     // Initialization > Data
                     let data = document.createElement('a');
 
+                    // Insertion
+                    document.body.appendChild(data);
+
                     /* Loop
                             Index Target's attributes.
 
                         > Modification > Data > [Event Path > Attribute > Name]
                     */
-                    for (let i = 0; i < event.path[0].attributes.length; i += 1)
-                        data.setAttribute(event.path[0].attributes[i].name, event.path[0].attributes[i].value);
+                    for (let i = 0; i < (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).attributes.length; i += 1)
+                        data.setAttribute((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).attributes[i].name, (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).attributes[i].value);
 
                     // Data > Click
-                    data.click()
+                    data.click();
+
+                    // Deletion
+                    document.body.removeChild(data)
                 });
 
                 // Key Down, Mouse Up
