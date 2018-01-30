@@ -84,6 +84,12 @@
                 }
         }
 
+    /* Text */
+    [data-id=text] {
+        font-family: 'PT Sans', 'Open Sans', 'Calibri Light', 'Droid Serif', sans-serif;
+        font-weight: lighter
+    }
+
     /* Section */
     .section {
         font-size: 91.64503%

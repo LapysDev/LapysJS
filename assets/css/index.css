@@ -6,6 +6,12 @@
         overflow-x: hidden
     }
 
+/* Assets */
+    /* Cursor */
+    [data-id*=cursor] {
+        background-color: #FFFFFF !important
+    }
+
 /* Components */
     /* Cover */
     #cover {
@@ -120,73 +126,6 @@
                     max-height: 100px
                 }
         }
-
-    /* Introduction */
-    #introduction {
-        color: #0056FF;
-        padding-bottom: 10px;
-        padding-top: 10px
-    }
-        /* @media > (Mobile, Tablet) View */
-        @media only all
-            and (max-width: 768px) {
-                #introduction {
-                    height: 150vh;
-                    min-height: 150%
-                }
-        }
-
-        /* Content */
-            /* States */
-                /* First Child */
-                    /* Content */
-                    #introduction > :first-child > * {
-                        margin: 10px auto
-                    }
-
-                    /* Text */
-                    #introduction > :first-child > [data-id=text] {
-                        max-height: 200px;
-                        width: 75%
-                    }
-
-                /* Last Child */
-                    /* @media > (Mobile, Tablet) View */
-                    @media only all
-                        and (max-width: 768px) {
-                            #introduction > :last-child {
-                                flex-direction: column
-                            }
-                    }
-
-                    /* <carousel-component> */
-                    #introduction > :last-child > carousel-component {
-                        height: 300px;
-                        margin: auto 1%
-                    }
-                        /* @media */
-                            /* Mobile View */
-                            @media only all
-                                and (max-width: 425px) {
-                                    #introduction > :last-child > carousel-component {
-                                        height: 200px
-                                    }
-                            }
-
-                            /* Tablet View */
-                            @media only all
-                                and (max-width: 768px)
-                                and (min-width: 426px) {
-                                    #introduction > :last-child > carousel-component {
-                                        height: 250px
-                                    }
-                            }
-
-                        /* (Buttons, Indicators) Container */
-                        #introduction > :last-child > carousel-component > [data-id=buttons-container],
-                        #introduction > :last-child > carousel-component > [data-id=indicators-container] {
-                            display: none
-                        }
 
     /* Particles JS */
     #particles-js {

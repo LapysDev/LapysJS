@@ -1,0 +1,31 @@
+/* Assets */
+    /* Syntax Highlighted */
+        /* Highlight Color */
+        .syntax-highlighted {
+            background-color: #25262B;
+            color: #D5D6DB;
+            display: inline-block;
+            text-align: left;
+            white-space: pre-line
+        }
+            /* Class */
+            .syntax-highlighted .highlight-color[role=attribute],
+            .syntax-highlighted .highlight-color[role=class] {
+                color: #7AD144
+            }
+
+            /* Comment */
+            .syntax-highlighted .highlight-color[role=comment] {
+                color: #5C666B
+            }
+
+            /* ID */
+            .syntax-highlighted .highlight-color[role=id] {
+                color: #D68B30
+            }
+
+            /* Operator */
+            .syntax-highlighted .highlight-color[role=element-tag-name],
+            .syntax-highlighted .highlight-color[role=operator] {
+                color: #D42D64
+            }

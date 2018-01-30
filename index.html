@@ -24,7 +24,12 @@
 
     <!-- Main -->
     <main>
-        <!-- Cover -->
+        <!-- Cover
+                    --- WARN ---
+                        @lapys: The 'script' attributes used here must be compressed
+                            to be effective.
+                                (Reason being that ParticlesJS and LapysJS` Dynamic Text PlugIn are both CPU & GPU heavy).
+        -->
         <jumbotron-element class='bg bg-cover bg-tone fill full-page no-overflow row-grp' id=cover>
             <!-- Curtain
                         --- NOTE ---
@@ -33,34 +38,7 @@
 
                                 ~ github.com/VincentGarreau/particles.js (v0.0.2)
             -->
-            <div class='absolute curtain no-overflow smooth sticky-left sticky-top' data-id=backdrop id=particles-js script='
-                let that = this;
-
-                invokeEvent(`resize`, function() {
-                    that.firstElementChild.height = screen.height;
-                    that.firstElementChild.setCSS({height: `${screen.height}px`, width: `${screen.width}px` });
-                    that.firstElementChild.width = screen.width
-                });
-
-                check(function() {
-                    return `ALLOW_PARTICLES_JS_SCRIPT` in global
-                }, function() {
-                    if (
-                        innerWidth > 767 &&
-                        ALLOW_PARTICLES_JS_SCRIPT
-                    ) {
-                        js.src(`particlesJSScript`, {async: ``, src: `vendors/js/particles.min.js`, type: `text/javascript`});
-
-                        timeout(function() {
-                            js.src(`particlesJSConfigurationScript`, {defer: ``, src: `vendors/js/particles-js-config.min.js`, type: `text/javascript`})
-                        }, 10)
-                    }
-
-                    else
-                        that.setCSS(`background`, `transparent !important`);
-
-                    !ALLOW_PARTICLES_JS_SCRIPT || invokeEvent(`resize`, function() { innerWidth > 767 ? that.delClass(`hidden`) : that.addClass(`hidden`) })
-                })' style='max-height: 100vh'>
+            <div class='absolute curtain no-overflow smooth sticky-left sticky-top' data-id=backdrop id=particles-js script='let that=this;invokeEvent(`resize`,function() {that.firstElementChild.height=screen.height;that.firstElementChild.setCSS({height:`${screen.height}px`,width:`${screen.width}px`});that.firstElementChild.width=screen.width});check(function(){return`ALLOW_PARTICLES_JS_SCRIPT`in global},function(){if(innerWidth>767&&ALLOW_PARTICLES_JS_SCRIPT){js.src(`particlesJSScript`,{async:``,src:`vendors/js/particles.min.js`,type:`text/javascript`});check(function(){return!!global.particlesJS},function(){js.src(`particlesJSConfigurationScript`,{defer:``,src:`vendors/js/particles-js-config.min.js`,type:`text/javascript`})})}else that.setCSS(`background`,`transparent !important`);!ALLOW_PARTICLES_JS_SCRIPT||invokeEvent(`resize`,function(){innerWidth>767?that.delClass(`hidden`):that.addClass(`hidden`)})})' style='max-height: 100vh'>
                 <canvas class=particles-js-canvas-el> </canvas>
             </div>
 
@@ -95,28 +73,7 @@
                             data-text-function-initial-delay=.5
                             data-text-function-separator=;
                             data-text-separator=,
-                            script='
-                                let that = this;
-
-                                check(function() {
-                                    return `ALLOW_DYNAMIC_TEXT_INIT_SCRIPT` in global
-                                }, function() {
-                                    check(function() {
-                                        return document.readyState == `complete` && ALLOW_DYNAMIC_TEXT_INIT_SCRIPT
-                                    }, function() {
-                                        timeout(function() {
-                                            that.attr(`data-text-function-init`, true)
-                                        }, 100)
-                                    });
-
-                                    timeout(function() {
-                                        if (!ALLOW_DYNAMIC_TEXT_INIT_SCRIPT) {
-                                            (that.$$(`[data-id*="cursor"`) || that.firstElementChild || `div`.html).addClass(`transparent`);
-                                            that.innerText = `Create new standards of web development`
-                                        }
-                                    }, 50)
-                                })
-                            '
+                            script='let that=this;check(function(){return`ALLOW_DYNAMIC_TEXT_INIT_SCRIPT`in global},function(){check(function(){return document.readyState==`complete`&&ALLOW_DYNAMIC_TEXT_INIT_SCRIPT},function(){timeout(function(){that.attr(`data-text-function-init`,true)},100)});timeout(function(){if(!ALLOW_DYNAMIC_TEXT_INIT_SCRIPT){(that.$$(`[data-id*="cursor"`)||that.firstElementChild||`div`.html).addClass(`transparent`);that.innerText=`Create new standards of web development`}},50)})'
                             style='max-width: 90%'
                         ></dynamic-text-component>
                         <span class=transparent>&nbsp;</span>
@@ -124,9 +81,9 @@
                 </hgroup>
 
                 <!-- Image -->
-                <div class='center grid-3 m-grid-2 t-grid-2' data-id=image>
+                <div class='center flex grid-3 m-grid-2 t-grid-2' data-id=image>
                     <!-- Logo -->
-                    <img class='float-right responsive' data-id=icon draggable=false role=logo script=this.src=decodeURIComponent(document.favicon[0].href)>
+                    <img class='fill float-right responsive' data-id=icon draggable=false role=logo script='let that=this;check(function(){return!!document.favicon[0]},function(){that.src=decodeURIComponent(document.favicon[0].href)})'>
                 </div>
             </div>
 
@@ -136,32 +93,6 @@
                 <nav class='center col-grp fill flex relative' role=header-navigation-bar></nav>
             </div>
         </jumbotron-element>
-
-        <section class='full-page row-grp section' id=introduction>
-            <div class='center col-1 flex row-grp'>
-                <!-- Header -->
-                <h1 class=col-1 data-id=header> <access-value data-id=value value=app.name> </access-value> </h1>
-
-                <!-- Text -->
-                <p class='col-3 no-overflow' data-id=text script='let that = this; timeout(function() { that.createDummyText(3) })'> </p>
-            </div>
-
-            <div class='center col-3 col-grp' style='width: 95%'>
-                <!-- Code -->
-                <carousel-component class='code-flag col-1 m-col-0 t-col-0' data-id=code onclick='let that = this; this.delAttr(`data-selected`); timeout(function() { that.delAttr(`data-selected`) })' script='let that = this; invokeEvent(`resize`, function() { $$(`[data-id=carouselComponentCodeFlag0`) ? $$(`[data-id=carouselComponentCodeFlag0`).innerHTML = `${that.CSSSelector}::before { left: ${that.offset.left - 17.5 - 3.5}px }` : css.style(`carouselComponentCodeFlag0`, `${that.CSSSelector}::before { left: ${that.offset.left - 17.5 - 3.5}px }`) })'>
-                    <div class=bg-c-r> </div>
-                    <div class=bg-c-g> </div>
-                    <div class=bg-c-b> </div>
-                </carousel-component>
-
-                <!-- Console -->
-                <carousel-component class='notepad-flag col-1 m-col-0 t-col-0' data-id=console onclick='let that = this; this.delAttr(`data-selected`); timeout(function() { that.delAttr(`data-selected`) })' script='let that = this; invokeEvent(`resize`, function() { $$(`[data-id=carouselComponentCodeFlag1`) ? $$(`[data-id=carouselComponentCodeFlag1`).innerHTML = `${that.CSSSelector}::before { left: ${that.offset.left - 17.5 - 3.5}px }` : css.style(`carouselComponentCodeFlag1`, `${that.CSSSelector}::before { left: ${that.offset.left - 17.5 - 3.5}px }`) })'>
-                    <div class=bg-c-r> </div>
-                    <div class=bg-c-g> </div>
-                    <div class=bg-c-b> </div>
-                </carousel-component>
-            </div>
-        </section>
     </main>
 </body>
 </html>
