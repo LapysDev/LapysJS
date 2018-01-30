@@ -1281,6 +1281,31 @@
                 }
             });
 
+        // Select
+        (typeof window.select == 'function') || (window.constructor.prototype.select = function select() {
+            /* Logic
+                    If
+                        there is an Argument.
+            */
+            if (arguments.length > 0)
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (
+                    arguments[0].constructor.name.indexOf('Element') > -1 &&
+                    typeof arguments[0].tagName == 'string'
+                ) {
+                    // Argument 0 > Select
+                    (typeof arguments[0].select != 'function') || arguments[0].select();
+
+                    // Return
+                    return arguments[0]
+                }
+
+            // Return
+            return null
+        });
+
         // Square Root
         (typeof window.sqrt == 'function') || Object.defineProperty(window.constructor.prototype, 'sqrt', {
             // Value
