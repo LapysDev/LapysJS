@@ -16,130 +16,6 @@ if ('ready' in window.LapysJS) {
             // Random
             let random = '::' + str(rand()).removeChar(/\./) + '::';
 
-            // String
-                // Parse Highlighting
-                String.prototype.def('parseHighlighting', {
-                    // Value
-                    value: function parseHighlighting(language) {
-                        // Initialization > Boolean
-                        let boolean = !!0;
-
-                        // Return
-                        return this.replace(/([^\\]|\b)~c(\-[0-9]|)/g, data => {
-                            // Update > Boolean
-                            boolean = !boolean;
-
-                            /* Logic
-                                    [if:else if:else statement]
-                            */
-                            if (boolean)
-                                /* Logic
-                                        [switch:case:default statement]
-
-                                    > Return
-                                */
-                                switch (language) {
-                                    // CSS
-                                    case 'CSS':
-                                        return data.firstChar + '/*';
-                                        break;
-
-                                    // HTML
-                                    case 'HTML':
-                                        return data.firstChar + '&lt;!--';
-                                        break;
-
-                                    // JavaScript
-                                    case 'JavaScript':
-                                        return data.firstChar + (data.lastChar == '1' ? '/*' : '//');
-                                        break;
-
-                                    // Plain Text
-                                    case 'PlainText':
-                                        return data.firstChar
-                                }
-
-                            else
-                                /* Logic
-                                        [switch:case:default statement]
-
-                                    > Return
-                                */
-                                switch (language) {
-                                    // CSS
-                                    case 'CSS':
-                                        return data.firstChar + '*/';
-                                        break;
-
-                                    // HTML
-                                    case 'HTML':
-                                        return data.firstChar + '--&gt;';
-                                        break;
-
-                                    // JavaScript
-                                    case 'JavaScript':
-                                        return data.firstChar + (data.lastChar == '1' ? '*/' : '');
-                                        break;
-
-                                    // Plain Text
-                                    case 'PlainText':
-                                        return data.firstChar
-                                }
-
-                            // Return
-                            return data
-                        }).replace(/([^\\]|\b)~t(\-[0-9]|)/g, data => {
-                            // Return
-                            return (`${random}-tab-space`.repeat(+data.lastChar || 4))
-                        }).replace(/( |\n|~w)~([a-z]){2,}=([^(=|~)]){1,}( |\n|~w)/g, data => {
-                            // Return
-                            return (data.startsWith('~w') ? '~w' : data.firstChar) + (`��${random}-command:${data.getAfterChar(data.startsWith('~w') ? '~w' : data.firstChar).getBeforeChar(data.endsWith('~w') ? '~w' : data.lastChar, !0)}��`) + (data.endsWith('~w') ? '~w' : data.lastChar)
-                        }).replace(/~w/g, '')
-                    },
-
-                    // Writable
-                    writable: false
-                });
-
-                // Parse Highlighted Code
-                String.prototype.def('parseHighlightedCode', {
-                    // Value
-                    value: function parseHighlightedCode() {
-                        // Initialization > (Boolean, Data)
-                        let boolean = false,
-                            data = createDocumentFragment(`<div>${this}</div>`, 'div');
-
-                        /* Loop
-                                [for statement]
-                        */
-                        for (let i = 0; i < data.$$('[role=comment', 'length'); i += 1)
-                            /* Loop
-                                    [for statement]
-
-                                > Error Handling
-                            */
-                            for (let j = ~-data.$$('[role=comment', i).$$('*', 'length'); j > -1; j -= 1)
-                                try {
-                                    // Modification > (Metadata > [Element]) > Outer HTML
-                                    data.$$('[role=comment', i).$$('*', j).outerHTML = data.$$('[role=comment', i).$$('*', j).innerHTML
-                                }
-
-                                catch (error) {}
-
-                        // Return
-                        return data.$$('*', 0).innerHTML.replace(reg(`${random}-tab-space`, 'g'), ' ').replace(reg(`��${random}\\-command:~([^�]){1,}��`, 'g'), data => {
-                            // Boolean
-                            boolean = !boolean;
-
-                            // Return
-                            return boolean ? '<span ' + data.getAfterChar(`��${random}-command:~`).getBeforeChar('��', !0) + '>' : '</span>'
-                        })
-                    },
-
-                    // Writable
-                    writable: false
-                });
-
         // Function
             // Highlight CSS Syntax
             global.def('highlightCSSSyntax', {
@@ -148,8 +24,70 @@ if ('ready' in window.LapysJS) {
                     // Modification > Element > Highlighted Code HTML
                     element.highlightedCodeHTML = element.sourceCode;
 
-                    // Update > Element Highlighted Code HTML
-                    element.highlightedCodeHTML = element.highlightedCodeHTML.parseHighlighting(element.language).parseHighlightedCode();
+                    /* Update > Element Highlighted Code HTML
+                            --- NOTE ---
+                                @lapys: Regular Expression Sequence:
+                                    - Trimmed newlines.
+                                    - Created operators.
+                                    - Created multi-line comments.
+                                    - Created strings.
+                                    - Created ID selectors.
+                                    - Created hexadecimal.
+                                    - Created numbers.
+                                    - Created classes (pseudo classes as well) selectors.
+                                    - Created keywords.
+                                    - Created CSS at-rules.
+                                    - Created CSS properties.
+                                        -- Modified CSS property values.
+                                    - Created CSS numeral measurements.
+                                    - Corrected numerals.
+                                    - Created attribute selectors.
+                                    - Created element tag name selectors.
+                                    - Created keyword modifiers.
+                    */
+                    element.highlightedCodeHTML = element.highlightedCodeHTML.trimChar('\n').replace(/%/g, '<span class=highlight-color role=operator>%</span>').replace(/\/\*[^*]{0,}\*\/|\/\*[^\/]{0,}\*\//g, '<span class=highlight-color role=comment>$&</span>').replace(/'[^']{0,}'|"[^"]{0,}"|`[^`]{0,}`/g, '<span class=highlight-color role=string>$&</span>').replace(/\#(\w|\$|_)(\w|\$|_|\-){0,}/g, '<span class=highlight-color role=id>$&</span>').replace(/#[a-fA-F0-9]{1,9}/g, data => {
+                        // Return
+                        return len(data.slice(len('#'))) == 3 || len(data.slice(len('#'))) == 6 || len(data.slice(len('#'))) == 8 ? `<span class=highlight-color role=hexadecimal>${data}</span>` : data
+                    }).replace(/\b([0-9]|\.)([0-9]|\.){0,}/g, data => {
+                        // Return
+                        return data == '.' ? data : (data.count(/\./g) > 1 ? data : `<span class=highlight-color role=numeral>${data}</span>`)
+                    }).replace(/(\.|::|:)(\w|\$|_)(\w|\$|_|\-){0,}/g, '<span class=highlight-color role=class>$&</span>').replace(/\band\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/\bonly\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/@([a-z]|\-){1,}\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/([a-z]|\-){1,}:[^\n]{1,}/g, data => {
+                        // Return
+                        return ('<span class=highlight�color role=property>' + data.getBeforeChar(':') + '</span>:<span class=highlight�color role=value>' + (data.getAfterChar(':').trimRight().endsWith(';') || data.getAfterChar(':').trimRight().endsWith(',') || data.getAfterChar(':').trimRight().endsWith('{') ? data.getAfterChar(':').slice(0, -len(',')) : data.getAfterChar(':')) + '</span>' + (data.getAfterChar(':').trimRight().endsWith(';') || data.getAfterChar(':').trimRight().endsWith(',') || data.getAfterChar(':').trimRight().endsWith('{') ? data.lastChar : '')).replace(/\(/g, '<span class=highlight�color role=default>(</span>').replace(/\)/g, '<span class=highlight�color role=default>)</span>').replace(/,/g, '<span class=highlight�color role=default>,</span>').replace(/([a-zA-Z]|\-){1,}<span class=highlight�color role=default>\(<\/span>/g, '<span class=highlight-color role=default>$&</span>').replace(/�/g, '-')
+                    }).replace(/[0-9]<\/span>cm/g, data => {
+                        // Return
+                        return data[0] + `</span><span class=highlight-color role=operator>${data.slice(len('</span>') + 1)}</span>`
+                    }).replace(/[0-9]<\/span>em/g, data => {
+                        // Return
+                        return data[0] + `</span><span class=highlight-color role=operator>${data.slice(len('</span>') + 1)}</span>`
+                    }).replace(/[0-9]<\/span>in/g, data => {
+                        // Return
+                        return data[0] + `</span><span class=highlight-color role=operator>${data.slice(len('</span>') + 1)}</span>`
+                    }).replace(/[0-9]<\/span>px/g, data => {
+                        // Return
+                        return data[0] + `</span><span class=highlight-color role=operator>${data.slice(len('</span>') + 1)}</span>`
+                    }).replace(/[0-9]<\/span>vh/g, data => {
+                        // Return
+                        return data[0] + `</span><span class=highlight-color role=operator>${data.slice(len('</span>') + 1)}</span>`
+                    }).replace(/(\-|\.)<span class=highlight\-color role=numeral>[0-9]/g, data => {
+                        // Return
+                        return '<span class=highlight-color role=numeral>' + data[0] + data.lastChar
+                    }).replace(/\[(\w|\$|_)(\w|\$|_|\-){0,}\]/g, data => {
+                        // Return
+                        return data[0] + '<span class=highlight-color role=attribute>' + data.slice(len('['), -len(']')) + '</span>' + data.lastChar
+                    }).replace(/\[(\w|\$|_)(\w|\$|_|\-){0,}(\*|~|\^|)=[^ ]{1,}\]/g, data => {
+                        // Return
+                        return data[0] + '<span class=highlight-color role=attribute>' + data.slice(len('['), -len(']')).getBeforeChar(data.getBeforeChar('=').lastChar == '*' || data.getBeforeChar('=').lastChar == '~' || data.getBeforeChar('=') == '^' ? '*=' : '=') + `</span><span class=highlight-color role=operator>${data.getBeforeChar('=').lastChar == '*' || data.getBeforeChar('=').lastChar == '~' || data.getBeforeChar('=') == '^' ? '*=': '='}</span><span class=highlight-color role=string>` + data.slice(len('['), -len(']')).getAfterChar(data.getBeforeChar('=').hasText('*') ? '*=' : '=') + '</span>' + data.lastChar
+                    }).replace(/\[(\w|\$|_)(\w|\$|_|\-){0,}(\*|~|\^|)=<span class=highlight\-color role=string>.*<\/span>\]/g, data => {
+                        // Return
+                        return data[0] + '<span class=highlight-color role=attribute>' + data.slice(len('['), -len(']')).getBeforeChar(data.getBeforeChar('=').lastChar == '*' || data.getBeforeChar('=').lastChar == '~' || data.getBeforeChar('=') == '^' ? '*=' : '=') + `</span><span class=highlight-color role=operator>${data.getBeforeChar('=').lastChar == '*' || data.getBeforeChar('=').lastChar == '~' || data.getBeforeChar('=') == '^' ? '*=': '='}</span>` + data.slice(len('['), -len(']')).getAfterChar(data.getBeforeChar('=').hasText('*') ? '*=' : '=') + data.lastChar
+                    }).replace(/(}|}<\/span>|\.<\/span>|:<\/span>|#<\/span>| |\n)(\w|\$|_)(\w|\$|_|\-){0,}({|<span class=highlight\-color role=default>{|<span class=highlight\-color role=class>\.|<span class=highlight\-color role=class>:|<span class=highlight\-color role=id>#| )/g, data => {
+                        // Initialization > Metadata
+                        let metadata = data[0] == '}' || data[0] == ' ' || data[0] == '\n' ? data[0] : '>';
+
+                        // Return
+                        return data.getBeforeChar(metadata) + metadata + (data.getAfterChar(metadata).hasText('<span') ? '<span class=highlight-color role=element-tag-name>' + data.getAfterChar(metadata).getBeforeChar('<') + '</span><' + data.getAfterChar(metadata).getAfterChar('<') : '<span class=highlight-color role=element-tag-name>' + data.getAfterChar(metadata).slice(0, -1) + '</span>' + data.lastChar)
+                    }).replace(/\ball\b/g, '<span class=highlight-color role=value>$&</span>');
 
                     // Modification > Element > Inner HTML
                     element.innerHTML = element.highlightedCodeHTML
@@ -166,8 +104,63 @@ if ('ready' in window.LapysJS) {
                     // Modification > Element > Highlighted Code HTML
                     element.highlightedCodeHTML = element.sourceCode;
 
-                    // Update > Element Highlighted Code HTML
-                    element.highlightedCodeHTML = element.highlightedCodeHTML.parseHighlighting(element.language).parseHighlightedCode();
+                    /* Update > Element Highlighted Code HTML
+                            --- NOTE ---
+                                @lapys: Regular Expression Sequence:
+                                    - Trimmed newlines.
+                                    - Created attribute values.
+                                    - Modified closing and opening element tag characters.
+                                    - Created non-spaced attributes.
+                                    - Created document type.
+                                    - Created comments.
+                                    - Created non-value attributes.
+                                    - Created default closing and opening element tags.
+                                    - Created single-line attribute modified opening tags.
+                                    - Created multi-line attribute modified opening tags.
+                    */
+                    element.highlightedCodeHTML = element.highlightedCodeHTML.trimChar('\n').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/'[^']{0,}'|"[^"]{0,}"/g, data => {
+                        // Return
+                        return data.hasText('&lt;') && data.hasText('&gt;') ? `✑${data}✒` : data
+                    }).replace(/(\w|\$|_)(\w|\$|_|\-){0,}=[^ ]{1,}/g, data => {
+                        // Initialization > Metadata
+                        let metadata = 'span classhighlight-color roleattribute' + data.getBeforeChar('=') + '/spanspan classhighlight-color rolestring' + data.getAfterChar('=') + '/span';
+
+                        // Return
+                        return metadata.slice(0, -len('/span')).trimRight().endsWith('&gt;') ? metadata.slice(0, -len('/span')).trimRightChar(' ', '').trimRightChar('\n', '✐').getBeforeChar('&gt;', true) + '/span&gt;' + metadata.slice(0, -len('/span')).trimRightChar(' ', '').trimRightChar('\n', '✐').getAfterChar('&gt;', true) : metadata
+                    }).replace(/!DOCTYPE( html|)/g, data => {
+                        // Return
+                        return data[0] + `<span class=highlight-color role=element-tag-name>${data.slice(len('!'))}</span>`
+                    }).replace(/&lt;!\-\-[^(\-|>)]{0,}\-\-&gt;/g, '<span class=highlight-color role=comment>$&</span>').replace(/&lt;(\w|\$|_)(\w|\$|_|\-){0,}&gt;/g, data => {
+                        // Initialization > Data
+                        data = data.replace('&lt;', '<').replace('&gt;', '>');
+
+                        // Return
+                        return (data[0] + `<span class=highlight-color role=element-tag-name>${data.slice(len('<'), -len('>'))}</span>` + data.lastChar).replace('<', '&lt;').slice(0, -len('>')) + '&gt;'
+                    }).replace(/( |\n)(\w|\$|_)(\w|\$|_|\-){0,}( |\n|>)/g, data => {
+                        // Return
+                        return data[0] + '<span class=highlight-color role=attribute>' + data.slice(len(data[0]), -len(data.lastChar)) + '</span>' + data.lastChar
+                    }).replace(/=(\w|\$|_)(\w|\$|_|\-){0,}( |\n|&gt;)/g, data => {
+                        // Return
+                        return '=' + data.slice(len('='), -len(data.lastChar == ';' ? '&gt;' : data.lastChar)) + (data.lastChar == ';' ? '&gt;' : data.lastChar)
+                    }).replace(/&lt;\/(\w|\$|_)(\w|\$|_|\-){0,}&gt;/g, data => {
+                        // Initialization > Data
+                        data = data.replace('&lt;', '<').replace('&gt;', '>');
+
+                        // Return
+                        return (data[0] + `/<span class=highlight-color role=element-tag-name>${data.slice(len('</'), -len('>'))}</span>` + data.lastChar).replace('<', '&lt;').slice(0, -len('>')) + '&gt;'
+                    }).replace(/&lt;(\w|\$|_)(\w|\$|_|\-){0,} [^\n]{1,}&gt;/g, data => {
+                        // Initialization > Data
+                        data = data.replace('&lt;', '<').replace('&gt;', '>');
+
+                        // Return
+                        return ('&lt;' + 'span class=highlight-color role=element-tag-name' + data.getBeforeChar(' ').slice(len('<')) + '/span ' + data.getAfterChar(' ')).replace(//g, '<').replace(//g, '>')
+                    }).replace(/&lt;(\w|\$|_)(\w|\$|_|\-){0,}\n/g, data => {
+                        // Initialization > Data
+                        data = data.replace('&lt;', '<').replace('&gt;', '>');
+
+                        // Return
+                        return '&lt;' + `<span class=highlight-color role=element-tag-name>${data.slice(len('<')).getBeforeChar('\n')}</span>` + '\n'
+                    }).replace(//g, '<').replace(//g, '>').replace(//g, '=').replace(//g, ' ').replace(/✐/g, '\n').replace(/✑/g, '<span class=highlight-color role=string>').replace(/✒/g, '</span>');
 
                     // Modification > Element > Inner HTML
                     element.innerHTML = element.highlightedCodeHTML
@@ -184,8 +177,42 @@ if ('ready' in window.LapysJS) {
                     // Modification > Element > Highlighted Code HTML
                     element.highlightedCodeHTML = element.sourceCode;
 
-                    // Update > Element Highlighted Code HTML
-                    element.highlightedCodeHTML = element.highlightedCodeHTML.parseHighlighting(element.language).parseHighlightedCode();
+                    /* Update > Element Highlighted Code HTML
+                            --- NOTE ---
+                                @lapys: Regular Expression Sequence:
+                                    - Trimmed newlines.
+                                    - Created operators and commands.
+                                    - Created control flow keywords.
+                                    - Created single-line comments.
+                                    - Created multi-line comments.
+                                    - Created strings.
+                                    - Created variable declaration keywords.
+                                    - Created boolean keywords.
+                                    - Created JSON properties.
+                                    - Created single-argument function call values.
+                                    - Created properties.
+                                    - Created functions.
+                                    - Created numbers.
+                    */
+                    element.highlightedCodeHTML = element.highlightedCodeHTML.trimChar('\n').replace(/-/g, 'span class�highlight-color role�operator-/span').replace(/=/g, 'span class=highlight-color role=operator=/span').replace(/�/g, '=').replace(/&lt;/g, '<').replace(/</g, '<span class=highlight-color role=operator�<</span�').replace(/&gt;/g, '>').replace(/>/g, '<span class=highlight-color role=operator>></span>').replace(/�/g, '>').replace(//g, '<').replace(//g, '>').replace(/!/g, '<span class=highlight-color role=operator>!</span>').replace(/\^/g, '<span class=highlight-color role=operator>^</span>').replace(/\b\*\b/g, '<span class=highlight-color role=operator>*</span>').replace(/\b\/\b/g, '<span class=highlight-color role=operator>/</span>').replace(/\+/g, '<span class=highlight-color role=operator>+</span>').replace(/\.\.\./g, '<span class=highlight-color role=operator>...</span>').replace(/&amp;/g, '&').replace(/&/g, '<span class=highlight-color role=operator>&</span>').replace(/~t/g, '&nbsp;&nbsp;&nbsp;&nbsp;').replace(/:/g, '<span class=highlight-color role=operator>:</span>').replace(/\bfor\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/\bif\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/\bin\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/\bnew\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/\breturn\b/g, '<span class=highlight-color role=keyword>$&</span>').replace(/\/\/[^\n]{0,}\n/g, data => {
+                        // Return
+                        return '<span class=highlight-color role=comment>' + data.slice(0, -len('\n')) + '</span>\n'
+                    }).replace(/\/\*[^*]{0,}\*\/|\/\*[^\/]{0,}\*\//g, '<span class=highlight-color role=comment>$&</span>').replace(/'[^']{0,}'|"[^"]{0,}"|`[^`]{0,}`/g, '<span class=highlight-color role=string>$&</span>').replace(/\bconst\b/g, '<span class=highlight-color role=variable-declaration>$&</span>').replace(/\blet\b/g, '<span class=highlight-color role=variable-declaration>$&</span>').replace(/\bvar\b/g, '<span class=highlight-color role=variable-declaration>$&</span>').replace(/\bfalse\b/g, '<span class=highlight-color role=numeral>$&</span>').replace(/\btrue\b/g, '<span class=highlight-color role=numeral>$&</span>').replace(/(\w|\$|_)(\w|\$|_|\-){0,}<span class=highlight-color role=operator>:/g, data => {
+                        // Return
+                        return '<span class=highlight-color role=value>' + data.getBeforeChar('<span class=highlight-color role=operator>:') + '</span><span class=highlight-color role=operator>:'
+                    }).replace(/(\w|\$|_)(\w|\$|_|\-){0,}\((\w|\$|_)(\w|\$|_|\-){0,}/g, data => {
+                        // Return
+                        return data.getBeforeChar('(') + '(<span class=highlight-color role=value>' + data.getAfterChar('(') + '</span>'
+                    }).replace(/(\w|\$|_)(\w|\$|_|\-){0,}\.(\w|\$|_)(\w|\$|_|\-){0,}/g, data => {
+                        // Return
+                        return '<span class=highlight-color role=property>' + data.getBeforeChar('.') + '</span>.' + data.getAfterChar('.')
+                    }).replace(/(\w|\$|_)(\w|\$|_|\-){0,}\(/g, data => {
+                        // Return
+                        return data.startsWith('function') ? data : '<span class=highlight-color role=function>' + data.getBeforeChar('(') + '</span>' + data.lastChar
+                    }).replace(/function\(/g, '<span class=highlight-color role=value>function</span>(').replace(/\b([0-9]|\.)([0-9]|\.|e){0,}\b/g, data => {
+                        // Return
+                        return data.count(/\./g) > 1 && data.count(/e/g) > 1 ? data : `<span class=highlight-color role=numeral>${data}</span>`
+                    });
 
                     // Modification > Element > Inner HTML
                     element.innerHTML = element.highlightedCodeHTML
@@ -203,7 +230,7 @@ if ('ready' in window.LapysJS) {
                     element.highlightedCodeHTML = element.sourceCode;
 
                     // Update > Element Highlighted Code HTML
-                    element.highlightedCodeHTML = element.highlightedCodeHTML.parseHighlighting(element.language).parseHighlightedCode();
+                    element.highlightedCodeHTML = element.highlightedCodeHTML;
 
                     // Modification > Element > Inner HTML
                     element.innerHTML = element.highlightedCodeHTML
@@ -213,90 +240,64 @@ if ('ready' in window.LapysJS) {
                 writable: false
             });
 
-        // On Node Added
-        onNodeAdded(document.body, function() {
+        /* Update */
+        function update() {
             // Index
             index(function(index) {
                 // Initialization > Element
                 let element = $$('.syntax-highlighted', index);
 
                 // Modification > Element
-                    // Highlighted Code HTML
-                    ('highlightedCodeHTML' in element) || element.def('highlightedCodeHTML', '');
-
-                    // Highlight Syntax
-                    (getType(element.highlightSyntax) == 'function') || element.def('highlightSyntax', {
-                        // Value
-                        value: function highlightSyntax(element) {
-                            // Global > [Function]
-                            global[`highlight${element.language}Syntax`](element || this)
-                        },
-
-                        // Writable
-                        writable: false
-                    });
-
-                    // (Programming) Language
-                    ('language' in element) || element.def('language', {
+                    // Language
+                    'language' in element || element.def('language', {
                         // Get
-                        get: function getProgrammingLanguage() {
-                            // Initialization > Data
-                            let data = this.attr('prog-language').trim().removeChar(/[^a-z]/g).lower();
-
-                            /* Logic
-                                    [switch:case:default statement]
-
-                                > Update > Data
-                            */
-                            switch (data) {
-                                // CSS
-                                case 'css':
-                                    data = 'CSS';
-                                    break;
-
-                                // HTML
-                                case 'html':
-                                    data = 'HTML';
-                                    break;
-
-                                // JavaScript
-                                case 'javascript':
-                                    data = 'JavaScript';
-                                    break;
-
-                                // JavaScript
-                                case 'js':
-                                    data = 'JavaScript';
-                                    break;
-
-                                // [Default]
-                                default:
-                                    data = 'PlainText'
-                            }
-
+                        get: function() {
                             // Return
-                            return data
-                        },
-
-                        // Set
-                        set: function setProgrammingLanguage() {
-                            // Modification > Target > Programming Language
-                            this.setAttr('prog-language', str(arguments[0]).trim().removeChar(/[^a-z]/g).lower())
+                            return this.attr('prog-language')
                         }
                     });
 
                     // Source Code
-                    (getType(element.sourceCode) == 'string') || element.def('sourceCode', {
+                    'sourceCode' in element || element.def('sourceCode', {
                         // Value
                         value: element.innerHTML,
 
                         // Writable
                         writable: false
-                    });
+                    })
 
-                // Element > Highlight Syntax
-                element.highlightSyntax(element)
+                /* Logic
+                        Switch case to Element`s programming language.
+
+                    > Highlight (...) Syntax
+                */
+                switch (element.language) {
+                    // CSS
+                    case 'css':
+                        highlightCSSSyntax(element);
+                        break;
+
+                    // HTML
+                    case 'html':
+                        highlightHTMLSyntax(element);
+                        break;
+
+                    // JavaScript
+                    case 'javascript':
+                        highlightJavaScriptSyntax(element);
+                        break;
+
+                    // Plain Text
+                    case 'plain-text':
+                        highlightPlainTextSyntax(element)
+                }
             }, $$('.syntax-highlighted', 'length'), index)
-        })
+        };
+
+        // On DOM Ready
+        onDOMReady(update);
+
+        // On Node Added
+        onNodeAdded(document.body, update)
     })
 }

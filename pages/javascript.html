@@ -20,13 +20,172 @@
     <!-- Main
                 --- NOTE ---
                     @lapys: Default Icons:
-                        - Chain Link (&#128279;)
+                        - Chain Link (&#128279; | \01F517)
     -->
     <main>
         <!-- Overview -->
         <section anchor=overview class=section id=overview>
             <!-- Header -->
-            <h1 data-id=header script=this.write(this.parent.id.capital())> </h1>
+            <h1 data-id=header onclick=LapysJS.$.anchor(`#`+this.parent.id) role=title script=this.write(this.parent.id.capital().replace(/\-/g,`&nbsp;`))> </h1>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Development and Production Forms </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    LapysJS renders scripting files that are tailored for both beginner-level developers to have a better time with JavaScript as a language and pro-level programmers to enjoy a more easing and flexible feel to the language.
+
+                    <br 2>
+
+                    LapysJS gives you two forms of its JavaScript once downloaded:
+                    <span before=• class=indent-inline>
+                        The compressed and minified form <em>for use on production sites facing the web</em>.
+
+                        <span class='inline-block-msg msg-info' style='transform: translateX(10%); width: 80%'> You can find it in the <code class=code-inline>src</code> folder as the <code class=code-inline>lapys.min.js</code> file. </span>
+                    </span>
+                    <span before=• class=indent-inline>
+                        and the default and manually coded form for use in development sites.
+
+                        <span class='inline-block-msg msg-info' style='transform: translateX(10%); width: 80%'> You can also find it in the <code class=code-inline>src</code> folder as <code class=code-inline>lapys.js</code>. </span>
+                    </span>
+                </p>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Strict JavaScript Rules </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        It is suggested at the user&rsquo;s will to modify the content of the file to nullify or enhance any strict rules the library declares.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> LapysCSS </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    The <code class=code-inline>lapys.js</code> and <code class=code-inline>lapys.min.js</code> files work in tandem with the <code class=code-inline>lapys.css</code> and <code class=code-inline>lapys.min.css</code> files for some of its plug-ins and not independently because all its plug-ins are based off visual styles, dynamism &amp; animation on a web page.
+                </p>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Design is not Functionality </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The <code class=code-inline>lapys.css</code> and <code class=code-inline>lapys.min.css</code> files do not need the <code class=code-inline>lapys.js</code> and <code class=code-inline>lapys.min.js</code> files because they are functionally independent and focus and design and style only.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> LapysJS Object </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    LapysJS provides the <span class=emphasis>global</span> <code class=code-inline>LapysJS</code> object which makes available basic information about the library and the allows the developer a small but unique set of properties (or methods) to manipulate data externally and/ or internally from the <abbr abbr='Document Object Model' title='Document Object Model'>DOM</abbr>.
+                </p>
+
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* The core JavaScript library of LapysJS. */
+                    LapysJS = new (function LapysJS() {
+                        ~t// Author(s) of the Library
+                        ~tthis.author = '<access-value value=LapysJS.author> </access-value>',
+
+                        ~t// New features that could run out for development needs.
+                        ~tthis.experimentalFeatures = ['<access-value value="LapysJS.experimentalFeatures.join(`', '`)"> </access-value>'],
+
+                        ~t// Becomes 'true' when LapysJS is fully scripted.
+                        ~tthis.ready = <access-value value=LapysJS.ready> </access-value>,
+
+                        ~t// The current stable version of the library.
+                        ~tthis.version = '<access-value value=LapysJS.version> </access-value>'
+                    })
+                </code>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    LapysJS certainly has been the main meat of the library allowing for creative, unique solutions to everyday coding tasks (or challenges).
+                </p>
+            </div>
+        </section>
+
+        <!-- Global Variables -->
+        <section anchor=global-variables class=section id=global-variables>
+            <!-- Header -->
+            <h1 data-id=header onclick=LapysJS.$.anchor(`#`+this.parent.id) role=title script=this.write(this.parent.id.capital().replace(/\-/g,`&nbsp;`))> </h1>
+
+            <!-- Content -->
+            <p data-id=text role=content>
+                Also known as the <em>&lsquo;Global Data&rsquo;</em> section of the <code class=code-inline>lapys.js</code> file, LapysJS provides a host of useful &lsquo;shortcut&rsquo; functions and values, as well as new approaches to collecting &amp; controlling data in JavaScript all in the form of constant or dynamic live variables declared on its document&rsquo;s <span class=emphasis>global</span> object.
+            </p>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> abs Function <span role=title-indicator>f();</span> </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Math.abs</code> function. </p>
+            </div>
+        </section>
+
+        <!-- Modifications -->
+        <section anchor=mods class=section id=mods>
+            <!-- Header -->
+            <h1 data-id=header onclick=LapysJS.$.anchor(`#`+this.parent.id) role=title script='this.write(this.parent.id.capital().replace(/\-/g,`&nbsp;`)+`<span role=title-indicator>[]</span><span role=title-indicator>f();</span><span role=title-indicator>{}</span><span role=title-indicator>""</span>`)'> </h1>
+
+            <!-- Content -->
+            <p data-id=text role=content>
+                Something about mods&hellip;
+            </p>
+
+            <div class=msg-info>
+                <!-- Header -->
+                <h3 data-id=header role=title> Overriding Mods </h3>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    Mods from LapysJS can be overridden if they are pre-defined before the library can create them.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Array Mods <span role=title-indicator>[]</span> </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    MDN definition of the <code class=code-inline>Arrays</code>.
+
+                    <br 2>
+
+                    LapysJS makes modifications to the regular everyday list of items known as Arrays. <br>
+                    Arrays which are useful for non-singular data manipulation have always been needed for ordering the control flow of our scripting language, sorting a group of objects in an OOP language or any other idea our developers can think of. But most of the time, Arrays aren&rsquo;t necessarily easy to master, you will have to learn how to manipulate data to and from an array and methods like <code class=code-inline>push</code> and <code class=code-inline>pop</code> can not be justified as substitutes to methods that would&rquo;ve been called <code class=code-inline>addNewElement</code> and <code class=code-inline>removeOldElement</code>.
+
+                    <br 2>
+
+                    LapysJS allows developers to work with arrays more neatly whilst holding the hands of new and diving coders and allowing a simpler, more flexible alternative to at first arduous tasks for steady programmers.
+                </p>
+
+                <!-- Content -->
+                <div data-id=text role=content>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> addElement Function </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content> Hello, World! </p>
+                </div>
+            </div>
         </section>
     </main>
 </body>

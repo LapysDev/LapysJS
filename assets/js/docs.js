@@ -10,6 +10,31 @@ if ('ready' in window.LapysJS) {
                 // Return
                 return 'DOCUMENT_SHEET_MODEL' in global
             }, function() {
+                // Insertion
+                !(DYNAMIC_ASSETS_URL == '../') || document.body.insertChild('begin', createElement('nav', '.col-grp.fill-w.fixed.sticky-left.sticky-top.z-5#navigation', `<nav class='center col-1 col-grp fill-h flex min-grid-2' role=header-navigation-bar> </nav>`, {style: 'justify-content: center'}))
+                    /* Check
+                            --- WARN ---
+                                @lapys: The On Node Added function does not
+                                    pick up on DOM updates instantly so we use the Check
+                                    function to cause it to 'wake up'.
+                    */
+                    check(function() {
+                        // Return
+                        return $$('[role=header-navigation-bar', 0).innerHTML.trim()
+                    }, function() {
+                        /* Loop
+                                [do:while statement]
+
+                            > Deletion
+                        */
+                        while ($$('delete-element', 0))
+                            $$('delete-element', 0).delete()
+                    }, function() {
+                        // Insertion
+                        document.body.insertChild('end', 'delete-element'.html)
+                    });
+
+                // Initialization > Allow Document Sheet Model
                 def('ALLOW_DOCUMENT_SHEET_MODEL', new (function Object() {
                     // Initialization > (Data, Once)
                     let data = false,
@@ -31,15 +56,18 @@ if ('ready' in window.LapysJS) {
                                 // Insertion
                                 (getType(document.main) == 'html-element') || document.body.insertChild('end', 'main'.html);
 
+                                // Modification > <main> > Former Content
+                                (getType(document.main.formerContent) == 'string') || (document.main.formerContent = document.main.innerHTML);
+
                                 // Initialization > Metadata
                                 let metadata = `
                                     <!-- Document Sheet Jumbotron -->
                                     <jumbotron-element id=jumbotron>
                                         <!-- Header -->
-                                        <h1 data-id=header role=title> ${document.title} </h1>
+                                        <h1 class='no-select single-line' data-id=header role=title> ${document.title} </h1>
 
                                         <!-- Description -->
-                                        <h2 data-id=description role=subtitle> Hello, World! </h2>
+                                        <h2 class=no-select data-id=description role=subtitle> Hello, World! </h2>
                                     </jumbotron-element>
 
                                     <!-- Document Sheet Section -->
@@ -64,8 +92,8 @@ if ('ready' in window.LapysJS) {
                                 `.removeChar('\n', /                                    /g).trim();
 
                                 // Modification > <main>
-                                    // Former Content
-                                    (document.main.innerHTML == metadata) || (document.main.formerContent = document.main.innerHTML);
+                                    // Class
+                                    data ? document.main.addClass('document-sheet-model') : document.main.delClass('document-sheet-model');
 
                                     // Inner HTML
                                     document.main.innerHTML = data ? metadata : document.main.formerContent;
@@ -318,26 +346,33 @@ if ('ready' in window.LapysJS) {
                                             // Get
                                             this.get = function() {
                                                 // Initialization > Result
-                                                let result = [...(document.main.$$('section[role=container', 0) || 'section'.html).$i('sections').$$('section', 'array')];
-                                                    // Add Section
-                                                    ('addSection' in result) || result.def('addSection', {
-                                                        // Value
-                                                        value: function addSection() {
-                                                            /* Logic
-                                                                    [if:else if:else statement]
+                                                let result = null;
 
-                                                                > Update > Argument 0
-                                                            */
-                                                            if (arguments[0] == 'begin')
-                                                                arguments[0] = 0;
+                                                /* Logic
+                                                        [if:else if:else statement]
+                                                */
+                                                if ((document.main.$$('section[role=container', 0) || 'section'.html).$i('sections')) {
+                                                    // Update > Result
+                                                    result = [...(document.main.$$('section[role=container', 0) || 'section'.html).$i('sections').$$('section', 'array')];
+                                                        // Add Section
+                                                        ('addSection' in result) || result.def('addSection', {
+                                                            // Value
+                                                            value: function addSection() {
+                                                                /* Logic
+                                                                        [if:else if:else statement]
 
-                                                            else if (arguments[0] == 'end')
-                                                                arguments[0] = ~-len(document.main.$$('section[role=container', 0).$i('sections').children)
+                                                                    > Update > Argument 0
+                                                                */
+                                                                if (arguments[0] == 'begin')
+                                                                    arguments[0] = 0;
 
-                                                            /* Logic
-                                                                    If
-                                                                        Argument 1 is an element.
-                                                            */
+                                                                else if (arguments[0] == 'end')
+                                                                    arguments[0] = ~-len(document.main.$$('section[role=container', 0).$i('sections').children)
+
+                                                                /* Logic
+                                                                        If
+                                                                            Argument 1 is an element.
+                                                                */
                                                             if (getType(arguments[1]).hasText('element')) {
                                                                 // Insertion
                                                                 document.main.$$('section[role=container', 0).$i('sections').insertChild('end', arguments[1]);
@@ -366,7 +401,7 @@ if ('ready' in window.LapysJS) {
                                                                 > Update > Data
                                                             */
                                                             for (let i = 0; i < len(this); i += 1)
-                                                                data.push(this[i].$$('p[data-id=text][role=content', 0));
+                                                                data.push(this[i].$$('[data-id=text][role=content', 0));
 
                                                             // Return
                                                             return data
@@ -384,11 +419,11 @@ if ('ready' in window.LapysJS) {
                                                             */
                                                             if (getType(arguments[0]) == 'array')
                                                                 for (let i = 0; i < len(arguments[0]); i += 1)
-                                                                    !this[i] || (this[i].$$('p[data-id=text][role=content', 0) ? this[i].$$('p[data-id=text][role=content', 0).innerHTML = arguments[0][i] : this[i].insertChild('begin', createElement('p', '[data-id=text][role=content', arguments[0])));
+                                                                    !this[i] || (this[i].$$('[data-id=text][role=content', 0) ? this[i].$$('[data-id=text][role=content', 0).innerHTML = arguments[0][i] : this[i].insertChild('begin', createElement('p', '[data-id=text][role=content', arguments[0])));
 
                                                             else if (getType(arguments[0]) == 'string')
                                                                 for (let i = 0; i < len(this); i += 1)
-                                                                    !this[i] || !this[i].$$('p[data-id=text][role=content', 0) || (this[i].$$('p[data-id=text][role=content', 0).innerHTML = arguments[0])
+                                                                    !this[i] || !this[i].$$('[data-id=text][role=content', 0) || (this[i].$$('[data-id=text][role=content', 0).innerHTML = arguments[0])
                                                         }
                                                     });
 
@@ -501,11 +536,11 @@ if ('ready' in window.LapysJS) {
                                                             */
                                                             if (getType(arguments[0]) == 'array')
                                                                 for (let i = 0; i < len(arguments[0]); i += 1)
-                                                                    !this[i] || !this[i].$$('h1[data-id=header][role=title', 0) || (this[i].$$('h1[data-id=header][role=title', 0).setAttr('onclick', `LapysJS.$.anchor('${arguments[0][i]}')`));
+                                                                    !this[i] || !this[i].$$('[data-id=header][role=title', 0) || (this[i].$$('[data-id=header][role=title', 0).setAttr('onclick', `LapysJS.$.anchor('${arguments[0][i]}')`));
 
                                                             else if (getType(arguments[0]) == 'string')
                                                                 for (let i = 0; i < len(this); i += 1)
-                                                                    !this[i] || !this[i].$$('h1[data-id=header][role=title', 0) || (this[i].$$('h1[data-id=header][role=title', 0).setAttr('onclick', `LapysJS.$.anchor('${arguments[0]}')`))
+                                                                    !this[i] || !this[i].$$('[data-id=header][role=title', 0) || (this[i].$$('[data-id=header][role=title', 0).setAttr('onclick', `LapysJS.$.anchor('${arguments[0]}')`))
                                                         }
                                                     });
 
@@ -522,7 +557,7 @@ if ('ready' in window.LapysJS) {
                                                                 > Update > Data
                                                             */
                                                             for (let i = 0; i < len(this); i += 1)
-                                                                data.push(this[i].$$('h2[data-id=subheader][role=subtitle', 0));
+                                                                data.push(this[i].$$('[data-id=subheader][role=subtitle', 0));
 
                                                             // Return
                                                             return data
@@ -541,18 +576,18 @@ if ('ready' in window.LapysJS) {
                                                             if (getType(arguments[0]) == 'array')
                                                                 for (let i = 0; i < len(arguments[0]); i += 1) {
                                                                     if (this[i])
-                                                                        if (this[i].$$('h2[data-id=subheader][role=subtitle', 0))
-                                                                            this[i].$$('h2[data-id=subheader][role=subtitle', 0).innerHTML = arguments[0][i];
+                                                                        if (this[i].$$('[data-id=subheader][role=subtitle', 0))
+                                                                            this[i].$$('[data-id=subheader][role=subtitle', 0).innerHTML = arguments[0][i];
 
                                                                         else {
                                                                             this[i].insertChild('begin', createElement('h2', '[data-id=subheader][role=subtitle', arguments[0]));
-                                                                            !this[i].$$('h1[data-id=header][role=title', 0) || this[i].insertBefore(this[i].$$('h1[data-id=header][role=title', 0), this[i].$$('h2[data-id=subheader][role=subtitle', 0))
+                                                                            !this[i].$$('[data-id=header][role=title', 0) || this[i].insertBefore(this[i].$$('[data-id=header][role=title', 0), this[i].$$('[data-id=subheader][role=subtitle', 0))
                                                                         }
                                                                 }
 
                                                             else if (getType(arguments[0]) == 'string')
                                                                 for (let i = 0; i < len(this); i += 1)
-                                                                    !this[i] || !this[i].$$('h2[data-id=subheader][role=subtitle', 0) || (this[i].$$('h2[data-id=subheader][role=subtitle', 0).innerHTML = arguments[0])
+                                                                    !this[i] || !this[i].$$('[data-id=subheader][role=subtitle', 0) || (this[i].$$('[data-id=subheader][role=subtitle', 0).innerHTML = arguments[0])
                                                         }
                                                     });
 
@@ -569,7 +604,7 @@ if ('ready' in window.LapysJS) {
                                                                 > Update > Data
                                                             */
                                                             for (let i = 0; i < len(this); i += 1)
-                                                                data.push(this[i].$$('h1[data-id=header][role=title', 0));
+                                                                data.push(this[i].$$('[data-id=header][role=title', 0));
 
                                                             // Return
                                                             return data
@@ -587,13 +622,14 @@ if ('ready' in window.LapysJS) {
                                                             */
                                                             if (getType(arguments[0]) == 'array')
                                                                 for (let i = 0; i < len(arguments[0]); i += 1)
-                                                                    !this[i] || (this[i].$$('h1[data-id=header][role=title', 0) ? this[i].$$('h1[data-id=header][role=title', 0).innerHTML = arguments[0][i] : this[i].insertChild('begin', createElement('h1', '[data-id=header][role=title', arguments[0])));
+                                                                    !this[i] || (this[i].$$('[data-id=header][role=title', 0) ? this[i].$$('[data-id=header][role=title', 0).innerHTML = arguments[0][i] : this[i].insertChild('begin', createElement('h1', '[data-id=header][role=title', arguments[0])));
 
                                                             else if (getType(arguments[0]) == 'string')
                                                                 for (let i = 0; i < len(this); i += 1)
-                                                                    !this[i] || !this[i].$$('h1[data-id=header][role=title', 0) || (this[i].$$('h1[data-id=header][role=title', 0).innerHTML = arguments[0])
+                                                                    !this[i] || !this[i].$$('[data-id=header][role=title', 0) || (this[i].$$('[data-id=header][role=title', 0).innerHTML = arguments[0])
                                                         }
                                                     });
+                                                }
 
                                                 // Return
                                                 return result
@@ -664,8 +700,24 @@ if ('ready' in window.LapysJS) {
                                             ('addLink' in document.main.shortcutAccessLinks) || document.main.shortcutAccessLinks.def('addLink', {
                                                 // Value
                                                 value: function addLink() {
-                                                    // Initialization > Data
-                                                    let data = createElement('li', `[onclick='smoothScrollTo($$(\`[anchor="${arguments[2]}"\`))'][role=link`, arguments[1]);
+                                                    // Initialization > (Arguments, Data)
+                                                    let Arguments = arguments,
+                                                        data = createElement('li', `[role=link`, arguments[1], {onclick: function() {
+                                                        // Initialization > Metadata
+                                                        let metadata = this.siblings;
+
+                                                        // Index
+                                                        index(function(index) {
+                                                            // Modification > Metadata > Class
+                                                            metadata[index].delClass('focus')
+                                                        }, metadata);
+
+                                                        // Modification > Target > Class
+                                                        this.addClass('focus');
+
+                                                        // Smooth Scroll To
+                                                        smoothScrollTo(document.$$(Arguments[2], 'attr:anchor'), ($$('header-navigation-bar', 'attr:role') || 'div'.html).offset.height)
+                                                    }});
 
                                                     /* Logic
                                                             [if:else if:else statement]
@@ -789,8 +841,8 @@ if ('ready' in window.LapysJS) {
                                         delete document.main.shortcutAccessLinks
                                     }
 
-                                // On Node Added
-                                once || !data || onNodeAdded(document.documentElement, function() {
+                                // On DOM Change
+                                once || !data || onDOMChange(function() {
                                     // Index
                                     index(function(index) {
                                         // Modification > [Section]
@@ -799,7 +851,7 @@ if ('ready' in window.LapysJS) {
                                                 // Get
                                                 get: function() {
                                                     // Return
-                                                    return this.$$(`h1[data-id=header][onclick*='LapysJS.$.anchor'][role=title`, 0)
+                                                    return this.$$(`[data-id=header][onclick*='LapysJS.$.anchor'][role=title`, 0)
                                                 }
                                             });
 
@@ -817,7 +869,7 @@ if ('ready' in window.LapysJS) {
                                                 // Get
                                                 get: function() {
                                                     // Return
-                                                    return this.$$('p[data-id=text][role=content', 0)
+                                                    return this.$$('[data-id=text][role=content', 0)
                                                 }
                                             });
 
@@ -826,7 +878,7 @@ if ('ready' in window.LapysJS) {
                                                 // Get
                                                 get: function() {
                                                     // Return
-                                                    return this.$$('h1[data-id=header][role=title', 0)
+                                                    return this.$$('[data-id=header][role=title', 0)
                                                 }
                                             });
 
@@ -835,7 +887,7 @@ if ('ready' in window.LapysJS) {
                                                 // Get
                                                 get: function() {
                                                     // Return
-                                                    return this.$$('h2[data-id=subheader][role=subtitle', 0)
+                                                    return this.$$('[data-id=subheader][role=subtitle', 0)
                                                 }
                                             })
                                     }, len(document.main.sections))
@@ -1039,44 +1091,74 @@ if ('ready' in window.LapysJS) {
                 }
         };
 
+        /* Scroll To */
+            // Timeout
+            timeout(function() {
+                !('localStorage' in global) || !(getType(+localStorage.scrollX) && getType(+localStorage.scrollY)) || scrollTo(localStorage.scrollX, localStorage.scrollY);
+                    // Local Storage > Clear
+                    localStorage.clear()
+            }, 333);
+
         /* Smooth Scroll To */
-        global.smoothScrollTo = function smoothScrollTo(element = 'div'.html) {
-            // Initialization > (Data, Scroll Speed)
+        global.smoothScrollTo = function smoothScrollTo(element, metadata = 0) {
+            // Initialization > (Data, Counter, Limit, Scroll Speed)
             let data = element.offset.top,
+                counter = 1,
+                limit = 0,
                 scrollSpeed = (abs(int(scrollY - data)) - innerHeight) > innerHeight ? 12 : 9;
 
             // Interval
             !$$('*', 'array').hasElement(element) || interval(function() {
                 // Scroll By
-                scrollBy.apply(global, scrollY > data ? [0, -scrollSpeed] : [0, scrollSpeed])
-            }, 0, abs(int(scrollY - data)) - innerHeight)
+                ((scrollY > ~-(data - scrollSpeed)) && (scrollY < (data + scrollSpeed) + 1)) || scrollBy.apply(global, scrollY > data ? [0, -scrollSpeed] : [0, scrollSpeed]);
+                (counter != limit) || scrollBy(0, -(metadata || scrollSpeed));
+
+                // Update > Counter
+                counter += 1
+            }, 0, limit = abs(abs(int(scrollY - data)) - innerHeight))
         };
 
     /* Components */
         /* Header Navigation Bar */
-            // Index
-            index(function(index) {
-                // Modification > Header Navigation Bar > Script
-                $$('[role=header-navigation-bar', index).setAttr('script');
+            // Timeout
+            timeout(function() {
+                // Index
+                index(function(index) {
+                    // Modification > Header Navigation Bar > Script
+                    $$('[role=header-navigation-bar', index).setAttr('script');
 
-                /* Check
-                        --- NOTE ---
-                            @lapys: The runtime of the Script attribute to the Script property
-                                has a slight delay which must be accounted for.
-                */
-                check(function() {
-                    // Return
-                    return 'script' in $$('[role=header-navigation-bar', index)
-                }, function() {
-                    // Timeout
-                    timeout(function() {
-                        // Modification > Header Navigation Bar > Script
-                        $$('[role=header-navigation-bar', index).script =
-                            'this.clearHTML();' +
-                            'index(function(index, that) {' +
-                                'that.innerHTML += `<a class="button-0 center col-1 single-line smooth transparent-button upper" href="${NAVIGATION_LINKS[index].href}" target=${NAVIGATION_LINKS[index].target} title="${NAVIGATION_LINKS[index].title}">${NAVIGATION_LINKS[index].textContent}</a>`' +
-                            '}, len(NAVIGATION_LINKS), this)'
-                    }, 100)
-                })
-            }, $$('[role=header-navigation-bar', 'length'))
+                    /* Check
+                            --- NOTE ---
+                                @lapys: The runtime of the Script attribute to the Script property
+                                    has a slight delay which must be accounted for.
+                    */
+                    check(function() {
+                        // Return
+                        return 'script' in $$('[role=header-navigation-bar', index)
+                    }, function() {
+                        // Timeout
+                        timeout(function() {
+                            // Modification > Header Navigation Bar > Script
+                            $$('[role=header-navigation-bar', index).script =
+                                'this.clearHTML();' +
+                                'index(function(index, that) {' +
+                                    'that.innerHTML += `<a class="button-0 center col-1 single-line smooth transparent-button upper" href="${NAVIGATION_LINKS[index].href}" target=${NAVIGATION_LINKS[index].target} title="${NAVIGATION_LINKS[index].title}">${NAVIGATION_LINKS[index].textContent}</a>`' +
+                                '}, len(NAVIGATION_LINKS), this);' +
+                                'this.delAttr(`script`)'
+                        }, 100)
+                    })
+                }, $$('[role=header-navigation-bar', 'length'))
+            }, 1e3);
+
+    /* Event */
+        // Window
+            // Resize, Scroll
+            !('localStorage' in global) || invokeEvent('resize scroll', function() {
+                // Modification > Local Storage
+                    // Scroll X
+                    localStorage.scrollX = scrollX;
+
+                    // Scroll Y
+                    localStorage.scrollY = scrollY
+            })
 }

@@ -1,90 +1,410 @@
-/* Assets */
-    /* Buttons */
-    [class*='button'] {
-        cursor: pointer;
-        display: inline-block;
-        letter-spacing: .5px;
-        text-decoration: none;
-        word-spacing: 3.3px
-    }
-        /* Transparent */
-        .transparent-button {
-            align-items: center;
-            border-radius: 3.3px;
-            display: inline-flex;
-            justify-content: center;
-            padding: 10px
+/* DOM Elements */
+    /* <main> */
+        /* Document Sheet Jumbotron */
+        main.document-sheet-model > #jumbotron {
+            background: #0066FF;
+            background: linear-gradient(#0000FF, #0066FF);
+            color: #FFFFFF;
+            font-weight: 200;
+            height: auto;
+            padding-bottom: 6.75%;
+            padding-left: 10%;
+            padding-right: 0;
+            padding-top: 10%;
+            padding-left: 10%;
+            text-align: left;
+            width: 90%
         }
-            /* Not */
-                /* Header Navigation Bar > Content */
-                .transparent-button:not([role=header-navigation-bar] > *) {
-                    max-width: 200px;
-                    min-width: 200px;
-                    width: 200px
-                }
+            /* @media > (Mobile, Tablet) View */
+            @media only all
+                and (max-width: 768px) {
+                    main.document-sheet-model > #jumbotron {
+                        padding-bottom: 10%;
+                        padding-left: 0;
+                        padding-right: 0;
+                        padding-top: 25%;
+                        text-align: center;
+                        width: 100%
+                    }
+            }
 
-            /* States */
-                /* Hover */
-                    /* 0 */
-                    .button-0.transparent-button:hover {
-                        background-color: rgba(0, 0, 0, .825)
+            /* Content */
+                /* States */
+                    /* First Child */
+                    main.document-sheet-model > #jumbotron > :first-child {
+                        margin-top: 0
                     }
 
-            /* 0 */
-            .button-0.transparent-button {
-                background-color: rgba(0, 0, 0, .65);
-                color: #FFFFFF;
-                text-shadow: 0 0 1.5px rgba(0, 0, 0, .5)
+                    /* Last Child */
+                    main.document-sheet-model > #jumbotron > :last-child {
+                        margin-bottom: 0
+                    }
+
+            /* Sub Title */
+            main.document-sheet-model > #jumbotron > [role=subtitle] {
+                font-family: 'Calibri Light', Roboto, 'Open Sans', Calibri, sans-serif;
+                font-weight: 100;
+                letter-spacing: -1px;
+                opacity: .75
+            }
+                /* @media */
+                    /* Mobile View */
+                    @media only all
+                        and (max-width: 425px) {
+                            main.document-sheet-model > #jumbotron > [role=subtitle] {
+                                font-size: 20px
+                            }
+                    }
+
+                    /* Tablet View */
+                    @media only all
+                        and (max-width: 768px)
+                        and (min-width: 426px) {
+                            main.document-sheet-model > #jumbotron > [role=subtitle] {
+                                font-size: 30px
+                            }
+                    }
+
+            /* Sub Title, Title */
+            main.document-sheet-model > #jumbotron > [role=subtitle],
+            main.document-sheet-model > #jumbotron > [role=title] {
+                cursor: default
             }
 
-    /* Flag */
-    [class*=-flag] {
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px
+            /* Title */
+            main.document-sheet-model > #jumbotron > [role=title] {
+                font-family: Roboto, 'Calibri Light', 'Open Sans', Calibri, sans-serif;
+                font-weight: 300
+            }
+                /* @media */
+                    /* Mobile View */
+                    @media only all
+                        and (max-width: 425px) {
+                            main.document-sheet-model > #jumbotron > [role=title] {
+                                font-size: 35px
+                            }
+                    }
+
+                    /* Tablet View */
+                    @media only all
+                        and (max-width: 768px)
+                        and (min-width: 426px) {
+                            main.document-sheet-model > #jumbotron > [role=title] {
+                                font-size: 50px
+                            }
+                    }
+
+    /* Document Sheet Section */
+    main.document-sheet-model > [role=container] {
+        border: 1px solid rgba(127, 127, 127, .35);
+        margin-bottom: 25px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 25px;
+        padding-left: 2.5%;
+        padding-right: 2.5%;
+        width: 80%
+    }
+        /* @media > (Mobile, Tablet) View */
+        @media only all
+            and (max-width: 768px) {
+                main.document-sheet-model > [role=container] {
+                    width: 90%
+                }
+        }
+
+        /* Sections */
+        main.document-sheet-model > [role=container] > #sections {
+            padding: 15px 2.5%;
+            width: 95%
+        }
+            /* <section> */
+            main.document-sheet-model > [role=container] > #sections > section {
+                font-weight: 300
+            }
+                /* Content */
+                main.document-sheet-model > [role=container] > #sections > section > [role=content] {
+                    line-height: 1.5
+                }
+
+                main.document-sheet-model > [role=container] > #sections > section > [role=content] + [role=content] {
+                    margin-top: 50px
+                }
+                    /* Header */
+                    main.document-sheet-model > [role=container] > #sections > section > [role=content] > [data-id=header] {
+                        font-size: 50px
+                    }
+
+                /* Header */
+                main.document-sheet-model > [role=container] > #sections > section > [data-id=header] {
+                    border-bottom: 1px solid rgba(127, 127, 127, .35);
+                    font-size: 65px
+                }
+
+                /* Sub Header */
+                main.document-sheet-model > [role=container] > #sections > section > [data-id=subheader] {
+                    font-size: 45px
+                }
+
+            /* Code Block */
+            main.document-sheet-model > [role=container] > #sections .code-block {
+                background-color: #25262B;
+                border-radius: 3.75px;
+                color: #D5D6DB;
+                display: block;
+                margin: 15px 0;
+                padding: 7.5px;
+                text-align: left;
+                white-space: pre-line
+            }
+                /* States > Selection */
+                main.document-sheet-model > [role=container] > #sections .code-block::selection,
+                main.document-sheet-model > [role=container] > #sections .code-block ::selection {
+                    background-color: rgba(255, 255, 255, .175) !important;
+                    color: #FFFFFF !important;
+                    text-shadow: none !important
+                }
+
+            /* Code Inline */
+            main.document-sheet-model > [role=container] > #sections .code-inline {
+                background-color: #EFEFEF;
+                border: 1px solid rgba(0, 0, 0, .1);
+                border-radius: 3px;
+                bottom: 3.5px;
+                box-shadow: inset 0 -1.75px 0 0 rgba(0, 0, 0, .1);
+                color: #EF0000;
+                margin: 0;
+                padding: 5px 7.5px;
+                position: relative;
+                zoom: .85
+            }
+
+            /* Header */
+            main.document-sheet-model > [role=container] > #sections [data-id=header] {
+                font-weight: 300;
+                opacity: .85
+            }
+
+            /* Header, Sub Header */
+            main.document-sheet-model > [role=container] > #sections [data-id=header],
+            main.document-sheet-model > [role=container] > #sections [data-id=subheader] {
+                cursor: default;
+                font-family: Roboto, 'Calibri Light', 'Open Sans', Calibri, sans-serif;
+                text-indent: 10px
+            }
+                /* States > Hover */
+                    /* Pseudo > Before */
+                    main.document-sheet-model > [role=container] > #sections [data-id=header]:hover::before,
+                    main.document-sheet-model > [role=container] > #sections [data-id=subheader]:hover::before {
+                        content: '\01F517';
+                        display: inline;
+                        font-size: 25px;
+                        margin-left: -50px;
+                        margin-top: 20px;
+                        opacity: .5;
+                        position: absolute
+                    }
+
+             /* Message */
+            main.document-sheet-model > [role=container] > #sections [class*=msg-] {
+                background-color: transparent;
+                border-bottom: 1px solid;
+                border-right: 1px solid;
+                border-top: 1px solid;
+                user-select: none;
+                width: 90%;
+                z-index: inherit
+            }
+                /* Pseudo > Before */
+                main.document-sheet-model > [role=container] > #sections .msg-info::before {
+                    align-items: center;
+                    border-radius: 50%;
+                    content: '';
+                    display: flex;
+                    height: 20px;
+                    justify-content: center;
+                    position: absolute;
+                    text-align: center;
+                    transform: translateX(-50px);
+                    width: 20px;
+                    z-index: 12
+                }
+
+                /* Information */
+                main.document-sheet-model > [role=container] > #sections .msg-info {
+                    border-bottom-color: rgba(0, 0, 255, .5);
+                    border-right-color: rgba(0, 0, 255, .5);
+                    border-top-color: rgba(0, 0, 255, .5);
+                    color: #0078CF
+                }
+                    /* Pseudo > Before */
+                    main.document-sheet-model > [role=container] > #sections .msg-info::before {
+                        background-color: #0045FF;
+                        color: #FFFFFF;
+                        content: '!'
+                    }
+
+                /* Warn */
+                main.document-sheet-model > [role=container] > #sections .msg-error {
+                    border-bottom-color: rgba(255, 0, 0, .5);
+                    border-right-color: rgba(255, 0, 0, .5);
+                    border-top-color: rgba(255, 0, 0, .5)
+                }
+
+                /* Header */
+                main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=header] {
+                    cursor: default;
+                    font-size: 25px;
+                    font-weight: 400;
+                    text-indent: 0
+                }
+                    /* Pseudo > Before */
+                    main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=header]::before {
+                        opacity: 0 !important
+                    }
+
+                /* Content */
+                main.document-sheet-model > [role=container] > #sections [class*=msg-] > [role=content] {
+                    max-width: 99%;
+                    padding: 0;
+                    padding-left: 1%;
+                    padding-top: 1%
+                }
+
+            /* Sub Header */
+            main.document-sheet-model > [role=container] > #sections [data-id=subheader] {
+                font-style: italic;
+                font-weight: 100;
+                opacity: .7
+            }
+
+            /* Text */
+            main.document-sheet-model > [role=container] > #sections [data-id=text] {
+                color: #787878;
+                font-size: 15px;
+                margin-left: .5%;
+                margin-right: 0;
+                max-width: 99.5%
+            }
+                /* Text Object */
+                main.document-sheet-model > [role=container] > #sections [data-id=text] > .text-object {
+                    margin-bottom: 15px;
+                    margin-top: 15px
+                }
+
+            /* Title Indicator */
+            main.document-sheet-model > [role=container] > #sections [role=title-indicator] {
+                cursor: default;
+                font-size: 75%;
+                font-style: italic;
+                font-weight: 400;
+                opacity: .35;
+                padding-left: 30px;
+                pointer-events: none;
+                user-drag: none;
+                user-select: none
+            }
+                /* States > First of Type */
+                main.document-sheet-model > [role=container] > #sections [role=title-indicator]:first-of-type {
+                    padding-left: 15px
+                }
+
+        /* Document Sheet Shortcut Access Links */
+            /* Link Container */
+            main.document-sheet-model > [role=container] > #shortcutAccessLinks > [data-id=linkContainer] {
+                list-style: none;
+                margin: 0;
+                width: 95%
+            }
+                /* Link */
+                main.document-sheet-model > [role=container] > #shortcutAccessLinks > [data-id=linkContainer] > [role=link] {
+                    border-left: 1px solid transparent;
+                    color: #9A9A9A;
+                    cursor: pointer;
+                    font-size: 15px;
+                    margin-left: 0;
+                    margin-right: auto;
+                    padding-left: 5%;
+                    transition: .3s ease-in-out;
+                    width: 95%
+                }
+                    /* States > Hover */
+                    main.document-sheet-model > [role=container] > #shortcutAccessLinks > [data-id=linkContainer] > .focus[role=link],
+                    main.document-sheet-model > [role=container] > #shortcutAccessLinks > [data-id=linkContainer] > [role=link]:hover {
+                        border-left-color: #0066FF;
+                        color: #0078FF;
+                        margin-left: 5%;
+                        margin-right: 0;
+                        width: 90%
+                    }
+
+            /* Title */
+            main.document-sheet-model > [role=container] > #shortcutAccessLinks > [role=title] {
+                border-bottom: 1px solid rgba(127, 127, 127, .1);
+                font-size: 35px;
+                font-variant: small-caps;
+                opacity: .75
+            }
+
+/* Assets */
+    /* Emphasis */
+    .emphasis {
+        color: #EF0000
+    }
+
+    /* Indent Inline */
+    .indent-inline {
+        display: inline-block;
+        margin-bottom: 7.5px;
+        margin-top: 7.5px;
+        text-indent: 5%;
+        width: 100%
+    }
+
+    /* Inline Block Message */
+    .inline-block-msg {
+        border-radius: 2px;
+        display: inline-block;
+        font-family: Roboto, 'PT Sans', 'Calibri Light', Calibri, sans-serif;
+        font-weight: 300;
+        margin: 12.5px 0;
+        margin-left: auto;
+        margin-right: auto;
+        padding-bottom: 7.5px;
+        padding-top: 7.5px;
+        text-indent: 0;
+        width: 90%
     }
         /* Pseudo > Before */
-        [class*=-flag]::before {
+        .inline-block-msg::before {
+            opacity: 0
+        }
+
+/* Components */
+    /* Navigation */
+    #navigation {
+        background-color: #FFFFFF;
+        color: #000078;
+        height: 50px
+    }
+        /* Header Navigation Bar */
+        #navigation > [role=header-navigation-bar] > a {
             align-items: center;
-            border-radius: 50%;
-            box-shadow: 0 1.5px 3px 0 rgba(0, 0, 0, .15);
-            content: '';
-            display: inline-flex;
-            font-size: 22.5px;
-            font-weight: 600;
-            height: 35px;
-            left: auto;
-            letter-spacing: -1px;
-            line-height: .5;
+            display: flex;
+            font-size: 15px;
+            font-variant: initial;
             justify-content: center;
-            margin: auto;
-            padding: 7px;
-            position: absolute;
-            right: auto;
-            transform: translateY(-17.5px);
-            width: 35px;
-            z-index: 14
+            text-transform: initial
         }
+            /* States */
+                /* Focus */
+                #navigation > [role=header-navigation-bar] > a:focus {
+                    border: 0;
+                    outline: 0
+                }
 
-        /* Code */
-        .code-flag {
-            border-left: 5px solid #00C853
-        }
-            /* Pseudo > Before */
-            .code-flag::before {
-                background-color: #00C853;
-                color: #FFFFFF;
-                content: '</>';
-                font-family: 'Roboto Mono', Inconsolata, monospace
-            }
-
-        /* Notepad */
-        .notepad-flag {
-            border-left: 5px solid #FFEA00
-        }
-            /* Pseudo > Before */
-            .notepad-flag::before {
-                background-color: #FFEA00;
-                color: #F57F17;
-                content: '\f02d';
-                font-family: sans-serif
-            }
+                /* Focus, Hover */
+                #navigation > [role=header-navigation-bar] > a:focus,
+                #navigation > [role=header-navigation-bar] > a:hover {
+                    background-color: rgba(0, 0, 0, .05)
+                }

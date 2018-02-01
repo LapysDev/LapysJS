@@ -354,6 +354,15 @@ if ('ready' in window.LapysJS) {
                         this.textContent = 'Get Started'
                     }),
 
+                    // JavaScript
+                    new (function NavigationLink() {
+                        // Modification > Target > (...)
+                        this.href = `${DYNAMIC_ASSETS_URL}pages/javascript.html`;
+                        this.target = '_self';
+                        this.title = createElement('div', '', 'Learn the fundamental core of LapysJS.').textContent;
+                        this.textContent = 'JavaScript'
+                    }),
+
                     // GitHub
                     new (function NavigationLink() {
                         // Modification > Target > (...)

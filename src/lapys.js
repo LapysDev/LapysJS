@@ -3699,6 +3699,16 @@
             }
         });
 
+    /* Document Type */
+        // Stringify
+        (typeof DocumentType.prototype.stringify == 'function') || Object.defineProperty(DocumentType.prototype, 'stringify', {
+            // Value
+            value: function stringify() {
+                // Return
+                return String(!this || String((`<!DOCTYPE ${(this.name)}${(this.publicId ? ` PUBLIC '${this.publicId}'` : '') + ((!this.publicId && this.systemId) ? ' SYSTEM' : '') + (this.systemId ? ` '${this.systemId}'` : '')}>`))).replace('true', '')
+            }
+        });
+
     /* Function Data */
         /* Get Arguments
                 --- UPDATE REQUIRED ---
@@ -4181,8 +4191,10 @@
 
                     > Update > Data
                 */
-                for (let i = 0; i < arguments.length; i += 1)
-                    data.push(!((this.indexOf(str(arguments[i])) < 0) || !1));
+                for (let i = 0; i < arguments.length; i += 1) {
+                    ((arguments[i] || []).constructor !== RegExp) || data.push(this.match(arguments[i]) !== null ? ('index' in this.match(arguments[i]) ? this.match(arguments[i]).index > -1 : this.match(arguments[i]).length > 0) : !1);
+                    (typeof arguments[i] != 'string') || data.push(!((this.indexOf(arguments[i]) < 0) || !1));
+                }
 
                 // Return
                 return data.indexOf(!1) < 0
@@ -4450,21 +4462,55 @@
                         [if:else if:else statement]
                 */
                 if (arguments.length > 0) {
+                    // Initialization > (Left, Right) Counter
+                    let leftCounter = 0,
+                        rightCounter = 0;
+
                     /* Loop
                             [do:while statement]
 
-                        > Update > Data
+                        > Update > Data, Left Counter
                     */
-                    while (data.startsWith(String(arguments[0])))
+                    while (data.startsWith(String(arguments[0]))) {
                         data = data.slice(String(arguments[0]).length);
+                        leftCounter += 1
+                    }
+
+                    /* Logic
+                            If
+                                Argument 1 is a string.
+                    */
+                    if (typeof arguments[1] == 'string')
+                        /* Loop
+                                Iterate over Left Counter.
+
+                            > Update > Data
+                        */
+                        for (let i = 0; i < leftCounter; i += 1)
+                            data = arguments[1] + data;
 
                     /* Loop
                             [do:while statement]
 
-                        > Update > Data
+                        > Update > Data, Right Counter
                     */
-                    while (data.endsWith(String(arguments[0])))
-                        data = data.slice(0, -String(arguments[0]).length)
+                    while (data.endsWith(String(arguments[0]))) {
+                        data = data.slice(0, -String(arguments[0]).length);
+                        rightCounter += 1
+                    }
+
+                    /* Logic
+                            If
+                                Argument 1 is a string.
+                    */
+                    if (typeof arguments[1] == 'string')
+                        /* Loop
+                                Iterate over Right Counter.
+
+                            > Update > Data
+                        */
+                        for (let i = 0; i < rightCounter; i += 1)
+                            data = data + arguments[1];
                 }
 
                 // Return
@@ -4483,13 +4529,31 @@
                         [if:else if:else statement]
                 */
                 if (arguments.length > 0) {
+                    // Initialization > Left Counter
+                    let leftCounter = 0;
+
                     /* Loop
                             [do:while statement]
 
-                        > Update > Data
+                        > Update > Data, Left Counter
                     */
-                    while (data.startsWith(String(arguments[0])))
-                        data = data.slice(String(arguments[0]).length)
+                    while (data.startsWith(String(arguments[0]))) {
+                        data = data.slice(String(arguments[0]).length);
+                        leftCounter += 1
+                    }
+
+                    /* Logic
+                            If
+                                Argument 1 is a string.
+                    */
+                    if (typeof arguments[1] == 'string')
+                        /* Loop
+                                Iterate over Left Counter.
+
+                            > Update > Data
+                        */
+                        for (let i = 0; i < leftCounter; i += 1)
+                            data = arguments[1] + data;
                 }
 
                 // Return
@@ -4508,13 +4572,31 @@
                         [if:else if:else statement]
                 */
                 if (arguments.length > 0) {
+                    // Initialization > Right Counter
+                    let rightCounter = 0;
+
                     /* Loop
                             [do:while statement]
 
-                        > Update > Data
+                        > Update > Data, Right Counter
                     */
-                    while (data.endsWith(String(arguments[0])))
-                        data = data.slice(0, -String(arguments[0]).length)
+                    while (data.endsWith(String(arguments[0]))) {
+                        data = data.slice(0, -String(arguments[0]).length);
+                        rightCounter += 1
+                    }
+
+                    /* Logic
+                            If
+                                Argument 1 is a string.
+                    */
+                    if (typeof arguments[1] == 'string')
+                        /* Loop
+                                Iterate over Right Counter.
+
+                            > Update > Data
+                        */
+                        for (let i = 0; i < rightCounter; i += 1)
+                            data = data + arguments[1];
                 }
 
                 // Return
@@ -5401,21 +5483,6 @@
                 })
             });
 
-            // HTML Document Type
-            constructor.prototype.HTMLDoctype || Object.defineProperty(constructor.prototype, 'HTMLDoctype', {
-                // Configurable
-                configurable: !0,
-
-                // Enumerable
-                enumerable: !0,
-
-                // Get
-                get: function HTMLDoctype() {
-                    // Return
-                    return String(!document.doctype || String((`<!DOCTYPE ${(document.doctype.name)}${(document.doctype.publicId ? ` PUBLIC '${document.doctype.publicId}'` : '') + ((!document.doctype.publicId && document.doctype.systemId) ? ' SYSTEM' : '') + (document.doctype.systemId ? ` '${document.doctype.systemId}'` : '')}>`))).replace('true', '')
-                }
-            });
-
             // JavaScript
             constructor.prototype.js || Object.defineProperty(constructor.prototype, 'js', {
                 // Value
@@ -5911,10 +5978,7 @@
                     }, 10)
                 });
 
-            /* Script
-                    --- UPDATE REQUIRED ---
-                        @lapys: Better parsing of the 'script' attribute.
-            */
+            // Script
                 // On Node Added
                 onNodeAdded(document.body, () => {
                     /* Loop
@@ -7056,6 +7120,10 @@
                     (typeof EventTarget.prototype.$$ == 'function') || Object.defineProperty(EventTarget.prototype, '$$', {
                         // Value
                         value: function LapysJSQuerySelector() {
+                            // Initialization > (Arguments, Target)
+                            let Arguments = arguments,
+                                that = this;
+
                             /* Logic
                                     [if:else if:else statement]
                             */
@@ -7063,9 +7131,46 @@
                                 /* Logic
                                         [if:else if:else statement]
                                 */
-                                if (arguments.length > 1)
+                                if (arguments.length > 1) {
                                     /* Logic
                                             [if:else if:else statement]
+                                    */
+                                    if (typeof arguments[1] == 'string')
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (arguments[1].startsWith('attr'))
+                                            // Return
+                                            return typeof arguments[2] == 'number' ? ((this === window ? document : this) || document).querySelectorAll(`[${arguments[1].slice('attr:'.length)}='${String(arguments[0]) || ''}'`)[arguments[2]] : (function() {
+                                                /* Logic
+                                                        Switch case to Argument 2.
+
+                                                    > Return
+                                                */
+                                                switch (Arguments[2]) {
+                                                    // Array
+                                                    case 'array':
+                                                        return [...((that === window ? document : that) || document).querySelectorAll(`[${Arguments[1].slice('attr:'.length)}='${String(Arguments[0]) || ''}'`)];
+                                                        break;
+
+                                                    // Length
+                                                    case 'length':
+                                                        return ((that === window ? document : that) || document).querySelectorAll(`[${Arguments[1].slice('attr:'.length)}='${String(Arguments[0]) || ''}'`).length;
+                                                        break;
+
+                                                    // Decremented Length
+                                                    case '~length':
+                                                        return ~-((that === window ? document : that) || document).querySelectorAll(`[${Arguments[1].slice('attr:'.length)}='${String(Arguments[0]) || ''}'`).length;
+                                                        break;
+
+                                                    // [Default]
+                                                    default:
+                                                        return (((that === window ? document : that) || document).querySelectorAll(`[${Arguments[1].slice('attr:'.length)}='${String(Arguments[0]) || ''}'`) || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll(`[${Arguments[1].slice('attr:'.length)}='${String(Arguments[0]) || ''}'`) : (((that === window ? document : that) || document).querySelectorAll(`[${Arguments[1].slice('attr:'.length)}='${String(Arguments[0]) || ''}'`) || [null])[0]
+                                                }
+                                            })();
+
+                                    /* Logic
+                                            [switch:case:default statement]
 
                                         > Return
                                     */
@@ -7085,6 +7190,37 @@
                                             return typeof window.$c == 'function' ? $c.apply(this || window, [...arguments].removeElement('class')) : null;
                                             break;
 
+                                        // CSS
+                                        case 'css':
+                                            return typeof arguments[2] == 'number' ? ((this === window ? document : this) || document).querySelectorAll(`link[href*='${arguments[0]}'`)[arguments[2]] : (function() {
+                                                /* Logic
+                                                        Switch case to Argument 2.
+
+                                                    > Return
+                                                */
+                                                switch (Arguments[2]) {
+                                                    // Array
+                                                    case 'array':
+                                                        return [...((that === window ? document : that) || document).querySelectorAll(`link[href*='${Arguments[0]}'`)];
+                                                        break;
+
+                                                    // Length
+                                                    case 'length':
+                                                        return ((that === window ? document : that) || document).querySelectorAll(`link[href*='${Arguments[0]}'`).length;
+                                                        break;
+
+                                                    // Decremented Length
+                                                    case '~length':
+                                                        return ~-((that === window ? document : that) || document).querySelectorAll(`link[href*='${Arguments[0]}'`).length;
+                                                        break;
+
+                                                    // [Default]
+                                                    default:
+                                                        return (((that === window ? document : that) || document).querySelectorAll(`link[href*='${Arguments[0]}'`) || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll(`link[href*='${Arguments[0]}'`) : (((that === window ? document : that) || document).querySelectorAll(`link[href*='${Arguments[0]}'`) || [null])[0]
+                                                }
+                                            })();
+                                            break;
+
                                         // ID
                                         case 'i':
                                             return typeof window.$i == 'function' ? $i.apply(this || window, [...arguments].removeElement('i')) : null;
@@ -7093,6 +7229,37 @@
                                         // ID
                                         case 'id':
                                             return typeof window.$i == 'function' ? $i.apply(this || window, [...arguments].removeElement('id')) : null;
+                                            break;
+
+                                        // JavaScript
+                                        case 'js':
+                                            return typeof arguments[2] == 'number' ? ((this === window ? document : this) || document).querySelectorAll(`script[src*='${arguments[0]}'][type='text/javascript'], script[src*='${arguments[0]}']:not([type])`)[arguments[2]] : (function() {
+                                                /* Logic
+                                                        Switch case to Argument 2.
+
+                                                    > Return
+                                                */
+                                                switch (Arguments[2]) {
+                                                    // Array
+                                                    case 'array':
+                                                        return [...((that === window ? document : that) || document).querySelectorAll(`script[src*='${Arguments[0]}'][type='text/javascript'], script[src*='${Arguments[0]}']:not([type])`)];
+                                                        break;
+
+                                                    // Length
+                                                    case 'length':
+                                                        return ((that === window ? document : that) || document).querySelectorAll(`script[src*='${Arguments[0]}'][type='text/javascript'], script[src*='${Arguments[0]}']:not([type])`).length;
+                                                        break;
+
+                                                    // Decremented Length
+                                                    case '~length':
+                                                        return ~-((that === window ? document : that) || document).querySelectorAll(`script[src*='${Arguments[0]}'][type='text/javascript'], script[src*='${Arguments[0]}']:not([type])`).length;
+                                                        break;
+
+                                                    // [Default]
+                                                    default:
+                                                        return (((that === window ? document : that) || document).querySelectorAll(`script[src*='${Arguments[0]}'][type='text/javascript'], script[src*='${Arguments[0]}']:not([type])`) || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll(`script[src*='${Arguments[0]}'][type='text/javascript'], script[src*='${Arguments[0]}']:not([type])`) : (((that === window ? document : that) || document).querySelectorAll(`script[src*='${Arguments[0]}'][type='text/javascript'], script[src*='${arguments[0]}']:not([type])`) || [null])[0]
+                                                }
+                                            })();
                                             break;
 
                                         // Tag Name
@@ -7119,6 +7286,7 @@
                                         case '~length':
                                             return 'length' in ((this === window ? document : this) || document).querySelectorAll(String(arguments[0] || '')) ? (((this === window ? document : this) || document).querySelectorAll(String(arguments[0] || '')).length - 1) : NaN;
                                     }
+                                }
 
                                 /* Logic
                                         [if:else if:else statement]
