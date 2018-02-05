@@ -4,6 +4,23 @@
     @version: 0.0.1
 */
 (function LapysJSScript(window = window, document = window.document, global, undefined = window.undefined || void 0) {
+    /* Polyfills
+            --- NOTE ---
+                @lapys: All polyfills are minified.
+                    Thanks to MDN and other developers who made these polyfills free and available for use.
+    */
+        /* Array */
+            // From
+            (typeof Array.from=='function')||(Array.from=function(){var a=Object.prototype.toString,b=function(f){return'function'==typeof f||'[object Function]'===a.call(f)},c=function(f){var g=+f;return isNaN(g)?0:0!=g&&isFinite(g)?(0<g?1:-1)*Math.floor(Math.abs(g)):g},d=Math.pow(2,53)-1,e=function(f){var g=c(f);return Math.min(Math.max(g,0),d)};return function(g){var h=this,i=Object(g);if(null==g)throw new TypeError('Array.from requires an array-like object - not null or undefined');var l,j=1<arguments.length?arguments[1]:void 0;if('undefined'!=typeof j){if(!b(j))throw new TypeError('Array.from: when provided, the second argument must be a function');2<arguments.length&&(l=arguments[2])}for(var p,m=e(i.length),n=b(h)?Object(new h(m)):Array(m),o=0;o<m;)p=i[o],n[o]=j?'undefined'==typeof l?j(p,o):j.call(l,p,o):p,o+=1;return n.length=m,n}}());
+
+        /* Math */
+            // Cube Root
+            Math.cbrt||(Math.cbrt=function(a){var b=Math.pow(Math.abs(a),1/3);return 0>a?-b:b});
+
+        /* Object */
+            // Assign
+            (typeof Object.assign=='function')||Object.defineProperty(Object,'assign',{configurable:!0,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: !0});
+
     /* Window */
         // Absolute
         (typeof window.abs == 'function') || Object.defineProperty(window, 'abs', {
@@ -76,7 +93,7 @@
             // Value
             value: function cbrt() {
                 // Return
-                return (window.Math || new (function Math(){
+                return (window.Math || new (function Math() {
                     // Modification > Target > Cube Root
                     this.cbrt = function cbrt() {
                         // Return
@@ -108,7 +125,11 @@
             }
         });
 
-        // Check
+        /* Check
+                --- NOTE ---
+                    @lapys: Similar to a Bernoulli distribution trial
+                        with exclusive or exhaustive results from an outcome.
+        */
         (typeof window.check == 'function') || Object.defineProperty(window.constructor.prototype, 'check', {
             // Value
             value: function check() {
@@ -222,6 +243,9 @@
         (typeof window.compare == 'function') || Object.defineProperty(window.constructor.prototype, 'compare', {
             // Value
             value: function compare() {
+                // Polyfill
+                (typeof Object.is=='function')||(Object.is=function(a,b){return a===b?0!==a||1/a==1/b:a!==a&&b!==b});
+
                 // Return
                 return Object.is.apply(this, [...arguments])
             }
@@ -233,23 +257,33 @@
                         @lapys: A somewhat major alternative to the 'console.dir' and 'console.log' methods.
             */
             (typeof console.print == 'function') || (console.print = function print() {
-                // Initialization > Data
-                let data = arguments[0];
-
                 /* Logic
-                        [if:else if:else statement]
+                        If
+                            there is an Argument.
                 */
-                if (typeof data == 'string' && arguments.length > 1)
-                    /* Loop
-                            [for statement]
+                if (arguments.length > 0) {
+                    // Initialization > Data
+                    let data = arguments[0];
 
-                        > Update > Data
+                    /* Logic
+                            [if:else if:else statement]
                     */
-                    for (let i = 0; i < [...arguments].slice(1).length; i += 1)
-                        data = data.replace(`{${i}}`, [...arguments].slice(1)[i]);
+                    if (typeof data == 'string' && arguments.length > 1)
+                        /* Loop
+                                [for statement]
 
-                // Console > Log
-                console.log(data)
+                            > Update > Data
+                        */
+                        for (let i = 0; i < [...arguments].slice(1).length; i += 1)
+                            data = data.replace(`{${i}}`, [...arguments].slice(1)[i]);
+
+                    // Console > Log
+                    console.log(data)
+                }
+
+                else
+                    // Console > Log
+                    console.log('\0')
             });
 
         // Copy
@@ -259,9 +293,13 @@
                 // Initialization > Data
                 let data = document.createElement('textarea');
 
-                // Modification > Data > Value
-                data.setAttribute('value', arguments.length > 0 ? String(arguments[0]) : '');
-                data.value = arguments.length > 0 ? String(arguments[0]) : '';
+                // Modification > Data
+                    // Content Editable
+                    data.contentEditable = !0;
+
+                    // Value
+                    data.setAttribute('value', arguments.length > 0 ? String(arguments[0]) : '');
+                    data.value = arguments.length > 0 ? String(arguments[0]) : '';
 
                 // Insertion
                 document.body.appendChild(data);
@@ -278,6 +316,32 @@
 
                 // Deletion
                 document.body.removeChild(data)
+            }
+        });
+
+        // Cut
+        (typeof window.cut == 'function') || Object.defineProperty(window.constructor.prototype, 'cut', {
+            // Value
+            value: function cut() {
+                // Initialization > Data
+                let data = arguments[0];
+
+                // Modification > Data
+                    // Content Editable
+                    data.contentEditable = !0;
+
+                    // Value
+                    data.value = data.value || '';
+
+                // Data > (Focus, Select)
+                data.focus();
+                data.select();
+
+                // Document > Execute Command
+                document.execCommand('cut');
+
+                // Data > Blur
+                data.blur()
             }
         });
 
@@ -342,7 +406,7 @@
                 // Error Handling
                 try {
                     // Initialization > Data
-                    let data = document.createElement(String(arguments[0]));
+                    let data = document.createElement.apply(document, (arguments[4] || []).constructor == Object ? [String(arguments[0]), arguments[4]] : [String(arguments[0])]);
 
                     // Modification > Data
                         // CSS Selector
@@ -522,7 +586,7 @@
             }
         });
 
-         // Get Query String By Name
+        // Get Query String By Name
         (typeof window.getQueryParameterByName == 'function') || (window.getQueryParameterByName = function getParameterByName() {
             // Initialization > Arguments
             let Arguments = arguments;
@@ -535,12 +599,23 @@
             let data = RegExp(`[?&]${Arguments[0]}(=([^&#]*)|&|#|$)`),
                 metadata = data.exec(Arguments[1]);
 
+            /* Logic
+                    [if:else if:else statement]
+
+                > Return
+            */
             if (!metadata)
                 return null;
 
+            /* Logic
+                    [if:else if:else statement]
+
+                > Return
+            */
             if (!metadata[2])
                 return '';
 
+            // Return
             return decodeURIComponent(metadata[2].replace(/\+/g, ' '))
         });
 
@@ -630,6 +705,8 @@
         /* Is Object
                 --- WARN ---
                     @lapys: This function is meant for development purposes only.
+                        It evaluates a value on if it is an object or not
+                            and either calls a given function or alternative value.
         */
         let isObject = function isObject() {
             // Return
@@ -641,7 +718,7 @@
                 (arguments[0] || []).constructor !== RegExp &&
                 (arguments[0] || []).constructor !== String &&
                 (arguments[0] || []).constructor !== Symbol
-            ) ? typeof arguments[1] == 'function' ? arguments[1]() : arguments[1] : !1
+            ) ? (typeof arguments[1] == 'function' ? arguments[1]() : arguments[1]) : !1
         };
 
         // Length
@@ -649,7 +726,7 @@
             // Value
             value: function len() {
                 // Return
-                return +String((typeof arguments[0] != 'number') || arguments[0]).replace('true', eval(String((typeof (arguments[0] || {length: ''}).length != 'number') || arguments[0].length).replace('true', void 0)))
+                return (arguments[0] || []).constructor == window.HTMLAllCollection ? arguments[0].length : (+String((typeof arguments[0] != 'number') || arguments[0]).replace('true', eval(String((typeof (arguments[0] || {length: ''}).length != 'number') || arguments[0].length).replace('true', void 0))))
             }
         });
 
@@ -693,7 +770,7 @@
         (typeof window.log == 'function') || (window.log = console.log);
 
         // Log Line
-        (typeof window.logl == 'function') || (window.logl = console.logLine);
+        (typeof window.logl == 'function') || (window.logl = console.print);
 
         /* JSON
                 --- NOTE ---
@@ -704,10 +781,10 @@
             this.fallback = !0;
 
             // Parse
-            this.parse = () => {};
+            this.parse = function() {};
 
             // Stringify
-            this.stringify = () => {}
+            this.stringify = function() {}
         });
             /* Fallback
                     --- NOTE ---
@@ -718,7 +795,7 @@
         // Math
             /* Evaluate
                     --- UPDATE REQUIRED ---
-                        @lapys: Should evaluate strings of math.
+                        @lapys: Should evaluate strings of deeper math.
             */
             !window.Math || Math.eval || Object.defineProperty(Math, 'eval', {
                 // Value
@@ -735,7 +812,7 @@
                     // Return
                     return 1 / arguments[0]
                 }
-            })
+            });
 
             // Random > Range
             !window.Math || (Math.random || []).range || Object.defineProperty(Math.random, 'range', {
@@ -762,7 +839,7 @@
             /* Logic
                     [if:else if:else statement]
             */
-            if (!window.max) {
+            if (typeof window.max != 'function') {
                 // Initialization
                 Object.defineProperty(window.constructor.prototype, 'max', {
                     // Value
@@ -811,7 +888,7 @@
             /* Logic
                     [if:else if:else statement]
             */
-            if (!window.min) {
+            if (typeof window.min != 'function') {
                 // Initialization
                 Object.defineProperty(window.constructor.prototype, 'min', {
                     // Value
@@ -860,7 +937,7 @@
             }
 
         // Name
-        window.name || (window.name = document.title);
+        (typeof window.name == 'string') || (window.name = document.title);
 
         // Navigator
         window.navigator || (window.navigator = new (function Navigator() {
@@ -877,7 +954,7 @@
             // Set Timeout
             setTimeout(() => {
                 // Initialization
-                window.number || Object.defineProperty(window.constructor.prototype, 'number', {
+                (typeof window.number == 'int') || Object.defineProperty(window.constructor.prototype, 'number', {
                     // Value
                     value: function number() {
                         // Return
@@ -886,7 +963,7 @@
                 });
                     // Modification
                         // Float
-                        window.number.float || Object.defineProperty(window.constructor.prototype.number, 'float', {
+                        (typeof window.number.float == 'function') || Object.defineProperty(window.constructor.prototype.number, 'float', {
                             // Value
                             value: function float() {
                                 // Return
@@ -895,7 +972,7 @@
                         });
 
                         // Integer
-                        window.number.int || Object.defineProperty(window.constructor.prototype.number, 'int', {
+                        (typeof window.number.int == 'function') || Object.defineProperty(window.constructor.prototype.number, 'int', {
                             // Value
                             value: function int() {
                                 // Return
@@ -905,6 +982,15 @@
 
                 // Definition
                 window.num = number
+            });
+
+            // Percent
+            (typeof Number.prototype.perc == 'function') || Object.defineProperty(Number.prototype, 'perc', {
+                // Value
+                value: function percent() {
+                    // Return
+                    return arguments.length > 0 ? this / (typeof arguments[0] == 'number' ? arguments[0] : 1) : this
+                }
             });
 
         // Objectify
@@ -1122,6 +1208,41 @@
             }
         });
 
+        // Paste
+        (typeof window.paste == 'function') || Object.defineProperty(window.constructor.prototype, 'paste', {
+            // Value
+            value: function paste() {
+                // Initialization > Data
+                let data = arguments[0];
+
+                // Modification > Data
+                    // Content Editable
+                    data.contentEditable = !0;
+
+                    // Value
+                    data.value = data.value || '';
+
+                // Data > (Focus, Select)
+                data.focus();
+                data.select();
+
+                // Document > Execute Command
+                document.execCommand('paste');
+
+                // Data > Blur
+                data.blur()
+            }
+        });
+
+        // Percent
+        (typeof window.perc == 'function') || Object.defineProperty(window.constructor.prototype, 'perc', {
+            // Value
+            value: function percent() {
+                // Return
+                return parseNumber(arguments[0]).perc(arguments[1])
+            }
+        });
+
         // PI
         (typeof window.PI == 'number') || Object.defineProperty(window.constructor.prototype, 'PI', {value: (Math || new (function Math() { this.PI = 3.141592653589793 })).PI});
 
@@ -1178,19 +1299,24 @@
                             If
                                 Argument 0 is not an Array
                                     and
-                                Argument 1 is not an Array,
+                                Argument 1 is not an Array
+                                    and
+                                Argument 2 is not an Array,
 
                             else if
                                 Argument 0 is an Array
                                     and
-                                Argument 1 is an Array.
+                                Argument 1 is an Array
+                                    and
+                                Argument 2 is an Array.
                     */
                     if (
                         (arguments[0] || '').constructor != Array &&
-                        (arguments[1] || '').constructor != Array
+                        (arguments[1] || '').constructor != Array &&
+                        (arguments[2] || '').constructor != Array
                     )
                         // Initialization > Metadata
-                        'define' in window.customElements ? window.customElements.define(String(arguments[0]), arguments[1] || class HTMLCustomElement extends HTMLElement {}) : (typeof document.registerElement == 'function' ? document.registerElement(String(arguments[0]), arguments[1] || class HTMLCustomElement extends HTMLElement {}) : LapysJS.error(`'${data}' could not be added to the customElementRegistry because CustomElements v1 is not yet supported in this browser.`));
+                        'define' in window.customElements ? window.customElements.define(String(arguments[0]), arguments[1] || class HTMLCustomElement extends HTMLElement {}, arguments[2]) : (typeof document.registerElement == 'function' ? document.registerElement(String(arguments[0]), arguments[1] || class HTMLCustomElement extends HTMLElement {}, arguments[2]) : LapysJS.error(`'${data}' could not be added to the customElementRegistry because CustomElements v1 is not yet supported in this browser.`));
 
                     else if (
                         (arguments[0] || '').constructor == Array &&
@@ -1202,7 +1328,7 @@
                             > Custom Elements > Define
                         */
                         for (let i = 0; i < max(arguments[0].length, arguments[1].length); i += 1)
-                            'define' in window.customElements ? window.customElements.define(String(arguments[0][i]), arguments[1][i] || class HTMLCustomElement extends HTMLElement {}) : (typeof document.registerElement == 'function' ? document.registerElement(String(arguments[0][i]), arguments[1][i] || class HTMLCustomElement extends HTMLElement {}) : LapysJS.error(`'${data}' could not be added to the customElementRegistry because CustomElements v1 is not yet supported in this browser.`))
+                            'define' in window.customElements ? window.customElements.define(String(arguments[0][i]), arguments[1][i] || class HTMLCustomElement extends HTMLElement {}, arguments[2][i]) : (typeof document.registerElement == 'function' ? document.registerElement(String(arguments[0][i]), arguments[1][i] || class HTMLCustomElement extends HTMLElement {}, arguments[2][i]) : LapysJS.error(`'${data}' could not be added to the customElementRegistry because CustomElements v1 is not yet supported in this browser.`))
                 }
 
                 // Return
@@ -1236,14 +1362,10 @@
                         > Function > Argument 0
                     */
                     for (let i = 0; i < arguments[1]; i += 1)
-                        arguments[0].apply(this, [...arguments].slice(2));
+                        arguments[0].apply(this, [...arguments].slice(2).addElementToBack(i));
 
-                else if (
-                    typeof arguments[0] == 'function' &&
-                    arguments.length < 2
-                )
-                    // Request Animation Frame
-                    requestAnimationFrame(arguments[0]);
+                // Return
+                return
             }
         });
 
@@ -2664,7 +2786,7 @@
                 this.executed = !1;
 
                 // Experimental Features
-                Object.defineProperty(this, 'experimentalFeatures', {value: ['data-focus']});
+                Object.defineProperty(this, 'experimentalFeatures', {value: ['data-focus', 'html-javascript']});
 
                 // Name (Title)
                 Object.defineProperty(this, 'name', {value: 'LapysJS'});
@@ -2693,6 +2815,7 @@
 
                         // Set
                         set: function disable() {
+                            // Modification > (LapysJS > Script) > Data Enable
                             this.setAttribute('data-enable', this.getAttribute('data-enable').replace(RegExp(`\b${arguments[0]}\b`, 'g'), '').replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g).removeRepeatedElements().join(' '))
                         }
                     });
@@ -2932,9 +3055,7 @@
         (typeof Array.prototype.indexOf == 'function') || Object.defineProperty(Array.prototype, 'indexOf', {
             // Value
             value: function indexOf() {
-                /* --- NOTE ---
-                        This is a minified polyfill version of 'indexOf' in non-supporting browsers.
-                */
+                // Polyfill
                 if(this===null)throw TypeError(`'this' is null or not defined`);var a,c=Object(this),b=c.length>>>0;if(0===b)return -1;a=parseFloat(arguments[1])||0;Infinity===Math.abs(a)&&(a=0);if(a>=b)return -1;for(a=Math.max(0<=a?a:b-Math.abs(a),0);a<b;){if(a in c&&c[a]===arguments[0])return a;a += 1}return -1
             }
         });
@@ -2946,9 +3067,7 @@
         (typeof Array.prototype.lastIndexOf == 'function') || Object.defineProperty(Array.prototype, 'lastIndexOf', {
             // Value
             value: function lastIndexOf() {
-                /* --- NOTE ---
-                        This is a minified polyfill version of 'lastIndexOf' in non-supporting browsers.
-                */
+                // Polyfill
                 if(this===void 0||this===null)throw TypeError();var n,k,t=Object(this),len=t.length>>>0;if(len===0){return -1}n=len-1;if(arguments.length>1){n=Number(arguments[1]);if(n!==n){n=0}else if(n!==0&&n!==(1/0)&&n!==-(1/0)){n=(n>0||-1)*Math.floor(Math.abs(n))}}for(k=n>=0?Math.min(n,len-1):len-Math.abs(n);k>=0;k -= 1){if(k in t&&t[k]===arguments[0]){return k}}return -1
             }
         });
@@ -3871,12 +3990,6 @@
                         case 'object':
                             // {Update Data}
                             (function updateData() {
-                                /*
-                                        --- NOTE ---
-                                            @lapys: Minified polyfill for the 'Object.assign' method.
-                                */
-                                (typeof Object.assign=='function')||Object.defineProperty(Object,'assign',{configurable:!0,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: !0});
-
                                 // Update > Data
                                 data = Object.assign(that, {})
                             })();
@@ -3945,12 +4058,6 @@
         (typeof Object.prototype.concat == 'function') || Object.defineProperty(Object.prototype, 'concat', {
             // Value
             value: function concat() {
-                /*
-                        --- NOTE ---
-                            @lapys: Minified polyfill for the 'Object.assign' method.
-                */
-                (typeof Object.assign=='function')||Object.defineProperty(Object,'assign',{configurable:!0,value:function assign(){'use strict';if(arguments[0]==null)throw TypeError('Cannot convert undefined or null to object');var to=Object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(Object.prototype.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable: !0});
-
                 // Return
                 return Object.assign(this, arguments[0] || {});
             }
@@ -3971,85 +4078,308 @@
                 (typeof data != 'number') || (data = String(data));
 
                 /* Logic
-                        If
-                            Argument 2 is undefined.
-
-                        > Object > Define Property
+                        [if:else if:else statement]
                 */
                 if (!arguments[2])
-                    Object.defineProperty(this || window, String(data), new (function Object() {
+                    // Error Handling
+                    try {
                         /* Logic
                                 [if:else if:else statement]
+
+                            > Return
                         */
-                        if (
-                            (Arguments[1] || []).get ||
-                            (Arguments[1] || []).set
-                        ) {
-                            // Modification > Target
-                                // Configurable
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (
-                                        (Arguments[1] || []).configurable !== undefined ||
-                                        (Arguments[1] || []).get ||
-                                        (Arguments[1] || []).set
-                                    )
-                                        this.configurable = (Arguments[1] || []).configurable;
-
-                                    else
-                                        this.configurable = !0;
-
-                                // Enumerable
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (
-                                        (Arguments[1] || []).enumerable !== undefined ||
-                                        (Arguments[1] || []).get ||
-                                        (Arguments[1] || []).set
-                                    )
-                                        this.enumerable = (Arguments[1] || []).enumerable;
-
-                                    else
-                                        this.enumerable = !0;
-
-                                // Get
-                                this.get = (Arguments[1] || []).get;
-
-                                // Set
-                                this.set = (Arguments[1] || []).set
-                        }
-
-                        else if (Arguments.length > 0) {
-                            // Error Handling
-                            try {
-                                // Value
-                                this.value = 'value' in Arguments[1] ? (Arguments[1] || []).value : Arguments[1]
-                            }
-
-                            catch (error) {
-                                // Value
-                                this.value = Arguments[1]
-                            }
-
-                            // Writable
+                        if ('get' in Arguments[1])
+                            return Object.defineProperty(this || window, String(data), new (function Object() {
                                 /* Logic
                                         [if:else if:else statement]
                                 */
-                                if ((Arguments[1] || []).writable !== undefined)
-                                    this.writable = (Arguments[1] || []).writable;
+                                if (
+                                    (Arguments[1] || []).get ||
+                                    (Arguments[1] || []).set
+                                ) {
+                                    // Modification > Target
+                                        // Configurable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).configurable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.configurable = (Arguments[1] || []).configurable;
 
-                                else
-                                    this.writable = !0
-                        }
-                    }));
+                                            else
+                                                this.configurable = !0;
+
+                                        // Enumerable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).enumerable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.enumerable = (Arguments[1] || []).enumerable;
+
+                                            else
+                                                this.enumerable = !0;
+
+                                        // Get
+                                        !Arguments[1].get || (this.get = Arguments[1].get);
+
+                                        // Set
+                                        !Arguments[1].set || (this.set = Arguments[1].set)
+                                }
+
+                                else if (Arguments.length > 0) {
+                                    // Error Handling
+                                    try {
+                                        // Value
+                                        this.value = 'value' in Arguments[1] ? (Arguments[1] || []).value : Arguments[1]
+                                    }
+
+                                    catch (error) {
+                                        // Value
+                                        this.value = Arguments[1]
+                                    }
+
+                                    // Writable
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if ((Arguments[1] || []).writable !== void 0)
+                                            this.writable = (Arguments[1] || []).writable;
+
+                                        else
+                                            this.writable = !0
+                                }
+                            }));
+
+                        else
+                            Object.defineProperty(this || window, String(data), new (function Object() {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (
+                                    (Arguments[1] || []).get ||
+                                    (Arguments[1] || []).set
+                                ) {
+                                    // Modification > Target
+                                        // Configurable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).configurable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.configurable = (Arguments[1] || []).configurable;
+
+                                            else
+                                                this.configurable = !0;
+
+                                        // Enumerable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).enumerable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.enumerable = (Arguments[1] || []).enumerable;
+
+                                            else
+                                                this.enumerable = !0;
+
+                                        // Get
+                                        !Arguments[1].get || (this.get = Arguments[1].get);
+
+                                        // Set
+                                        !Arguments[1].set || (this.set = Arguments[1].set)
+                                }
+
+                                else if (Arguments.length > 0) {
+                                    // Error Handling
+                                    try {
+                                        // Value
+                                        this.value = 'value' in Arguments[1] ? (Arguments[1] || []).value : Arguments[1]
+                                    }
+
+                                    catch (error) {
+                                        // Value
+                                        this.value = Arguments[1]
+                                    }
+
+                                    // Writable
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if ((Arguments[1] || []).writable !== void 0)
+                                            this.writable = (Arguments[1] || []).writable;
+
+                                        else
+                                            this.writable = !0
+                                }
+                            }));
+
+                        // Return
+                        return (this || window)[String(data)]
+                    }
+
+                    catch (error) {
+                        /* Logic
+                                [if:else if:else statement]
+
+                            > Return
+                        */
+                        if (Arguments[1].get)
+                            return Object.defineProperty(this || window, String(data), new (function Object() {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (
+                                    (Arguments[1] || []).get ||
+                                    (Arguments[1] || []).set
+                                ) {
+                                    // Modification > Target
+                                        // Configurable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).configurable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.configurable = (Arguments[1] || []).configurable;
+
+                                            else
+                                                this.configurable = !0;
+
+                                        // Enumerable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).enumerable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.enumerable = (Arguments[1] || []).enumerable;
+
+                                            else
+                                                this.enumerable = !0;
+
+                                        // Get
+                                        !Arguments[1].get || (this.get = Arguments[1].get);
+
+                                        // Set
+                                        !Arguments[1].set || (this.set = Arguments[1].set)
+                                }
+
+                                else if (Arguments.length > 0) {
+                                    // Error Handling
+                                    try {
+                                        // Value
+                                        this.value = 'value' in Arguments[1] ? (Arguments[1] || []).value : Arguments[1]
+                                    }
+
+                                    catch (error) {
+                                        // Value
+                                        this.value = Arguments[1]
+                                    }
+
+                                    // Writable
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if ((Arguments[1] || []).writable !== void 0)
+                                            this.writable = (Arguments[1] || []).writable;
+
+                                        else
+                                            this.writable = !0
+                                }
+                            }));
+
+                        else
+                            Object.defineProperty(this || window, String(data), new (function Object() {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (
+                                    (Arguments[1] || []).get ||
+                                    (Arguments[1] || []).set
+                                ) {
+                                    // Modification > Target
+                                        // Configurable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).configurable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.configurable = (Arguments[1] || []).configurable;
+
+                                            else
+                                                this.configurable = !0;
+
+                                        // Enumerable
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (Arguments[1] || []).enumerable !== void 0 ||
+                                                (Arguments[1] || []).get ||
+                                                (Arguments[1] || []).set
+                                            )
+                                                this.enumerable = (Arguments[1] || []).enumerable;
+
+                                            else
+                                                this.enumerable = !0;
+
+                                        // Get
+                                        !Arguments[1].get || (this.get = Arguments[1].get);
+
+                                        // Set
+                                        !Arguments[1].set || (this.set = Arguments[1].set)
+                                }
+
+                                else if (Arguments.length > 0) {
+                                    // Error Handling
+                                    try {
+                                        // Value
+                                        this.value = 'value' in Arguments[1] ? (Arguments[1] || []).value : Arguments[1]
+                                    }
+
+                                    catch (error) {
+                                        // Value
+                                        this.value = Arguments[1]
+                                    }
+
+                                    // Writable
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if ((Arguments[1] || []).writable !== void 0)
+                                            this.writable = (Arguments[1] || []).writable;
+
+                                        else
+                                            this.writable = !0
+                                }
+                            }));
+
+                        // Return
+                        return (this || window)[String(data)]
+                    }
 
                 else
-                    Object.defineProperty(this || window, data, arguments[1]);
-
-                // Return
-                return (this || window)[String(data)]
+                    return Object.defineProperty(this || window, data, arguments[1])
             }
         });
 
@@ -4059,6 +4389,24 @@
             value: function empty() {
                 // Return
                 return typeof this == 'number' ? !this : !Object.keys(this)[0] || !1
+            }
+        });
+
+        // Get (Property)
+        (typeof Object.prototype.getProperty == 'function') || Object.defineProperty(Object.prototype, 'getProperty', {
+            // Value
+            value: function getProperty() {
+                // Return
+                return String(arguments[0]) in this ? this[String(arguments[0])] : void 0
+            }
+        });
+
+        // Has Property
+        (typeof Object.prototype.hasProperty == 'function') || Object.defineProperty(Object.prototype, 'hasProperty', {
+            // Value
+            value: function hasProperty() {
+                // Return
+                return String(arguments[0]) in this
             }
         });
 
@@ -4090,6 +4438,15 @@
                         @lapys: Create a 'setter' for vendor scripts.
             */
             set: function __name__() {}
+        });
+
+        // Set (Property)
+        (typeof Object.prototype.setProperty == 'function') || Object.defineProperty(Object.prototype, 'setProperty', {
+            // Value
+            value: function setProperty() {
+                // Return
+                return this[String(arguments[0])] = arguments[1]
+            }
         });
 
         // Values
@@ -5594,7 +5951,7 @@
 
         /* Document */
             // Favorite Icon
-            Document.prototype.favicon || (Object.defineProperty(Document.prototype, 'favicon', {
+            ('favicon' in Document.prototype) || (Object.defineProperty(Document.prototype, 'favicon', {
                 // Configurable
                 configurable: !0,
 
@@ -5604,13 +5961,31 @@
                 // Get
                 get: function getFavicon() {
                     // Return
-                    return [...document.querySelectorAll(`link[href][rel*='icon']`)]
+                    return [...(document.querySelectorAll(`link[href][rel*='icon']`) || [null])]
                 },
 
                 // Set
                 set: function setFavicon() {
-                    // Insertion
-                    document.head.appendChild(createDocumentFragment(`<link href='${arguments[0]}' rel=icon type=image/${String(arguments[0]).getAfterChar('.', !0) || 'x-icon'}><link href='${arguments[0]}' rel='shortcut icon'><link href='${arguments[0]}' rel=icon type=image/vnd.microsoft.icon><link href='${arguments[0]}' rel=apple-touch-icon-precomposed>`, `div`))
+                    /* Logic
+                            [if:else if:else statement]
+                    */
+                    if (
+                        [...(document.querySelectorAll(`link[href][rel*='icon']`) || [null])][0] === null ||
+                        [...(document.querySelectorAll(`link[href][rel*='icon']`) || [null])][0] === void 0
+                    )
+                        // Insertion
+                        document.head.appendChild(createDocumentFragment(`<link href='${arguments[0]}' rel=icon type=image/${String(arguments[0]).getAfterChar('.', !0) || 'x-icon'}><link href='${arguments[0]}' rel='shortcut icon'><link href='${arguments[0]}' rel=icon type=image/vnd.microsoft.icon><link href='${arguments[0]}' rel=apple-touch-icon-precomposed>`, `div`));
+
+                    else
+                        /* Loop
+                                [for statement]
+
+                            > Modification > [Element] > (Hyperlink Reference, Type)
+                        */
+                        for (let i = 0; i < [...(document.querySelectorAll(`link[href][rel*='icon']`) || [null])].length; i += 1) {
+                            [...(document.querySelectorAll(`link[href][rel*='icon']`) || [null])][i].href = arguments[0];
+                            !([...(document.querySelectorAll(`link[href][rel*='icon']`) || [null])][i].getAttribute('type') || '').startsWith('type') || ([...(document.querySelectorAll(`link[href][rel*='icon']`) || null)].type = `image/${String(arguments[0]).getAfterChar('.', !0) || 'x-icon'}`)
+                        }
                 }
             }));
 
@@ -5625,7 +6000,7 @@
                 // Get
                 get: function main() {
                     // Return
-                    return document.querySelector('main')
+                    return document.getElementsByTagName('main')[0]
                 }
             });
 
@@ -5659,7 +6034,7 @@
                         LapysJS.script.enabled.indexOf('data-focus') > -1
                     )
                         // On DOM Ready
-                        onDOMReady(() => {
+                        onDOMReady(function() {
                             // Event > <body> > Mouse Up
                             document.body.setEvent('mouseup', function LapysJSDataFocusFeatureEvent(event) {
                                 /* Loop
@@ -5855,17 +6230,17 @@
                     > Modification > <option> > Label
                 */
                 while (document.querySelector('option:not([label])'))
-                    document.querySelector('option:not([label])').label = document.querySelector('option:not([label])').innerText.trim()
+                    document.querySelector('option:not([label])').label = document.querySelector('option:not([label])').innerText.trim();
 
             /* <time> */
                 // On DOM Ready
-                onDOMReady(() => {
+                onDOMReady(function() {
                     /* On DOM Change
                             --- NOTE ---
                                 @lapys: The 'onDOMChange' function can also be used here,
                                     actually it's more subtle.
                     */
-                    setInterval(() => {
+                    setInterval(function() {
                         /* Loop
                                 Index all Dynamic Time.
                         */
@@ -7050,7 +7425,7 @@
                                 */
                                 if (
                                     screen.height !== innerHeight &&
-                                    !this.hasAttribute('data-fullscreen')
+                                    !that.hasAttribute('data-fullscreen')
                                 ) {
                                     !!arguments[0] || alert(`[LapysJS ${LapysJS.version}] => Press the 'Esc' key to exit fullscreen.`);
 
@@ -7701,10 +8076,7 @@
                     (typeof Node.prototype.insertChild == 'function') || Object.defineProperty(Node.prototype, 'insertChild', {
                         // Value
                         value: function insertChild() {
-                            /*
-                                    --- NOTE ---
-                                        Minified polyfill for the 'ParentNode.prepend' method.
-                            */
+                            // Polyfill
                             (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:!0,enumerable:!0,value:function prepend(){var argArr=Array.prototype.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:!0})})})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
 
                             // Insertion > Element
@@ -8313,7 +8685,7 @@
                         }
                     });
 
-        /* Components
+        /* Assets, Components
                 --- NOTE ---
                     @lapys: The 'LapysJS isModified' property helps the loop know which
                         Components have not been modified.
@@ -11896,6 +12268,87 @@
                     })
             });
 
+        /* Features */
+            /* HTML JavaScript Feature */
+                // Check
+                check(function HTMLJavaScriptFeature() {
+                    // Return
+                    return LapysJS.script.enabled.indexOf('all') > -1 || LapysJS.script.enabled.indexOf('html-javascript') > -1
+                }, function() {
+                    /* <script-element> */
+                    (function scriptElementAPI() {
+                        // Registration
+                        !registerElement() || registerElement('script-element', class HTMLAccessValueElement extends HTMLElement {
+                            // Constructor
+                            constructor() {
+                                // Super
+                                !registerElement() || super();
+
+                                // Return
+                                return registerElement() ? void 0 : 'script-element'.html
+                            }
+                        });
+
+                        // Function > Evaluate Script Element
+                        function evaluateScriptElement() {
+                            /* Loop
+                                    [do:while statement]
+                            */
+                            while (document.getElementsByTagName('script-element')[0]) {
+                                // Insertion
+                                !document.getElementsByTagName('script-element')[0].innerHTML.trim() || document.getElementsByTagName('script-element')[0].insertAdjacentHTML('afterend', `<script${(function(element) {
+                                    // Initialization > (Data, Metadata)
+                                    let data = '',
+                                        metadata = document.createElement('iframe');
+
+                                    // Insertion
+                                    document.body.appendChild(metadata);
+
+                                    /* Loop
+                                            [for statement]
+
+                                        > Update > Data
+                                    */
+                                    for (let i = 0; i < element.attributes.length; i += 1)
+                                        (element.attributes[i].name == 'src') || (data += ` ` + element.attributes[i].name + `='` + element.attributes[i].value + `'`);
+
+                                    // Metadata > Content Window > Document > (Write, Close)
+                                    metadata.contentWindow.document.write(`<script${data} type=text/javascript>${element.innerHTML}</script>`);
+                                    metadata.contentWindow.document.close();
+
+                                    // Deletion
+                                    document.body.removeChild(metadata);
+
+                                    // Return
+                                    return data
+                                })(document.getElementsByTagName('script-element')[0])}>function execute() { ${document.getElementsByTagName('script-element')[0].innerHTML} }</script>`);
+
+                                !(document.getElementsByTagName('script-element')[0].getAttribute('src') || document.getElementsByTagName('script-element')[0].src || '').trim() || document.getElementsByTagName('script-element')[0].insertAdjacentHTML('afterend', `<script${(function(element) {
+                                    // Initialization > Data
+                                    let data = '';
+
+                                    /* Loop
+                                            [for statement]
+
+                                        > Update > Data
+                                    */
+                                    for (let i = 0; i < element.attributes.length; i += 1)
+                                        data += ` ` + element.attributes[i].name + `='` + element.attributes[i].value + `'`;
+
+                                    // Return
+                                    return data
+                                })(document.getElementsByTagName('script-element')[0])}> </script>`);
+
+                                // Deletion
+                                document.getElementsByTagName('script-element')[0].remove()
+                            }
+                        };
+
+                        evaluateScriptElement();
+                        onDOMNodeAdded(evaluateScriptElement)
+                    })()
+                });
+
         /* Event */
             // Window
                 // Blur, Resize, Scroll
@@ -12050,7 +12503,10 @@
                 LapysJS.executed = !0;
 
                 // Ready
-                LapysJS.ready = LapysJS.executed
+                LapysJS.ready = LapysJS.executed;
+
+        // Console > Log
+        console.log(`LapysJS.ready`, LapysJS.ready)
     }
 
     else if (!window)

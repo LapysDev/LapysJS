@@ -123,10 +123,6 @@
                 font-weight: 300
             }
                 /* Content */
-                main.document-sheet-model > [role=container] > #sections > section > [role=content] {
-                    line-height: 1.5
-                }
-
                 main.document-sheet-model > [role=container] > #sections > section > [role=content] + [role=content] {
                     margin-top: 50px
                 }
@@ -167,17 +163,26 @@
 
             /* Code Inline */
             main.document-sheet-model > [role=container] > #sections .code-inline {
-                background-color: #EFEFEF;
-                border: 1px solid rgba(0, 0, 0, .1);
-                border-radius: 3px;
-                bottom: 3.5px;
-                box-shadow: inset 0 -1.75px 0 0 rgba(0, 0, 0, .1);
-                color: #EF0000;
+                border-radius: 3.75px;
                 margin: 0;
                 padding: 5px 7.5px;
                 position: relative;
                 zoom: .85
             }
+                main.document-sheet-model > [role=container] > #sections .code-inline.syntax-highlighted {
+                    padding-left: 0;
+                    text-indent: 1%
+                }
+
+                /* Not > Syntax Highlighted */
+                main.document-sheet-model > [role=container] > #sections .code-inline:not(.syntax-highlighted) {
+                    background-color: #EFEFEF;
+                    border: 1px solid rgba(0, 0, 0, .1);
+                    border-radius: 3px;
+                    bottom: 3.5px;
+                    box-shadow: inset 0 -1.75px 0 0 rgba(0, 0, 0, .1);
+                    color: #EF0000
+                }
 
             /* Header */
             main.document-sheet-model > [role=container] > #sections [data-id=header] {
@@ -190,7 +195,10 @@
             main.document-sheet-model > [role=container] > #sections [data-id=subheader] {
                 cursor: default;
                 font-family: Roboto, 'Calibri Light', 'Open Sans', Calibri, sans-serif;
-                text-indent: 10px
+                max-width: 100%;
+                overflow: hidden;
+                text-indent: 10px;
+                text-overflow: ellipsis
             }
                 /* States > Hover */
                     /* Pseudo > Before */
@@ -199,6 +207,7 @@
                         content: '\01F517';
                         display: inline;
                         font-size: 25px;
+                        font-style: normal;
                         margin-left: -50px;
                         margin-top: 20px;
                         opacity: .5;
@@ -216,7 +225,7 @@
                 z-index: inherit
             }
                 /* Pseudo > Before */
-                main.document-sheet-model > [role=container] > #sections .msg-info::before {
+                main.document-sheet-model > [role=container] > #sections [class*=msg-]::before {
                     align-items: center;
                     border-radius: 50%;
                     content: '';
@@ -228,6 +237,13 @@
                     transform: translateX(-50px);
                     width: 20px;
                     z-index: 12
+                }
+
+                /* Error */
+                main.document-sheet-model > [role=container] > #sections .msg-error {
+                    border-bottom-color: rgba(255, 0, 0, .5);
+                    border-right-color: rgba(255, 0, 0, .5);
+                    border-top-color: rgba(255, 0, 0, .5)
                 }
 
                 /* Information */
@@ -244,23 +260,32 @@
                         content: '!'
                     }
 
-                /* Warn */
-                main.document-sheet-model > [role=container] > #sections .msg-error {
-                    border-bottom-color: rgba(255, 0, 0, .5);
-                    border-right-color: rgba(255, 0, 0, .5);
-                    border-top-color: rgba(255, 0, 0, .5)
-                }
-
-                /* Header */
-                main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=header] {
-                    cursor: default;
-                    font-size: 25px;
-                    font-weight: 400;
-                    text-indent: 0
+                /* Valid */
+                main.document-sheet-model > [role=container] > #sections .msg-valid {
+                    border-bottom-color: rgba(0, 255, 0, .5);
+                    border-right-color: rgba(0, 255, 0, .5);
+                    border-top-color: rgba(0, 255, 0, .5);
+                    color: #00CF00
                 }
                     /* Pseudo > Before */
-                    main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=header]::before {
-                        opacity: 0 !important
+                    main.document-sheet-model > [role=container] > #sections .msg-valid::before {
+                        background-color: #00CF00;
+                        color: #FFFFFF;
+                        content: '!'
+                    }
+
+                /* Warn */
+                main.document-sheet-model > [role=container] > #sections .msg-warn {
+                    border-bottom-color: rgba(255, 255, 0, .5);
+                    border-right-color: rgba(255, 255, 0, .5);
+                    border-top-color: rgba(255, 255, 0, .5);
+                    color: #CFCF00
+                }
+                    /* Pseudo > Before */
+                    main.document-sheet-model > [role=container] > #sections .msg-warn::before {
+                        background-color: #EFEF00;
+                        color: #787800;
+                        content: '!'
                     }
 
                 /* Content */
@@ -271,17 +296,48 @@
                     padding-top: 1%
                 }
 
+                /* Header */
+                main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=header] {
+                    cursor: default;
+                    font-size: 25px;
+                    font-weight: 400;
+                    text-indent: 0
+                }
+
+                /* Header, Sub Header */
+                    /* Pseudo > Before */
+                    main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=header]::before,
+                    main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=subheader]::before {
+                        opacity: 0 !important
+                    }
+
+                /* Sub Header */
+                main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=subheader] {
+                    cursor: default;
+                    font-size: 20px;
+                    font-style: normal;
+                    font-weight: 300;
+                    opacity: 1;
+                    text-indent: 0
+                }
+
             /* Sub Header */
             main.document-sheet-model > [role=container] > #sections [data-id=subheader] {
+                border-bottom: 1px solid;
                 font-style: italic;
                 font-weight: 100;
-                opacity: .7
+                opacity: .75
             }
 
             /* Text */
+            main.document-sheet-model > [role=container] > #sections [data-id=text],
+            main.document-sheet-model > [role=container] > #sections [class*=msg-] > [data-id=subheader] {
+                color: #787878
+            }
+
             main.document-sheet-model > [role=container] > #sections [data-id=text] {
-                color: #787878;
                 font-size: 15px;
+                line-height: 1.675;
                 margin-left: .5%;
                 margin-right: 0;
                 max-width: 99.5%
@@ -385,26 +441,28 @@
     #navigation {
         background-color: #FFFFFF;
         color: #000078;
-        height: 50px
+        height: 50px;
+        min-width: 100%
     }
         /* Header Navigation Bar */
-        #navigation > [role=header-navigation-bar] > a {
-            align-items: center;
-            display: flex;
-            font-size: 15px;
-            font-variant: initial;
-            justify-content: center;
-            text-transform: initial
-        }
-            /* States */
-                /* Focus */
-                #navigation > [role=header-navigation-bar] > a:focus {
-                    border: 0;
-                    outline: 0
-                }
+            /* <a> */
+            #navigation > [role=header-navigation-bar] > a {
+                align-items: center;
+                display: flex;
+                font-size: 15px;
+                font-variant: initial;
+                justify-content: center;
+                text-transform: initial
+            }
+                /* States */
+                    /* Focus */
+                    #navigation > [role=header-navigation-bar] > a:focus {
+                        border: 0;
+                        outline: 0
+                    }
 
-                /* Focus, Hover */
-                #navigation > [role=header-navigation-bar] > a:focus,
-                #navigation > [role=header-navigation-bar] > a:hover {
-                    background-color: rgba(0, 0, 0, .05)
-                }
+                    /* Focus, Hover */
+                    #navigation > [role=header-navigation-bar] > a:focus,
+                    #navigation > [role=header-navigation-bar] > a:hover {
+                        background-color: rgba(0, 0, 0, .05)
+                    }

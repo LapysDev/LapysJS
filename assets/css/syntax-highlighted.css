@@ -24,6 +24,13 @@
                 text-shadow: none !important
             }
 
+            /* Argument, ID */
+            .syntax-highlighted .highlight-color[role=argument],
+            .syntax-highlighted .highlight-color[role=argument] .highlight-color[role=value],
+            .syntax-highlighted .highlight-color[role=id] {
+                color: #D68B30
+            }
+
             /* Attribute, Class, Function */
             .syntax-highlighted .highlight-color[role=attribute],
             .syntax-highlighted .highlight-color[role=class],
@@ -33,6 +40,7 @@
 
             /* Comment */
             .syntax-highlighted .highlight-color[role=comment],
+            .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=argument],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=attribute],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=class],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=css-at-rule],
@@ -45,23 +53,14 @@
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=numeral],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=operator],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=property],
+            .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=regular-expression],
+            .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=regular-expression] .highlight-color[role=regular-expression],
+            .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=regular-expression] .highlight-color[role=regular-expression] .highlight-color[role=operator],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=string],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=string] .highlight-color[role=numeral],
+            .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=string] .highlight-color[role=operator],
             .syntax-highlighted .highlight-color[role=comment] .highlight-color[role=value] {
-                color: #5C666B
-            }
-
-            /* Default */
-            .syntax-highlighted .highlight-color[role=default] {
-                color: #D5D6DB
-            }
-                .syntax-highlighted .highlight-color[role=property] .highlight-color[role=default] {
-                    color: #D5D6DB !important
-                }
-
-            /* ID */
-            .syntax-highlighted .highlight-color[role=id] {
-                color: #D68B30
+                color: #5C666B !important
             }
 
             /* CSS At Rule, Element Tag Name, Keyword, Operator */
@@ -72,16 +71,26 @@
                 color: #D42D64
             }
 
-            /* Hexadecimal, Numeral */
+            /* Default */
+            .syntax-highlighted .highlight-color[role=default] {
+                color: #D5D6DB
+            }
+                .syntax-highlighted .highlight-color[role=property] .highlight-color[role=default] {
+                    color: #D5D6DB !important
+                }
+
+            /* Hexadecimal, Numeral, Regular Expression */
             .syntax-highlighted .highlight-color[role=hexadecimal],
             .syntax-highlighted .highlight-color[role=numeral],
-            .syntax-highlighted .highlight-color[role=numeral] .highlight-color[role=class] {
+            .syntax-highlighted .highlight-color[role=numeral] .highlight-color[role=class],
+            .syntax-highlighted .highlight-color[role=regular-expression],
+            .syntax-highlighted .highlight-color[role=regular-expression] .highlight-color[role=operator] {
                 color: #D17AD9
             }
 
-            /* Variable Declaration, Property, Value */
-            .syntax-highlighted .highlight-color[role=variable-declaration],
+            /* Property, Value, Variable Declaration */
             .syntax-highlighted .highlight-color[role=property],
+            .syntax-highlighted .highlight-color[role=variable-declaration],
             .syntax-highlighted .highlight-color[role=value],
             .syntax-highlighted .highlight-color[role=value] .highlight-color[role=element-tag-name] {
                 color: #7AD1D9
@@ -89,10 +98,10 @@
 
             /* String */
             .syntax-highlighted .highlight-color[role=string],
+            .syntax-highlighted .highlight-color[role=string] .highlight-color[role=argument],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=attribute],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=class],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=css-at-rule],
-            .syntax-highlighted .highlight-color[role=string] .highlight-color[role=default],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=element-tag-name],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=hexadecimal],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=id],
@@ -100,6 +109,7 @@
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=numeral],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=operator],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=property],
+            .syntax-highlighted .highlight-color[role=string] .highlight-color[role=regular-expression],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=string],
             .syntax-highlighted .highlight-color[role=string] .highlight-color[role=value] {
                 color: #D1D97A

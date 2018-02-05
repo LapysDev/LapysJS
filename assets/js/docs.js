@@ -20,7 +20,7 @@ if ('ready' in window.LapysJS) {
                     */
                     check(function() {
                         // Return
-                        return $$('[role=header-navigation-bar', 0).innerHTML.trim()
+                        return $$('[role=header-navigation-bar', 0).innerHTML.trim() || ($$('delete-element', 'length') > 50)
                     }, function() {
                         /* Loop
                                 [do:while statement]
@@ -1061,11 +1061,23 @@ if ('ready' in window.LapysJS) {
             });
 
         /* LapysJS */
-            // JavaScript > Source
-                // Timeout
-                !$$('.syntax-highlighted', 0) || timeout(function() {
-                    js.src('syntaxHighlightedScript', {src: `${DYNAMIC_ASSETS_URL}assets/js/syntax-highlighted.js`, type: 'text/javascript'})
-                }, 100);
+            // JavaScript
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if ($$('.syntax-highlighted', 0)) {
+                    // JavaScript > Source
+                    js.src('syntaxHighlightedScript', {src: `${DYNAMIC_ASSETS_URL}assets/js/syntax-highlighted.js`, type: 'text/javascript'});
+
+                    // Check
+                    check(function() {
+                        // Return
+                        return getType(global.highlightSyntax) == 'function'
+                    }, function() {
+                        // JavaScript > Script
+                        js.script('syntaxHighlightedScriptCaller', 'highlightSyntax(); timeout(highlightSyntax); onDOMReady(highlightSyntax); onDOMNodeAdded(highlightSyntax)')
+                    })
+                }
 
     /* Functions */
         /* Index */
@@ -1093,11 +1105,19 @@ if ('ready' in window.LapysJS) {
 
         /* Scroll To */
             // Timeout
-            timeout(function() {
-                !('localStorage' in global) || !(getType(+localStorage.scrollX) && getType(+localStorage.scrollY)) || scrollTo(localStorage.scrollX, localStorage.scrollY);
-                    // Local Storage > Clear
-                    localStorage.clear()
-            }, 333);
+                /* Try
+                        --- NOTE ---
+                            @lapys: Microsoft Edge.
+                */
+                try {
+                    !('localStorage' in global) || timeout(function() {
+                        !(getType(+localStorage.scrollX) == 'number' && getType(+localStorage.scrollY) == 'number') || scrollTo(localStorage.scrollX, localStorage.scrollY);
+                            // Local Storage > Clear
+                            localStorage.clear()
+                    }, 333)
+                }
+
+                catch (error) {}
 
         /* Smooth Scroll To */
         global.smoothScrollTo = function smoothScrollTo(element, metadata = 0) {
@@ -1154,11 +1174,19 @@ if ('ready' in window.LapysJS) {
         // Window
             // Resize, Scroll
             !('localStorage' in global) || invokeEvent('resize scroll', function() {
-                // Modification > Local Storage
-                    // Scroll X
-                    localStorage.scrollX = scrollX;
+                /* Error Handling
+                        --- NOTE ---
+                            @lapys: This is thanks to Microsoft Edge`s `unspecified error`.
+                */
+                try {
+                    // Modification > Local Storage
+                        // Scroll X
+                        localStorage.scrollX = scrollX;
 
-                    // Scroll Y
-                    localStorage.scrollY = scrollY
+                        // Scroll Y
+                        localStorage.scrollY = scrollY
+                }
+
+                catch (error) {}
             })
 }

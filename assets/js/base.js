@@ -134,15 +134,9 @@ if ('ready' in window.LapysJS) {
         });
 
         /* Clear */
-        Object.defineProperty(global, 'CLEAR', {
-            // Configurable
-            configurable: true,
-
-            // Enumerable
-            enumerable: true,
-
+        def('CLEAR', {
             // Get
-            get: function CLEAR()  {
+            get: function CLEAR() {
                 // Clear
                 clear();
 
@@ -223,6 +217,9 @@ if ('ready' in window.LapysJS) {
                 check(function() {
                     return 'DYNAMIC_ASSETS_URL' in global
                 }, function() {
+                    // Initialization > Data
+                    let data = 'favicon.ico';
+
                     !ALLOW_ALTERNATIVE_RESOURCE_FILES || new LapysJS.component.Image({
                         // On Error
                         onerror: function() {
@@ -230,12 +227,19 @@ if ('ready' in window.LapysJS) {
                         },
 
                         // On Load
-                        onload: function() {
-                            document.favicon = 'favicon.ico'
+                        onload: function(event) {
+                            // Error Handling
+                            try {
+                                document.favicon = decodeURIComponent(event.path[0].src)
+                            }
+
+                            catch (error) {
+                                document.favicon = data
+                            }
                         },
 
                         // Source
-                        src: 'favicon.ico'
+                        src: data
                     })
                 });
 
@@ -320,9 +324,6 @@ if ('ready' in window.LapysJS) {
                         // Roboto Mono
                         LapysJS.$.import('font', {format: 'truetype', name: 'Roboto Mono', url: `${DYNAMIC_ASSETS_URL}assets/fonts/roboto-mono.ttf`});
 
-                        // The Woodlands
-                        LapysJS.$.import('font', {format: 'truetype', name: 'The Woodlands', url: `${DYNAMIC_ASSETS_URL}assets/fonts/the-woodlands.ttf`});
-
                         // Trajan Pro
                         LapysJS.$.import('font', {name: 'Trajan Pro', url: `${DYNAMIC_ASSETS_URL}assets/fonts/trajan-pro.otf`});
 
@@ -345,6 +346,15 @@ if ('ready' in window.LapysJS) {
             value: new (function NavigationLinksArray() {
                 // Initialization > Data
                 let data = [
+                    // Get Started
+                    new (function NavigationLink() {
+                        // Modification > Target > (...)
+                        this.href = `${DYNAMIC_ASSETS_URL}index.html`;
+                        this.target = '_self';
+                        this.title = createElement('div', '', 'Back to the home page.').textContent;
+                        this.textContent = 'LapysJS'
+                    }),
+
                     // Get Started
                     new (function NavigationLink() {
                         // Modification > Target > (...)

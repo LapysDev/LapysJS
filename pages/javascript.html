@@ -70,7 +70,7 @@
 
                 <!-- Content -->
                 <p data-id=text role=content>
-                    The <code class=code-inline>lapys.js</code> and <code class=code-inline>lapys.min.js</code> files work in tandem with the <code class=code-inline>lapys.css</code> and <code class=code-inline>lapys.min.css</code> files for some of its plug-ins and not independently because all its plug-ins are based off visual styles, dynamism &amp; animation on a web page.
+                    The <code class=code-inline>lapys.js</code> and <code class=code-inline>lapys.min.js</code> files work in tandem with the <code class=code-inline>lapys.css</code> and <code class=code-inline>lapys.min.css</code> files for some of its plug-ins because those its plug-ins are based off animation, dynamism &amp; visual styles on a web page.
                 </p>
 
                 <div class=msg-info>
@@ -79,7 +79,7 @@
 
                     <!-- Content -->
                     <p data-id=text role=content>
-                        The <code class=code-inline>lapys.css</code> and <code class=code-inline>lapys.min.css</code> files do not need the <code class=code-inline>lapys.js</code> and <code class=code-inline>lapys.min.js</code> files because they are functionally independent and focus and design and style only.
+                        The <code class=code-inline>lapys.css</code> and <code class=code-inline>lapys.min.css</code> files do not need the <code class=code-inline>lapys.js</code> and <code class=code-inline>lapys.min.js</code> files because they are functionally independent and focus and design &amp; style only.
                     </p>
                 </div>
             </div>
@@ -97,17 +97,17 @@
                 <code class='code-block syntax-highlighted' prog-language=javascript>
                     /* The core JavaScript library of LapysJS. */
                     LapysJS = new (function LapysJS() {
-                        ~t// Author(s) of the Library
-                        ~tthis.author = '<access-value value=LapysJS.author> </access-value>',
+                        $t$// Author(s) of the Library
+                        $t$this.author = '<access-value value=LapysJS.author> </access-value>',
 
-                        ~t// New features that could run out for development needs.
-                        ~tthis.experimentalFeatures = ['<access-value value="LapysJS.experimentalFeatures.join(`', '`)"> </access-value>'],
+                        $t$// New features that could be used for development needs.
+                        $t$this.experimentalFeatures = ['<access-value value="LapysJS.experimentalFeatures.join(`', '`)"> </access-value>'],
 
-                        ~t// Becomes 'true' when LapysJS is fully scripted.
-                        ~tthis.ready = <access-value value=LapysJS.ready> </access-value>,
+                        $t$// Becomes 'true' when LapysJS is fully scripted.
+                        $t$this.ready = <access-value value=LapysJS.ready> </access-value>,
 
-                        ~t// The current stable version of the library.
-                        ~tthis.version = '<access-value value=LapysJS.version> </access-value>'
+                        $t$// The current stable version of the library.
+                        $t$this.version = '<access-value value=LapysJS.version> </access-value>'
                     })
                 </code>
 
@@ -128,13 +128,1022 @@
                 Also known as the <em>&lsquo;Global Data&rsquo;</em> section of the <code class=code-inline>lapys.js</code> file, LapysJS provides a host of useful &lsquo;shortcut&rsquo; functions and values, as well as new approaches to collecting &amp; controlling data in JavaScript all in the form of constant or dynamic live variables declared on its document&rsquo;s <span class=emphasis>global</span> object.
             </p>
 
+            <div class=msg-info>
+                <!-- Header -->
+                <h3 data-id=header role=title> Re-definable Global Variables </h3>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    Most global variables defined in LapysJS are somewhat permanent (if not changed otherwise in the source code), but can be prevented from being defined in LapysJS if they
+                    are pre-defined in another script and meet a certain criteria (such as being a function).
+                </p>
+            </div>
+
             <!-- Content -->
             <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
                 <!-- Header -->
-                <h2 data-id=header role=title> abs Function <span role=title-indicator>f();</span> </h2>
+                <h2 data-id=header role=title> abs Function </h2>
 
                 <!-- Content -->
-                <p data-id=text role=content> MDN definition of the <code class=code-inline>Math.abs</code> function. </p>
+                <p data-id=text role=content>
+                    The <code class=code-inline>abs()</code> function returns the absolute value of a given number. <br>
+                    If anything except a number is given, it will react as the following example:
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    abs(); // returns <access-value value=abs()> </access-value>
+                    abs([1, 2]); // returns <access-value value=abs([1,2])> </access-value>
+                    abs({}); // returns <access-value value=abs({})> </access-value>
+                    abs('string'); // returns <access-value value=abs(`string`)> </access-value>
+
+                    abs(null); // returns <access-value value=abs(null)> </access-value>
+                    abs([]); // returns <access-value value=abs([])> </access-value>
+                    abs(''); // returns <access-value value=abs(``)> </access-value>
+
+                    abs('-1'); // returns <access-value value=abs(`-1`)> </access-value>
+
+                    abs(-2); // returns <access-value value=abs(-2)> </access-value>
+                    abs([2]); // returns <access-value value=abs([2])> </access-value>
+                </code>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Shortcut Functions </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        This kind of function created in LapysJS basically serves as a shortcut function to another pre-defined function or method in JavaScript. <br>
+                        In this case, the <code class=code-inline>abs</code> function is a shortcut to the static <code class=code-inline>Math.abs</code> method.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> array Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    The JavaScript <code class=code-inline>Array</code> object is a global object that is used in the construction of arrays; Which are high-level, list-like objects. <br>
+                    Similar to the wrapper object function <code class=code-inline>Array</code>, this function creates arrays but differs from built-in array creating functions in a few ways.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /*
+                        $t$Convert HTMLCollections and element NodeLists to Arrays or
+                        $t$create Arrays from JavaScript values.
+                    */
+                    let array = function array(...values) { ... };
+
+                    array(); // returns [<access-value value='array().join(`, `)'> </access-value>]
+                    array(function(a, b, c) {}); // returns ['<access-value value="array(function(a,b,c) {}).join(`', '`)"> </access-value>']
+                    array('Hello'); // returns ['<access-value value="array(`Hello`).join(`', '`)"> </access-value>']
+                    array(['Hello']); // returns ['<access-value value="array(['Hello']).join(`', '`)"> </access-value>']
+                    array(/Hello/i); // returns [<access-value value='array(/Hello/i).join(`, `)'> </access-value>]
+                    array(true); // returns [<access-value value='array(true).join(`, `)'> </access-value>]
+                    array(1, 0, 1); // returns [<access-value value='array(1,0,1).join(`, `)'> </access-value>]
+                    array([1, 0, 1], [2, 3, 5]); // returns [<access-value value='array([1,0,1],[2,3,5]).join(`, `)'> </access-value>]
+                    array({name: 'Lapys', age: 21}) // returns [<access-value value='array({name:`Lapys`,age:21}).join(`, `)'> </access-value>]
+                </code>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Description </h6>
+                <p data-id=text role=content>
+                    Arrays are list-like objects that come with a variety of manipulative operations for data it stores. <br>
+                    They also come with a pre-defined set of dynamic, non-static values such as its <code class=code-inline>length</code> which is used to determine its size.
+
+                    <br 2>
+
+                    <code class=code-inline>Array</code> instances created using this method are made by co-joining each argument to the function into a concatenated group (or an array): This method goes an extra step in modifying its results from the values it receives, for example:
+
+                    <span before=• class=indent-inline>
+                        Booleans, numbers and regular expressions are added as an element of a created array: <br>
+                        <code class='code-inline syntax-highlighted' prog-language=javascript style='transform: translateX(10%); width: 80%'> (false, 2, /World/s) => return [false, 2, /World/s]  </code>
+                    </span>
+
+                    <span before=• class=indent-inline>
+                        Functions are converted into an array via their named arguments: <br>
+                        <code class='code-inline syntax-highlighted' prog-language=javascript style='transform: translateX(10%); width: 80%'> function(a, b, c) {} => return ['a', 'b', 'c'] </code>
+                    </span>
+
+                    <span before=• class=indent-inline>
+                        Other values are converted into their Array format (or an empty array if they have none) and concatenated into the result: <br>
+                        <code class='code-inline syntax-highlighted' prog-language=javascript style='transform: translateX(10%); width: 80%'> 'Lorem ipsum' => return ['L', 'o', 'r', 'e', 'm', ' ', 'i', 'p', 's', 'u', 'm']  </code>
+                    </span>
+                </p>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Array Creation Alternative </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        Overall, this function serves as an alternative to the <code class=code-inline>Array</code> &amp; <code class=code-inline>Array.from</code> methods and the <code class=code-inline>[...]</code> operator with exception to the way it parses values differently.
+
+                        <br 2>
+
+                        Originally, the function was built to parse document <code class=code-inline>HTMLCollection</code>&rsquo;s and <code class=code-inline>NodeList</code>&rsquo;s from the <abbr abbr='Document Object Model' title='Document Object Model'>DOM</abbr> but was versatile enough to be used for analyzing other objects and values.
+                    </p>
+                </div>
+
+                <div class=msg-warn>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> HTMLAllCollections are not HTMLCollections or NodeLists </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The <code class=code-inline>array</code> function will not return a list of elements when the <code class=code-inline>document.all</code> value is used a parameter of the function, rather it would keep the result of the value (an <code class=code-inline>HTMLAllCollection</code>) as an element of a newly returned array.
+                    </p>
+
+                    <code class='code-block syntax-highlighted' prog-language=javascript>
+                        array(document.all) // returns [HTMLAllCollection(<access-value value=len(document.all)||document.all.length> </access-value>)]
+                    </code>
+                </div>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Iterable or not </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The <code class=code-inline>array</code> function was built to work with a majority of JavaScript values, not just iterable (index-based) values.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> bool Function </h2>
+
+                <!-- Content -->
+                <div data-id=text role=content>
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        This is one of LapysJS&rsquo; core object functions: <br>
+                        the <code class=code-inline>bool</code> function returns the <code class=code-inline>Boolean</code> object wrapper with its given arguments for a boolean value.
+                    </p>
+
+                    <!-- Sub Header -->
+                    <h6 data-id=subheader role=subtitle> Examples </h6>
+                    <code class='code-block syntax-highlighted' prog-language=javascript>
+                        /* Convert primitive values to their primitive base. */
+                        let bool = function bool(value) { ... };
+
+                        bool(0); // returns <access-value value=bool(0)> </access-value>
+                        bool('1') // returns <access-value value=bool(`1`)> </access-value>
+                    </code>
+
+                    <!-- Sub Header -->
+                    <h6 data-id=subheader role=subtitle> Description </h6>
+                    <p data-id=text role=content>
+                        The value passed in the first parameter of the function is converted to a boolean value (if necessary). <br>
+                        If the value is <code class=code-inline>0</code>, <code class=code-inline>-0</code>, <code class=code-inline>null</code>, <code class=code-inline>false</code>, <code class=code-inline>NaN</code>, <code class=code-inline>undefined</code>, an empty string (<code class=code-inline>""</code>) or is not given, the return value becomes <code class=code-inline>false</code>. <br>
+                        Just as its sibling wrapper object function <code class=code-inline>Boolean</code>, if the parameter is the <abbr abbr='Document Object Model' title='Document Object Model'>DOM</abbr> object <code class=code-inline>document.all</code>, the return value becomes <code class=code-inline>false</code>. Any other value, as well as the string <code class=code-inline>"false"</code> are parsed to return <code class=code-inline>true</code>.
+                    </p>
+
+                    <div class=msg-warn>
+                        <!-- Header -->
+                        <h3 data-id=header role=title> Primitive and Return Values </h3>
+
+                        <!-- Content -->
+                        <p data-id=text role=content>
+                            Do not confuse the primitive <code class=code-inline>Boolean</code> values <code class=code-inline>true</code> and <code class=code-inline>false</code> with the return values of the <code class=code-inline>bool</code> function.
+
+                            <br 2>
+
+                            Any object whose value is not <code class=code-inline>null</code> or <code class=code-inline>undefined</code> (including <code class=code-inline>Boolean</code> objects with a <code class=code-inline>false</code> value) are parsed to <code class=code-inline>true</code> when passed in a conditional statement or another <code class=code-inline>bool</code> function.
+                        </p>
+
+                        <code class='code-block syntax-highlighted' prog-language=javascript>
+                            if (bool(false)) {
+                                $t$/* Code not executed... */
+                            }
+
+                            if (bool(new Boolean(false))) {
+                                $t$/* Code executed... */
+                            }
+                        </code>
+                    </div>
+
+                    <div class=msg-info>
+                        <!-- Header -->
+                        <h3 data-id=header role=title> Alternatives &amp; Preferred Syntax </h3>
+
+                        <!-- Content -->
+                        <p data-id=text role=content>
+                            Of course, the <code class=code-inline>bool</code> function serves as a shorter alternative to the global <code class=code-inline>Boolean</code> object or the twofold <code class=code-inline>!</code> operator.
+                        </p>
+
+                        <code class='code-block syntax-highlighted' prog-language=javascript>
+                            /* Best */
+                            !1 // returns <access-value value=!1> </access-value>
+                            !0 // returns <access-value value=!0> </access-value>
+
+                            /* Better */
+                            false // returns <access-value value=!1> </access-value>
+                            true // returns <access-value value=!0> </access-value>
+
+                            /* Good */
+                            bool() // returns <access-value value=bool()> </access-value>
+                            !bool() // returns <access-value value=!bool()> </access-value>
+
+                            /* Bad */
+                            bool(false) // returns <access-value value=bool(false)> </access-value>
+                            bool(true) // returns <access-value value=bool(true)> </access-value>
+                        </code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> cbrt Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    The <code class=code-inline>cbrt()</code> function returns the cube root of a given number. <br>
+                    If anything except a number is given, it will react as the following example:
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    cbrt(Infinity); // return <access-value value=cbrt(Infinity)> </access-value>
+                    cbrt(-Infinity); // return <access-value value=cbrt(-Infinity)> </access-value>
+
+                    cbrt(); // return <access-value value=cbrt()> </access-value>
+                    cbrt(NaN); // return <access-value value=cbrt(NaN)> </access-value>
+
+                    cbrt(-1); // return <access-value value=cbrt(-1)> </access-value>
+
+                    cbrt(null); // return <access-value value=cbrt(null)> </access-value>
+                    cbrt(0); // return <access-value value=cbrt(0)> </access-value>
+                    cbrt(-0); // return <access-value value=cbrt(-0)> </access-value>
+
+                    cbrt(1); // return <access-value value=cbrt(1)> </access-value>
+                    cbrt(2); // return <access-value value=cbrt(2)> </access-value>
+                </code>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Shortcut Function </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        This function is a shortcut to the static <code class=code-inline>Math.cbrt</code> method.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> ceil Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    The <code class=code-inline>ceil()</code> function returns the smallest integer greater than or equal to a given number. <br>
+                    If anything except a number is given, it will react as the following example:
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    ceil(4); // return <access-value value=ceil(4)> </access-value>
+                    ceil(-4); // return <access-value value=ceil(-4)> </access-value>
+
+                    ceil(7.004); // return <access-value value=ceil(7.004)> </access-value>
+                    ceil(-7.004); // return <access-value value=ceil(-7.004)> </access-value>
+
+                    ceil(.95); // return <access-value value=ceil(.95)> </access-value>
+                    ceil(-.95); // return <access-value value=ceil(-.95)> </access-value>
+                </code>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Shortcut Function </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        This function is a shortcut to the static <code class=code-inline>Math.ceil</code> method.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> check Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    In the theory of possibility and statistics, a Bernoulli trial allows for experiments with only two outcomes, a 'success' and 'failure' result. <br>
+                    The <code class=code-inline>check</code> function was inspired by this binomial trial such that when called, the function has an experiment (a condition) it runs constantly (checking) for if the outcome will be a 'success' or a 'failure'.
+                </p>
+
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* Evaluate if an outcome is 'true' or 'false' in `real-time`. */
+                    check(function condition() {
+                        $t$/*
+                            $t$$t$Constantly evaluate to 'true' or 'false' the condition below...
+                            $t$$t$This uses animation frames to do this in seamless succession.
+                        $t$*/
+                        $t$return users > 1000
+                    }, function onsuccess() {
+                        $t$/*
+                            $t$$t$If the condition is 'true', this function is called.
+                            $t$$t$Once this function is called, the constant evaluation is stopped.
+                        $t$*/
+                        $t$log('Yes, we made it to 1000 monthly active users!')
+                    }, function onfail() {
+                        $t$/* If the condition is 'false', this function is called. */
+                        $t$log('Don`t worry, we`ll still make it someday...')
+                    });
+
+                    /* Evaluate if an outcome is 'true' or 'false' at the moment of execution. */
+                    check(true, function() { log('True!') }, function() { log('False!') })
+                </code>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Dynamic Conditional Statement I </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The function takes on the form of a <code class=code-inline>if, else if, else</code> control block but constantly evaluates its condition until the condition becomes (or returns) <code class=code-inline>true</code>.
+                    </p>
+                </div>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Dynamic Conditional Statement II </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The <code class=code-inline>check</code> function was initially meant to be a new JavaScript keyword but as the scripting language does not allow creation of new keywords within its scope, it was just an idea.
+                    </p>
+
+                    <code class='code-block syntax-highlighted' prog-language=javascript>
+                        check users > 1000 ?
+                            $t$log('Yes, we made it to 1000 monthly active users!') :
+                            $t$log('Don`t worry, we`ll still make it someday...')
+                    </code>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> clear Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    Clears the console.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* Clearing the console... */
+                    clear()
+                </code>
+
+                <div class=msg-warn>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Persist Log </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        Note this function is nullified when the browser has its console set to preserve former logs.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> compare Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    The <code class=code-inline>compare</code> function determines whether two values are the same value.
+
+                    <br 2>
+
+                    Two values are the same if one of the following holds:
+                    <span before=• class=indent-inline> both are <code class=code-inline>false</code>. </span>
+                    <span before=• class=indent-inline> both are <code class=code-inline>null</code>. </span>
+                    <span before=• class=indent-inline> both are <code class=code-inline>numbers</code>. </span>
+                    <span before=• class=indent-inline style='opacity: .9; transform: translateX(2.5%); zoom: .9'> both are <code class=code-inline>+0</code>. </span>
+                    <span before=• class=indent-inline style='opacity: .9; transform: translateX(2.5%); zoom: .9'> both are <code class=code-inline>-0</code>. </span>
+                    <span before=• class=indent-inline style='opacity: .9; transform: translateX(2.5%); zoom: .9'> both are <code class=code-inline>NaN</code>. </span>
+                    <span before=• class=indent-inline style='opacity: .9; transform: translateX(2.5%); zoom: .9'> both are non-zero and both not <code class=code-inline>NaN</code> and both have equal value. </span>
+                    <span before=• class=indent-inline> both are strings of equal length and equal order. </span>
+                    <span before=• class=indent-inline> both are <code class=code-inline>true</code>. </span>
+                    <span before=• class=indent-inline> both are <code class=code-inline>undefined</code>. </span>
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /*
+                        $t$Comparing a wide range of values.
+                        $t$Just for fun, you could try experimenting with the '==' and '===' operators to see what
+                            $t$$t$values they return instead.
+                    */
+                    compare('Hello', 'Hello'); // returns <access-value value=compare(`Hello`,`Hello`)> </access-value>
+                    compare(global, window); // returns <access-value value=compare(global,window)> </access-value>
+
+                    compare('Hello', 'World'); // returns <access-value value=compare(`Hello`,`World`)> </access-value>
+                    compare([], []); // returns <access-value value=compare([],[])> </access-value>
+
+                    let obj = {name: 'Lapys', age: 21};
+                    compare(obj, {name: 'Lapys', age: 21}); // returns <access-value value='let obj={name:`Lapys`,age:21};compare(obj,{name:`Lapys`,age:21})'> </access-value>
+                    compare(obj, obj); // returns <access-value value='let obj={name:`Lapys`,age:21};compare(obj,obj)'> </access-value>
+
+                    compare(null, null); // returns <access-value value=compare(null,null)> </access-value>
+
+                    /* Special Cases... */
+                    compare(0, -0); // returns <access-value value=compare(0,-0)> </access-value>
+                    compare(-0, -0); // returns <access-value value=compare(-0,-0)> </access-value>
+                    compare(NaN, 0 &divide; 0); // returns <access-value value=compare(NaN,0/0)> </access-value>
+                </code>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Compare is not &lsquo;==&rsquo; </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        This comparison is not similar to utilizing the <code class=code-inline>==</code> operator because the <code class=code-inline>==</code> applies other rules to its comparisons and more flexibility between what can be on both sides before parsing (such as <code class=code-inline>"" == false</code> returning <code class=code-inline>true</code>), but <code class=code-inline>compare</code> does not alternate either compared value.
+                    </p>
+                </div>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Compare is not &lsquo;===&rsquo; </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The <code class=code-inline>compare</code> function also is not the same as the <code class=code-inline>===</code> operator because the <code class=code-inline>===</code> operator (and the <code class=code-inline>==</code> operator as well) parse the numbers <code class=code-inline>-0</code> &amp; <code class=code-inline>+0</code> as equal and the values <code class=code-inline>NaN</code> &amp; <code class=code-inline>Number.NaN</code> as different.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> console.print Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    Writes the current line terminator (usually the character <code class=code-inline>'\0'</code>) to the browser console if no arguments are provided <br>
+                    and prints data to the console if otherwise.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    console.print = function print(data, $h$metadata) { ... };
+
+                    /* Printing data to the console... */
+                    console.print('{0}, {1}!', 'Hello', 'World') // prints "Hello, World!"
+                </code>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Alternative to console.logging... </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The <code class=code-inline>console.print</code> method serves as a minor alternative to the <code class=code-inline>console.log</code> function.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> copy Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    There are pre-defined extensions built in browsers using WebExtension <abbr abbr='Application Program Interface' title='Application Program Interface'>API</abbr>s that can interact with the system clipboard using the <code class=code-inline>document.execCommand</code> method.
+
+                    <br 2>
+
+                    The <code class=code-inline>copy</code> command is available for use without permissions if it is being used in an event handler based on user interactivity.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* The text 'Hello, World!' gets over-written into the system clipboard. */
+                    copy('Hello, World!');
+
+                    /* The inner workings of the Copy function. */
+                    function copy(myString) {
+                        $t$// Create a placeholder element for storing the text;
+                        $t$// The element is a &lt;textarea&gt; because they store text in their pre-formatted form.
+                        $t$let placeholder = document.createElement('textarea');
+
+                        $t$// Modify the element so it can execute text commands via scripting.
+                        $t$placeholder.contentEditable = true;
+
+                        $t$// Fill the element with the text given to copy (a.k.a.: 'myString');
+                        $t$// If 'myString' is not a string, it gets converted to one.
+                        $t$placeholder.setAttribute('value', arguments.length > 0 ? String(myString) : '');
+                        $t$placeholder.value = arguments.length > 0 ? String(myString) : '';
+
+                        $t$// Insert the element into the DOM so it can be recognized.
+                        $t$document.body.appendChild(placeholder);
+
+                        $t$// Select the element (focus it as well if necessary).
+                        $t$placeholder.focus();
+                        $t$placeholder.select();
+
+                        $t$// Execute the 'copy' command on the element&rsquo;s text.
+                        $t$document.execCommand('copy');
+
+                        $t$// De-select the element.
+                        $t$placeholder.blur();
+
+                        $t$// Remove the element from the DOM to prevent the page from being heavier (although this causes page reflow).
+                        $t$document.body.removeChild(placeholder)
+                    }
+                </code>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> cut Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    The <code class=code-inline>cut</code> function is also pretty similar to the <code class=code-inline>copy</code> function in the sense that it utilizes the <code class=code-inline>document.execCommand</code> method and may require special permissions on some occasions.
+
+                    <br 2>
+
+                    The difference is the <code class=code-inline>cut</code> function takes in an <code class=code-inline>HTMLElement</code> from the DOM as an argument and not a string because it is going to be selecting data strictly from an input &amp; text-based element. <br>
+                    It will cut off the element&rsquo;s value and copy it to the system clipboard.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* The text 'Hello, World!' gets removed from the given element and written to the system clipboard. */
+                    cut($$(`textarea[value='Hello, World!'`, 0));
+
+                    /*
+                        $t$The inner workings of the Cut function;
+                        $t$There is no protection against edge-cases (such as providing a non-element).
+                    */
+                    function cut(myElement) {
+                        $t$// Cache the given element into memory.
+                        $t$let data = myElement;
+
+                        $t$// Modify the element so it can execute text commands via scripting.
+                        $t$data.contentEditable = true;
+
+                        $t$// Make sure the element&rsquo;s value is not invalid &mdash; this may be redundant though.
+                        $t$data.value = data.value || '';
+
+                        $t$// Select the element (and maybe focus it as well).
+                        $t$data.focus();
+                        $t$data.select();
+
+                        $t$// Execute the 'cut' command and empty the element&rsquo;s inner text.
+                        $t$document.execCommand('cut');
+
+                        $t$// De-select the element
+                        $t$data.blur()
+                    }
+                </code>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> createDocumentFragment Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    Creates a new empty <code class=code-inline>DocumentFragment</code>.
+
+                    <br 2>
+
+                    Basically, using <code class=code-inline>DocumentFragment</code>&rsquo;s allows for better performance.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* Syntax
+                        $t$$c-list-item$ Creates and returns a document fragment.
+                    */
+                    createDocumentFragment();
+
+                    /* Parent Container
+                        $t$$c-list-item$ The second argument determines a parent element for inserting
+                        $t$$c-list-item$ content into the document fragment.
+                        $t$$c-list-item$
+                        $t$$c-list-item$
+                        $t$$c-list-item$ The kind of parent element also matters as well e.g.:
+                        $t$$c-list-item$ an &lt;html&gt; parent container element (which is by default if no element type is specified)
+                        $t$$c-list-item$ will always append given content from the first argument of the function
+                        $t$$c-list-item$ into a &lt;body&gt; element while
+                        $t$$c-list-item$
+                        $t$$c-list-item$ a &lt;div&gt; element will directly insert the content as long as it can be inserted in a &lt;div&gt;.
+                    */
+                        $t$// &lt;div&gt; parent container element.
+                        $t$createDocumentFragment('Hello, World!', 'div');
+                        $t$createDocumentFragment(`&lt;p class='text'&gt; Hello, World! &lt;/p&gt;`, 'div');
+
+                        $t$// &lt;html&gt; parent container element.
+                        $t$createDocumentFragment('Hello, World!', 'html');
+                        $t$createDocumentFragment(`&lt;p class='text'&gt; Hello, World! &lt;/p&gt;`);
+
+                    /* Child Content
+                        $t$$c-list-item$ HTML syntax written as a string into the first argument of this function
+                        $t$$c-list-item$ will be inserted into the document fragment and modified based on the
+                        $t$$c-list-item$ parent container.
+                        $t$$c-list-item$
+                        $t$$c-list-item$
+                        $t$$c-list-item$ A way to circumvent this would be to parse a DOM node and not a string
+                        $t$$c-list-item$ as the first argument of the function.
+                    */
+                        $t$// String to Node to Fragment Insertion
+                        $t$createDocumentFragment('Hello, World!');
+                        $t$createDocumentFragment(`&lt;p class='text'&gt; Hello, World! &lt;/p&gt;`);
+
+                        $t$// Node to Fragment Insertion
+                        $t$createDocumentFragment(createElement('p', '.text', 'Hello, World!') /* &lt;p&gt; element. */);
+                </code>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Description </h6>
+                <p data-id=text role=content>
+                    <br>
+                    <code class=code-inline>DocumentFragments</code> are <abbr abbr='Document Object Model' title='Document Object Model'>DOM</abbr> Nodes which are never part of the main <abbr abbr='Document Object Title' title='Document Object Model'>DOM</abbr> tree. <br>
+                    Usually, they are used for appending elements into their fragments which is not in the <abbr abbr='Document Object Title' title='Document Object Model'>DOM</abbr> and throwing them later into the <abbr abbr='Document Object Title' title='Document Object Model'>DOM</abbr> to avoid page reflow (computation of element&rsquo;s position and geometry). In the <abbr abbr='Document Object Title' title='Document Object Model'>DOM</abbr>, the fragment is replaced by its children in order.
+                </p>
+
+                <div class=msg-valid>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> More Functionality </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        Like most other functions in LapysJS, the <code class=code-inline>createDocumentFragment</code> function will allow developers to work quicker without having to bulk up on many lines of code (as shown in the example below).
+                    </p>
+
+                    <h6 data-id=subheader role=subtitle> Vanilla JavaScript </h6>
+                    <code class='code-block syntax-highlighted' prog-language=javascript>
+                        /* Creating a non-empty document fragment with basic JavaScript. */
+                            $t$// Create your fragment and content.
+                            $t$let items = ['Lapys', 'Jyrsper', 'Emeryld', 'Gyrnet'],
+                                $t$$t$fragment = document.createDocumentFragment(),
+                                $t$$t$list = document.createElement('ul');
+
+                            $t$// Modify the content.
+                            $t$list.classList.add('container', 'container-list');
+                            $t$list.id = 'myAwesomeList';
+                            $t$list.innerHTML = `&lt;li&gt;${items.join('&lt;/li&gt;&lt;li&gt;')}&lt;/li&gt;`;
+                            $t$list.role = 'list';
+                            $t$list.title = 'My Awesome List!';
+
+                            $t$// Insert the content
+                            $t$fragment.appendChild(list)
+                    </code>
+
+                    <h6 data-id=subheader role=subtitle> LapysJS </h6>
+                    <code class='code-block syntax-highlighted' prog-language=javascript>
+                        /* Creating a non-empty document fragment with LapysJS. */
+                            $t$// Create your items.
+                            $t$let items = ['Lapys', 'Jyrsper', 'Emeryld', 'Gyrnet'];
+
+                            $t$// Create a fragment using nodes.
+                            $t$let fragment = createDocumentFragment(
+                                $t$$t$createElement(
+                                    $t$$t$$t$/* Tag Name */
+                                    $t$$t$$t$'ul',
+
+                                    $t$$t$$t$/* CSS Selector */
+                                    $t$$t$$t$'.container.container-list#myAwesomeList',
+
+                                    $t$$t$$t$/* Inner HTML */
+                                    $t$$t$$t$`&lt;li&gt;${items.join('&lt;/li&gt;&lt;li&gt;')}&lt;/li&gt;`,
+
+                                    $t$$t$$t$/* Attributes */
+                                    $t$$t$$t${role: 'list', title: 'My Awesome List!'}
+                                $t$$t$)
+                            $t$);
+
+                            $t$// Create a fragment using strings.
+                            $t$fragment = createDocumentFragment(
+                                $t$$t$/* Container */
+                                $t$$t$`&lt;ul class='container container-list' id=myAwesomeList role=list title='My Awesome List!'&gt;
+                                    $t$$t$$t$/* List Items */
+                                    $t$$t$$t$&lt;li&gt;${items.join('&lt;/li&gt;&lt;li&gt;')}&lt;/li&gt;
+                                $t$$t$&lt;/ul&gt;`
+                            $t$)
+                    </code>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> createElement Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    In an HTML document, the Document.createElement() method creates the HTML element specified by tagName, or an HTMLUnknownElement if tagName isn't recognized.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> createObject Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Object.assign</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> date Variable </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Date object</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> dp Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Math.toFixed</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> float Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Number.parseFloat</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> floor Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Math.floor</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> func Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Function object</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> getQueryParameterByName Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> global Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>window</code> object. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> int Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Number.parseInt</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> interval Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>setInterval</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> len Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>length Property</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Location.prototype.queryParameters Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> log Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>console.log</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> logl Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> console.print Function </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Math.eval Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Math.invert Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Math.random.range Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Math.root Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> max Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Math.max</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> max.getObject Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> min Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Math.min</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> min.getObject Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> num Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> number Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> number.float Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> Number.prototype.perc Method </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> Hello, World! </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> paste Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content>
+                    There are pre-defined extensions built in browsers using WebExtension <abbr abbr='Application Program Interface' title='Application Program Interface'>API</abbr>s that can interact with the system clipboard using the <code class=code-inline>document.execCommand</code> method.
+
+                    <br 2>
+
+                    The <code class=code-inline>paste</code> command is available for use without permissions if it is being used in an event handler based on user interactivity.
+                </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> prec Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Math.toPrecision</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> objectify Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Object object</code> function. </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> obj Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> MDN definition of the <code class=code-inline>Object object</code> function. </p>
             </div>
         </section>
 
@@ -170,7 +1179,7 @@
                     <br 2>
 
                     LapysJS makes modifications to the regular everyday list of items known as Arrays. <br>
-                    Arrays which are useful for non-singular data manipulation have always been needed for ordering the control flow of our scripting language, sorting a group of objects in an OOP language or any other idea our developers can think of. But most of the time, Arrays aren&rsquo;t necessarily easy to master, you will have to learn how to manipulate data to and from an array and methods like <code class=code-inline>push</code> and <code class=code-inline>pop</code> can not be justified as substitutes to methods that would&rquo;ve been called <code class=code-inline>addNewElement</code> and <code class=code-inline>removeOldElement</code>.
+                    Arrays which are useful for non-singular data manipulation have always been needed for ordering the control flow of our scripting language, sorting a group of objects in an OOP language or any other idea our developers can think of. But most of the time, Arrays aren&rsquo;t necessarily easy to master, you will have to learn how to manipulate data to and from an array and methods like <code class=code-inline>push</code> and <code class=code-inline>pop</code> can not be justified as substitutes to methods that would&rsquo;ve been called <code class=code-inline>addNewElement</code> and <code class=code-inline>removeOldElement</code>.
 
                     <br 2>
 
