@@ -706,6 +706,7 @@
         /* <summary> */
             /* Pseudo > Web Kit Details Marker */
             details summary::-webkit-details-marker {
+                display: inline-block;
                 height: .6em;
                 width: .6em;
                 -webkit-margin-end: 0
@@ -990,9 +991,7 @@
     }
 
     .carousel > [data-id=indicators-container] > .indicator,
-    input[type=color],
-    input[type=range]::-moz-range-thumb,
-    input[type=range]::-webkit-slider-thumb {
+    input[type=color] {
         width: 15px
     }
 
@@ -1003,12 +1002,32 @@
         -webkit-appearance: textfield
     }
         /* Pseudo */
+            /* Mozilla Focus Inner */
+            [type=button]::-moz-focus-inner,
+            [type=reset]::-moz-focus-inner,
+            [type=submit]::-moz-focus-inner,
+            button::-moz-focus-inner {
+                border-style: none;
+                padding: 0
+            }
+
+            /* Mozilla Focus Ring */
+            [type=button]:-moz-focusring,
+            [type=reset]:-moz-focusring,
+            [type=submit]:-moz-focusring,
+            button:-moz-focusring {
+                outline: 0;
+                user-select: none
+            }
+
             /* Mozilla System Metric */
                 /* <color-picker-available> */
                     /* Pseudo > Mozilla Color Swatch */
                     input[type=color]:-moz-system-metric(color-picker-available)::-moz-color-swatch {
+                        border: 0;
                         border-radius: 50%;
                         box-sizing: border-box;
+                        display: block;
                         height: 100%;
                         margin-inline-end: auto;
                         margin-inline-start: auto;
@@ -1019,7 +1038,8 @@
 
             /* Web Kit Color Swatch */
             input[type=color]::-webkit-color-swatch {
-                border-radius: 50%
+                border-radius: 50%;
+                border: 0
             }
 
             /* Before */
@@ -1047,6 +1067,9 @@
 
             /* Web Kit File Upload Button */
             input[type=file]::-webkit-file-upload-button {
+                border: 1px solid;
+                border-image: initial;
+                border-spacing: 0;
                 color: inherit;
                 cursor: pointer;
                 font-size: 13px;
@@ -1060,13 +1083,16 @@
                 border-radius: 50%;
                 box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
                 cursor: pointer;
-                transition: .5s ease
+                height: 15px;
+                transition: .5s ease;
+                width: 15px
             }
 
             /* Mozilla Range Track */
             input[type=range]::-moz-range-track {
                 background-color: #EFEFEF;
                 box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
+                cursor: default;
                 height: 2px;
                 width: 100%
             }
@@ -1075,8 +1101,14 @@
             input[type=range]::-ms-track {
                 background-color: #EFEFEF;
                 box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
+                cursor: default;
                 height: 2px;
                 width: 100%
+            }
+
+            /* Web Kit Color Swatch Wrapper */
+            input[type=color]::-webkit-color-swatch-wrapper {
+                padding: 0
             }
 
             /* Web Kit Slider Runnable Track
@@ -1088,16 +1120,22 @@
                 background-color: transparent;
                 background-color: #000000;
                 border-radius: 15px;
+                cursor: default;
                 width: 100%
             }
 
             /* Web Kit Slider Thumb */
             input[type=range]::-webkit-slider-thumb {
                 background-color: #FFFFFF;
+                border: 1px solid;
+                border-image: initial;
+                border-spacing: 0;
                 border-radius: 50%;
                 box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
                 cursor: pointer;
+                height: 15px;
                 transition: .5s ease;
+                width: 15px;
                 -webkit-appearance: none
             }
 
@@ -1178,8 +1216,6 @@
     /* <input>, <meter>, <progress> */
     .carousel > [data-id=indicators-container] > .indicator,
     input[type=color],
-    input[type=range]::-moz-range-thumb,
-    input[type=range]::-webkit-slider-thumb,
     meter,
     progress {
         height: 15px
@@ -1303,7 +1339,11 @@
         /* Pseudo */
             /* Mozilla Meter Bar */
             meter::-moz-meter-bar {
+                float: none;
                 height: 100%;
+                overflow: hidden;
+                position: static;
+                visibility: visible;
                 -moz-appearance: meterchunk
             }
 
@@ -1329,6 +1369,7 @@
             meter::-webkit-meter-bar {
                 background: #FFFFFF;
                 height: 100%;
+                width: 100%;
                 -webkit-user-modify: read-only
             }
 
@@ -1342,6 +1383,7 @@
             /* Web Kit Meter Inner Element */
             meter::-webkit-meter-inner-element {
                 height: 100%;
+                width: 100%;
                 -webkit-appearance: inherit;
                 -webkit-user-modify: read-only
             }
@@ -1438,7 +1480,14 @@
             /* Mozilla Progress Bar */
             progress[value]::-moz-progress-bar {
                 background-color: #0000FF;
+                object-fit: contain;
                 overflow: hidden
+            }
+
+            /* Webkit Progress Bar */
+            progress[value]::-webkit-progress-bar {
+                background: transparent;
+                object-fit: contain
             }
 
             /* Web Kit Progress Value */
@@ -2005,9 +2054,6 @@
     details summary,
     embed,
     input[type*=date]::before,
-    input[type=range]::-moz-range-track,
-    input[type=range]::-ms-track,
-    input[type=range]::-webkit-slider-runnable-track,
     input:active,
     label,
     object,
@@ -2102,8 +2148,6 @@
         .row-group > *,
         form,
         hr,
-        meter::-webkit-meter-bar,
-        meter::-webkit-meter-inner-element,
         table.responsive {
             width: 100%
         }
@@ -2328,7 +2372,6 @@
     .badge,
     .no-float,
     frameset,
-    meter::-moz-meter-bar,
     optgroup,
     option,
     spacer {
@@ -2370,16 +2413,12 @@
 
     /* No Outline */
     [contenteditable=false],
-    [type=button]:-moz-focusring,
-    [type=reset]:-moz-focusring,
-    [type=submit]:-moz-focusring,
     :focus,
     :host,
     .carousel > [data-id=buttons-container] > .button,
     .no-outline,
     .thumbnail,
     a,
-    button:-moz-focusring,
     html,
     input[type=color]:focus,
     input[type=checkbox]:focus,
@@ -2388,17 +2427,12 @@
     }
 
     /* No Padding */
-    [type=button]::-moz-focus-inner,
-    [type=reset]::-moz-focus-inner,
-    [type=submit]::-moz-focus-inner,
     .carousel > [data-id=slides-container],
     .jumbotron,
     .no-pad,
     .no-padding,
     blockquote,
-    button::-moz-focus-inner,
     input[type=color],
-    input[type=color]::-webkit-color-swatch-wrapper,
     legend,
     mark,
     q,
@@ -2416,12 +2450,8 @@
     }
 
     /* No Select */
-    [type=button]:-moz-focusring,
-    [type=reset]:-moz-focusring,
-    [type=submit]:-moz-focusring,
     .no-select,
     aside,
-    button:-moz-focusring,
     canvas,
     screen-toast,
     screen-tip {
@@ -2764,7 +2794,6 @@
     .stat,
     .static,
     frameset,
-    meter::-moz-meter-bar,
     optgroup,
     option,
     select > button,
@@ -3190,8 +3219,7 @@
         .bg-trans,
         .bg-transparent,
         code,
-        input[type=range],
-        progress[value]::-webkit-progress-bar {
+        input[type=range] {
             background: transparent
         }
 
@@ -3202,11 +3230,9 @@
     input[type*=date]::before,
     input[type=email],
     input[type=file],
-    input[type=file]::-webkit-file-upload-button,
     input[type=month],
     input[type=number],
     input[type=password],
-    input[type=range]::-webkit-slider-thumb,
     input[type=search],
     input[type=tel],
     input[type=text],
@@ -3230,8 +3256,6 @@
         img,
         input::placeholder,
         input[type=color],
-        input[type=color]::-webkit-color-swatch,
-        input[type=color]:-moz-system-metric(color-picker-available)::-moz-color-swatch,
         legend,
         textarea::placeholder {
             border: 0
@@ -3347,13 +3371,9 @@
             }
 
             /* None */
-            [type=button]::-moz-focus-inner,
-            [type=reset]::-moz-focus-inner,
-            [type=submit]::-moz-focus-inner,
             .bdr-nostyle,
             .border-nostyle,
             blockquote,
-            button::-moz-focus-inner,
             input[type=color] {
                 border-style: none
             }
@@ -3421,7 +3441,6 @@
         html,
         iframe,
         img.responsive,
-        input[type=color]:-moz-system-metric(color-picker-available)::-moz-color-swatch,
         input[type=submit],
         legend,
         listing,
@@ -3536,13 +3555,11 @@
         button,
         canvas,
         code,
-        details summary::-webkit-details-marker,
         figure,
         input::placeholder,
         keygen,
         marquee,
         meter,
-        meter::-moz-meter-bar,
         plaintext,
         pre,
         progress,
@@ -3908,8 +3925,8 @@
 
         /* Visible */
         .overflow-visible,
-        .ovflow-v,
-        meter::-moz-meter-bar {
+        .ovflow-v {
+            display: inline-block;
             overflow: visible
         }
 
@@ -9131,8 +9148,6 @@
     .column-group,
     .row-grp,
     .row-group,
-    progress[value]::-moz-progress-bar,
-    progress[value]::-webkit-progress-bar,
     video {
         object-fit: contain
     }

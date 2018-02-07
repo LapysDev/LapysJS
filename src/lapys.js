@@ -2,8 +2,13 @@
     @author: Lapys Dev Team
     @description: LapysJS is a JavaScript library with its independent CSS framework designed to make JavaScript more forgiving and faster to script.
     @version: 0.0.1
+
+    --- UPDATE ---
+        @lapys: A few updates such as:
+            - DOM Element caching
+            - Unnecessary mini-polyfills (such as Math.abs)
 */
-(function LapysJSScript(window = window, document = window.document, global, undefined = window.undefined || void 0) {
+(function LapysJSScript(window = window, document = window.document, global = window.global || null, undefined = window.undefined || void 0) {
     /* Polyfills
             --- NOTE ---
                 @lapys: All polyfills are minified.
@@ -32,6 +37,45 @@
                     return +String((arguments[0] > -1) || -arguments[0]).replace('true', arguments[0])
                 }
             })).abs
+        });
+
+        /* Animate
+                --- WARN ---
+                    @lapys: Only use when a process happens permanently.
+        */
+        (typeof window.animate == 'function') || Object.defineProperty(window, 'animate', {
+            // Value
+            value: function animate() {
+                // Initialization > (Data, Arguments)
+                let data = arguments[0],
+                    Arguments = [...arguments].slice(1);
+
+                /* Logic
+                        Switch case to Argument 0`s data type.
+                */
+                switch (typeof data) {
+                    // Function
+                    case 'function':
+                        (function animationFunction() {
+                            // Argument 0
+                            data.apply(this || window, Arguments);
+
+                            // Request Animation Frame
+                            requestAnimationFrame(animationFunction)
+                        })();
+                        break;
+
+                    // String
+                    case 'string':
+                        (function animationFunction() {
+                            // Execution
+                            eval(`(function(...args) {\n${data}\n}).apply(this || window, Arguments)`);
+
+                            // Request Animation Frame
+                            requestAnimationFrame(animationFunction)
+                        })()
+                }
+            }
         });
 
         /* Array
@@ -73,6 +117,26 @@
                         }
 
                         catch (error) {}
+
+                // Return
+                return data
+            }
+        });
+
+        // Average
+        (typeof window.avg == 'function') || Object.defineProperty(window, 'avg', {
+            // Value
+            value: function average() {
+                // Initialization > Data
+                let data = 0;
+
+                /* Loop
+                        [for statement]
+
+                    > Update > Data
+                */
+                for (let i = 0; i < arguments.length; i += 1)
+                    data += arguments[i] / arguments.length;
 
                 // Return
                 return data
@@ -793,6 +857,15 @@
             JSON.fallback || (JSON.fallback = !1);
 
         // Math
+            // Average
+            !window.Math || Math.avg || Object.defineProperty(Math, 'avg', {
+                // Value
+                value: function average() {
+                    // Return
+                    return avg.apply(window, [...arguments])
+                }
+            });
+
             /* Evaluate
                     --- UPDATE REQUIRED ---
                         @lapys: Should evaluate strings of deeper math.
@@ -1005,6 +1078,9 @@
             window.obj = objectify;
 
         // On (DOM, Node) Change
+            // Initialization > Data
+            let _data = ['onDOMChange', 'onNodeChange'];
+
             /* Loop
                     [for statement]
 
@@ -1012,9 +1088,9 @@
             */
             for (let i = 0; i < 2; i += 1)
                 eval(
-                    `(typeof window.${['onDOMChange', 'onNodeChange'][i]} == 'function') || Object.defineProperty(window.constructor.prototype, '${['onDOMChange', 'onNodeChange'][i]}', {` +
+                    `(typeof window.${_data[i]} == 'function') || Object.defineProperty(window.constructor.prototype, '${_data[i]}', {` +
                         // Value
-                        `value: function ${['onDOMChange', 'onNodeChange'][i]}() {` +
+                        `value: function ${_data[i]}() {` +
                             // Error Handling
                             `try {` +
                                 // Initialization > (Arguments, Target)
@@ -1060,11 +1136,11 @@
                                         `formerContent = currentContent` +
                                     `};` +
 
-                                    /* Set Interval
+                                    /* Update
                                             --- NOTE ---
                                                 @lapys: Unlike the other On DOM Node * function intervals, this function's is quicker.
                                     */
-                                    `setInterval(() => {` +
+                                    `(function update() {` +
                                         // Update > Content
                                         `currentContent = (${['document.documentElement', 'arguments[0]'][i]} || document.createElement('a')).outerHTML;` +
 
@@ -1079,7 +1155,10 @@
                                             // Update > Former Content
                                             `formerContent = currentContent` +
                                         `}` +
-                                    `}, 10)` +
+
+                                        // Request Animation Frame
+                                        `requestAnimationFrame(update)` +
+                                    `})()` +
                                 `}` +
                             `}` +
                         `}` +
@@ -1087,6 +1166,12 @@
                 );
 
         // On DOM Node (Added, Count Change, Removed)
+            // Update > Data
+            _data = [
+                ['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'],
+                ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']
+            ];
+
             /* Loop
                     [for statement]
             */
@@ -1098,10 +1183,10 @@
                 */
                 for (let j = 0; j < 3; j += 1)
                     eval(
-                        `(typeof window.${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]} == 'function') || Object.defineProperty(window.constructor.prototype, '${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]}', {` +
+                        `(typeof window.${_data[i][j]} == 'function') || Object.defineProperty(window.constructor.prototype, '${_data[i][j]}', {` +
                             // Value
-                            `value: function ${[['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j]}() {` +
-                                ([['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onDOMNodeCountChange' || [['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onNodeCountChange' ? `try {` +
+                            `value: function ${_data[i][j]}() {` +
+                                (_data[i][j] === 'onDOMNodeCountChange' || _data[i][j] === 'onNodeCountChange' ? `try {` +
                                     // Initialization > (Arguments, Target)
                                     `let Arguments = arguments,` +
                                         `that = this;` +
@@ -1122,10 +1207,10 @@
                                             Argument 0 is a function.
                                 */
                                 `if (typeof ${['arguments[0]', 'arguments[1]'][i]} == 'function') {` +
-                                    // Initialization > DOM Nodes Length
+                                    // Initialization > ((Former) DOM Nodes Length, Data)
                                     `let DOMNodesLength = ${['document', 'arguments[0]'][i]}.getElementsByTagName('*').length,` +
-                                        // Former DOM Nodes Length
-                                        `formerDOMNodesLength = DOMNodesLength;` +
+                                        `formerDOMNodesLength = DOMNodesLength,` +
+                                        `data = arguments;` +
 
                                     // Update > DOM Nodes Length
                                     `DOMNodesLength = ${['document', 'arguments[0]'][i]}.getElementsByTagName('*').length;` +
@@ -1142,23 +1227,26 @@
                                     `}` +
 
                                     // Set Interval
-                                    `setInterval(() => {` +
+                                    `(function update() {` +
                                         // Update > DOM Nodes Length
-                                        `DOMNodesLength = ${['document', 'arguments[0]'][i]}.getElementsByTagName('*').length;` +
+                                        `DOMNodesLength = ${['document', 'data[0]'][i]}.getElementsByTagName('*').length;` +
 
                                         /* Logic
                                                 [if:else if:else statement]
                                         */
                                         `if (DOMNodesLength ${[['>', '!==', '<'], ['>', '!==', '<']][i][j]} formerDOMNodesLength) {` +
                                             // Function > Argument 0
-                                            `${['arguments[0]', 'arguments[1]'][i]}.apply(this, [...arguments].slice(${[1, 2][i]}));` +
+                                            `${['data[0]', 'data[1]'][i]}.apply(this, [...data].slice(${[1, 2][i]}));` +
 
                                             // Update > Former DOM Nodes Length
                                             `formerDOMNodesLength = DOMNodesLength` +
                                         `}` +
-                                    `}, 100)` +
+
+                                        // Set Timeout
+                                        `setTimeout(function() { requestAnimationFrame(update) })` +
+                                    `})()` +
                                 `}` +
-                                ([['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onDOMNodeCountChange' || [['onDOMNodeAdded', 'onDOMNodeCountChange', 'onDOMNodeRemoved'], ['onNodeAdded', 'onNodeCountChange', 'onNodeRemoved']][i][j] === 'onNodeCountChange' ? '}' : '') +
+                                (_data[i][j] === 'onDOMNodeCountChange' || _data[i][j] === 'onNodeCountChange' ? '}' : '') +
                             `}` +
                         `})`
                     );
@@ -1504,8 +1592,9 @@
         /* LapysJS */
             // Initialization
             window.LapysJS = new (function LapysJS() {
-                // Initialization > Version Number
-                let VER_NUMBER = '0.0.1';
+                // Initialization > (Target, Version Number)
+                let that = this,
+                    VER_NUMBER = '0.0.1';
 
                 // Author
                 Object.defineProperty(this, 'author', {value: 'Lapys Dev Team'});
@@ -1582,15 +1671,18 @@
                                     --- NOTE ---
                                         @lapys: Returns a specified component.
                             */
+                                // Initialization > Data
+                                _data = ['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'];
+
                                 /* Loop
                                         Iterate six times.
 
                                     > Execution
                                 */
                                 for (let i = 0; i < 6; i += 1)
-                                    eval(`Object.defineProperty(this, '${['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i][0].toUpperCase() + ['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i].slice(['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i][0].length)}', {` +
+                                    eval(`Object.defineProperty(this, '${_data[i][0].toUpperCase() + _data[i].slice(_data[i][0].length)}', {` +
                                         // Value
-                                        `value: class LapysJS${['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i][0].toUpperCase() + ['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i].slice(['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i][0].length)} {` +
+                                        `value: class LapysJS${_data[i][0].toUpperCase() + _data[i].slice(_data[i][0].length)} {` +
                                             // Constructor
                                             `constructor() {` +
                                                 // Initialization > Data
@@ -1598,7 +1690,7 @@
 
                                                 // Modification > Data-Event-based
                                                     // Class
-                                                    `data.setAttribute('class', '${['badge', 'card', 'dialog', 'jumbotron', 'pane', 'thumbnail'][i].toLowerCase()}');` +
+                                                    `data.setAttribute('class', '${_data[i].toLowerCase()}');` +
 
                                                     // Inner HTML
                                                     `data.innerHTML = arguments.length > 0 ? (typeof arguments[0] == 'string' ? arguments[0] : Object(arguments[0]).innerHTML) : '';` +
@@ -2854,7 +2946,10 @@
                         // Get
                         get: function enabled() {
                             // Return
-                            return (this.getAttribute('data-enable') || '').split(/ /g).removeFalsyElements().removeRepeatedElements()
+                            return (this.getAttribute('data-enable') || '').split(/ /g).removeFalsyElements().removeRepeatedElements().filter(data => {
+                                // Return
+                                return that.experimentalFeatures.indexOf(data) > -1
+                            })
                         }
                     });
 
@@ -2874,10 +2969,11 @@
                 this.ready = !1;
 
                 // Temporary Data
+                this.temporaryData = void 0;
                     /* Set Interval
                             --- NOTE ---
                                 @lapys: Every minute, the the Temporary Data
-                                becomes undefined.
+                                     becomes undefined.
                     */
                     setInterval(() => {
                         // Update > LapysJS > Temporary Data
@@ -6020,38 +6116,6 @@
             });
 
         /* DOM Elements */
-            /* Data Focus */
-                // Set Timeout
-                setTimeout(function() {
-                    /* Logic
-                            If
-                                the LapysJS script has 'all' enabled
-                                    or
-                                the LapysJS script has 'data-focus' enabled.
-                    */
-                    if (
-                        LapysJS.script.enabled.indexOf('all') > -1 ||
-                        LapysJS.script.enabled.indexOf('data-focus') > -1
-                    )
-                        // On DOM Ready
-                        onDOMReady(function() {
-                            // Event > <body> > Mouse Up
-                            document.body.setEvent('mouseup', function LapysJSDataFocusFeatureEvent(event) {
-                                /* Loop
-                                        While
-                                            there is a Data Focus element left.
-
-                                    > Modification > Data Focus Element > Data Focus
-                                */
-                                while (document.querySelector('[data-focus'))
-                                    document.querySelector('[data-focus').removeAttribute('data-focus');
-
-                                // Modification > Event Path > Data Focus
-                                (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).setAttribute('data-focus', '')
-                            })
-                        })
-                });
-
             /* <br>, <wbr> */
                 // On DOM Node Added
                 onDOMNodeAdded(() => {
@@ -7862,7 +7926,7 @@
                                 }
 
                                 // Return
-                                return metadata.length > 1 ? metadata : metadata[0]
+                                return typeof arguments[1] == 'number' ? metadata[arguments[1]] : (metadata.length > 1 ? metadata : metadata[0])
                             }
                         });
 
@@ -8080,7 +8144,10 @@
                             (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:!0,enumerable:!0,value:function prepend(){var argArr=Array.prototype.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:!0})})})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
 
                             // Insertion > Element
-                            this[(str((arguments[0] !== 'begin') || str((!this.prepend || 'prepend')).replace('true', 'cloneNode')).replace('true', str((arguments[0] !== 'end') || str((!this.append || 'append')).replace('true', 'appendChild')).replace('true', '')) || 'cloneNode')](arguments[1])
+                            this[(str((arguments[0] !== 'begin') || str((!this.prepend || 'prepend')).replace('true', 'cloneNode')).replace('true', str((arguments[0] !== 'end') || str((!this.append || 'append')).replace('true', 'appendChild')).replace('true', '')) || 'cloneNode')](arguments[1]);
+
+                            // Return
+                            return arguments[1]
                         }
                     });
 
@@ -8509,127 +8576,6 @@
                         }
                     }));
 
-                    // Pseudo
-                    Element.prototype.__pseudo__ || Object.defineProperty(HTMLElement.prototype, '__pseudo__', {
-                        // Configurable
-                        configurable: !0,
-
-                        // Enumerable
-                        enumerable: !0,
-
-                        // Get
-                        get: function getPseudo() {
-                            // Initialization > Target
-                            let that = this;
-
-                            // Return
-                            return new (function LapysJSPseudoAttributesList() {
-                                // Initialization > LapysJS Pseudo Attributes List
-                                let _LapysJSPseudoAttributesList = new (function LapysJSPseudoAttributesList() {});
-
-                                /* Loop
-                                        Index all Target's data sets.
-                                */
-                                for (let i = 0; i < Object.keys(that.dataset).length; i += 1)
-                                    /* Logic
-                                            [if:else if:else statement]
-
-                                        > Update > LapysJS Pseudo Attributes List
-                                    */
-                                    if (
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('slide') > -1 && ((that.parentElement || {getAttribute: () => {}}).getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] === 'active') ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] == 'buttons') ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] == 'buttonsLeftHtml') ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] == 'buttonsRightHtml') ||
-                                        Object.keys(that.dataset)[i] == 'close' ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('media-playlist') > -1 && Object.keys(that.dataset)[i] == 'description') ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] == 'direction') ||
-                                        (that == LapysJS.script && Object.keys(that.dataset)[i] == 'enable') ||
-                                        (that.tagName == 'KEY-COMMAND' && Object.keys(that.dataset)[i] == 'eventKey') ||
-                                        Object.keys(that.dataset)[i] == 'eventFunction' ||
-                                        Object.keys(that.dataset)[i] == 'eventType' ||
-                                        Object.keys(that.dataset)[i] == 'focus' ||
-                                        (((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-time') > -1) && Object.keys(that.dataset)[i] == 'format') ||
-                                        Object.keys(that.dataset)[i] == 'id' ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] == 'indicators') ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] == 'indicatorsHtml') ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && Object.keys(that.dataset)[i] == 'interval') ||
-                                        Object.keys(that.dataset)[i] == 'open' ||
-                                        (that.tagName == 'INPUT' && Object.keys(that.dataset)[i] == 'placeholder') ||
-                                        (that.tagName == 'TEXTAREA' && Object.keys(that.dataset)[i] == 'placeholder') ||
-                                        Object.keys(that.dataset)[i] == 'selected' ||
-                                        (((that.parentElement.parentElement || {getAttribute: () => {}}).getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && (that.getAttribute('class') || '').split(/ /g).indexOf('indicator') > -1 && Object.keys(that.dataset)[i] == 'slideIndex') ||
-                                        (((that.parentElement.parentElement || {getAttribute: () => {}}).getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1 && (that.getAttribute('class') || '').split(/ /g).indexOf('slide') > -1 && Object.keys(that.dataset)[i] == 'slideIndex') ||
-                                        (
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'text') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textCursorPosition') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFormat') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFunction') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFunctionDelay') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFunctionDuration') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFunctionInit') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFunctionInitialDelay') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFunctionIterationCount') ||
-                                            ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-text') > -1 && Object.keys(that.dataset)[i] == 'textFunctionSeparator')
-                                        ) ||
-                                        Object.keys(that.dataset)[i] == 'title' ||
-                                        Object.keys(that.dataset)[i] == 'titleClass' ||
-                                        Object.keys(that.dataset)[i] == 'titleCoordinate' ||
-                                        Object.keys(that.dataset)[i] == 'titleStyle' ||
-                                        Object.keys(that.dataset)[i] == 'toast' ||
-                                        Object.keys(that.dataset)[i] == 'toastDelay' ||
-                                        Object.keys(that.dataset)[i] == 'toastDuration' ||
-                                        Object.keys(that.dataset)[i] == 'unknown' ||
-                                        ((that.getAttribute('class') || '').split(/ /g).indexOf('dynamic-time') > -1 && Object.keys(that.dataset)[i] == 'utcFormat')
-                                    )
-                                        _LapysJSPseudoAttributesList[Object.keys(that.dataset)[i].replace(/(h|H)(t|T)(m|M)(l|L)/g, 'HTML')] = that.dataset[Object.keys(that.dataset)[i]];
-
-                                // Modification > LapysJS Pseudo Attributes List
-                                Object.defineProperty(_LapysJSPseudoAttributesList, '__pseudo__', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Get
-                                    get: function __pseudo__() {
-                                        // Return
-                                        return this
-                                    }
-                                });
-
-                                /* Loop
-                                        Index all LapysJS Pseudo Attributes List's elements.
-
-                                    > Modification > Target > [LapysJS Pseudo Attributes List > Element]
-                                */
-                                for (let i = 0; i < Object.keys(_LapysJSPseudoAttributesList).length; i += 1)
-                                    Object.defineProperty(this, Object.keys(_LapysJSPseudoAttributesList)[i], {
-                                        // Configurable
-                                        configurable: !0,
-
-                                        // Enumerable
-                                        enumerable: !0,
-
-                                        // Get
-                                        get: function getPseudo() {
-                                            // Return
-                                            return _LapysJSPseudoAttributesList[Object.keys(_LapysJSPseudoAttributesList)[i]]
-                                        },
-
-                                        // Set
-                                        set: function setPseudo() {
-                                            // Modification > Target > [Data...]
-                                            that.setAttribute(`data-${Object.keys(_LapysJSPseudoAttributesList)[i].replace(/[A-Z]/g, data => {
-                                                return `-${data.toLowerCase()}`
-                                            })}`, arguments[0])
-                                        }
-                                    })
-                            })
-                        }
-                    });
-
                     // Width
                     Element.prototype.width || Object.defineProperty(HTMLElement.prototype, 'width', {
                         // Configurable
@@ -8691,10 +8637,10 @@
                         Components have not been modified.
         */
             // On DOM Ready
-            onDOMReady(function LapysJSScriptPlugIns() {
+            onDOMReady(LapysJS.script.scriptPlugIns = function LapysJSScriptPlugIns() {
                 // Accordion
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptNewAccordion() {
+                    // Function > LapysJS Script New Accordion
+                    function LapysJSScriptNewAccordion() {
                         // Initialization > Accordion
                         let accordion = document.querySelectorAll('.accordion:not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)');
 
@@ -8814,20 +8760,23 @@
                                                     }
                                                 });
 
-                                // Event > Accordion > Click
-                                accordion[i].setEvent((accordion[i].getAttribute('data-event-type') || 'click').trim(), function toggleAccordion() {
+                                // Event > (Accordion > Header) > Click
+                                accordion[i].header.setEvent((accordion[i].getAttribute('data-event-type') || 'click').trim(), function toggleAccordion() {
                                     // Toggle
-                                    this['LapysJS toggle'] ? this['LapysJS close']() : this['LapysJS open']();
-                                    this['LapysJS toggle'] = !this['LapysJS toggle']
+                                    this.accordion['LapysJS toggle'] ? this.accordion['LapysJS close']() : this.accordion['LapysJS open']();
+                                    this.accordion['LapysJS toggle'] = !this.accordion['LapysJS toggle']
                                 });
 
                                 // Modification > Accordion > Is Modified
                                 accordion[i]['LapysJS isModified'] = !0
                             }
-                    });
+                    };
+                    LapysJS.script.scriptNewAccordion = LapysJSScriptNewAccordion;
+                    LapysJSScriptNewAccordion();
+                    onDOMNodeAdded(LapysJSScriptNewAccordion);
 
                 // Carousel
-                (function LapysJSScriptCarousel() {
+                (LapysJS.script.scriptCarousel = function LapysJSScriptCarousel() {
                     // Initialization > Carousel
                     let carousel = document.querySelectorAll('.carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(input):not(textarea)');
 
@@ -8839,8 +8788,7 @@
                     for (let i = 0; i < carousel.length; i += 1)
                         carousel[i].children[0] || carousel[i].appendChild(document.createElement('div'));
 
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptNewCarousel() {
+                    function LapysJSScriptNewCarousel() {
                         /* Loop
                                 Index all Carousel.
                         */
@@ -9119,7 +9067,7 @@
                                 // Error Handling
                                 try {
                                     // Insertion
-                                    carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(
+                                    !carousel[i].hasAttribute('data-buttons') || carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(
                                         (carousel[i].getAttribute('data-buttons-left-html') || `<button class='button button-0' data-id=left-button>&larr;</button>`) +
                                         (carousel[i].getAttribute('data-buttons-right-html') || `<button class='button button-1' data-id=right-button>&rarr;</button>`),
                                         'div'
@@ -9128,7 +9076,7 @@
 
                                 catch (error) {
                                     // Insertion
-                                    carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(`<button class='button button-0' data-id=left-button>&larr;</button><button class='button button-1' data-id=right-button>&rarr;</button>`, 'div'))
+                                    !carousel[i].hasAttribute('data-buttons') || carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(`<button class='button button-0' data-id=left-button>&larr;</button><button class='button button-1' data-id=right-button>&rarr;</button>`, 'div'))
                                 }
 
                             /* Insertion
@@ -9139,44 +9087,40 @@
                                 // Error Handling
                                 try {
                                     // Insertion
-                                    carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(
-                                        (element => {
-                                            // Initialization > Data
-                                            let data = '';
+                                    !carousel[i].hasAttribute('data-indicators') || carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment((element => {
+                                        // Initialization > Data
+                                        let data = '';
 
-                                            /* Loop
-                                                    Iterate over the Element's length of slides.
+                                        /* Loop
+                                                Iterate over the Element's length of slides.
 
-                                                > Update > Data
-                                            */
-                                            for (let i = 0; i < element.slides.length; i += 1)
-                                                data += element.getAttribute('data-indicators-html') || `<a class='indicator indicator-${i}' data-slide-index=${i}> </a>`;
+                                            > Update > Data
+                                        */
+                                        for (let i = 0; i < element.slides.length; i += 1)
+                                            data += element.getAttribute('data-indicators-html') || `<a class='indicator indicator-${i}' data-slide-index=${i}> </a>`;
 
-                                            // Return
-                                            return data
-                                        })(carousel[i]), 'div'
-                                    ))
+                                        // Return
+                                        return data
+                                    })(carousel[i]), 'div'))
                                 }
 
                                 catch (error) {
                                     // Insertion
-                                    carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment(
-                                        (element => {
-                                            // Initialization > Data
-                                            let data = '';
+                                    !carousel[i].hasAttribute('data-indicators') || carousel[i].children[~-carousel[i].children.length].appendChild(createDocumentFragment((element => {
+                                        // Initialization > Data
+                                        let data = '';
 
-                                            /* Loop
-                                                    Iterate over the Element's length of slides.
+                                        /* Loop
+                                                Iterate over the Element's length of slides.
 
-                                                > Update > Data
-                                            */
-                                            for (let i = 0; i < element.slides.length; i += 1)
-                                                data += `<a class='indicator indicator-${i}' data-slide-index=${i}> </a>`;
+                                            > Update > Data
+                                        */
+                                        for (let i = 0; i < element.slides.length; i += 1)
+                                            data += `<a class='indicator indicator-${i}' data-slide-index=${i}> </a>`;
 
-                                            // Return
-                                            return data
-                                        })(carousel[i]), 'div'
-                                    ))
+                                        // Return
+                                        return data
+                                    })(carousel[i]), 'div'))
                                 }
 
                             // Event > Carousel
@@ -9260,7 +9204,13 @@
                             // Modification > Carousel > Is Modified
                             carousel[i]['LapysJS isModified'] = !0
                         }
-                    });
+                    };
+                    LapysJS.script.scriptNewCarousel = LapysJSScriptNewCarousel;
+                    LapysJSScriptNewCarousel();
+                    onDOMNodeAdded(LapysJSScriptNewCarousel);
+
+                    // Initialization > Data
+                    let data = LapysJSScriptNewCarousel;
 
                     /* Set Timeout
                             --- WARN ---
@@ -9270,10 +9220,11 @@
                                     Therefore if these functions execute before their former,
                                     the browser will be stuck processing an infinite loop.
                     */
-                    setTimeout(() => {
-                        // On Node Change
-                        onNodeChange(document.body, function LapysJSScriptCorrectCarousel() {
-                            /* Loop
+                    setTimeout(function() {
+                        // Function
+                            // LapysJS Script Correct Carousel Sequence A
+                            function LapysJSScriptCorrectCarouselSequenceA() {
+                                /* Loop
                                         Index all Carousel.
                                 */
                                 for (let i = 0; i < carousel.length; i += 1) {
@@ -9402,7 +9353,7 @@
                                     // Insertion
                                     carousel[i].slides[0] || carousel[i].containers.slides.appendChild(document.createElement('div'));
 
-                                    /* Loop {Inject New Slide}
+                                    /* {Inject New Slide} Loop
                                             [do:while statement]
                                     */
                                     injectNewSlide: while (
@@ -9812,33 +9763,49 @@
                                             carousel[i].slides[j].setAttribute('data-slide-index', j)
                                         }
                                 }
-                        });
+                            };
+                            LapysJS.script.scriptCorrectCarouselSequenceA = LapysJSScriptCorrectCarouselSequenceA;
+                            LapysJSScriptCorrectCarouselSequenceA();
+                            onNodeChange(document.body, LapysJSScriptCorrectCarouselSequenceA);
 
-                        // On Node Change
-                        onNodeChange(document.body, function LapysJSScriptCorrectCarousel() {
-                            /* Loop
-                                    Index all Carousel.
-                            */
-                            for (let i = 0; i < carousel.length; i += 1)
-                                // Error Handling
-                                try {
-                                    /* Loop
-                                            [while statement]
+                            // LapysJS Script Correct Carousel Sequence B
+                            function LapysJSScriptCorrectCarouselSequenceB() {
+                                /* Loop
+                                        Index all Carousel.
+                                */
+                                for (let i = 0; i < carousel.length; i += 1)
+                                    // Error Handling
+                                    try {
+                                        /* Loop
+                                                [while statement]
 
-                                        > Deletion
-                                    */
-                                    while (carousel[i].containers.slides.querySelector('.button, .indicator'))
-                                        carousel[i].containers.slides.querySelector('.button, .indicator').remove()
-                                }
+                                            > Deletion
+                                        */
+                                        while (carousel[i].containers.slides.querySelector('.button, .indicator'))
+                                            carousel[i].containers.slides.querySelector('.button, .indicator').remove()
+                                    }
 
-                                catch (error) {}
-                        })
-                    }, LapysJS.permanentData.pluginScriptDelay = typeof LapysJS.permanentData.pluginScriptDelay == 'number' ? LapysJS.permanentData.pluginScriptDelay : 3e3)
+                                    catch (error) {}
+                            };
+                            LapysJS.script.scriptCorrectCarouselSequenceB = LapysJSScriptCorrectCarouselSequenceB;
+                            LapysJSScriptCorrectCarouselSequenceB();
+                            onNodeChange(document.body, LapysJSScriptCorrectCarouselSequenceB);
+
+                        // ...
+                        LapysJS.script.scriptCarousel = function scriptNewCarousel() {
+                            // Data
+                            data();
+
+                            // LapysJS Script Correct Carousel Sequence (A, B)
+                            LapysJSScriptCorrectCarouselSequenceA();
+                            LapysJSScriptCorrectCarouselSequenceB()
+                        }
+                    }, LapysJS.permanentData.pluginScriptDelay = typeof LapysJS.permanentData.pluginScriptDelay == 'number' ? Math.abs(LapysJS.permanentData.pluginScriptDelay) : 3e3)
                 })();
 
                 // Dropdown
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptNewDropdown() {
+                    // Function > LapysJS Script New Dropdown
+                    function LapysJSScriptNewDropdown() {
                         // Initialization
                         let dropdown = document.querySelectorAll('.dropdown:not(.accordion):not(.carousel):not(.dynamic-text):not(.media):not(input):not(textarea)');
 
@@ -9911,7 +9878,10 @@
                                 // Modification > Dropdown > Is Modified
                                 dropdown[i]['LapysJS isModified'] = !0
                             }
-                    });
+                    };
+                    LapysJS.script.scriptNewDropdown = LapysJSScriptNewDropdown;
+                    LapysJSScriptNewDropdown();
+                    onDOMNodeAdded(LapysJSScriptNewDropdown);
 
                 /* Dynamic Text
                         --- UPDATE REQUIRED ---
@@ -9919,9 +9889,9 @@
                                 - A proper delay attribute and property that functions.
                                 - Dynamic Text should be very toggle-able (whether it automates or not).
                 */
-                (function LapysJSScriptDynamicText() {
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptNewDynamicText() {
+                (LapysJS.script.scriptDynamicText = function LapysJSScriptDynamicText() {
+                    // Function > Script New Dynamic Text
+                    function LapysJSScriptNewDynamicText() {
                         // Initialization
                         let dynamicText = document.querySelectorAll('.dynamic-text:not(.accordion):not(.carousel):not(.dropdown):not(.media):not(input):not(textarea)');
 
@@ -11427,12 +11397,15 @@
                                 // Modification > Dynamic Text > Is Modified
                                 dynamicText[i]['LapysJS isModified'] = !0
                             }
-                    })
+                    };
+                    LapysJS.script.scriptNewDynamicText = LapysJSScriptNewDynamicText;
+                    LapysJSScriptNewDynamicText();
+                    onDOMNodeAdded(LapysJSScriptNewDynamicText)
                 })();
 
                 // Placeholder
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptNewPlaceholder() {
+                    // Function > Script New Placeholder
+                    function LapysJSScriptNewPlaceholder() {
                         // Initialization > Placeholder
                         let placeholder = document.querySelectorAll('input[data-placeholder]:not(.accordion):not(.carousel):not(.dynamic-text):not(.media), textarea[data-placeholder]:not(.accordion):not(.carousel):not(.dynamic-text):not(.media)');
 
@@ -11511,7 +11484,10 @@
                             // Deletion
                             (placeholderElement[i].nextElementSibling || {hasAttribute: () => { return !1 }}).hasAttribute('data-placeholder') || placeholderElement[i].remove()
                         }
-                    });
+                    };
+                    LapysJS.script.scriptNewPlaceholder = LapysJSScriptNewPlaceholder;
+                    LapysJSScriptNewPlaceholder();
+                    onDOMNodeAdded(LapysJSScriptNewPlaceholder);
 
                 // Screen Tip
                     // Registration
@@ -11728,8 +11704,8 @@
                             }
                         });
 
-                    // On Node Change
-                    onNodeChange(document.body, function LapysJSScriptNewScreenTip() {
+                    // On DOM Change
+                    onDOMChange(function LapysJSScriptNewScreenTip() {
                         /* Loop
                                 Index all Titled Elements.
                         */
@@ -11793,8 +11769,8 @@
                     });
 
                 // Select Box
-                    // On Node Added
-                    onNodeAdded(document.body, function LapysJSScriptNewSelectBox() {
+                    // Function > LapysJS Script New Select Box
+                    function LapysJSScriptNewSelectBox() {
                         // Initialization > Select Box
                         let selectBox = document.querySelectorAll('input.select-box[data-id], textarea.select-box[data-id]');
 
@@ -12128,7 +12104,10 @@
                                 // Modification > Select Box > Is Modified
                                 selectBox[i]['LapysJS isModified'] = !0
                             }
-                    });
+                    };
+                    LapysJS.script.scriptNewSelectBox = LapysJSScriptNewSelectBox;
+                    LapysJSScriptNewSelectBox();
+                    onDOMNodeAdded(LapysJSScriptNewSelectBox);
 
                 /* Toast
                         --- NOTE ---
@@ -12206,8 +12185,8 @@
                         this.conceal(createElement('div', '[data-toast-delay=.1][data-toast-duration=.3'))
                     });
 
-                    // On Node Change
-                    onNodeChange(document.body, function LapysJSScriptNewToast() {
+                    // On DOM Change
+                    onDOMChange(function LapysJSScriptNewToast() {
                         /* Loop
                                 Index all Toast Elements.
                         */
@@ -12269,23 +12248,114 @@
             });
 
         /* Features */
+            /* Data Focus Feature */
+                // Check
+                check(function DataFocusFeature() {
+                    // Return
+                    return LapysJS.script.enabled.indexOf('all') > -1 || LapysJS.script.enabled.indexOf('data-focus') > -1
+                }, function() {
+                    /* Data Focus */
+                    function dataFocusAPI() {
+                        // Event > <body> > Mouse Up
+                        !!document.querySelector('.focusable') ? document.body.setEvent('mouseup', function(event) {
+                            /* Loop
+                                    While
+                                        there is a Data Focus 'focusable'-classed element left.
+
+                                > Modification > Data Focus Element > Data Focus
+                            */
+                            while (document.querySelector('.focusable[data-focus'))
+                                document.querySelector('.focusable[data-focus').removeAttribute('data-focus');
+
+                            // Modification > [Event > (...)] > Data Focus
+                            (((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).getAttribute('class') || '').trim().split(/ /g).indexOf('focusable') < 0) || (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).setAttribute('data-focus', '')
+                        }) : document.body.setEvent('mouseup', function(event) {
+                            /* Loop
+                                    While
+                                        there is a Data Focus element left.
+
+                                > Modification > Data Focus Element > Data Focus
+                            */
+                            while (document.querySelector('[data-focus'))
+                                document.querySelector('[data-focus').removeAttribute('data-focus');
+
+                            // Modification > [Event > (...)] > Data Focus
+                            (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).setAttribute('data-focus', '')
+                        })
+                    };
+                    onDOMReady(dataFocusAPI)
+                });
+
             /* HTML JavaScript Feature */
                 // Check
                 check(function HTMLJavaScriptFeature() {
                     // Return
                     return LapysJS.script.enabled.indexOf('all') > -1 || LapysJS.script.enabled.indexOf('html-javascript') > -1
                 }, function() {
+                    /* <access-value> */
+                    (function accessValueAPI() {
+                        // Registration
+                        !registerElement() || registerElement('access-value', class HTMLScriptElementAPIElement extends HTMLElement {
+                            // Constructor
+                            constructor() {
+                                /* Logic
+                                        If
+                                            CustomElementRegistry is valid.
+                                */
+                                if (registerElement()) {
+                                    // Super
+                                    super();
+
+                                    // Return
+                                    return
+                                }
+
+                                // Return
+                                return 'access-value'.html
+                            }
+                        });
+
+                        // Function > Evaluate Access Value
+                        function evaluateAccessValue() {
+                            /* Loop
+                                    [do:while statement]
+                            */
+                            while (document.getElementsByTagName('access-value')[0])
+                                // Error Handling
+                                try {
+                                    // Modification > <access-value> > Outer HTML
+                                    document.getElementsByTagName('access-value')[0].outerHTML = eval(document.getElementsByTagName('access-value')[0].value || document.getElementsByTagName('access-value')[0].getAttribute('value') || '')
+                                }
+
+                                catch (error) {
+                                    document.getElementsByTagName('access-value')[0].outerHTML = `[LapysJS ${LapysJS.version}] => Error parsing that value:<span style='display: block !important; text-indent: 1%'>\n\t${error}</span>`
+                                }
+                        };
+
+                        evaluateAccessValue();
+                        onDOMNodeAdded(evaluateAccessValue)
+                    })();
+
                     /* <script-element> */
                     (function scriptElementAPI() {
                         // Registration
-                        !registerElement() || registerElement('script-element', class HTMLAccessValueElement extends HTMLElement {
+                        !registerElement() || registerElement('script-element', class HTMLScriptElementAPIElement extends HTMLElement {
                             // Constructor
                             constructor() {
-                                // Super
-                                !registerElement() || super();
+                                /* Logic
+                                        If
+                                            CustomElementRegistry is valid.
+                                */
+                                if (registerElement()) {
+                                    // Super
+                                    super();
+
+                                    // Return
+                                    return
+                                }
 
                                 // Return
-                                return registerElement() ? void 0 : 'script-element'.html
+                                return 'script-element'.html
                             }
                         });
 
@@ -12295,49 +12365,20 @@
                                     [do:while statement]
                             */
                             while (document.getElementsByTagName('script-element')[0]) {
-                                // Insertion
-                                !document.getElementsByTagName('script-element')[0].innerHTML.trim() || document.getElementsByTagName('script-element')[0].insertAdjacentHTML('afterend', `<script${(function(element) {
-                                    // Initialization > (Data, Metadata)
-                                    let data = '',
-                                        metadata = document.createElement('iframe');
+                                // JavaScript
+                                    // Script
+                                    !document.getElementsByTagName('script-element')[0].innerHTML.trim() || js.script('scriptElement', document.getElementsByTagName('script-element')[0].innerHTML);
 
-                                    // Insertion
-                                    document.body.appendChild(metadata);
+                                    // Source
+                                    !(document.getElementsByTagName('script-element')[0].getAttribute('src') || document.getElementsByTagName('script-element')[0].src || '').trim() || js.src('scriptElement', new (function Object() {
+                                        /* Loop
+                                                [for statement]
 
-                                    /* Loop
-                                            [for statement]
-
-                                        > Update > Data
-                                    */
-                                    for (let i = 0; i < element.attributes.length; i += 1)
-                                        (element.attributes[i].name == 'src') || (data += ` ` + element.attributes[i].name + `='` + element.attributes[i].value + `'`);
-
-                                    // Metadata > Content Window > Document > (Write, Close)
-                                    metadata.contentWindow.document.write(`<script${data} type=text/javascript>${element.innerHTML}</script>`);
-                                    metadata.contentWindow.document.close();
-
-                                    // Deletion
-                                    document.body.removeChild(metadata);
-
-                                    // Return
-                                    return data
-                                })(document.getElementsByTagName('script-element')[0])}>function execute() { ${document.getElementsByTagName('script-element')[0].innerHTML} }</script>`);
-
-                                !(document.getElementsByTagName('script-element')[0].getAttribute('src') || document.getElementsByTagName('script-element')[0].src || '').trim() || document.getElementsByTagName('script-element')[0].insertAdjacentHTML('afterend', `<script${(function(element) {
-                                    // Initialization > Data
-                                    let data = '';
-
-                                    /* Loop
-                                            [for statement]
-
-                                        > Update > Data
-                                    */
-                                    for (let i = 0; i < element.attributes.length; i += 1)
-                                        data += ` ` + element.attributes[i].name + `='` + element.attributes[i].value + `'`;
-
-                                    // Return
-                                    return data
-                                })(document.getElementsByTagName('script-element')[0])}> </script>`);
+                                            > Update > Target > [Attribute]
+                                        */
+                                        for (let i = 0; i < document.getElementsByTagName('script-element')[0].attributes.length; i += 1)
+                                            this[document.getElementsByTagName('script-element')[0].attributes[i].name] = document.getElementsByTagName('script-element')[0].attributes[i].value
+                                    }));
 
                                 // Deletion
                                 document.getElementsByTagName('script-element')[0].remove()
@@ -12512,4 +12553,4 @@
     else if (!window)
         // LapysJS > Error
         LapysJS.error(`LapysJS does not function without the global 'window' object.`)
-})(window, document, void 0, void 0)
+})(window, window.document, window.global || null, window.undefined || void 0)
