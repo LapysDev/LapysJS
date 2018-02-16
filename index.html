@@ -17,82 +17,35 @@
         <script async src=assets/js/loader-screen.min.js type=text/javascript> </script>
 
         <!-- LapysJS Script -->
-        <script src=src/lapys.min.js type=text/javascript> </script>
+        <script data-enable=html-javascript src=src/lapys.min.js type=text/javascript> </script>
 
         <!-- Base Script -->
         <script async src=assets/js/base.js type=text/javascript> </script>
 
     <!-- Main -->
     <main>
-        <!-- Cover
-                    --- WARN ---
-                        @lapys: The 'script' attributes used here must be compressed
-                            to be effective.
-                                (Reason being that ParticlesJS and LapysJS` Dynamic Text PlugIn are both CPU & GPU heavy).
-        -->
-        <jumbotron-element class='bg bg-cover bg-tone fill full-page no-overflow row-grp' id=cover>
-            <!-- Curtain
-                        --- NOTE ---
-                            @lapys: Provided by Vincent Garreau at vincentgarreau.com
-                                with MIT licensing,
+        <!-- Introduction -->
+       <jumbotron-element id=introduction>
+            <!-- Title -->
+            <h1 data-id=header role=title> <access-value value=app.name> </access-value> </h1>
 
-                                ~ github.com/VincentGarreau/particles.js (v0.0.2)
-            -->
-            <div class='absolute curtain no-overflow smooth sticky-left sticky-top' data-id=backdrop id=particles-js script='let that=this;invokeEvent(`resize`,function() {that.firstElementChild.height=screen.height;that.firstElementChild.setCSS({height:`${screen.height}px`,width:`${screen.width}px`});that.firstElementChild.width=screen.width});check(function(){return`ALLOW_PARTICLES_JS_SCRIPT`in global},function(){if(innerWidth>767&&ALLOW_PARTICLES_JS_SCRIPT){js.src(`particlesJSScript`,{async:``,src:`vendors/js/particles.min.js`,type:`text/javascript`});check(function(){return!!global.particlesJS},function(){js.src(`particlesJSConfigurationScript`,{defer:``,src:`vendors/js/particles-js-config.min.js`,type:`text/javascript`})})}else that.setCSS(`background`,`transparent !important`);!ALLOW_PARTICLES_JS_SCRIPT||invokeEvent(`resize`,function(){innerWidth>767?that.delClass(`hidden`):that.addClass(`hidden`)})})' style='max-height: 100vh'>
-                <canvas class=particles-js-canvas-el> </canvas>
-            </div>
+            <dynamic-text-component
+                data-text='
+                    for (let i = 0; i < 5; i++) doSomething() // this is confusing...,
+                    /* With LapysJS */repeat(doSomething\, 5) // just like 1\, 2\, 3
+                '
+                data-text-format=trim
+                data-text-function='
+                    type, delete;
+                    type=18, insertNewline, type=21, pause=20, type=19, delete, reset
+                '
+                data-text-function-duration=3
+                data-text-function-delay=1
+            > </dynamic-text-component>
 
-            <!-- Mid Section -->
-            <div class='center col-1 flex m-col-5 m-grid-1 no-overflow no-select no-touch reverse t-col-5 t-grid-1' data-id=midSection>
-                <!-- Header Group -->
-                <hgroup class='grid-2 row-grp text-left' data-id=headerGroup>
-                    <!-- Header -->
-                    <h1 class='col-1 m-col-0 t-col-0' data-id=header script=this.innerHTML=app.name> </h1>
-
-                    <!-- Sub Header -->
-                    <h2 class=no-overflow data-id=subheader>
-                        <!-- Value -->
-                        <dynamic-text-component
-                            data-id=value
-                            data-text='
-                                Create new standards of web development,
-                                Do something bold&amp;creative,
-                                tnemirepxe ot diarfa eb t&rsquo;noD,
-                                It&rsquo;s simply new development
-                            '
-                            data-text-format=trim
-                            data-text-function='
-                                type, highlightCharacterBackwards, pause, clearAll;
-                                type=17, insertNewline, type=1, insertNewline, type=8, pause, delete=28;
-                                insert, pause, deleteForwards;
-                                type, pause, delete
-                            '
-                            data-text-function-delay=.5
-                            data-text-function-duration=.8275
-                            data-text-function-init=false
-                            data-text-function-initial-delay=.5
-                            data-text-function-separator=;
-                            data-text-separator=,
-                            script='let that=this;check(function(){return`ALLOW_DYNAMIC_TEXT_INIT_SCRIPT`in global},function(){check(function(){return document.readyState==`complete`&&ALLOW_DYNAMIC_TEXT_INIT_SCRIPT},function(){timeout(function(){that.attr(`data-text-function-init`,true)},100)});timeout(function(){if(!ALLOW_DYNAMIC_TEXT_INIT_SCRIPT){(that.$$(`[data-id*="cursor"`)||that.firstElementChild||`div`.html).addClass(`transparent`);that.innerText=`Create new standards of web development`}},50)})'
-                            style='max-width: 90%'
-                        ></dynamic-text-component>
-                        <span class=transparent>&nbsp;</span>
-                    </h2>
-                </hgroup>
-
-                <!-- Image -->
-                <div class='center flex grid-3 m-grid-2 t-grid-2' data-id=image>
-                    <!-- Logo -->
-                    <img class='fill float-right responsive' data-id=icon draggable=false role=logo script='let that=this;check(function(){return!!document.favicon[0]},function(){that.src=decodeURIComponent(document.favicon[0].href)})'>
-                </div>
-            </div>
-
-            <!-- Bottom Section -->
-            <div class='col-1 m-col-3 no-select t-col-3' data-id=bottomSection>
-                <!-- Header Navigation Bar -->
-                <nav class='center col-grp fill flex relative' role=header-navigation-bar></nav>
-            </div>
-        </jumbotron-element>
+            <!-- Sub Title -->
+            <h2 data-id=subheader role=subtitle> It&rsquo;s Simple Programming </h2>
+       </jumbotron-element>
     </main>
 </body>
 </html>

@@ -11,28 +11,7 @@ if ('ready' in window.LapysJS) {
                 return 'DOCUMENT_SHEET_MODEL' in global
             }, function() {
                 // Insertion
-                !(DYNAMIC_ASSETS_URL == '../') || document.body.insertChild('begin', createElement('nav', '.col-grp.fill-w.fixed.sticky-left.sticky-top.z-5#navigation', `<nav class='center col-1 col-grp fill-h flex min-grid-2' role=header-navigation-bar> </nav>`, {style: 'justify-content: center'}))
-                    /* Check
-                            --- WARN ---
-                                @lapys: The On Node Added function does not
-                                    pick up on DOM updates instantly so we use the Check
-                                    function to cause it to 'wake up'.
-                    */
-                    check(function() {
-                        // Return
-                        return $$('[role=header-navigation-bar', 0).innerHTML.trim() || ($$('delete-element', 'length') > 50)
-                    }, function() {
-                        /* Loop
-                                [do:while statement]
-
-                            > Deletion
-                        */
-                        while ($$('delete-element', 0))
-                            $$('delete-element', 0).delete()
-                    }, function() {
-                        // Insertion
-                        document.body.insertChild('end', 'delete-element'.html)
-                    });
+                !(DYNAMIC_ASSETS_URL == '../') || document.body.insertChild('begin', createElement('nav', '.col-grp.fill-w.fixed.sticky-left.sticky-top.z-5#navigation', `<nav class='center col-1 col-grp fill-h flex min-grid-2' role=header-navigation-bar> </nav>`, {style: 'justify-content: center'}));
 
                 // Initialization > Allow Document Sheet Model
                 def('ALLOW_DOCUMENT_SHEET_MODEL', new (function Object() {
@@ -164,7 +143,7 @@ if ('ready' in window.LapysJS) {
                                                         that = this;
 
                                                     // Index
-                                                    index(function(index) {
+                                                    repeat(function(index) {
                                                         // Insertion
                                                         data.insertChild('end', that.childNodes[index].clone(true))
                                                     }, len(this.childNodes));
@@ -707,7 +686,7 @@ if ('ready' in window.LapysJS) {
                                                         let metadata = this.siblings;
 
                                                         // Index
-                                                        index(function(index) {
+                                                        repeat(function(index) {
                                                             // Modification > Metadata > Class
                                                             metadata[index].delClass('focus')
                                                         }, metadata);
@@ -844,7 +823,7 @@ if ('ready' in window.LapysJS) {
                                 // On DOM Change
                                 once || !data || onDOMChange(function() {
                                     // Index
-                                    index(function(index) {
+                                    repeat(function(index) {
                                         // Modification > [Section]
                                             // Anchor
                                             ('anchor' in document.main.sections[index]) || document.main.sections[index].def('anchor', {
@@ -1080,29 +1059,6 @@ if ('ready' in window.LapysJS) {
                 }
 
     /* Functions */
-        /* Index */
-        global.index = function index() {
-            /* Loop
-                    Index Argument 1.
-            */
-            for (let i = 0; i < len(arguments[1]); i += 1)
-                /* Logic
-                        [switch:case:default statement]
-                */
-                switch (typeof arguments[0]) {
-                    // Function
-                    case 'function':
-                        // Argument 0
-                        arguments[0].apply(this, [...arguments].slice(2).addElementToBack(i));
-                        break;
-
-                    // String
-                    case 'string':
-                        // Execution
-                        eval(`(function() {let index = ${i};\n${arguments[0]}\n})()`)
-                }
-        };
-
         /* Scroll To */
             // Timeout
                 /* Try
@@ -1143,7 +1099,7 @@ if ('ready' in window.LapysJS) {
             // Timeout
             timeout(function() {
                 // Index
-                index(function(index) {
+                repeat(function(index) {
                     // Modification > Header Navigation Bar > Script
                     $$('[role=header-navigation-bar', index).setAttr('script');
 
@@ -1161,7 +1117,7 @@ if ('ready' in window.LapysJS) {
                             // Modification > Header Navigation Bar > Script
                             $$('[role=header-navigation-bar', index).script =
                                 'this.clearHTML();' +
-                                'index(function(index, that) {' +
+                                'repeat(function(index, that) {' +
                                     'that.innerHTML += `<a class="button-0 center col-1 single-line smooth transparent-button upper" href="${NAVIGATION_LINKS[index].href}" target=${NAVIGATION_LINKS[index].target} title="${NAVIGATION_LINKS[index].title}">${NAVIGATION_LINKS[index].textContent}</a>`' +
                                 '}, len(NAVIGATION_LINKS), this);' +
                                 'this.delAttr(`script`)'

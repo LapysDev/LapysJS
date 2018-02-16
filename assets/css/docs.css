@@ -167,6 +167,8 @@
                 margin: 0;
                 padding: 5px 7.5px;
                 position: relative;
+                text-indent: 0;
+                white-space: normal;
                 zoom: .85
             }
                 main.document-sheet-model > [role=container] > #sections .code-inline.syntax-highlighted {

@@ -2074,6 +2074,13 @@
         z-index: 2147483647
     }
 
+    /* Drag Element */
+    .drag-element {
+        padding: 0;
+        text-indent: 0;
+        user-select: none !important
+    }
+
     /* Dynamic Text */
         /* <span> */
             /* Cursor
@@ -2109,7 +2116,6 @@
                 /* Pseudo > Before */
                 .dynamic-text span[data-id*=cursor]::before {
                     content: ' ';
-                    display: inline-block;
                     height: inherit;
                     width: inherit
                 }
@@ -2481,10 +2487,11 @@
     ::after,
     ::before,
     [data-id=placeholder],
+    .drag-element > *,
     .no-touch,
     input::placeholder,
     textarea::placeholder {
-        user-drag: none
+        pointer-events: none
     }
 
     ::after,
@@ -2493,7 +2500,7 @@
     .no-touch,
     input::placeholder,
     textarea::placeholder {
-        pointer-events: none
+        user-drag: none
     }
 
     /* No Transition */
@@ -2807,22 +2814,30 @@
     }
         /* Bottom */
         .sticky-bottom {
-            bottom: 0
+            bottom: 0;
+            margin-bottom: 0;
+            margin-top: auto
         }
 
         /* Left */
         .sticky-left {
-            left: 0
+            left: 0;
+            margin-left: 0;
+            margin-right: auto
         }
 
         /* Right */
         .sticky-right {
-            right: 0
+            right: 0;
+            margin-left: auto;
+            margin-right: 0
         }
 
         /* Top */
         .sticky-top {
-            top: 0
+            top: 0;
+            margin-bottom: auto;
+            margin-top: 0
         }
 
     /* Table */
@@ -3548,8 +3563,12 @@
         .code,
         .d-ib,
         .display-inline-block,
+        .drag-element,
         .dynamic-text span,
+        .dynamic-text span[data-id*=cursor]::before,
         .inline-block,
+        .overflow-visible,
+        .ovflow-v,
         .pre,
         audio,
         button,
@@ -3926,7 +3945,6 @@
         /* Visible */
         .overflow-visible,
         .ovflow-v {
-            display: inline-block;
             overflow: visible
         }
 

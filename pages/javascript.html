@@ -12,7 +12,7 @@
         <script async src=../assets/js/loader-screen.min.js type=text/javascript> </script>
 
         <!-- LapysJS Script -->
-        <script src=../src/lapys.min.js type=text/javascript> </script>
+        <script data-enable=html-javascript src=../src/lapys.min.js type=text/javascript> </script>
 
         <!-- Base Script -->
         <script async src=../assets/js/base.js type=text/javascript> </script>
@@ -183,6 +183,15 @@
             <!-- Content -->
             <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
                 <!-- Header -->
+                <h2 data-id=header role=title> animate Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> </p>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
                 <h2 data-id=header role=title> array Function </h2>
 
                 <!-- Content -->
@@ -274,6 +283,15 @@
                         The <code class=code-inline>array</code> function was built to work with a majority of JavaScript values, not just iterable (index-based) values.
                     </p>
                 </div>
+            </div>
+
+            <!-- Content -->
+            <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
+                <!-- Header -->
+                <h2 data-id=header role=title> avg Function </h2>
+
+                <!-- Content -->
+                <p data-id=text role=content> </p>
             </div>
 
             <!-- Content -->
@@ -444,6 +462,8 @@
 
                 <!-- Content -->
                 <p data-id=text role=content>
+                    <strong>Asynchronous reversed while statement</strong> <br 2>
+
                     In the theory of possibility and statistics, a Bernoulli trial allows for experiments with only two outcomes, a 'success' and 'failure' result. <br>
                     The <code class=code-inline>check</code> function was inspired by this binomial trial such that when called, the function has an experiment (a condition) it runs constantly (checking) for if the outcome will be a 'success' or a 'failure'.
                 </p>
@@ -866,8 +886,98 @@
 
                 <!-- Content -->
                 <p data-id=text role=content>
-                    In an HTML document, the Document.createElement() method creates the HTML element specified by tagName, or an HTMLUnknownElement if tagName isn't recognized.
+                    In an HTML document, the <code class=code-inline>createElement</code> function creates the HTML element specified by a <code class=code-inline>tagName</code> value, or an <code class=code-inline>HTMLUnknownElement</code> if the value is not recognized.
                 </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* Standard element node creation. */
+                    createElement('div'); // returns a &lt;div&gt; element.
+
+                    /* Specialized element node creation. */
+                        $t$// This first use case returns: &lt;div class='class-a class-b' id='identity' attribute-name='attribute-value'&gt;
+                        $t$createElement(
+                            $t$$t$'div', '.class-a.class-b#identity[attribute-name=attribute-value'
+                        $t$);
+
+                        $t$// This second use case returns: &lt;div ...&gt;Hello, World!&lt;/div&gt;
+                        $t$createElement(
+                            $t$$t$'div', '.class-a.class-b#identity[attribute-name=attribute-value',
+                            $t$$t$'Hello, World!'
+                        $t$);
+
+                        $t$// This third use case returns: &lt;div id='unique' role='quantified'&gt;...&lt;/div&gt;
+                        $t$createElement(
+                            $t$$t$'div', '#identity[role=attribute-value',
+                            $t$$t$'Hello, World!',
+                            $t$$t${id: 'unique', role: 'quantified'}
+                        $t$)
+                </code>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Description </h6>
+                <p data-id=text role=content>
+                    To explain,
+                        <span before=• class=indent-inline>
+                            The first parameter of the <code class=code-inline>createElement</code> function takes in a <code class=code-inline>tagName</code> value and creates an element node off of that value.
+                        </span>
+                        <span before=• class=indent-inline>
+                            The second parameter modifies the <code class=code-inline>CSSSelector</code> property of said element to the string value given.
+
+                            <span class='inline-block-msg msg-info' style='transform: translateX(10%); width: 80%'> To make that clear, the <code class=code-inline>CSSSelector</code> property of an element takes in CSS selector syntax and imposes the queries of the selection as attributes on the element. </span>
+                        </span>
+                        <span before=• class=indent-inline>
+                            The third parameter of the function modifies the <code class=code-inline>innerHTML</code> property of the element to the string value given.
+                        </span>
+                        <span before=• class=indent-inline>
+                            The fourth parameter allows properties of the element to be created or once again modified to the given value of each key in a parsed JSON object.
+                        </span>
+                </p>
+
+                <div class=msg-info>
+                    <!-- Header -->
+                    <h3 data-id=header role=title> Many Statements for One Node </h3>
+
+                    <!-- Content -->
+                    <p data-id=text role=content>
+                        The <code class=code-inline>createElement</code> function and many other functions like it in LapysJS remove the problem of not being able to create a modified element in one instance. <br>
+                        To do this conventionally, one would have to bulk up on about 3+ lines of readable code to get the same result.
+                    </p>
+
+                    <h6 data-id=subheader role=subtitle> Vanilla JavaScript </h6>
+                    <code class='code-block syntax-highlighted' prog-language=javascript>
+                        /* Vanilla way of doing things. */
+                            $t$// Create the unmodified element.
+                            $t$let element = document.createElement('div');
+                                $t$$t$// Modify the class attribute of the element (this method requires a polyfill for IE8 and below).
+                                $t$$t$'classList' in element ?
+                                    $t$$t$$t$element.classList.add('class-a', 'class-b') :
+                                    $t$$t$$t$element.className = (element.className + ' class-a class-b').trim();
+
+                                $t$$t$// Identify the element with an ID.
+                                $t$$t$element.id = 'identity';
+
+                                $t$$t$// Add some content to the element dynamically.
+                                $t$$t$element.innerHTML = 'Hello, World!';
+
+                                $t$$t$// Make a JSON object full of properties you want to add to the element.
+                                $t$$t$let json = {id: 'unique', role: 'quantified'};
+                                    $t$$t$$t$// Add those properties.
+                                    $t$$t$$t$for (let propertyName in json)
+                                        $t$$t$$t$$t$element[propertyName] = json[propertyName]
+                    </code>
+
+                    <h6 data-id=subheader role=subtitle> LapysJS </h6>
+                    <code class='code-block syntax-highlighted' prog-language=javascript>
+                        /* LapysJS way to do things. */
+                            $t$// Create your modified element.
+                            $t$createElement(
+                                $t$$t$'div', '.class-a.class-b#identity',
+                                $t$$t$'Hello, World!', {id: 'unique', role: 'quantified'}
+                            $t$)
+                    </code>
+                </div>
             </div>
 
             <!-- Content -->
@@ -930,7 +1040,19 @@
                 <h2 data-id=header role=title> getQueryParameterByName Function </h2>
 
                 <!-- Content -->
-                <p data-id=text role=content> Hello, World! </p>
+                <p data-id=text role=content>
+                    The <code class=code-inline>getQueryParameterByName</code> function returns the string value of a query parameter from a given URL.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    /* Return the 'queryParameter' query string value of the current URL. */
+                    getQueryParameterByName('queryParameter'); // returns <access-value value=str(getQueryParameterByName(`queryParameter`))> </access-value>
+
+                    /* Return the 'queryParameter' query string value of a given URL. */
+                    getQueryParameterByName('queryParameter', 'https:$/$$/$www.example.com?queryParameter=queryValue') // returns <access-value value=str(getQueryParameterByName(`queryParameter`,`https://www.example.com?queryParameter=queryValue`))> </access-value>
+                </code>
             </div>
 
             <!-- Content -->
@@ -972,10 +1094,18 @@
             <!-- Content -->
             <div data-id=text role=content script='let that=this;timeout(function(){that.id=that.parent.id+`-`+that.children[0].textContent.capital().replace(/[A-Z]/g,data=>{return`-`+data.lower()}).replace(/ /g,``).slice(1)});this.delAttr(`script`)'>
                 <!-- Header -->
-                <h2 data-id=header role=title> Location.prototype.queryParameters Method </h2>
+                <h2 data-id=header role=title> <small>Location.prototype.queryParameters Method</small> </h2>
 
                 <!-- Content -->
-                <p data-id=text role=content> Hello, World! </p>
+                <p data-id=text role=content>
+                    The <code class=code-inline>queryParameters</code> method returns an <code class=code-inline>Array</code> of query parameters as <abbr abrr='JavaScript Object Notation' title='JavaScript Object Notation'>JSON</abbr> objects containing the key and the value of the query string.
+                </p>
+
+                <!-- Sub Header -->
+                <h6 data-id=subheader role=subtitle> Examples </h6>
+                <code class='code-block syntax-highlighted' prog-language=javascript>
+                    location.queryParameters // returns [<access-value value='len(location.queryParameters) > 1 ? `{...}, `.repeat(len(location.queryParameters)).slice(0, -2) : JSON.stringify(location.queryParameters[0] || {})'> </access-value>]
+                </code>
             </div>
 
             <!-- Content -->

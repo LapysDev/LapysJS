@@ -6,7 +6,7 @@ if ('ready' in window.LapysJS) {
     // Check
     check(function() {
         // Return
-        return getType(global.index) == 'function'
+        return getType(global.repeat) == 'function'
     }, function() {
         // Global Data
             // CSS
@@ -42,7 +42,7 @@ if ('ready' in window.LapysJS) {
                                     - Created element tag name selectors.
                                     - Created keyword modifiers.
                     */
-                    element.highlightedCodeHTML = element.highlightedCodeHTML.trimChar('\n').replace(/%/g, '<span class=highlight-color role=operator>%</span>').replace(/\/\*[^*]{0,}\*\/|\/\*[^\/]{0,}\*\//g, '<span class=highlight-color role=comment>$&</span>').replace(/'[^']{0,}'/g, '<span class=highlight-color role=string>$&</span>').replace(/"[^"]{0,}"/g, '<span class=highlight-color role=string>$&</span>').replace(/\#(\w|\$|_)(\w|\$|_|\-){0,}/g, '<span class=highlight-color role=id>$&</span>').replace(/#[a-fA-F0-9]{1,9}/g, data => {
+                    element.highlightedCodeHTML = element.highlightedCodeHTML.trimChar('\n').replace(/%/g, '<span class=highlight-color role=operator>%</span>').replace(/\/\*[^\*]{0,}\*\/|\/\*[^\/]{0,}\*\//g, '<span class=highlight-color role=comment>$&</span>').replace(/'[^']{0,}'/g, '<span class=highlight-color role=string>$&</span>').replace(/"[^"]{0,}"/g, '<span class=highlight-color role=string>$&</span>').replace(/\#(\w|\$|_)(\w|\$|_|\-){0,}/g, '<span class=highlight-color role=id>$&</span>').replace(/#[a-fA-F0-9]{1,9}/g, data => {
                         // Return
                         return len(data.slice(len('#'))) == 3 || len(data.slice(len('#'))) == 6 || len(data.slice(len('#'))) == 8 ? `<span class=highlight-color role=hexadecimal>${data}</span>` : data
                     }).replace(/\b([0-9]|\.)([0-9]|\.){0,}/g, data => {
@@ -242,7 +242,7 @@ if ('ready' in window.LapysJS) {
                                     return `<span class=highlight-color role=regular-expression>${data}</span>`
                                 })
                             }).replace(//g, '\\/'))
-                        }).replace(//g, '//').replace(//g, '/*').replace(//g, '*/').replace(//g, '</span>').replace(/\/\*[^*]{0,}\*\/|\/\*[^\/]{0,}\*\//g, '<span class=highlight-color role=comment>$&</span>').replace(/'[^']{0,}'/g, '<span class=highlight-color role=string>$&</span>').replace(/"[^"]{0,}"/g, '<span class=highlight-color role=string>$&</span>').replace(/`[^`]{0,}`/g, data => {
+                        }).replace(//g, '//').replace(//g, '/*').replace(//g, '*/').replace(//g, '</span>').replace(/\/\*[^\*]{0,}\*\/|\/\*[^\/]{0,}\*\//g, '<span class=highlight-color role=comment>$&</span>').replace(/'[^']{0,}'/g, '<span class=highlight-color role=string>$&</span>').replace(/"[^"]{0,}"/g, '<span class=highlight-color role=string>$&</span>').replace(/`[^`]{0,}`/g, data => {
                             /* Initialization > (...)
                                     --- NOTE ---
                                         @lapys: Metadata is the conventional modification
@@ -294,7 +294,13 @@ if ('ready' in window.LapysJS) {
                         }).replace(/function {1,}<span class=highlight-color role=function>/g, data => {
                             // Return
                             return '<span class=highlight-color role=value>' + data.getBeforeChar(' <') + '</span> <' + data.getAfterChar('<')
-                        }).replace(//g, '<span class=highlight-color role=operator>...</span>').replace(/÷/g, '<span class=highlight-color role=operator>/</span>').replace(/\$c<span class=highlight-color role=operator>-<\/span>list<span class=highlight-color role=operator>-<\/span>item\$/g, '&#0042;')
+                        }).replace(//g, '<span class=highlight-color role=operator>...</span>').replace(/÷/g, '<span class=highlight-color role=operator>/</span>').replace(/\$c<span class=highlight-color role=operator>-<\/span>list<span class=highlight-color role=operator>-<\/span>item\$/g, '&#0042;').replace(/\$<span class=highlight-color role=regular-expression>\/\$\$\/<span class=highlight-color[^>]{1,}>\$((\w|\$|_)(\w|\$|_|\-|){0,}|)<\/span>/g, data => {
+                            // Return
+                            return '//' + data.getAfterChar('>$').getBeforeChar('</span>')
+                        }).replace(/\$<span class=highlight-color role=regular-expression>\/\$\$\/<\/span>\$/g, '//').replace(/\$\/\$/g, '/').replace(/<span class=highlight-color role=comment>\/\/<\/span>[^\n]{0,}\n/g, data => {
+                            // Return
+                            return `<span class=highlight-color role=comment>${data}</span>`
+                        })
                     };
 
                     // Update > Element Highlighted Code HTML
@@ -328,8 +334,8 @@ if ('ready' in window.LapysJS) {
 
             /* Update */
             global.highlightSyntax = function highlightSyntax() {
-                // Index
-                index(function(index) {
+                // Repeat
+                repeat(function(index) {
                     // Initialization > Element
                     let element = $$('.syntax-highlighted', index);
 
@@ -377,7 +383,7 @@ if ('ready' in window.LapysJS) {
                         case 'plain-text':
                             highlightPlainTextSyntax(element)
                     }
-                }, $$('.syntax-highlighted', 'length'), index)
+                }, $$('.syntax-highlighted', 'length'))
             }
     })
 }

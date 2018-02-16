@@ -3,6 +3,13 @@
             LapysJS is Ready.
 */
 if ('ready' in window.LapysJS) {
+    /* Polyfills
+            --- NOTE ---
+                @lapys: All polyfills are compressed or minified.
+    */
+        // Text Content
+        Object.defineProperty&&Object.getOwnPropertyDescriptor&&Object.getOwnPropertyDescriptor(Element.prototype,"textContent")&&!Object.getOwnPropertyDescriptor(Element.prototype,"textContent").get&&function(){var a=Object.getOwnPropertyDescriptor(Element.prototype,"innerText");Object.defineProperty(Element.prototype,"textContent",{get:function(){return a.get.call(this)},set:function(b){return a.set.call(this,b)}})}();
+
     /* Global Data */
         /* Processing Load Time */
         def('PROCESSING_LOAD_TIME', 0);
@@ -107,13 +114,13 @@ if ('ready' in window.LapysJS) {
                     app.viewport.initialScale = 1;
 
                     // Maximum Scale
-                    check(function() { return !!window.num }, function() { app.viewport.maximumScale = num(app.viewport.initialScale) * 2 });
+                    check(function() { return getType(getProperty('num')) == 'function' }, function() { app.viewport.maximumScale = num(app.viewport.initialScale) * 2 });
 
                     // Minimal U.I.
                     app.viewport.minimalUI = true;
 
                     // Minimum Scale
-                    check(function() { return !!window.num }, function() { app.viewport.minimumScale = num(app.viewport.initialScale) / 2 });
+                    check(function() { return getType(getProperty('num')) == 'function' }, function() { app.viewport.minimumScale = num(app.viewport.initialScale) / 2 });
 
                     // Target Density D.P.I.
                     app.viewport.targetDensityDPI = 96;
@@ -131,21 +138,6 @@ if ('ready' in window.LapysJS) {
                 // Return
                 return document.body
             }
-        });
-
-        /* Clear */
-        def('CLEAR', {
-            // Get
-            get: function CLEAR() {
-                // Clear
-                clear();
-
-                // Return
-                return clear
-            },
-
-            // Set
-            set: func()
         });
 
         /* Create Dynamic Footer
@@ -191,7 +183,7 @@ if ('ready' in window.LapysJS) {
             // Check
             check(function() {
                 // Return
-                return 'MINIFY_ASSET_FILES' in global && 'REVEAL_ELEMENTS_BOUNDING_BOX' in global
+                return 'MINIFY_ASSET_FILES' in global
             }, function() {
                 // Link
                     // LapysJS Stylesheet
@@ -204,22 +196,20 @@ if ('ready' in window.LapysJS) {
                     !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('docsStylesheet', {href: decodeURIComponent($$('link[data-id=baseStylesheet').href.replace(/base./g, 'docs.')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'})
 
                     // Document Stylesheet
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('documentStylesheet', {href: decodeURIComponent($$('link[data-id=baseStylesheet').href.replace(/base./g, (file.name || 'index') + '.')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                // Style
-                    // Reveal Elements Bounding Box
-                    !REVEAL_ELEMENTS_BOUNDING_BOX || css.style('revealElementsBoundingBoxOptionsStylesheet', ':nth-child(odd) { outline: 1px solid blue } :nth-child(even) { outline: 1px solid red }');
+                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('documentStylesheet', {href: decodeURIComponent($$('link[data-id=baseStylesheet').href.replace(/base./g, (file.name || 'index') + '.')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'})
             });
 
         /* Document */
             // Favorite Icon
                 // Check
                 check(function() {
+                    // Return
                     return 'DYNAMIC_ASSETS_URL' in global
                 }, function() {
                     // Initialization > Data
                     let data = 'favicon.ico';
 
+                    // LapysJS > Component > Image
                     !ALLOW_ALTERNATIVE_RESOURCE_FILES || new LapysJS.component.Image({
                         // On Error
                         onerror: function() {
@@ -258,7 +248,7 @@ if ('ready' in window.LapysJS) {
 
                     > Update > Data
                 */
-                if (location.href.hasText('LapysJS/pages/'))
+                if (location.href.getBeforeChar('/', true).trim().endsWith('LapysJS/pages'))
                     data = `../${data}`;
 
                 // Return
@@ -284,6 +274,7 @@ if ('ready' in window.LapysJS) {
         /* JavaScript */
             // Check
             check(function() {
+                // Return
                 return 'MINIFY_ASSET_FILES' in global
             }, function() {
                 // Source
@@ -298,12 +289,21 @@ if ('ready' in window.LapysJS) {
                     */
                     !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('docsScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, 'docs.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'});
 
-                    // Document Script
+                    /* Document Script
+                            --- NOTE ---
+                                @lapys:
+                                    This implements the project`s unique script file.
+                    */
                     !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('documentScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, (file.name || 'index') + '.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'});
-            });
 
-            // Source
-            js.src('appJS', `${DYNAMIC_ASSETS_URL}assets/app.js`);
+                    /* App JS
+                            --- NOTE ---
+                                @lapys: Although not an app,
+                                    the LapysJS documentation will use a wide range of features
+                                    and components from the App JS plug-in.
+                    */
+                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('appJSScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, 'app.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'})
+            });
 
         /* LapysJS */
             // $
@@ -349,7 +349,7 @@ if ('ready' in window.LapysJS) {
             value: new (function NavigationLinksArray() {
                 // Initialization > Data
                 let data = [
-                    // Get Started
+                    // LapysJS
                     new (function NavigationLink() {
                         // Modification > Target > (...)
                         this.href = `${DYNAMIC_ASSETS_URL}index.html`;
@@ -391,14 +391,7 @@ if ('ready' in window.LapysJS) {
 
                     > Modification > Target > [Data]
                 */
-                for (let i = 0; i < len(data); i += 1)
-                    this.def(i, {
-                        // Value
-                        value: data[i],
-
-                        // Writable
-                        writable: false
-                    });
+                createObject(this, data);
 
                 // Modification > Target > Length
                 this.def('length', {
@@ -414,62 +407,12 @@ if ('ready' in window.LapysJS) {
             writable: false
         });
 
-        /* Reveal Elements Bounding Box */
-        def('REVEAL_ELEMENTS_BOUNDING_BOX', {
-            /* Value
-                    --- NOTE ---
-                        @lapys: Set to 'true' to display all elements` bounding boxes through CSS outlines,
-                            set to 'false' otherwise.
-            */
-            value: (function() {
-                /* Logic
-                        [switch:case:default statement]
-
-                    > Return
-                */
-                switch (getQueryParameterByName('revealElementsBoundingBox')) {
-                    // False
-                    case 'false':
-                        return false;
-                        break;
-
-                    // True
-                    case 'true':
-                        return true;
-                        break;
-
-                    // Null
-                    case null:
-                        return false
-                }
-
-                // Return
-                return false
-            })(),
-
-            // Writable
-            writable: false
-        });
-
-        /* Number */
-            // Percent
-            (getType(Number.prototype.perc) == 'function') || Number.prototype.def('perc', {
-                // Value
-                value: function percent() {
-                    // Return
-                    return this * (arguments[0] * 1e-2)
-                },
-
-                // Writable
-                writable: false
-            });
-
         /* Percent */
         def('perc', {
             // Value
             value: function percent() {
                 // Return
-                return arguments[0] * 1e-2
+                return arguments.length > 1 ? num(arguments[0]) * (num(arguments[1]) * 1e-2) : num(arguments[0]) * 1e-2
             },
 
             // Writable
@@ -504,7 +447,7 @@ if ('ready' in window.LapysJS) {
                         // Font
                         font: {
                             // Family
-                            family: '"Open Sans", "Calibri Light", "Droid Serif", sans-serif'
+                            family: `'Open Sans', 'Calibri Light', 'Droid Serif', sans-serif`
                         }
                     })
             });
@@ -518,18 +461,10 @@ if ('ready' in window.LapysJS) {
         console.log(`    Dynamic_Assets_URL`, `"${DYNAMIC_ASSETS_URL}"`);
         console.log(`    Minify_Asset_Files`, MINIFY_ASSET_FILES);
         console.log(`    Navigation_Links`, NAVIGATION_LINKS);
-        console.log(`    Reveal_Elements_Bounding_Box`, REVEAL_ELEMENTS_BOUNDING_BOX);
         console.log(`    Supports_WebGL`, SUPPORTS_WEBGL);
         console.log(`    $location`, location.href.getAfterChar('LapysJS'));
         browser.internetExplorer ? console.log('\nThe above values were processed at runtime...') : console.log( '%c%s', 'font-style: italic', 'The above values were processed at runtime...');
         console.log('\n');
-
-        /* Polyfills
-                --- NOTE ---
-                    @lapys: All polyfills are compressed or minified.
-        */
-            // Text Content
-            Object.defineProperty&&Object.getOwnPropertyDescriptor&&Object.getOwnPropertyDescriptor(Element.prototype,"textContent")&&!Object.getOwnPropertyDescriptor(Element.prototype,"textContent").get&&function(){var a=Object.getOwnPropertyDescriptor(Element.prototype,"innerText");Object.defineProperty(Element.prototype,"textContent",{get:function(){return a.get.call(this)},set:function(b){return a.set.call(this,b)}})}();
 
         /* {Modify DOM Elements} On Node Added */
         onNodeAdded(document.body, function modifyDOMElements() {
