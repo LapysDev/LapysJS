@@ -37,6 +37,16 @@
             // Is
             (typeof Object.is=='function')||(Object.is=function(a,b){return a===b?0!==a||1/a==1/b:a!==a&&b!==b});
 
+        /* Performance */
+            // Now
+            (window.performance=window.performance||{}).lapys=Date.now?Date.now():+new Date;(function(){if(!1=="performance"in window&&(window.performance={}),Date.now=Date.now||function(){return new Date().getTime()},!1=="now"in window.performance){var a=Date.now();performance.timing&&performance.timing.navigationStart&&(a=performance.timing.navigationStart),window.performance.now=function(){return Date.now()-a}}})();
+
+        /* Promise
+                --- NOTE ---
+                    Source: https://www.promisejs.org/polyfills/promise-7.0.4.min.js
+        */
+        !function b(g,j,k){function m(z,A){if(!j[z]){if(!g[z]){var B="function"==typeof require&&require;if(!A&&B)return B(z,!0);if(q)return q(z,!0);var C=new Error("Cannot find module '"+z+"'");throw C.code="MODULE_NOT_FOUND",C}var D=j[z]={exports:{}};g[z][0].call(D.exports,function(E){var F=g[z][1][E];return m(F?F:E)},D,D.exports,b,g,j,k)}return j[z].exports}for(var q="function"==typeof require&&require,x=0;x<k.length;x++)m(k[x]);return m}({1:[function(b,g){"use strict";function k(){}function m(K){try{return K.then}catch(L){return I=L,J}}function q(K,L){try{return K(L)}catch(M){return I=M,J}}function x(K,L,M){try{K(L,M)}catch(N){return I=N,J}}function z(K){if("object"!=typeof this)throw new TypeError("Promises must be constructed via new");if("function"!=typeof K)throw new TypeError("not a function");this._37=0,this._12=null,this._59=[],K!==k&&G(K,this)}function A(K,L,M){return new K.constructor(function(N,O){var P=new z(k);P.then(N,O),B(K,new F(L,M,P))})}function B(K,L){for(;3===K._37;)K=K._12;return 0===K._37?void K._59.push(L):void H(function(){var M=1===K._37?L.onFulfilled:L.onRejected;if(null===M)return void(1===K._37?C(L.promise,K._12):D(L.promise,K._12));var N=q(M,K._12);N===J?D(L.promise,I):C(L.promise,N)})}function C(K,L){if(L===K)return D(K,new TypeError("A promise cannot be resolved with itself."));if(L&&("object"==typeof L||"function"==typeof L)){var M=m(L);if(M===J)return D(K,I);if(M===K.then&&L instanceof z)return K._37=3,K._12=L,void E(K);if("function"==typeof M)return void G(M.bind(L),K)}K._37=1,K._12=L,E(K)}function D(K,L){K._37=2,K._12=L,E(K)}function E(K){for(var L=0;L<K._59.length;L++)B(K,K._59[L]);K._59=null}function F(K,L,M){this.onFulfilled="function"==typeof K?K:null,this.onRejected="function"==typeof L?L:null,this.promise=M}function G(K,L){var M=!1,N=x(K,function(O){M||(M=!0,C(L,O))},function(O){M||(M=!0,D(L,O))});M||N!==J||(M=!0,D(L,I))}var H=b("asap/raw"),I=null,J={};g.exports=z,z._99=k,z.prototype.then=function(K,L){if(this.constructor!==z)return A(this,K,L);var M=new z(k);return B(this,new F(K,L,M)),M}},{"asap/raw":4}],2:[function(b,g){"use strict";function k(D){var E=new m(m._99);return E._37=1,E._12=D,E}var m=b("./core.js");g.exports=m;var q=k(!0),x=k(!1),z=k(null),A=k(void 0),B=k(0),C=k("");m.resolve=function(D){if(D instanceof m)return D;if(null===D)return z;if(void 0===D)return A;if(!0===D)return q;if(!1===D)return x;if(0===D)return B;if(""===D)return C;if("object"==typeof D||"function"==typeof D)try{var E=D.then;if("function"==typeof E)return new m(E.bind(D))}catch(F){return new m(function(G,H){H(F)})}return k(D)},m.all=function(D){var E=Array.prototype.slice.call(D);return new m(function(F,G){function H(K,L){if(L&&("object"==typeof L||"function"==typeof L)){if(L instanceof m&&L.then===m.prototype.then){for(;3===L._37;)L=L._12;return 1===L._37?H(K,L._12):(2===L._37&&G(L._12),void L.then(function(O){H(K,O)},G))}var M=L.then;if("function"==typeof M){var N=new m(M.bind(L));return void N.then(function(O){H(K,O)},G)}}E[K]=L,0==--I&&F(E)}if(0===E.length)return F([]);for(var I=E.length,J=0;J<E.length;J++)H(J,E[J])})},m.reject=function(D){return new m(function(E,F){F(D)})},m.race=function(D){return new m(function(E,F){D.forEach(function(G){m.resolve(G).then(E,F)})})},m.prototype["catch"]=function(D){return this.then(null,D)}},{"./core.js":1}],3:[function(b,g){"use strict";function m(C){var D;D=z.length?z.pop():new q,D.task=C,x(D)}function q(){this.task=null}var x=b("./raw"),z=[],A=[],B=x.makeRequestCallFromTimer(function(){if(A.length)throw A.shift()});g.exports=m,q.prototype.call=function(){try{this.task.call()}catch(C){m.onerror?m.onerror(C):(A.push(C),B())}finally{this.task=null,z[z.length]=this}}},{"./raw":4}],4:[function(b,g){(function(k){"use strict";function m(G){B.length||(A(),C=!0),B[B.length]=G}function q(){for(;D<B.length;){var G=D;if(D+=1,B[G].call(),D>1024){for(var H=0,I=B.length-D;I>H;H++)B[H]=B[H+D];B.length-=D,D=0}}B.length=0,D=0,C=!1}function z(G){return function(){function H(){clearTimeout(I),clearInterval(J),G()}var I=setTimeout(H,0),J=setInterval(H,50)}}g.exports=m;var A,B=[],C=!1,D=0,F=k.MutationObserver||k.WebKitMutationObserver;A="function"==typeof F?function(G){var H=1,I=new F(G),J=document.createTextNode("");return I.observe(J,{characterData:!0}),function(){H=-H,J.data=H}}(q):z(q),m.requestFlush=A,m.makeRequestCallFromTimer=z}).call(this,"undefined"==typeof window?"undefined"==typeof self?"undefined"==typeof window?{}:window:self:window)},{}],5:[function(){"function"!=typeof Promise.prototype.done&&(Promise.prototype.done=function(){var q=arguments.length?this.then.apply(this,arguments):this;q.then(null,function(x){setTimeout(function(){throw x},0)})})},{}],6:[function(b){b("asap"),"undefined"==typeof Promise&&(Promise=b("./lib/core.js"),b("./lib/es6-extensions.js")),b("./polyfill-done.js")},{"./lib/core.js":1,"./lib/es6-extensions.js":2,"./polyfill-done.js":5,asap:3}]},{},[6]);
+
     /* {Window} Global Data */
         // Absolute
         (typeof abs == 'function') || (window.abs = Math.abs);
@@ -425,6 +435,51 @@
 
         // Clear
         (typeof clear == 'function') || (window.clear = console.clear);
+
+        // Click
+        (typeof click == 'function') || Object.defineProperty(Window.prototype, 'click', {
+            // Value
+            value: function click() {
+                // Initialization > (Arguments, Arguments Set, Data, Metadata, Alpha)
+                let args = [...arguments],
+                    argsSet = args.slice(2),
+                    data = args[0] || new (function LapysJSObject() {}),
+                    metadata = typeof args[1] == 'string' ? func('', '', args[1]) : args[1],
+                    alpha = function(event) {
+                        // Metadata
+                        metadata.apply(this, [event].concat(argsSet))
+                    };
+
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (data.nodeType == 1 && typeof metadata != 'function')
+                    // Data > Click
+                    data.click();
+
+                else if (data.nodeType == 1 && typeof metadata == 'function') {
+                    // Event > Data > Click
+                    data.setEvent('click', alpha);
+
+                    // Data > Click
+                    data.click();
+
+                    // Event > Data > Click
+                    data.delEvent('click', alpha)
+                }
+
+                else if (data.nodeType != 1)
+                    // LapysJS > Error
+                    LapysJS.error('$c$element_1', data);
+
+                else if (typeof metadata != 'function')
+                    // LapysJS > Error
+                    LapysJS.error('$c$function|string_1', metadata);
+
+                // Return
+                return metadata()
+            }
+        });
 
         // Cooler
             // Definition
@@ -1080,10 +1135,6 @@
         });
 
         /* Global
-                --- CHECKPOINT ---
-                    @lapys: Continuing improving the best way you can from here.
-                        I believe in you. :)
-
                 --- NOTE ---
                     @lapys: Allow a reference name for the global object.
         */
@@ -1977,8 +2028,43 @@
         (typeof process == 'function') || Object.defineProperty(Window.prototype, 'process', {
             // Value
             value: function process() {
+                // Initialization > (Arguments, Data, Metadata, Alpha)
+                let args = [...arguments],
+                    data = performance.now(),
+                    metadata = typeof args[0] == 'string' ? func('', '', args[0]) : args[0],
+                    alpha = typeof args[1] == 'string' ? func('', '', args[1]) : args[1];
+
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (
+                    (typeof metadata == 'function' && typeof alpha == 'function' && args.length > 1) ||
+                    (typeof metadata == 'function' && args.length == 1)
+                )
+                    /* Logic
+                            If promises are valid.
+                    */
+                    if (typeof Promise == 'function')
+                        // [Element] > Click
+                        createElement('a', '', '', {onclick: function() {
+                            metadata();
+
+                            (new Promise(function() {
+                                arguments[0](null);
+                                arguments[1](null)
+                            })).then(alpha)
+                        }}).click();
+
+                    else {
+                        // Metadata
+                        metadata();
+
+                        // Alpha
+                        alpha()
+                    }
+
                 // Return
-                return parseNumber(arguments[0]).perc(arguments[1])
+                return performance.now() - data
             }
         });
 
@@ -9454,7 +9540,7 @@
                                     for (let j = 0; j < Object.values([...arguments].slice(1)).length; j += 1)
                                         try {
                                             // Deletion
-                                            document.removeEventListener ?
+                                            typeof document.removeEventListener == 'function' ?
                                                 (this || window).removeEventListener(LapysJS.debug.formatText(String(arguments[0]), 4)[i], Object.values([...arguments].slice(1))[j]) :
                                                 (this || window).detachEvent('on' + LapysJS.debug.formatText(String(arguments[0]), 4)[i], Object.values([...arguments].slice(1))[j])
                                         }
