@@ -779,7 +779,6 @@
         border: 2px solid;
         margin-inline-end: 2px;
         margin-inline-start: 2px;
-        max-width: 100%;
         padding-block-end: .75em;
         padding-block-start: .35em;
         padding-inline-end: .625em;
@@ -888,8 +887,7 @@
     hr {
         background-color: #000000;
         border-bottom: 1px solid;
-        box-sizing: content-box;
-        max-width: 100%
+        box-sizing: content-box
     }
 
     /* <html> */
@@ -1264,8 +1262,7 @@
     legend {
         box-sizing: border-box;
         color: inherit;
-        font-size: xx-large;
-        max-width: 100%
+        font-size: xx-large
     }
 
     /* <li> */
@@ -1415,7 +1412,9 @@
     }
 
     /* <optgroup> */
-    optgroup {
+    optgroup,
+    option,
+    select {
         -moz-user-select: none
     }
         /* Pseudo > Before */
@@ -1437,8 +1436,7 @@
 
     /* <option> */
     option {
-        min-block-size: 1em;
-        -moz-user-select: none
+        min-block-size: 1em
     }
 
     /* <p> */
@@ -1559,8 +1557,7 @@
         overflow: -moz-hidden-unscrollable;
         overflow-clip-box: padding-box;
         page-break-inside: avoid;
-        -moz-appearance: menulist;
-        -moz-user-select: none
+        -moz-appearance: menulist
     }
 
     select[size],
@@ -1697,7 +1694,6 @@
         margin-block-end: 1px;
         margin-block-start: 1px;
         max-height: 80vh;
-        max-width: 100%;
         min-height: 40px;
         min-width: 180px;
         padding-inline-end: 1px;
@@ -1757,7 +1753,9 @@
     .abs,
     .absolute,
     .carousel > [data-id=buttons-container],
-    .carousel > [data-id=indicators-container] {
+    .carousel > [data-id=indicators-container],
+    .roulette > [data-id=buttons-container],
+    .roulette > [data-id=indicators-container] {
         position: absolute
     }
 
@@ -1884,8 +1882,12 @@
     }
         /* Buttons Container */
         .carousel > [data-id=buttons-container] {
-            justify-content: space-between;
             width: 85%
+        }
+
+        .carousel > [data-id=buttons-container],
+        .roulette > [data-id=buttons-container] {
+            justify-content: space-between
         }
             /* Button */
             .carousel > [data-id=buttons-container] > .button {
@@ -1899,8 +1901,13 @@
             }
 
             .carousel > [data-id=buttons-container] > .button,
+            .carousel > [data-id=indicators-container] > .indicator,
             .carousel > [data-id=indicators-container],
-            .carousel > [data-id=indicators-container] > .indicator {
+            .roulette > [data-id=buttons-container] > .button,
+            .roulette > [data-id=indicators-container],
+            .roulette > [data-id=indicators-container] > .indicator,
+            .center,
+            .jumbotron {
                 justify-content: center
             }
 
@@ -1917,7 +1924,8 @@
             }
 
             /* Indicator */
-            .carousel > [data-id=indicators-container] > .indicator {
+            .carousel > [data-id=indicators-container] > .indicator,
+            .roulette > [data-id=indicators-container] > .indicator {
                 background-color: rgba(0, 0, 0, .3);
                 border: 2px solid;
                 box-shadow: 0 0 7.5px 0 rgba(0, 0, 0, .3),
@@ -1931,14 +1939,16 @@
             }
                 /* States */
                     /* Focus */
-                    .carousel > [data-id=indicators-container] > .indicator:focus {
+                    .carousel > [data-id=indicators-container] > .indicator:focus,
+                    .roulette > [data-id=indicators-container] > .indicator:focus {
                         background-color: rgba(255, 255, 255, .5);
                         box-shadow: 0 0 7.5px 0 rgba(0, 0, 0, .3),
                                             0 0 5px 0 rgba(255, 255, 255, .3)
                     }
 
                     /* Hover */
-                    .carousel > [data-id=indicators-container] > .indicator:hover {
+                    .carousel > [data-id=indicators-container] > .indicator:hover,
+                    .roulette > [data-id=indicators-container] > .indicator:hover {
                         background-color: rgba(0, 0, 0, .5);
                         box-shadow: 0 0 7.5px 0 rgba(255, 255, 255, .3),
                                             0 0 5px 0 rgba(0, 0, 0, .3)
@@ -1958,6 +1968,8 @@
 
     .carousel > [data-id=buttons-container],
     .carousel > [data-id=indicators-container],
+    .roulette > [data-id=buttons-container],
+    .roulette > [data-id=indicators-container],
     .center,
     .dialog {
         left: 0
@@ -1966,6 +1978,9 @@
     .carousel > [data-id=buttons-container],
     .carousel > [data-id=indicators-container],
     .carousel > [data-id=indicators-container] > .indicator,
+    .roulette > [data-id=buttons-container],
+    .roulette > [data-id=indicators-container],
+    .roulette > [data-id=indicators-container] > .indicator,
     .center,
     .center > *,
     .dialog {
@@ -1977,6 +1992,8 @@
 
     .carousel > [data-id=buttons-container],
     .carousel > [data-id=indicators-container],
+    .roulette > [data-id=buttons-container],
+    .roulette > [data-id=indicators-container],
     .center,
     .dialog {
         right: 0
@@ -1986,8 +2003,13 @@
     .carousel > [data-id=buttons-container] > .button,
     .carousel > [data-id=indicators-container],
     .carousel > [data-id=indicators-container] > .indicator,
+    .roulette > [data-id=buttons-container],
+    .roulette > [data-id=buttons-container] > .button,
+    .roulette > [data-id=indicators-container],
+    .roulette > [data-id=indicators-container] > .indicator,
     .center,
-    .jumbotron {
+    .jumbotron,
+    .roulette > [data-id*=cards-container] {
         align-items: center
     }
 
@@ -2070,16 +2092,19 @@
         bottom: 0;
         outline: 5000px solid rgba(0, 0, 0, .75);
         top: 0;
-        width: 90%;
-        z-index: 2147483647
+        width: 90%
     }
 
     /* Drag Element */
-    .drag-element {
+    [data-id*=drag-element] {
         padding: 0;
-        text-indent: 0;
-        user-select: none !important
+        text-indent: 0
     }
+        /* States > Active */
+        .dialog,
+        [data-id*=drag-element]:active {
+            z-index: 2147483647
+        }
 
     /* Dynamic Text */
         /* <span> */
@@ -2248,8 +2273,7 @@
     .jumbotron {
         background-color: rgba(0, 0, 0, .1);
         background-size: 100%;
-        height: 42.5vh;
-        max-width: 100%
+        height: 42.5vh
     }
         /* First Child */
         .jumbotron > :first-child {
@@ -2422,6 +2446,7 @@
     :focus,
     :host,
     .carousel > [data-id=buttons-container] > .button,
+    .roulette > [data-id=buttons-container] > .button,
     .no-outline,
     .thumbnail,
     a,
@@ -2456,6 +2481,7 @@
     }
 
     /* No Select */
+    .accordion [data-id=header],
     .no-select,
     aside,
     canvas,
@@ -2464,6 +2490,7 @@
         user-select: none
     }
         /* States > Selection */
+        .accordion [data-id=header],
         .no-select::selection {
             background-color: transparent;
             color: inherit;
@@ -2487,7 +2514,7 @@
     ::after,
     ::before,
     [data-id=placeholder],
-    .drag-element > *,
+    [data-id*=drag-element] > *,
     .no-touch,
     input::placeholder,
     textarea::placeholder {
@@ -2504,7 +2531,8 @@
     }
 
     /* No Transition */
-    .no-transition {
+    .no-transition,
+    .roulette > [data-id*=cards-container] > * {
         transition: none
     }
 
@@ -2619,6 +2647,8 @@
     .accordion [data-id=header],
     .carousel > [data-id=buttons-container] > .button,
     .carousel > [data-id=indicators-container] > .indicator,
+    .roulette > [data-id=buttons-container] > .button,
+    .roulette > [data-id=indicators-container] > .indicator,
     .dropdown,
     .pointer,
     a,
@@ -2638,6 +2668,7 @@
     .carousel > [data-id=slides-container] > .slide,
     .rel,
     .relative,
+    .roulette > [data-id*=cards-container],
     p,
     sub,
     sup {
@@ -2648,17 +2679,6 @@
     .resize,
     textarea {
         resize: both
-    }
-
-    /* Responsive */
-    .responsive,
-    applet,
-    audio,
-    embed,
-    img,
-    object,
-    video {
-        max-width: 100%
     }
 
     .responsive table,
@@ -2674,6 +2694,44 @@
     bdi:dir(rtl) {
         direction: rtl
     }
+
+    /* Roulette */
+    .roulette {
+        height: 150px;
+        padding: 5px 2.5%;
+        width: 2147483646%
+    }
+        /* Buttons Container */
+        .roulette > [data-id=buttons-container] {
+            width: 95%
+        }
+            /* Button */
+            .roulette > [data-id=buttons-container] > .button {
+                background-color: #F7F7F7;
+                box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
+                color: #0078FF;
+                height: 33.3px;
+                margin-top: -116.7px;
+                padding: 10px;
+                width: 33.3px
+            }
+
+        /* Cards Container */
+            /* Content */
+            .roulette > [data-id*=cards-container] > * {
+                box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
+                height: 85%;
+                margin: auto 7.5px;
+                width: 100px
+            }
+
+            /* Drag Element */
+                /* States > Active */
+                .roulette > [data-id*=cards-container] > [data-id*=drag-element]:active {
+                    bottom: initial;
+                    margin: 0;
+                    right: initial
+                }
 
     /* Screen Toast */
     screen-toast {
@@ -2716,8 +2774,6 @@
 
     /* Single Line */
     .single-line {
-        max-width: 100%;
-        overflow: hidden;
         text-overflow: ellipsis;
         white-space: pre
     }
@@ -2730,6 +2786,7 @@
     }
 
     /* Smooth */
+    .roulette > [data-id*=cards-container],
     .smooth {
         animation-direction: normal;
         animation-duration: .3s;
@@ -3264,6 +3321,7 @@
         .carousel > [data-id=buttons-container] > .button,
         .no-bdr,
         .no-border,
+        .roulette > [data-id=buttons-container] > .button,
         blockquote[cite],
         blockquote[type=cite],
         frameset,
@@ -3284,6 +3342,8 @@
             .carousel > [data-id=buttons-container] > .button,
             .carousel > [data-id=indicators-container] > .indicator,
             .circle,
+            .roulette > [data-id=buttons-container] > .button,
+            .roulette > [data-id=indicators-container] > .indicator,
             .round,
             input[type=color],
             input[type=radio] {
@@ -3500,6 +3560,9 @@
         .display-flex,
         .flex,
         .flex-reverse,
+        .roulette > [data-id=buttons-container],
+        .roulette > [data-id=buttons-container] > .button,
+        .roulette > [data-id=indicators-container],
         .row-grp,
         .row-group {
             display: flex
@@ -3563,13 +3626,14 @@
         .code,
         .d-ib,
         .display-inline-block,
-        .drag-element,
+        [data-id*=drag-element],
         .dynamic-text span,
         .dynamic-text span[data-id*=cursor]::before,
         .inline-block,
         .overflow-visible,
         .ovflow-v,
         .pre,
+        .roulette > [data-id*=cards-container] > *,
         audio,
         button,
         canvas,
@@ -3594,7 +3658,8 @@
         .carousel > [data-id=indicators-container] > .indicator,
         .d-if,
         .display-inline-flex,
-        .inline-flex {
+        .inline-flex,
+        .roulette > [data-id=indicators-container] > .indicator {
             display: inline-flex
         }
 
@@ -3929,6 +3994,9 @@
         .no-overflow,
         .overflow-hidden,
         .ovflow-h,
+        .roulette > [data-id*=cards-container] > *,
+        .roulette > [data-id=indicators-container] > .indicator,
+        .single-line,
         foreignObject,
         frameset,
         image,
@@ -3984,6 +4052,9 @@
             .center-text,
             .dialog,
             .jumbotron,
+            .roulette > [data-id=buttons-container],
+            .roulette > [data-id=buttons-container] > .button,
+            .roulette > [data-id=indicators-container],
             .text-align-center,
             .text-center,
             .txt-a-c,
@@ -4084,7 +4155,8 @@
             }
 
         /* Grid 1 */
-        .col-grp .grid-1 {
+        .col-grp .grid-1,
+        .roulette > [data-id*=cards-container] {
             width: 100%
         }
 
@@ -4092,13 +4164,28 @@
             flex-basis: 100%
         }
 
+        .roulette > [data-id*=cards-container],
         .row-grp .grid-1 {
             height: 100%
         }
             /* Maximum */
+            applet,
+            audio,
+            embed,
+            fieldset,
+            hr,
+            img,
+            legend,
+            textarea,
+            object,
+            video,
             .col-grp .max-grid-1,
             .grid-1:not(.strict-grid),
-            .max-grid-1 {
+            .jumbotron,
+            .max-grid-1,
+            .responsive,
+            .roulette > [data-id*=cards-container],
+            .single-line {
                 max-width: 100%
             }
 
