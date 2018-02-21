@@ -1,0 +1,115 @@
+/**
+    @author: Lapys Dev Team
+    @description: App JS is a web framework for configuring web pages to perform more like mobile apps.
+    @version: 0.0.1
+*/
+/* DOM Elements */
+    /*
+        <accordion-component>,
+        <block-list>,
+        <button-container>,
+        <carousel-component>,
+        <dialog-component>,
+        <dropdown-component>,
+        <jumbotron-element>,
+    */
+    accordion-component,
+    block-list,
+    button-container,
+    carousel-component,
+    dialog-component,
+    dropdown-component,
+    jumbotron-element {
+        display: block
+    }
+
+    /* <block-list> */
+        /* Content */
+        block-list > * {
+                border: 1px solid rgba(0, 0, 0, .1);
+                border-radius: 2.5px;
+                display: block;
+                line-height: initial;
+                list-style: none;
+                margin-bottom: 5px;
+                margin-top: 5px;
+                min-height: 0;
+                min-width: 75px;
+                padding: 10px 5px;
+                text-align: left
+            }
+                /* States > Empty */
+                block-list > :empty {
+                    min-height: 20px
+                }
+
+    /* <dynamic-text-component> */
+        /* <span> */
+            /* Cursor */
+            dynamic-text-component > span[data-id*=cursor] {
+                background-color: #FFFFFF !important;
+                border-color: #FFFFFF !important;
+                color: #FFFFFF !important
+            }
+
+            /* Highlighted */
+            dynamic-text-component > span[data-id*=highlighted] {
+                font-style: normal
+            }
+
+    /*
+        <dynamic-text-component>,
+        <hyperlink-button>,
+        <logo-element>,
+        <menu-button>,
+        <search-button>
+    */
+    dynamic-text-component,
+    hyperlink-button,
+    logo-element,
+    menu-button,
+    search-button {
+        display: inline-block
+    }
+
+    /*
+        <hyperlink-button>,
+        <menu-button>,
+        <search-button>
+    */
+    hyperlink-button,
+    menu-button,
+    search-button {
+        background-color: #FFFFFF;
+        color: initial;
+        font-family: inherit;
+        line-height: 1.15;
+        padding: 2.5px 7.5px;
+        text-align: center;
+        text-transform: none;
+        white-space: normal;
+        -webkit-appearance: button
+    }
+
+    /* <logo-element> */
+    logo-element {
+        user-drag: none;
+        user-select: none
+    }
+        /* <img> */
+        logo-element > img {
+            pointer-events: none;
+            user-drag: none;
+            user-select: none
+        }
+            /* States > Selection */
+            logo-element > img::selection {
+                background-color: transparent;
+                color: inherit;
+                text-shadow: none
+            }
+
+    /* <sound-effect> */
+    sound-effect {
+        display: none
+    }

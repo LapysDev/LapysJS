@@ -1,546 +1,295 @@
-/* Logic
-        If
-            LapysJS is Ready.
+/* Function > Base Script
+        --- WARN ---
+            @lapys: Do not use template strings, defer to standard concatenation instead.
 */
-if ('ready' in window.LapysJS) {
-    /* Polyfills
-            --- NOTE ---
-                @lapys: All polyfills are compressed or minified.
+(function BaseScript(window = window, document = window.document, global = typeof global != 'undefined' ? global : null, undefined = window.undefined || void 0, LapysJS = typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false })) {
+    /* {Global Object Test} Logic
+            If
+                LapysJS is ready.
     */
-        // Text Content
-        Object.defineProperty&&Object.getOwnPropertyDescriptor&&Object.getOwnPropertyDescriptor(Element.prototype,"textContent")&&!Object.getOwnPropertyDescriptor(Element.prototype,"textContent").get&&function(){var a=Object.getOwnPropertyDescriptor(Element.prototype,"innerText");Object.defineProperty(Element.prototype,"textContent",{get:function(){return a.get.call(this)},set:function(b){return a.set.call(this,b)}})}();
-
-    /* Global Data */
-        /* Processing Load Time */
-        def('PROCESSING_LOAD_TIME', 0);
-            /* {Increment Processing Load Time} Check
-                    --- NOTE ---
-                        @lapys: Increment the Load Time of Processing
-                            until the Document is completely loaded.
-            */
-            check(function incrementPROCESSING_LOAD_TIME() {
-                // Update > Processing Load Time
-                PROCESSING_LOAD_TIME += 1;
-
-                // Return
-                return document.readyState == 'complete'
-            });
-
-        /* Allow Alternative Resource Files */
-        def('ALLOW_ALTERNATIVE_RESOURCE_FILES', {
-            /* Value
-                    --- NOTE ---
-                        @lapys: Set to 'true' to have the current script add assumed files to the project,
-                            set to 'false' otherwise.
-            */
-            value: true,
-
-            // Writable
-            writable: false
-        });
-
-        /* Allow Dynamic Title */
-        def('ALLOW_DYNAMIC_TITLE', new (function Object() {
-            // Initialization > Data
-            let data = false;
-
-            // Modification > Target
-                // Get
-                this.get = function() {
-                    // Return
-                    return data
-                };
-
-                // Set
-                this.set = function() {
-                    // Update > Data
-                    (getType(arguments[0]) != 'boolean') || (data = arguments[0]);
-
-                    // Check
-                    !data || check(function() {
-                        // Return
-                        return getType(global.DYNAMIC_ASSETS_URL) == 'string'
-                    }, function() {
-                        // Modification > Document > Title
-                        document.title = app.name || 'LapysJS';
-
-                        /* Logic
-                                [switch:case:default statement]
-
-                            > Modification > Document > Title
-                        */
-                        switch (DYNAMIC_ASSETS_URL) {
-                            case '../':
-                                document.title += ` | ${file.name ? (file.name[0].upper() + file.name.slice(1)) : (location.href.getAfterChar('/', true).getBeforeChar('.')[0].upper() + location.href.getAfterChar('/', true).getBeforeChar('.').slice(1))}`
-                        }
-                    })
-                }
-        }));
-
-        /* Application */
-            // Modification > Application
-                // Author
-                app.author = 'Lapys Dev Team';
-
-                // Cache Control
-                app.cacheControl = 'cache';
-
-                // Character Set
-                app.charset = document.characterSet || 'UTF-8';
-
-                // Copyright
-                app.copyright = 'Lapys Dev Team';
-
-                // Description
-                app.description = 'Client-Side Web Library';
-
-                // Keywords
-                app.keywords = 'Lapys, Lapys Dev, LapysJS';
-
-                // Name
-                app.name = 'LapysJS';
-
-                // Robots
-                app.robots = 'none';
-
-                // Theme Color
-                app.themeColor = '#0023FF';
-
-                // Viewport
-                    // Height
-                    app.viewport.height = 'device-height';
-
-                    // Initial Scale
-                    app.viewport.initialScale = 1;
-
-                    // Maximum Scale
-                    check(function() { return getType(getProperty('num')) == 'function' }, function() { app.viewport.maximumScale = num(app.viewport.initialScale) * 2 });
-
-                    // Minimal U.I.
-                    app.viewport.minimalUI = true;
-
-                    // Minimum Scale
-                    check(function() { return getType(getProperty('num')) == 'function' }, function() { app.viewport.minimumScale = num(app.viewport.initialScale) / 2 });
-
-                    // Target Density D.P.I.
-                    app.viewport.targetDensityDPI = 96;
-
-                    // User Scalable
-                    app.viewport.userScalable = true;
-
-                    // Width
-                    app.viewport.width = 'device-width';
-
-        /* Body */
-        def('body', {
-            // Get
-            get: function() {
-                // Return
-                return document.body
-            }
-        });
-
-        /* Create Dynamic Footer
+    if (typeof LapysJS == 'object' && (LapysJS || new (function Data() {})).ready === true) {
+        /* Global Data
                 --- NOTE ---
-                    @lapys: Set to 'true' to automatically import a footer into the DOM.
+                    @lapys: Variables defined in all caps represent constants.
         */
-        def('CREATE_DYNAMIC_FOOTER', new (function Object() {
-            // Initialization > Data
-            let data = true;
+            // Allow Alternative Resource Files
+            def('ALLOW_ALTERNATIVE_RESOURCE_FILES', {
+                // Value
+                value: !global.ALLOW_ALTERNATIVE_RESOURCE_FILES ? true : ALLOW_ALTERNATIVE_RESOURCE_FILES,
 
-            // Modification > Target
-                // Get
-                this.get = function() {
-                    // Return
-                    return data
-                };
-
-                // Set
-                this.set = function() {
-                    // Update > Data
-                    (getType(arguments[0]) != 'boolean') || (data = arguments[0]);
-
-                    /* Logic
-                            If
-                                Data is true,
-
-                            else if
-                                the Document has a footer.
-                    */
-                    if (data)
-                        // Insertion
-                        (getType(document.footer) == 'html-element') || (document.main || document.body).insertChild('end', document.footer = createElement('footer', '.card.center.flex.fill-w#footer', 'Hello, World!'));
-
-                    else if (document.footer) {
-                        // Deletion
-                        document.footer.delete();
-                        delete document.footer
-                    }
-                }
-        }));
-
-        /* CSS */
-            // Check
-            check(function() {
-                // Return
-                return 'MINIFY_ASSET_FILES' in global
-            }, function() {
-                // Link
-                    // LapysJS Stylesheet
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('LapysJSStylesheet', {href: decodeURIComponent(LapysJS.script.src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                    // Base Stylesheet
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('baseStylesheet', {href: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/js/g, 'css')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                    // Documents Stylesheet
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('docsStylesheet', {href: decodeURIComponent($$('link[data-id=baseStylesheet').href.replace(/base./g, 'docs.')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'})
-
-                    // Document Stylesheet
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || css.link('documentStylesheet', {href: decodeURIComponent($$('link[data-id=baseStylesheet').href.replace(/base./g, (file.name || 'index') + '.')).replace(/(\.css)([^(\.css)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), media: 'all', rel: 'stylesheet', type: 'text/css'})
+                // Writable
+                writable: false
             });
 
-        /* Document */
-            // Favorite Icon
-                // Check
-                check(function() {
-                    // Return
-                    return 'DYNAMIC_ASSETS_URL' in global
-                }, function() {
-                    // Initialization > Data
-                    let data = 'favicon.ico';
-
-                    // LapysJS > Component > Image
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || new LapysJS.component.Image({
-                        // On Error
-                        onerror: function() {
-                            document.favicon = `${DYNAMIC_ASSETS_URL}assets/img/ico/icon.ico`
-                        },
-
-                        // On Load
-                        onload: function(event) {
-                            // Error Handling
-                            try {
-                                document.favicon = decodeURIComponent(event.path[0].src)
-                            }
-
-                            catch (error) {
-                                document.favicon = data
-                            }
-                        },
-
-                        // Source
-                        src: data
-                    })
-                });
-
-            // Title
-            document.title = app.name || 'LapysJS';
-
-        /* Dynamic Assets URL */
-        def('DYNAMIC_ASSETS_URL', {
-            // Value
-            value: (function() {
-                // Initialization > Data
-                let data = '';
-
+            // Application
                 /* Logic
                         [if:else if:else statement]
 
-                    > Update > Data
+                        --- NOTE ---
+                            @lapys: Configure the application from here.
+
+                    > Modification > Application
                 */
-                if (location.href.getBeforeChar('/', true).trim().endsWith('LapysJS/pages'))
-                    data = `../${data}`;
+                if (typeof app == 'object') {
+                    // Author
+                    app.author = 'Lapys Dev Team';
 
-                // Return
-                return data
-            })(),
+                    // Cache Control
+                    app.cacheControl = 'cache';
 
-            // Writable
-            writable: false
-        });
+                    // Character Encoding Set
+                    app.charset = 'characterSet' in document ? document.characterSet : 'UTF-8';
 
-        /* False */
-        def('FALSE', { get: bool });
+                    // Copyright
+                    app.copyright = 'Lapys Dev Team';
 
-        /* Head */
-        def('head', {
-            // Get
-            get: function() {
-                // Return
-                return document.head
-            }
-        });
+                    // Description
+                    app.description = 'LapysJS is a JavaScript library with its independent CSS counterpart designed to simplify JavaScript';
 
-        /* JavaScript */
-            // Check
-            check(function() {
-                // Return
-                return 'MINIFY_ASSET_FILES' in global
-            }, function() {
-                // Source
-                    /* Documents Script
-                            --- NOTE ---
-                                @lapys:
-                                    While the Base Script is meant for consistency across all
-                                    forms of projects,
+                    // Keywords
+                    app.keywords = 'JavaScript Library, Lapys Dev, LapysJS, Simplify JavaScript';
 
-                                    the Docs (Documents) Scripts is meant for additional functions
-                                    specific to the current project.
+                    // Name
+                    app.name = 'LapysJS';
+
+                    // Robots
+                    app.robots = 'none';
+
+                    // Theme Color
+                    app.themeColor = '#0033FF';
+
+                    // Version
+                    app.version = LapysJS.version
+                }
+
+            // Dynamic Assets URL
+            def('DYNAMIC_ASSETS_URL', {
+                // Value
+                value: (function() {
+                    // Initialization > Data
+                    let data = '';
+
+                    /* Logic
+                            [if:else if:else statement]
+
+                        > Update > Data
                     */
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('docsScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, 'docs.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'});
+                        // {Home}
+                        if (location.href.getBeforeChar('/', true).endsWith('LapysJS'))
+                            data = '';
 
-                    /* Document Script
-                            --- NOTE ---
-                                @lapys:
-                                    This implements the project`s unique script file.
-                    */
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('documentScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, (file.name || 'index') + '.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'});
+                        // {Internal Page}
+                        else if (location.href.getBeforeChar('/', true).endsWith('pages'))
+                            data = '../';
 
-                    /* App JS
-                            --- NOTE ---
-                                @lapys: Although not an app,
-                                    the LapysJS documentation will use a wide range of features
-                                    and components from the App JS plug-in.
-                    */
-                    !ALLOW_ALTERNATIVE_RESOURCE_FILES || js.src('appJSScript', {src: decodeURIComponent((document.currentScript || $$(`script[src*='base.'][src*='.js']`) || $$('script', $$('script', '~length'))).src.replace(/base./g, 'app.')).replace(/(\.js)([^(\.js)]*)$/, !!MINIFY_ASSET_FILES ? '.min$1' : '$&'), type: 'text/javascript'})
+                    // Return
+                    return data
+                })(),
+
+                // Writable
+                writable: false
             });
 
-        /* LapysJS */
-            // $
-                // Import
-                    // Font
-                        // Calibri Light
-                        LapysJS.$.import('font', {format: 'truetype', name: 'Calibri Light', url: `${DYNAMIC_ASSETS_URL}assets/fonts/calibri-light.ttf`});
+            // CSS > Link
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (ALLOW_ALTERNATIVE_RESOURCE_FILES) {
+                    // LapysJS Stylesheet
+                    css.link('LapysJSStylesheet', {href: decodeURIComponent(LapysJS.script.src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
 
-                        // Calibri
-                        LapysJS.$.import('font', {format: 'truetype', name: 'Calibri', url: `${DYNAMIC_ASSETS_URL}assets/fonts/calibri.ttf`});
+                    // Base Stylesheet
+                    css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[src*='base.'][src*='.js'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
 
-                        // Droid Serif
-                        LapysJS.$.import('font', {format: 'truetype', name: 'Droid Serif', url: `${DYNAMIC_ASSETS_URL}assets/fonts/droid-serif.ttf`});
+                    // App JS Stylesheet
+                    !$$("script[src*='app.'][src*='.js'", 0) || css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[src*='app.'][src*='.js'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
 
-                        // PT Sans
-                        LapysJS.$.import('font', {format: 'truetype', name: 'PT Sans', url: `${DYNAMIC_ASSETS_URL}assets/fonts/pt-sans.ttf`});
+                    // Interval JS Stylesheet
+                    !$$("script[src*='interval.'][src*='.js'", 0) || css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[src*='interval.'][src*='.js'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
 
-                        // Open Sans
-                        LapysJS.$.import('font', {format: 'truetype', name: 'Open Sans', url: `${DYNAMIC_ASSETS_URL}assets/fonts/open-sans.ttf`});
+                    // Document Stylesheet
+                    !$$("script[data-id*='documentScript'", 0) || css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[data-id*='documentScript'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'})
+                }
 
-                        // Roboto Mono
-                        LapysJS.$.import('font', {format: 'truetype', name: 'Roboto Mono', url: `${DYNAMIC_ASSETS_URL}assets/fonts/roboto-mono.ttf`});
+            // Document
+                // Favorite Icon
+                    // Initialization > Favorite Icon URL
+                    let faviconURL = null;
 
-                        // Trajan Pro
-                        LapysJS.$.import('font', {name: 'Trajan Pro', url: `${DYNAMIC_ASSETS_URL}assets/fonts/trajan-pro.otf`});
+                    // LapysJS > Component > Image
+                    new LapysJS.component.Image(new (function Object() {
+                        // Initialization > Data
+                        let data = DYNAMIC_ASSETS_URL + 'favicon.ico';
 
-        /* Minify Asset Files */
-        def('MINIFY_ASSET_FILES', {
-            /* Value
-                    --- NOTE ---
-                        @lapys: Set to 'true' to use the minified CSS and JS asset files,
-                            set to 'false' to use CSS and JS asset files as they are.
-            */
-            value: false,
+                        // On Error
+                        this.onerror = function() {
+                            // Update > Favorite Icon URL
+                            faviconURL = DYNAMIC_ASSETS_URL + 'assets/img/ico/icon.ico'
+                        },
 
-            // Writable
-            writable: false
-        });
+                        // On Load
+                        this.onload = function() {
+                            // Update > Favorite Icon URL
+                            faviconURL = data
+                        },
 
-        /* Navigation Links */
-        def('NAVIGATION_LINKS', {
-            // Value
-            value: new (function NavigationLinksArray() {
-                // Initialization > Data
+                        // Source
+                        this.src = data
+                    }));
+
+                    // Check
+                    check(function checkFavoriteIconReady() {
+                        // Return
+                        return faviconURL !== null
+                    }, function setFavoriteIcon() {
+                        // Modification > Document > Favorite Icon
+                        document.favicon = faviconURL
+                    });
+
+                // Title
+                document.title = 'LapysJS';
+
+            // LapysJS > $ > Import > Font
+                // Calibri Light
+                LapysJS.$.import.font({format: 'truetype', name: 'Calibri Light', src: DYNAMIC_ASSETS_URL + 'assets/fonts/calibri-light.ttf'});
+
+                // Calibri
+                LapysJS.$.import.font({format: 'truetype', name: 'Calibri', src: DYNAMIC_ASSETS_URL + 'assets/fonts/calibri.ttf'});
+
+                // Droid Serif
+                LapysJS.$.import.font({format: 'truetype', name: 'Droid Serif', src: DYNAMIC_ASSETS_URL + 'assets/fonts/droid-serif.ttf'});
+
+                // Open Sans
+                LapysJS.$.import.font({format: 'truetype', name: 'Open Sans', src: DYNAMIC_ASSETS_URL + 'assets/fonts/open-sans.ttf'});
+
+                // PT Sans
+                LapysJS.$.import.font({format: 'truetype', name: 'PT Sans', src: DYNAMIC_ASSETS_URL + 'assets/fonts/pt-sans.ttf'});
+
+                // Roboto Mono
+                LapysJS.$.import.font({format: 'truetype', name: 'PT Sans', src: DYNAMIC_ASSETS_URL + 'assets/fonts/roboto-mono.ttf'});
+
+            // Navigation Links
+            def('NAVIGATION_LINKS', new (function NavigationLinksList() {
+                // Initialization > (Data, Target)
                 let data = [
                     // LapysJS
-                    new (function NavigationLink() {
+                    new (function NavigationLinks() {
                         // Modification > Target > (...)
-                        this.href = `${DYNAMIC_ASSETS_URL}index.html`;
+                        this.class = 'col-1';
+                        this.href = 'index.html';
+                        this.role = 'home';
                         this.target = '_self';
-                        this.title = createElement('div', '', 'Back to the home page.').textContent;
-                        this.textContent = 'LapysJS'
-                    }),
-
-                    // Get Started
-                    new (function NavigationLink() {
-                        // Modification > Target > (...)
-                        this.href = `${DYNAMIC_ASSETS_URL}pages/get-started.html`;
-                        this.target = '_self';
-                        this.title = createElement('div', '', 'Let&rsquo;s begin shall we?').textContent;
-                        this.textContent = 'Get Started'
+                        this.textContent = 'LapysJS';
+                        this.title = 'Back to the main hub'
                     }),
 
                     // JavaScript
-                    new (function NavigationLink() {
+                    new (function NavigationLinks() {
                         // Modification > Target > (...)
-                        this.href = `${DYNAMIC_ASSETS_URL}pages/javascript.html`;
+                        this.class = 'col-1';
+                        this.href = 'pages/javascript.html';
+                        this.role = 'javascript';
                         this.target = '_self';
-                        this.title = createElement('div', '', 'Learn the fundamental core of LapysJS.').textContent;
-                        this.textContent = 'JavaScript'
-                    }),
-
-                    // GitHub
-                    new (function NavigationLink() {
-                        // Modification > Target > (...)
-                        this.href = 'https://github.com/LapysDev/LapysJS';
-                        this.target = '_blank';
-                        this.title = createElement('div', '', 'See how the library&rsquo;s doing.').textContent;
-                        this.textContent = 'GitHub'
+                        this.textContent = 'JavaScript';
+                        this.title = 'Reference our JavaScript documentation'
                     })
-                ];
+                ], that = this;
 
-                /* Loop
-                        Index Data.
-
-                    > Modification > Target > [Data]
-                */
-                createObject(this, data);
+                // Repeat
+                repeat(index => {
+                    // Modification > Target > [Index]
+                    that[index] = data[index]
+                }, len(data));
 
                 // Modification > Target > Length
-                this.def('length', {
-                    // Value
-                    value: len(data),
+                that.length = data.length
+            }));
 
-                    // Writable
-                    writable: false
-                })
-            }),
+            // Random Version Number
+            def('RANDOM_VER_NUMBER', {
+                /* Value
+                        --- NOTE ---
+                            @lapys: This simulates the current date in milliseconds,
+                                slices to the first 5 characters and provides the format
+                                x.xxx.x
+                */
+                value: str(+date).slice(-5).replace(/[0-9]/, '$&.').reverse().replace(/[0-9]/, '$&.').reverse(),
 
-            // Writable
-            writable: false
-        });
-
-        /* Percent */
-        def('perc', {
-            // Value
-            value: function percent() {
-                // Return
-                return arguments.length > 1 ? num(arguments[0]) * (num(arguments[1]) * 1e-2) : num(arguments[0]) * 1e-2
-            },
-
-            // Writable
-            writable: false
-        });
-
-        /* Supports Web GL */
-        def('SUPPORTS_WEBGL', {
-            // Get
-            get: function SUPPORTS_WEBGL() {
-                // Return
-                return ('canvas'.html.getContext('webgl') || 'canvas'.html.getContext('experimental-webgl')) && ('canvas'.html.getContext('webgl') || 'canvas'.html.getContext('experimental-webgl')) instanceof window.WebGLRenderingContext
-            }
-        });
-
-        /* True */
-         def('TRUE', { get: function() { return !bool() } });
-
-    /* DOM Elements */
-        /* <body> */
-            // Check
-            check(function() {
-                // Return
-                return !!document.body
-            }, function() {
-                // Modification > <body>
-                    // Class
-                    document.body.addClass('sans-serif');
-
-                    // Style
-                    document.body.setCSS({
-                        // Font
-                        font: {
-                            // Family
-                            family: `'Open Sans', 'Calibri Light', 'Droid Serif', sans-serif`
-                        }
-                    })
+                // Writable
+                writable: false
             });
 
-    /* Functions */
-        /* (Console) > Log */
-        console.log(`[${app.name}] =>\n`);
-        console.log(`    Allow_Alternative_Resource_Files`, ALLOW_ALTERNATIVE_RESOURCE_FILES);
-        console.log(`    Allow_Dynamic_Title`, ALLOW_DYNAMIC_TITLE);
-        console.log(`    Create_Dynamic_Footer`, CREATE_DYNAMIC_FOOTER);
-        console.log(`    Dynamic_Assets_URL`, `"${DYNAMIC_ASSETS_URL}"`);
-        console.log(`    Minify_Asset_Files`, MINIFY_ASSET_FILES);
-        console.log(`    Navigation_Links`, NAVIGATION_LINKS);
-        console.log(`    Supports_WebGL`, SUPPORTS_WEBGL);
-        console.log(`    $location`, location.href.getAfterChar('LapysJS'));
-        browser.internetExplorer ? console.log('\nThe above values were processed at runtime...') : console.log( '%c%s', 'font-style: italic', 'The above values were processed at runtime...');
-        console.log('\n');
+        /* Functions */
+            // On Node Added
+            onNodeAdded(document.documentElement, function() {
+                /* Loop
+                        [do:while statement]
 
-        /* {Modify DOM Elements} On Node Added */
-        onNodeAdded(document.body, function modifyDOMElements() {
-            // DOM Elements
-                // <main>
-                    // LapysJS > Warn
-                    !$$('main', 1) || LapysJS.warn(`There can not be more than one (1) 'HTMLMainElement' in the DOM.`);
-
-                    /* Loop
-                            [do:while statement]
-
-                        > Deletion
-                    */
-                    while ($$('main', 1))
-                        $$('main', 1).delete();
-
-                // <script>
-                    /* Loop
-                            [for statement]
-
-                        > Modification > <script> > Language
-                    */
-                    for (let i = 0; i < $$('script[language', 'length'); i += 1)
-                        $$('script[language', i).delAttr('language')
-        });
-
-        /* On DOM Ready */
-        onDOMReady(function() {
-            // Function
-                /* Stop Loading Document
                         --- NOTE ---
-                            @lapys: When the DOM is ready,
-                                stop the page from still loading after 10 seconds.
+                            @lapys: Attempt to update the
+                                caching power and the script breakage of
+                                scripting files in <script> elements.
+
+                    > Modification > <script> > Source
                 */
-                (function stopLoadingDocument() {
-                    // Global > Stop
-                    global.stop();
-                })();
+                while ($$("script:not([src*='?'])", 0))
+                    $$("script:not([src*='?'])", 0).src = decodeURIComponent($$("script:not([src*='?'])", 0).src + '?' + RANDOM_VER_NUMBER)
+            });
 
-                /* Modify DOM Structure
-                        --- NOTE ---
-                            @lapys: Modify some parts of the DOM to make
-                                it lighter. e.g.: Removing unnecessary elements.
-                */
-                (function modifyDOMStructure() {
-                    /* Loop
-                            [do:while statement]
+            // On DOM Ready
+            onDOMReady(function() {
+                /* DOM Elements */
+                    // <script>
+                        // On Node Added
+                        onNodeAdded(document.documentElement, function() {
+                            // Repeat
+                            repeat(function() {
+                                // Deletion
+                                $t('script', 0).delete()
+                            }, $t('script', 'length'))
+                        });
 
-                            --- NOTE ---
-                                @lapys: Remove all non-head element based elements.
+                /* Assets */
+                    // Navigation Links Container > Repeat
+                    !global.NAVIGATION_LINKS_MODIFIER || repeat(index => {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (!$$("[role*='navigation-links-container'", index)['BaseScript elementIsModified']) {
+                            // Modification > Navigation Links Container > Inner HTML
+                            $$("[role*='navigation-links-container'", index).innerHTML = '';
 
-                        > Deletion
-                    */
-                    while (document.head.$$(':not(link):not(meta):not(script):not(style):not(title)', 0))
-                        document.head.$$(':not(link):not(meta):not(script):not(style):not(title)', 0).delete();
+                            // Repeat
+                            repeat(metaIndex => {
+                                // Modification > Navigation Links Container > Inner HTML
+                                $$("[role*='navigation-links-container'", index).innerHTML +=
+                                    "<a " + (function() {
+                                        // Initialization > Data
+                                        let data = '';
 
-                    /* Loop
-                            [do:while statement]
+                                        /* Loop
+                                                Index Navigation Links.
 
-                            --- NOTE ---
-                                @lapys: Remove all scripts,
-                                    scripts are not used anymore after they have been executed.
+                                            > Update > Data
+                                        */
+                                        for (let i in NAVIGATION_LINKS[metaIndex])
+                                            !(i != 'href' && i != 'target' && i != 'textContent' && i != 'title') || (data += i + "='" + NAVIGATION_LINKS[metaIndex][i] + "'");
 
-                        > Deletion
-                    */
-                    while ($$(`script:not([src*='lapys.'])`, 0))
-                        $$(`script:not([src*='lapys.'])`, 0).delete()
-                })()
-        }, 1e4);
+                                        // Return
+                                        return data
+                                    })() + ('title' in NAVIGATION_LINKS[metaIndex] ? "data-title='" + NAVIGATION_LINKS[metaIndex].title + "' " : '') + "href='" + DYNAMIC_ASSETS_URL + NAVIGATION_LINKS[metaIndex].href + "' target='" + (NAVIGATION_LINKS[metaIndex].target || '_self') + "''>" +
+                                        NAVIGATION_LINKS[metaIndex].textContent +
+                                    '</a>'
+                            }, len(NAVIGATION_LINKS));
 
-        /* {Stop Loading Document} Timeout
-                --- NOTE ---
-                    @lapys: Stop the page from loading after 15 seconds.
-        */
-        timeout(function stopLoadingDocument() {
-            // Global > Stop
-            global.stop()
-        }, 1.5e4)
-}
+                            // Modification > Navigation Links Container > Element Is Modified
+                            $$("[role*='navigation-links-container'", index)['BaseScript elementIsModified'] = true
+                        }
+                    }, $$("[role*='navigation-links-container'", 'length'))
+            });
+    }
+
+    else
+        // Error
+        throw new Error('Can not execute script without LapysJS.')
+})(window, window.document, typeof global != 'undefined' ? global : null, window.undefined || void 0, typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false }))

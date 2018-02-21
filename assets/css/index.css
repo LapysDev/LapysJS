@@ -1,135 +1,137 @@
 /* DOM Elements */
-    /* <body>, <html>, <main> */
-    body,
-    html,
-    main {
-        overflow-x: hidden
+    /* <body> */
+    body {
+        overflow: hidden
     }
 
+    /* <body>, <html>, <main> */
+    body, html, main {
+       height: 100%;
+       width: 100%
+    }
+
+    /* <main> */
+        /* Full Page */
+        main > [role=full-page] {
+            min-height: 100vh;
+            min-width: 100%;
+            transition: .3s ease-in-out
+        }
+
 /* Assets */
-    /* Cursor */
-    [data-id*=cursor] {
-        background-color: #FFFFFF !important
+    /* Header, Sub Header */
+    [data-id=header],
+    [data-id=subheader] {
+        cursor: default
     }
 
 /* Components */
-    /* Cover */
-    #cover {
-        background-image: url('../img/webp/cover-bg-1.l-ll-fourk.webp');
-        color: #FFFFFF;
-        text-shadow: 0 0 1.5px rgba(0, 0, 0, .5)
+    /* Introduction */
+        /* Header */
+        #introduction > [data-id=header] {
+            border-bottom: 3px solid;
+            border-radius: 5px;
+            font-weight: 300;
+            margin-left: auto;
+            margin-right: auto;
+            padding-bottom: 15px;
+            width: 75%
+        }
+
+    /* Jumbotron */
+    #jumbotron {
+        background-image: url('../img/jpg/cover-bg-0.l-ll-fourk.jpg');
+        box-shadow: inset 0 0 0 5000px rgba(0, 51, 255, .5);
+        color: #FFFFFF
     }
-        /* @media */
-            /* (Mobile, Tablet) View */
-            @media only all
-                and (max-width: 768px) {
-                    #cover {
-                        background-image: url('../img/webp/cover-bg-1.m-t.webp')
-                    }
-            }
+        /* States > Hover */
+        #jumbotron:hover {
+            box-shadow: inset 0 0 0 5000px rgba(0, 25, 127, .5)
+        }
 
-            /* (Laptop (L), 4K) View */
-            @media only all
-                and (max-width: 2560px)
-                and (min-width: 769px) {
-                    #cover {
-                        background-image: url('../img/webp/cover-bg-1.l-ll-fourk.webp')
-                    }
-            }
-
-        /* Header Group */
-            /* @media > (Mobile, Tablet) View */
-            @media only all
-                and (max-width: 768px) {
-                    #cover [data-id=headerGroup] {
-                        text-align: center
-                    }
-            }
-
-        /* Header Navigation Bar */
-        #cover [role=header-navigation-bar] {
-            flex-wrap: wrap;
-            height: 0;
-            max-height: 0
+        /* Header */
+        #jumbotron [data-id=header] {
+            font-size: 6.3em;
+            margin-bottom: 20px
         }
             /* @media > (Mobile, Tablet) View */
             @media only all
                 and (max-width: 768px) {
-                    #cover [role=header-navigation-bar] {
-                        bottom: 75px
+                    #jumbotron [data-id=header] {
+                        font-size: 3.6em
                     }
             }
 
-            /* Content */
-            #cover [role=header-navigation-bar] > * {
-                flex-basis: 175px;
-                height: 20px;
-                max-width: 175px;
-                width: 175px
+        /* Particles JS Backdrop */
+        #jumbotron #particlesJSBackdrop {
+            box-shadow: inset 0 0 0 5000px rgba(0, 51, 255, .5)
+        }
+            /* <canvas> */
+            #jumbotron #particlesJSBackdrop canvas {
+                opacity: .75
             }
-                /* @media > (Mobile, Tablet) View */
+
+        /* Sub Header */
+        #jumbotron [data-id=subheader] {
+            font-size: 2.5em;
+            margin-top: 20px
+        }
+            /* @media > (Mobile, Tablet) View */
+            @media only all
+                and (max-width: 768px) {
+                    #jumbotron [data-id=subheader] {
+                        font-size: 1.25em
+                    }
+            }
+
+    /* Navigation Links Container */
+        /* Content */
+        [role=navigation-links-container] > * {
+            background-color: rgba(0, 0, 0, .75);
+            border: 1px solid rgba(255, 255, 255, .45);
+            border-radius: 2.75px;
+            box-shadow: 0 2px 1px 0 rgba(0, 0, 0, .075),
+                                inset 0 0 0 1000px transparent;
+            color: #FFFFFF !important;
+            flex-grow: 0;
+            font-family: 'PT Sans', 'Calibri Light';
+            font-size: 15px;
+            font-weight: 100;
+            margin: auto;
+            padding: 7.5px 15px;
+            text-align: center;
+            transition: .3s ease-in-out;
+            user-select: none
+        }
+            /* @media */
+                /* Mobile View */
                 @media only all
-                    and (max-width: 768px) {
-                        #cover [role=header-navigation-bar] > * {
-                            flex-basis: 33.3%;
-                            margin-bottom: 5px;
-                            margin-top: 5px;
-                            max-width: 33.3%;
-                            min-width: 33.3%;
-                            width: 33.3%
+                    and (max-width: 425px) {
+                        [role=navigation-links-container] > * {
+                            transform: scale(.8)
                         }
                 }
 
-        /* Mid Section */
-            /* @media > (Mobile, Tablet) View */
-            @media only all
-                and (max-width: 768px) {
-                    #cover > [data-id=midSection] {
-                        flex-direction: column-reverse;
-                        overflow: hidden
-                    }
-            }
-
-        /* Image */
-            /* @media > (Mobile, Tablet) View */
-            @media only all
-                and (max-width: 768px) {
-                    #cover [data-id=image] {
-                        display: flex
-                    }
-            }
-
-        /* Logo */
-        #cover [role=logo] {
-            width: 80%
-        }
-            /* @media > (Mobile, Tablet) View */
-            @media only all
-                and (max-width: 768px) {
-                    #cover [role=logo] {
-                        float: none;
-                        margin-bottom: 0;
-                        width: 60%
-                    }
-            }
-
-    /* Sub Header */
-    #cover [data-id=subheader] {
-        height: 200px;
-        max-height: 200px
-    }
-        /* @media > (Mobile, Tablet) View */
-        @media only all
-            and (max-width: 768px) {
-                #cover [data-id=subheader] {
-                    height: 100px;
-                    max-height: 100px
+                /* (Laptop (L), 4K) View */
+                @media only all
+                    and (max-width: 2560px)
+                    and (min-width: 769px) {
+                        [role=navigation-links-container] > * {
+                            transform: scale(1.2) translateY(-50%)
+                        }
                 }
-        }
 
-    /* Particles JS */
-    #particles-js {
-        background: rgba(0, 64, 255, .3);
-        background: linear-gradient(rgba(0, 127, 255, .3), rgba(0, 0, 255, .3));
-        max-height: 100vh
-    }
+            /* States */
+                /* Focus, Hover */
+                [role=navigation-links-container] > :focus,
+                [role=navigation-links-container] > :hover {
+                    border-color: rgba(255, 255, 255, .9);
+                    box-shadow: 0 2px 1px 0 rgba(0, 0, 0, .075),
+                                        inset 0 0 0 1000px rgba(0, 0, 0, .5)
+                }
+
+                /* Selection */
+                [role=navigation-links-container] > ::selection {
+                    background-color: transparent;
+                    text-shadow: none
+                }

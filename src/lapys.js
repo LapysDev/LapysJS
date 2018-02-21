@@ -1,6 +1,6 @@
 /**
     @author: Lapys Dev Team
-    @description: LapysJS is a JavaScript library with its independent CSS framework designed to make JavaScript more forgiving and faster to script.
+    @description: LapysJS is a JavaScript library with its independent CSS counterpart designed to simplify JavaScript.
     @version: 0.0.1
 
     --- UPDATE ---
@@ -9,13 +9,35 @@
             - Unnecessary mini-polyfills
             - Unnecessary lumps of string characters as a fallback to regular expression negation
                 (e.g.: The CSSSelector property`s regular expression matching).
+
+    --- WARN ---
+        @lapys: Do not use template strings, defer to standard concatenation instead.
 */
-(function LapysJSScript(window = window, document = window.document, global = window.global || null, undefined = window.undefined || void 0) {
+(function LapysJSScript(window = window, document = window.document, global = typeof global != 'undefined' ? global : null, undefined = window.undefined || void 0) {
     /* Polyfills
             --- NOTE ---
                 @lapys: All polyfills are minified.
                     Thanks to MDN and other developers who made these polyfills free and available for use.
     */
+        // LapysJS Script Total Processing Time
+            // Initialization
+            var LapysJSScriptTotalProcessingTime = 0;
+
+            // Update
+                // Error Handling
+                try {
+                    // ...
+                    LapysJSScriptTotalProcessingTime = performance.now()
+                }
+
+                catch (error) {
+                    // Update > Performance > Now
+                    (window.performance=window.performance||{}).now=function now(){return Date.now?Date.now():+new Date;(function(){if(!1=="performance"in window&&(window.performance={}),Date.now=Date.now||function(){return new Date().getTime()},!1=="now"in window.performance){var a=Date.now();performance.timing&&performance.timing.navigationStart&&(a=performance.timing.navigationStart),window.performance.now=function(){return Date.now()-a}}})()};
+
+                    // ...
+                    LapysJSScriptTotalProcessingTime = performance.now()
+                }
+
         /* Array */
             // From
             (typeof Array.from=='function')||(Array.from=function(){var a=Object.prototype.toString,b=function(f){return'function'==typeof f||'[object Function]'===a.call(f)},c=function(f){var g=+f;return isNaN(g)?0:0!=g&&isFinite(g)?(0<g?1:-1)*Math.floor(Math.abs(g)):g},d=Math.pow(2,53)-1,e=function(f){var g=c(f);return Math.min(Math.max(g,0),d)};return function(g){var h=this,i=Object(g);if(null==g)throw new TypeError('Array.from requires an array-like object - not null or undefined');var l,j=1<arguments.length?arguments[1]:void 0;if('undefined'!=typeof j){if(!b(j))throw new TypeError('Array.from: when provided, the second argument must be a function');2<arguments.length&&(l=arguments[2])}for(var p,m=e(i.length),n=b(h)?Object(new h(m)):Array(m),o=0;o<m;)p=i[o],n[o]=j?'undefined'==typeof l?j(p,o):j.call(l,p,o):p,o+=1;return n.length=m,n}}());
@@ -25,6 +47,10 @@
 
             // Last Index Of
             (typeof Array.prototype.lastIndexOf=='function')||Object.defineProperty(Array.prototype,'lastIndexOf',{value:function lastIndexOf(){if(this===void 0||this===null)throw TypeError();var n,k,t=Object(this),len=t.length>>>0;if(len===0){return -1}n=len-1;if(arguments.length>1){n=Number(arguments[1]);if(n!==n){n=0}else if(n!==0&&n!==(1/0)&&n!==-(1/0)){n=(n>0||-1)*Math.floor(Math.abs(n))}}for(k=n>=0?Math.min(n,len-1):len-Math.abs(n);k>=0;k -= 1){if(k in t&&t[k]===arguments[0]){return k}}return -1}});
+
+        /* Element */
+            // Text Content
+            Object.defineProperty&&Object.getOwnPropertyDescriptor&&Object.getOwnPropertyDescriptor(Element.prototype,"textContent")&&!Object.getOwnPropertyDescriptor(Element.prototype,"textContent").get&&function(){var a=Object.getOwnPropertyDescriptor(Element.prototype,"innerText");Object.defineProperty(Element.prototype,"textContent",{get:function(){return a.get.call(this)},set:function(b){return a.set.call(this,b)}})}();
 
         /* Math */
             // Cube Root
@@ -37,9 +63,9 @@
             // Is
             (typeof Object.is=='function')||(Object.is=function(a,b){return a===b?0!==a||1/a==1/b:a!==a&&b!==b});
 
-        /* Performance */
-            // Now
-            (window.performance=window.performance||{}).lapys=Date.now?Date.now():+new Date;(function(){if(!1=="performance"in window&&(window.performance={}),Date.now=Date.now||function(){return new Date().getTime()},!1=="now"in window.performance){var a=Date.now();performance.timing&&performance.timing.navigationStart&&(a=performance.timing.navigationStart),window.performance.now=function(){return Date.now()-a}}})();
+        /* Node */
+            // Prepend
+            (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:!0,enumerable:!0,value:function prepend(){var argArr=Array.prototype.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:!0})})})([Element.prototype,Document.prototype,DocumentFragment.prototype]);
 
         /* Promise
                 --- NOTE ---
@@ -170,7 +196,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        !(i.getAttribute('data-id') || '').hasText(/\bdrag\-element\b/) || metadata.push(i);
+                                        (LapysJS.debug.formatText(i.getAttribute('data-id') || '', 4).indexOf('drag-element') < 0) || metadata.push(i);
 
                                     // Return
                                     return metadata
@@ -191,7 +217,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        !(i.getAttribute('data-id') || '').hasText(/\bdrop\-element\b/) || metadata.push(i);
+                                        (LapysJS.debug.formatText(i.getAttribute('data-id') || '', 4).indexOf('drop-element') < 0) || metadata.push(i);
 
                                     // Return
                                     return metadata
@@ -305,7 +331,7 @@
                     @lapys: Similar to a Bernoulli distribution trial
                         with exclusive or exhaustive results from an outcome.
         */
-        (typeof check == 'function') || Object.defineProperty(Window.prototype, 'check', {
+        Object.defineProperty(Window.prototype, 'check', {
             // Value
             value: function check() {
                 // Initialization > Arguments
@@ -1915,7 +1941,7 @@
                                             'requestAnimationFrame(update)' +
                                         '})()' +
                                 '}' +
-                                (metadata === 'onDOMNodeCountChange' || metadata === 'onNodeCountChange' ? '}' : '') +
+                                (metadata == 'onDOMNodeCountChange' || metadata == 'onNodeCountChange' ? '}' : '') +
                             '}' +
                         '})'
                     )
@@ -1926,15 +1952,19 @@
         (typeof Window.prototype.onDOMReady == 'function') || Object.defineProperty(Window.prototype, 'onDOMReady', {
             // Value
             value: function onDOMReady() {
-                // Initialization > (Argument, Data, Metadata)
+                // Initialization > (Arguments, Data, Metadata, Alpha)
                 let args = [...arguments],
-                    data = parseFloat(args[1]),
-                    metadata = typeof args[0] == 'string' ? func('', '', '(function() {var args = void 0;\n' + args[0] + '\n})()') : args[0];
+                    data = parseFloat(args[1]) || 0,
+                    metadata = typeof args[0] == 'string' ? func('', '', '(function() {var args = void 0;\n' + args[0] + '\n})()') : args[0],
+                    alpha = !1;
 
                 // Function > Main
                 function main() {
+                    // Update > Alpha
+                    alpha = !0;
+
                     // Argument 0( | Set Timeout)
-                    !arguments[0] ? ((document.readyState != 'complete') || metadata()) : (data > 0 ? setTimeout(metadata, data) : metadata())
+                    !arguments[0] ? metadata() : (data > 0 ? setTimeout(metadata, data) : metadata())
                 };
 
                 // (Set Timeout | Main) | (Event > Document)
@@ -1950,14 +1980,20 @@
                         document.attachEvent('onreadystatechange', function() {
                             // Set Timeout | Main
                             data > 0 ? setTimeout(main, data) : main()
-                        })
+                        });
+
+                // Check
+                check(function() {
+                    // Return
+                    return document.readyState == 'complete'
+                }, function() {
+                    // Main
+                    alpha || main(!0)
+                });
             }
         });
 
-        /* Paste
-                --- UPDATE REQUIRED ---
-                    @lapys: Should actually work.
-        */
+        // Paste
         (typeof paste == 'function') || Object.defineProperty(Window.prototype, 'paste', {
             // Value
             value: function paste() {
@@ -2047,8 +2083,13 @@
                     if (typeof Promise == 'function')
                         // [Element] > Click
                         createElement('a', '', '', {onclick: function() {
+                            // Metadata
                             metadata();
 
+                            // Update > Data
+                            data = performance.now() - data;
+
+                            // Promise
                             (new Promise(function() {
                                 arguments[0](null);
                                 arguments[1](null)
@@ -2059,12 +2100,15 @@
                         // Metadata
                         metadata();
 
+                        // Update > Data
+                        data = performance.now() - data;
+
                         // Alpha
                         alpha()
                     }
 
                 // Return
-                return performance.now() - data
+                return data
             }
         });
 
@@ -2245,23 +2289,20 @@
                     // Metadata
                         // Error Handling
                         try {
-                            metadata = typeof metadata == 'function' ? metadata() : parseNumber(metadata)
+                            metadata = metadata == Infinity ? Infinity : (typeof metadata == 'function' ? parseNumber(metadata()) : parseNumber(metadata))
                         }
 
                         catch (error) {
-                            metadata = parseNumber(metadata)
+                            metadata = metadata == Infinity ? Infinity : parseNumber(metadata)
                         }
 
                     // Data
-                    (typeof data != 'string') || (data = func('', 'index, limit', '(function() {delete args = void 0;' + data + '\n})()'));
+                    (typeof data != 'string') || (data = func('', 'index, limit', '(function() {' + data + '\n})()'));
 
                 /* Logic
                         [if:else if:else statement]
                 */
-                if (
-                    typeof data == 'function' &&
-                    typeof metadata == 'number'
-                ) {
+                if (typeof data == 'function' && typeof metadata == 'number') {
                     // Initialization > Alpha
                     let alpha = args.slice(2);
 
@@ -2714,19 +2755,27 @@
                 let args = [...arguments];
 
                 /* Logic
-                        Switch case to Argument 0`s constructor.
-
-                    > Return
+                        If
+                            there is an Argument.
                 */
-                switch (args[0].constructor) {
-                    // Document Type
-                    case DocumentType:
-                        return args[0].stringify();
-                        break
+                if (args.length > 0) {
+                    /* Logic
+                            Switch case to Argument 0`s constructor.
+
+                        > Return
+                    */
+                    switch (args[0].constructor) {
+                        // Document Type
+                        case DocumentType:
+                            return args[0].stringify()
+                    }
+
+                    // Return
+                    return (args[0] || new (function LapysJSObject() {})).constructor === RegExp ? String(args[0]).slice('/'.length, -('/'.length + args[0].flags.length)) : (String(((args[0] || new (function LapysJSObject() {})).constructor !== Object) || JSON.stringify(args[0]).slice('{'.length, -'}'.length)).replace('true', String(args[0])))
                 }
 
                 // Return
-                return (args[0] || new (function LapysJSObject() {})).constructor === RegExp ? String(args[0]).slice('/'.length, -('/'.length + args[0].flags.length)) : (String(((args[0] || new (function LapysJSObject() {})).constructor !== Object) || JSON.stringify(args[0]).slice('{'.length, -'}'.length)).replace('true', String(args[0])))
+                return ''
             }
         });
 
@@ -2828,8 +2877,12 @@
                         return data + ')'
                     })());
 
-                    // Initialization > (Target, Version Number)
-                    let that = this,
+                    /* Initialization > (Psi, Target, Version Number)
+                            --- WARN ---
+                                @lapys: Try not to use the Psi variable.
+                    */
+                    let psi = this,
+                        that = this,
                         VER_NUMBER = '0.0.1';
 
                     // Error
@@ -3083,7 +3136,33 @@
                                 // Image
                                 Object.defineProperty(this, 'Image', {
                                     // Value
-                                    value: class LapysJSImage {}
+                                    value: class LapysJSImage {
+                                        // Constructor
+                                        constructor() {
+                                            // Initialization > (Arguments, Data, Metadata)
+                                            let args = [...arguments],
+                                                data = typeof Image == 'function' ? new Image() : document.createElement('img'),
+                                                metadata = isObject(args[0]) ? args[0] : {src: args[0]};
+
+                                            // Update > Metadata
+                                            (args.length < 2) || (metadata.width = args[1]),
+                                            (args.length < 3) || (metadata.height = args[2]);
+
+                                            /* Loop
+                                                    Index Metadata.
+
+                                                > Modification > Data > [Loop Counter]
+                                            */
+                                            for (let i in metadata)
+                                                (i == 'src') || (data[i] = metadata[i]);
+
+                                            // Modification > Data > Source
+                                            !('src' in metadata) || (data.src = metadata.src);
+
+                                            // Return
+                                            return data
+                                        }
+                                    }
                                 });
 
                                 // Table
@@ -3178,6 +3257,106 @@
                         }
                     });
 
+                    // Permanent Data
+                    'permanentData' in this.constructor.prototype || Object.defineProperty(this.constructor.prototype, 'permanentData', {
+                        // Value
+                        value: new (function LapysJSScriptPermanentData() {
+                            // Modification > Target
+                                // Cooled Items
+                                (typeof this.constructor.prototype.cooledItems == 'object') || Object.defineProperty(this.constructor.prototype, 'cooledItems', {
+                                    // Value
+                                    value: new (function LapysJSCooledItemsList() {})
+                                });
+
+                                // Data List
+                                (typeof this.constructor.prototype.dataList == 'object') || Object.defineProperty(this.constructor.prototype, 'dataList', {value: []});
+
+                                // Mouse Coordinates
+                                (typeof this.constructor.prototype.mouseCoordinates == 'object') || Object.defineProperty(this.constructor.prototype, 'mouseCoordinates', {
+                                    // Value
+                                    value: new (function LapysJSScriptMouseCoordinates() {
+                                        // Initialization > (Data, Metadata)
+                                        let data = 0,
+                                            metadata = 0;
+
+                                        // Modification > Target > (X, Y)
+                                        Object.defineProperties(this.constructor.prototype, {
+                                            // X
+                                            x: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !0,
+
+                                                // Get
+                                                get: function() {
+                                                    // Return
+                                                    return data
+                                                },
+
+                                                // Set
+                                                set: function() {
+                                                    // Update > Data
+                                                    data = arguments[0]
+                                                }
+                                            },
+
+                                            // Y
+                                            y: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !0,
+
+                                                // Get
+                                                get: function() {
+                                                    // Return
+                                                    return metadata
+                                                },
+
+                                                // Set
+                                                set: function() {
+                                                    // Update > Metadata
+                                                    metadata = arguments[0]
+                                                }
+                                            }
+                                        })
+                                    })
+                                });
+
+                                // Plug-In Script Delay
+                                this.constructor.prototype.pluginScriptDelay = 3e3;
+
+                                // Script Element List
+                                (typeof this.constructor.prototype.scriptElementList == 'object') || Object.defineProperty(this.constructor.prototype, 'scriptElementList', {
+                                    // Value
+                                    value: new (function LapysJSScriptScriptElementList() {})
+                                });
+
+                                // Written Elements
+                                (typeof this.constructor.prototype.writtenElements == 'object') || Object.defineProperty(this.constructor.prototype, 'writtenElements', {
+                                    // Value
+                                    value: []
+                                })
+                        })
+                    });
+                        // Permanent
+                        'perm' in this.constructor.prototype || Object.defineProperty(this.constructor.prototype, 'perm', {
+                            // Configurable
+                            configurable: !1,
+
+                            // Enumerable
+                            enumerable: !1,
+
+                            // Get
+                            get: function() {
+                                // Return
+                                return this.permanentData
+                            }
+                        });
+
                     // [Dollar Object]
                     '$' in this.constructor.prototype || Object.defineProperty(this.constructor.prototype, '$', {
                         // Value
@@ -3229,6 +3408,177 @@
                                     }
                                 });
 
+                                /* Cookie
+                                        --- NOTE ---
+                                            @lapys: The cookie object acts as a mini-framework
+                                            for manipulating and parsing cookies.
+                                */
+                                ((this.constructor.prototype.cookie || new (function LapysJSObject() {})).constructor.name == 'CookieManager') || Object.defineProperty(this.constructor.prototype, 'cookie', {
+                                    // Value
+                                    value: (function() {
+                                        /* Initialization > Data
+                                                --- WARN ---
+                                                    @lapys: Prevent the Cookie Manager constructor name
+                                                        from being redacted.
+                                        */
+                                        let data = eval('new (function CookieManager() {})');
+
+                                        // Modification > Data
+                                            // Clear
+                                            (typeof data.constructor.prototype.clear == 'function') || Object.defineProperty(data.constructor.prototype, 'clear', {
+                                                // Value
+                                                value: function clear() {
+                                                    /* Logic
+                                                            [if:else if:else statement]
+
+                                                            --- NOTE ---
+                                                                FALSE for default clearing,
+                                                                TRUE for deep clearing.
+                                                    */
+                                                    if (!arguments[0])
+                                                        /* Loop
+                                                                [for statement]
+                                                        */
+                                                        for (let i of document.cookie.trim().split(';')) {
+                                                            // Initialization > (Metadata, Alpha, Beta)
+                                                            let metadata = i,
+                                                                alpha = metadata.indexOf('='),
+                                                                beta = alpha > -1 ? metadata.substr(0, alpha) : metadata;
+
+                                                            // Modification > Document > Cookie
+                                                            document.cookie = beta + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT'
+                                                        }
+
+                                                    else {
+                                                        // Initialization > Data
+                                                        let data = document.cookie.split('; ');
+
+                                                        /* Loop
+                                                                [for statement]
+                                                        */
+                                                        for (let i of data) {
+                                                            // Initialization > Metadata
+                                                            let metadata = location.hostname.split('.');
+
+                                                            /* Loop
+                                                                    [do:while statement]
+                                                            */
+                                                            while (metadata.length > 0) {
+                                                                // Initialization > (Alpha, Beta)
+                                                                let alpha = encodeURIComponent(i.split(';')[0].split('=')[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + metadata.join('.') + ' ;path=',
+                                                                    beta = location.pathname.split('/');
+
+                                                                // Modification > Document > Cookie
+                                                                document.cookie = alpha + '/';
+
+                                                                /* Loop
+                                                                        [do:while statement]
+                                                                */
+                                                                while (beta.length > 0) {
+                                                                    // Modification > Document > Cookie
+                                                                    document.cookie = alpha + beta.join('/');
+
+                                                                    // Update > Beta
+                                                                    beta.pop()
+                                                                }
+
+                                                                // Update > Metadata
+                                                                metadata.shift()
+                                                            }
+                                                        }
+                                                    }
+
+                                                    // Return
+                                                    return document.cookie
+                                                }
+                                            });
+
+                                            // Delete Cookie
+                                            (typeof data.constructor.prototype.delCookie == 'function') || Object.defineProperty(data.constructor.prototype, 'delCookie', {
+                                                // Value
+                                                value: function delCookie() {
+                                                    // Modification > Document > Cookie
+                                                    document.cookie = arguments[0] + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+
+                                                    // Return
+                                                    return document.cookie
+                                                }
+                                            });
+
+                                            // Get Cookie Value
+                                            (typeof data.constructor.prototype.getCookieValue == 'function') || Object.defineProperty(data.constructor.prototype, 'getCookieValue', {
+                                                // Value
+                                                value: function getCookieValue() {
+                                                    // Initialization > (Data, Metadata)
+                                                    let data = '',
+                                                        metadata = arguments[0];
+
+                                                    // Update > Data
+                                                    data = document.cookie.replace(RegExp('(?:(?:^|.*;\\s*)' + metadata + '\\s*\\=\\s*([^;]*).*$)|^.*$'), '$1');
+
+                                                    // Return
+                                                    return data
+                                                }
+                                            });
+
+                                            // Set Cookies
+                                            (typeof data.constructor.prototype.setCookies == 'function') || Object.defineProperty(data.constructor.prototype, 'setCookies', {
+                                                // Value
+                                                value: function setCookies() {
+                                                    // Initialization > Data
+                                                    let data = arguments[0];
+
+                                                    /* Logic
+                                                            If
+                                                                Data is an object.
+                                                    */
+                                                    if (isObject(data)) {
+                                                        // Initialization > Metadata
+                                                        let metadata = '';
+
+                                                        // Update > Metadata
+                                                            // {Maximum Age}
+                                                            !('maxAge' in data) || (metadata += 'max-age=' + data.maxAge + ';');
+
+                                                            // {Value}
+                                                                /* Logic
+                                                                        [if:else if:else statement]
+                                                                */
+                                                                if (isObject(data.value))
+                                                                    /* Loop
+                                                                            [for statement]
+
+                                                                        > Update > Metadata
+                                                                    */
+                                                                    for (let i in data.value)
+                                                                        metadata += i + '=' + data.value[i] + ';';
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                                --- NOTE ---
+                                                                    @lapys: Add each chip to the overall cookie.
+
+                                                            > Modification > Document > Cookie
+                                                        */
+                                                        for (let i of metadata.trim().split(';').removeFalsyElements())
+                                                            document.cookie = i + ';';
+                                                    }
+
+                                                    else
+                                                        // LapysJS > Error
+                                                        LapysJS.error('$c$object_0', data);
+
+                                                    // Return
+                                                    return document.cookie
+                                                }
+                                            });
+
+                                        // Return
+                                        return data
+                                    })()
+                                });
+
                                 /* Import
                                         --- NOTE ---
                                             @lapys: This function serves as a means of importing
@@ -3236,29 +3586,134 @@
                                                     or
                                                 for inserting Nodes into the DOM.
                                 */
-                                (typeof this.constructor.prototype.import == 'function') || Object.defineProperty(this.constructor.prototype, 'import', {
-                                    // Value
-                                    value: function Import() {
-                                        // Initialization > Arguments
-                                        let args = [...arguments];
+                                    // Definition > Import
+                                    (typeof this.constructor.prototype.import == 'function') || Object.defineProperty(this.constructor.prototype, 'import', {
+                                        // Value
+                                        value: function Import() {}
+                                    });
+                                        // Font
+                                        (typeof this.constructor.prototype.import.font == 'function') || Object.defineProperty(this.constructor.prototype.import, 'font', {
+                                            // Value
+                                            value: function font() {
+                                                // Initialization > (Arguments, Data, Metadata, Alpha, Beta)
+                                                let args = [...arguments],
+                                                    data = args[0],
+                                                    metadata = '',
+                                                    alpha = [],
+                                                    beta = [];
 
-                                        // Update > Argument 1
-                                        (typeof args[1] == 'object') || (args[1] = {});
+                                                /* Logic
+                                                        If
+                                                            Data is an object.
+                                                */
+                                                if (isObject(data)) {
+                                                    // Update > Metadata
+                                                    metadata = "{" + (
+                                                        ('name' in data ? 'name: ' + (String(data.name).indexOf(' ') > -1 ? "'" + data.name + "'" : data.name) + ',' : '') +
+                                                        ('src' in data ? "src: '" + data.src + "'," : '') +
+                                                        ('format' in data ? 'format: ' + data.format + ',' : '')
+                                                    ).trimRightChar(',').trim() + "}";
 
-                                        /* Logic
-                                                Switch case to Argument 0.
-                                        */
-                                        switch (String(args[0])) {
-                                            // Font
-                                            case 'font':
-                                                // CSS > Style
-                                                css.style('CSSFont', '@font-face {' +
-                                                    ('name' in args[1] ? ('font-family: ' + (String(args[1].name || '').indexOf(' ') > -1 ? "'" + args[1].name + "'" : args[1].name) + ';') : '') +
-                                                    'src: ' + (('url' in args[1] ? "url('" + args[1].url + "') " : '') + ('format' in args[1] ? ("format('" + args[1].format + "')") : '')) +
-                                                '}')
-                                        }
-                                    }
-                                });
+                                                    /* Logic
+                                                            If
+                                                                there are cookies.
+                                                    */
+                                                    if (document.cookie.trim())
+                                                        /* Loop
+                                                                [for statement]
+                                                        */
+                                                        for (let i of document.cookie.trim().split(';')) {
+                                                            /* Loop
+                                                                [for statement]
+                                                        */
+                                                            for (let j of i.getAfterChar('=').slice("'{".length, -"}'".length).split(',')) {
+                                                                // Initialization > Delta
+                                                                let delta = j.split(': ')[1].trim().trimChar("'");
+
+                                                                // Update > Alpha
+                                                                alpha.push(delta == data.name.trim() || delta == data.format.trim() || delta == data.src.trim());
+                                                            }
+
+                                                            // Update > Beta
+                                                            beta.push(alpha.indexOf(false) > -1);
+
+                                                            // Update > Alpha
+                                                            alpha.length = 0
+                                                        }
+
+                                                    else
+                                                        // Update > Beta
+                                                        beta = [true];
+
+                                                    // Initialization > Kappa
+                                                    let kappa = beta.indexOf(false) < 0;
+
+                                                    /* Logic
+                                                            [if:else if:else statement]
+
+                                                            --- NOTE ---
+                                                                @lapys:
+                                                                    If the condition is true,
+                                                                        then the given argument is used to parse the custom font,
+                                                                        otherwise cookies will be used to parse the custom font.
+
+                                                                    All that`s missing is if the file can be added as a cookie,
+                                                                    then we could successfully cache the files and use them regardless.
+                                                    */
+                                                    if (kappa) {
+                                                        // CSS > Style
+                                                        css.style(
+                                                            'label' in data ? data.label : 'CSSFontStylesheet',
+                                                            '@font-face {' +
+                                                                ('name' in data ? ('font-family: ' + (String(data.name).indexOf(' ') > -1 ? "'" + data.name + "'" : data.name) + ';') : '') +
+                                                                'src: ' + ('src' in data ? "url('" + data.src + "')" : 'url()') + ('format' in data ? " format('" + data.format + "')" : '') +
+                                                            '}'
+                                                        );
+
+                                                        // Modification > Document > Cookie
+                                                        document.cookie = decodeURIComponent('lapysjs-imported-font_' + Math.random() + "='" + encodeURIComponent(metadata) + "';");
+                                                    }
+
+                                                    else {
+                                                        // Initialization > Omega
+                                                        let omega = {};
+
+                                                        /* Loop
+                                                                [for statement]
+                                                        */
+                                                        for (let i of document.cookie.split(';'))
+                                                            /* Loop
+                                                                    [for statement]
+                                                            */
+                                                            for (let j of i.getAfterChar("='{").slice(0, -"}'".length).split(',')) {
+                                                                // Initialization > (Delta, Gamma)
+                                                                let delta = j.split(': ')[1].trim(),
+                                                                    gamma = j.split(': ')[0].trim();
+
+                                                                // Update
+                                                                    // Delta
+                                                                    delta = delta.endsWith("'") && delta.startsWith("'") ? delta.slice("'".length, -"'".length) : delta;
+
+                                                                    // Omega
+                                                                    omega[gamma] = delta
+                                                            }
+
+                                                        // CSS > Style
+                                                        css.style(
+                                                            'label' in omega ? omega.label : 'CSSFontStylesheet',
+                                                            '@font-face {' +
+                                                                ('name' in omega ? ('font-family: ' + (String(omega.name).indexOf(' ') > -1 ? "'" + omega.name + "'" : omega.name) + ';') : '') +
+                                                                'src: ' + ('src' in omega ? "url('" + omega.src + "')" : 'url()') + ('format' in omega ? " format('" + omega.format + "')" : '') +
+                                                            '}'
+                                                        );
+                                                    }
+                                                }
+
+                                                else
+                                                    // LapysJS > Error
+                                                    LapysJS.error('$c$object_0', args[0])
+                                            }
+                                        });
 
                                 /* Request
                                         --- NOTE ---
@@ -3673,106 +4128,6 @@
                                 return data + ')'
                             })())
                         };
-
-                    // Permanent Data
-                    'permanentData' in this.constructor.prototype || Object.defineProperty(this.constructor.prototype, 'permanentData', {
-                        // Value
-                        value: new (function LapysJSScriptPermanentData() {
-                            // Modification > Target
-                                // Cooled Items
-                                (typeof this.constructor.prototype.cooledItems == 'object') || Object.defineProperty(this.constructor.prototype, 'cooledItems', {
-                                    // Value
-                                    value: new (function LapysJSCooledItemsList() {})
-                                });
-
-                                // Data List
-                                (typeof this.constructor.prototype.dataList == 'object') || Object.defineProperty(this.constructor.prototype, 'dataList', {value: []});
-
-                                // Mouse Coordinates
-                                (typeof this.constructor.prototype.mouseCoordinates == 'object') || Object.defineProperty(this.constructor.prototype, 'mouseCoordinates', {
-                                    // Value
-                                    value: new (function LapysJSScriptMouseCoordinates() {
-                                        // Initialization > (Data, Metadata)
-                                        let data = 0,
-                                            metadata = 0;
-
-                                        // Modification > Target > (X, Y)
-                                        Object.defineProperties(this.constructor.prototype, {
-                                            // X
-                                            x: {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function() {
-                                                    // Return
-                                                    return data
-                                                },
-
-                                                // Set
-                                                set: function() {
-                                                    // Update > Data
-                                                    data = arguments[0]
-                                                }
-                                            },
-
-                                            // Y
-                                            y: {
-                                                // Configurable
-                                                configurable: !0,
-
-                                                // Enumerable
-                                                enumerable: !0,
-
-                                                // Get
-                                                get: function() {
-                                                    // Return
-                                                    return metadata
-                                                },
-
-                                                // Set
-                                                set: function() {
-                                                    // Update > Metadata
-                                                    metadata = arguments[0]
-                                                }
-                                            }
-                                        })
-                                    })
-                                });
-
-                                // Plug-In Script Delay
-                                this.constructor.prototype.pluginScriptDelay = 3e3;
-
-                                // Script Element List
-                                (typeof this.constructor.prototype.scriptElementList == 'object') || Object.defineProperty(this.constructor.prototype, 'scriptElementList', {
-                                    // Value
-                                    value: new (function LapysJSScriptScriptElementList() {})
-                                });
-
-                                // Written Elements
-                                (typeof this.constructor.prototype.writtenElements == 'object') || Object.defineProperty(this.constructor.prototype, 'writtenElements', {
-                                    // Value
-                                    value: []
-                                });
-                        })
-                    });
-                        // Permanent
-                        'perm' in this.constructor.prototype || Object.defineProperty(this.constructor.prototype, 'perm', {
-                            // Configurable
-                            configurable: !1,
-
-                            // Enumerable
-                            enumerable: !1,
-
-                            // Get
-                            get: function() {
-                                // Return
-                                return this.permanentData
-                            }
-                        });
 
                     // Ready
                     this.constructor.prototype.ready = !1;
@@ -7885,8 +8240,8 @@
                             > Modification > [Element] > (Hyperlink Reference, Type)
                         */
                         for (let i = 0; i < [...(document.querySelectorAll("link[href][rel*='icon'") || [null])].length; i += 1) {
-                            [...(document.querySelectorAll("link[href][rel*='icon'") || [null])][i].href = arguments[0];
-                            !([...(document.querySelectorAll("link[href][rel*='icon'") || [null])][i].getAttribute('type') || '').startsWith('type') || ([...(document.querySelectorAll("link[href][rel*='icon'") || null)].type = 'image/' + (String(arguments[0]).getAfterChar('.', !0) || 'x-icon'))
+                            document.querySelectorAll("link[href][rel*='icon'")[i].href = arguments[0];
+                            !('type' in document.querySelectorAll("link[href][rel*='icon'")[i]) || (document.querySelectorAll("link[href][rel*='icon'")[i].type = 'image/' + (String(arguments[0]).getAfterChar('.', !0) || 'x-icon'))
                         }
                 }
             }));
@@ -8281,8 +8636,8 @@
                                             // LapysJS > (Permanent Data > Script Element List) > [Script > Script Element ID]
                                             LapysJS.perm.scriptElementList[data['LapysJS scriptElementID']] || (LapysJS.perm.scriptElementList[data['LapysJS scriptElementID']] = data);
 
-                                        // Execution
-                                        eval('(function(...args) {\n' + data.script.replace(/[^:]\/\/(.*[^\n])\n/g, '$&\n').trim() + "\n}).call(LapysJS.perm.scriptElementList['" + data['LapysJS scriptElementID'] + "'], LapysJS.perm.scriptElementList['" + data['LapysJS scriptElementID'] + "'], '" + data['LapysJS script'] + "', window, window.document, window.global || null, window.undefined || void 0)")
+                                        // Function
+                                        func('', '...args', 'var global = window;\n' + data.script.replace(/[^:]\/\/(.*[^\n])\n/g, '$&\n').trim()).call(LapysJS.perm.scriptElementList[data['LapysJS scriptElementID']], LapysJS.perm.scriptElementList[data['LapysJS scriptElementID']], data.script, window.parent, window.document, typeof global != 'undefined' ? global : null, window.undefined || void 0)
                                     }
                                 })
                             }, document.querySelectorAll('[script')[i])
@@ -8588,7 +8943,7 @@
                                                 > Modification > Target > Class
                                             */
                                             for (let j = 0; j < LapysJS.debug.formatText([...arguments][i], 4).length; j += 1)
-                                                this.setAttribute('class', String(this.getAttribute('class').trim().split(/ /g).removeElement(LapysJS.debug.formatText([...arguments][i], 4)[j])).replace(/,/g, ' ').trim());
+                                                this.setAttribute('class', String(LapysJS.debug.formatText(this.getAttribute('class'), 4).removeElement(LapysJS.debug.formatText([...arguments][i], 4)[j])).replace(/,/g, ' ').trim());
 
                                         // Modification > Target > Class
                                         this.getAttribute('class') || this.removeAttribute('class')
@@ -10301,9 +10656,6 @@
                     (typeof Node.prototype.insertChild == 'function') || Object.defineProperty(Node.prototype, 'insertChild', {
                         // Value
                         value: function insertChild() {
-                            // Polyfill
-                            (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:!0,enumerable:!0,value:function prepend(){var argArr=Array.prototype.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:!0})})})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
-
                             // Insertion > Element
                             this[(str((arguments[0] !== 'begin') || str((!this.prepend || 'prepend')).replace('true', 'cloneNode')).replace('true', str((arguments[0] !== 'end') || str((!this.append || 'append')).replace('true', 'appendChild')).replace('true', '')) || 'cloneNode')](arguments[1]);
 
@@ -10348,18 +10700,18 @@
                                             /* Loop
                                                     Index the Target's class nodes.
                                             */
-                                            for (let i = 0; i < that.getAttribute('class').split(/ /g).length; i += 1)
+                                            for (let i = 0; i < LapysJS.debug.formatText(that.getAttribute('class'), 4).length; i += 1)
                                                 /* Logic
                                                         If
                                                             the class node has any 'unusual''characters.
 
                                                     > Update > Classes
                                                 */
-                                                if (that.getAttribute('class').split(/ /g)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
-                                                    Classes += "[class='" + that.getAttribute('class').split(/ /g)[i] + "']";
+                                                if (LapysJS.debug.formatText(that.getAttribute('class'), 4)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
+                                                    Classes += "[class='" + LapysJS.debug.formatText(that.getAttribute('class'), 4)[i] + "']";
 
                                                 else
-                                                    Classes += '.' + that.getAttribute('class').split(/ /g)[i];
+                                                    Classes += '.' + LapysJS.debug.formatText(that.getAttribute('class'), 4)[i];
 
                                         // Return
                                         return Classes
@@ -10911,7 +11263,7 @@
                                                 > Modification > (Content, Header) > Accordion
                                             */
                                             for (let j = 0; j < base.plugins.accordion[i].children.length; j += 1)
-                                                !(base.plugins.accordion[i].children[j].getAttribute('data-id') === 'content' || base.plugins.accordion[i].children[j].getAttribute('data-id') === 'header') || Object.defineProperty(base.plugins.accordion[i].children[j], 'accordion', {
+                                                !(base.plugins.accordion[i].children[j].getAttribute('data-id') == 'content' || base.plugins.accordion[i].children[j].getAttribute('data-id') == 'header') || Object.defineProperty(base.plugins.accordion[i].children[j], 'accordion', {
                                                     // Configurable
                                                     configurable: !0,
 
@@ -10931,7 +11283,7 @@
                                                                     If
                                                                         the Target Parent is an Accordion.
                                                             */
-                                                            if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('accordion') > -1) {
+                                                            if (LapysJS.debug.formatText(this.parentPath[i].getAttribute('class') || '', 4).indexOf('accordion') > -1) {
                                                                 // Update > Data
                                                                 data = this.parentPath[i];
 
@@ -11321,7 +11673,7 @@
                                 // Mouse Down, Touch Start
                                 carousel[i].setEvent('mousedown touchstart', function carouselUserGesture_SwipeToggleSlide(event) {
                                     // Modification > Target > Cursor Position X
-                                    (this.getAttribute('class').trim().split(/ /g).indexOf('no-swipe') > -1) || (this['LapysJS eventPositionX'] = event.clientX || event.changedTouches[0].clientX)
+                                    (LapysJS.debug.formatText(this.getAttribute('class'), 4).indexOf('no-swipe') > -1) || (this['LapysJS eventPositionX'] = event.clientX || event.changedTouches[0].clientX)
                                 });
 
                                 // Mouse Up, Touch End
@@ -11329,7 +11681,7 @@
                                     /* Logic
                                             [if:else if:else statement]
                                     */
-                                    if (this.getAttribute('class').trim().split(/ /g).indexOf('no-swipe') < 0)
+                                    if (LapysJS.debug.formatText(this.getAttribute('class'), 4).indexOf('no-swipe') < 0)
                                         /* Logic
                                                 [if:else if:else statement]
                                         */
@@ -11455,7 +11807,7 @@
                                                     If
                                                         the child's Data ID is 'buttons-container'.
                                             */
-                                            if (carousel[i].children[j].getAttribute('data-id') === 'buttons-container') {
+                                            if (carousel[i].children[j].getAttribute('data-id') == 'buttons-container') {
                                                 // Deletion
                                                 carousel[i].children[j].remove();
 
@@ -11481,7 +11833,7 @@
                                                     If
                                                         the child's Data ID is 'indicators-container'.
                                             */
-                                            if (carousel[i].children[j].getAttribute('data-id') === 'indicators-container') {
+                                            if (carousel[i].children[j].getAttribute('data-id') == 'indicators-container') {
                                                 // Remove
                                                 carousel[i].children[j].remove();
 
@@ -11671,7 +12023,7 @@
                                                             If
                                                                 the Target Parent is a Carousel.
                                                     */
-                                                    if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1) {
+                                                    if (LapysJS.debug.formatText(this.parentPath[i].getAttribute('class') || '', 4).indexOf('carousel') > -1) {
                                                         // Update > Data
                                                         data = this.parentPath[i];
 
@@ -11734,7 +12086,7 @@
                                                                 If
                                                                     the Target Parent is a Carousel.
                                                         */
-                                                        if ((this.parentPath[i].getAttribute('class') || '').split(/ /g).indexOf('carousel') > -1) {
+                                                        if (LapysJS.debug.formatText(this.parentPath[i].getAttribute('class') || '', 4).indexOf('carousel') > -1) {
                                                             // Update > Data
                                                             data = this.parentPath[i];
 
@@ -13929,7 +14281,7 @@
                                         else if (!this.previousElementSibling)
                                             return null;
 
-                                        else if (this.previousElementSibling.getAttribute('data-id') === 'placeholder')
+                                        else if (this.previousElementSibling.getAttribute('data-id') == 'placeholder')
                                             return this.previousElementSibling;
 
                                         // Return
@@ -13944,13 +14296,13 @@
                                     // Blur
                                     placeholder[i].setEvent('blur', function deselectPlaceholder() {
                                         // Modification > (Target > Previous Element Sibling) > Data Selected
-                                        !this.previousElementSibling || (this.previousElementSibling.getAttribute('data-id') !== 'placeholder') || this.previousElementSibling.removeAttribute('data-selected')
+                                        !this.previousElementSibling || (this.previousElementSibling.getAttribute('data-id') != 'placeholder') || this.previousElementSibling.removeAttribute('data-selected')
                                     });
 
                                     // Focus
                                     placeholder[i].setEvent('focus', function selectPlaceholder() {
                                         // Modification > (Target > Previous Element Sibling) > Data Selected
-                                        !this.previousElementSibling || (this.previousElementSibling.getAttribute('data-id') !== 'placeholder') || this.previousElementSibling.setAttribute('data-selected', '')
+                                        !this.previousElementSibling || (this.previousElementSibling.getAttribute('data-id') != 'placeholder') || this.previousElementSibling.setAttribute('data-selected', '')
                                     });
 
                                 // Modification > Placeholder > Is Modified
@@ -14464,7 +14816,7 @@
                                         // Mouse Down, Touch Start
                                         roulette[i].setEvent('mousedown touchstart', function(event) {
                                             // Modification > Target > Cursor Position X
-                                            (this.getAttribute('class').trim().split(/ /g).indexOf('no-swipe') > -1) || (this['LapysJS eventPositionX'] = event.clientX || event.changedTouches[0].clientX);
+                                            (LapysJS.debug.formatText(this.getAttribute('class'), 4).indexOf('no-swipe') > -1) || (this['LapysJS eventPositionX'] = event.clientX || event.changedTouches[0].clientX);
 
                                             // Insertion
                                             document.head.appendChild(createDocumentFragment('<delete-element><style media=all type=text/css>' + this.CSSSelector + ' > [data-id=cards-container] > * { user-select: none !important; }</style></delete-element>', 'div'))
@@ -14475,7 +14827,7 @@
                                             /* Logic
                                                     [if:else if:else statement]
                                             */
-                                            if (this.getAttribute('class').trim().split(/ /g).indexOf('no-swipe') < 0)
+                                            if (LapysJS.debug.formatText(this.getAttribute('class'), 4).indexOf('no-swipe') < 0)
                                                 /* Logic
                                                         [if:else if:else statement]
                                                 */
@@ -15477,7 +15829,7 @@
                                 document.querySelector('.focusable[data-focus').removeAttribute('data-focus');
 
                             // Modification > [Event > (...)] > Data Focus
-                            (((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).getAttribute('class') || '').trim().split(/ /g).indexOf('focusable') < 0) || (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).setAttribute('data-focus', '')
+                            (LapysJS.debug.formatText((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).getAttribute('class') || '', 4).indexOf('focusable') < 0) || (typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement)).setAttribute('data-focus', '')
                         }) : document.body.setEvent('mouseup', function(event) {
                             /* Loop
                                     While
@@ -15766,11 +16118,14 @@
                 // Ready
                 LapysJS.ready = !0;
 
-        // Console > Log
-        console.log('LapysJS.ready', LapysJS.ready)
+        // Console > (...)
+        console.group('LapysJS');
+            console.log('LapysJS.ready', LapysJS.ready);
+            console.log('LapysJS.totalProcessingTime', LapysJS.totalProcessingTime = performance.now() - LapysJSScriptTotalProcessingTime);
+        console.groupEnd()
     }
 
     else
         // LapysJS > Error
         LapysJS.error('$c$global-object-test')
-})(window, window.document, window.global || null, window.undefined || void 0)
+})(window, window.document, typeof global != 'undefined' ? global : null, window.undefined || void 0)
