@@ -14,7 +14,7 @@
 
     <!-- Scripts -->
         <!-- Loader Screen Script -->
-        <script async src=assets/js/loader-screen.min.js type=text/javascript> </script>
+        <script async src=assets/js/loader-screen.js type=text/javascript> </script>
 
         <!-- LapysJS Script -->
         <script data-enable=html-javascript src=src/lapys.js type=text/javascript> </script>
@@ -59,9 +59,9 @@
                     <!-- Sub Header -->
                     <h2 class='col-3 m-center no-margin no-select t-center text-left' data-id=subheader>
                         <dynamic-text-component
-                            data-text='tnempoleved wen s&rsquo;tI'
-                            data-text-function='type, pause=20, highlightCharacterBackwards, clear; insert, navigateCursorForwards, pause=20, delete'
-                            data-text-function-delay=3
+                            data-text='tnempoleved wen s&rsquo;tI,We create to make creating easier'
+                            data-text-function='type, pause=20, highlightCharacterBackwards, clear; insert, navigateCursorForwards, pause=20, delete; type, pause=20, delete'
+                            data-text-function-delay=2
                             data-text-function-duration=.75
                             data-text-function-initial-delay=.75
                             script='let that = this; check(function() { return !!document.title.removeChar(/\w/g).trim() }, function() { that.attr("data-text", (document.title.getAfterChar(document.title.removeChar(/\w/g).trim()[0]) + ", " + (that.attr("data-text") || "")).trim()); that.attr("data-text-function-init", true) }); that.delAttr("script")'

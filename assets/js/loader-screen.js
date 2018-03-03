@@ -2,28 +2,51 @@
     (function LoaderScreenScript(window = window, document = window.document, undefined = window.undefined || void 0) {
         // Initialization > (Processing Time, Condition, Timeout, Loader (...))
         let processingTime = 0,
-            condition = function() {
+            condition = function condition() {
                 // Return
                 return document.body
             },
-            timeout = function() {
+            timeout = function timeout() {
                 // Return
                 return (processingTime * 1e3) / 2
             },
-            loaderScreenFontSize = typeof window.loaderScreenFontSize != 'undefined' ? window.loaderScreenFontSize : 14,
-            loaderScreenMargin = typeof window.loaderScreenMargin != 'undefined' ? window.loaderScreenMargin : 10,
-            loaderScreenMessage = typeof window.loaderScreenMessage != 'undefined' ? window.loaderScreenMessage : 'Loading, please wait&hellip;',
-            loaderScreenOpacity = typeof window.loaderScreenOpacity != 'undefined' ? window.loaderScreenOpacity : .75,
-            loaderScreenTransition = typeof window.loaderScreenTransition != 'undefined' ? window.loaderScreenTransition : .675,
-            loaderScreenWidth = typeof window.loaderScreenWidth != 'undefined' ? window.loaderScreenWidth : 7.5;
+            loaderScreenBase = [],
+            loaderScreenClearInterval = typeof requestAnimationFrame == 'function' ? function clearInterval() {
+                /* Update > Loader Screen Base
+                        --- NOTE ---
+                            @lapys: Since this function is barely used,
+                                just clear the whole data.
+                */
+                loaderScreenBase = []
+            } : clearInterval,
+            loaderScreenFontSize = typeof window.loaderScreenFontSize != 'undefined' ? loaderScreenFontSize : 14,
+            loaderScreenMargin = typeof window.loaderScreenMargin != 'undefined' ? loaderScreenMargin : 10,
+            loaderScreenMessage = typeof window.loaderScreenMessage != 'undefined' ? loaderScreenMessage : 'Loading, please wait&hellip;',
+            loaderScreenOpacity = typeof window.loaderScreenOpacity != 'undefined' ? loaderScreenOpacity : .75,
+            loaderScreenTransition = typeof window.loaderScreenTransition != 'undefined' ? loaderScreenTransition : .675,
+            loaderScreenWidth = typeof window.loaderScreenWidth != 'undefined' ? loaderScreenWidth : 7.5,
+            loaderScreenInterval = typeof requestAnimationFrame == 'function' ? function interval(callback) {
+                // Update > Loader Screen Base
+                loaderScreenBase.push(callback);
+
+                // Function > Main
+                (function main() {
+                    // Callback
+                    callback();
+
+                    // Request Animation Frame
+                    (loaderScreenBase.indexOf(callback) < 0) || requestAnimationFrame(main)
+                })()
+            } : setInterval,
+            loaderScreenTimeout = setTimeout;
 
         // Function > Update
         function update() {
-            // Set Timeout
-            setTimeout(function() {
+            // Loader Screen Timeout
+            loaderScreenTimeout(function() {
                 // Initialization > (Data, Metadata)
                 var data = document.createElement('loader-screen-element'),
-                    metadata = setInterval(function() {
+                    metadata = loaderScreenInterval(function() {
                         /* Logic
                                 [if:else if:else statement]
                         */
@@ -59,13 +82,13 @@
                         "<small style='color: rgba(127, 127, 127, .675); font-family: \"Open Sans\", \"Calibri Light\", Calibri, sans-serif; font-size: " + loaderScreenFontSize + "px !important; margin: 0 auto; margin-top: " + loaderScreenMargin + "px; text-align: center'> " + loaderScreenMessage + " </small>";
 
                     // Style
-                    data.style = 'align-items: center; background-color: rgba(255, 255, 255, .98); display: flex; flex-direction: column; height: ' + innerHeight + 'px; justify-content: center; left: 0; margin: auto; max-height: 100% !important; max-width: 100% !important; min-height: 100vh; min-width: 100vh; position: fixed; top: 0; transition: ' + loaderScreenTransition + 's ease-in-out; width: ' + innerWidth + 'px; z-index: 2147483647';
+                    data.style = 'align-items: center; background-color: rgba(255, 255, 255, .9999); display: flex; flex-direction: column; height: ' + innerHeight + 'px; justify-content: center; left: 0; margin: auto; max-height: 100% !important; max-width: 100% !important; min-height: 100vh; min-width: 100vh; position: fixed; top: 0; transition: ' + loaderScreenTransition + 's ease-in-out; width: ' + innerWidth + 'px; z-index: 2147483647';
 
                 // Function
                     // Alpha
                     function alpha() {
-                        // Clear Interval
-                        clearInterval(metadata)
+                        // Loader Screen Clear Interval
+                        loaderScreenClearInterval(metadata)
                     };
 
                     // Test
@@ -77,8 +100,8 @@
                             // Opacity
                             data.style.opacity = 0;
 
-                        // Set Timeout
-                        setTimeout(function() {
+                        // Loader Screen Timeout
+                        loaderScreenTimeout(function() {
                             // Deletion
                             data.remove();
 
@@ -99,7 +122,7 @@
 
         else {
             // Initialization > Data
-            var data = setInterval(function() {
+            var data = loaderScreenInterval(function() {
                 /* Logic
                         [if:else if:else statement]
                 */
@@ -117,8 +140,8 @@
 
             // Function > Metadata
             function metadata() {
-                // Clear Interval
-                clearInterval(data);
+                // Loader Screen Clear Interval
+                loaderScreenClearInterval(data);
 
                 /* Logic
                         [if:else if:else statement]

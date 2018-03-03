@@ -173,7 +173,7 @@
                 // Initialization > (Data, Target)
                 let data = [
                     // LapysJS
-                    new (function NavigationLinks() {
+                    new (function NavigationLink() {
                         // Modification > Target > (...)
                         this.class = 'col-1';
                         this.href = 'index.html';
@@ -184,7 +184,7 @@
                     }),
 
                     // JavaScript
-                    new (function NavigationLinks() {
+                    new (function NavigationLink() {
                         // Modification > Target > (...)
                         this.class = 'col-1';
                         this.href = 'pages/javascript.html';
@@ -287,6 +287,29 @@
                         }
                     }, $$("[role*='navigation-links-container'", 'length'))
             });
+
+            onDOMReady(function() {
+                /* Logic
+                        [if:else if:else statement]
+                */
+                if (hasProperty('QUIET_CONSOLE')) {
+                    // Clear
+                    clear();
+
+                    // Timeout
+                    timeout(function() {
+                        // Update > Quiet Console
+                        QUIET_CONSOLE = true
+                    })
+                }
+
+                // Console > (...)
+                console.group(document.title);
+                    console.log('ALLOW_ALTERNATIVE_RESOURCE_FILES', ALLOW_ALTERNATIVE_RESOURCE_FILES);
+                    console.log('DYNAMIC_ASSETS_URL', '"' + DYNAMIC_ASSETS_URL + '"');
+                    console.log('NAVIGATION_LINKS', NAVIGATION_LINKS);
+                console.groupEnd()
+            }, LapysJS.totalProcessingTime)
     }
 
     else

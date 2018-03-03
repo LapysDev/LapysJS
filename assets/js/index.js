@@ -4,9 +4,10 @@
 */
 if (typeof LapysJS == 'object' && (LapysJS || new (function Data() {})).ready === true) {
     /* Global Data */
-        // (Former) Current Slide
+        // (Former) Current Slide, Is Scrolling
         let currentSlide = 0,
-            formerCurrentSlide = 0;
+            formerCurrentSlide = 0,
+            isScrolling = false;
 
         // Document > Title
             // Check
@@ -71,16 +72,22 @@ if (typeof LapysJS == 'object' && (LapysJS || new (function Data() {})).ready ==
                 data.delete()
             }
 
-            // JavaScript > Source
-            js.src('particlesJSScript', {src: 'vendors/js/particles.min.js?' + RANDOM_VER_NUMBER, type: 'text/javascript'});
-
             // Check
-            check(function checkParticlesJS() {
+            check(function checkRandomVersionNumberReady() {
                 // Return
-                return typeof particlesJS == 'function'
-            }, function configureParticlesJS() {
+                return typeof RANDOM_VER_NUMBER == 'string'
+            }, function scriptParticlesJS() {
                 // JavaScript > Source
-                js.src('particlesJSConfigurationScript', {src: 'vendors/js/particles-js-config.min.js?' + RANDOM_VER_NUMBER, type: 'text/javascript'})
+                js.src('particlesJSScript', {src: 'vendors/js/particles.min.js?' + RANDOM_VER_NUMBER, type: 'text/javascript'});
+
+                // Check
+                check(function checkParticlesJS() {
+                    // Return
+                    return typeof particlesJS == 'function'
+                }, function configureParticlesJS() {
+                    // JavaScript > Source
+                    js.src('particlesJSConfigurationScript', {src: 'vendors/js/particles-js-config.min.js?' + RANDOM_VER_NUMBER, type: 'text/javascript'})
+                })
             })
         };
 
@@ -176,11 +183,29 @@ if (typeof LapysJS == 'object' && (LapysJS || new (function Data() {})).ready ==
                     currentSlide = currentSlide
             }
 
-            /* Scroll To
-                    --- UPDATE REQUIRED ---
-                        @lapys: Update this to a working Smooth Scroll To function.
-            */
-            (formerCurrentSlide == currentSlide) || scrollTo(document.main._$('[role=full-page', currentSlide).offset.left, document.main._$('[role=full-page', currentSlide).offset.top)
+            // (Smooth) Scroll To
+            (getProperty('smoothScrollTo') || func()).getBody().trim() ? ((formerCurrentSlide == currentSlide) || isScrolling || smoothScrollTo({
+                // Duration
+                duration: 1,
+
+                // On Smooth Scroll Start
+                onsmoothscrollstart: function() {
+                    // Update > Is Scrolling
+                    isScrolling = true
+                },
+
+                // On Smooth Scroll End
+                onsmoothscrollend: function() {
+                    // Update > Is Scrolling
+                    isScrolling = false
+                },
+
+                // Target
+                target: document.main._$('[role=full-page', currentSlide),
+
+                // Timing Function
+                timingFunction: 'ease-in-out'
+            })) : scrollTo(document.main._$('[role=full-page', currentSlide).offset.left, document.main._$('[role=full-page', currentSlide).offset.top)
         };
 
     // Event
@@ -193,8 +218,12 @@ if (typeof LapysJS == 'object' && (LapysJS || new (function Data() {})).ready ==
 
             // Resize
             invokeEvent('resize', function() {
+                // Scroll To
+                scrollTo(0, 0);
+                scrollTo(0, document.main._$('[role=full-page', currentSlide).offset.top);
+
                 // (Initialize | Stop) Particles JS Script
-                innerWidth > 768 ? initParticlesJSScript() : stopParticlesJSScript()
+                (LapysJS.totalProcessingTime > rand(300, 350)) || (innerWidth > 768 ? initParticlesJSScript() : stopParticlesJSScript())
             });
 
         // <body>

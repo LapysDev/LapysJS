@@ -22,7 +22,7 @@
 
                     > Modification > Application
                 */
-                if (typeof app == 'object') {
+                if (getType(app) == 'application-information') {
                     // Author
                     app.author = app.author || 'Author`s Name';
 
@@ -75,6 +75,14 @@
                         }
                 }
 
+            // Console Fallback
+            let consoleFallback = {}
+                // Repeat
+                repeat((index, limit, data, keys, values) => {
+                    // Initialization
+                    consoleFallback[values + 'Fallback'] = console[values]
+                }, console.keys());
+
             // CSS > Style
                 // Error Handling
                 try {
@@ -87,6 +95,20 @@
 
             // Document > Favorite Icon
             (len(document.favicon) > 0) || (document.favicon = 'favicon.ico');
+
+            // Quiet Console
+            def('QUIET_CONSOLE', hasProperty('QUIET_CONSOLE') ? QUIET_CONSOLE : false);
+                // Repeat
+                repeat(function() {
+                    // Repeat
+                    QUIET_CONSOLE ? repeat((index, limit, data, keys) => {
+                        // Update > Console > (...)
+                        console[keys.slice(0, -len('Fallback'))] = func()
+                    }, consoleFallback) : repeat((index, limit, data, keys) => {
+                        // Update > Console > (...)
+                        console[keys.slice(0, -len('Fallback'))] = data[keys]
+                    }, consoleFallback)
+                }, Infinity);
 
         /* DOM Elements */
             // Component
@@ -253,16 +275,18 @@
         /* Function */
             // On DOM Ready
             onDOMReady(function updateLapysJSPlugIns() {
-                // Function > Main
+                /* Function > Main
+                        --- NOTE ---
+                            @lapys: `Wake up` the DOM.
+                */
                 function main() {
                     // Insertion
                     LapysJS.debug.addNewElement();
 
-                    //Deletion
+                    // Deletion
                     LapysJS.debug.delOldElement()
                 };
-                main();
-                timeout(main, 3e3)
+                invokeTimeout(main, 3e3)
             })
     }
 
