@@ -14,6 +14,10 @@
     --- UPDATE ---
         @lapys:
             - Closeable dialogs.
+            - Cache all 'constructor.prototype'`s.
+            - <key-command>
+            - Dynamic Time plugin
+            - Lazy Scripts and <img>
 
     --- WARN ---
         @lapys:
@@ -61,13 +65,13 @@
 
             /* Node */
                 // Prepend
-                (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:!0,enumerable:!0,value:function prepend(){var argArr=Array.prototype.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:!0})})})([Element.prototype,Document.prototype,DocumentFragment.prototype]);
+                (function(arr){arr.forEach(function(item){if(item.hasOwnProperty('prepend'))return;Object.defineProperty(item,'prepend',{configurable:!0,enumerable:!0,value:function prepend(){var argArr=_temporaryData.slice.call(arguments),docFrag=document.createDocumentFragment();argArr.forEach(function(argItem){var isNode=argItem instanceof Node;docFrag.appendChild(isNode?argItem:document.createTextNode(String(argItem)))});this.insertBefore(docFrag,this.firstChild)},writable:!0})})})([Element.prototype,Document.prototype,DocumentFragment.prototype]);
 
             /* Promise
                     --- NOTE ---
                         @lapys: https://www.promisejs.org/polyfills/promise-7.0.4.min.js
             */
-            !function b(g,j,k){function m(z,A){if(!j[z]){if(!g[z]){var B="function"==typeof require&&require;if(!A&&B)return B(z,!0);if(q)return q(z,!0);var C=new Error("Cannot find module '"+z+"'");throw C.code="MODULE_NOT_FOUND",C}var D=j[z]={exports:{}};g[z][0].call(D.exports,function(E){var F=g[z][1][E];return m(F?F:E)},D,D.exports,b,g,j,k)}return j[z].exports}for(var q="function"==typeof require&&require,x=0;x<k.length;x++)m(k[x]);return m}({1:[function(b,g){"use strict";function k(){}function m(K){try{return K.then}catch(L){return I=L,J}}function q(K,L){try{return K(L)}catch(M){return I=M,J}}function x(K,L,M){try{K(L,M)}catch(N){return I=N,J}}function z(K){if("object"!=typeof this)throw new TypeError("Promises must be constructed via new");if("function"!=typeof K)throw new TypeError("not a function");this._37=0,this._12=null,this._59=[],K!==k&&G(K,this)}function A(K,L,M){return new K.constructor(function(N,O){var P=new z(k);P.then(N,O),B(K,new F(L,M,P))})}function B(K,L){for(;3===K._37;)K=K._12;return 0===K._37?void K._59.push(L):void H(function(){var M=1===K._37?L.onFulfilled:L.onRejected;if(null===M)return void(1===K._37?C(L.promise,K._12):D(L.promise,K._12));var N=q(M,K._12);N===J?D(L.promise,I):C(L.promise,N)})}function C(K,L){if(L===K)return D(K,new TypeError("A promise cannot be resolved with itself."));if(L&&("object"==typeof L||"function"==typeof L)){var M=m(L);if(M===J)return D(K,I);if(M===K.then&&L instanceof z)return K._37=3,K._12=L,void E(K);if("function"==typeof M)return void G(M.bind(L),K)}K._37=1,K._12=L,E(K)}function D(K,L){K._37=2,K._12=L,E(K)}function E(K){for(var L=0;L<K._59.length;L++)B(K,K._59[L]);K._59=null}function F(K,L,M){this.onFulfilled="function"==typeof K?K:null,this.onRejected="function"==typeof L?L:null,this.promise=M}function G(K,L){var M=!1,N=x(K,function(O){M||(M=!0,C(L,O))},function(O){M||(M=!0,D(L,O))});M||N!==J||(M=!0,D(L,I))}var H=b("asap/raw"),I=null,J={};g.exports=z,z._99=k,z.prototype.then=function(K,L){if(this.constructor!==z)return A(this,K,L);var M=new z(k);return B(this,new F(K,L,M)),M}},{"asap/raw":4}],2:[function(b,g){"use strict";function k(D){var E=new m(m._99);return E._37=1,E._12=D,E}var m=b("./core.js");g.exports=m;var q=k(!0),x=k(!1),z=k(null),A=k(void 0),B=k(0),C=k("");m.resolve=function(D){if(D instanceof m)return D;if(null===D)return z;if(void 0===D)return A;if(!0===D)return q;if(!1===D)return x;if(0===D)return B;if(""===D)return C;if("object"==typeof D||"function"==typeof D)try{var E=D.then;if("function"==typeof E)return new m(E.bind(D))}catch(F){return new m(function(G,H){H(F)})}return k(D)},m.all=function(D){var E=Array.prototype.slice.call(D);return new m(function(F,G){function H(K,L){if(L&&("object"==typeof L||"function"==typeof L)){if(L instanceof m&&L.then===m.prototype.then){for(;3===L._37;)L=L._12;return 1===L._37?H(K,L._12):(2===L._37&&G(L._12),void L.then(function(O){H(K,O)},G))}var M=L.then;if("function"==typeof M){var N=new m(M.bind(L));return void N.then(function(O){H(K,O)},G)}}E[K]=L,0==--I&&F(E)}if(0===E.length)return F([]);for(var I=E.length,J=0;J<E.length;J++)H(J,E[J])})},m.reject=function(D){return new m(function(E,F){F(D)})},m.race=function(D){return new m(function(E,F){D.forEach(function(G){m.resolve(G).then(E,F)})})},m.prototype["catch"]=function(D){return this.then(null,D)}},{"./core.js":1}],3:[function(b,g){"use strict";function m(C){var D;D=z.length?z.pop():new q,D.task=C,x(D)}function q(){this.task=null}var x=b("./raw"),z=[],A=[],B=x.makeRequestCallFromTimer(function(){if(A.length)throw A.shift()});g.exports=m,q.prototype.call=function(){try{this.task.call()}catch(C){m.onerror?m.onerror(C):(A.push(C),B())}finally{this.task=null,z[z.length]=this}}},{"./raw":4}],4:[function(b,g){(function(k){"use strict";function m(G){B.length||(A(),C=!0),B[B.length]=G}function q(){for(;D<B.length;){var G=D;if(D+=1,B[G].call(),D>1024){for(var H=0,I=B.length-D;I>H;H++)B[H]=B[H+D];B.length-=D,D=0}}B.length=0,D=0,C=!1}function z(G){return function(){function H(){clearTimeout(I),clearInterval(J),G()}var I=setTimeout(H,0),J=setInterval(H,50)}}g.exports=m;var A,B=[],C=!1,D=0,F=k.MutationObserver||k.WebKitMutationObserver;A="function"==typeof F?function(G){var H=1,I=new F(G),J=document.createTextNode("");return I.observe(J,{characterData:!0}),function(){H=-H,J.data=H}}(q):z(q),m.requestFlush=A,m.makeRequestCallFromTimer=z}).call(this,"undefined"==typeof window?"undefined"==typeof self?"undefined"==typeof window?{}:window:self:window)},{}],5:[function(){"function"!=typeof Promise.prototype.done&&(Promise.prototype.done=function(){var q=arguments.length?this.then.apply(this,arguments):this;q.then(null,function(x){setTimeout(function(){throw x},0)})})},{}],6:[function(b){b("asap"),"undefined"==typeof Promise&&(Promise=b("./lib/core.js"),b("./lib/es6-extensions.js")),b("./polyfill-done.js")},{"./lib/core.js":1,"./lib/es6-extensions.js":2,"./polyfill-done.js":5,asap:3}]},{},[6]);
+            !function b(g,j,k){function m(z,A){if(!j[z]){if(!g[z]){var B="function"==typeof require&&require;if(!A&&B)return B(z,!0);if(q)return q(z,!0);var C=new Error("Cannot find module '"+z+"'");throw C.code="MODULE_NOT_FOUND",C}var D=j[z]={exports:{}};g[z][0].call(D.exports,function(E){var F=g[z][1][E];return m(F?F:E)},D,D.exports,b,g,j,k)}return j[z].exports}for(var q="function"==typeof require&&require,x=0;x<k.length;x++)m(k[x]);return m}({1:[function(b,g){"use strict";function k(){}function m(K){try{return K.then}catch(L){return I=L,J}}function q(K,L){try{return K(L)}catch(M){return I=M,J}}function x(K,L,M){try{K(L,M)}catch(N){return I=N,J}}function z(K){if("object"!=typeof this)throw new TypeError("Promises must be constructed via new");if("function"!=typeof K)throw new TypeError("not a function");this._37=0,this._12=null,this._59=[],K!==k&&G(K,this)}function A(K,L,M){return new K.constructor(function(N,O){var P=new z(k);P.then(N,O),B(K,new F(L,M,P))})}function B(K,L){for(;3===K._37;)K=K._12;return 0===K._37?void K._59.push(L):void H(function(){var M=1===K._37?L.onFulfilled:L.onRejected;if(null===M)return void(1===K._37?C(L.promise,K._12):D(L.promise,K._12));var N=q(M,K._12);N===J?D(L.promise,I):C(L.promise,N)})}function C(K,L){if(L===K)return D(K,new TypeError("A promise cannot be resolved with itself."));if(L&&("object"==typeof L||"function"==typeof L)){var M=m(L);if(M===J)return D(K,I);if(M===K.then&&L instanceof z)return K._37=3,K._12=L,void E(K);if("function"==typeof M)return void G(M.bind(L),K)}K._37=1,K._12=L,E(K)}function D(K,L){K._37=2,K._12=L,E(K)}function E(K){for(var L=0;L<K._59.length;L++)B(K,K._59[L]);K._59=null}function F(K,L,M){this.onFulfilled="function"==typeof K?K:null,this.onRejected="function"==typeof L?L:null,this.promise=M}function G(K,L){var M=!1,N=x(K,function(O){M||(M=!0,C(L,O))},function(O){M||(M=!0,D(L,O))});M||N!==J||(M=!0,D(L,I))}var H=b("asap/raw"),I=null,J={};g.exports=z,z._99=k,z.prototype.then=function(K,L){if(this.constructor!==z)return A(this,K,L);var M=new z(k);return B(this,new F(K,L,M)),M}},{"asap/raw":4}],2:[function(b,g){"use strict";function k(D){var E=new m(m._99);return E._37=1,E._12=D,E}var m=b("./core.js");g.exports=m;var q=k(!0),x=k(!1),z=k(null),A=k(void 0),B=k(0),C=k("");m.resolve=function(D){if(D instanceof m)return D;if(null===D)return z;if(void 0===D)return A;if(!0===D)return q;if(!1===D)return x;if(0===D)return B;if(""===D)return C;if("object"==typeof D||"function"==typeof D)try{var E=D.then;if("function"==typeof E)return new m(E.bind(D))}catch(F){return new m(function(G,H){H(F)})}return k(D)},m.all=function(D){var E=_temporaryData.slice.call(D);return new m(function(F,G){function H(K,L){if(L&&("object"==typeof L||"function"==typeof L)){if(L instanceof m&&L.then===m.prototype.then){for(;3===L._37;)L=L._12;return 1===L._37?H(K,L._12):(2===L._37&&G(L._12),void L.then(function(O){H(K,O)},G))}var M=L.then;if("function"==typeof M){var N=new m(M.bind(L));return void N.then(function(O){H(K,O)},G)}}E[K]=L,0==--I&&F(E)}if(0===E.length)return F([]);for(var I=E.length,J=0;J<E.length;J++)H(J,E[J])})},m.reject=function(D){return new m(function(E,F){F(D)})},m.race=function(D){return new m(function(E,F){D.forEach(function(G){m.resolve(G).then(E,F)})})},m.prototype["catch"]=function(D){return this.then(null,D)}},{"./core.js":1}],3:[function(b,g){"use strict";function m(C){var D;D=z.length?z.pop():new q,D.task=C,x(D)}function q(){this.task=null}var x=b("./raw"),z=[],A=[],B=x.makeRequestCallFromTimer(function(){if(A.length)throw A.shift()});g.exports=m,q.prototype.call=function(){try{this.task.call()}catch(C){m.onerror?m.onerror(C):(A.push(C),B())}finally{this.task=null,z[z.length]=this}}},{"./raw":4}],4:[function(b,g){(function(k){"use strict";function m(G){B.length||(A(),C=!0),B[B.length]=G}function q(){for(;D<B.length;){var G=D;if(D+=1,B[G].call(),D>1024){for(var H=0,I=B.length-D;I>H;H++)B[H]=B[H+D];B.length-=D,D=0}}B.length=0,D=0,C=!1}function z(G){return function(){function H(){clearTimeout(I),clearInterval(J),G()}var I=setTimeout(H,0),J=setInterval(H,50)}}g.exports=m;var A,B=[],C=!1,D=0,F=k.MutationObserver||k.WebKitMutationObserver;A="function"==typeof F?function(G){var H=1,I=new F(G),J=document.createTextNode("");return I.observe(J,{characterData:!0}),function(){H=-H,J.data=H}}(q):z(q),m.requestFlush=A,m.makeRequestCallFromTimer=z}).call(this,"undefined"==typeof window?"undefined"==typeof self?"undefined"==typeof window?{}:window:self:window)},{}],5:[function(){"function"!=typeof Promise.prototype.done&&(Promise.prototype.done=function(){var q=arguments.length?this.then.apply(this,arguments):this;q.then(null,function(x){setTimeout(function(){throw x},0)})})},{}],6:[function(b){b("asap"),"undefined"==typeof Promise&&(Promise=b("./lib/core.js"),b("./lib/es6-extensions.js")),b("./polyfill-done.js")},{"./lib/core.js":1,"./lib/es6-extensions.js":2,"./polyfill-done.js":5,asap:3}]},{},[6]);
 
         /* {Window} Global Data */
             // LapysJS Script Total Processing Time
@@ -101,12 +105,15 @@
                 return Math.abs.apply(Math, [...arguments])
             });
 
+            // Initialization > Temporary Data
+            let _temporaryData = Window.prototype;
+
             /* Add Class List
                     --- NOTE ---
                         @lapys: Store a set of re-usable class names
                             for DOM elements.
             */
-            (typeof addClassList == 'function') || Object.defineProperty(Window.prototype, 'addClassList', {
+            (typeof addClassList == 'function') || Object.defineProperty(_temporaryData, 'addClassList', {
                 // Value
                 value: function addClassList() {
                     // Initialization > (Arguments, Data, Metadata)
@@ -145,7 +152,7 @@
                         @lapys: Made for converting HTMLCollections and NodeLists into arrays,
                             Very similar to the Array function object.
             */
-            Object.defineProperty(Window.prototype, 'array', {
+            Object.defineProperty(_temporaryData, 'array', {
                 // Value
                 value: function array() {
                     // Initialization > (Arguments, Data)
@@ -223,7 +230,7 @@
                                     // Get
                                     get: function accordion() {
                                         // Return
-                                        return document.querySelectorAll(".accordion:not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                        return document.querySelectorAll(".accordion:not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
                                     }
                                 });
 
@@ -232,7 +239,7 @@
                                     // Get
                                     get: function carousel() {
                                         // Return
-                                        return document.querySelectorAll(".carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                        return document.querySelectorAll(".carousel:not(.accordion):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
                                     }
                                 });
 
@@ -241,7 +248,7 @@
                                     // Get
                                     get: function dragElement() {
                                         // Initialization > (Data, Metadata)
-                                        let data = [...document.querySelectorAll("[data-id*='drag-element']:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drop-element']):not(input):not(textarea)")],
+                                        let data = [...document.querySelectorAll("[data-id*='drag-element']:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drop-element']):not(input):not(textarea)")],
                                             metadata = [];
 
                                         /* Loop
@@ -262,7 +269,7 @@
                                     // Get
                                     get: function dropElement() {
                                         // Initialization > (Data, Metadata)
-                                        let data = [...document.querySelectorAll("[data-id*='drop-element']:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not(input):not(textarea)")],
+                                        let data = [...document.querySelectorAll("[data-id*='drop-element']:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not(input):not(textarea)")],
                                             metadata = [];
 
                                         /* Loop
@@ -283,7 +290,16 @@
                                     // Get
                                     get: function dropdown() {
                                         // Return
-                                        return document.querySelectorAll(".dropdown:not(.accordion):not(.carousel):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                        return document.querySelectorAll(".dropdown:not(.accordion):not(.carousel):not(.dynamic-time):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                    }
+                                });
+
+                                // Dynamic Time
+                                _Object.defineProperty(that, 'dynamicTime', {
+                                    // Get
+                                    get: function dynamicTime() {
+                                        // Return
+                                        return document.querySelectorAll("time.dynamic-time:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element'])")
                                     }
                                 });
 
@@ -292,7 +308,7 @@
                                     // Get
                                     get: function dynamicText() {
                                         // Return
-                                        return document.querySelectorAll(".dynamic-text:not(.accordion):not(.carousel):not(.dropdown):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                        return document.querySelectorAll(".dynamic-text:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
                                     }
                                 });
 
@@ -301,7 +317,7 @@
                                     // Get
                                     get: function media() {
                                         // Return
-                                        return document.querySelectorAll(".media:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                        return document.querySelectorAll(".media:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
                                     }
                                 });
 
@@ -310,7 +326,7 @@
                                     // Get
                                     get: function mediaPlaylist() {
                                         // Return
-                                        return document.querySelectorAll(".media-playlist:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                        return document.querySelectorAll(".media-playlist:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
                                     }
                                 });
 
@@ -319,7 +335,7 @@
                                     // Get
                                     get: function placeholder() {
                                         // Return
-                                        return document.querySelectorAll("input[data-placeholder]:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']), textarea[data-placeholder]:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element'])")
+                                        return document.querySelectorAll("input[data-placeholder]:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element']), textarea[data-placeholder]:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.roulette):not([data-id*='drag-element']):not([data-id*='drop-element'])")
                                     }
                                 });
 
@@ -328,7 +344,7 @@
                                     // Get
                                     get: function roulette() {
                                         // Return
-                                        return document.querySelectorAll(".roulette:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-text):not(.media):not(.media-playlist):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
+                                        return document.querySelectorAll(".roulette:not(.accordion):not(.carousel):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.media-playlist):not([data-id*='drag-element']):not([data-id*='drop-element']):not(input):not(textarea)")
                                     }
                                 });
 
@@ -345,7 +361,7 @@
             });
 
             // Boolean
-            Object.defineProperty(Window.prototype, 'bool', {
+            Object.defineProperty(_temporaryData, 'bool', {
                 // Value
                 value: function boolean() {
                     // Initialization > (Arguments, Data)
@@ -385,7 +401,7 @@
                         @lapys: Similar to a Bernoulli distribution trial
                             with exclusive or exhaustive results from an outcome.
             */
-            Object.defineProperty(Window.prototype, 'check', {
+            Object.defineProperty(_temporaryData, 'check', {
                 // Value
                 value: function check() {
                     // Initialization > (Arguments, Data, Metadata, Alpha)
@@ -502,7 +518,7 @@
             });
 
             // Class List
-            ((window.classList || _LapysJSObject).constructor.name == 'ClassListRegistry') || Object.defineProperty(Window.prototype, 'classList', new (function Object() {
+            ((window.classList || _LapysJSObject).constructor.name == 'ClassListRegistry') || Object.defineProperty(_temporaryData, 'classList', new (function Object() {
                 // Initialization > (Data, Target)
                 let data = new (function ClassListRegistry() {}),
                     that = this;
@@ -522,47 +538,38 @@
             }));
 
             // Clear
-                // Initialization > Temporary Data
-                let temporaryData;
-
                 // Update > Temporary Data
                     // Error Handling
                     try {
-                        temporaryData = console.clear.bind({})
+                        _temporaryData = console.clear.bind({})
                     }
 
                     catch (error) {
-                        temporaryData = console.clear
+                        _temporaryData = console.clear
                     }
-
-                /* Initialization > Temporary Data
-                        --- NOTE ---
-                            @lapys: Prevent this function from
-                                being redundant even if it`s original version
-                                is deleted.
-                */
-                let _temporaryData = temporaryData;
 
                 // Definition
-                (typeof clear == 'function') || Object.defineProperty(window, 'clear', {
-                    // Configurable
-                    configurable: !0,
+                (typeof clear == 'function') || Object.defineProperty(window, 'clear', new (function Object() {
+                    // Initialization > (Data, Target)
+                    let data = _temporaryData,
+                        that = this;
 
-                    // Enumerable
-                    enumerable: !0,
+                    // Modification > Target
+                        // Configurable
+                        that.configurable = !0;
 
-                    // Get
-                    get: function clear() {
-                        // Initialization > Data
-                        let data = _temporaryData;
+                        // Enumerable
+                        that.enumerable = !0;
 
-                        // Data
-                        data();
+                        // Get
+                        that.get = function clear() {
+                            // Data
+                            data();
 
-                        // Return
-                        return data
-                    }
-                });
+                            // Return
+                            return data
+                        }
+                }));
 
             /* Is Element
                     --- NOTE ---
@@ -602,8 +609,11 @@
                 return data.nodeType == 1 && typeof data.outerHTML == 'string' ? (metadata || !0) : !1
             };
 
+            // Update > Temporary Data
+            _temporaryData = Window.prototype;
+
             // Click
-            (typeof click == 'function') || Object.defineProperty(Window.prototype, 'click', {
+            (typeof click == 'function') || Object.defineProperty(_temporaryData, 'click', {
                 // Value
                 value: function click() {
                     // Initialization > (Arguments, Arguments Set, Data, Metadata, Alpha)
@@ -659,15 +669,16 @@
             var clipboardContent = (window.clipboardData || {getData: function() {}}).getData('Text') || '';
 
             // Cooler
-            ((window.cooler || _LapysJSObject).constructor.name == 'LapysJSCooler') || Object.defineProperty(Window.prototype, 'cooler', new (function Object() {
+            ((window.cooler || _LapysJSObject).constructor.name == 'LapysJSCooler') || Object.defineProperty(_temporaryData, 'cooler', new (function Object() {
                 // Initialization > (Data, Target)
                 let data = new (function LapysJSCooler() {
                     // Initialization > Target
-                    let that = this;
+                    let that = this,
+                        _that = that.constructor.prototype;
 
                     // Modification > Target
                         // Freeze
-                        _Object.defineProperty(that.constructor.prototype, 'freeze', {
+                        _Object.defineProperty(_that, 'freeze', {
                             // Value
                             value: function freeze() {
                                 // Initialization > (Arguments, Data, Metadata, Alpha)
@@ -718,7 +729,7 @@
                         });
 
                         // Melt
-                        _Object.defineProperty(that.constructor.prototype, 'melt', {
+                        _Object.defineProperty(_that, 'melt', {
                             // Value
                             value: function melt() {
                                 // Initialization > (Arguments, Data)
@@ -765,7 +776,7 @@
             }));
 
             // Compare
-            (typeof compare == 'function') || Object.defineProperty(Window.prototype, 'compare', {
+            (typeof compare == 'function') || Object.defineProperty(_temporaryData, 'compare', {
                 // Value
                 value: function compare() {
                     // Return
@@ -812,7 +823,7 @@
                 });
 
             // Copy
-            (typeof copy == 'function') || Object.defineProperty(Window.prototype, 'copy', {
+            (typeof copy == 'function') || Object.defineProperty(_temporaryData, 'copy', {
                 // Value
                 value: function copy() {
                     // Update > Argument 0
@@ -864,7 +875,7 @@
             });
 
             // Cut
-            (typeof cut == 'function') || Object.defineProperty(Window.prototype, 'cut', {
+            (typeof cut == 'function') || Object.defineProperty(_temporaryData, 'cut', {
                 // Value
                 value: function cut() {
                     /* Logic
@@ -923,7 +934,7 @@
             });
 
             // Create Document Fragment
-            (typeof createDocumentFragment == 'function') || Object.defineProperty(Window.prototype, 'createDocumentFragment', {
+            (typeof createDocumentFragment == 'function') || Object.defineProperty(_temporaryData, 'createDocumentFragment', {
                 // Value
                 value: function createDocumentFragment() {
                     // Initialization > (Arguments, Data, Metadata, Alpha)
@@ -996,7 +1007,7 @@
             });
 
             // Create Element
-            (typeof createElement == 'function') || Object.defineProperty(Window.prototype, 'createElement', {
+            (typeof createElement == 'function') || Object.defineProperty(_temporaryData, 'createElement', {
                 // Value
                 value: function createElement() {
                     // Error Handling
@@ -1048,7 +1059,7 @@
                         @lapys: Used for making objects
                             or making objects.
             */
-            (typeof createObject == 'function') || Object.defineProperty(Window.prototype, 'createObject', {
+            (typeof createObject == 'function') || Object.defineProperty(_temporaryData, 'createObject', {
                 // Value
                 value: function createObject() {
                     // Initialization > (Arguments, Data, Metadata)
@@ -1085,7 +1096,7 @@
                         @lapys: Remove a set of re-usable class names
                             for DOM elements.
             */
-            (typeof delClassList == 'function') || Object.defineProperty(Window.prototype, 'delClassList', {
+            (typeof delClassList == 'function') || Object.defineProperty(_temporaryData, 'delClassList', {
                 // Value
                 value: function delClassList() {
                     // Initialization > (Arguments, Data, Metadata)
@@ -1125,7 +1136,7 @@
             });
 
             // Date
-            ((window.date || _LapysJSObject).constructor == Date) || Object.defineProperty(Window.prototype, 'date', {
+            ((window.date || _LapysJSObject).constructor == Date) || Object.defineProperty(_temporaryData, 'date', {
                 // Get
                 get: function date() {
                     // Return
@@ -1165,7 +1176,7 @@
                 }
 
             // Execute Command
-            (typeof execCommand == 'function') || Object.defineProperty(Window.prototype, 'execCommand', {
+            (typeof execCommand == 'function') || Object.defineProperty(_temporaryData, 'execCommand', {
                 // Value
                 value: function execCommand() {
                     // Return
@@ -1174,7 +1185,7 @@
             });
 
             // Float
-            (typeof float == 'function') || Object.defineProperty(Window.prototype, 'float', {value: Number.parseFloat});
+            (typeof float == 'function') || Object.defineProperty(_temporaryData, 'float', {value: Number.parseFloat});
 
             // Floor
             (typeof floor == 'function') || (window.floor = function floor() {
@@ -1190,7 +1201,7 @@
                         @lapys: Objects frozen outside the cooler can not be melted
                             — without the `freeze.eval` method of course.
             */
-            (typeof freeze == 'function') || Object.defineProperty(Window.prototype, 'freeze', {
+            (typeof freeze == 'function') || Object.defineProperty(_temporaryData, 'freeze', {
                 // Value
                 value: function freeze() {
                     // Initialization > (Arguments, Metadata)
@@ -1359,44 +1370,139 @@
                         @lapys: The 'args' variable must not be used here as the 'eval' function
                             allows private data to be accessed.
             */
-            Object.defineProperty(Window.prototype, 'func', {
+            Object.defineProperty(_temporaryData, 'func', {
                 // Value
                 value: function func() {
                     // Update > LapysJS > Temporary Data
                     LapysJS.tmp = Math.random();
 
                     /* Logic
-                            If
-                                Argument 0 is not a Function.
-
-                        > Error Handling
+                            [if:else if:else statement]
                     */
-                    if (typeof arguments[0] != 'function')
-                        try {
-                            // Execution
-                            eval('LapysJS.permanentData["function:' + LapysJS.tmp + '"] = (function ' + (arguments[0] || '') + '(' + (arguments[1] || '') + ') {' + (arguments[2] || '') + '})')
-                        }
-
-                        catch (error) {
+                    if (arguments.length > 0)
+                        /* Logic
+                                If
+                                    Argument 0 is not a Function.
+                        */
+                        if (typeof arguments[0] != 'function')
                             // Error Handling
                             try {
-                                // Execution
-                                eval('LapysJS.permanentData["function:' + LapysJS.tmp + '"] = (function ' + (arguments[0] || '') + '(' + (arguments[1] || '') + '\n) {' + (arguments[2] || '') + '})')
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (arguments.length > 2)
+                                    // Execution
+                                    eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function ' + (arguments.length > 0 ? arguments[0] : '') + '(' + (arguments.length > 1 ? arguments[1] : '') + ') {' + (arguments.length > 2 ? arguments[2] : '') + '})');
+
+                                else
+                                    /* Logic
+                                            [switch:case:default statement]
+
+                                        > Execution
+                                    */
+                                    switch (arguments.length) {
+                                        // 2
+                                        case 2:
+                                            eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function(' + (arguments.length > 0 ? arguments[0] : '') + ') {' + (arguments.length > 1 ? arguments[1] : '') + '})');
+                                            break;
+
+                                        // 1
+                                        case 1:
+                                            eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function() {' + (arguments.length > 0 ? arguments[0] : '') + '})')
+                                    }
                             }
 
                             catch (error) {
                                 // Error Handling
                                 try {
-                                    // Execution
-                                    eval('LapysJS.permanentData["function:' + LapysJS.tmp + '"] = (function ' + (arguments[0] || '') + '(' + (arguments[1] || '') + ') {' + (arguments[2] || '') + '\n})')
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (arguments.length > 2)
+                                        // Execution
+                                        eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function ' + (arguments.length > 0 ? arguments[0] : '') + '(' + (arguments.length > 1 ? arguments[1] : '') + '\n) {' + (arguments.length > 2 ? arguments[2] : '') + '})');
+
+                                    else
+                                        /* Logic
+                                                [switch:case:default statement]
+
+                                            > Execution
+                                        */
+                                        switch (arguments.length) {
+                                            // 2
+                                            case 2:
+                                                eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function(' + (arguments.length > 0 ? arguments[0] : '') + '\n) {' + (arguments.length > 1 ? arguments[1] : '') + '})');
+                                                break;
+
+                                            // 1
+                                            case 1:
+                                                eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function() {' + (arguments.length > 0 ? arguments[0] : '') + '})')
+                                        }
                                 }
 
                                 catch (error) {
-                                    // Execution
-                                    eval('LapysJS.permanentData["function:' + LapysJS.tmp + '"] = (function ' + (arguments[0] || '') + '(' + (arguments[1] || '') + '\n) {' + (arguments[2] || '') + '\n})')
+                                    // Error Handling
+                                    try {
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (arguments.length > 2)
+                                            // Execution
+                                            eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function ' + (arguments.length > 0 ? arguments[0] : '') + '(' + (arguments.length > 1 ? arguments[1] : '') + ') {' + (arguments.length > 2 ? arguments[2] : '') + '\n})');
+
+                                        else
+                                            /* Logic
+                                                    [switch:case:default statement]
+
+                                                > Execution
+                                            */
+                                            switch (arguments.length) {
+                                                // 2
+                                                case 2:
+                                                    eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function(' + (arguments.length > 0 ? arguments[0] : '') + ') {' + (arguments.length > 1 ? arguments[1] : '') + '\n})');
+                                                    break;
+
+                                                // 1
+                                                case 1:
+                                                    eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function() {' + (arguments.length > 0 ? arguments[0] : '') + '\n})')
+                                            }
+                                    }
+
+                                    catch (error) {
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (arguments.length > 2)
+                                            // Execution
+                                            eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function ' + (arguments.length > 0 ? arguments[0] : '') + '(' + (arguments.length > 1 ? arguments[1] : '') + '\n) {' + (arguments.length > 2 ? arguments[2] : '') + '\n})');
+
+                                        else
+                                            /* Logic
+                                                    [switch:case:default statement]
+
+                                                > Execution
+                                            */
+                                            switch (arguments.length) {
+                                                // 2
+                                                case 2:
+                                                    eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function(' + (arguments.length > 0 ? arguments[0] : '') + '\n) {' + (arguments.length > 1 ? arguments[1] : '') + '\n})');
+                                                    break;
+
+                                                // 1
+                                                case 1:
+                                                    eval('LapysJS.perm["function:' + LapysJS.tmp + '"] = (function() {' + (arguments.length > 0 ? arguments[0] : '') + '\n})')
+                                            }
+                                    }
                                 }
                             }
-                        }
+
+                        else
+                            // Return
+                            return arguments[0];
+
+                    else
+                        // Return
+                        return (function() {})
 
                     // Set Timeout
                     setTimeout(function() {
@@ -1410,7 +1516,7 @@
             });
 
              // Get Class List
-            (typeof getClassList == 'function') || Object.defineProperty(Window.prototype, 'getClassList', {
+            (typeof getClassList == 'function') || Object.defineProperty(_temporaryData, 'getClassList', {
                 // Value
                 value: function getClassList() {
                     // Initialization > Arguments
@@ -1447,7 +1553,7 @@
             });
 
             // Get Query String By Name
-            (typeof getQueryParameterByName == 'function') || Object.defineProperty(Window.prototype, 'getQueryParameterByName', {
+            (typeof getQueryParameterByName == 'function') || Object.defineProperty(_temporaryData, 'getQueryParameterByName', {
                 // Value
                 value: function getQueryParameterByName() {
                     // Initialization > Arguments
@@ -1477,7 +1583,7 @@
                     --- NOTE ---
                         @lapys: Allow a reference name for the global object.
             */
-            ((window.global || _LapysJSObject).constructor == Window) || Object.defineProperty(Window.prototype, 'global', {
+            ((window.global || _LapysJSObject).constructor == Window) || Object.defineProperty(_temporaryData, 'global', {
                 // Get
                 get: function global() {
                     // Return
@@ -1486,10 +1592,10 @@
             });
 
             // Integer
-            (typeof int == 'function') || Object.defineProperty(Window.prototype, 'int', {value: Number.parseInt});
+            (typeof int == 'function') || Object.defineProperty(_temporaryData, 'int', {value: Number.parseInt});
 
             // Interval
-            (typeof interval == 'function') || Object.defineProperty(Window.prototype, 'interval', {
+            (typeof interval == 'function') || Object.defineProperty(_temporaryData, 'interval', {
                 // Value
                 value: function interval() {
                     // Initialization > Arguments
@@ -1553,7 +1659,7 @@
             });
 
             // Invoke Interval
-            (typeof invokeInterval == 'function') || Object.defineProperty(Window.prototype, 'invokeInterval', {
+            (typeof invokeInterval == 'function') || Object.defineProperty(_temporaryData, 'invokeInterval', {
                 // Value
                 value: function invokeInterval() {
                     // Initialization > (Arguments, Data)
@@ -1572,7 +1678,7 @@
             });
 
             // Invoke Timeout
-            (typeof invokeTimeout == 'function') || Object.defineProperty(Window.prototype, 'invokeTimeout', {
+            (typeof invokeTimeout == 'function') || Object.defineProperty(_temporaryData, 'invokeTimeout', {
                 // Value
                 value: function invokeTimeout() {
                     // Initialization > (Arguments, Data)
@@ -1636,7 +1742,7 @@
             };
 
             // Length
-            (typeof len == 'function') || Object.defineProperty(Window.prototype, 'len', {
+            (typeof len == 'function') || Object.defineProperty(_temporaryData, 'len', {
                 // Value
                 value: function len() {
                     // Initialization > (Arguments, Data, Metadata)
@@ -1728,7 +1834,7 @@
                 */
                 check(function() {
                     // Return
-                    return (window.LapysJS || _LapysJSObject).executed
+                    return (window.LapysJS || _LapysJSObject).executed === !0
                 }, function() {
                     // Update > Log
                     window.log = console.log
@@ -1773,14 +1879,15 @@
                     // Value
                     value: new (function MathStatistics() {
                         // Initialization > Target
-                        let that = this;
+                        let that = this,
+                            _that = that.constructor.prototype;
 
                         /* Modification > Object
                                 --- NOTE ---
                                     @lapys: All methods in here work with non-frequency data.
                         */
                             // Arithmetic Mean
-                            Object.defineProperty(that.constructor.prototype, 'aMean', {
+                            Object.defineProperty(_that, 'aMean', {
                                 // Value
                                 value: function arithmeticMean() {
                                     // Initialization > (Arguments, Data)
@@ -1801,7 +1908,7 @@
                             });
 
                             // Coefficient of Skewness
-                            Object.defineProperty(that.constructor.prototype, 'skewCoeff', {
+                            Object.defineProperty(_that, 'skewCoeff', {
                                 // Value
                                 value: function coefficientOfSkewness() {
                                     // Initialization > (Arguments, Target)
@@ -1814,7 +1921,7 @@
                             });
 
                             // Coefficient of Variation
-                            Object.defineProperty(that.constructor.prototype, 'varCoeff', {
+                            Object.defineProperty(_that, 'varCoeff', {
                                 // Value
                                 value: function coefficientOfVariation() {
                                     // Initialization > (Arguments, Target)
@@ -1827,7 +1934,7 @@
                             });
 
                             // Geometric Mean
-                            Object.defineProperty(that.constructor.prototype, 'gMean', {
+                            Object.defineProperty(_that, 'gMean', {
                                 // Value
                                 value: function geometricMean() {
                                     // Initialization > (Arguments, Data, Metadata)
@@ -1849,7 +1956,7 @@
                             });
 
                             // Harmonic Mean
-                            Object.defineProperty(that.constructor.prototype, 'hMean', {
+                            Object.defineProperty(_that, 'hMean', {
                                 // Value
                                 value: function harmonicMean() {
                                     // Initialization > (Arguments, Data, Metadata)
@@ -1870,7 +1977,7 @@
                             });
 
                             // Mean Absolute Deviation
-                            Object.defineProperty(that.constructor.prototype, 'mad', {
+                            Object.defineProperty(_that, 'mad', {
                                 // Value
                                 value: function meanAbsoluteDeviation() {
                                     // Initialization > (Arguments, Data, Metadata)
@@ -1892,7 +1999,7 @@
                             });
 
                             // Median
-                            Object.defineProperty(that.constructor.prototype, 'median', {
+                            Object.defineProperty(_that, 'median', {
                                 // Value
                                 value: function median() {
                                     // Initialization > Arguments
@@ -1904,7 +2011,7 @@
                             });
 
                             // Mode
-                            Object.defineProperty(that.constructor.prototype, 'mode', {
+                            Object.defineProperty(_that, 'mode', {
                                 // Value
                                 value: function mode() {
                                     // Return
@@ -1913,7 +2020,7 @@
                             });
 
                             // Standard Deviation
-                            Object.defineProperty(that.constructor.prototype, 'sDev', {
+                            Object.defineProperty(_that, 'sDev', {
                                 // Value
                                 value: function standardDeviation() {
                                     // Initialization > Target
@@ -1925,7 +2032,7 @@
                             });
 
                             // Variance
-                            Object.defineProperty(that.constructor.prototype, 'var', {
+                            Object.defineProperty(_that, 'var', {
                                 // Value
                                 value: function variance() {
                                     // Initialization > (Arguments, Data, Metadata)
@@ -1987,7 +2094,7 @@
 
             // Maximum
                 // Initialization
-                Object.defineProperty(Window.prototype, 'max', {
+                Object.defineProperty(_temporaryData, 'max', {
                     // Value
                     value: function max() {
                         /* Initialization > Result
@@ -2010,7 +2117,7 @@
                     }
                 });
                     // Modification > Get Object
-                    Object.defineProperty(Window.prototype.max, 'getObject', {
+                    Object.defineProperty(_temporaryData.max, 'getObject', {
                         // Value
                         value: function getObject() {
                             // Initialization > (Arguments, Data)
@@ -2044,7 +2151,7 @@
                     // Execution
                     eval(
                         // Definition > (Decimal Point, Precision)
-                        "'" + data + "' in Window.prototype || Object.defineProperty(Window.prototype, '" + data + "', {" +
+                        "'" + data + "' in _temporaryData || Object.defineProperty(_temporaryData, '" + data + "', {" +
                             // Configurable
                             'configurable: !0,' +
 
@@ -2074,7 +2181,7 @@
                         // Execution
                         eval(
                             // Definition > (Decimal Point, Precision)
-                            "!('" + data + "ber' in Window.prototype) || Object.defineProperty(window, '" + data + "', {" +
+                            "!('" + data + "ber' in _temporaryData) || Object.defineProperty(window, '" + data + "', {" +
                                 // Configurable
                                 'configurable: !0,' +
 
@@ -2095,7 +2202,7 @@
                         @lapys: The `melt.eval` method unfreezes objects frozen
                             with the `freeze.eval` method.
             */
-            (typeof melt == 'function') || Object.defineProperty(Window.prototype, 'melt', {
+            (typeof melt == 'function') || Object.defineProperty(_temporaryData, 'melt', {
                 // Value
                 value: function melt() {
                     // Initialization > (Arguments, Metadata)
@@ -2252,7 +2359,7 @@
 
             // Min
                 // Initialization
-                Object.defineProperty(Window.prototype, 'min', {
+                Object.defineProperty(_temporaryData, 'min', {
                     // Value
                     value: function min() {
                         /* Initialization > (Arguments, Result)
@@ -2275,7 +2382,7 @@
                     }
                 });
                     // Modification > Get Object
-                    Object.defineProperty(Window.prototype.min, 'getObject', {
+                    Object.defineProperty(_temporaryData.min, 'getObject', {
                         // Value
                         value: function getObject() {
                             // Initialization > (Arguments, Data)
@@ -2429,7 +2536,7 @@
                 });
 
                 // Initialization
-                (typeof parseNumber == 'function') || Object.defineProperty(Window.prototype, 'parseNumber', {
+                (typeof parseNumber == 'function') || Object.defineProperty(_temporaryData, 'parseNumber', {
                     // Value
                     value: function parseNumber() {
                         // Return
@@ -2439,7 +2546,7 @@
 
             // Number
                 // Initialization
-                Object.defineProperty(Window.prototype, 'number', {
+                Object.defineProperty(_temporaryData, 'number', {
                     // Value
                     value: function number() {
                         // Return
@@ -2448,7 +2555,7 @@
                 });
                     // Modification
                         // Float
-                        (typeof number.float == 'function') || Object.defineProperty(Window.prototype.number, 'float', {
+                        (typeof number.float == 'function') || Object.defineProperty(_temporaryData.number, 'float', {
                             // Value
                             value: function float() {
                                 // Return
@@ -2457,7 +2564,7 @@
                         });
 
                         // Integer
-                        (typeof number.int == 'function') || Object.defineProperty(Window.prototype.number, 'int', {
+                        (typeof number.int == 'function') || Object.defineProperty(_temporaryData.number, 'int', {
                             // Value
                             value: function int() {
                                 // Return
@@ -2484,7 +2591,7 @@
                 });
 
             // Object
-            Object.defineProperty(Window.prototype, 'obj', {
+            Object.defineProperty(_temporaryData, 'obj', {
                 // Value
                 value: function object() {
                     // Return
@@ -2505,7 +2612,7 @@
 
                     // Execution
                     eval(
-                        '(typeof ' + data + " == 'function') || Object.defineProperty(Window.prototype, '" + data + "', {" +
+                        '(typeof ' + data + " == 'function') || Object.defineProperty(_temporaryData, '" + data + "', {" +
                             // Value
                             'value: function ' + data + '() {' +
                                 // Initialization > Arguments
@@ -2594,7 +2701,7 @@
 
                         // Execution
                         eval(
-                            '(typeof ' + metadata + " == 'function') || Object.defineProperty(Window.prototype, '" + metadata + "', {" +
+                            '(typeof ' + metadata + " == 'function') || Object.defineProperty(_temporaryData, '" + metadata + "', {" +
                                 // Value
                                 'value: function ' + metadata + '() {' +
                                     // Initialization > Arguments
@@ -2659,7 +2766,7 @@
                 }
 
             // On DOM Ready
-            (typeof Window.prototype.onDOMReady == 'function') || Object.defineProperty(Window.prototype, 'onDOMReady', {
+            (typeof _temporaryData.onDOMReady == 'function') || Object.defineProperty(_temporaryData, 'onDOMReady', {
                 // Value
                 value: function onDOMReady() {
                     // Initialization > (Arguments, Data, Metadata, Alpha)
@@ -2706,7 +2813,7 @@
             });
 
             // Paste
-            (typeof paste == 'function') || Object.defineProperty(Window.prototype, 'paste', {
+            (typeof paste == 'function') || Object.defineProperty(_temporaryData, 'paste', {
                 // Value
                 value: function paste() {
                     /* Logic
@@ -2776,7 +2883,7 @@
             });
 
             // Percent
-            (typeof perc == 'function') || Object.defineProperty(Window.prototype, 'perc', {
+            (typeof perc == 'function') || Object.defineProperty(_temporaryData, 'perc', {
                 // Value
                 value: function percent() {
                     // Return
@@ -2785,13 +2892,13 @@
             });
 
             // PI
-            (typeof PI == 'number') || Object.defineProperty(Window.prototype, 'PI', {
+            (typeof PI == 'number') || Object.defineProperty(_temporaryData, 'PI', {
                 // Value
                 value: typeof Math.PI == 'number' ? Math.PI : 3.141592653589793
             });
 
             // Power
-            (typeof pow == 'function') || Object.defineProperty(Window.prototype, 'pow', {
+            (typeof pow == 'function') || Object.defineProperty(_temporaryData, 'pow', {
                 // Value
                 value: function pow() {
                     // Initialization > Arguments
@@ -2811,7 +2918,7 @@
             });
 
             // Process
-            (typeof process == 'function') || Object.defineProperty(Window.prototype, 'process', {
+            (typeof process == 'function') || Object.defineProperty(_temporaryData, 'process', {
                 // Value
                 value: function process() {
                     // Initialization > (Arguments, Data, Metadata, Alpha)
@@ -2879,7 +2986,7 @@
             });
 
             // Random
-            Object.defineProperty(Window.prototype, 'rand', {
+            Object.defineProperty(_temporaryData, 'rand', {
                 // Value
                 value: function random() {
                     // Initialization > (Arguments, Data, Metadata, Alpha)
@@ -2927,7 +3034,7 @@
             });
 
             // Range
-            (typeof range == 'function') || Object.defineProperty(Window.prototype, 'range', {
+            (typeof range == 'function') || Object.defineProperty(_temporaryData, 'range', {
                 // Value
                 value: function range() {
                     // Return
@@ -2936,7 +3043,7 @@
             });
 
             // Redirect
-            (typeof redirect == 'function') || Object.defineProperty(Window.prototype, 'redirect', {
+            (typeof redirect == 'function') || Object.defineProperty(_temporaryData, 'redirect', {
                 // Value
                 value: function redirect() {
                     // Location > Assign
@@ -2945,7 +3052,7 @@
             });
 
             // Regular Expression
-            Object.defineProperty(Window.prototype, 'regex', {
+            Object.defineProperty(_temporaryData, 'regex', {
                 // Value
                 value: function regex() {
                     // Return
@@ -2956,7 +3063,7 @@
                 window.reg = regex;
 
             // Register Element
-            (typeof registerElement == 'function') || Object.defineProperty(Window.prototype, 'registerElement', {
+            (typeof registerElement == 'function') || Object.defineProperty(_temporaryData, 'registerElement', {
                 // Value
                 value: function registerElement() {
                     // Initialization > (Arguments, Data)
@@ -3049,7 +3156,7 @@
             });
 
             // Reload
-            (typeof reload == 'function') || Object.defineProperty(Window.prototype, 'reload', {
+            (typeof reload == 'function') || Object.defineProperty(_temporaryData, 'reload', {
                 // Value
                 value: function reload() {
                     // Location > Reload
@@ -3058,7 +3165,7 @@
             });
 
             // Repeat
-            (typeof repeat == 'function') || Object.defineProperty(Window.prototype, 'repeat', {
+            (typeof repeat == 'function') || Object.defineProperty(_temporaryData, 'repeat', {
                 // Value
                 value: function repeat() {
                     // Initialization > (Arguments, Data, Metadata, Beta, Target)
@@ -3157,10 +3264,10 @@
             });
 
             // Request Animation Frame
-            Window.prototype.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.mozRequestAnimationFrame;
+            _temporaryData.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame || window.mozRequestAnimationFrame;
 
             // Round
-            (typeof round == 'function') || Object.defineProperty(Window.prototype, 'round', {
+            (typeof round == 'function') || Object.defineProperty(_temporaryData, 'round', {
                 // Value
                 value: function() {
                     // Return
@@ -3185,7 +3292,7 @@
                 });
 
             // Scroll Height
-            (typeof Window.prototype.scrollHeight == 'number') || Object.defineProperty(Window.prototype, 'scrollHeight', {
+            (typeof _temporaryData.scrollHeight == 'number') || Object.defineProperty(_temporaryData, 'scrollHeight', {
                 // Configurable
                 configurable: !0,
 
@@ -3200,7 +3307,7 @@
             });
 
             // Scroll Width
-            (typeof Window.prototype.scrollWidth == 'number') || Object.defineProperty(Window.prototype, 'scrollWidth', {
+            (typeof _temporaryData.scrollWidth == 'number') || Object.defineProperty(_temporaryData, 'scrollWidth', {
                 // Configurable
                 configurable: !0,
 
@@ -3219,7 +3326,7 @@
                         @lapys: Remove a set of re-usable class names
                             for DOM elements.
             */
-            (typeof setClassList == 'function') || Object.defineProperty(Window.prototype, 'setClassList', {
+            (typeof setClassList == 'function') || Object.defineProperty(_temporaryData, 'setClassList', {
                 // Value
                 value: function setClassList() {
                     // Initialization > Arguments
@@ -3253,7 +3360,7 @@
             });
 
             // Select
-            (typeof select == 'function') || Object.defineProperty(Window.prototype, 'select', {
+            (typeof select == 'function') || Object.defineProperty(_temporaryData, 'select', {
                 // Value
                 value: function select() {
                     /* Logic
@@ -3296,7 +3403,7 @@
             (function(a,b){"use strict";function c(t){"function"!=typeof t&&(t=new Function(""+t));for(var u=Array(arguments.length-1),v=0;v<u.length;v++)u[v]=arguments[v+1];var w={callback:t,arguments:u};return o[n]=w,r(n),n++}function d(t){delete o[t]}function e(t){var u=t.callback,v=t.arguments;switch(v.length){case 0:u();break;case 1:u(v[0]);break;case 2:u(v[0],v[1]);break;case 3:u(v[0],v[1],v[2]);break;default:u.apply(b,v)}}function f(t){if(p)setTimeout(f,0,t);else{var u=o[t];if(u){p=!0;try{e(u)}finally{d(t),p=!1}}}}function g(){r=function(t){process.nextTick(function(){f(t)})}}function h(){if(a.postMessage&&!a.importScripts){var t=!0,u=a.onmessage;return a.onmessage=function(){t=!1},a.postMessage("","*"),a.onmessage=u,t}}function j(){var t="setImmediate$"+Math.random()+"$",u=function(v){v.source===a&&"string"==typeof v.data&&0===v.data.indexOf(t)&&f(+v.data.slice(t.length))};a.addEventListener?a.addEventListener("message",u,!1):a.attachEvent("onmessage",u),r=function(v){a.postMessage(t+v,"*")}}function k(){var t=new MessageChannel;t.port1.onmessage=function(u){var v=u.data;f(v)},r=function(u){t.port2.postMessage(u)}}function l(){var t=q.documentElement;r=function(u){var v=q.createElement("script");v.onreadystatechange=function(){f(u),v.onreadystatechange=null,t.removeChild(v),v=null},t.appendChild(v)}}function m(){r=function(t){setTimeout(f,0,t)}}if(!a.setImmediate){var r,n=1,o={},p=!1,q=a.document,s=Object.getPrototypeOf&&Object.getPrototypeOf(a);s=s&&s.setTimeout?s:a,"[object process]"==={}.toString.call(a.process)?g():h()?j():a.MessageChannel?k():q&&"onreadystatechange"in q.createElement("script")?l():m(),s.setImmediate=c,s.clearImmediate=d}})("undefined"==typeof self?"undefined"==typeof global?this:global:self);
 
             // Square Root
-            (typeof sqrt == 'function') || Object.defineProperty(Window.prototype, 'sqrt', {
+            (typeof sqrt == 'function') || Object.defineProperty(_temporaryData, 'sqrt', {
                 // Value
                 value: function sqrt() {
                     // Return
@@ -3305,7 +3412,7 @@
             });
 
             // String
-            Object.defineProperty(Window.prototype, 'str', {
+            Object.defineProperty(_temporaryData, 'str', {
                 // Value
                 value: function str() {
                     // Initialization > (Arguments, Data)
@@ -3338,7 +3445,7 @@
             });
 
             // Symbol
-            Object.defineProperty(Window.prototype, 'sym', {
+            Object.defineProperty(_temporaryData, 'sym', {
                 // Value
                 value: function symbol() {
                     // Return
@@ -3347,7 +3454,7 @@
             });
 
             // Timeout
-            (typeof timeout == 'function') || Object.defineProperty(Window.prototype, 'timeout', {
+            (typeof timeout == 'function') || Object.defineProperty(_temporaryData, 'timeout', {
                 // Value
                 value: function timeout() {
                     // Set Timeout
@@ -3356,7 +3463,7 @@
             });
 
             // (Get) Type (Of)
-            (typeof getType == 'function') || Object.defineProperty(Window.prototype, 'getType', {
+            (typeof getType == 'function') || Object.defineProperty(_temporaryData, 'getType', {
                 // Value
                 value: function getType() {
                     // Initialization > (Arguments, Data)
@@ -3433,16 +3540,18 @@
                             return data + ')'
                         })());
 
-                        /* Initialization > (Psi, Target, Version Number)
+                        /* Initialization > (Define, Psi, Target, Version)
                                 --- WARN ---
                                     @lapys: Try not to use the Psi variable.
                         */
-                        let psi = this,
+                        let def = Object.defineProperty,
+                            psi = this,
+                            _psi = psi.constructor.prototype,
                             that = psi,
-                            VER_NUMBER = '0.0.2';
+                            version = '0.0.2';
 
                         // Error
-                        'error' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'error', {
+                        'error' in _psi || Object.defineProperty(_psi, 'error', {
                             // Value
                             value: function error() {
                                 // Initialization > (Data, Metadata)
@@ -3470,7 +3579,7 @@
                                 */
                                 if (data.startsWith('/command ')) {
                                     // Update > Data
-                                    data = data.slice('/command '.length);
+                                    data = data.slice('/command '.length).trimLeft();
 
                                     /* Logic
                                             [if:else if:else statement]
@@ -3480,7 +3589,12 @@
                                     switch (data) {
                                         // Global Object Test
                                         case 'global-object-test':
-                                            data = "LapysJS does not function without the global 'window' object."
+                                            data = "LapysJS does not function without the global 'window' object.";
+                                            break;
+
+                                        // Modifier
+                                        case 'modifier':
+                                            data = 'Procedure requires modifier to operate'
                                     }
 
                                     /* Logic
@@ -3509,18 +3623,18 @@
                                             @lapys: Prevent compressors and minifiers from redacting the name
                                                 of the Error.
                                 */
-                                eval("throw new (class LapysJSScriptError extends Error {constructor(){super([...arguments]);Error.captureStackTrace(this,LapysJSScriptError)}})('[LapysJS v" + VER_NUMBER + '] => ' + data.replace(/'/g, '"') + "\\r')")
+                                eval("throw new (class LapysJSScriptError extends Error {constructor(){super([...arguments]);Error.captureStackTrace(this,LapysJSScriptError)}})('[LapysJS v" + version + '] => ' + data.replace(/'/g, '"') + "\\r')")
                             }
                         });
 
                         // Author
-                        Object.defineProperty(that.constructor.prototype, 'author', {
+                        Object.defineProperty(_psi, 'author', {
                             // Value
                             value: 'Lapys Dev Team'
                         });
 
                         // Array
-                        'array' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'array', {
+                        'array' in _psi || Object.defineProperty(_psi, 'array', {
                             // Value
                             value: class LapysJSArray extends array {
                                 // Constructor
@@ -3589,7 +3703,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.array
+                                    return _psi.array
                                 }
                             });
                             window.larray = function() {
@@ -3615,7 +3729,7 @@
                             };
 
                         // Boolean
-                        'boolean' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'boolean', {
+                        'boolean' in _psi || Object.defineProperty(_psi, 'boolean', {
                             // Value
                             value: class LapysJSBoolean extends bool {
                                 // Constructor
@@ -3678,7 +3792,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.boolean
+                                    return _psi.boolean
                                 }
                             });
                             window.lbool = function() {
@@ -3704,15 +3818,16 @@
                             };
 
                         // Component
-                        'component' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'component', {
+                        'component' in _psi || Object.defineProperty(_psi, 'component', {
                             // Value
                             value: new (function LapysJSComponentsObject() {
                                 // Initialization > Target
-                                let that = this;
+                                let that = this,
+                                    _that = this;
 
                                 // Modification > Target
                                     // Badge
-                                    Object.defineProperty(that, 'Badge', {
+                                    Object.defineProperty(_that, 'Badge', {
                                         // Value
                                         value: class LapysJSBadge {
                                             // Constructor
@@ -3742,9 +3857,17 @@
                                             }
                                         }
                                     });
+                                        // Definition
+                                        Object.defineProperty(_that, '1', {
+                                            // Get
+                                            get: function Badge() {
+                                                // Return
+                                                return _that.Badge
+                                            }
+                                        });
 
                                     // Dialog
-                                    Object.defineProperty(that, 'Dialog', {
+                                    Object.defineProperty(_that, 'Dialog', {
                                         // Value
                                         value: class LapysJSDialog {
                                             // Constructor
@@ -3777,9 +3900,17 @@
                                             }
                                         }
                                     });
+                                        // Definition
+                                        Object.defineProperty(_that, '2', {
+                                            // Get
+                                            get: function Dialog() {
+                                                // Return
+                                                return _that.Dialog
+                                            }
+                                        });
 
                                     // Image
-                                    Object.defineProperty(that, 'Image', {
+                                    Object.defineProperty(_that, 'Image', {
                                         // Value
                                         value: class LapysJSImage {
                                             // Constructor
@@ -3809,9 +3940,17 @@
                                             }
                                         }
                                     });
+                                        // Definition
+                                        Object.defineProperty(_that, '3', {
+                                            // Get
+                                            get: function Image() {
+                                                // Return
+                                                return _that.Image
+                                            }
+                                        });
 
                                     // Table
-                                    Object.defineProperty(that, 'Table', {
+                                    Object.defineProperty(_that, 'Table', {
                                         // Value
                                         value: class LapysJSTable {
                                             // Constructor
@@ -5129,7 +5268,15 @@
                                                 return document.createElement('table')
                                             }
                                         }
-                                    })
+                                    });
+                                        // Definition
+                                        Object.defineProperty(_that, '4', {
+                                            // Get
+                                            get: function Table() {
+                                                // Return
+                                                return _that.Table
+                                            }
+                                        })
                             })
                         });
 
@@ -5137,124 +5284,236 @@
                                 --- NOTE ---
                                     @lapys: For debugging purposes only.
                         */
-                        'debug' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'debug', {
-                            // Get
-                            get: function debug() {
-                                // Return
-                                return new (function LapysJSScriptDebugObject() {
-                                    // Initialization > Target
-                                    let that = this;
+                        'debug' in _psi || Object.defineProperty(_psi, 'debug', new (function Object() {
+                            // Initialization > Temporary Data
+                            let _temporaryData;
 
-                                    // Modification > Target
-                                        // Add New Element
-                                        that.constructor.prototype.addNewElement = function addNewElement() {
-                                            // Insertion
-                                            document.body.appendChild('lapysjs-element'.html);
+                            // Update > Temporary Data
+                                // Error Handling
+                                try {
+                                    _temporaryData = [console.info.bind({}), console.log.bind({})]
+                                }
 
-                                            // Return
-                                            return document.body.$t('lapysjs-element', $t('lapysjs-element', '~length'))
-                                        };
+                                catch (error) {
+                                    _temporaryData = [console.info, console.log]
+                                }
 
-                                        // Alternate Log
-                                        that.constructor.prototype.altLog = function altLog() {
-                                            // Console > Log
-                                            console.log(3)
-                                        };
+                            // Modification > Target > Get
+                            this.get = function debug() {
+                                // Initialization > Data
+                                let debug = function LapysJSScriptDebugger() {
+                                    // Initialization > Data
+                                    let data = String(arguments[0]).trim();
 
-                                        // Delete Old Element
-                                        that.constructor.prototype.delOldElement = function delOldElement() {
-                                            // Deletion
-                                            document.body.$t('lapysjs-element', $t('lapysjs-element', '~length')).delete();
+                                    /* Logic
+                                            [switch:case:default statement]
 
-                                            // Return
-                                            return null
-                                        };
-
-                                        // Fail Log
-                                        that.constructor.prototype.failLog = function failLog() {
-                                            // Console > Log
-                                            console.log(2)
-                                        };
-
-                                        // Format Text
-                                        Object.defineProperty(that.constructor.prototype, 'formatText', {
-                                            // Value
-                                            value: function formatText() {
-                                                // Initialization > (Arguments, Data)
-                                                let args = [...arguments],
-                                                    data = String(args[0])
-
-                                                /* Logic
-                                                        Switch case to Argument 1.
-
-                                                        --- WARN ---
-                                                            @lapys: All cases must be
-                                                                labeled via numbers.
-
-                                                    > Return
-                                                */
-                                                switch (args[1]) {
-                                                    // --- Redacting double-spaced characters.
-                                                    case 0:
-                                                        return data.replace(/  /g, ' ').replace(/  /g, ' ');
-                                                        break;
-
-                                                    // --- Redact double-spaced characters and trim the text.
-                                                    case 1:
-                                                        return data.replace(/  /g, ' ').replace(/  /g, ' ').trim();
-                                                        break;
-
-                                                    case 2:
-                                                        return data.replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g).join(' ');
-                                                        break;
-
-                                                    // --- Editing single-spaced items.
-                                                    case 3:
-                                                        return data.replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g);
-                                                        break;
-
-                                                    // --- Editing single-spaced items after format.
-                                                    case 4:
-                                                        return data.replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g)
-                                                }
-
-                                                // Return
-                                                return data
-                                            }
-                                        });
-
+                                        > [Function]
+                                    */
+                                    switch (data) {
                                         // Insert
-                                        that.constructor.prototype.insert = that.constructor.prototype.addNewElement;
+                                        case '/insert':
+                                            debug.addNewElement();
+                                            break;
 
-                                        // Success Log
-                                        that.constructor.prototype.successLog = function successLog() {
-                                            // Console > Log
-                                            console.log(1)
+                                        // Log
+                                        case '/log':
+                                            debug.log();
+                                            break;
+
+                                            // Alternative
+                                            case '/log alt':
+                                                debug.altLog();
+                                                break;
+
+                                                // {Definition}
+                                                case '/log 2':
+                                                    debug.altLog();
+                                                    break;
+
+                                            // Fail
+                                            case '/log fail':
+                                                debug.failLog();
+                                                break;
+
+                                                // {Definition}
+                                                case '/log 1':
+                                                    debug.failLog();
+                                                    break;
+
+                                            // Success
+                                            case '/log success':
+                                                debug.successLog();
+                                                break;
+
+                                                // {Definition}
+                                                case '/log 0':
+                                                    debug.successLog();
+                                                    break;
+
+                                        // Remove
+                                        case '/remove':
+                                            debug.delOldElement()
+                                    }
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (data.startsWith('/formattext')) {
+                                        // Initialization > (Metadata, Regular Expression Set)
+                                        let metadata = data.getAfterChar('/formattext'),
+                                            regexSet = that.regexSet;
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (metadata) {
+                                            // Initialization > Alpha
+                                            let alpha = parseNumber(metadata.replace(/\\_/g, regexSet).getAfterChar('_', !0).replace(RegExp(regexSet, 'g'), '_').trim());
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (!alpha)
+                                                // Target > Error
+                                                that.error('/command modifier');
+
+                                            else
+                                                // Return
+                                                return debug.formatText(metadata.replace(/\\_/g, regexSet).getBeforeChar('_', !0).replace(RegExp(regexSet, 'g'), '_'), alpha)
                                         }
-                                })
+
+                                        else
+                                            // Debug > Information Log
+                                            debug.infoLog('[LapysJS v' + version + '] =>\n\tSyntax: `/formattext <string>_<numeral>`')
+                                    }
+                                };
+                                    // Add New Element
+                                    debug.addNewElement = function addNewElement() {
+                                        // Insertion
+                                        document.body.appendChild('lapysjs-element'.html);
+
+                                        // Return
+                                        return document.body.$t('lapysjs-element', $t('lapysjs-element', '~length'))
+                                    };
+
+                                    // Alternate Log
+                                    debug.altLog = function altLog() {
+                                        // Temporary Data
+                                        _temporaryData[1](3, 'MISC')
+                                    };
+
+                                    // Delete Old Element
+                                    debug.delOldElement = function delOldElement() {
+                                        // Deletion
+                                        document.body.$t('lapysjs-element', $t('lapysjs-element', '~length')).delete();
+
+                                        // Return
+                                        return null
+                                    };
+
+                                    // Fail Log
+                                    debug.failLog = function failLog() {
+                                        // Temporary Data
+                                        _temporaryData[1](2, 'FAIL')
+                                    };
+
+                                    // Format Text
+                                    def(debug, 'formatText', {
+                                        // Value
+                                        value: function formatText() {
+                                            // Initialization > (Arguments, Data)
+                                            let args = [...arguments],
+                                                data = String(args[0])
+
+                                            /* Logic
+                                                    Switch case to Argument 1.
+
+                                                    --- WARN ---
+                                                        @lapys: All cases must be
+                                                            labeled via numbers.
+
+                                                > Return
+                                            */
+                                            switch (args[1]) {
+                                                // --- Redacting double-spaced characters.
+                                                case 0:
+                                                    return data.replace(/  /g, ' ').replace(/  /g, ' ');
+                                                    break;
+
+                                                // --- Redact double-spaced characters and trim the text.
+                                                case 1:
+                                                    return data.replace(/  /g, ' ').replace(/  /g, ' ').trim();
+                                                    break;
+
+                                                case 2:
+                                                    return data.replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g).join(' ');
+                                                    break;
+
+                                                // --- Editing single-spaced items.
+                                                case 3:
+                                                    return data.replace(/  /g, ' ').replace(/  /g, ' ').split(/ /g);
+                                                    break;
+
+                                                // --- Editing single-spaced items after format.
+                                                case 4:
+                                                    return data.replace(/  /g, ' ').replace(/  /g, ' ').trim().split(/ /g)
+                                            }
+
+                                            // Return
+                                            return data
+                                        }
+                                    });
+
+                                    // Information Log
+                                    debug.infoLog = function infoLog() {
+                                        // Temporary Data
+                                        _temporaryData[0](arguments[0])
+                                    };
+
+                                    // Insert
+                                    debug.insert = debug.addNewElement;
+
+                                    // Log
+                                    debug.log = debug.successLog;
+
+                                    // Remove
+                                    debug.remove = debug.delOldElement;
+
+                                    // Success Log
+                                    debug.successLog = function successLog() {
+                                        // Temporary Data
+                                        _temporaryData[1](1, 'SUCCESS')
+                                    };
+
+                                // Return
+                                return debug
                             }
-                        });
+                        }));
 
                         /* Permanent Data
                                 --- WARN ---
                                     @lapys: Only modify if you are knowledgeable in how this
                                         property works.
                         */
-                        'permanentData' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'permanentData', {
+                        'permanentData' in _psi || Object.defineProperty(_psi, 'permanentData', {
                             // Value
                             value: new (function LapysJSScriptPermanentData() {
+                                // Initialization > Target
+                                let that = this;
+
                                 // Modification > Target
                                     // Cooled Items
-                                    (typeof this.constructor.prototype.cooledItems == 'object') || Object.defineProperty(this.constructor.prototype, 'cooledItems', {
+                                    (typeof that.constructor.prototype.cooledItems == 'object') || Object.defineProperty(that.constructor.prototype, 'cooledItems', {
                                         // Value
                                         value: new (function LapysJSCooledItemsList() {})
                                     });
 
                                     // Data List
-                                    (typeof this.constructor.prototype.dataList == 'object') || Object.defineProperty(this.constructor.prototype, 'dataList', {value: []});
+                                    (typeof that.constructor.prototype.dataList == 'object') || Object.defineProperty(that.constructor.prototype, 'dataList', {value: []});
 
                                     // Modified Elements List
-                                    ((this.constructor.prototype.modifiedElementsList || _LapysJSObject).constructor.name == 'LapysJSScriptModifiedElementsList') || Object.defineProperty(this.constructor.prototype, 'modifiedElementsList', {
+                                    ((that.constructor.prototype.modifiedElementsList || _LapysJSObject).constructor.name == 'LapysJSScriptModifiedElementsList') || Object.defineProperty(that.constructor.prototype, 'modifiedElementsList', {
                                         // Value
                                         value: new (function LapysJSScriptModifiedElementsList() {
                                             // Initialization > Target
@@ -5270,7 +5529,7 @@
                                     });
 
                                     // Mouse Coordinates
-                                    (typeof this.constructor.prototype.mouseCoordinates == 'object') || Object.defineProperty(this.constructor.prototype, 'mouseCoordinates', {
+                                    (typeof that.constructor.prototype.mouseCoordinates == 'object') || Object.defineProperty(that.constructor.prototype, 'mouseCoordinates', {
                                         // Value
                                         value: new (function LapysJSScriptMouseCoordinates() {
                                             // Initialization > (Data, Metadata)
@@ -5325,26 +5584,49 @@
                                     });
 
                                     // Plug-In Script Delay
-                                    this.constructor.prototype.pluginScriptDelay = 3e3;
+                                    that.constructor.prototype.pluginScriptDelay = 3e3;
 
                                     // Regular Expression Set
-                                    (typeof this.constructor.prototype.regexSet == 'object') || Object.defineProperty(this.constructor.prototype, 'regexSet', {
+                                    (typeof that.constructor.prototype.regexSet == 'object') || Object.defineProperty(that.constructor.prototype, 'regexSet', {
                                         // Value
                                         value: '�'
                                     });
 
                                     // Script Element List
-                                    (typeof this.constructor.prototype.scriptElementList == 'object') || Object.defineProperty(this.constructor.prototype, 'scriptElementList', {
+                                    (typeof that.constructor.prototype.scriptElementList == 'object') || Object.defineProperty(that.constructor.prototype, 'scriptElementList', {
                                         // Value
                                         value: new (function LapysJSScriptScriptElementList() {})
                                     });
 
+                                    // Temporary Data
+                                    that.constructor.prototype.temporaryData = void 0;
+                                        // Set Interval
+                                        setInterval(function() {
+                                            // Update > LapysJS > Temporary Data
+                                            !LapysJS.tmp || (LapysJS.tmp = void 0)
+                                        }, 6e4);
+
+                                        // Temporary
+                                        'tmp' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'tmp', {
+                                            // Get
+                                            get: function getTemporaryData() {
+                                                // Return
+                                                return this.temporaryData
+                                            },
+
+                                            // Set
+                                            set: function setTemporaryData() {
+                                                // Modification > Target > Temporary Data
+                                                this.temporaryData = arguments[0]
+                                            }
+                                        });
+
                                     // Written Elements List
-                                    (typeof this.constructor.prototype.writtenElementsList == 'object') || Object.defineProperty(this.constructor.prototype, 'writtenElementsList', {value: []})
+                                    (typeof that.constructor.prototype.writtenElementsList == 'object') || Object.defineProperty(that.constructor.prototype, 'writtenElementsList', {value: []})
                             })
                         });
                             // Permanent
-                            'perm' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'perm', {
+                            'perm' in _psi || Object.defineProperty(_psi, 'perm', {
                                 // Get
                                 get: function permanentData() {
                                     // Return
@@ -5353,11 +5635,12 @@
                             });
 
                         // [Dollar Object]
-                        '$' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, '$', {
+                        '$' in _psi || Object.defineProperty(_psi, '$', {
                             // Value
                             value: new (function LapysJSDollarObject() {
                                 // Initialization > Target
-                                let that = this;
+                                let that = this,
+                                    _that = that.constructor.prototype;
 
                                 // Modification > Target
                                     /* Anchor
@@ -5365,7 +5648,7 @@
                                                 @lapys: This function simulates the click event of
                                                     a generic but usually modified hypertext link.
                                     */
-                                    (typeof this.constructor.prototype.anchor == 'function') || Object.defineProperty(this.constructor.prototype, 'anchor', {
+                                    (typeof _that.anchor == 'function') || Object.defineProperty(_that, 'anchor', {
                                         // Value
                                         value: function anchor() {
                                             // Initialization > (Arguments, Data)
@@ -5408,7 +5691,7 @@
                                                 @lapys: The cookie object acts as a mini-framework
                                                 for manipulating and parsing cookies.
                                     */
-                                    ((this.constructor.prototype.cookie || _LapysJSObject).constructor.name == 'CookieManager') || Object.defineProperty(this.constructor.prototype, 'cookie', {
+                                    ((_that.cookie || _LapysJSObject).constructor.name == 'CookieManager') || Object.defineProperty(_that, 'cookie', {
                                         // Value
                                         value: (function() {
                                             /* Initialization > Data
@@ -5582,131 +5865,258 @@
                                                     for inserting Nodes into the DOM.
                                     */
                                         // Definition > Import
-                                        (typeof this.constructor.prototype.import == 'function') || Object.defineProperty(this.constructor.prototype, 'import', {
+                                        (typeof _that.import == 'function') || Object.defineProperty(_that, 'import', {
                                             // Value
-                                            value: function Import() {}
+                                            value: function Import() {
+                                                let args = [...arguments],
+                                                    data = args[0],
+                                                    argsSet = args.slice(1),
+                                                    _that = _psi.$.import;
+
+                                                /* Logic
+                                                        [switch:case:default statement]
+
+                                                    > Return
+                                                */
+                                                switch (data) {
+                                                    // CSS
+                                                    case 'css':
+                                                        return _that.css.apply(_that, argsSet);
+                                                        break;
+
+                                                    // File
+                                                    case 'file':
+                                                        return _that.file.apply(_that, argsSet);
+                                                        break;
+
+                                                    // Font
+                                                    case 'font':
+                                                        return _that.font.apply(_that, argsSet);
+                                                        break;
+
+                                                    // JavaScript
+                                                    case 'js':
+                                                        return _that.js.apply(_that, argsSet)
+                                                }
+
+                                                // Return
+                                                return null
+                                            }
                                         });
-                                            // Font
-                                            (typeof this.constructor.prototype.import.font == 'function') || Object.defineProperty(this.constructor.prototype.import, 'font', {
+                                            // CSS
+                                            (typeof _that.import.css == 'function') || Object.defineProperty(_that.import, 'css', {
                                                 // Value
-                                                value: function font() {
-                                                    // Initialization > (Arguments, Data, Metadata, Alpha, Beta)
+                                                value: function css() {
+                                                    // Initialization > (Arguments, Data, Metadata, Alpha)
                                                     let args = [...arguments],
-                                                        data = args[0],
-                                                        metadata = '',
-                                                        alpha = [],
-                                                        beta = [];
+                                                        data = createDocumentFragment(createElement('link', args.length > 0 ? (args[0] ? "[data-id='" + String(args[0]) + "'" : '') : '')),
+                                                        metadata = args[1],
+                                                        alpha = args[2];
+
+                                                    // Update > (LapysJS > Permanent Data > Temporary Data)
+                                                    _psi.perm.tmp = data.firstElementChild;
+
+                                                    // Function > Test
+                                                    function test() {
+                                                        // Initialization > Beta
+                                                        let beta = arguments[0];
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Modification > (LapysJS > Permanent Data > Temporary Data) > [Loop Counter]
+                                                        */
+                                                        for (let i in beta)
+                                                            _psi.perm.tmp[i] = beta[i];
+
+                                                        // Return
+                                                        return beta
+                                                    }
 
                                                     /* Logic
-                                                            If
-                                                                Data is an object.
+                                                            [if:else if:else statement]
                                                     */
-                                                    if (isObject(data)) {
-                                                        // Update > Metadata
-                                                        metadata = "{" + (
-                                                            ('name' in data ? 'name: ' + (String(data.name).indexOf(' ') > -1 ? "'" + data.name + "'" : data.name) + ',' : '') +
-                                                            ('src' in data ? "src: '" + data.src + "'," : '') +
-                                                            ('format' in data ? 'format: ' + data.format + ',' : '')
-                                                        ).trimRightChar(',').trim() + "}";
+                                                    if (isObject(metadata))
+                                                        // Test
+                                                        test(metadata);
 
-                                                        /* Logic
-                                                                If
-                                                                    there are cookies.
-                                                        */
-                                                        if (document.cookie.trim())
+                                                    else if (typeof metadata == 'string' && isObject(alpha)) {
+                                                        // Test
+                                                        test(alpha);
+
+                                                        // Modification > (LapysJS > Permanent Data > Temporary Data) > Hyperlink Reference
+                                                        _psi.perm.tmp.href = metadata
+                                                    }
+
+                                                    else if (typeof metadata == 'string' && args.length == 2)
+                                                        // Modification > (LapysJS > Permanent Data > Temporary Data) > Hyperlink Reference
+                                                        _psi.perm.tmp.href = metadata;
+
+                                                    else if (args.length > 2 && !isObject(alpha) || args.length > 1 && !isObject(metadata))
+                                                        // LapysJS > Warn
+                                                        _psi.warn('Parameter `options` must be JSON or an object.');
+
+                                                    // Modification > (LapysJS > Permanent Data > Temporary Data) > (Media, Relationship, Type)
+                                                    _psi.perm.tmp.getAttribute('media') || (_psi.perm.tmp.media = 'all');
+                                                    _psi.perm.tmp.getAttribute('rel') || (_psi.perm.tmp.rel = 'stylesheet');
+                                                    _psi.perm.tmp.getAttribute('type') || (_psi.perm.tmp.type = 'text/css');
+
+                                                    // Insertion
+                                                    (document.head || document.body || document.documentElement).appendChild(data);
+
+                                                    // Return
+                                                    return _psi.perm.tmp
+                                                }
+                                            });
+
+                                            // File
+                                            (typeof _that.import.file == 'function') || Object.defineProperty(_that.import, 'file', {
+                                                // Value
+                                                value: function file() {
+                                                    // Initialization > (Arguments, Data)
+                                                    let args = [...arguments],
+                                                        data = eval((function() {
+                                                            // Initialization > Data
+                                                            let data = "new _that.request('GET', ";
+
                                                             /* Loop
-                                                                    [for statement]
+                                                                    Index Arguments.
+
+                                                                > Update > Data
                                                             */
-                                                            for (let i of document.cookie.trim().split(';')) {
-                                                                /* Loop
-                                                                    [for statement]
-                                                            */
-                                                                for (let j of i.getAfterChar('=').slice("'{".length, -"}'".length).split(',')) {
-                                                                    // Initialization > Delta
-                                                                    let delta = j.split(': ')[1].trim().trimChar("'");
+                                                            for (let i in args)
+                                                                data += 'args[' + i + '], ';
 
-                                                                    // Update > Alpha
-                                                                    alpha.push(delta == data.name.trim() || delta == data.format.trim() || delta == data.src.trim());
-                                                                }
+                                                            // Return
+                                                            return data + ')'
+                                                        })());
 
-                                                                // Update > Beta
-                                                                beta.push(alpha.indexOf(!1) > -1);
+                                                    // Return
+                                                    return data
+                                                }
+                                            });
 
-                                                                // Update > Alpha
-                                                                alpha.length = 0
-                                                            }
+                                            // Font
+                                            (typeof _that.import.font == 'function') || Object.defineProperty(_that.import, 'font', {
+                                                // Value
+                                                value: function font() {
+                                                    // Initialization > (Arguments, Data, Metadata)
+                                                    let args = [...arguments],
+                                                        data = isObject(args[0]) ? args[0] : args[0],
+                                                        metadata = args[1];
 
-                                                        else
-                                                            // Update > Beta
-                                                            beta = [!0];
-
-                                                        // Initialization > Kappa
-                                                        let kappa = beta.indexOf(!1) < 0;
-
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (args.length > 0) {
                                                         /* Logic
                                                                 [if:else if:else statement]
 
-                                                                --- NOTE ---
-                                                                    @lapys:
-                                                                        If the condition is true,
-                                                                            then the given argument is used to parse the custom font,
-                                                                            otherwise cookies will be used to parse the custom font.
-
-                                                                        All that`s missing is if the file can be added as a cookie,
-                                                                        then we could successfully cache the files and use them regardless.
+                                                            > Psi > Error
                                                         */
-                                                        if (kappa) {
-                                                            // CSS > Style
-                                                            css.style(
-                                                                'label' in data ? data.label : 'CSSFontStylesheet',
-                                                                '@font-face {' +
-                                                                    ('name' in data ? ('font-family: ' + (String(data.name).indexOf(' ') > -1 ? "'" + data.name + "'" : data.name) + ';') : '') +
-                                                                    'src: ' + ('src' in data ? "url('" + data.src + "')" : 'url()') + ('format' in data ? " format('" + data.format + "')" : '') +
-                                                                '}'
-                                                            );
+                                                        if (args.length > 1 && !isObject(metadata))
+                                                            _psi.error('/command object_0', metadata);
 
-                                                            // Modification > Document > Cookie
-                                                            document.cookie = decodeURIComponent('lapysjs-imported-font_' + Math.random() + "='" + encodeURIComponent(metadata) + "';");
-                                                        }
+                                                        else if (!isObject(data) && typeof data != 'string')
+                                                            _psi.error('/command object|string_0', data);
 
-                                                        else {
-                                                            // Initialization > Omega
-                                                            let omega = {};
+                                                        // Initialization > Alpha
+                                                        let alpha = {};
 
-                                                            /* Loop
-                                                                    [for statement]
-                                                            */
-                                                            for (let i of document.cookie.split(';'))
-                                                                /* Loop
-                                                                        [for statement]
-                                                                */
-                                                                for (let j of i.getAfterChar("='{").slice(0, -"}'".length).split(',')) {
-                                                                    // Initialization > (Delta, Gamma)
-                                                                    let delta = j.split(': ')[1].trim(),
-                                                                        gamma = j.split(': ')[0].trim();
+                                                        // Update > Alpha
+                                                        !isObject(data) || (metadata = data);
+                                                        !isObject(metadata) || (alpha = metadata);
+                                                        (typeof data != 'string') || (alpha.name = data);
 
-                                                                    // Update
-                                                                        // Delta
-                                                                        delta = delta.endsWith("'") && delta.startsWith("'") ? delta.slice("'".length, -"'".length) : delta;
+                                                        // Psi > Error
+                                                        ('name' in alpha) || _psi.error('`name` option required');
+                                                        ('url' in alpha) || _psi.error('`url` option required');
 
-                                                                        // Omega
-                                                                        omega[gamma] = delta
-                                                                }
+                                                        /* Loop
+                                                                [for statement]
 
-                                                            // CSS > Style
-                                                            css.style(
-                                                                'label' in omega ? omega.label : 'CSSFontStylesheet',
-                                                                '@font-face {' +
-                                                                    ('name' in omega ? ('font-family: ' + (String(omega.name).indexOf(' ') > -1 ? "'" + omega.name + "'" : omega.name) + ';') : '') +
-                                                                    'src: ' + ('src' in omega ? "url('" + omega.src + "')" : 'url()') + ('format' in omega ? " format('" + omega.format + "')" : '') +
-                                                                '}'
-                                                            );
-                                                        }
+                                                            > Modification > Alpha > [Loop Counter]
+                                                        */
+                                                        for (let i in alpha)
+                                                            alpha[i] = String(alpha[i]);
+
+                                                        // CSS > Style
+                                                        css.style(
+                                                            'CSSFontStylesheet',
+                                                            '@font-face {' +
+                                                                'font-family: ' + (alpha.name.indexOf(' ') > -1 ? '"' + alpha.name + '"' : '') + ';' +
+                                                                'src: url("' + alpha.url + '")' + ('format' in alpha ? ' format("' + alpha.format + '")' : '') +
+                                                            '}'
+                                                        )
+                                                    }
+                                                }
+                                            });
+
+                                            // JavaScript
+                                            (typeof _that.import.js == 'function') || Object.defineProperty(_that.import, 'js', {
+                                                // Value
+                                                value: function js() {
+                                                    // Initialization > (Arguments, Data, Metadata, Alpha)
+                                                    let args = [...arguments],
+                                                        data = createElement('script', args.length > 0 ? (args[0] ? "[data-id='" + String(args[0]) + "'" : '') : ''),
+                                                        metadata = args[1],
+                                                        alpha = args[2];
+
+                                                    // Update > (Psi > Permanent Data > Temporary Data)
+                                                    _psi.perm.tmp = data;
+
+                                                    // Function > Test
+                                                    function test() {
+                                                        // Initialization > Beta
+                                                        let beta = arguments[0];
+
+                                                        /* Loop
+                                                                [for statement]
+
+                                                            > Modification > (Psi > Permanent Data > Temporary Data) > [Loop Counter]
+                                                        */
+                                                        for (let i in beta)
+                                                            (i == 'src') || (_psi.perm.tmp[i] = beta[i]);
+
+                                                        // Return
+                                                        return beta
                                                     }
 
-                                                    else
-                                                        // LapysJS > Error
-                                                        LapysJS.error('/command object_0', args[0])
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (isObject(metadata)) {
+                                                        // Test
+                                                        test(metadata);
+
+                                                        // Modification > (Psi > Permanent Data > Temporary Data) > Source
+                                                        !('src' in metadata) || (_psi.perm.tmp.src = metadata)
+                                                    }
+
+                                                    else if (typeof metadata == 'string' && isObject(alpha)) {
+                                                        // Test
+                                                        test(alpha);
+
+                                                        // Modification > (Psi > Permanent Data > Temporary Data) > Source
+                                                        _psi.perm.tmp.src = metadata
+                                                    }
+
+                                                    else if (typeof metadata == 'string' && args.length == 2)
+                                                        // Modification > (Psi > Permanent Data > Temporary Data) > Source
+                                                        _psi.perm.tmp.src = metadata;
+
+                                                    else if (args.length > 2 && !isObject(alpha) || args.length > 1 && !isObject(metadata))
+                                                        // Psi > Warn
+                                                        _psi.warn('Parameter `options` must be JSON or an object.');
+
+                                                    // Modification > (Psi > Permanent Data > Temporary Data) > Type
+                                                    _psi.perm.tmp.getAttribute('type') || (_psi.perm.tmp.type = 'text/javascript');
+
+                                                    // Insertion
+                                                    (document.head || document.body || document.documentElement).appendChild(data);
+
+                                                    // Return
+                                                    return _psi.perm.tmp
                                                 }
                                             });
 
@@ -5715,70 +6125,61 @@
                                                 @lapys: This function is or getting data from CORS requests,
                                                     it serves as an alternative to the Fetch API.
                                     */
-                                    (typeof this.constructor.prototype.request == 'function') || Object.defineProperty(this.constructor.prototype, 'request', {
+                                    (typeof _that.request == 'function') || Object.defineProperty(_that, 'request', {
                                         // Value
                                         value: function request() {
-                                            /* Initialization > (Arguments, XML HTTP Request)
-                                                    --- NOTE ---
-                                                        @lapys: Create a new CORS request.
-                                            */
+                                            // Initialization > (Arguments, Data, Metadata, Alpha, Beta)
                                             let args = [...arguments],
-                                                _XMLHttpRequest = new XMLHttpRequest();
+                                                data = new XMLHttpRequest(),
+                                                metadata = args[0],
+                                                alpha = args[1],
+                                                beta = args[2];
 
                                             /* Logic
-                                                    If
-                                                        the Request has credentials,
-
-                                                    else if
-                                                        the XDomainRequest exists.
+                                                    [if:else if:else statement]
                                             */
-                                            if ('withCredentials' in _XMLHttpRequest)
-                                                // XML HTTP Request > Open
-                                                _XMLHttpRequest.open(String(args[0]), String(args[1]), !0);
+                                            if ('withCredentials' in data)
+                                                // Data > Open
+                                                data.open(metadata, alpha, !0);
 
-                                            else if (window.XDomainRequest) {
-                                                // Update > XML HTTP Request
-                                                _XMLHttpRequest = new XDomainRequest();
+                                            else if (typeof XDomainRequest != 'undefined') {
+                                                // Update > Data
+                                                data = new XDomainRequest();
 
-                                                // XML HTTP Request > Open
-                                                _XMLHttpRequest.open(String(args[0]), String(args[1]))
+                                                // Data > Open
+                                                data.open(metadata, alpha)
                                             }
 
                                             else {
-                                                // Update > XML HTTP Request
-                                                _XMLHttpRequest = null;
+                                                // Update > Data
+                                                data = null;
 
-                                                // Set Timeout
-                                                setTimeout(function() {
-                                                    // LapysJS > Warn
-                                                    LapysJS.warn('CORS is not supported by this browser.')
-                                                })
+                                                // LapysJS > Warn
+                                                LapysJS.warn('CORS is not supported by this browser.')
                                             }
 
                                             /* Logic
-                                                    If
-                                                        Argument 2 is an Object.
+                                                    [if:else if:else statement]
                                             */
-                                            if ((args[2] || _LapysJSObject).constructor === Object)
-                                                /* Loop
-                                                        Index Argument 2.
-
-                                                    > Update > XML HTTP Request.
+                                            if (data !== null) {
+                                                /* Logic
+                                                        [if:else if:else statement]
                                                 */
-                                                for (let i in args[2])
-                                                    _XMLHttpRequest[i] = args[2][i];
+                                                if (isObject(beta))
+                                                    /* Loop
+                                                            [for statement]
 
-                                            /* Set Timeout
-                                                    --- NOTE ---
-                                                        @lapys: Automated request parsing.
-                                            */
-                                            setTimeout(function() {
-                                                // XML HTTP Request > Send
-                                                _XMLHttpRequest.send()
-                                            }, +String(args[3]).replace(/ /g, '') || _LapysJSObject);
+                                                        > Modification > Data > [Loop Counter]
+                                                    */
+                                                    for (let i in beta)
+                                                        data[i] = beta[i];
+
+                                                // Data > Send
+                                                data.send()
+                                            }
 
                                             // Return
-                                            return _XMLHttpRequest
+                                            return data
                                         }
                                     });
 
@@ -5860,16 +6261,28 @@
                         });
 
                         // Executed
-                        that.constructor.prototype.executed = !1;
+                        _psi.executed = !1;
 
                         // Experimental Features
-                        'experimentalFeatures' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'experimentalFeatures', {
-                            // Value
-                            value: ['data-focus', 'html-javascript']
+                        'experimentalFeatures' in _psi || Object.defineProperty(_psi, 'experimentalFeatures', {
+                            /* Value
+                                    --- NOTE ---
+                                        @lapys:
+                            */
+                            value: [
+                                /*
+                                    * Enables all DOM elements to have a `data-focus` attribute when `focused` upon.
+                                    * Can be further specified to elements with a `focusable` class only.
+                                */
+                                'data-focus',
+
+                                // Enables unique LapysJS custom DOM elements to function/ be utilized.
+                                'html-javascript'
+                            ]
                         });
 
                         // Function
-                        'function' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'function', {
+                        'function' in _psi || Object.defineProperty(_psi, 'function', {
                             // Value
                             value: class LapysJSFunction extends func {
                                 // Constructor
@@ -5928,7 +6341,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.function
+                                    return _psi.function
                                 }
                             });
                             window.lfunc = function() {
@@ -5954,13 +6367,13 @@
                             };
 
                         // Name (Title)
-                        'name' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'name', {
+                        'name' in _psi || Object.defineProperty(_psi, 'name', {
                             // Value
-                            value: this.constructor.name || 'LapysJS'
+                            value: that.constructor.name || 'LapysJS'
                         });
 
                         // Number
-                        'number' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'number', {
+                        'number' in _psi || Object.defineProperty(_psi, 'number', {
                             // Value
                             value: class LapysJSNumber extends number {
                                 // Constructor
@@ -6023,7 +6436,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.number
+                                    return _psi.number
                                 }
                             });
                             window.lnumber = (window.lnum = function() {
@@ -6052,10 +6465,16 @@
                                 --- NOTE ---
                                     @lapys: The LapysJS object is meant to be recursive.
                         */
-                        'LapysJS' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'LapysJS', {value: this});
+                        'LapysJS' in _psi || Object.defineProperty(_psi, 'LapysJS', {
+                            // Get
+                            get: function LapysJS() {
+                                // Return
+                                return that
+                            }
+                        });
 
                         // Object
-                        'object' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'object', {
+                        'object' in _psi || Object.defineProperty(_psi, 'object', {
                             // Value
                             value: class LapysJSObject extends obj {
                                 // Constructor
@@ -6090,7 +6509,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.object
+                                    return _psi.object
                                 }
                             });
                             window.lobj = function() {
@@ -6116,15 +6535,16 @@
                             };
 
                         // Plug-In
-                        'plugin' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'plugin', {
+                        'plugin' in _psi || Object.defineProperty(_psi, 'plugin', {
                             // Value
                             value: new (function LapysJSPluginsObject() {
                                 // Initialization > Target
-                                let that = this;
+                                let that = this,
+                                    _that = that.constructor.prototype;
 
                                 // Modification > Target
                                     // Accordion
-                                    Object.defineProperty(that.constructor.prototype, 'Accordion', {
+                                    Object.defineProperty(_that, 'Accordion', {
                                         // Value
                                         value: (function Accordion() {
                                             // Initialization > Data
@@ -6145,7 +6565,7 @@
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '1', {
+                                        Object.defineProperty(_that, '1', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6154,7 +6574,7 @@
                                         });
 
                                     // Carousel
-                                    Object.defineProperty(that.constructor.prototype, 'Carousel', {
+                                    Object.defineProperty(_that, 'Carousel', {
                                         // Value
                                         value: (function Carousel() {
                                             // Initialization > Data
@@ -6179,7 +6599,7 @@
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '2', {
+                                        Object.defineProperty(_that, '2', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6188,7 +6608,7 @@
                                         });
 
                                     // Drag Element
-                                    Object.defineProperty(that.constructor.prototype, 'DragElement', {
+                                    Object.defineProperty(_that, 'DragElement', {
                                         // Value
                                         value: (function DragElement() {
                                             // Initialization > Data
@@ -6209,7 +6629,7 @@
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '3', {
+                                        Object.defineProperty(_that, '3', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6218,7 +6638,7 @@
                                         });
 
                                     // Dropdown
-                                    Object.defineProperty(that.constructor.prototype, 'Dropdown', {
+                                    Object.defineProperty(_that, 'Dropdown', {
                                         // Value
                                         value: (function Dropdown() {
                                             // Initialization > Data
@@ -6239,7 +6659,7 @@
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '4', {
+                                        Object.defineProperty(_that, '4', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6248,7 +6668,7 @@
                                         });
 
                                     // Drop Element
-                                    Object.defineProperty(that.constructor.prototype, 'DropElement', {
+                                    Object.defineProperty(_that, 'DropElement', {
                                         // Value
                                         value: (function DropElement() {
                                             // Initialization > Data
@@ -6269,7 +6689,7 @@
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '5', {
+                                        Object.defineProperty(_that, '5', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6277,8 +6697,38 @@
                                             }
                                         });
 
+                                    // Dynamic Time
+                                    Object.defineProperty(_that, 'DynamicTime', {
+                                        // Value
+                                        value: (function DynamicTime() {
+                                            // Initialization > Data
+                                            let data = class DynamicTime {
+                                                // Constructor
+                                                constructor() {
+                                                    // Return
+                                                    return createElement('time', '.dynamic-time', '', {dataset: {time: 'full-date'}})
+                                                }
+                                            };
+
+                                            // Modification > Data
+                                                // PlugIn Type
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 6});
+
+                                            // Return
+                                            return data
+                                        })()
+                                    });
+                                        // Definition
+                                        Object.defineProperty(_that, '6', {
+                                            // Get
+                                            get: function() {
+                                                // Return
+                                                return that.DynamicTime
+                                            }
+                                        });
+
                                     // Dynamic Text
-                                    Object.defineProperty(that.constructor.prototype, 'DynamicText', {
+                                    Object.defineProperty(_that, 'DynamicText', {
                                         // Value
                                         value: (function DynamicText() {
                                             // Initialization > Data
@@ -6292,14 +6742,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 6});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 7});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '6', {
+                                        Object.defineProperty(_that, '7', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6308,7 +6758,7 @@
                                         });
 
                                     // Media
-                                    Object.defineProperty(that.constructor.prototype, 'Media', {
+                                    Object.defineProperty(_that, 'Media', {
                                         // Value
                                         value: (function Media() {
                                             // Initialization > Data
@@ -6322,14 +6772,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 7});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 8});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '7', {
+                                        Object.defineProperty(_that, '8', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6338,7 +6788,7 @@
                                         });
 
                                     // Media Playlist
-                                    Object.defineProperty(that.constructor.prototype, 'MediaPlaylist', {
+                                    Object.defineProperty(_that, 'MediaPlaylist', {
                                         // Value
                                         value: (function MediaPlaylist() {
                                             // Initialization > Data
@@ -6352,14 +6802,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 8});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 9});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '8', {
+                                        Object.defineProperty(_that, '9', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6368,7 +6818,7 @@
                                         });
 
                                     // Placeholder
-                                    Object.defineProperty(that.constructor.prototype, 'Placeholder', {
+                                    Object.defineProperty(_that, 'Placeholder', {
                                         // Value
                                         value: (function Placeholder() {
                                             // Initialization > Data
@@ -6382,14 +6832,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 9});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 10});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '9', {
+                                        Object.defineProperty(_that, '10', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6398,7 +6848,7 @@
                                         });
 
                                     // Roulette
-                                    Object.defineProperty(that.constructor.prototype, 'Roulette', {
+                                    Object.defineProperty(_that, 'Roulette', {
                                         // Value
                                         value: (function Roulette() {
                                             // Initialization > Data
@@ -6412,14 +6862,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 10});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 11});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '10', {
+                                        Object.defineProperty(_that, '11', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6428,7 +6878,7 @@
                                         });
 
                                     // Select Box
-                                    Object.defineProperty(that.constructor.prototype, 'SelectBox', {
+                                    Object.defineProperty(_that, 'SelectBox', {
                                         // Value
                                         value: (function SelectBox() {
                                             // Initialization > Data
@@ -6442,14 +6892,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 11});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 12});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '11', {
+                                        Object.defineProperty(_that, '12', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6458,7 +6908,7 @@
                                         });
 
                                     // Tip
-                                    Object.defineProperty(that.constructor.prototype, 'Tip', {
+                                    Object.defineProperty(_that, 'Tip', {
                                         // Value
                                         value: (function Tip() {
                                             // Initialization > Data
@@ -6472,14 +6922,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 12});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 13});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '12', {
+                                        Object.defineProperty(_that, '13', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6488,7 +6938,7 @@
                                         });
 
                                     // Toast
-                                    Object.defineProperty(that.constructor.prototype, 'Toast', {
+                                    Object.defineProperty(_that, 'Toast', {
                                         // Value
                                         value: (function Toast() {
                                             // Initialization > Data
@@ -6502,14 +6952,14 @@
 
                                             // Modification > Data
                                                 // PlugIn Type
-                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 13});
+                                                Object.defineProperty(data, 'LapysJS pluginType', {value: 14});
 
                                             // Return
                                             return data
                                         })()
                                     });
                                         // Definition
-                                        Object.defineProperty(that.constructor.prototype, '13', {
+                                        Object.defineProperty(_that, '14', {
                                             // Get
                                             get: function() {
                                                 // Return
@@ -6520,10 +6970,13 @@
                         });
 
                         // Ready
-                        that.constructor.prototype.ready = !1;
+                        _psi.ready = !1;
+
+                        // Ready State
+                        _psi.readyState = 'loading';
 
                         // Regular Expression
-                        'regex' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'regex', {
+                        'regex' in _psi || Object.defineProperty(_psi, 'regex', {
                             // Value
                             value: class LapysJSRegExp extends regex {
                                 // Constructor
@@ -6588,7 +7041,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.regex
+                                    return _psi.regex
                                 }
                             });
                             window.lregex = (window.lreg = function() {
@@ -6614,41 +7067,50 @@
                             });
 
                         // Script
-                        Object.defineProperty(that, 'script', {
+                        Object.defineProperty(_psi, 'script', {
                             // Value
                             value: document.currentScript || document.querySelector("script[src*='lapys.'][src*='.js']") || document.scripts[~-document.scripts.length]
                         });
+                            // Definition > Target
+                            let __psi = _psi.script;
+
                             // Data Enable
-                            ((that.script.getAttribute('data-enable') || '').indexOf('null') < 0) || that.script.removeAttribute('data-enable');
+                            ((__psi.getAttribute('data-enable') || '').indexOf('null') < 0) || __psi.removeAttribute('data-enable');
 
                             // Disable
-                            'disable' in that.script || Object.defineProperty(that.script, 'disable', {
+                            'disable' in __psi || Object.defineProperty(__psi, 'disable', {
                                 // Set
                                 set: function disable() {
+                                    // Initialization > Target
+                                    let that = this;
+
                                     // Modification > (LapysJS > Script) > Data Enable
-                                    this.setAttribute('data-enable', this.getAttribute('data-enable').replace(RegExp('\b' + LapysJS.debug.formatText(arguments[0], 4).removeRepeatedElements().join(' ') + '\b', 'g')))
+                                    that.setAttribute('data-enable', that.getAttribute('data-enable').replace(RegExp('\b' + LapysJS.debug.formatText(arguments[0], 4).removeRepeatedElements().join(' ') + '\b', 'g')))
                                 }
                             });
 
                             // Enable
-                            'enable' in that.script || Object.defineProperty(that.script, 'enable', {
+                            'enable' in __psi || Object.defineProperty(__psi, 'enable', {
                                 // Set
                                 set: function enable() {
+                                    // Initialization > Target
+                                    let that = this;
+
                                     /* Logic
                                             [if:else if:else statement]
 
                                         > Modification > (LapysJS > Script) > Data Enable
                                     */
                                     if (typeof arguments[0] == 'string')
-                                        this.setAttribute('data-enable', LapysJS.debug.formatText(arguments[0], 4).removeRepeatedElements().join(' '));
+                                        that.setAttribute('data-enable', LapysJS.debug.formatText(arguments[0], 4).removeRepeatedElements().join(' '));
 
                                     else if ((arguments[0] || _LapysJSObject).constructor == Array)
-                                        this.setAttribute('data-enable', LapysJS.debug.formatText(arguments[0].join(' ').trim(), 4).removeRepeatedElements().join(' '))
+                                        that.setAttribute('data-enable', LapysJS.debug.formatText(arguments[0].join(' ').trim(), 4).removeRepeatedElements().join(' '))
                                 }
                             });
 
                             // Enabled
-                            'enabled' in that.script || Object.defineProperty(that.script, 'enabled', {
+                            'enabled' in __psi || Object.defineProperty(__psi, 'enabled', {
                                 // Get
                                 get: function enabled() {
                                     // Return
@@ -6660,7 +7122,7 @@
                             });
 
                         // String
-                        'string' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'string', {
+                        'string' in _psi || Object.defineProperty(_psi, 'string', {
                             // Value
                             value: class LapysJSString extends str {
                                 // Constructor
@@ -6723,7 +7185,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.string
+                                    return _psi.string
                                 }
                             });
                             window.lstr = function() {
@@ -6749,7 +7211,7 @@
                             };
 
                         // Symbol
-                        'symbol' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'symbol', {
+                        'symbol' in _psi || Object.defineProperty(_psi, 'symbol', {
                             // Value
                             value: class LapysJSSymbol extends sym {
                                 // Constructor
@@ -6812,7 +7274,7 @@
                                 // Get
                                 get: function() {
                                     // Return
-                                    return that.constructor.prototype.symbol
+                                    return _psi.symbol
                                 }
                             });
                             window.lsym = function() {
@@ -6838,45 +7300,45 @@
                             };
 
                         // Regular Expression Set
-                        Object.defineProperty(that.constructor.prototype, 'regexSet', {
+                        Object.defineProperty(_psi, 'regexSet', {
                             // Get
-                            get: function() {
+                            get: function regexSet() {
                                 // Return
                                 return that.perm.regexSet
                             }
                         });
 
                         // Temporary Data
-                        that.constructor.prototype.temporaryData = void 0;
+                        _psi.temporaryData = void 0;
                             /* Set Interval
                                     --- NOTE ---
                                         @lapys: Every minute, the the Temporary Data
                                              becomes undefined.
                             */
                             setInterval(function() {
-                                // Update > LapysJS > Temporary Data
-                                !LapysJS.tmp || (LapysJS.tmp = void 0)
+                                // Update > Psi > Temporary Data
+                                !_psi.tmp || (_psi.tmp = void 0)
                             }, 6e4);
 
                             // Temporary
-                            'tmp' in this.constructor.prototype || Object.defineProperty(this.constructor.prototype, 'tmp', {
+                            'tmp' in _psi || Object.defineProperty(_psi, 'tmp', {
                                 // Get
-                                get: function() {
+                                get: function getTemporaryData() {
                                     // Return
-                                    return this.temporaryData
+                                    return that.temporaryData
                                 },
 
                                 // Set
-                                set: function() {
+                                set: function setTemporaryData() {
                                     // Modification > Target > Temporary Data
                                     this.temporaryData = arguments[0]
                                 }
                             });
 
                         // Version
-                        'version' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'version', {
+                        'version' in _psi || Object.defineProperty(_psi, 'version', {
                             // Value
-                            value: VER_NUMBER
+                            value: version
                         });
 
                         // Warn
@@ -6894,22 +7356,26 @@
                                 }
 
                             // Definition
-                            'warn' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'warn', {
+                            'warn' in _psi || Object.defineProperty(_psi, 'warn', {
                                 // Value
                                 value: function warn() {
                                     // Temporary Data
-                                    _temporaryData('[LapysJS v' + VER_NUMBER + '] => ' + arguments[0])
+                                    _temporaryData('[LapysJS v' + version + '] => ' + arguments[0])
                                 }
                             })
                     }
                 }),
 
+                // Writable
                 writable: !1
             });
 
+        // Temporary Data
+        _temporaryData = Array.prototype;
+
         /* Array Data */
             // Add Element
-            (typeof Array.prototype.addElement == 'function') || Object.defineProperty(Array.prototype, 'addElement', {
+            (typeof _temporaryData.addElement == 'function') || Object.defineProperty(_temporaryData, 'addElement', {
                 // Value
                 value: function addElement() {
                     // Initialization > (Arguments, Target)
@@ -6930,7 +7396,7 @@
             });
 
             // Add Element To Back
-            (typeof Array.prototype.addElementToBack == 'function') || Object.defineProperty(Array.prototype, 'addElementToBack', {
+            (typeof _temporaryData.addElementToBack == 'function') || Object.defineProperty(_temporaryData, 'addElementToBack', {
                 // Value
                 value: function addElementToBack() {
                     // Initialization > (Arguments, Target)
@@ -6951,7 +7417,7 @@
             });
 
             // Add Element To Front
-            (typeof Array.prototype.addElementToFront == 'function') || Object.defineProperty(Array.prototype, 'addElementToFront', {
+            (typeof _temporaryData.addElementToFront == 'function') || Object.defineProperty(_temporaryData, 'addElementToFront', {
                 // Value
                 value: function addElementToFront() {
                     // Initialization > (Arguments, Target)
@@ -6972,7 +7438,7 @@
             });
 
             // First Element
-            ('firstElement' in Array.prototype) || Object.defineProperty(Array.prototype, 'firstElement', {
+            ('firstElement' in _temporaryData) || Object.defineProperty(_temporaryData, 'firstElement', {
                 // Get
                 get: function firstElement() {
                     // Return
@@ -6981,7 +7447,7 @@
             });
 
             // Filled With
-            (typeof Array.prototype.filledWith == 'function') || Object.defineProperty(Array.prototype, 'filledWith', {
+            (typeof _temporaryData.filledWith == 'function') || Object.defineProperty(_temporaryData, 'filledWith', {
                 // Value
                 value: function filledWith() {
                     // Initialization > (Arguments, Data)
@@ -7002,7 +7468,7 @@
             });
 
             // Filled With Array Elements
-            (typeof Array.prototype.filledWithArrayElements == 'function') || Object.defineProperty(Array.prototype, 'filledWithArrayElements', {
+            (typeof _temporaryData.filledWithArrayElements == 'function') || Object.defineProperty(_temporaryData, 'filledWithArrayElements', {
                 // Value
                 value: function filledWithArrayElements() {
                     // Initialization > (Arguments, Data, Metadata)
@@ -7032,7 +7498,7 @@
              });
 
             // Free
-            (typeof Array.prototype.free == 'function') || Object.defineProperty(Array.prototype, 'free', {
+            (typeof _temporaryData.free == 'function') || Object.defineProperty(_temporaryData, 'free', {
                 // Value
                 value: function free() {
                     // Modification > Target > Length
@@ -7044,7 +7510,7 @@
             });
 
             // Get Common Element
-            (typeof Array.prototype.getCommonElement == 'function') || Object.defineProperty(Array.prototype, 'getCommonElement', {
+            (typeof _temporaryData.getCommonElement == 'function') || Object.defineProperty(_temporaryData, 'getCommonElement', {
                 // Value
                 value: function getCommonElement() {
                     // Initialization > (Data, Alpha, Metadata, Target)
@@ -7092,7 +7558,7 @@
             });
 
             // Get Duplicated Elements
-            (typeof Array.prototype.getDuplicatedElements == 'function') || Object.defineProperty(Array.prototype, 'getDuplicatedElements', {
+            (typeof _temporaryData.getDuplicatedElements == 'function') || Object.defineProperty(_temporaryData, 'getDuplicatedElements', {
                 // Value
                 value: function getDuplicatedElements() {
                     // Return
@@ -7101,7 +7567,7 @@
             });
 
             // Get Repeated Elements
-            (typeof Array.prototype.getRepeatedElements == 'function') || Object.defineProperty(Array.prototype, 'getRepeatedElements', {
+            (typeof _temporaryData.getRepeatedElements == 'function') || Object.defineProperty(_temporaryData, 'getRepeatedElements', {
                 // Value
                 value: function getRepeatedElements() {
                     // Initialization > (Data, Target)
@@ -7121,7 +7587,7 @@
             });
 
             // Get Uncommon Element
-            (typeof Array.prototype.getUncommonElement == 'function') || Object.defineProperty(Array.prototype, 'getUncommonElement', {
+            (typeof _temporaryData.getUncommonElement == 'function') || Object.defineProperty(_temporaryData, 'getUncommonElement', {
                 // Value
                 value: function getUncommonElement() {
                     // Initialization > (Alpha, Target, Data, Metadata)
@@ -7173,7 +7639,7 @@
             });
 
             // Has Array Element
-            (typeof Array.prototype.hasArrayElements == 'function') || Object.defineProperty(Array.prototype, 'hasArrayElements', {
+            (typeof _temporaryData.hasArrayElements == 'function') || Object.defineProperty(_temporaryData, 'hasArrayElements', {
                 // Value
                 value: function hasArrayElements() {
                     // Initialization > (Arguments, Data, Metadata)
@@ -7203,7 +7669,7 @@
              });
 
              // Has Element
-             (typeof Array.prototype.hasElement == 'function') || Object.defineProperty(Array.prototype, 'hasElement', {
+             (typeof _temporaryData.hasElement == 'function') || Object.defineProperty(_temporaryData, 'hasElement', {
                 // Value
                 value: function hasElement() {
                     // Initialization > (Arguments, Data)
@@ -7224,7 +7690,7 @@
              });
 
             // Last Element
-            (typeof Array.prototype.lastElement == 'function') || Object.defineProperty(Array.prototype, 'lastElement', {
+            (typeof _temporaryData.lastElement == 'function') || Object.defineProperty(_temporaryData, 'lastElement', {
                 // Get
                 get: function lastElement() {
                     // Return
@@ -7233,7 +7699,7 @@
             });
 
             // Random Element
-            (typeof Array.prototype.randomElement == 'function') || Object.defineProperty(Array.prototype, 'randomElement', {
+            (typeof _temporaryData.randomElement == 'function') || Object.defineProperty(_temporaryData, 'randomElement', {
                 // Value
                 value: function randomElement() {
                     // Return
@@ -7242,7 +7708,7 @@
             });
 
             // Randomize
-            (typeof Array.prototype.randomize == 'function') || Object.defineProperty(Array.prototype, 'randomize', {
+            (typeof _temporaryData.randomize == 'function') || Object.defineProperty(_temporaryData, 'randomize', {
                 // Value
                 value: function randomize() {
                     // Initialization > (Data, Metadata)
@@ -7269,7 +7735,7 @@
             });
 
             // Remove Common Elements
-            (typeof Array.prototype.removeCommonElements == 'function') || Object.defineProperty(Array.prototype, 'removeCommonElements', {
+            (typeof _temporaryData.removeCommonElements == 'function') || Object.defineProperty(_temporaryData, 'removeCommonElements', {
                 // Value
                 value: function removeCommonElements() {
                     // Return
@@ -7282,7 +7748,7 @@
                         @lapys: Should only remove duplicated values from the back
                             of the target array.
             */
-            (typeof Array.prototype.removeDuplicatedElement == 'function') || Object.defineProperty(Array.prototype, 'removeDuplicatedElement', {
+            (typeof _temporaryData.removeDuplicatedElement == 'function') || Object.defineProperty(_temporaryData, 'removeDuplicatedElement', {
                 // Value
                 value: function removeDuplicatedElement() {
                     // Initialization > (Target, Metadata, Data)
@@ -7325,7 +7791,7 @@
                         @lapys: Should only remove duplicated values from the back
                             of the target array.
             */
-            (typeof Array.prototype.removeDuplicatedElementFromBack == 'function') || Object.defineProperty(Array.prototype, 'removeDuplicatedElementFromBack', {
+            (typeof _temporaryData.removeDuplicatedElementFromBack == 'function') || Object.defineProperty(_temporaryData, 'removeDuplicatedElementFromBack', {
                 // Value
                 value: function removeDuplicatedElementFromBack() {
                     // Initialization > (Target, Metadata, Data)
@@ -7364,7 +7830,7 @@
             });
 
             // Remove Duplicated Element From Front
-            (typeof Array.prototype.removeDuplicatedElementFromFront == 'function') || Object.defineProperty(Array.prototype, 'removeDuplicatedElementFromFront', {
+            (typeof _temporaryData.removeDuplicatedElementFromFront == 'function') || Object.defineProperty(_temporaryData, 'removeDuplicatedElementFromFront', {
                 // Value
                 value: function removeDuplicatedElementFromFront() {
                     // Initialization > (Target, Metadata, Data)
@@ -7403,7 +7869,7 @@
             });
 
             // Remove Duplicated Elements
-            (typeof Array.prototype.removeDuplicatedElements == 'function') || Object.defineProperty(Array.prototype, 'removeDuplicatedElements', {
+            (typeof _temporaryData.removeDuplicatedElements == 'function') || Object.defineProperty(_temporaryData, 'removeDuplicatedElements', {
                 // Value
                 value: function removeDuplicatedElements() {
                     // Initialization > (Data, Metadata)
@@ -7440,7 +7906,7 @@
             });
 
             // Remove Duplicated Elements From Back
-            (typeof Array.prototype.removeDuplicatedElementsFromBack == 'function') || Object.defineProperty(Array.prototype, 'removeDuplicatedElementsFromBack', {
+            (typeof _temporaryData.removeDuplicatedElementsFromBack == 'function') || Object.defineProperty(_temporaryData, 'removeDuplicatedElementsFromBack', {
                 // Value
                 value: function removeDuplicatedElementsFromBack() {
                     // Initialization > (Array, Data)
@@ -7477,7 +7943,7 @@
             });
 
             // Remove Duplicated Elements From Front
-            (typeof Array.prototype.removeDuplicatedElementsFromFront == 'function') || Object.defineProperty(Array.prototype, 'removeDuplicatedElementsFromFront', {
+            (typeof _temporaryData.removeDuplicatedElementsFromFront == 'function') || Object.defineProperty(_temporaryData, 'removeDuplicatedElementsFromFront', {
                 // Value
                 value: function removeDuplicatedElementsFromFront() {
                     // Initialization > (Data, Metadata)
@@ -7517,7 +7983,7 @@
                     --- NOTE ---
                         @lapys: Removes the first instance specified element of an array.
             */
-            (typeof Array.prototype.removeElement == 'function') || Object.defineProperty(Array.prototype, 'removeElement', {
+            (typeof _temporaryData.removeElement == 'function') || Object.defineProperty(_temporaryData, 'removeElement', {
                 // Value
                 value: function removeElement() {
                     // Initialization > (Arguments, Target)
@@ -7537,7 +8003,7 @@
             });
 
             // Remove Element From Back
-            (typeof Array.prototype.removeElementFromBack == 'function') || Object.defineProperty(Array.prototype, 'removeElementFromBack', {
+            (typeof _temporaryData.removeElementFromBack == 'function') || Object.defineProperty(_temporaryData, 'removeElementFromBack', {
                 // Value
                 value: function removeElementFromBack() {
                     // Initialization > (Arguments, Target)
@@ -7560,7 +8026,7 @@
                     --- NOTE ---
                         @lapys: Removes the last instance specified element of an array.
             */
-             (typeof Array.prototype.removeElementFromFront == 'function') || Object.defineProperty(Array.prototype, 'removeElementFromFront', {
+             (typeof _temporaryData.removeElementFromFront == 'function') || Object.defineProperty(_temporaryData, 'removeElementFromFront', {
                 // Value
                 value: function removeElementFromFront() {
                     // Initialization > (Arguments, Target)
@@ -7580,7 +8046,7 @@
              });
 
             // Remove Elements
-            (typeof Array.prototype.removeElements == 'function') || Object.defineProperty(Array.prototype, 'removeElements', {
+            (typeof _temporaryData.removeElements == 'function') || Object.defineProperty(_temporaryData, 'removeElements', {
                 // Value
                 value: function removeElements() {
                     // Initialization > (Arguments, Target)
@@ -7610,7 +8076,7 @@
             });
 
             // Remove Falsy Elements
-            (typeof Array.prototype.removeFalsyElements == 'function') || Object.defineProperty(Array.prototype, 'removeFalsyElements', {
+            (typeof _temporaryData.removeFalsyElements == 'function') || Object.defineProperty(_temporaryData, 'removeFalsyElements', {
                 // Value
                 value: function removeFalsyElements() {
                     // Initialization > (Target, Data)
@@ -7634,7 +8100,7 @@
              });
 
             // Remove Repeated Elements
-             (typeof Array.prototype.removeRepeatedElements == 'function') || Object.defineProperty(Array.prototype, 'removeRepeatedElements', {
+             (typeof _temporaryData.removeRepeatedElements == 'function') || Object.defineProperty(_temporaryData, 'removeRepeatedElements', {
                 // Value
                 value: function removeRepeatedElements() {
                     // Initialization > (Target, Data, Metadata)
@@ -7670,7 +8136,7 @@
              });
 
             // Remove Truthy Elements
-            (typeof Array.prototype.removeTruthyElements == 'function') || Object.defineProperty(Array.prototype, 'removeTruthyElements', {
+            (typeof _temporaryData.removeTruthyElements == 'function') || Object.defineProperty(_temporaryData, 'removeTruthyElements', {
                 // Value
                 value: function removeTruthyElements() {
                     // Initialization > (Target, Data)
@@ -7697,7 +8163,7 @@
              });
 
             // Remove Uncommon Elements
-            (typeof Array.prototype.removeUncommonElements == 'function') || Object.defineProperty(Array.prototype, 'removeUncommonElements', {
+            (typeof _temporaryData.removeUncommonElements == 'function') || Object.defineProperty(_temporaryData, 'removeUncommonElements', {
                 // Value
                 value: function removeUncommonElements() {
                     // Return
@@ -7706,7 +8172,7 @@
             });
 
             // Repeat Element
-            (typeof Array.prototype.repeatElement == 'function') || Object.defineProperty(Array.prototype, 'repeatElement', {
+            (typeof _temporaryData.repeatElement == 'function') || Object.defineProperty(_temporaryData, 'repeatElement', {
                 // Value
                 value: function repeatElement() {
                     // Initialization > (Arguments, Data, Metadata, Target)
@@ -7729,7 +8195,7 @@
              });
 
             // Repeat Element To Back
-            (typeof Array.prototype.repeatElementToBack == 'function') || Object.defineProperty(Array.prototype, 'repeatElementToBack', {
+            (typeof _temporaryData.repeatElementToBack == 'function') || Object.defineProperty(_temporaryData, 'repeatElementToBack', {
                 // Value
                 value: function repeatElementToBack() {
                     // Initialization > (Arguments, Data, Metadata, Target)
@@ -7752,7 +8218,7 @@
              });
 
             // Repeat Element To Front
-            (typeof Array.prototype.repeatElementToFront == 'function') || Object.defineProperty(Array.prototype, 'repeatElementToFront', {
+            (typeof _temporaryData.repeatElementToFront == 'function') || Object.defineProperty(_temporaryData, 'repeatElementToFront', {
                 // Value
                 value: function repeatElementToFront() {
                     // Initialization > (Arguments, Data, Metadata, Target)
@@ -7775,7 +8241,7 @@
              });
 
             // Repeat Element Set
-            (typeof Array.prototype.repeatElementSet == 'function') || Object.defineProperty(Array.prototype, 'repeatElementSet', {
+            (typeof _temporaryData.repeatElementSet == 'function') || Object.defineProperty(_temporaryData, 'repeatElementSet', {
                 // Value
                 value: function repeatElementSet() {
                     // Initialization > (Arguments, Data, Metadata, Target)
@@ -7802,7 +8268,7 @@
              });
 
             // Repeat Element Set To Back
-            (typeof Array.prototype.repeatElementSetToBack == 'function') || Object.defineProperty(Array.prototype, 'repeatElementSetToBack', {
+            (typeof _temporaryData.repeatElementSetToBack == 'function') || Object.defineProperty(_temporaryData, 'repeatElementSetToBack', {
                 // Value
                 value: function repeatElementSetToBack() {
                     // Initialization > (Arguments, Data, Metadata, Target)
@@ -7829,7 +8295,7 @@
              });
 
             // Repeat Element Set To Front
-            (typeof Array.prototype.repeatElementSetToFront == 'function') || Object.defineProperty(Array.prototype, 'repeatElementSetToFront', {
+            (typeof _temporaryData.repeatElementSetToFront == 'function') || Object.defineProperty(_temporaryData, 'repeatElementSetToFront', {
                 // Value
                 value: function repeatElementSetToFront() {
                     // Initialization > (Arguments, Data, Metadata, Target)
@@ -7856,7 +8322,7 @@
              });
 
             // Replace Common Elements
-            (typeof Array.prototype.replaceCommonElements == 'function') || Object.defineProperty(Array.prototype, 'replaceCommonElements', {
+            (typeof _temporaryData.replaceCommonElements == 'function') || Object.defineProperty(_temporaryData, 'replaceCommonElements', {
                 // Value
                 value: function replaceCommonElements() {
                     // Initialization > (Target, Data)
@@ -7877,7 +8343,7 @@
             });
 
             // Replace Duplicated Element
-            (typeof Array.prototype.replaceDuplicatedElement == 'function') || Object.defineProperty(Array.prototype, 'replaceDuplicatedElement', {
+            (typeof _temporaryData.replaceDuplicatedElement == 'function') || Object.defineProperty(_temporaryData, 'replaceDuplicatedElement', {
                 // Value
                 value: function replaceDuplicatedElement() {
                     // Initialization > (Target, Data, Metadata)
@@ -7910,7 +8376,7 @@
             });
 
             // Replace Duplicated Element From Back
-            (typeof Array.prototype.replaceDuplicatedElementFromBack == 'function') || Object.defineProperty(Array.prototype, 'replaceDuplicatedElementFromBack', {
+            (typeof _temporaryData.replaceDuplicatedElementFromBack == 'function') || Object.defineProperty(_temporaryData, 'replaceDuplicatedElementFromBack', {
                 // Value
                 value: function replaceDuplicatedElementFromBack() {
                     // Initialization > (Target, Data, Metadata)
@@ -7943,7 +8409,7 @@
             });
 
             // Replace Duplicated Element From Front
-            (typeof Array.prototype.replaceDuplicatedElementFromFront == 'function') || Object.defineProperty(Array.prototype, 'replaceDuplicatedElementFromFront', {
+            (typeof _temporaryData.replaceDuplicatedElementFromFront == 'function') || Object.defineProperty(_temporaryData, 'replaceDuplicatedElementFromFront', {
                 // Value
                 value: function replaceDuplicatedElementFromFront() {
                     // Initialization > (Target, Data, Metadata)
@@ -7976,7 +8442,7 @@
             });
 
             // Replace Duplicated Elements
-            (typeof Array.prototype.replaceDuplicatedElements == 'function') || Object.defineProperty(Array.prototype, 'replaceDuplicatedElements', {
+            (typeof _temporaryData.replaceDuplicatedElements == 'function') || Object.defineProperty(_temporaryData, 'replaceDuplicatedElements', {
                 // Value
                 value: function replaceDuplicatedElements() {
                     // Initialization > (Target, Data)
@@ -8005,7 +8471,7 @@
             });
 
             // Replace Duplicated Elements From Back
-            (typeof Array.prototype.replaceDuplicatedElementsFromBack == 'function') || Object.defineProperty(Array.prototype, 'replaceDuplicatedElementsFromBack', {
+            (typeof _temporaryData.replaceDuplicatedElementsFromBack == 'function') || Object.defineProperty(_temporaryData, 'replaceDuplicatedElementsFromBack', {
                 // Value
                 value: function replaceDuplicatedElementsFromBack() {
                     // Initialization > (Target, Data)
@@ -8034,7 +8500,7 @@
             });
 
             // Replace Duplicated Elements From Front
-            (typeof Array.prototype.replaceDuplicatedElementsFromFront == 'function') || Object.defineProperty(Array.prototype, 'replaceDuplicatedElementsFromFront', {
+            (typeof _temporaryData.replaceDuplicatedElementsFromFront == 'function') || Object.defineProperty(_temporaryData, 'replaceDuplicatedElementsFromFront', {
                 // Value
                 value: function replaceDuplicatedElementsFromFront() {
                     // Initialization > (Target, Data)
@@ -8063,7 +8529,7 @@
             });
 
             // Replace Element
-            (typeof Array.prototype.replaceElement == 'function') || Object.defineProperty(Array.prototype, 'replaceElement', {
+            (typeof _temporaryData.replaceElement == 'function') || Object.defineProperty(_temporaryData, 'replaceElement', {
                 // Value
                 value: function replaceElement() {
                     // Initialization > (Arguments, Target)
@@ -8087,7 +8553,7 @@
             });
 
             // Replace Element From Back
-            (typeof Array.prototype.replaceElementFromBack == 'function') || Object.defineProperty(Array.prototype, 'replaceElementFromBack', {
+            (typeof _temporaryData.replaceElementFromBack == 'function') || Object.defineProperty(_temporaryData, 'replaceElementFromBack', {
                 // Value
                 value: function replaceElementFromBack() {
                     // Initialization > (Arguments, Target)
@@ -8111,7 +8577,7 @@
             });
 
             // Replace Element From Front
-            (typeof Array.prototype.replaceElementFromFront == 'function') || Object.defineProperty(Array.prototype, 'replaceElementFromFront', {
+            (typeof _temporaryData.replaceElementFromFront == 'function') || Object.defineProperty(_temporaryData, 'replaceElementFromFront', {
                 // Value
                 value: function replaceElementFromFront() {
                     // Initialization > (Arguments, Target)
@@ -8135,7 +8601,7 @@
             });
 
             // Replace Elements
-            (typeof Array.prototype.replaceElements == 'function') || Object.defineProperty(Array.prototype, 'replaceElements', {
+            (typeof _temporaryData.replaceElements == 'function') || Object.defineProperty(_temporaryData, 'replaceElements', {
                 // Value
                 value: function replaceElements() {
                     // Initialization > (Arguments, Target)
@@ -8159,7 +8625,7 @@
             });
 
             // Replace Falsy Elements
-            (typeof Array.prototype.replaceFalsyElements == 'function') || Object.defineProperty(Array.prototype, 'replaceFalsyElements', {
+            (typeof _temporaryData.replaceFalsyElements == 'function') || Object.defineProperty(_temporaryData, 'replaceFalsyElements', {
                 // Value
                 value: function replaceFalsyElements() {
                     // Initialization > (Arguments, Target, Data)
@@ -8195,7 +8661,7 @@
             });
 
             // Replace Repeated Elements
-            (typeof Array.prototype.replaceRepeatedElements == 'function') || Object.defineProperty(Array.prototype, 'replaceRepeatedElements', {
+            (typeof _temporaryData.replaceRepeatedElements == 'function') || Object.defineProperty(_temporaryData, 'replaceRepeatedElements', {
                 // Value
                 value: function replaceRepeatedElements() {
                     // Initialization > (Arguments, Target, Data)
@@ -8217,7 +8683,7 @@
             });
 
             // Replace Truthy Elements
-            (typeof Array.prototype.replaceTruthyElements == 'function') || Object.defineProperty(Array.prototype, 'replaceTruthyElements', {
+            (typeof _temporaryData.replaceTruthyElements == 'function') || Object.defineProperty(_temporaryData, 'replaceTruthyElements', {
                 // Value
                 value: function replaceTruthyElements() {
                     // Initialization > (Arguments, Target, Data)
@@ -8255,7 +8721,7 @@
             });
 
             // Replace Uncommon Elements
-            (typeof Array.prototype.replaceUncommonElements == 'function') || Object.defineProperty(Array.prototype, 'replaceUncommonElements', {
+            (typeof _temporaryData.replaceUncommonElements == 'function') || Object.defineProperty(_temporaryData, 'replaceUncommonElements', {
                 // Value
                 value: function replaceUncommonElements() {
                     // Initialization > (Target, Data)
@@ -8276,7 +8742,7 @@
             });
 
             // Stretch
-            (typeof Array.prototype.stretch == 'function') || Object.defineProperty(Array.prototype, 'stretch', {
+            (typeof _temporaryData.stretch == 'function') || Object.defineProperty(_temporaryData, 'stretch', {
                 // Value
                 value: function stretch() {
                     // Initialization > Data
@@ -8290,19 +8756,28 @@
                 }
             });
 
+        // Update > Temporary Data
+        _temporaryData = DocumentType.prototype;
+
         /* Document Type */
             // Stringify
-            (typeof DocumentType.prototype.stringify == 'function') || Object.defineProperty(DocumentType.prototype, 'stringify', {
+            (typeof _temporaryData.stringify == 'function') || Object.defineProperty(_temporaryData, 'stringify', {
                 // Value
                 value: function stringify() {
+                    // Initialization > Target
+                    let that = this;
+
                     // Return
-                    return String(!this || String(('<!DOCTYPE ' + this.name + (this.publicId ? (" PUBLIC '" + this.publicId + "'") : '') + (!this.publicId && this.systemId ? ' SYSTEM' : '') + (this.systemId ? (" '" + this.systemId + "'") : '') + '>'))).replace('true', '')
+                    return String(!that || String(('<!DOCTYPE ' + that.name + (that.publicId ? (" PUBLIC '" + that.publicId + "'") : '') + (!that.publicId && that.systemId ? ' SYSTEM' : '') + (that.systemId ? (" '" + that.systemId + "'") : '') + '>'))).replace('true', '')
                 }
             });
 
+        // Update > Temporary Data
+        _temporaryData = Function.prototype;
+
         /* Function Data */
             // Get Arguments
-            (typeof Function.prototype.getArguments == 'function') || Object.defineProperty(Function.prototype, 'getArguments', {
+            (typeof _temporaryData.getArguments == 'function') || Object.defineProperty(_temporaryData, 'getArguments', {
                 // Value
                 value: function getArguments() {
                     /* Logic
@@ -8668,7 +9143,7 @@
             });
 
             // Get Body
-            (typeof Function.prototype.getBody == 'function') || Object.defineProperty(Function.prototype, 'getBody', {
+            (typeof _temporaryData.getBody == 'function') || Object.defineProperty(_temporaryData, 'getBody', {
                 // Value
                 value: function getBody() {
                     /* Logic
@@ -8699,9 +9174,12 @@
                 }
             });
 
+        // Update > Temporary Data
+        _temporaryData = HTMLAllCollection.prototype;
+
         /* HTMLAllCollection Data */
             // First Element
-            ('firstElement' in HTMLAllCollection.prototype) || Object.defineProperty(HTMLAllCollection.prototype, 'firstElement', {
+            ('firstElement' in _temporaryData) || Object.defineProperty(_temporaryData, 'firstElement', {
                 // Get
                 get: function firstElement() {
                     // Return
@@ -8710,17 +9188,20 @@
             });
 
             // Last Element
-            ('lastElement' in HTMLAllCollection.prototype) || Object.defineProperty(HTMLAllCollection.prototype, 'lastElement', {
+            ('lastElement' in _temporaryData) || Object.defineProperty(_temporaryData, 'lastElement', {
                 // Get
                 get: function lastElement() {
                     // Return
                     return this[~-this.length]
                 }
             });
+
+        // Update > Temporary Data
+        _temporaryData = HTMLCollection.prototype;
 
         /* HTMLCollection Data */
             // First Element
-            ('firstElement' in HTMLCollection.prototype) || Object.defineProperty(HTMLCollection.prototype, 'firstElement', {
+            ('firstElement' in _temporaryData) || Object.defineProperty(_temporaryData, 'firstElement', {
                 // Get
                 get: function firstElement() {
                     // Return
@@ -8729,17 +9210,20 @@
             });
 
             // Last Element
-            ('lastElement' in HTMLCollection.prototype) || Object.defineProperty(HTMLCollection.prototype, 'lastElement', {
+            ('lastElement' in _temporaryData) || Object.defineProperty(_temporaryData, 'lastElement', {
                 // Get
                 get: function lastElement() {
                     // Return
                     return this[~-this.length]
                 }
             });
+
+        // Update > Temporary Data
+        _temporaryData = NodeList.prototype;
 
         /* NodeList Data */
             // First Element
-            ('firstElement' in NodeList.prototype) || Object.defineProperty(NodeList.prototype, 'firstElement', {
+            ('firstElement' in _temporaryData) || Object.defineProperty(_temporaryData, 'firstElement', {
                 // Get
                 get: function firstElement() {
                     // Return
@@ -8748,7 +9232,7 @@
             });
 
             // Last Element
-            ('lastElement' in NodeList.prototype) || Object.defineProperty(NodeList.prototype, 'lastElement', {
+            ('lastElement' in _temporaryData) || Object.defineProperty(_temporaryData, 'lastElement', {
                 // Get
                 get: function lastElement() {
                     // Return
@@ -8756,9 +9240,12 @@
                 }
             });
 
+        // Update > Temporary Data
+        _temporaryData = Object.prototype;
+
         /* Object Data */
             // Clone
-            (typeof Object.prototype.clone == 'function') || Object.defineProperty(Object.prototype, 'clone', {
+            (typeof _temporaryData.clone == 'function') || Object.defineProperty(_temporaryData, 'clone', {
                 // Value
                 value: function clone() {
                     // Initialization > (Data, Deep, Target)
@@ -8774,58 +9261,67 @@
                         // Update > Data
                         data = that.cloneNode(deep);
 
-                    else
+                    else {
                         /* Logic
-                                Switch case to
-                                    Target's data type.
+                                [if:else if:else statement]
                         */
-                        switch (getType(that)) {
-                            // Array
-                            case 'array':
-                                // Update > Data
-                                data = [];
-                                break;
+                        if (typeof that == 'object' && deep)
+                            // Return
+                            return Object.assign(that, {});
 
-                            // Boolean
-                            case 'boolean':
-                                // Update > Data
-                                data = !!that;
-                                break;
+                        else
+                            /* Logic
+                                    Switch case to
+                                        Target's data type.
+                            */
+                            switch (getType(that)) {
+                                // Array
+                                case 'array':
+                                    // Update > Data
+                                    data = [];
+                                    break;
 
-                            // Function
-                            case 'function':
-                                // Update > Data
-                                data = that.bind({});
-                                break;
+                                // Boolean
+                                case 'boolean':
+                                    // Update > Data
+                                    data = !!that;
+                                    break;
 
-                            // Number
-                            case 'number':
-                                // Update > Data
-                                data = +(that + '');
-                                break;
+                                // Function
+                                case 'function':
+                                    // Update > Data
+                                    data = that.bind({});
+                                    break;
 
-                            // Object
-                            case 'object':
-                                data = Object.assign({}, that);
-                                break;
+                                // Number
+                                case 'number':
+                                    // Update > Data
+                                    data = +(that + '');
+                                    break;
 
-                            // Regular Expression
-                            case 'regex':
-                                // Update > Data
-                                data = RegExp(String(that).slice('/'.length, -('/'.length + that.flags.length)));
-                                break;
+                                // Object
+                                case 'object':
+                                    data = Object.assign({}, that);
+                                    break;
 
-                            // String
-                            case 'string':
-                                // Update > Data
-                                data = (' ' + that).slice(' '.length);
-                                break;
+                                // Regular Expression
+                                case 'regex':
+                                    // Update > Data
+                                    data = RegExp(String(that).slice('/'.length, -('/'.length + that.flags.length)));
+                                    break;
 
-                            // [Default]
-                            default:
-                                // Update > Data
-                                data = that !== null && that !== void 0 ? eval('new (function ' + that.constructor.name + '() {})') : that
-                        }
+                                // String
+                                case 'string':
+                                    // Update > Data
+                                    data = (' ' + that).slice(' '.length);
+                                    break;
+
+                                // [Default]
+                                default:
+                                    // Update > Data
+                                    data = that !== null && that !== void 0 ? eval('new (function ' + that.constructor.name + '() {})') : that
+                            }
+                    }
 
                     /* Logic
                             If
@@ -8868,17 +9364,8 @@
                 }
             });
 
-            // Concatenate
-            (typeof Object.prototype.concat == 'function') || Object.defineProperty(Object.prototype, 'concat', {
-                // Value
-                value: function concat() {
-                    // Return
-                    return Object.assign(this, arguments[0] || {});
-                }
-            });
-
             // Define
-            (typeof Object.prototype.def == 'function') || Object.defineProperty(Object.prototype, 'def', {
+            (typeof _temporaryData.def == 'function') || Object.defineProperty(_temporaryData, 'def', {
                 // Value
                 value: function defineProperty() {
                     /* Initialization > (Arguments, Data)
@@ -9198,7 +9685,7 @@
             });
 
             // Free
-            (typeof Object.prototype.free == 'function') || Object.defineProperty(Object.prototype, 'free', {
+            (typeof _temporaryData.free == 'function') || Object.defineProperty(_temporaryData, 'free', {
                 // Value
                 value: function free() {
                     // Initialization > Target
@@ -9218,7 +9705,7 @@
             });
 
             // Get (Property)
-            (typeof Object.prototype.getProperty == 'function') || Object.defineProperty(Object.prototype, 'getProperty', {
+            (typeof _temporaryData.getProperty == 'function') || Object.defineProperty(_temporaryData, 'getProperty', {
                 // Value
                 value: function getProperty() {
                     // Return
@@ -9227,7 +9714,7 @@
             });
 
             // Has Property
-            (typeof Object.prototype.hasProperty == 'function') || Object.defineProperty(Object.prototype, 'hasProperty', {
+            (typeof _temporaryData.hasProperty == 'function') || Object.defineProperty(_temporaryData, 'hasProperty', {
                 // Value
                 value: function hasProperty() {
                     // Return
@@ -9236,7 +9723,7 @@
             });
 
             // Keys
-            (typeof Object.prototype.keys == 'function') || Object.defineProperty(Object.prototype, 'keys', {
+            (typeof _temporaryData.keys == 'function') || Object.defineProperty(_temporaryData, 'keys', {
                 // Value
                 value: function keys() {
                     // Return
@@ -9245,7 +9732,7 @@
             });
 
             // Name
-            (typeof ({}).__name__ == 'string') || Object.defineProperty(Object.prototype, '__name__', {            // Get
+            (typeof ({}).__name__ == 'string') || Object.defineProperty(_temporaryData, '__name__', {            // Get
                 get: function get__name__() {
                     // Return
                     return this.constructor.name
@@ -9259,7 +9746,7 @@
             });
 
             // Set (Property)
-            (typeof Object.prototype.setProperty == 'function') || Object.defineProperty(Object.prototype, 'setProperty', {
+            (typeof _temporaryData.setProperty == 'function') || Object.defineProperty(_temporaryData, 'setProperty', {
                 // Value
                 value: function setProperty() {
                     // Return
@@ -9268,7 +9755,7 @@
             });
 
             // Values
-            (typeof Object.prototype.values == 'function') || Object.defineProperty(Object.prototype, 'values', {
+            (typeof _temporaryData.values == 'function') || Object.defineProperty(_temporaryData, 'values', {
                 // Value
                 value: function values() {
                     // Return
@@ -9276,9 +9763,12 @@
                 }
             });
 
+        // Update > Temporary Data
+        _temporaryData = String.prototype;
+
         /* String Data */
             // Capitalize
-            (typeof String.prototype.capital == 'function') || Object.defineProperty(String.prototype, 'capital', {
+            (typeof _temporaryData.capital == 'function') || Object.defineProperty(_temporaryData, 'capital', {
                 // Value
                 value: function capital() {
                     // Return
@@ -9290,7 +9780,7 @@
             });
 
             // Count
-            (typeof String.prototype.count == 'function') || Object.defineProperty(String.prototype, 'count', {
+            (typeof _temporaryData.count == 'function') || Object.defineProperty(_temporaryData, 'count', {
                 // Value
                 value: function count() {
                     // Initialization > (Arguments, Data, Beta, Target)
@@ -9358,7 +9848,7 @@
             });
 
             // First Character
-            'firstChar' in String.prototype || Object.defineProperty(String.prototype, 'firstChar', {
+            'firstChar' in _temporaryData || Object.defineProperty(_temporaryData, 'firstChar', {
                 // Get
                 get: function firstChar() {
                     // Return
@@ -9367,60 +9857,78 @@
             });
 
             // Get After Character/ Text
-            (typeof String.prototype.getAfterChar == 'function') || (String.prototype.getAfterChar = function getAfterChar() {
-                // Initialization > (Arguments, Data, Metadata, Target)
-                let args = [...arguments],
-                    data = args[0],
-                    metadata = args[1],
-                    that = this;
+            (typeof _temporaryData.getAfterChar == 'function') || Object.defineProperty(_temporaryData, 'getAfterChar', {
+                // Value
+                value: function getAfterChar() {
+                    // Initialization > (Arguments, Data, Metadata, Target)
+                    let args = [...arguments],
+                        data = args[0],
+                        metadata = args[1],
+                        that = this;
 
-                /* Logic
-                        Switch Argument 0 data type case to
-                            'number' and 'string'.
-                */
-                switch (typeof data) {
-                    // Number
-                    case 'number':
-                        // Return
-                        return metadata ? that.slice(-data) : that.slice(data + 1);
-                        break;
+                    // Update > Data
+                    ((data || _LapysJSObject).constructor != RegExp) || (data = (metadata ? [...that].reverse()[(that.reverse().match(RegExp(data.source, data.flags.replace('g', ''))) || []).index] : [...that][(that.match(RegExp(data.source, data.flags.replace('g', ''))) || []).index]) || null);
 
-                    // String
-                    case 'string':
-                        // Return
-                        return (metadata ? that.lastIndexOf : that.indexOf).call(that, data) > -1 ? that.slice((metadata ? that.lastIndexOf : that.indexOf).call(that, data) + data.length) : ''
+                    /* Logic
+                            Switch Argument 0 data type case to
+                                'number' and 'string'.
+                    */
+                    switch (typeof data) {
+                        // Number
+                        case 'number':
+                            // Return
+                            return metadata ? that.slice(-data) : that.slice(data + 1);
+                            break;
+
+                        // String
+                        case 'string':
+                            // Return
+                            return (metadata ? that.lastIndexOf : that.indexOf).call(that, data) > -1 ? that.slice((metadata ? that.lastIndexOf : that.indexOf).call(that, data) + data.length) : ''
+                    }
+
+                    // Return
+                    return null
                 }
             });
 
             // Get Before Character/ Text
-            (typeof String.prototype.getBeforeChar == 'function') || (String.prototype.getBeforeChar = function getBeforeChar() {
-                // Initialization > (Arguments, Data, Metadata, Target)
-                let args = [...arguments],
-                    data = args[0],
-                    metadata = args[1],
-                    that = this;
+            (typeof _temporaryData.getBeforeChar == 'function') || Object.defineProperty(_temporaryData, 'getBeforeChar', {
+                // Value
+                value: function getBeforeChar() {
+                    // Initialization > (Arguments, Data, Metadata, Target)
+                    let args = [...arguments],
+                        data = args[0],
+                        metadata = args[1],
+                        that = this;
 
-                /* Logic
-                        Switch Argument 0 data type case to
-                            'number' and 'string'.
+                    // Update > Data
+                    ((data || _LapysJSObject).constructor != RegExp) || (data = (metadata ? [...that].reverse()[(that.reverse().match(RegExp(data.source, data.flags.replace('g', ''))) || []).index] : [...that][(that.match(RegExp(data.source, data.flags.replace('g', ''))) || []).index]) || null);
 
-                    > Return
-                */
-                switch (typeof data) {
-                    // Number
-                    case 'number':
-                        return metadata ? that.slice(0, -data - 2) : that.slice(0, data);
-                        break;
+                    /* Logic
+                            Switch Argument 0 data type case to
+                                'number' and 'string'.
 
-                    // String
-                    case 'string':
-                        // Return
-                        return (metadata ? that.lastIndexOf : that.indexOf).call(that, data) > -1 ? that.slice(0, (metadata ? that.lastIndexOf : that.indexOf).call(that, data)) : that
+                        > Return
+                    */
+                    switch (typeof data) {
+                        // Number
+                        case 'number':
+                            return metadata ? that.slice(0, -data - 2) : that.slice(0, data);
+                            break;
+
+                        // String
+                        case 'string':
+                            // Return
+                            return (metadata ? that.lastIndexOf : that.indexOf).call(that, data) > -1 ? that.slice(0, (metadata ? that.lastIndexOf : that.indexOf).call(that, data)) : that
+                    }
+
+                    // Return
+                    return null
                 }
             });
 
             // Has Text
-            (typeof String.prototype.hasText == 'function') || Object.defineProperty(String.prototype, 'hasText', {
+            (typeof _temporaryData.hasText == 'function') || Object.defineProperty(_temporaryData, 'hasText', {
                 // Value
                 value: function hasText() {
                     // Initialization > (Arguments, Data)
@@ -9443,7 +9951,7 @@
             });
 
             // HTML
-            'html' in String.prototype || Object.defineProperty(String.prototype, 'html', {
+            'html' in _temporaryData || Object.defineProperty(_temporaryData, 'html', {
                 // Configurable
                 configurable: !0,
 
@@ -9461,7 +9969,7 @@
                     --- NOTE ---
                         @lapys: Check if an Element is registered.
             */
-            'isRegistered' in String.prototype || Object.defineProperty(String.prototype, 'isRegistered', {
+            'isRegistered' in _temporaryData || Object.defineProperty(_temporaryData, 'isRegistered', {
                 // Get
                 get: function isRegistered() {
                     // Error Handling
@@ -9485,7 +9993,7 @@
             });
 
             // Last Character
-            'lastChar' in String.prototype || Object.defineProperty(String.prototype, 'lastChar', {
+            'lastChar' in _temporaryData || Object.defineProperty(_temporaryData, 'lastChar', {
                 // Configurable
                 configurable: !0,
 
@@ -9501,15 +10009,15 @@
 
             /* Lower
                     --- NOTE ---
-                        @lapys: Shorter form of 'String.toLowerCase' method.
+                        @lapys: Shorter form of `String.toLowerCase` method.
             */
-            (typeof String.prototype.lower == 'function') || (String.prototype.lower = function lower() {
+            (typeof _temporaryData.lower == 'function') || (_temporaryData.lower = function lower() {
                 // Return
                 return this.toLowerCase()
             });
 
             // Randomize
-            (typeof String.prototype.randomize == 'function') || Object.defineProperty(String.prototype, 'randomize', {
+            (typeof _temporaryData.randomize == 'function') || Object.defineProperty(_temporaryData, 'randomize', {
                 // Value
                 value: function randomize() {
                     let data = '',
@@ -9519,14 +10027,22 @@
                             [for statement]
                     */
                     for (let i = 0; i < this.length; i += 1) {
-                        // Initialization > Random
-                        let random = parseInt(rand(0, metadata.length));
+                        // Initialization > Alpha
+                        let alpha = parseInt(rand(0, metadata.length));
+
+                        /* Loop
+                                [do:while statement]
+
+                            > Update > Alpha
+                        */
+                        while (!(alpha in [...metadata]))
+                            alpha = parseInt(rand(0, metadata.length));
 
                         // Update > Data
-                        data += metadata[random];
+                        data += metadata[alpha];
 
                         // Deletion
-                        metadata = metadata.replace(metadata[random], '')
+                        metadata = metadata.replace(metadata[alpha], '')
                     }
 
                     // Return
@@ -9535,7 +10051,7 @@
             });
 
             // Reverse
-            (typeof String.prototype.reverse == 'function') || Object.defineProperty(String.prototype, 'reverse', {
+            (typeof _temporaryData.reverse == 'function') || Object.defineProperty(_temporaryData, 'reverse', {
                 // Value
                 value: function reverse() {
                     // Return
@@ -9544,7 +10060,7 @@
             });
 
             // Remove Character/ Text
-            (typeof String.prototype.removeChar == 'function') || Object.defineProperty(String.prototype, 'removeChar', {
+            (typeof _temporaryData.removeChar == 'function') || Object.defineProperty(_temporaryData, 'removeChar', {
                 // Value
                 value: function removeChar() {
                     // Initialization > (Arguments, Data)
@@ -9569,7 +10085,7 @@
             });
 
             // To Array
-            (typeof String.prototype.toArray == 'function') || Object.defineProperty(String.prototype, 'toArray', {
+            (typeof _temporaryData.toArray == 'function') || Object.defineProperty(_temporaryData, 'toArray', {
                 // Value
                 value: function toArray() {
                     // Initialization > (Arguments, Data, Metadata, Alpha, Beta, Regular Expression Set (...), Target)
@@ -9712,152 +10228,75 @@
                 }
             });
 
-            // To Object
-            (typeof String.prototype.toObject == 'function') || Object.defineProperty(String.prototype, 'toObject', {
-                // Value
-                value: function toObject() {
-                    // Initialization > (Arguments, Data, Metadata, Alpha, Beta, Delta, Gamma, Epsilon, Regular Expression Set (...), Target)
-                    let args = [...arguments],
-                        data = [];
-                        metadata = [],
-                        alpha = [],
-                        beta = [],
-                        delta = [],
-                        gamma = [],
-                        epsilon = {},
-                        regexSet = LapysJS.regexSet.randomize(),
-                        regexSetAlt = LapysJS.regexSet.randomize(),
-                        regexSetQuasiAlt = LapysJS.regexSet.randomize(),
-                        regexSetQuasiAlt0 = LapysJS.regexSet.randomize(),
-                        regexSetQuasiAlt1 = LapysJS.regexSet.randomize(),
-                        that = this;
-
-                    // Update > Target
-                    that.startsWith('{') || (that = '{' + that);
-                    that.endsWith('}') || (that += '}');
-
-                    // Return
-                    return epsilon
-                }
-            });
-
             // To String Array
-            (typeof String.prototype.toStringArray == 'function') || Object.defineProperty(String.prototype, 'toStringArray', {
+            (typeof _temporaryData.toStringArray == 'function') || Object.defineProperty(_temporaryData, 'toStringArray', {
                 // Value
                 value: function toStringArray() {
+                    // Initialization > (Arguments, Data)
+                    let args = [...arguments],
+                        data = (args[0] || _LapysJSObject).constructor == RegExp ? args[0].source : args[0];
+
                     // Return
-                    return this.split(RegExp('\\' + (arguments.length > 0 ? arguments[0] : ','), 'g'))
+                    return this.split(String(data))
                 }
             });
 
             // Trim Character
-            (typeof String.prototype.trimChar == 'function') || Object.defineProperty(String.prototype, 'trimChar', {
+            (typeof _temporaryData.trimChar == 'function') || Object.defineProperty(_temporaryData, 'trimChar', {
                 // Value
                 value: function trimChar() {
-                    /* Initialization > Data
-                            --- WARN ---
-                                @lapys: Apparently in this case
-                                    Data can not be cloned.
-                    */
-                    let data = (' ' + this).slice(' '.length);
-
-                    /* Logic
-                            [if:else if:else statement]
-                    */
-                    if (arguments.length > 0) {
-                        // Initialization > (Left, Right) Counter
-                        let leftCounter = 0,
-                            rightCounter = 0;
-
-                        /* Loop
-                                [do:while statement]
-
-                            > Update > (Data, Left Counter)
-                        */
-                        while (data.startsWith(String(arguments[0]))) {
-                            data = data.slice(String(arguments[0]).length);
-                            leftCounter += 1
-                        }
-
-                        /* Logic
-                                If
-                                    Argument 1 is a string.
-                        */
-                        if (typeof arguments[1] == 'string')
-                            /* Loop
-                                    Iterate over Left Counter.
-
-                                > Update > Data
-                            */
-                            for (let i = 0; i < leftCounter; i += 1)
-                                data = arguments[1] + data;
-
-                        /* Loop
-                                [do:while statement]
-
-                            > Update > Data, Right Counter
-                        */
-                        while (data.endsWith(String(arguments[0]))) {
-                            data = data.slice(0, -String(arguments[0]).length);
-                            rightCounter += 1
-                        }
-
-                        /* Logic
-                                If
-                                    Argument 1 is a string.
-                        */
-                        if (typeof arguments[1] == 'string')
-                            /* Loop
-                                    Iterate over Right Counter.
-
-                                > Update > Data
-                            */
-                            for (let i = 0; i < rightCounter; i += 1)
-                                data = data + arguments[1];
-                    }
+                    // Initialization > (Arguments, Target)
+                    let args = [...arguments],
+                        that = this;
 
                     // Return
-                    return String(data)
+                    return that.trimRightChar.apply(that.trimLeftChar.apply(that, args), args)
                 }
             });
 
             // Trim Left Character
-            (typeof String.prototype.trimLeftChar == 'function') || Object.defineProperty(String.prototype, 'trimLeftChar', {
+            (typeof _temporaryData.trimLeftChar == 'function') || Object.defineProperty(_temporaryData, 'trimLeftChar', {
                 // Value
                 value: function trimLeftChar() {
-                    // Initialization > Data
-                    let data = (' ' + this).slice(1);
+                    /* Initialization > (Arguments, Data)
+                            --- WARN ---
+                                @lapys: Apparently in this case
+                                    the `clone` method does not work.
+                    */
+                    let args = [...arguments],
+                        data = (' ' + this).slice(' '.length);
 
                     /* Logic
                             [if:else if:else statement]
                     */
-                    if (arguments.length > 0) {
-                        // Initialization > Left Counter
-                        let leftCounter = 0;
-
+                    if (arguments.length > 0 && this)
                         /* Loop
-                                [do:while statement]
-
-                            > Update > Data, Left Counter
+                                Index Arguments
                         */
-                        while (data.startsWith(String(arguments[0]))) {
-                            data = data.slice(String(arguments[0]).length);
-                            leftCounter += 1
-                        }
+                        for (let i in args) {
+                            // Update > Arguments
+                            (typeof args[i] != 'function') || (args[i] = args[i]());
 
-                        /* Logic
-                                If
-                                    Argument 1 is a string.
-                        */
-                        if (typeof arguments[1] == 'string')
-                            /* Loop
-                                    Iterate over Left Counter.
+                            // Initialization > Metadata
+                            let metadata = (args[i] || _LapysJSObject).constructor == RegExp ? RegExp(args[i].source) : String(args[i]);
 
-                                > Update > Data
+                            /* Logic
+                                    [if:else if:else statement]
                             */
-                            for (let i = 0; i < leftCounter; i += 1)
-                                data = arguments[1] + data;
-                    }
+                            if (metadata)
+                                // Error Handling
+                                try {
+                                    /* Loop
+                                            [do:while statement]
+
+                                        > Update > Data
+                                    */
+                                    while (data[0].hasText(metadata))
+                                        data = data.replace(metadata, '')
+                                }
+
+                                catch (error) {}
+                        }
 
                     // Return
                     return String(data)
@@ -9865,42 +10304,55 @@
             });
 
             // Trim Right Character
-            (typeof String.prototype.trimRightChar == 'function') || Object.defineProperty(String.prototype, 'trimRightChar', {
+            (typeof _temporaryData.trimRightChar == 'function') || Object.defineProperty(_temporaryData, 'trimRightChar', {
                 // Value
                 value: function trimRightChar() {
-                    // Initialization > Data
-                    let data = (' ' + this).slice(1);
+                    /* Initialization > (Arguments, Data)
+                            --- WARN ---
+                                @lapys: Apparently in this case
+                                    the `clone` method does not work.
+                    */
+                    let args = [...arguments],
+                        data = (' ' + this).slice(' '.length);
 
                     /* Logic
                             [if:else if:else statement]
                     */
-                    if (arguments.length > 0) {
-                        // Initialization > Right Counter
-                        let rightCounter = 0;
-
+                    if (arguments.length > 0 && this)
                         /* Loop
-                                [do:while statement]
-
-                            > Update > Data, Right Counter
+                                Index Arguments
                         */
-                        while (data.endsWith(String(arguments[0]))) {
-                            data = data.slice(0, -String(arguments[0]).length);
-                            rightCounter += 1
-                        }
+                        for (let i in args) {
+                            // Update > Arguments
+                            (typeof args[i] != 'function') || (args[i] = args[i]());
 
-                        /* Logic
-                                If
-                                    Argument 1 is a string.
-                        */
-                        if (typeof arguments[1] == 'string')
-                            /* Loop
-                                    Iterate over Right Counter.
+                            // Initialization > Metadata
+                            let metadata = (args[i] || _LapysJSObject).constructor == RegExp ? RegExp(args[i].source) : String(args[i]);
 
-                                > Update > Data
+                            /* Logic
+                                    [if:else if:else statement]
                             */
-                            for (let i = 0; i < rightCounter; i += 1)
-                                data = data + arguments[1];
-                    }
+                            if (metadata) {
+                                // Update > Data
+                                data = data.reverse();
+
+                                // Error Handling
+                                try {
+                                    /* Loop
+                                            [do:while statement]
+
+                                        > Update > Data
+                                    */
+                                    while (data[0].hasText(metadata))
+                                        data = data.replace(metadata, '')
+                                }
+
+                                catch (error) {}
+
+                                // Update > Data
+                                data = data.reverse()
+                            }
+                        }
 
                     // Return
                     return String(data)
@@ -9909,9 +10361,9 @@
 
             /* Upper
                     --- NOTE ---
-                        @lapys: Shorter form of 'String.toUpperCase' method.
+                        @lapys: Shorter form of `String.toUpperCase` method.
             */
-            (typeof String.prototype.upper == 'function') || (String.prototype.upper = function upper() {
+            (typeof _temporaryData.upper == 'function') || (_temporaryData.upper = function upper() {
                 // Return
                 return this.toUpperCase()
             });
@@ -9919,138 +10371,220 @@
         /* {Global Object Test} Logic
                 [if:else if:else statement]
         */
-        if (window && !LapysJS.executed && (LapysJS.script || _LapysJSObject).nodeType == 1) {
+        if (
+            LapysJS.executed === !1 &&
+            LapysJS.readyState == 'loading' &&
+            (LapysJS.script || _LapysJSObject).nodeType == 1 &&
+            typeof window == 'object'
+        ) {
+            /* Update */
+                // LapysJS > Ready State
+                LapysJS.readyState = 'interactive';
+
             /* Global Data */
-                // Alphabet String
-                let alphabetString = 'abcdefghijklmnopqrstuvwxyz'.randomize(),
-                    def = Object.defineProperty;
+                // Define, Regular Expression Set, Temporary Data
+                let regexSet = LapysJS.regexSet.randomize(),
+                    def = Object.defineProperty,
+                    _temporaryData = Window.prototype;
 
                 /* App
                         --- NOTE ---
                             @lapys: Unless the Application is explicitly made not to be defined, it is.
                 */
-                !(!Window.prototype.app && !document.isNotApp) || Object.defineProperty(Window.prototype, 'app', {
+                (document.isNotApp === !1) || 'app' in _temporaryData || Object.defineProperty(_temporaryData, 'app', {
                     // Value
                     value: new (function ApplicationInformation() {
-                        // Initialization > (Name, Omega, Version)
-                        let name = '',
-                            omega = new (function LapysJSObject() {}),
+                        // Initialization > (Data, Target, Version)
+                        let data = _LapysJSObject,
+                            that = this,
                             version = '0.0.1';
 
                         // Modification > Target
                             // App
-                            this.constructor.prototype.app = this;
+                            that.constructor.prototype.app = that;
 
                             // Author
-                            Object.defineProperty(this.constructor.prototype, 'author', {
+                            'author' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'author', {
                                 // Get
                                 get: function getAuthor() {
                                     // Return
-                                    return (document.querySelector('meta[name=author') || omega).content
+                                    return (document.querySelector('meta[name=author') || data).content || null
                                 },
 
                                 // Set
                                 set: function setAuthor() {
-                                    // Modification
-                                    (document.querySelector('meta[name=author') || omega).content = arguments[0];
-                                    document.querySelector('meta[name=author') || (document.head.innerHTML += "\r<meta content='" + arguments[0] + "' name=author>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Content
+                                    (document.querySelector('meta[name=author') || data).content = arg;
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[name=author') || (document.head.innerHTML += "\r<meta content='" + arg + "' name=author>")
                                 }
                             });
 
                             // Cache Control
-                            Object.defineProperty(this.constructor.prototype, 'cacheControl', {
+                            'cacheControl' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'cacheControl', {
                                 // Get
                                 get: function getCacheControl() {
                                     // Return
-                                    return (document.querySelector('meta[http-equiv=cache-control') || omega).content
+                                    return (document.querySelector('meta[http-equiv=cache-control') || data).content || null
                                 },
 
                                 // Set
                                 set: function setCacheControl() {
-                                    // Modification
-                                    (document.querySelector('meta[http-equiv=cache-control') || omega).content = arguments[0];
-                                    document.querySelector('meta[http-equiv=cache-control') || (document.head.innerHTML += "\r<meta content='" + arguments[0] + "' http-equiv=cache-control>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Content
+                                    (document.querySelector('meta[http-equiv=cache-control') || data).content = arg;
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[http-equiv=cache-control') || (document.head.innerHTML += "\r<meta content='" + arg + "' http-equiv=cache-control>")
                                 }
                             });
 
                             // Character Set
-                            Object.defineProperty(this.constructor.prototype, 'charset', {
+                            'charset' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'charset', {
                                 // Get
                                 get: function getCharset() {
                                     // Return
-                                    return (document.querySelector('meta[charset') || omega).getAttribute('charset') || document.characterSet || ''
+                                    return (document.querySelector('meta[charset') || {getAttribute: function() {}}).getAttribute('charset') || document.characterSet
                                 },
 
                                 // Set
                                 set: function setCharset() {
-                                    // Modification
-                                    (document.querySelector('meta[charset') || omega).setAttribute('charset', arguments[0]);
-                                    document.querySelector('meta[charset') || (document.head.innerHTML += "\r<meta charset='" + arguments[0] + "'>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Character Set
+                                    (document.querySelector('meta[charset') || {setAttribute: function() {}}).setAttribute('charset', arg);
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[charset') || (document.head.innerHTML += "\r<meta charset='" + arg + "'>")
                                 }
                             });
 
                             // Connection
-                            !navigator.connection || Object.defineProperty(this.constructor.prototype, 'connection', {value: navigator.connection});
+                            !('connection' in navigator) || 'connection' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'connection', {
+                                // Get
+                                get: function connection() {
+                                    // Return
+                                    return navigator.connection
+                                }
+                            });
 
                             // Cookies
-                            this.cookies = document.cookie;
+                            'cookies' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'cookies', {
+                                // Get
+                                get: function cookies() {
+                                    // Return
+                                    return document.cookie
+                                }
+                            });
 
                             // Copyright
-                            Object.defineProperty(this.constructor.prototype, 'copyright', {
+                            'copyright' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'copyright', {
                                 // Get
                                 get: function getCopyright() {
                                     // Return
-                                    return (document.querySelector('meta[name=copyright') || omega).content
+                                    return (document.querySelector('meta[name=copyright') || data).content || null
                                 },
 
                                 // Set
                                 set: function setCopyright() {
-                                    // Modification
-                                    (document.querySelector('meta[name=copyright') || omega).content = arguments[0];
-                                    document.querySelector('meta[name=copyright') || (document.head.innerHTML += "\r<meta content='" + arguments[0] + "' name=copyright>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Content
+                                    (document.querySelector('meta[name=copyright') || data).content = arg;
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[name=copyright') || (document.head.innerHTML += "\r<meta content='" + arg + "' name=copyright>")
                                 }
                             });
 
                             // Description
-                            Object.defineProperty(this.constructor.prototype, 'description', {
+                            'description' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'description', {
                                 // Get
                                 get: function getDescription() {
                                     // Return
-                                    return (document.querySelector('meta[name=description') || omega).content
+                                    return (document.querySelector('meta[name=description') || data).content || null
                                 },
 
                                 // Set
                                 set: function setDescription() {
-                                    // Modification
-                                    (document.querySelector('meta[name=description') || omega).content = arguments[0];
-                                    document.querySelector('meta[name=description') || (document.head.innerHTML += "\r<meta content='" + arguments[0] + "' name=description>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Content
+                                    (document.querySelector('meta[name=description') || data).content = arg;
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[name=description') || (document.head.innerHTML += "\r<meta content='" + arg + "' name=description>")
                                 }
                             });
 
                             // Device Pixel Ratio
-                            window.devicePixelRatio || (this.dpRatio = devicePixelRatio);
+                            !('devicePixelRatio' in window) || 'dpRatio' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'dpRatio', {
+                                // Get
+                                get: function devicePixelRatio() {
+                                    // Return
+                                    return devicePixelRatio
+                                }
+                            });
 
                             // Do Not Track
-                            !navigator.doNotTrack || (this.doNotTrack = navigator.doNotTrack);
+                            !('doNotTrack' in navigator) || 'doNotTrack' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'doNotTrack', {
+                                // Get
+                                get: function doNotTrack() {
+                                    // Return
+                                    return navigator.doNotTrack
+                                }
+                            });
 
                             // Keywords
-                            Object.defineProperty(this.constructor.prototype, 'keywords', {
+                            'keywords' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'keywords', {
                                 // Get
                                 get: function getKeywords() {
                                     // Return
-                                    return (document.querySelector('meta[name=keywords') || omega).content
+                                    return (document.querySelector('meta[name=keywords') || data).content || null
                                 },
 
                                 // Set
                                 set: function setKeywords() {
-                                    // Modification
-                                    (document.querySelector('meta[name=keywords') || omega).content = arguments[0];
-                                    document.querySelector('meta[name=keywords') || (document.head.innerHTML += "\r<meta content='" + arguments[0] + "' name=keywords>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Content
+                                    (document.querySelector('meta[name=keywords') || data).content = arg;
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[name=keywords') || (document.head.innerHTML += "\r<meta content='" + arg + "' name=keywords>")
                                 }
                             });
 
                             // Name
-                            Object.defineProperty(this.constructor.prototype, 'name', {
+                            'name' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'name', {
                                 // Get
                                 get: function getName() {
                                     // Return
@@ -10059,435 +10593,414 @@
 
                                 // Set
                                 set: function setName() {
+                                    // Initialization > Data
+                                    let data = arguments[0];
+
                                     // Modification
                                         // Document > Title
-                                        document.title = arguments[0];
+                                        document.title = data;
 
                                         // Window
                                             // Name
-                                            window.name = arguments[0];
+                                            window.name = data;
 
                                             // Short Name
-                                            window.short_name = arguments[0]
+                                            window.short_name = data
                                 }
                             });
 
                             // Navigator
-                            Object.defineProperty(this.constructor.prototype, 'navigator', {value: navigator});
+                            'nav' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'nav', {
+                                // Get
+                                get: function navigator() {
+                                    // Return
+                                    return navigator
+                                }
+                            });
 
                             // Languages
-                            this.lang = navigator.languages || [];
+                            'lang' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'lang', {
+                                // Get
+                                get: function language() {
+                                    // Return
+                                    return navigator.languages || []
+                                }
+                            });
 
                             // Online
-                            !navigator.onLine || Object.defineProperty(this, 'online', {value: navigator.onLine});
+                            !('onLine' in navigator) || 'online' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'online', {
+                                // Get
+                                get: function online() {
+                                    // Return
+                                    return navigator.onLine
+                                }
+                            });
 
                             // Platform
-                            Object.defineProperty(this, 'platform', {value: navigator.platform});
+                            !('platform' in navigator) || 'platform' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'platform', {
+                                // Get
+                                get: function platform() {
+                                    // Return
+                                    return navigator.platform
+                                }
+                            });
 
                             // Plug-Ins
-                            Object.defineProperty(this, 'plugins', {value: navigator.plugins});
+                            !('plugins' in navigator) || 'plugins' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'plugins', {
+                                // Get
+                                get: function plugins() {
+                                    // Return
+                                    return navigator.plugins
+                                }
+                            });
 
                             // Robots
-                            Object.defineProperty(this.constructor.prototype, 'robots', {
+                            'robots' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'robots', {
                                 // Get
                                 get: function getRobots() {
                                     // Return
-                                    return (document.querySelector('meta[name=robots') || omega).content
+                                    return (document.querySelector('meta[name=robots') || data).content || null
                                 },
 
                                 // Set
                                 set: function setRobots() {
-                                    // Modification
-                                    (document.querySelector('meta[name=robots') || omega).content = arguments[0];
-                                    document.querySelector('meta[name=robots') || (document.head.innerHTML += "\r<meta content='" + arguments[0] + "' name=robots>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Content
+                                    (document.querySelector('meta[name=robots') || data).content = arg;
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[name=robots') || (document.head.innerHTML += "\r<meta content='" + arg + "' name=robots>")
                                 }
                             });
 
                             // Theme Color
-                            Object.defineProperty(this.constructor.prototype, 'themeColor', {
+                            'themeColor' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'themeColor', {
                                 // Get
                                 get: function getThemeColor() {
                                     // Return
-                                    return (document.querySelector('meta[name=theme-color') || omega).content
+                                    return (document.querySelector('meta[name=theme-color') || data).content || null
                                 },
 
                                 // Set
                                 set: function setThemeColor() {
-                                    // Modification
-                                    (document.querySelector('meta[name=theme-color') || omega).content = arguments[0];
-                                    document.querySelector('meta[name=theme-color') || (document.head.innerHTML += "\r<meta content='" + arguments[0] + "' name=theme-color>")
+                                    // Initialization > Argument
+                                    let arg = String(arguments[0]);
+
+                                    // Modification > [Element] > Content
+                                    (document.querySelector('meta[name=theme-color') || data).content = arg;
+
+                                    // Deletion
+                                    delete data.content;
+
+                                    // Modification > <head> > Inner HTML
+                                    document.querySelector('meta[name=theme-color') || (document.head.innerHTML += "\r<meta content='" + arg + "' name=theme-color>")
                                 }
                             });
 
                             // User Agent
-                            Object.defineProperty(this, 'userAgent', {value: navigator.userAgent});
+                            !('userAgent' in navigator) || 'userAgent' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'userAgent', {
+                                // Get
+                                get: function userAgent() {
+                                    // Return
+                                    return navigator.userAgent
+                                }
+                            });
 
                             // Vendor
-                            Object.defineProperty(this, 'vendor', {value: navigator.vendor});
+                            !('vendor' in navigator) || 'vendor' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'vendor', {
+                                // Get
+                                get: function vendor() {
+                                    // Return
+                                    return navigator.vendor
+                                }
+                            });
 
                             // Viewport
-                            Object.defineProperty(this, 'viewport', {value: {}});
-                                // Height
-                                Object.defineProperty(this.viewport, 'height', {
-                                    // Get
-                                    get: function getHeight() {
-                                        // Return
-                                        return ((document.querySelector('meta[name=viewport') || omega).content || '').getAfterChar('height').getBeforeChar(',').replace('=', '') || ''
-                                    },
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (!('viewport' in that.constructor.prototype)) {
+                                    // Initialization > Metadata
+                                    let metadata = new (function ApplicationViewportInformation() {
+                                        // Initialization > Target
+                                        let that = this;
 
-                                    // Set
-                                    set: function setHeight() {
-                                        /* Logic
-                                                If
-                                                    a Viewport Metadata Element exists.
-                                        */
-                                        if (document.querySelector('meta[name=viewport'))
-                                            /* Logic
-                                                    If
-                                                        the Element does not have a 'height' content value.
-                                            */
-                                            if ((document.querySelector('meta[name=viewport').content.match(/height {0,}=/g) || []).length < 1)
-                                                /* Logic
-                                                        If
-                                                            the Element has a content value.
+                                        // Modification > Target
+                                            // Height
+                                            Object.defineProperty(that.constructor.prototype, 'height', {
+                                                // Get
+                                                get: function getHeight() {
+                                                    // Return
+                                                    return ((document.querySelector('meta[name=viewport') || data).content || '').getAfterChar('height').getBeforeChar(',').replace('=', '')
+                                                },
 
-                                                    > Update > Element > Content
-                                                */
-                                                if (document.querySelector('meta[name=viewport').content.indexOf('=') > -1)
-                                                    document.querySelector('meta[name=viewport').content += ', height=' + arguments[0];
+                                                // Set
+                                                set: function setHeight() {
+                                                    // Initialization > (Argument, Metadata, Regular Expression Set (...))
+                                                    let arg = String(arguments[0]),
+                                                        metadata = document.querySelector('meta[name=viewport'),
+                                                        regexSetAlt = LapysJS.regexSet.randomize(),
+                                                        regexSetQuasiAlt = RegExp(regexSet, 'g');
 
-                                                else
-                                                    document.querySelector('meta[name=viewport').content = 'height=' + arguments[0];
+                                                    /* > (...)
+                                                            --- NOTE ---
+                                                                @lapys: The syntax is a bit long to prevent the value from changing multiple times
+                                                                    or creating a cache variable.
+                                                    */
+                                                    metadata ?
+                                                        (metadata.content = (
+                                                            metadata.content.replace(regexSetQuasiAlt, regexSetAlt).hasText(/height {0,}=/) ?
+                                                                (metadata.content.replace(regexSetQuasiAlt, regexSetAlt) + regexSet).replace(RegExp('height {0,}=[^,]{0,}(,|' + regexSet + ')', 'g'), 'height=' + arg + ',').replace(RegExp(regexSet, 'g'), '') :
+                                                                metadata.content + ', height=' + arg
+                                                        ).replace(RegExp(regexSetAlt, 'g'), regexSet).trimRightChar(/,| /)) :
+                                                        document.head.innerHTML += "\r<meta content='height=" + arg + "' name=viewport>"
+                                                }
+                                            });
 
-                                            else
-                                                // Update > Element > Content
-                                                document.querySelector('meta[name=viewport').content = document.querySelector('meta[name=viewport').content.replace(/height {0,}=([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\;\$\@\!\"\#\%\&\'\(\)\*\+\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ]|){1,}/, 'height=' + arguments[0]);
+                                            // Initial Scale
+                                            Object.defineProperty(that.constructor.prototype, 'initialScale', {
+                                                // Get
+                                                get: function getInitialScale() {
+                                                    // Return
+                                                    return ((document.querySelector('meta[name=viewport') || data).content || '').getAfterChar('initial-scale').getBeforeChar(',').replace('=', '')
+                                                },
 
-                                        else
-                                            // Update > <head> > Inner HTML
-                                            document.head.innerHTML += "\r<meta content='height=" + arguments[0] + "' name=viewport>"
-                                    }
-                                });
+                                                // Set
+                                                set: function setInitialScale() {
+                                                    // Initialization > (Argument, Metadata, Regular Expression Set (...))
+                                                    let arg = parseNumber(arguments[0]),
+                                                        metadata = document.querySelector('meta[name=viewport'),
+                                                        regexSetAlt = LapysJS.regexSet.randomize(),
+                                                        regexSetQuasiAlt = RegExp(regexSet, 'g');
 
-                                // Initial Scale
-                                Object.defineProperty(this.viewport, 'initialScale', {
-                                    // Get
-                                    get: function getInitialScale() {
-                                        // Return
-                                        return parseFloat(((document.querySelector('meta[name=viewport') || omega).content || '').getAfterChar('initial-scale').getBeforeChar(',').replace('=', '')) || ''
-                                    },
+                                                    /* > (...)
+                                                            --- NOTE ---
+                                                                @lapys: The syntax is a bit long to prevent the value from changing multiple times
+                                                                    or creating a cache variable.
+                                                    */
+                                                    metadata ?
+                                                        (metadata.content = (
+                                                            metadata.content.replace(regexSetQuasiAlt, regexSetAlt).hasText(/initial-scale {0,}=/) ?
+                                                                (metadata.content.replace(regexSetQuasiAlt, regexSetAlt) + regexSet).replace(RegExp('initial-scale {0,}=[^,]{0,}(,|' + regexSet + ')', 'g'), 'initial-scale=' + arg + ',').replace(RegExp(regexSet, 'g'), '') :
+                                                                metadata.content + ', initial-scale=' + arg
+                                                        ).replace(RegExp(regexSetAlt, 'g'), regexSet).trimRightChar(/,| /)) :
+                                                        document.head.innerHTML += "\r<meta content='initial-scale=" + arg + "' name=viewport>"
+                                                }
+                                            });
 
-                                    // Set
-                                    set: function setInitialScale() {
-                                        // Update > Data
-                                        !arguments[0] .toFixed || (arguments[0] = arguments[0] .toFixed(1) || arguments[0]);
-                                        arguments[0] = String(arguments[0]);
+                                            // Maximum Scale
+                                            Object.defineProperty(that.constructor.prototype, 'maximumScale', {
+                                                // Get
+                                                get: function getMaximumScale() {
+                                                    // Return
+                                                    return ((document.querySelector('meta[name=viewport') || data).content || '').getAfterChar('maximum-scale').getBeforeChar(',').replace('=', '')
+                                                },
 
-                                        /* Logic
-                                                If
-                                                    a Viewport Metadata Element exists.
-                                        */
-                                        if (document.querySelector('meta[name=viewport'))
-                                            /* Logic
-                                                    If
-                                                        the Element does not have a 'initial-scale' content value.
-                                            */
-                                            if ((document.querySelector('meta[name=viewport').content.match(/initial-scale {0,}=/g) || []).length < 1)
-                                                /* Logic
-                                                        If
-                                                            the Element has a content value.
+                                                // Set
+                                                set: function setMaximumScale() {
+                                                    // Initialization > (Argument, Metadata, Regular Expression Set (...))
+                                                    let arg = parseNumber(arguments[0]),
+                                                        metadata = document.querySelector('meta[name=viewport'),
+                                                        regexSetAlt = LapysJS.regexSet.randomize(),
+                                                        regexSetQuasiAlt = RegExp(regexSet, 'g');
 
-                                                    > Update > Element > Content
-                                                */
-                                                if (document.querySelector('meta[name=viewport').content.indexOf('=') > -1)
-                                                    document.querySelector('meta[name=viewport').content += ', initial-scale=' + arguments[0];
+                                                    /* > (...)
+                                                            --- NOTE ---
+                                                                @lapys: The syntax is a bit long to prevent the value from changing multiple times
+                                                                    or creating a cache variable.
+                                                    */
+                                                    metadata ?
+                                                        (metadata.content = (
+                                                            metadata.content.replace(regexSetQuasiAlt, regexSetAlt).hasText(/maximum-scale {0,}=/) ?
+                                                                (metadata.content.replace(regexSetQuasiAlt, regexSetAlt) + regexSet).replace(RegExp('maximum-scale {0,}=[^,]{0,}(,|' + regexSet + ')', 'g'), 'maximum-scale=' + arg + ',').replace(RegExp(regexSet, 'g'), '') :
+                                                                metadata.content + ', maximum-scale=' + arg
+                                                        ).replace(RegExp(regexSetAlt, 'g'), regexSet).trimRightChar(/,| /)) :
+                                                        document.head.innerHTML += "\r<meta content='maximum-scale=" + arg + "' name=viewport>"
+                                                }
+                                            });
 
-                                                else
-                                                    document.querySelector('meta[name=viewport').content = 'initial-scale=' + arguments[0];
+                                            // Minimal UI
+                                            Object.defineProperty(that.constructor.prototype, 'minimalUI', {
+                                                // Get
+                                                get: function getMinimalUI() {
+                                                    // Return
+                                                    return ((document.querySelector('meta[name=viewport') || data).content || '').indexOf('minimal-ui') > -1
+                                                },
 
-                                            else
-                                                // Update > Element > Content
-                                                document.querySelector('meta[name=viewport').content = document.querySelector('meta[name=viewport').content.replace(/initial-scale {0,}=([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\;\$\@\!\"\#\%\&\'\(\)\*\+\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ]|){1,}/, 'initial-scale=' + arguments[0]);
+                                                // Set
+                                                set: function setMinimalUI() {
+                                                    // Initialization > (Argument, Metadata, Regular Expression Set (...))
+                                                    let arg = arguments[0] === !0 ? !0 : !1,
+                                                        metadata = document.querySelector('meta[name=viewport'),
+                                                        regexSetAlt = LapysJS.regexSet.randomize(),
+                                                        regexSetQuasiAlt = RegExp(regexSet, 'g');
 
-                                        else
-                                            // Update > <head> > Inner HTML
-                                            document.head.innerHTML += "\r<meta content='initial-scale=" + arguments[0] + "' name=viewport>"
-                                    }
-                                });
+                                                    /* > (...)
+                                                            --- NOTE ---
+                                                                @lapys: The syntax is a bit long to prevent the value from changing multiple times
+                                                                    or creating a cache variable.
+                                                    */
+                                                    metadata ?
+                                                        (metadata.content = (
+                                                            arg ?
+                                                                (metadata.content.indexOf('minimal-ui') > -1 ? metadata.content : metadata.content + ', minimal-ui') :
+                                                                metadata.content.replace(/, {0,}minimal-ui/, '').replace(/  /g, ' ')
+                                                        )) :
+                                                        document.head.innerHTML += "\r<meta content=minimal-ui name=viewport>"
+                                                }
+                                            });
 
-                                // Maximum Scale
-                                Object.defineProperty(this.viewport, 'maximumScale', {
-                                    // Get
-                                    get: function getMaximumScale() {
-                                        // Return
-                                        return parseFloat(((document.querySelector('meta[name=viewport') || omega).content || '').getAfterChar('maximum-scale').getBeforeChar(',').replace('=', '')) || ''
-                                    },
+                                            // Minimum Scale
+                                            Object.defineProperty(that.constructor.prototype, 'minimumScale', {
+                                                // Get
+                                                get: function getMinimumScale() {
+                                                    // Return
+                                                    return ((document.querySelector('meta[name=viewport') || data).content || '').getAfterChar('minimum-scale').getBeforeChar(',').replace('=', '')
+                                                },
 
-                                    // Set
-                                    set: function setMaximumScale() {
-                                        // Update > Data
-                                        !arguments[0] .toFixed || (arguments[0] = arguments[0] .toFixed(1) || arguments[0]);
-                                        arguments[0] = String(arguments[0]);
+                                                // Set
+                                                set: function setMinimumScale() {
+                                                    // Initialization > (Argument, Metadata, Regular Expression Set (...))
+                                                    let arg = parseNumber(arguments[0]),
+                                                        metadata = document.querySelector('meta[name=viewport'),
+                                                        regexSetAlt = LapysJS.regexSet.randomize(),
+                                                        regexSetQuasiAlt = RegExp(regexSet, 'g');
 
-                                        /* Logic
-                                                If
-                                                    a Viewport Metadata Element exists.
-                                        */
-                                        if (document.querySelector('meta[name=viewport'))
-                                            /* Logic
-                                                    If
-                                                        the Element does not have a 'maximum-scale' content value.
-                                            */
-                                            if ((document.querySelector('meta[name=viewport').content.match(/maximum-scale {0,}=/g) || []).length < 1)
-                                                /* Logic
-                                                        If
-                                                            the Element has a content value.
+                                                    /* > (...)
+                                                            --- NOTE ---
+                                                                @lapys: The syntax is a bit long to prevent the value from changing multiple times
+                                                                    or creating a cache variable.
+                                                    */
+                                                    metadata ?
+                                                        (metadata.content = (
+                                                            metadata.content.replace(regexSetQuasiAlt, regexSetAlt).hasText(/minimum-scale {0,}=/) ?
+                                                                (metadata.content.replace(regexSetQuasiAlt, regexSetAlt) + regexSet).replace(RegExp('minimum-scale {0,}=[^,]{0,}(,|' + regexSet + ')', 'g'), 'minimum-scale=' + arg + ',').replace(RegExp(regexSet, 'g'), '') :
+                                                                metadata.content + ', minimum-scale=' + arg
+                                                        ).replace(RegExp(regexSetAlt, 'g'), regexSet).trimRightChar(/,| /)) :
+                                                        document.head.innerHTML += "\r<meta content='minimum-scale=" + arg + "' name=viewport>"
+                                                }
+                                            });
 
-                                                    > Update > Element > Content
-                                                */
-                                                if (document.querySelector('meta[name=viewport').content.indexOf('=') > -1)
-                                                    document.querySelector('meta[name=viewport').content += ', maximum-scale=' + arguments[0];
+                                            // Target Density DPI
+                                            Object.defineProperty(that.constructor.prototype, 'targetDensityDPI', {
+                                                // Get
+                                                get: function getTargetDensityDPI() {
+                                                    // Return
+                                                    return parseFloat((document.querySelector('meta[name=viewport') || {getAttribute: function() { return 0 }}).getAttribute('target-densitydpi'))
+                                                },
 
-                                                else
-                                                    document.querySelector('meta[name=viewport').content = 'maximum-scale=' + arguments[0];
+                                                set: function setTargetDensityDPI() {
+                                                    // Modification > Viewport Metadata Element > Target Density DPI
+                                                    (document.querySelector('meta[name=viewport') || omega).setAttribute('target-densitydpi', arguments[0])
+                                                }
+                                            });
 
-                                            else
-                                                // Update > Element > Content
-                                                document.querySelector('meta[name=viewport').content = document.querySelector('meta[name=viewport').content.replace(/maximum-scale {0,}=([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\;\$\@\!\"\#\%\&\'\(\)\*\+\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ]|){1,}/, 'maximum-scale=' + arguments[0]);
+                                            // User Scalable
+                                            Object.defineProperty(that.constructor.prototype, 'userScalable', {
+                                                // Get
+                                                get: function getUserScalable() {
+                                                    // Return
+                                                    return ((document.querySelector('meta[name=viewport') || data).content || '').getAfterChar('minimum-scale').getBeforeChar(',').replace('=', '') == 'yes' ? !0 : !1
+                                                },
 
-                                        else
-                                            // Update > <head> > Inner HTML
-                                            document.head.innerHTML += "\r<meta content='maximum-scale=" + arguments[0] + "' name=viewport>"
-                                    }
-                                });
+                                                // Set
+                                                set: function setUserScalable() {
+                                                    // Initialization > (Argument, Metadata, Regular Expression Set (...))
+                                                    let arg = arguments[0] === !0 || arguments[0] == 'yes' ? 'yes' : 'no',
+                                                        metadata = document.querySelector('meta[name=viewport'),
+                                                        regexSetAlt = LapysJS.regexSet.randomize(),
+                                                        regexSetQuasiAlt = RegExp(regexSet, 'g');
 
-                                // Minimal UI
-                                Object.defineProperty(this.viewport, 'minimalUI', {
-                                    // Get
-                                    get: function getMinimalUI() {
-                                        /* Return
-                                                --- UPDATE REQUIRED ---
-                                                    This still needs a bit of tweaking.
-                                        */
-                                        return (document.querySelector('meta[name=viewport') || omega).content.indexOf('minimal-ui') > -1
-                                    },
+                                                    /* > (...)
+                                                            --- NOTE ---
+                                                                @lapys: The syntax is a bit long to prevent the value from changing multiple times
+                                                                    or creating a cache variable.
+                                                    */
+                                                    metadata ?
+                                                        (metadata.content = (
+                                                            metadata.content.replace(regexSetQuasiAlt, regexSetAlt).hasText(/user-scalable {0,}=/) ?
+                                                                (metadata.content.replace(regexSetQuasiAlt, regexSetAlt) + regexSet).replace(RegExp('user-scalable {0,}=[^,]{0,}(,|' + regexSet + ')', 'g'), 'user-scalable=' + arg + ',').replace(RegExp(regexSet, 'g'), '') :
+                                                                metadata.content + ', user-scalable=' + arg
+                                                        ).replace(RegExp(regexSetAlt, 'g'), regexSet).trimRightChar(/,| /)) :
+                                                        document.head.innerHTML += "\r<meta content='user-scalable=" + arg + "' name=viewport>"
+                                                }
+                                            });
 
-                                    // Set
-                                    set: function setMinimalUI() {
-                                        // Initialization > Data
-                                        let data = !!arguments[0];
+                                            // Width
+                                            Object.defineProperty(that.constructor.prototype, 'width', {
+                                                // Get
+                                                get: function getWidth() {
+                                                    // Return
+                                                    return ((document.querySelector('meta[name=viewport') || data).content || '').getAfterChar('width').getBeforeChar(',').replace('=', '')
+                                                },
 
-                                        /* Logic
-                                                If
-                                                    a Viewport Metadata Element exists.
-                                        */
-                                        if (document.querySelector('meta[name=viewport'))
-                                            /* Logic
-                                                    If
-                                                        Data is 'true'
-                                                            and
-                                                        the Element does not have a 'minimal-ui' content value.
-                                            */
-                                            if (
-                                                data &&
-                                                (document.querySelector('meta[name=viewport').content.match(/minimal-ui/g) || []).length < 1
-                                            )
-                                                /* Logic
-                                                        If
-                                                            the Element has a content value.
+                                                // Set
+                                                set: function setWidth() {
+                                                    // Initialization > (Argument, Metadata, Regular Expression Set (...))
+                                                    let arg = String(arguments[0]),
+                                                        metadata = document.querySelector('meta[name=viewport'),
+                                                        regexSetAlt = LapysJS.regexSet.randomize(),
+                                                        regexSetQuasiAlt = RegExp(regexSet, 'g');
 
-                                                    > Update > Element > Content
-                                                */
-                                                if (document.querySelector('meta[name=viewport').content.indexOf('=') > -1)
-                                                    document.querySelector('meta[name=viewport').content += ', minimal-ui';
+                                                    /* > (...)
+                                                            --- NOTE ---
+                                                                @lapys: The syntax is a bit long to prevent the value from changing multiple times
+                                                                    or creating a cache variable.
+                                                    */
+                                                    metadata ?
+                                                        (metadata.content = (
+                                                            metadata.content.replace(regexSetQuasiAlt, regexSetAlt).hasText(/width {0,}=/) ?
+                                                                (metadata.content.replace(regexSetQuasiAlt, regexSetAlt) + regexSet).replace(RegExp('width {0,}=[^,]{0,}(,|' + regexSet + ')', 'g'), 'width=' + arg + ',').replace(RegExp(regexSet, 'g'), '') :
+                                                                metadata.content + ', width=' + arg
+                                                        ).replace(RegExp(regexSetAlt, 'g'), regexSet).trimRightChar(/,| /)) :
+                                                        document.head.innerHTML += "\r<meta content='width=" + arg + "' name=viewport>"
+                                                }
+                                            });
 
-                                                else
-                                                    document.querySelector('meta[name=viewport').content = 'minimal-ui';
+                                            // Version
+                                            Object.defineProperty(that.constructor.prototype, 'version', {
+                                                // Get
+                                                get: function getVersion() {
+                                                    // Return
+                                                    return version
+                                                },
 
-                                            else
-                                                // Update > Element > Content
-                                                document.querySelector('meta[name=viewport').content = String(document.querySelector('meta[name=viewport').content.replace('minimal-ui', '').split(/,/g).removeFalsyElements().removeElements(' '));
+                                                // Set
+                                                set: function setVersion() {
+                                                    // Update > Version
+                                                    version = String(arguments[0])
+                                                }
+                                            })
+                                    });
 
-                                        else
-                                            // Update > <head> > Inner HTML
-                                            document.head.innerHTML += '<meta content=minimal-ui name=viewport>'
-                                    }
-                                });
-
-                                // Minimum Scale
-                                Object.defineProperty(this.viewport, 'minimumScale', {
-                                    // Get
-                                    get: function getMinimumScale() {
-                                        // Return
-                                        return parseFloat(((document.querySelector('meta[name=viewport') || omega).content || '').getAfterChar('minimum-scale').getBeforeChar(',').replace('=', '')) || ''
-                                    },
-
-                                    // Set
-                                    set: function setMinimumScale() {
-                                        // Update > Data
-                                        !arguments[0] .toFixed || (arguments[0] = arguments[0] .toFixed(1) || arguments[0]);
-                                        arguments[0] = String(arguments[0]);
-
-                                        /* Logic
-                                                If
-                                                    a Viewport Metadata Element exists.
-                                        */
-                                        if (document.querySelector('meta[name=viewport'))
-                                            /* Logic
-                                                    If
-                                                        the Element does not have a 'minimum-scale' content value.
-                                            */
-                                            if ((document.querySelector('meta[name=viewport').content.match(/minimum-scale {0,}=/g) || []).length < 1)
-                                                /* Logic
-                                                        If
-                                                            the Element has a content value.
-
-                                                    > Update > Element > Content
-                                                */
-                                                if (document.querySelector('meta[name=viewport').content.indexOf('=') > -1)
-                                                    document.querySelector('meta[name=viewport').content += ', minimum-scale=' + arguments[0];
-
-                                                else
-                                                    document.querySelector('meta[name=viewport').content = 'minimum-scale=' + arguments[0];
-
-                                            else
-                                                // Update > Element > Content
-                                                document.querySelector('meta[name=viewport').content = document.querySelector('meta[name=viewport').content.replace(/minimum-scale {0,}=([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\;\$\@\!\"\#\%\&\'\(\)\*\+\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ]|){1,}/, 'minimum-scale=' + arguments[0]);
-
-                                        else
-                                            // Update > <head> > Inner HTML
-                                            document.head.innerHTML += "\r<meta content='minimum-scale=" + arguments[0] + "' name=viewport>"
-                                    }
-                                });
-
-                                // Target Density DPI
-                                Object.defineProperty(this.viewport, 'targetDensityDPI', {
-                                    // Get
-                                    get: function getTargetDensityDPI() {
-                                        // Return
-                                        return parseFloat((document.querySelector('meta[name=viewport') || omega).getAttribute('target-densitydpi'))
-                                    },
-
-                                    set: function setTargetDensityDPI() {
-                                        // Modification > Viewport Metadata Element > Target Density DPI
-                                        (document.querySelector('meta[name=viewport') || omega).setAttribute('target-densitydpi', arguments[0])
-                                    }
-                                });
-
-                                // User Scalable
-                                Object.defineProperty(this.viewport, 'userScalable', {
-                                    // Get
-                                    get: function getUserScalable() {
-                                        // Return
-                                        return ((document.querySelector('meta[name=viewport') || omega).content || '').getAfterChar('user-scalable').getBeforeChar(',').replace('=', '') || ''
-                                    },
-
-                                    // Set
-                                    set: function setUserScalable() {
-                                        // Initialization > Data
-                                        let data = arguments[0];
-
-                                        // Update > Data
-                                        typeof data != 'string' ? (!data ? data = 'no' : data = 'yes') : (data != 'yes' && data != 'no') ? data = 'yes' : !1;
-
-                                        /* Logic
-                                                If
-                                                    a Viewport Metadata Element exists.
-                                        */
-                                        if (document.querySelector('meta[name=viewport'))
-                                            /* Logic
-                                                    If
-                                                        the Element does not have a 'user-scalable' content value.
-                                            */
-                                            if ((document.querySelector('meta[name=viewport').content.match(/user-scalable {0,}=/g) || []).length < 1)
-                                                /* Logic
-                                                        If
-                                                            the Element has a content value.
-
-                                                    > Update > Element > Content
-                                                */
-                                                if (document.querySelector('meta[name=viewport').content.indexOf('=') > -1)
-                                                    document.querySelector('meta[name=viewport').content += ', user-scalable=' + data;
-
-                                                else
-                                                    document.querySelector('meta[name=viewport').content = 'user-scalable=' + data;
-
-                                            else
-                                                // Update > Element > Content
-                                                document.querySelector('meta[name=viewport').content = document.querySelector('meta[name=viewport').content.replace(/user-scalable {0,}=([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\;\$\@\!\"\#\%\&\'\(\)\*\+\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ]|){1,}/, 'user-scalable=' + data);
-
-                                        else
-                                            // Update > <head> > Inner HTML
-                                            document.head.innerHTML += "\r<meta content='user-scalable=" + arguments[0] + "' name=viewport>"
-                                    }
-                                });
-
-                                // Width
-                                Object.defineProperty(this.viewport, 'width', {
-                                    // Get
-                                    get: function getWidth() {
-                                        // Return
-                                        return ((document.querySelector('meta[name=viewport') || omega).content || '').getAfterChar('width').getBeforeChar(',').replace('=', '') || ''
-                                    },
-
-                                    // Set
-                                    set: function setWidth() {
-                                        /* Logic
-                                                If
-                                                    a Viewport Metadata Element exists.
-                                        */
-                                        if (document.querySelector('meta[name=viewport'))
-                                            /* Logic
-                                                    If
-                                                        the Element does not have a 'width' content value.
-                                            */
-                                            if ((document.querySelector('meta[name=viewport').content.match(/width {0,}=/g) || []).length < 1)
-                                                /* Logic
-                                                        If
-                                                            the Element has a content value.
-
-                                                    > Update > Element > Content
-                                                */
-                                                if (document.querySelector('meta[name=viewport').content.indexOf('=') > -1)
-                                                    document.querySelector('meta[name=viewport').content += ', width=' + arguments[0];
-
-                                                else
-                                                    document.querySelector('meta[name=viewport').content = 'width=' + arguments[0];
-
-                                            else
-                                                // Update > Element > Content
-                                                document.querySelector('meta[name=viewport').content = document.querySelector('meta[name=viewport').content.replace(/width {0,}=([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\;\$\@\!\"\#\%\&\'\(\)\*\+\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\[\]\{\}\«\»\ ]|){1,}/, 'width=' + arguments[0]);
-
-                                        else
-                                            // Update > <head> > Inner HTML
-                                            document.head.innerHTML += "\r<meta content='width=" + arguments[0] + "' name=viewport>"
-                                    }
-                                });
-
-                            // Version
-                            Object.defineProperty(this, 'version', {
-                                // Get
-                                get: function getVersion() {
-                                    // Return
-                                    return version
-                                },
-
-                                // Set
-                                set: function setVersion() {
-                                    // Update > Version
-                                    version = arguments[0]
+                                    // Definition
+                                    'viewport' in that.constructor.prototype || Object.defineProperty(that.constructor.prototype, 'viewport', {
+                                        // Get
+                                        get: function viewport() {
+                                            // Return
+                                            return metadata
+                                        }
+                                    })
                                 }
-                            })
                     })()
                 });
 
                 // Browser
-                Window.prototype.browser || Object.defineProperty(Window.prototype, 'browser', {
+                'browser' in _temporaryData || Object.defineProperty(_temporaryData, 'browser', {
                     // Value
                     value: new (function BrowserInformation() {
+                        // Initialization > Target
+                        let that = this,
+                            _that = that.constructor.prototype;
+
                         // Modification > Target
                             // Chrome
-                            Object.defineProperty(this, 'chrome', {
+                            'chrome' in _that || Object.defineProperty(_that, 'chrome', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10497,12 +11010,12 @@
                                 // Get
                                 get: function chrome() {
                                     // Return
-                                    return !!(!!window.chrome && !!window.chrome.webstore)
+                                    return !!(window.chrome && window.chrome.webstore)
                                 }
                             });
 
                             // Firefox
-                            Object.defineProperty(this, 'firefox', {
+                            'firefox' in _that || Object.defineProperty(_that, 'firefox', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10512,12 +11025,12 @@
                                 // Get
                                 get: function firefox() {
                                     // Return
-                                    return (typeof InstallTrigger != 'undefined')
+                                    return typeof InstallTrigger != 'undefined'
                                 }
                             });
 
                             // Internet Explorer
-                            Object.defineProperty(this, 'internetExplorer', {
+                            'ie' in _that || Object.defineProperty(_that, 'ie', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10532,7 +11045,7 @@
                             });
 
                             // Opera
-                            Object.defineProperty(this, 'opera', {
+                            'opera' in _that || Object.defineProperty(_that, 'opera', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10547,7 +11060,7 @@
                             });
 
                             // Safari
-                            Object.defineProperty(this, 'safari', {
+                            'safari' in _that || Object.defineProperty(_that, 'safari', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10560,163 +11073,265 @@
                                     return !!(/constructor/i.test(window.HTMLElement) || (data => {
                                         // Return
                                         return data.toString() === '[object SafariRemoteNotification]'
-                                    })(!window['safari'] || safari.pushNotification))
+                                    })(!window.safari || safari.pushNotification))
                                 }
                             })
                     })
                 });
 
                 // CSS
-                Window.prototype.css || Object.defineProperty(Window.prototype, 'css', {
+                'css' in _temporaryData || Object.defineProperty(_temporaryData, 'css', {
                     // Value
                     value: new (function CSSImportObject() {
+                        // Initialization > Target
+                        let that = this,
+                            _that = that.constructor.prototype;
+
                         /* Modification > Target
                                 --- NOTE ---
-                                    @lapys: All properties defined here are volatile
-                                        out of consideration for users.
+                                    @lapys: Do not forget that these
+                                        methods` first parameters are `data-id``s.
                         */
                             // Link
-                            this.constructor.prototype.link = function link() {
-                                // Insertion
-                                document.head.appendChild(LapysJS.perm.HTMLLinkElement = createElement('link', arguments[0] ? "[data-id='" + arguments[0] + "'" : ''));
+                            'link' in _that || Object.defineProperty(_that, 'link', {
+                                // Value
+                                value: function link() {
+                                    // Return
+                                    return LapysJS.$.import.css.apply(LapysJS.$.import, [...arguments])
+                                },
 
-                                /* Logic
-                                        If
-                                            Argument 1 is an Object,
-
-                                        else if
-                                            Argument 1 is a String.
-                                */
-                                if (typeof arguments[1] == 'object')
-                                    /* Loop
-                                            Index key-values of Argument 1.
-
-                                        > Modification > (LapysJS > Permanent Data > HTML Link Element) > [Argument 1]
-                                    */
-                                    for (let i in arguments[1])
-                                        LapysJS.perm.HTMLLinkElement.setAttribute(i.replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        }), arguments[1][i]);
-
-                                else if (typeof arguments[1] == 'string')
-                                    // Modification > (LapysJS > Permanent Data > HTML Link Element) > Hyperlink Reference
-                                    LapysJS.perm.HTMLLinkElement.setAttribute('href', arguments[1])
-                            };
+                                // Writable
+                                writable: !0
+                            });
 
                             // Style
-                            this.constructor.prototype.style = function style() {
-                                // Insertion
-                                document.head.appendChild(createElement('style', (arguments[0] ? "[data-id='" + arguments[0] + "']" : '') + "[media=all][type=text/css", String(arguments[1])))
-                            }
+                            'style' in _that || Object.defineProperty(_that, 'style', {
+                                // Value
+                                value: function style() {
+                                    // Initialization > (Arguments, Data, Metadata, Alpha)
+                                    let args = [...arguments],
+                                        data = createDocumentFragment(createElement('style', args.length > 0 ? (args[0] ? "[data-id='" + String(args[0]) + "'" : '') : '')),
+                                        metadata = args[1],
+                                        alpha = args[2];
+
+                                    // Update > (LapysJS > Permanent Data > Temporary Data)
+                                    LapysJS.perm.tmp = data.firstElementChild;
+
+                                    // Function > Test
+                                    function test() {
+                                        // Initialization > Beta
+                                        let beta = arguments[0];
+
+                                        /* Loop
+                                                [for statement]
+
+                                            > Modification > (LapysJS > Permanent Data > Temporary Data) > [Loop Counter]
+                                        */
+                                        for (let i in beta)
+                                            LapysJS.perm.tmp[i] = beta[i];
+
+                                        // Return
+                                        return beta
+                                    }
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (isObject(metadata))
+                                        // Test
+                                        test(metadata);
+
+                                    else if (typeof metadata == 'string' && isObject(alpha)) {
+                                        // Test
+                                        test(alpha);
+
+                                        // Modification > (LapysJS > Permanent Data > Temporary Data) > Inner Text
+                                        LapysJS.perm.tmp.innerText = metadata
+                                    }
+
+                                    else if (typeof metadata == 'string' && args.length == 2)
+                                        // Modification > (LapysJS > Permanent Data > Temporary Data) > Inner Text
+                                        LapysJS.perm.tmp.innerText = metadata;
+
+                                    else if (args.length > 2 && !isObject(alpha) || args.length > 1 && !isObject(metadata))
+                                        // LapysJS > Warn
+                                        LapysJS.warn('Parameter `options` must be JSON or an object.');
+
+                                    // Modification > (LapysJS > Permanent Data > Temporary Data) > (Media, Type)
+                                    LapysJS.perm.tmp.getAttribute('media') || (LapysJS.perm.tmp.media = 'all');
+                                    LapysJS.perm.tmp.getAttribute('type') || (LapysJS.perm.tmp.type = 'text/css');
+
+                                    // Insertion
+                                    (document.head || document.body || document.documentElement).appendChild(data);
+
+                                    // Return
+                                    return LapysJS.perm.tmp
+                                },
+
+                                // Writable
+                                writable: !0
+                            })
                     })
                 });
 
                 // File
-                Window.prototype.file || Object.defineProperty(Window.prototype, 'file', {
+                'file' in _temporaryData || Object.defineProperty(_temporaryData, 'file', {
                     // Value
-                    value: new (function FileInformation() {
+                    value: (function() {
+                        // Initialization > Data
+                        let data = function file() {
+                            // Initialization > (Arguments, Arguments Set)
+                            let args = [...arguments],
+                                argsSet = args.slice(1);
+
+                            /* Logic
+                                    [switch:case:default statement]
+
+                                > Return
+                            */
+                            switch (args[0]) {
+                                // Read
+                                case 'read':
+                                    return data.read.apply(data, argsSet)
+                            }
+
+                            // Return
+                            return null
+                        };
+                            // Read
+                            Object.defineProperty(data, 'read', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function read() {
+                                    // Return
+                                    return LapysJS.$.import.file.apply(LapysJS.$.import, [...arguments])
+                                }
+                            });
+
+                            /* Write
+                                    --- UPDATE REQUIRED ---
+                                        @lapys: Must be able to write data into files.
+                            */
+                            Object.defineProperty(data, 'write', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function write() {}
+                            });
+
+                        // Return
+                        return data
+                    })()
+                });
+
+                // JavaScript
+                'js' in _temporaryData || Object.defineProperty(_temporaryData, 'js', {
+                    // Value
+                    value: new (function JavaScriptImportObject() {
+                        // Initialization > Target
+                        let that = this,
+                            _that = that.constructor.prototype;
+
                         // Modification > Target
-                            // Full Name
-                            Object.defineProperty(this.constructor.prototype, 'fullName', {
-                                // Configurable
-                                configurable: !0,
+                            // Script
+                            Object.defineProperty(_that, 'script', {
+                                // Value
+                                value: function script() {
+                                    // Initialization > (Arguments, Data, Metadata, Alpha)
+                                    let args = [...arguments],
+                                        data = createElement('script', args.length > 0 ? (args[0] ? "[data-id='" + String(args[0]) + "'" : '') : ''),
+                                        metadata = args[1],
+                                        alpha = args[2];
 
-                                // Enumerable
-                                enumerable: !0,
+                                    // Update > (LapysJS > Permanent Data > Temporary Data)
+                                    LapysJS.perm.tmp = data;
 
-                                // Get
-                                get: function fullName() {
+                                    // Function > Test
+                                    function test() {
+                                        // Initialization > Beta
+                                        let beta = arguments[0];
+
+                                        /* Loop
+                                                [for statement]
+
+                                            > Modification > (LapysJS > Permanent Data > Temporary Data) > [Loop Counter]
+                                        */
+                                        for (let i in beta)
+                                            (i == 'innerText') || (LapysJS.perm.tmp[i] = beta[i]);
+
+                                        // Return
+                                        return beta
+                                    }
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (isObject(metadata)) {
+                                        // Test
+                                        test(metadata);
+
+                                        // Modification > (LapysJS > Permanent Data > Temporary Data) > Inner Text
+                                        !('innerText' in metadata) || (LapysJS.perm.tmp.innerText = metadata)
+                                    }
+
+                                    else if (typeof metadata == 'string' && isObject(alpha)) {
+                                        // Test
+                                        test(alpha);
+
+                                        // Modification > (LapysJS > Permanent Data > Temporary Data) > Inner Text
+                                        LapysJS.perm.tmp.innerText = metadata
+                                    }
+
+                                    else if (typeof metadata == 'string' && args.length == 2)
+                                        // Modification > (LapysJS > Permanent Data > Temporary Data) > Source
+                                        LapysJS.perm.tmp.innerText = metadata;
+
+                                    else if (args.length > 2 && !isObject(alpha) || args.length > 1 && !isObject(metadata))
+                                        // LapysJS > Warn
+                                        LapysJS.warn('Parameter `options` must be JSON or an object.');
+
+                                    // Modification > (LapysJS > Permanent Data > Temporary Data) > Type
+                                    LapysJS.perm.tmp.getAttribute('type') || (LapysJS.perm.tmp.type = 'text/javascript');
+
+                                    // Insertion
+                                    (document.head || document.body || document.documentElement).appendChild(data);
+
                                     // Return
-                                    return (location.pathname.split('/').pop() || location.pathname.split('#').shift()).indexOf('/') > -1 ? null : location.pathname.split('/').pop() || location.pathname.split('#').shift()
+                                    return LapysJS.perm.tmp
                                 }
                             });
 
-                            // Name
-                            Object.defineProperty(this.constructor.prototype, 'name', {
-                                // Configurable
-                                configurable: !0,
-
-                                // Enumerable
-                                enumerable: !0,
-
-                                // Get
-                                get: function name() {
+                            // Source
+                            Object.defineProperty(_that, 'src', {
+                                // Value
+                                value: function source() {
                                     // Return
-                                    return (location.pathname.split('/').pop() || location.pathname.split('#').shift()).indexOf('/') > -1 ? null : (location.pathname.split('/').pop() || location.pathname.split('#').shift()).slice(0, (location.pathname.split('/').pop() || location.pathname.split('#').shift()).indexOf('.'));
-                                }
-                            });
-
-                            // Type
-                            Object.defineProperty(this.constructor.prototype, 'type', {
-                                // Configurable
-                                configurable: !0,
-
-                                // Enumerable
-                                enumerable: !0,
-
-                                // Get
-                                get: function type() {
-                                    // Return
-                                    return (location.pathname.split('/').pop() || location.pathname.split('#').shift()).indexOf('/') > -1 ? null : (location.pathname.split('/').pop() || location.pathname.split('#').shift()).split('.').pop()
+                                    return LapysJS.$.import.js.apply(LapysJS.$.import, [...arguments])
                                 }
                             })
                     })
                 });
 
-                // JavaScript
-                Window.prototype.js || Object.defineProperty(Window.prototype, 'js', {
-                    // Value
-                    value: new (function JavaScriptImportObject() {
-                        /* Modification > Target
-                                --- NOTE ---
-                                    @lapys: All properties defined here are volatile
-                                        out of consideration for users.
-                        */
-                            // Script
-                            this.constructor.prototype.script = function script() {
-                                // Insertion
-                                document.head.appendChild(createElement('script', (arguments[0] ? "[data-id='" + arguments[0] + "']" : '') + "[language=javascript][type=text/javascript", String(arguments[1])))
-                            };
-
-                            // Source
-                            this.constructor.prototype.src = function source() {
-                                // Insertion
-                                document.head.appendChild(LapysJS.perm.HTMLScriptElement = createElement('script', (arguments[0] ? "[data-id='" + arguments[0] + "']" : '') + "[language=javascript][type=text/javascript"));
-
-                                /* Logic
-                                        If
-                                            Argument 1 is an Object,
-
-                                        else if
-                                            Argument 1 is a String.
-                                */
-                                if (typeof arguments[1] == 'object')
-                                    /* Loop
-                                            Index key-values of Argument 1.
-
-                                        > Modification > (LapysJS > Permanent Data > HTML Script Element) > [Argument 1]
-                                    */
-                                    for (let i in arguments[1])
-                                        LapysJS.perm.HTMLScriptElement.setAttribute(i.replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        }), arguments[1][i]);
-
-                                else if (typeof arguments[1] == 'string')
-                                    // Modification > (LapysJS > Permanent Data > HTML Script Element) > Source
-                                    LapysJS.perm.HTMLScriptElement.setAttribute('src', arguments[1])
-                        }
-                    })
-                });
-
                 // Operating System
-                Window.prototype.os || Object.defineProperty(Window.prototype, 'os', {
+                'operatingSystem' in _temporaryData || Object.defineProperty(_temporaryData, 'operatingSystem', {
                     // Value
                     value: new (function OperatingSystemInformation() {
+                        // Initialization > Target
+                        let that = this,
+                            _that = that.constructor.prototype;
+
                         // Modification > Target
                             // Macintosh
-                            Object.defineProperty(this.constructor.prototype, 'macintosh', {
+                            Object.defineProperty(_that, 'macintosh', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10731,7 +11346,7 @@
                             });
 
                             // Linux
-                            Object.defineProperty(this.constructor.prototype, 'linux', {
+                            Object.defineProperty(_that, 'linux', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10746,7 +11361,7 @@
                             });
 
                             // Unix
-                            Object.defineProperty(this.constructor.prototype, 'unix', {
+                            Object.defineProperty(_that, 'unix', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10761,7 +11376,7 @@
                             });
 
                             // Windows
-                            Object.defineProperty(this.constructor.prototype, 'windows', {
+                            Object.defineProperty(_that, 'windows', {
                                 // Configurable
                                 configurable: !0,
 
@@ -10776,10 +11391,15 @@
                             })
                     })
                 });
+                    // Definition
+                    'os' in window || (window.os = Object.assign(operatingSystem, {}));
+
+            // Update > Temporary Data
+            _temporaryData = Document.prototype;
 
             /* Document */
                 // Favorite Icon
-                ('favicon' in Document.prototype) || (Object.defineProperty(Document.prototype, 'favicon', {
+                'favicon' in _temporaryData || Object.defineProperty(_temporaryData, 'favicon', {
                     // Configurable
                     configurable: !0,
 
@@ -10787,38 +11407,45 @@
                     enumerable: !0,
 
                     // Get
-                    get: function getFavicon() {
+                    get: function getFavoriteIcon() {
+                        // Initialization > Data
+                        let data = document.querySelectorAll("link[href][rel*='icon'");
+
                         // Return
-                        return [...(document.querySelectorAll("link[href][rel*='icon'") || [null])]
+                        return data.length > 0 ? data : null
                     },
 
                     // Set
-                    set: function setFavicon() {
+                    set: function setFavoriteIcon() {
+                        // Initialization > (Data, Metadata)
+                        let data = String(typeof arguments[0] == 'function' ? arguments[0]() : arguments[0]),
+                            metadata = [...document.querySelectorAll("link[href][rel*='icon'")];
+
                         /* Logic
                                 [if:else if:else statement]
                         */
-                        if (
-                            [...(document.querySelectorAll("link[href][rel*='icon'") || [null])][0] === null ||
-                            [...(document.querySelectorAll("link[href][rel*='icon'") || [null])][0] === void 0
-                        )
-                            // Insertion
-                            document.head.appendChild(createDocumentFragment("<link href='" + arguments[0] + "' rel=icon type=image/" + (String(arguments[0]).getAfterChar('.', !0) || 'x-icon') + "><link href='" + arguments[0] + "' rel='shortcut icon'><link href='" + arguments[0] + "' rel=icon type=image/vnd.microsoft.icon><link href='" + arguments[0] + "' rel=apple=touch-icon-precomposed>", 'div'));
-
-                        else
+                        if (metadata.length > 0)
                             /* Loop
                                     [for statement]
 
-                                > Modification > [Element] > (Hyperlink Reference, Type)
+                                > Modification > [Loop Counter]
                             */
-                            for (let i = 0; i < [...(document.querySelectorAll("link[href][rel*='icon'") || [null])].length; i += 1) {
-                                document.querySelectorAll("link[href][rel*='icon'")[i].href = arguments[0];
-                                !('type' in document.querySelectorAll("link[href][rel*='icon'")[i]) || (document.querySelectorAll("link[href][rel*='icon'")[i].type = 'image/' + (String(arguments[0]).getAfterChar('.', !0) || 'x-icon'))
+                            for (let i of metadata) {
+                                // Hyperlink Reference
+                                i.href = data;
+
+                                // Type
+                                !((i.type || '').trim().startsWith('image/') && !(i.type || '').trim().startsWith('image/vnd.microsoft.icon')) || (i.type = 'image/' + (data.getAfterChar('.', !0) || 'x-icon'))
                             }
+
+                        else
+                            // Insertion
+                            (document.head || document.body || document.documentElement).appendChild(createDocumentFragment("<link href='" + data + "' rel=icon type=image/" + (String(data).getAfterChar('.', !0) || 'x-icon') + "><link href='" + data + "' rel='shortcut icon'><link href='" + data + "' rel=icon type=image/vnd.microsoft.icon><link href='" + data + "' rel=apple-touch-icon-precomposed>"))
                     }
-                }));
+                });
 
                 // Main
-                Document.prototype.main || Object.defineProperty(Document.prototype, 'main', {
+                'main' in _temporaryData || Object.defineProperty(_temporaryData, 'main', {
                     // Get
                     get: function main() {
                         // Return
@@ -10827,305 +11454,2653 @@
                 });
 
                 // Title (Element)
-                Document.prototype.titleElement || Object.defineProperty(Document.prototype, 'titleElement', {
+                'titleElement' in _temporaryData || Object.defineProperty(_temporaryData, 'titleElement', {
                     // Get
                     get: function title() {
                         // Return
-                        return document.querySelector('title')
+                        return document.getElementsByTagName('title')[0]
+                    }
+                });
+
+            // Update > Temporary Data
+            _temporaryData = Element.prototype;
+
+            /* Element */
+                // Add Class
+                (typeof _temporaryData.addClass == 'function') || Object.defineProperty(_temporaryData, 'addClass', {
+                    // Value
+                    value: function addClass() {
+                        // Initialization > (Arguments, Target)
+                        let args = [...arguments],
+                            that = this;
+
+                        /* Logic
+                                [if:Else if:else statement]
+                        */
+                        if (args.length > 0) {
+                            /* Loop
+                                    Index all Arguments.
+
+                                > Modification > Arguments
+                            */
+                            for (let i in args)
+                                args[i] = (args[i] || '').constructor == Array ? args[i].join(' ').replace(/  /g, ' ').trim() : String(args[i]);
+
+                            // Modification > Target > Class
+                            that.setAttribute('class', ((that.getAttribute('class') ? that.getAttribute('class') + ' ' : '') + args.join(' ')).trim().split(' ').removeDuplicatedElements().removeFalsyElements().join(' '))
+                        }
+
+                        // Return
+                        return that.attributes.class
+                    }
+                });
+
+                // Attribute
+                (typeof _temporaryData.attr == 'function') || Object.defineProperty(_temporaryData, 'attr', {
+                    // Value
+                    value: function attribute() {
+                        // Initialization > (Arguments, Target)
+                        let args = [...arguments],
+                            that = this;
+
+                        // Return
+                        return args.length > 1 ? that.setAttr.apply(that, args) : that.getAttr.apply(that, args)
+                    }
+                });
+
+                // Change Element Tag
+                (typeof _temporaryData.changeElementTag == 'function') || Object.defineProperty(_temporaryData, 'changeElementTag', {
+                    // Value
+                    value: function changeElementTag() {
+                        let data = String(arguments[0]),
+                            that = this;
+
+                        // Error Handling
+                        try {
+                            // Document > Create Element
+                            document.createElement(data)
+                        }
+
+                        catch (error) {
+                            // LapysJS > Error
+                            LapysJS.error(error)
+                        }
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (arguments.length > 0 && data.toLowerCase() != that.tagName.toLowerCase()) {
+                            // Initialization > Metadata
+                            let metadata = that.outerHTML.clone();
+
+                            // Return
+                            return that.outerHTML = metadata.getBeforeChar(/>| /).replace(/[a-zA-Z][\w\-]{0,}/, data) + (that.attributes.length ? ' ' : '>') + metadata.getAfterChar(/>| /).getBeforeChar('</', !0) + '</' + metadata.getAfterChar(/>| /).getAfterChar('</', !0).replace(/[a-zA-Z][\w\-]{0,}/, data)
+                        }
+
+                        // Return
+                        return that
+                    }
+                });
+
+                // Delete Attribute
+                (typeof _temporaryData.delAttr == 'function') || Object.defineProperty(_temporaryData, 'delAttr', new (function Object() {
+                    // Initialization > (Target, Temporary Data)
+                    let that = this,
+                        _temporaryData = (function() {
+                            // Return
+                            return arguments[0].removeAttribute(arguments[1])
+                        });
+
+                    // Modification > Target > Value
+                    that.value = function removeAttribute() {
+                        // Initialization > (Arguments, Target)
+                        let args = [...arguments].removeFalsyElements(),
+                            that = this;
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (args[0].trimRight() == '/all')
+                            /* Loop
+                                    [do:while statement]
+
+                                > Temporary Data
+                            */
+                            while (that.attributes[0])
+                                _temporaryData(that, that.attributes[0].name);
+
+                        else
+                            /* Loop
+                                    Index Arguments.
+                            */
+                            for (let i in args) {
+                                // Initialization > Data
+                                let data = args[i].constructor == Attr ? args[i].name : String(args[i]);
+
+                                // Temporary Data
+                                !that.hasAttribute(data) || _temporaryData(that, data)
+                            }
+
+                        // Return
+                        return that
+                    }
+                }));
+
+                // Delete Class
+                (typeof _temporaryData.delClass == 'function') || Object.defineProperty(_temporaryData, 'delClass', {
+                    // Value
+                    value: function removeClass() {
+                        // Initialization > (Arguments, Target, Data)
+                        let args = [...arguments],
+                            that = this,
+                            data = LapysJS.debug.formatText(that.getAttribute('class') || '', 4);
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (that.getAttribute('class')) {
+                            /* Loop
+                                    index Arguments.
+                            */
+                            for (let i of args)
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if ((i || _LapysJSObject).constructor == RegExp) {
+                                    // Initialization > (Metadata, Alpha)
+                                    let metadata = RegExp(i.source, i.flags.replace('g', '')),
+                                        alpha = '';
+
+                                    // Update > Metadata
+                                    metadata = (data.join(' ').match(metadata) || _LapysJSObject).index === void 0 ? null : (data.join(' ').match(metadata) || _LapysJSObject).index;
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (metadata) {
+                                        // Update > Data
+                                        data = data.join(' ');
+
+                                        // Update > Alpha
+                                        alpha = [...data][metadata];
+
+                                        /* Logic
+                                                [do:while statement]
+
+                                            > Update > Alpha
+                                        */
+                                        while ([...data][metadata += 1] != ' ' && [...data][metadata])
+                                            alpha += data[metadata];
+
+                                        // Update > Data
+                                        data = data.split(' ')
+                                    }
+
+                                    // Update > Data
+                                    data.removeElement(alpha)
+                                }
+
+                                else
+                                    // Update > Data
+                                    data.removeElement(String(i));
+
+                            // Modification > Target > Class
+                            that.setAttribute('class', data.join(' '))
+                        }
+
+                        // Return
+                        return that.attributes.class
+                    }
+                });
+
+                // Delete (Inline) Style
+                (typeof _temporaryData.delStyle == 'function') || Object.defineProperty(_temporaryData, 'delStyle', {
+                    // Value
+                    value: function removeStyle() {
+                        // Initialization > Target
+                        let that = this,
+                            _that = that.getAttribute('style');
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (that.hasAttribute('style'))
+                            /* Loop
+                                    Index all Arguments.
+                            */
+                            for (let i of [...arguments]) {
+                                // Initialization > Data
+                                let data = String(i);
+
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (data.trimRightChar() == '/all') {
+                                    // Modification > Target > Style
+                                    that.removeAttribute('style');
+
+                                    // Break
+                                    break
+                                }
+
+                                /* Logic
+                                        [if:else if:else statement]
+
+                                        --- WARN ---
+                                            @lapys: I will not use a ternary statement here. X-[
+                                */
+                                if (
+                                    (data !== 'animation' && _that.indexOf('animation') < 0) &&
+                                    (data !== 'background' && _that.indexOf('background') < 0) &&
+                                    (data !== 'border' && _that.indexOf('border') < 0) &&
+                                    (data !== 'flex' && _that.indexOf('flex') < 0) &&
+                                    (data !== 'font' && _that.indexOf('font') < 0) &&
+                                    (data !== 'overflow' && _that.indexOf('overflow') < 0) &&
+                                    (data !== 'transition' && _that.indexOf('transition') < 0)
+                                )
+                                    // Modification > Target > Style
+                                    that.style = _that.replace(_that.slice(_that.indexOf(data),
+                                        (function property() {
+                                            // Initialization > (Metadata, Alpha)
+                                            let metadata = that.style[data] || getComputedStyle(that).getPropertyValue(data);
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+
+                                                > Return
+                                            */
+                                            if (_that.indexOf(data + ': ' + metadata) > -1)
+                                                return (_that.indexOf(data) + String(data + ': ' + metadata).length);
+
+                                            else if (_that.indexOf(data + ':' + metadata) > -1)
+                                                return (_that.indexOf(data) + String(data + ':' + metadata).length);
+
+                                            else if (_that.indexOf(data + ' :' + metadata) > -1)
+                                                return (_that.indexOf(data) + String(data + ' :' + metadata).length);
+
+                                            else if (_that.indexOf(data + ' : ' + metadata) > -1)
+                                                return (_that.indexOf(data) + String(data + ' : ' + metadata).length);
+
+                                            // Return
+                                            return 0
+                                        })() +
+                                        (function value() {
+                                            let metadata = that.style[data] || getComputedStyle(that).getPropertyValue(data);
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (_that.indexOf(metadata + '; ') > -1)
+                                                return (_that.indexOf(data) + '; '.length);
+
+                                            else if (_that.indexOf(metadata + ' ;') > -1)
+                                                return (_that.indexOf(data) + ' ;'.length);
+
+                                            else if (_that.indexOf(metadata + ';') > -1)
+                                                return (_that.indexOf(data) + ';'.length);
+
+                                            else if (_that.indexOf(metadata + ' ; ') > -1)
+                                                return (_that.indexOf(data) + ' ; '.length);
+
+                                            // Return
+                                            return 0
+                                        })()),
+                                    '');
+
+                                else
+                                    // Style > Target > [Data]
+                                    that.style[data] = ''
+                            }
+
+                        // Modification > Target > Style
+                        that.getAttribute('style') ? that.setAttribute('style', that.getAttribute('style').trimRightChar(';')) : that.removeAttribute('style')
+
+                        // Return
+                        return that.attributes.style
+                    }
+                });
+
+                // [First Element Child]
+                '$1' in Element.prototype || Object.defineProperty(Element.prototype, '$1', temporaryData = {
+                    // Get
+                    get: function firstElementChild() {
+                        // Return
+                        return (this === window ? document : this).firstElementChild
+                    }
+                });
+                    !('$1' in Element.prototype) || '$1' in window || Object.defineProperty(Window.prototype, '$1', temporaryData);
+                    !('$1' in Element.prototype) || '$1' in document || Object.defineProperty(Document.prototype, '$1', temporaryData);
+
+                // Get Attribute
+                (typeof _temporaryData.getAttr == 'function') || Object.defineProperty(_temporaryData, 'getAttr', new (function Object() {
+                    // Initialization > (Target, Temporary Data)
+                    let that = this,
+                        _temporaryData = (function() {
+                            // Return
+                            return arguments[0].getAttribute(arguments[1])
+                        });
+
+                    // Modification > Target > Value
+                    that.value = function getAttribute() {
+                        // Initialization > (Arguments, Data, Target)
+                        let args = [...arguments],
+                            data = args[0],
+                            that = this;
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (args.length == 1)
+                            // Return
+                            return _temporaryData(that, (data || _LapysJSObject).constructor == Attr ? data.name : String(data));
+
+                        else if (args.length > 1) {
+                            // Initialization > Metadata
+                            let metadata = [];
+
+                            /* Loop
+                                    Index Arguments.
+                            */
+                            for (let i of args) {
+                                // Initialization > Alpha
+                                let alpha = i;
+
+                                // Update > Metadata
+                                metadata.push(_temporaryData(that, (alpha || _LapysJSObject).constructor == Attr ? alpha.name : String(alpha)))
+                            }
+
+                            // Return
+                            return metadata
+                        }
+
+                        // Return
+                        return null
+                    }
+                }));
+
+                // Get Attribute Names
+                (typeof _temporaryData.getAttrNames == 'function') || Object.defineProperty(_temporaryData, 'getAttrNames', new (function Object() {
+                    // Initialization > (Target, Temporary Data)
+                    let that = this,
+                        _temporaryData = (function() {
+                            // Return
+                            return arguments[0].getAttributeNames()
+                        });
+
+                    // Modification > Target > Value
+                    that.value = function getAttributeNames() {
+                        // Return
+                        return _temporaryData(this)
+                    }
+                }));
+
+                // Get Attribute Node
+                (typeof _temporaryData.getAttrNode == 'function') || Object.defineProperty(_temporaryData, 'getAttrNode', new (function Object() {
+                    // Initialization > (Target, Temporary Data)
+                    let that = this,
+                        _temporaryData = (function() {
+                            // Return
+                            return arguments[0].getAttributeNode(arguments[1])
+                        });
+
+                    // Modification > Target > Value
+                    that.value = function getAttributeNode() {
+                        // Initialization > (Arguments, Data, Target)
+                        let args = [...arguments],
+                            data = args[0],
+                            that = this;
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (args.length == 1)
+                            // Return
+                            return _temporaryData(that, (data || _LapysJSObject).constructor == Attr ? data.name : String(data));
+
+                        else if (args.length > 1) {
+                            // Initialization > Metadata
+                            let metadata = [];
+
+                            /* Loop
+                                    Index Arguments.
+                            */
+                            for (let i of args) {
+                                // Initialization > Alpha
+                                let alpha = i;
+
+                                // Update > Metadata
+                                metadata.push(_temporaryData(that, (alpha || _LapysJSObject).constructor == Attr ? alpha.name : String(alpha)))
+                            }
+
+                            // Return
+                            return metadata
+                        }
+
+                        // Return
+                        return null
+                    }
+                }));
+
+                // Get CSS
+                (typeof _temporaryData.getCSS == 'function') || Object.defineProperty(_temporaryData, 'getCSS', {
+                    // Value
+                    value: function getCSS() {
+                        // Initialization > (Arguments, Data, Target)
+                        let args = [...arguments],
+                            data = [],
+                            that = this;
+
+                        /* Loop
+                                Index Arguments.
+
+                            > Update > Data
+                        */
+                        for (let i of args)
+                            data.push(that.style[i.replace(/[A-Z]/g, data => {
+                                // Return
+                                return '-' + data.toLowerCase()
+                            })] || getComputedStyle(that).getPropertyValue(i.replace(/[A-Z]/g, data => {
+                                // Return
+                                return '-' + data.toLowerCase()
+                            })));
+
+                        // Return
+                        return data.length > 1 ? data : data[0]
+                    }
+                });
+
+                // Get Element By ID
+                (typeof _temporaryData.getElementById == 'function') || Object.defineProperty(_temporaryData, 'getElementById', {
+                    // Value
+                    value: function getElementById() {
+                        // Return
+                        return this.querySelector('#' + String(arguments[0])) || null
+                    }
+                });
+
+                // Has Attribute
+                (typeof _temporaryData.hasAttr == 'function') || Object.defineProperty(_temporaryData, 'hasAttr', new (function Object() {
+                    // Initialization > (Target, Temporary Data)
+                    let that = this,
+                        _temporaryData = (function() {
+                            // Return
+                            return arguments[0].hasAttribute(arguments[1])
+                        });
+
+                    // Modification > Target > Value
+                    that.value = function hasAttribute() {
+                        // Initialization > (Arguments, Data, Target)
+                        let args = [...arguments],
+                            data = args[0],
+                            that = this;
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (args.length == 1)
+                            // Return
+                            return _temporaryData(that, (data || _LapysJSObject).constructor == Attr ? data.name : String(data));
+
+                        else if (args.length > 1) {
+                            // Initialization > Metadata
+                            let metadata = [];
+
+                            /* Loop
+                                    Index Arguments.
+                            */
+                            for (let i of args) {
+                                // Initialization > Alpha
+                                let alpha = i;
+
+                                // Update > Metadata
+                                metadata.push(_temporaryData(that, (alpha || _LapysJSObject).constructor == Attr ? alpha.name : String(alpha)))
+                            }
+
+                            // Return
+                            return metadata.indexOf(!1) < 0
+                        }
+
+                        // Return
+                        return null
+                    }
+                }));
+
+                // Has Class
+                (typeof _temporaryData.hasClass == 'function') || Object.defineProperty(_temporaryData, 'hasClass', {
+                    // Value
+                    value: function hasClass() {
+                        // Initialization > (Arguments, Target, Data)
+                        let args = [...arguments],
+                            that = this,
+                            data = LapysJS.debug.formatText(that.getAttribute('class') || '', 4);
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (args.length > 0)
+                            // Return
+                            return that.getAttribute('class') ? data.hasArrayElements(args) : !1;
+
+                        // Return
+                        return null
+                    }
+                });
+
+                // Insert Adjacent Comment
+                (typeof _temporaryData.insertAdjacentComment == 'function') || Object.defineProperty(_temporaryData, 'insertAdjacentComment', {
+                    // Value
+                    value: function insertAdjacentComment() {
+                        // Target > Insert Adjacent HTML
+                        this.insertAdjacentHTML(String(arguments[0]), '<!--' + String(arguments[1]) + '-->', [...arguments].slice(2))
+                    }
+                });
+
+                /* In View
+                        --- NOTE ---
+                            @lapys: Returns whether or not the element can be
+                                seen in the viewport.
+                */
+                (typeof _temporaryData.inView == 'function') || Object.defineProperty(_temporaryData, 'inView', {
+                    // Value
+                    value: function inView() {
+                        // Initialization > (Target, Left, Top)
+                        let that = this,
+                            left = this.offsetLeft,
+                            top = this.offsetTop;
+
+                        /* Loop
+                                [for statement]
+                        */
+                        for (let i = 0; i < this.parentPath; i += 1) {
+                            left += this.parentPath[i];
+                            top += this.parentPath[i]
+                        }
+
+                        // Return
+                        return this.getCSS('display') == 'none' ? !1 : (!arguments[0] == !1 ? left < (innerWidth + pageXOffset) && pageXOffset < (left + this.offsetWidth) && pageYOffset < (this.offsetHeight + top) && top < (innerHeight + pageYOffset) : left > ~-pageXOffset && (left + this.offsetWidth) < (pageXOffset + innerWidth + 1) && top > ~-pageYOffset && (this.offsetHeight + top) < (pageYOffset + innerHeight + 1))
+                    }
+                });
+
+                // [Last Element Child]
+                '$n' in _temporaryData || Object.defineProperty(_temporaryData, '$n', temporaryData = {
+                    // Get
+                    get: function lastElementChild() {
+                        // Return
+                        return (this === window ? document : this).lastElementChild
+                    }
+                });
+                    // Definition
+                    !('$n' in _temporaryData) || '$n' in window || Object.defineProperty(Window.prototype, '$n', temporaryData);
+                    !('$n' in _temporaryData) || '$n' in document || Object.defineProperty(Document.prototype, '$n', temporaryData);
+
+                // [Penultimate Element Child]
+                '$n1' in _temporaryData || Object.defineProperty(_temporaryData, '$n1', temporaryData = {
+                    // Get
+                    get: function penultimateElementChild() {
+                        // Initialization > Target
+                        let that = this;
+
+                        // Return
+                        return (that === window ? document : that).children[(that === window ? document : that).children.length - 2] || null
+                    }
+                });
+                    // Definition
+                    !('$n1' in _temporaryData) || '$n1' in window || Object.defineProperty(Window.prototype, '$n1', temporaryData);
+                    !('$n1' in _temporaryData) || '$n1' in document || Object.defineProperty(Document.prototype, '$n1', temporaryData);
+
+                // [Query Indexer]
+                (typeof _temporaryData.$x == 'function') || Object.defineProperty(_temporaryData, '$x', {
+                    // Value
+                    value: function queryIndexer() {
+                        // Return
+                        return (this === window ? document : this).children[arguments[0]] || null
+                    }
+                });
+                    // Definition
+                    (typeof _temporaryData.$x != 'function') || (typeof $x == 'function') || Object.defineProperty(Window.prototype, '$x', {value: _temporaryData.$x});
+                    (typeof _temporaryData.$x != 'function') || (typeof document.$x == 'function') || Object.defineProperty(Document.prototype, '$x', {value: _temporaryData.$x});
+
+                // Replace Attribute
+                (typeof _temporaryData.replaceAttribute == 'function') || Object.defineProperty(_temporaryData, 'replaceAttribute', {
+                    // Value
+                    value: function replaceAttribute() {
+                        // Initialization > (Arguments, Data, Metadata, Alpha, Beta, Target)
+                        let args = [...arguments],
+                            data = String(typeof args[0] == 'function' ? args[0]() : args[0]),
+                            metadata = String(typeof args[1] == 'function' ? args[1]() : args[1]).replace(/\-[a-zA-Z]/g, data => {
+                                // Return
+                                return data.slice('-'.length).toUpperCase()
+                            }),
+                            alpha = args.length > 2 ? (typeof args[2] == 'function' ? args[2]() : args[2]) : '',
+                            beta = !1,
+                            that = this,
+                            _that = that.cloneNode(!0);
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (args.length > 0) {
+                            // Modification > Target > [Metadata]
+                            _that[metadata] = String(alpha);
+                            (_that.getAttribute(metadata) != _that[metadata]) || (beta = !0);
+
+                            // Modification > Target > ([Metadata], [Data])
+                            !beta || (that[metadata] = alpha);
+                            that.setAttribute(metadata, args.length > 2 ? alpha : that.getAttribute(data));
+                            that.removeAttribute(data)
+                        }
+
+                        // Return
+                        return alpha
+                    }
+                });
+
+                // Replace Attribute
+                (typeof _temporaryData.replAttr == 'function') || Object.defineProperty(_temporaryData, 'replAttr', {
+                    // Value
+                    value: function replaceAttribute() {
+                        // Target > Replace Attribute
+                        this.replaceAttribute.apply(this, [...arguments]);
+
+                        // Return
+                        return this
+                    }
+                });
+
+                // [Second Element Child]
+                '$2' in _temporaryData || Object.defineProperty(_temporaryData, '$2', temporaryData = {
+                    // Get
+                    get: function secondElementChild() {
+                        // Return
+                        return (this === window ? document : this).children[1] || null
+                    }
+                });
+                    // Definition
+                    !('$2' in _temporaryData) || '$2' in window || Object.defineProperty(Window.prototype, '$2', temporaryData);
+                    !('$2' in _temporaryData) || '$2' in document || Object.defineProperty(Document.prototype, '$2', temporaryData);
+
+                // Set Attribute
+                (typeof _temporaryData.setAttr == 'function') || Object.defineProperty(_temporaryData, 'setAttr', new (function Object() {
+                    // Initialization > (Target, Temporary Data)
+                    let that = this,
+                        _temporaryData = (function() {
+                            // Return
+                            return arguments[0].setAttribute(arguments[1], arguments[2])
+                        });
+
+                    // Modification > Target > Value
+                    that.value = function setAttribute() {
+                        // Initialization > (Arguments, Data, Metadata, Target)
+                        let args = [...arguments],
+                            data = args[0],
+                            metadata = (args[1] || _LapysJSObject).constructor == Array ? args[1] : String(args[1]),
+                            that = this;
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (args.length > 0) {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (typeof data == 'string' && args.length == 1)
+                                // Temporary Data
+                                _temporaryData(that, data, '');
+
+                            else if (typeof data == 'string' && args.length > 1)
+                                // Temporary Data
+                                _temporaryData(that, data, String(args.length > 1 ? ((metadata || _LapysJSObject).constructor == Array ? metadata[0] : String(metadata)) : ''));
+
+                            else if ((data || _LapysJSObject).constructor == Array && args.length == 0)
+                                /* Loop
+                                        [for statement]
+
+                                    > Temporary Data
+                                */
+                                for (let i of data)
+                                    _temporaryData(that, i, '');
+
+                            else if ((data || _LapysJSObject).constructor == Array && typeof metadata == 'string')
+                                /* Loop
+                                        [for statement]
+
+                                    > Temporary Data
+                                */
+                                for (let i of data)
+                                    _temporaryData(that, i, String(metadata));
+
+                            else if ((data || _LapysJSObject).constructor == Array && (metadata || _LapysJSObject).constructor == Array)
+                                /* Loop
+                                        [for statement]
+
+                                    > Temporary Data
+                                */
+                                for (let i in data)
+                                    _temporaryData(that, data[i], String(metadata[i]));
+
+                            else if (isObject(data))
+                                /* Loop
+                                        [for statement]
+
+                                    > Temporary Data
+                                */
+                                for (let i in data)
+                                    _temporaryData(that, i.replace(/[A-Z]{3,}/g, data => {
+                                        // Return
+                                        return data.toLowerCase()
+                                    }).replace(/[A-Z]{2,}/g, data => {
+                                        // Return
+                                        return data[0] + data[1].toLowerCase()
+                                    }).replace(/[A-Z]/g, data => {
+                                        // Return
+                                        return '-' + data.toLowerCase()
+                                    }).toLowerCase(), String(data[i]))
+                        }
+
+                        // Return
+                        return that
+                    }
+                }));
+
+                /* Set CSS
+                        --- CHECKPOINT ---
+                        --- UPDATE REQUIRED ---
+                            @lapys: Rebuild this.
+                */
+                (typeof _temporaryData.setCSS == 'function') || Object.defineProperty(_temporaryData, 'setCSS', {
+                    // Value
+                    value: function setCSS() {
+
+                    }
+                });
+                (typeof Element.prototype.setCSS == 'function') || Object.defineProperty(Element.prototype, 'setCSS', {
+                    // Value
+                    value: function setCSS() {
+                        // Initialization > (Arguments, Data, Metadata, Target, (...), Regular Expression Set (...))
+                        let args = [...arguments],
+                            data = [],
+                            metadata = [],
+                            that = this,
+                            alpha = Object.keys,
+                            upsilon = args[0],
+                            zeta = args[1],
+                            regexSet = LapysJS.regexSet.randomize(),
+                            regexSetAlt = LapysJS.regexSet.randomize(),
+                            regexSetQuasiAlt = LapysJS.regexSet.randomize(),
+                            regexSetQuasiAlt0 = LapysJS.regexSet.randomize(),
+                            regexSetQuasiAlt1 = LapysJS.regexSet.randomize();
+
+                        // Function > Test
+                        function test(temporaryData, _metadata) {
+                            // Update > Data
+                            !(
+                                _metadata == 'animation-delay' || _metadata == 'animation-duration' ||
+                                _metadata == 'transition-delay' || _metadata == 'transition-duration'
+                            ) || String(temporaryData).endsWith('s') || (temporaryData = temporaryData + 's');
+
+                            !(
+                                _metadata == 'background-position-x' || _metadata == 'background-position-y' || _metadata == 'block-size' || _metadata == 'border-bottom-left-radius' || _metadata == 'border-bottom-right-radius' || _metadata == 'border-bottom-width' || _metadata == 'border-image-outset' || _metadata == 'border-left-width' || _metadata == 'border-right-width' || _metadata == 'border-top-left-radius' || _metadata == 'border-top-right-radius' || _metadata == 'border-top-width' || _metadata == 'border-width' || _metadata == 'bottom' ||
+                                _metadata == 'column-rule-width' ||
+                                _metadata == 'font-size' ||
+                                _metadata == 'grid-column-gap' || _metadata == 'grid-row-gap' ||
+                                _metadata == 'height' ||
+                                _metadata == 'inline-size' ||
+                                _metadata == 'left' || _metadata == 'line-height-step' ||
+                                _metadata == 'margin' || _metadata == 'margin-bottom' || _metadata == 'margin-left' || _metadata == 'margin-right' || _metadata == 'margin-top' || _metadata == 'max-block-size' || _metadata == 'max-height' || _metadata == 'max-inline-size' || _metadata == 'max-width' || _metadata == 'min-block-size' || _metadata == 'min-height' || _metadata == 'min-inline-size' || _metadata == 'min-width' ||
+                                _metadata == 'padding' || _metadata == 'padding-bottom' || _metadata == 'padding-left' || _metadata == 'padding-right' || _metadata == 'padding-top' || _metadata == 'perspective' || _metadata == 'perspective-origin' ||
+                                _metadata == 'r' || _metadata == 'rx' || _metadata == 'ry' || _metadata == 'right' ||
+                                _metadata == 'shape-margin' || _metadata == 'stroke-dash-offset' || _metadata == 'stroke-width' ||
+                                _metadata == 'text-indent' || _metadata == 'top' ||
+                                _metadata == 'x' ||
+                                _metadata == 'y' ||
+                                _metadata == 'width'
+                            ) || String(temporaryData).endsWith('px') || (temporaryData = temporaryData + 'px');
+
+                            // Return
+                            return temporaryData
+                        };
+
+                        // Modification > Target > Style
+                        that.setAttribute('style', that.getAttribute('style') || '');
+
+                        /* Logic
+                                [if:else if:else statement]
+
+                                --- NOTE ---
+                                    @lapys: Check for the different variations of applying CSS properties in JavaScript.
+                        */
+                        if (isObject(upsilon) && args.length == 1) {
+                            // Initialization > Property (Name, Value)
+                            let propertyName = '',
+                                propertyValue = '';
+
+                            /* Loop
+                                    Index Argument 0.
+                            */
+                            for (let i = 0; i < alpha(upsilon).length; i += 1) {
+                                // Initialization > (Beta, Delta)
+                                let beta = alpha(upsilon)[i],
+                                    delta = upsilon[beta];
+
+                                /* Logic
+                                        If
+                                            Argument 0`s value is an object.
+                                */
+                                if (isObject(delta, !0)) {
+                                    /* Loop
+                                            Index Argument 0`s value.
+                                    */
+                                    for (let j = 0; j < alpha(delta).length; j += 1) {
+                                        // Initialization > (Gamma, Epsilon)
+                                        let gamma = alpha(delta)[j],
+                                            epsilon = delta[gamma];
+
+                                        /* Logic
+                                                If
+                                                    Argument 0`s value`s value is an object.
+                                        */
+                                        if (isObject(epsilon, !0)) {
+                                            /* Loop
+                                                    Index Argument 0`s value`s value.
+                                            */
+                                            for (let k = 0; k < alpha(epsilon).length; k += 1) {
+                                                // Initialization > Rho
+                                                let rho = alpha(epsilon)[k];
+
+                                                // Update > Property (Name, Value)
+                                                propertyName = (beta + '-' + gamma + '-' + rho).replace(/[A-Z]/g, data => {
+                                                    // Return
+                                                    return '-' + data.toLowerCase()
+                                                });
+                                                propertyValue = test(epsilon[rho], propertyName);
+
+                                                // Update > (Data, Metadata)
+                                                data.push(propertyName);
+                                                metadata.push(propertyValue)
+                                            }
+                                        }
+
+                                        else {
+                                            // Update > Property (Name, Value)
+                                            propertyName = (beta + '-' + gamma).replace(/[A-Z]/g, data => {
+                                                // Return
+                                                return '-' + data.toLowerCase()
+                                            });
+                                            propertyValue = test(epsilon, propertyName);
+
+                                            // Update > (Data, Metadata)
+                                            data.push(propertyName);
+                                            metadata.push(propertyValue)
+                                        }
+                                    }
+                                }
+
+                                else {
+                                    // Update > Property (Name, Value)
+                                    propertyName = beta.replace(/[A-Z]/g, data => {
+                                        // Return
+                                        return '-' + data.toLowerCase()
+                                    });
+                                    propertyValue = test(delta, propertyName);
+
+                                    // Update > (Data, Metadata)
+                                    data.push(propertyName);
+                                    metadata.push(propertyValue)
+                                }
+                            }
+                        }
+
+                        else if ((upsilon || _LapysJSObject).constructor == Array && args.length == 1) {
+                            // Initialization > Property (Name, Value)
+                            let propertyName = '',
+                                propertyValue = '';
+
+                            // Function > Update
+                            function update() {
+                                // Return
+                                return arguments[0].replace(//g, ';').replace(/�/g, ':').replace(RegExp(regexSet, 'g'), '')
+                            }
+
+                            /* Loop
+                                    [for statement]
+                            */
+                            for (let i of upsilon) {
+                                // Update > Property (Name, Value)
+                                propertyName = i.replace(/[A-Z]/g, data => {
+                                    // Return
+                                    return '-' + data.toLowerCase()
+                                });
+                                propertyValue = 'initial';
+
+                                // Update > (Data, Metadata)
+                                data.push(update(propertyName));
+                                metadata.push(update(propertyValue))
+                            }
+                        }
+
+                        else if ((upsilon || '').constructor == Array && (zeta || '').constructor == Array) {
+                            // Initialization > Property (Name, Value)
+                            let propertyName = '',
+                                propertyValue = '';
+
+                            /* Loop
+                                    Index Argument 0.
+                            */
+                            for (let i = 0; i < upsilon.length; i += 1) {
+                                // Update > Property (Name, Value)
+                                propertyName = upsilon[i].replace(/[A-Z]/g, data => {
+                                    // Return
+                                    return '-' + data.toLowerCase()
+                                });
+                                propertyValue = test(zeta[i], propertyName);
+
+                                // Update > (Data, Metadata)
+                                data.push(propertyName);
+                                metadata.push(propertyValue)
+                            }
+                        }
+
+                        else if ((upsilon || '').constructor == Array && typeof zeta == 'string') {
+                            // Initialization > Property (Name, Value)
+                            let propertyName = '',
+                                propertyValue = '';
+
+                            for (let i = 0; i < upsilon.length; i += 1) {
+                                // Update > Property (Name, Value)
+                                propertyName = upsilon[i].replace(/[A-Z]/g, data => {
+                                    // Return
+                                    return '-' + data.toLowerCase()
+                                });
+                                propertyValue = test(zeta, propertyName);
+
+                                // Update > (Data, Metadata)
+                                data.push(propertyName);
+                                metadata.push(propertyValue)
+                            }
+                        }
+
+                        else if (typeof upsilon == 'string' && (zeta || '').constructor == Array) {
+                            // Initialization > Property (Name, Value)
+                            let propertyName = '',
+                                propertyValue = '';
+
+                            // Update > Property (Name, Value)
+                            propertyName = upsilon.replace(/[A-Z]/g, data => {
+                                // Return
+                                return '-' + data.toLowerCase()
+                            });
+                            propertyValue = test(zeta[~-zeta.length], propertyName);
+
+                            // Update > (Data, Metadata)
+                            data.push(propertyName);
+                            metadata.push(propertyValue)
+                        }
+
+                        else if (typeof upsilon == 'string' && args.length > 1) {
+                            // Initialization > Property (Name, Value)
+                            let propertyName = '',
+                                propertyValue = '';
+
+                            // Update > Property (Name, Value)
+                            propertyName = upsilon.replace(/[A-Z]/g, data => {
+                                // Return
+                                return '-' + data.toLowerCase()
+                            });
+                            propertyValue = test((function(data, metadata) {
+                                // Update > Metadata
+                                metadata = metadata.trim().replace(/[A-Z]/g, data => {
+                                    // Return
+                                    return '-' + data.toLowerCase()
+                                }).trimChar('-');
+
+                                /* Logic
+                                        If
+                                            Data is a number.
+
+                                    > Update > Data
+                                */
+                                (typeof data != 'number') || (data = test(data, metadata));
+
+                                // Return
+                                return String(data)
+                            })(zeta, propertyName), propertyName);
+
+                            // Update > (Data, Metadata)
+                            data.push(propertyName);
+                            metadata.push(propertyValue)
+                        }
+
+                        else if (typeof upsilon == 'string' && args.length == 1) {
+                            // Initialization > Alpha, Property (Name, Value)
+                            let alpha = upsilon,
+                                propertyName = '',
+                                propertyValue = '';
+
+                            /* Update > Data
+                                    --- NOTE ---
+                                        @lapys: Ignore all strings.
+                            */
+                            alpha = alpha.replace(/'[^']{0,}'/g, data => {
+                                // Return
+                                return [...data].join(regexSet).replace(/:/g, '�').replace(/;/g, '')
+                            }).replace(/"[^"]{0,}"/g, data => {
+                                // Return
+                                return [...data].join(regexSet).replace(/:/g, '�').replace(/;/g, '')
+                            });
+
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (alpha.hasText(':')) {
+                                // Update > Alpha
+                                alpha.trim().endsWith(';') || (alpha = alpha.trim() + ';');
+                                alpha = alpha.split(/;/g).removeFalsyElements();
+
+                                /* Loop
+                                        Index Alpha.
+                                */
+                                for (let i in alpha)
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (alpha[i].trim()) {
+                                        // Update > Alpha
+                                        alpha[i] = alpha[i].trim();
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (alpha[i].split(/:/g).length > 1) {
+                                            // Update > Property (Name, Value)
+                                            propertyName = alpha[i].split(/:/g)[0].trim().replace(//g, ';').replace(/�/g, ':').replace(RegExp(regexSet, 'g'), '');
+                                            propertyValue = alpha[i].split(/:/g)[1].trim().replace(//g, ';').replace(/�/g, ':').replace(RegExp(regexSet, 'g'), '');
+
+                                            // Update > (Data, Metadata)
+                                            data.push(propertyName);
+                                            metadata.push(propertyValue)
+                                        }
+                                    }
+                            }
+
+                            else {
+                                // Update > Property (Name, Value)
+                                propertyName = upsilon.replace(/[A-Z]/g, data => {
+                                    // Return
+                                    return '-' + data.toLowerCase()
+                                });
+                                propertyValue = 'initial';
+
+                                // Update > (Data, Metadata)
+                                data.push(propertyName.replace(//g, ';').replace(/�/g, ':').replace(RegExp(regexSet, 'g'), ''));
+                                metadata.push(propertyValue.replace(//g, ';').replace(/�/g, ':').replace(RegExp(regexSet, 'g'), ''))
+                            }
+                        }
+
+                        /* Loop
+                                Index Data
+
+                            > Update > Data
+                        */
+                        for (let i = 0; i < data.length; i += 1)
+                            data[i] = String(data[i]).trim().trimChar('-').toLowerCase();
+
+                        /* Loop
+                                Index Metadata
+
+                            > Update > Metadata
+                        */
+                        for (let i = 0; i < metadata.length; i += 1)
+                            metadata[i] = str(metadata[i]).trim();
+
+                        /* Loop
+                                Index Data
+
+                            > Style > Target > [Data]
+                        */
+                        for (let i = 0; i < data.length; i += 1)
+                            this.style[data[i].replace(/\-[a-z]/g, data => {
+                                // Return
+                                return data.slice('-'.length).toUpperCase()
+                            })] = metadata[i].replace(/(!importantpx)([^(!importantpx)]*)$|(!importants)([^(!importants)]*)$/, '!important').trimRightChar('!important').trim();
+
+                        // Modification > Target > Style
+                        this.setAttribute('style', (this.getAttribute('style') || '').endsWith(';') ? (this.getAttribute('style') || '') : (this.getAttribute('style') === null ? '' : this.getAttribute('style') + ';'));
+                        this.setAttribute('style', (this.getAttribute('style') || '').replace(/'[^']{1,}'|"[^"]{1,}"/g, data => {
+                            // Return
+                            return data.split(/(?:)/g).join('�')
+                        }).replace(/ {0,}: {0,}[^;]{1,};/g, data => {
+                            // Return
+                            return data.replace(/ {0,}: {0,}/, ': ')
+                        }).replace(/'[^']{1,}'|"[^"]{1,}"/g, data => {
+                            // Return
+                            return data.replace(/�/g, '')
+                        }));
+
+                        /* Loop
+                                Index Data
+
+                                --- NOTE ---
+                                    @lapys: For `!important` values.
+                        */
+                        for (let i = 0; i < data.length; i += 1) {
+                            // Update > Metadata
+                            metadata[i] = metadata[i].replace(/(!importantpx)([^(!importantpx)]*)$|(!importants)([^(!importants)]*)$/, '!important');
+
+                            // Modification > Target > Style
+                            !metadata[i].endsWith('!important') || that.setAttribute('style',
+                                (that.getAttribute('style') || '').replace(RegExp(data[i].replace(/\-/g, '\\$&') + '[^;]{1,};'), data => {
+                                    // Return
+                                    return data.trim().trimRightChar(';') + ' !important;'
+                                })
+                            )
+                        }
+
+                        // Modification > Target > Style
+                        that.setAttribute('style', (that.getAttribute('style') || '').trim().trimRightChar(';'));
+                        that.getAttribute('style') || that.removeAttribute('style');
+
+                        // Return
+                        return that.attributes.style
+                    }
+                });
+
+                // Write
+                (typeof Element.prototype.write == 'function') || Object.defineProperty(Element.prototype, 'write', {
+                    // Value
+                    value: function write() {
+                        // Modification > Target > Inner HTML
+                        this.innerHTML = LapysJS.perm.writtenElementsList.indexOf(this) < 0 ? arguments[0] : this.innerHTML + arguments[0];
+
+                        // Update > (LapysJS > Permanent Data > Written Elements List)
+                        (LapysJS.perm.writtenElementsList.indexOf(this) > -1) || LapysJS.perm.writtenElementsList.push(this)
+                    }
+                });
+
+                // Add Event
+                (typeof EventTarget.prototype.addEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'addEvent', {
+                    // Value
+                    value: function addEvent() {
+                        /* Logic
+                                If
+                                    Argument 1 is a Function.
+                        */
+                        if (typeof arguments[1] == 'function')
+                            /* Loop
+                                    Index modified Arguments.
+                            */
+                            for (let i = 0; i < Object.values([...arguments].slice(1)).length; i += 1)
+                                /* Loop
+                                        Index Listeners.
+                                */
+                                for (let j = 0; j < LapysJS.debug.formatText(String(arguments[0]), 4).length; j += 1) {
+                                    // Modification > Target > Custom Events
+                                    (this || window).customEvents = (this || window).customEvents || {fallback: !0};
+                                        // [Argument 0]
+                                        (this || window).customEvents[LapysJS.debug.formatText(String(arguments[0]), 4)[j]] = typeof document.createEvent == 'function' ? document.createEvent('Event') : document.createEventObject();
+                                            // [Argument 0] > Initialize Event
+                                            typeof (this || window).customEvents[LapysJS.debug.formatText(String(arguments[0]), 4)[j]].initEvent == 'function' ? (this || window).customEvents[LapysJS.debug.formatText(String(arguments[0]), 4)[j]].initEvent(LapysJS.debug.formatText(String(arguments[0]), 4)[j], !0, !0) : !1;
+
+                                    // Event > Target > [Argument 0]
+                                    (this || window).setEvent(LapysJS.debug.formatText(String(arguments[0]), 4)[j], Object.values([...arguments].slice(1))[i], !1)
+                            }
+                    }
+                });
+
+                // Delete Event
+                (typeof EventTarget.prototype.delEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'delEvent', {
+                    // Value
+                    value: function delEvent() {
+                        /* Logic
+                                If
+                                    Argument 1 exists.
+                        */
+                        if (arguments.length > 1)
+                            /* Loop
+                                    Index Events in Argument 0.
+                            */
+                            for (let i = 0; i < LapysJS.debug.formatText(String(arguments[0]), 4).length; i += 1)
+                                /* Loop
+                                        Index Listeners in Argument 1.
+
+                                    > Error Handling
+                                */
+                                for (let j = 0; j < Object.values([...arguments].slice(1)).length; j += 1)
+                                    try {
+                                        // Deletion
+                                        typeof document.removeEventListener == 'function' ?
+                                            (this || window).removeEventListener(LapysJS.debug.formatText(String(arguments[0]), 4)[i], Object.values([...arguments].slice(1))[j]) :
+                                            (this || window).detachEvent('on' + LapysJS.debug.formatText(String(arguments[0]), 4)[i], Object.values([...arguments].slice(1))[j])
+                                    }
+
+                                    catch (error) {
+                                        // LapysJS > Error
+                                        LapysJS.error(error)
+                                    }
+
+                        else
+                            /* Loop
+                                    Index Target's Event of the specified type.
+
+                                > Deletion
+                            */
+                            for (let i = 0; i < (this || window).getEvents()[String(arguments[0])].length; i += 1)
+                                document.removeEventListener ?
+                                    (this || window).removeEventListener((this || window).getEvents()[String(arguments[0])][i].type, (this || window).getEvents()[String(arguments[0])][i].listener) :
+                                    (this || window).detachEvent('on' + (this || window).getEvents()[String(arguments[0])][i].type, (this || window).getEvents()[String(arguments[0])][i].listener)
+                    }
+                });
+
+                // Events
+                EventTarget.prototype['LapysJS events'] = new (function LapysJSEventMap() {});
+
+                // Get Event
+                (typeof EventTarget.prototype.getEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'getEvent', {
+                    // Value
+                    value: function getEvent() {
+                        // Initialization > Target
+                        let that = this;
+
+                        // Return
+                        return (
+                            typeof window.getEventListeners == 'function' ?
+                                (new (function LapysJSEventMap() {
+                                    /* Loop
+                                            Index Event Listeners.
+
+                                        > Modification > Target > [Event Listener]
+                                    */
+                                    for (let i = 0; i < Object.keys(getEventListeners(that || window)).length; i += 1)
+                                        this[Object.keys(getEventListeners(that || window))[i]] = getEventListeners(that || window)[Object.keys(getEventListeners(that || window))[i]]
+                                }))[String(arguments[0])] :
+                                ((this || window)['LapysJS events'] || new (function LapysJSEventMap() {}))[String(arguments[0])]
+                            ) || null
+                    }
+                });
+
+                // Get Events
+                (typeof EventTarget.prototype.getEvents == 'function') || Object.defineProperty(EventTarget.prototype, 'getEvents', {
+                    // Value
+                    value: function getEvents() {
+                        // Initialization > Target
+                        let that = this,
+                            metadata;
+
+                        /* Initialization > Data
+                                --- NOTE ---
+                                    @lapys: If Meta Data is truthy, then there is no
+                                        need to track down Event handlers and add them to the Data.
+
+                                --- UPDATE REQUIRED ---
+                                    @lapys: Fallback should be able to track Event handlers.
+                        */
+                        let data = typeof window.getEventListeners == 'function' ?
+                            new (function LapysJSEventMap() {
+                                // Update > Meta Data
+                                metadata = !0;
+
+                                /* Loop
+                                        Index Event Listeners.
+
+                                    > Modification > Target > [Event Listener]
+                                */
+                                for (let i = 0; i < Object.keys(getEventListeners(that || window)).length; i += 1)
+                                    this[Object.keys(getEventListeners(that || window))[i]] = getEventListeners(that || window)[Object.keys(getEventListeners(that || window))[i]]
+                            }) :
+                            (this || window)['LapysJS events'] || new (function LapysJSEventMap() {});
+
+                        // Return
+                        return data
+                    }
+                });
+
+                // Invoke Event
+                (typeof EventTarget.prototype.invokeEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'invokeEvent', {
+                    // Value
+                    value: function invokeEvent() {
+                        // Target > (Add, Run) Event
+                        (this || window).addEvent.apply(this || window, [...arguments]);
+                        (this || window).runEvent.apply(this || window, [...arguments])
+                    }
+                });
+
+                // Invoke Full Screen
+                (typeof EventTarget.prototype.invokeFullscreen == 'function') || Object.defineProperty(EventTarget.prototype, 'invokeFullscreen', {
+                    // Value
+                    value: function invokeFullscreen() {
+                        // Initialization > Target
+                        let that = this === window ? document.documentElement : (this || document.documentElement);
+
+                        // Error Handling
+                        try {
+                            /* Logic
+                                    If
+                                        the document is in Fullscreen.
+
+                                > <html> > ((| Mozilla | Microsoft | Webkit) Request Fullscreen | Alert | Modification > Target > Data Fullscreen)
+                            */
+                            if (
+                                screen.height !== innerHeight &&
+                                !that.hasAttribute('data-fullscreen')
+                            ) {
+                                !!arguments[0] || alert('[LapysJS ' + LapysJS.version + "] => Press the 'Esc' key to exit fullscreen.");
+
+                                that.setAttribute('data-fullscreen', '');
+
+                                (typeof that.requestFullscreen != 'function') || that.requestFullscreen();
+                                (typeof that.mozRequestFullScreen != 'function') || that.mozRequestFullScreen();
+                                (typeof that.msRequestFullscreen != 'function') || that.msRequestFullscreen();
+                                (typeof that.webkitRequestFullScreen != 'function') || that.webkitRequestFullScreen()
+                            }
+
+                            else {
+                                that.removeAttribute('data-fullscreen');
+
+                                (typeof document.exitFullscreen != 'function') || document.exitFullscreen();
+                                (typeof document.mozCancelFullScreen != 'function') || document.mozCancelFullScreen();
+                                (typeof document.msExitFullscreen != 'function') || document.msExitFullscreen();
+                                (typeof document.webkitCancelFullScreen != 'function') || document.webkitCancelFullScreen()
+                            }
+                        }
+
+                        catch (error) {
+                            // LapysJS > Error
+                            LapysJS.error(error)
+                        }
+                    }
+                });
+
+                // Observe Event
+                (typeof EventTarget.prototype.observeEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'observeEvent', {
+                    // Value
+                    value: function observeEvent() {
+                        // Initialization > (Data, Metadata, Target)
+                        let data = (arguments[0] || '').constructor === Array ? arguments[0] : [arguments[0]],
+                            metadata = [...arguments].slice(1),
+                            that = this;
+
+                        // Event > Target > [Metadata 0]
+                        !((data[0] || _LapysJSObject).nodeType == 1) || this.setEvent(String(metadata[0]), function observeEvent(event) {
+                            // Function > Metadata 1
+                            (data.indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement))) < 0) || metadata[1].call(that, event)
+                        }, metadata[2], metadata[3])
+                    }
+                });
+
+                // Observe Event By Query Selector
+                (typeof EventTarget.prototype.observeEventByQuerySelector == 'function') || Object.defineProperty(EventTarget.prototype, 'observeEventByQuerySelector', {
+                    // Value
+                    value: function observeEventByQuerySelector() {
+                        // Initialization > (Data, Metadata, Target)
+                        let data = String(arguments[0]),
+                            metadata = [...arguments].slice(1),
+                            that = this;
+
+                        // Event > Target > [Metadata 0]
+                        this.setEvent(String(metadata[0]), function observeEvent(event) {
+                            // Function > Metadata 1
+                            ([...document.querySelectorAll(data)].indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement))) < 0) || metadata[1].call(that, event)
+                        }, metadata[2], metadata[3])
+                    }
+                });
+
+                // [Query Selector (All)]
+                (typeof EventTarget.prototype.$$ == 'function') || Object.defineProperty(EventTarget.prototype, '$$', {
+                    // Value
+                    value: function LapysJSQuerySelector() {
+                        // Initialization > (Arguments, Target)
+                        let args = [...arguments],
+                            that = this;
+
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (arguments.length > 0) {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (arguments.length > 1) {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (typeof arguments[1] == 'string')
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (arguments[1].startsWith('attr'))
+                                        // Return
+                                        return typeof arguments[2] == 'number' ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll('[' + arguments[1].slice('attr:'.length) + "='" + (String(arguments[0]) || '') + "'")[arguments[2]] : (function() {
+                                            /* Logic
+                                                    Switch case to Argument 2.
+
+                                                > Return
+                                            */
+                                            switch (args[2]) {
+                                                // Array
+                                                case 'array':
+                                                    return [...((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'")];
+                                                    break;
+
+                                                // Length
+                                                case 'length':
+                                                    return ((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'").length;
+                                                    break;
+
+                                                // Decremented Length
+                                                case '~length':
+                                                    return ~-((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'").length;
+                                                    break;
+
+                                                // [Default]
+                                                default:
+                                                    return (((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'") || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'") : (((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'") || [null])[0]
+                                            }
+                                        })();
+
+                                /* Logic
+                                        [switch:case:default statement]
+
+                                    > Return
+                                */
+                                switch (arguments[1]) {
+                                    // Array
+                                    case 'array':
+                                        return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || ''))];
+                                        break;
+
+                                    // Class
+                                    case 'c':
+                                        return typeof window.$c == 'function' ? $c.apply(this || window, [...arguments].removeElement('c')) : null;
+                                        break;
+
+                                    // Class
+                                    case 'class':
+                                        return typeof window.$c == 'function' ? $c.apply(this || window, [...arguments].removeElement('class')) : null;
+                                        break;
+
+                                    // CSS
+                                    case 'css':
+                                        return typeof arguments[2] == 'number' ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll("link[href*='" + arguments[0] + "'")[arguments[2]] : (function() {
+                                            /* Logic
+                                                    Switch case to Argument 2.
+
+                                                > Return
+                                            */
+                                            switch (args[2]) {
+                                                // Array
+                                                case 'array':
+                                                    return [...((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'")];
+                                                    break;
+
+                                                // Length
+                                                case 'length':
+                                                    return ((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'").length;
+                                                    break;
+
+                                                // Decremented Length
+                                                case '~length':
+                                                    return ~-((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'").length;
+                                                    break;
+
+                                                // [Default]
+                                                default:
+                                                    return (((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'") || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'") : (((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'") || [null])[0]
+                                            }
+                                        })();
+                                        break;
+
+                                    // ID
+                                    case 'i':
+                                        return typeof window.$i == 'function' ? $i.apply(this || window, [...arguments].removeElement('i')) : null;
+                                        break;
+
+                                    // ID
+                                    case 'id':
+                                        return typeof window.$i == 'function' ? $i.apply(this || window, [...arguments].removeElement('id')) : null;
+                                        break;
+
+                                    // JavaScript
+                                    case 'js':
+                                        return typeof arguments[2] == 'number' ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll("script[src*='" + arguments[0] + "'][type='text/javascript'], script[src*='" + arguments[0] + "']:not([type])")[arguments[2]] : (function() {
+                                            /* Logic
+                                                    Switch case to Argument 2.
+
+                                                > Return
+                                            */
+                                            switch (args[2]) {
+                                                // Array
+                                                case 'array':
+                                                    return [...((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])")];
+                                                    break;
+
+                                                // Length
+                                                case 'length':
+                                                    return ((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])").length;
+                                                    break;
+
+                                                // Decremented Length
+                                                case '~length':
+                                                    return ~-((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])").length;
+                                                    break;
+
+                                                // [Default]
+                                                default:
+                                                    return (((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])") || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])") : (((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + arguments[0] + "']:not([type])") || [null])[0]
+                                            }
+                                        })();
+                                        break;
+
+                                    // Tag Name
+                                    case 't':
+                                        return typeof window.$t == 'function' ? $t.apply(this || window, [...arguments].removeElement('t')) : null;
+                                        break;
+
+                                    // Tag Name
+                                    case 'tag':
+                                        return typeof window.$t == 'function' ? $t.apply(this || window, [...arguments].removeElement('tag')) : null;
+                                        break;
+
+                                    // Tag Name
+                                    case 'tag-name':
+                                        return typeof window.$t == 'function' ? $t.apply(this || window, [...arguments].removeElement('tag-name')) : null;
+                                        break;
+
+                                    // Length
+                                    case 'length':
+                                        return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')).length : NaN;
+                                        break;
+
+                                    // ~Length
+                                    case '~length':
+                                        return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')).length - 1) : NaN;
+                                }
+                            }
+
+                            /* Logic
+                                    [if:else if:else statement]
+
+                                > Return
+                            */
+                            if (typeof arguments[1] == 'number')
+                                return ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || ''))[arguments[1]] || null;
+
+                            else if (arguments.length < 2 && ('length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')).length : NaN) < 2)
+                                return ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || ''))[0] || null;
+
+                            // Return
+                            return ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) || null
+                        }
+                    }
+                });
+                    // [Get Elements By Class Name]
+                    (typeof EventTarget.prototype.$c == 'function') || Object.defineProperty(EventTarget.prototype, '$c', {
+                        // Value
+                        value: function LapysJSGetElementsByClassName() {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (arguments.length > 0) {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (arguments.length > 1)
+                                    /* Logic
+                                            [switch:case:default statement]
+
+                                        > Return
+                                    */
+                                    switch (arguments[1]) {
+                                        // Array
+                                        case 'array':
+                                            return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))];
+                                            break;
+
+                                        // Length
+                                        case 'length':
+                                            return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))).length : NaN;
+                                            break;
+
+                                        // Decremented Length
+                                        case '~length':
+                                            return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))).length - 1 : NaN
+                                    }
+
+                                // Return
+                                return (typeof arguments[1] == 'number' ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))[arguments[1]] || null) : ((((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))).length > 1 ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))) : (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))))[0])) || null
+                            }
+                        }
+                    });
+
+                    // [Get Element By ID]
+                    (typeof EventTarget.prototype.$i == 'function') || Object.defineProperty(EventTarget.prototype, '$i', {
+                        // Value
+                        value: function LapysJSGetElementByID() {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (arguments.length > 0) {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (arguments.length > 1)
+                                    /* Logic
+                                            [switch:case:default statement]
+
+                                        > Return
+                                    */
+                                    switch (arguments[1]) {
+                                        // Array
+                                        case 'array':
+                                            // Error Handling
+                                            try {
+                                                return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))]
+                                            }
+
+                                            catch (error) {
+                                                return [((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))]
+                                            }
+                                            break;
+
+                                        // Length
+                                        case 'length':
+                                            return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length : ('id' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? 1 : NaN);
+                                            break;
+
+                                        // Decremented Length
+                                        case '~length':
+                                            return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length - 1 : ('id' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? 0 : NaN)
+                                    }
+
+                                // Return
+                                return (typeof arguments[1] == 'number' ? ([((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))][arguments[1]] || null) : (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])))) || null
+                            }
+                        }
+                    });
+
+                    // [Get Elements By Tag Name]
+                    (typeof EventTarget.prototype.$t == 'function') || Object.defineProperty(EventTarget.prototype, '$t', {
+                        // Value
+                        value: function LapysJSGetElementsByTagName() {
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (arguments.length > 0) {
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (arguments.length > 1)
+                                    /* Logic
+                                            [switch:case:default statement]
+
+                                        > Return
+                                    */
+                                    switch (arguments[1]) {
+                                        // Array
+                                        case 'array':
+                                            return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))];
+                                            break;
+
+                                        // Length
+                                        case 'length':
+                                            return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length : NaN;
+                                            break;
+
+                                        // Decremented Length
+                                        case '~length':
+                                            return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length - 1 : NaN
+                                    }
+
+                                // Return
+                                return typeof arguments[1] == 'number' ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))[arguments[1]] || null) : (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length < 2 ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))[0] : ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])))
+                            }
+                        }
+                    });
+
+                    // [Ancestor Element Query Selector (All)]
+                    (typeof EventTarget.prototype.$_ == 'function') || Object.defineProperty(EventTarget.prototype, '$_', {
+                        // Value
+                        value: function LapysJSQuerySelector() {
+                            // Initialization > (Data, Metadata)
+                            let data = document.$$(arguments[0], 'array'),
+                                metadata = [];
+
+                            /* Logic
+                                    Switch case to Argument 1.
+
+                                > Update > Data
+                            */
+                            switch (arguments[1]) {
+                                // Class
+                                case 'c':
+                                    data = document.$c(arguments[0], 'array');
+                                    break;
+
+                                // ID
+                                case 'i':
+                                    data = document.$i(arguments[0], 'array');
+                                    break;
+
+                                // Tag Name
+                                case 't':
+                                    data = document.$t(arguments[0], 'array')
+                            }
+
+                            /* Loop
+                                    Index Data.
+
+                                > Update > Metadata
+                            */
+                            for (let i = 0; i < data.length; i += 1)
+                                ((this.parentPath || []).slice(1).indexOf(data[i]) < 0) || metadata.push(data[i]);
+
+                            /* Logic
+                                    Switch case to Argument 1.
+
+                                > Return
+                            */
+                            switch (arguments[1]) {
+                                case 'array':
+                                    return metadata;
+                                    break;
+
+                                case 'length':
+                                    return metadata.length;
+                                    break;
+
+                                case '~length':
+                                    return ~-metadata.length
+                            }
+
+                            // Return
+                            return (typeof arguments[1] == 'number' ? metadata[arguments[1]] : (metadata.length > 1 ? metadata : metadata[0])) || null
+                        }
+                    });
+
+                    /* [Descendant Element Query Selector (All)]
+                            --- NOTE ---
+                                @lapys: There might be some minor bugs (emphasis on the word, `might`).
+                    */
+                    (typeof EventTarget.prototype._$ == 'function') || Object.defineProperty(EventTarget.prototype, '_$', {
+                        // Value
+                        value: function LapysJSQuerySelector() {
+                            // Initialization > (Data, Metadata)
+                            let data = this.$$(arguments[0], 'array'),
+                                metadata = [];
+
+                            /* Logic
+                                    Switch case to Argument 1.
+
+                                > Update > Data
+                            */
+                            switch (arguments[1]) {
+                                // Class
+                                case 'c':
+                                    data = this.$c(arguments[0], 'array');
+                                    break;
+
+                                // ID
+                                case 'i':
+                                    data = this.$i(arguments[0], 'array');
+                                    break;
+
+                                // Tag Name
+                                case 't':
+                                    data = this.$t(arguments[0], 'array')
+                            }
+
+                            /* Loop
+                                    Index Data.
+
+                                > Update > Metadata
+                            */
+                            for (let i = 0; i < data.length; i += 1)
+                                ([...(this.children || document.children)].indexOf(data[i]) < 0) || metadata.push(data[i]);
+
+                            /* Logic
+                                    Switch case to Argument 1.
+
+                                > Return
+                            */
+                            switch (arguments[1]) {
+                                case 'array':
+                                    return metadata;
+                                    break;
+
+                                case 'length':
+                                    return metadata.length;
+                                    break;
+
+                                case '~length':
+                                    return ~-metadata.length
+                            }
+
+                            // Return
+                            return (typeof arguments[1] == 'number' ? metadata[arguments[1]] : (metadata.length > 1 ? metadata : metadata[0])) || null
+                        }
+                    });
+
+                    // [Document (Fragment) > Prototype] > ([Query Selector (All)], [Get Elements By Class Name], [Get Element By ID], [Get Elements By Tag Name], [Ancestor Element Query Selector (All)], [Descendant Element Query Selector (All)])
+                    (typeof Document.prototype.$$ == 'function') || Object.defineProperty(Document.prototype, '$$', {value: $$});
+                    (typeof DocumentFragment.prototype.$$ == 'function') || Object.defineProperty(DocumentFragment.prototype, '$$', {value: $$});
+
+                    (typeof Document.prototype.$c == 'function') || Object.defineProperty(Document.prototype, '$c', {value: $c});
+                    (typeof DocumentFragment.prototype.$c == 'function') || Object.defineProperty(DocumentFragment.prototype, '$c', {value: $c});
+
+                    (typeof Document.prototype.$i == 'function') || Object.defineProperty(Document.prototype, '$i', {value: $i});
+                    (typeof DocumentFragment.prototype.$i == 'function') || Object.defineProperty(DocumentFragment.prototype, '$i', {value: $i});
+
+                    (typeof Document.prototype.$t == 'function') || Object.defineProperty(Document.prototype, '$t', {value: $t});
+                    (typeof DocumentFragment.prototype.$t == 'function') || Object.defineProperty(DocumentFragment.prototype, '$t', {value: $t});
+
+                    (typeof Document.prototype._$ == 'function') || Object.defineProperty(Document.prototype, '_$', {value: _$});
+                    (typeof DocumentFragment.prototype._$ == 'function') || Object.defineProperty(DocumentFragment.prototype, '_$', {value: _$});
+
+                    (typeof Document.prototype.$_ == 'function') || Object.defineProperty(Document.prototype, '$_', {value: $_});
+                    (typeof DocumentFragment.prototype.$_ == 'function') || Object.defineProperty(DocumentFragment.prototype, '$_', {value: $_});
+
+                // Run Event
+                (typeof EventTarget.prototype.runEvent == 'function') || (EventTarget.prototype.runEvent = function runEvent() {
+                    // Initialization > Arguments
+                    let args = [];
+
+                    /* Loop
+                            Index Arguments.
+
+                        > Update > Arguments
+                    */
+                    for (let i = 0; i < arguments.length; i += 1)
+                        args = args.concat(LapysJS.debug.formatText(String(arguments[i]), 4));
+
+                    /* Loop
+                            Index Arguments.
+                    */
+                    for (let i = 0; i < args.length; i += 1)
+                        // Error Handling
+                        try {
+                            // Target > (DIspatch | Fire) Event
+                            document.createEvent ? (this || window).dispatchEvent((this || window).customEvents[String(args[i])]) : (this || window).fireEvent('on ' + args[i], (this || window).customEvents[String(args[i])])
+                        }
+
+                        catch (error) {
+                            /* Logic
+                                    If
+                                        Document.prototype.createEvent is defined.
+                            */
+                            if (typeof document.createEvent == 'function') {
+                                // Initialization > Event
+                                let event = document.createEvent('HTMLEvents');
+
+                                // Event > Initialize Event
+                                event.initEvent(String(args[i]), !1, !0);
+
+                                // Target > Dispatch Event
+                                (this || window).dispatchEvent(event)
+                            }
+
+                            else
+                                // Target > Fire Event
+                                (this || window).fireEvent('on ' + args[i])
+                        }
+                });
+                    // Trigger
+                    (typeof EventTarget.prototype.trigger == 'function') || Object.defineProperty(EventTarget.prototype, 'trigger', {value: EventTarget.prototype.runEvent});
+
+                // Set Event
+                (typeof EventTarget.prototype.setEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'setEvent', {
+                    // Value
+                    value: function setEvent() {
+                        // Initialization > Data
+                        let data = String(arguments[0]);
+
+                        /* Loop
+                                Index Data.
+                        */
+                        for (let i = 0; i < LapysJS.debug.formatText(String(data), 4).length; i += 1) {
+                            // Update > Data
+                            (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_focus') || (data = data.replace('_focus', 'blur focus'));
+                            (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_hover') || (data = data.replace('_hover', 'mouseleave mouseover'));
+                            (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_key') || (data = data.replace('_key', 'keydown, keypress keyup'));
+                            (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_mouse') || (data = data.replace('_mouse', 'mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup mousewheel'));
+                            (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_seek') || (data = data.replace('_seek', 'seeked seeking'));
+                            (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_update') || (data = data.replace('_update', 'change input'))
+                        }
+
+                        // Modification > Target > Events
+                        (this || window)['LapysJS events'] = (this || window)['LapysJS events'] || new (function LapysJSEventMap() {});
+
+                        /* Loop
+                                Index Data.
+                        */
+                        for (let i = 0; i < LapysJS.debug.formatText(String(data), 4).length; i += 1) {
+                            // Update > Target > Events
+                            (this || window)['LapysJS events'][
+                                (index => {
+                                    /* Logic
+                                            [if:else if:else statement]
+
+                                        > Return
+                                    */
+                                    if (
+                                        LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '') !== 'online' &&
+                                        LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').startsWith('on')
+                                    )
+                                        return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').replace('on', '');
+
+                                    else
+                                        return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
+                                })(i)
+                            ] = (this || window)['LapysJS events'][
+                                (index => {
+                                    /* Logic
+                                            [if:else if:else statement]
+
+                                        > Return
+                                    */
+                                    if (
+                                        LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '') !== 'online' &&
+                                        LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').startsWith('on')
+                                    )
+                                        return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').replace('on', '');
+
+                                    else
+                                        return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
+                                })(i)
+                            ] || [];
+
+                            (this || window)['LapysJS events'][
+                                (index => {
+                                    /* Logic
+                                            [if:else if:else statement]
+
+                                        > Return
+                                    */
+                                    if (
+                                        LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '') !== 'online' &&
+                                        LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').startsWith('on')
+                                    )
+                                        return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').replace('on', '');
+
+                                    else
+                                        return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
+                                })(i)
+                            ].push({
+                                // Listener
+                                listener: arguments[1],
+
+                                // Type
+                                type: (index => {
+                                    // Return
+                                    return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
+                                })(i),
+
+                                // Use Capture
+                                useCapture: !!arguments[2],
+
+                                // Wants Untrusted
+                                wantsUntrusted: !!arguments[3]
+                            });
+
+                            // Event > Target > [Data]
+                            typeof document.addEventListener == 'function' ?
+                                (this || window).addEventListener(LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, ''), arguments[1], !!arguments[2], !!arguments[3]) :
+                                (this || window).attachEvent(LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, ''), arguments[1], !!arguments[2], !!arguments[3])
+                        }
+                    }
+                });
+
+                (typeof EventTarget.prototype.smoothScrollTo == 'function') || Object.defineProperty(EventTarget.prototype, 'smoothScrollTo', {
+                    // Value
+                    value: function smoothScrollTo() {
+
+                    }
+                });
+
+                // Delete
+                (typeof Node.prototype.delete == 'function') || (Node.prototype.delete = function Delete() {
+                    // Error Handling
+                    try {
+                        // Deletion
+                        this.remove()
+                    }
+
+                    catch (error) {
+                        // Initialization > Target
+                        let that = this;
+
+                        // Set Timeout
+                        setTimeout(function() {
+                            // Error Handling
+                            try {
+                                try {
+                                    // Deletion
+                                    that.remove()
+                                }
+
+                                catch (error) {
+                                    // Error Handling
+                                    try {
+                                        // Deletion
+                                        that.parentNode.removeChild(that)
+                                    }
+
+                                    catch (error) {
+                                        // LapysJS > Error
+                                        LapysJS.error(error)
+                                    }
+                                }
+                            }
+
+                            catch (error) {}
+                        })
+                    }
+                });
+
+                // Insert Child
+                (typeof Node.prototype.insertChild == 'function') || Object.defineProperty(Node.prototype, 'insertChild', {
+                    // Value
+                    value: function insertChild() {
+                        // Insertion > Element
+                        this[(str((arguments[0] !== 'begin') || str((!this.prepend || 'prepend')).replace('true', 'cloneNode')).replace('true', str((arguments[0] !== 'end') || str((!this.append || 'append')).replace('true', 'appendChild')).replace('true', '')) || 'cloneNode')](arguments[1]);
+
+                        // Return
+                        return arguments[1]
+                    }
+                });
+
+                /* CSS Selector
+                        --- WARN ---
+                            @lapys: Strings should not be placed as values in CSS attributes.
+                */
+                Element.prototype.CSSSelector || Object.defineProperty(Element.prototype, 'CSSSelector', {
+                    // Get
+                    get: function getCSSSelector() {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (this != Element.prototype) {
+                            // Initialization
+                                // CSS Selector, Target
+                                let CSSSelector = '',
+                                    that = this;
+
+                            // Update > CSS Selector
+                            CSSSelector = (
+                                that.tagName.toLowerCase() +
+                                (function() {
+                                    // Initialization > Classes
+                                    let Classes = '';
+
+                                    /* Logic
+                                            If the Target has a class.
+                                    */
+                                    if (that.getAttribute('class'))
+                                        /* Loop
+                                                Index the Target's class nodes.
+                                        */
+                                        for (let i = 0; i < LapysJS.debug.formatText(that.getAttribute('class'), 4).length; i += 1)
+                                            /* Logic
+                                                    If
+                                                        the class node has any 'unusual''characters.
+
+                                                > Update > Classes
+                                            */
+                                            if (LapysJS.debug.formatText(that.getAttribute('class'), 4)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
+                                                Classes += "[class='" + LapysJS.debug.formatText(that.getAttribute('class'), 4)[i] + "']";
+
+                                            else
+                                                Classes += '.' + LapysJS.debug.formatText(that.getAttribute('class'), 4)[i];
+
+                                    // Return
+                                    return Classes
+                                })() +
+
+                                // ID
+                                (function() {
+                                    /* Logic
+                                            If
+                                                the Target has an ID.
+                                    */
+                                    if (that.id)
+                                        /* Logic
+                                                If
+                                                    the Target ID has any 'unusual''characters.
+
+                                            > Return
+                                        */
+                                        if (that.id.replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
+                                            return "[id='" + that.id + "']";
+
+                                        else
+                                            // Return
+                                            return '#' + that.id;
+
+                                    // Return
+                                    return ''
+                                })() +
+
+                                // Attributes
+                                (function() {
+                                    // Initialization > Attributes
+                                    let thatAttributes = '';
+
+                                    /* Loop
+                                            Index the element"s attributes.
+                                    */
+                                    for (let i = 0; i < that.attributes.length; i += 1)
+                                        /* Logic
+                                                If
+                                                    the attribute name is not 'class' and 'id'.
+                                        */
+                                        if (
+                                            that.attributes[i].name !== 'class' &&
+                                            that.attributes[i].name !== 'id'
+                                        )
+                                            // Update > Attributes
+                                            thatAttributes += '[' + that.attributes[i].name + "='" + (that.attributes[i].value || '').replace(/'/g, '"') + "']";
+
+                                    // Return
+                                    return thatAttributes
+                                })()
+                            );
+
+                            // Return
+                            return CSSSelector.replace(/=\'\'/g, '')
+                        }
+
+                        // Return
+                        return null
+                    },
+
+                    /* Set
+                            --- WARN ---
+                                @lapys: The CSSSelector parameter is necessary, trust me,
+                    */
+                    set: function setCSSSelector(CSSSelector) {
+                        // Update > CSS Selector
+                        CSSSelector += ' ';
+                        CSSSelector = CSSSelector.replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\'\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\{\}\«\»\ ]|){0,}\.([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\'\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\{\}\«\»\ ]|){0,}\]/g, data => {
+                            // Return
+                            return data.replace(/\./g, '::lapysjs_period' + regexSet + '::')
+                        }).replace(/\.([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}/g, data => {
+                            // Return
+                            return "[class='" + data.slice('.'.length) + "']"
+                        }).replace(RegExp('::lapysjs_period' + regexSet + '::', 'g'), '.').replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\$\%\&\'\(\)\*\+\,\;\-\.\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\{\}\«\»\ ]|){0,}\]/g, data => {
+                            // Return
+                            return data.replace(/#/g, '::lapysjs_hash' + regexSet + '::')
+                        }).replace(/#([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}/g, data => {
+                            // Return
+                            return "[id='" + data.slice('.'.length) + "']"
+                        }).replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\[/g, data => {
+                            // Return
+                            return '[' + data.slice('['.length).getBeforeChar('[') + ']['
+                        }).replace(RegExp('::lapysjs_hash' + regexSet + '::', 'g'), '#').replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}(\]| )/g, data => {
+                            // Return
+                            return data.getBeforeChar('=') + "='" + data.getAfterChar('=').slice(0, -']'.length) + "'" + (data.lastChar.trim() || ']')
+                        }).trim();
+
+                        /* String Data > Match
+                                --- WARN ---
+                                    This is a temporary cover-up for the String 'match' method.
+                        */
+                        String.prototype['LapysJS match'] = function match() {
+                            // Return
+                            return this.match.apply(this, arguments) || []
+                        };
+
+                        /* Loop
+                                Index 'classes' in the CSS Selector.
+
+                            > Modification > Target > Class
+                        */
+                        for (let i = 0; i < CSSSelector['LapysJS match'](/\[class='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g).length; i += 1)
+                            this.addClass(CSSSelector['LapysJS match'](/\[class='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g)[i].slice("[class='".length, -"']".length));
+
+                        // Modification > Target > Class
+                        this.getAttribute('class') || this.removeAttribute('class');
+
+                        // Modification > Target > ID
+                        this.id = (CSSSelector['LapysJS match'](/\[id='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g)[~-CSSSelector['LapysJS match'](/\[id='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g).length] || []).slice("[id='".length, -"']".length);
+                        this.id || this.removeAttribute('id');
+
+                        /* Loop
+                                Index attributes in the CSS Selector.
+                        */
+                        for (let i = 0; i < (CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g)) || []).length; i += 1)
+                            /* Logic
+                                    If
+                                        the attribute is not a 'class'
+                                            and
+                                        the attribute is not an 'id'.
+                            */
+                            if (
+                                !CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].startsWith("[class='") &&
+                                !CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].startsWith("[id='")
+                            )
+                                /* Logic
+                                        If
+                                            the attribute is a string property of the Target.
+
+                                    > Modification > Target > [CSS Selector]
+                                */
+                                if ((this[CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].slice('['.length).getBeforeChar('=').replace(/data-/g, 'dataset.').replace(/-[a-z]/g, data => { return data[1].toUpperCase() })] || _LapysJSObject).constructor.name === 'String')
+                                    this[CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].slice('['.length).getBeforeChar('=').replace(/data-/g, 'dataset.').replace(/-[a-z]/g, data => { return data[1].toUpperCase() })] = CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].getAfterChar('=').slice("'".length, -"']".length);
+
+                                else
+                                    this.setAttribute(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].getBeforeChar('=').slice('['.length), CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].getAfterChar('=').slice("'".length, -"']".length));
+
+                        // Deletion
+                        delete String.prototype['LapysJS match']
+                    }
+                });
+
+                // Label
+                'label' in Element.prototype || Object.defineProperty(Element.prototype, 'label', {
+                    // Get
+                    get: function getLabel() {
+                        // Return
+                        return this != Element.prototype ? (this.getAttribute('label') || '') : null
+                    },
+
+                    // Set
+                    set: function setLabel() {
+                        // Modification > Target > Role
+                        this.setAttribute('label', arguments[0])
+                    }
+                });
+
+                // Parent
+                Element.prototype.parent || Object.defineProperty(Element.prototype, 'parent', {
+                    // Get
+                    get: function parent() {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (this != Element.prototype)
+                            // Return
+                            return this.parentElement || this.parentNode;
+
+                        // Return
+                        return null
+                    }
+                });
+
+                // Parent Path
+                document.createElement('a').parentPath || Object.defineProperty(Element.prototype, 'parentPath', {
+                    // Get
+                    get: function parentPath() {
+                        // Initialization
+                            // Target
+                            let that = this;
+
+                            // Parent Nodes
+                            let parents = [];
+
+                        /* Logic
+                                While
+                                    the Target is still defined.
+                        */
+                        while (that) {
+                            // Update
+                                // Parent Nodes
+                                parents.push(that);
+
+                                // Target
+                                that = that.parentNode || that.parentElement
+                        };
+
+                        // Update > Parent Nodes
+                        parents.push(window);
+
+                        // Return
+                        return parents
+                    }
+                });
+
+                // Previous Element Siblings
+                Element.prototype.previousElementSiblings || Object.defineProperty(Element.prototype, 'previousElementSiblings', {
+                    // Get
+                    get: function previousElementSiblings() {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (this != Element.prototype) {
+                            // Initialization > Result
+                            let result = [];
+
+                            /* Loop
+                                    [for statement]
+
+                                > Update > Result
+                            */
+                            for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
+                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) > ~-[...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+
+                            // Return
+                            return result.length > 0 ? result : null
+                        }
+
+                        // Return
+                        return null
+                    }
+                });
+
+                // Next Element Siblings
+                Element.prototype.nextElementSiblings || Object.defineProperty(Element.prototype, 'nextElementSiblings', {
+                    // Get
+                    get: function nextElementSiblings() {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (this != Element.prototype) {
+                            // Initialization > Result
+                            let result = [];
+
+                            /* Loop
+                                    [for statement]
+
+                                > Update > Result
+                            */
+                            for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
+                                ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) < ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) + 1) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
+
+                            // Return
+                            return result
+                        }
+
+                        // Return
+                        return null
+                    }
+                });
+
+                // Insert Child
+                (typeof Node.prototype.reverseChildElementsOrder == 'function') || Object.defineProperty(Node.prototype, 'reverseChildElementsOrder', {
+                    // Value
+                    value: function reverseChildElementsOrder() {
+                        let data = this.children;
+
+                        for (let i = 0; i < data.length; i += 1)
+                            this.insertBefore(data[i], data[0]);
+
+                        return this
+                    }
+                });
+
+                // Role
+                'role' in Element.prototype || Object.defineProperty(Element.prototype, 'role', {
+                    // Get
+                    get: function getRole() {
+                        // Return
+                        return this != Element.prototype ? (this.getAttribute('role') || '') : null
+                    },
+
+                    // Set
+                    set: function setRole() {
+                        // Modification > Target > Role
+                        this.setAttribute('role', arguments[0])
+                    }
+                });
+
+                // Siblings
+                Element.prototype.siblings || Object.defineProperty(Element.prototype, 'siblings', {
+                    // Get
+                    get: function getSiblings() {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (this != Element.prototype) {
+                            // Initialization > (Target, Array)
+                            let that = this,
+                                array = [];
+
+                            /* Loop
+                                    Index Target's Parent's Children.
+                            */
+                            for (let i = 0; i < this.parentElement.children.length; i += 1)
+                                array.push(this.parentElement.children[i]);
+
+                            // Return
+                            return array.filter(data => {
+                                // Return
+                                return data !== that
+                            })
+                        }
+
+                        // Return
+                        return null
+                    }
+                });
+
+                // Height
+                Element.prototype.height || Object.defineProperty(HTMLElement.prototype, 'height', {
+                    // Get
+                    get: function getHeight() {
+                        // Return
+                        return this.getBoundingClientRect().height
+                    },
+
+                    // Set
+                    set: function setHeight(number) {
+                        // Target > Style > Height
+                        this.style.height = number + 'px'
+                    }
+                });
+
+                // Offset
+                Element.prototype.offset || (Object.defineProperty(HTMLElement.prototype, 'offset', {
+                    // Get
+                    get: function offset() {
+                        // Initialization > (Data, Metadata, Target)
+                        let data = {},
+                            metadata = this.getBoundingClientRect(),
+                            that = this;
+
+                        /* Loop
+                                Index Metadata.
+
+                            > Modification > Data > [Property Name]
+                        */
+                        for (let i in metadata)
+                            (typeof metadata[i] != 'number') || Object.defineProperty(data, i, {
+                                // Get
+                                get: function() {
+                                    // Return
+                                    return metadata[i]
+                                },
+
+                                // Set
+                                set: function() {
+                                    // Style > Target > [Property Name]
+                                    that.style[i] = arguments[0] + 'px'
+                                }
+                            });
+
+                        // Return
+                        return data
+                    }
+                }));
+
+                // Width
+                Element.prototype.width || Object.defineProperty(HTMLElement.prototype, 'width', {
+                    // Get
+                    get: function getWidth() {
+                        // Return
+                        return this.getBoundingClientRect().width
+                    },
+
+                    // Set
+                    set: function setWidth(number) {
+                        // Target > Style > Width
+                        this.style.width = number + 'px'
+                    }
+                });
+
+                // Body
+                (typeof HTMLTableElement.prototype.body == 'function') || Object.defineProperty(HTMLTableElement.prototype, 'body', {
+                    // Configurable
+                    configurable: !0,
+
+                    // Enumerable
+                    enumerable: !0,
+
+                    // Get
+                    get: function body() {
+                        // Initialization > Data
+                        let data = [...this.children];
+
+                        /* Loop
+                                [for statement]
+                        */
+                        for (let i of data)
+                            /* Logic
+                                    [if:else if:else statement]
+
+                                > Return
+                            */
+                            if (i.tagName == 'TBODY')
+                                return i;
+
+                        // Return
+                        return null
+                    }
+                });
+
+                // Footer
+                (typeof HTMLTableElement.prototype.footer == 'function') || Object.defineProperty(HTMLTableElement.prototype, 'footer', {
+                    // Configurable
+                    configurable: !0,
+
+                    // Enumerable
+                    enumerable: !0,
+
+                    // Get
+                    get: function footer() {
+                        // Initialization > Data
+                        let data = [...this.children];
+
+                        /* Loop
+                                [for statement]
+                        */
+                        for (let i of data)
+                            /* Logic
+                                    [if:else if:else statement]
+
+                                > Return
+                            */
+                            if (i.tagName == 'TFOOT')
+                                return i;
+
+                        // Return
+                        return null
+                    }
+                });
+
+                // Head
+                (typeof HTMLTableElement.prototype.head == 'function') || Object.defineProperty(HTMLTableElement.prototype, 'head', {
+                    // Configurable
+                    configurable: !0,
+
+                    // Enumerable
+                    enumerable: !0,
+
+                    // Get
+                    get: function head() {
+                        // Initialization > Data
+                        let data = [...this.children];
+
+                        /* Loop
+                                [for statement]
+                        */
+                        for (let i of data)
+                            /* Logic
+                                    [if:else if:else statement]
+
+                                > Return
+                            */
+                            if (i.tagName == 'THEAD')
+                                return i;
+
+                        // Return
+                        return null
+                    }
+                });
+
+                /* Convert Frame to Image
+                        --- UPDATE REQUIRED ---
+                            @lapys: There has to be a better way for this to be done.
+
+                                The main goal is to return an <img> element whose source is
+                                directed to the specified frame.
+                */
+                (typeof HTMLVideoElement.prototype.convertFrameToImage == 'function') || Object.defineProperty(HTMLVideoElement.prototype, 'convertFrameToImage', {
+                    // Value
+                    value: function convertFrameToImage() {
+                        // Initialization > (Data(, Context), Metadata, Target)
+                        let data = document.createElement('canvas'),
+                            dataContext = data.getContext('2d'),
+                            metadata = createElement('video', '', '', {src: this.src || decodeURIComponent(this.currentSrc)}),
+                            that = this;
+
+                        // Modification > Data > (Height, Width)
+                        data.height = this.offset.height;
+                        data.width = this.offset.width;
+
+                        // Event > Metadata > Seeked
+                        metadata.setEvent('seeked', function() {
+                            // Data Context > Draw Image
+                            dataContext.drawImage(metadata, 0, 0, that.offset.width, that.offset.height);
+
+                            // Update > (LapysJS > Permanent Data) > Framed Image
+                            LapysJS.perm.framedImage = data
+                        });
+
+                        // Modification > Metadata > Current Time
+                        metadata.currentTime = parseInt(arguments[0]) || 0
                     }
                 });
 
             /* DOM Elements */
-                /* <br>, <wbr> */
+                /* <br>, <option>, <wbr> */
                     // On DOM Node Added
-                    onDOMNodeAdded(function() {
+                    onNodeAdded(document.documentElement, function() {
                         /* Loop
-                                Index <br>, <wbr> elements.
+                                [for statement]
                         */
-                        for (let i of document.querySelectorAll('br, wbr'))
+                        for (let i of [...this.querySelectorAll('br, wbr')]) {
                             /* Logic
                                     [if:else if:else statement]
 
-                                > Modification > (<br>, <wbr>) > (...)
+                                > Modification > [Loop Counter] > (...)
                             */
-                            if (
-                                i.getAttribute('length') == 2 ||
-                                i.hasAttribute('2') ||
-                                i.len == 2
-                            ) {
+                            if (i.getAttribute('length') == 2 || i.hasAttribute('2') || i.len == 2) {
                                 i.removeAttribute('length');
                                 i.removeAttribute('2');
                                 i.outerHTML = i.outerHTML.repeat(2)
                             }
 
-                            else if (
-                                i.getAttribute('length') == 3 ||
-                                i.hasAttribute('3') ||
-                                i.len == 3
-                            ) {
+                            else if (i.getAttribute('length') == 3 || i.hasAttribute('3') || i.len == 3) {
                                 i.removeAttribute('length');
                                 i.removeAttribute('3');
                                 i.outerHTML = i.outerHTML.repeat(3)
                             }
+                        }
+
+                        /* Loop
+                                [for statement]
+
+                            > Modification > [Loop Counter] > Label
+                        */
+                        for (let i of [...this.querySelectorAll('option:not([label])')])
+                            i.label = i.innerText.trim()
                     });
 
                 /* <html> */
                     // Modification > Language
-                    (document.documentElement || {}).lang = document.documentElement.lang || ((document.documentElement || {lang: 0}).lang || String(navigator.languages || '').replace(/, /, ',').replace(/,/g, ', '));
+                    !document.documentElement || (document.documentElement.lang = document.documentElement.lang || navigator.languages.join(', '));
 
-                /* <img>, Lazy Script
-                        --- NOTE ---
-                            @lapys: A bit more consistency between the
-                                Lazy Scripts and Script elements would be nice
-                                in terms of parsing their JavaScript.
-
-                                P.S.: The Script currently has the updated parser.
-                */
-                    // On DOM Ready
-                    onDOMReady(function() {
-                        // Invoke Event
-                        invokeEvent('resize scroll', function lazyScript() {
-                            /* Loop
-                                    Index 'lazy' <img> elements.
-
-                                > Logic
-                                        If
-                                            the <img> is in view.
-                            */
-                            for (let i of document.querySelectorAll('img[lazy-load'))
-                                if ((window.innerHeight + window.scrollY) > ~-i.getBoundingClientRect().top) {
-                                    // Modification > <img> > (Lazy Loaded, Source)
-                                    i.setAttribute('lazy-loaded', '');
-                                    i.src = i.getAttribute('lazy-load')
-                                };
-
-                            /* Loop
-                                    Index "lazy" <img> elements.
-
-                                > Logic
-                                        If
-                                            the <img> is in view.
-
-                                > Modification > <img> > Lazy Load
-                            */
-                            for (let i = 0; i < document.querySelectorAll('img[lazy-load').length; i += 1)
-                                ((window.innerHeight + window.scrollY) < document.querySelectorAll('img[lazy-load')[i].getBoundingClientRect().top) || document.querySelectorAll('img[lazy-load')[i--].removeAttribute('lazy-load');
-
-                            /* Loop
-                                    Index 'lazily scripted' elements.
-                            */
-                            for (let i = 0; i < document.querySelectorAll('[lazy-script').length; i += 1) {
-                                // Modification > Element
-                                    // Lazy Script
-                                    document.querySelectorAll('[lazy-script')[i].setAttribute(
-                                        'lazy-script',
-
-                                        document.querySelectorAll('[lazy-script')[i].getAttribute('lazy-script').replace(/this( |){1,}\.( |){1,}outerHTML = /g, data => {
-                                            // Return
-                                            return "this['LapysJS outerHTML'] = "
-                                        }).replace(/('|"|`|\/).*('|"|`|\/)/g, data => {
-                                            /* Logic
-                                                    [if:else if:else statement]
-
-                                                > Return
-                                            */
-                                            if (
-                                                data.slice('"'.length, -'"'.length).indexOf(data[0]) > -1 &&
-                                                data.slice('"'.length, -'"'.length).indexOf('\\') < 0
-                                            )
-                                                return data;
-
-                                            // Return
-                                            return data[0] + data.slice('"'.length, -'"'.length).replace(/(?:)/g, '::lapysjs_' + alphabetString + '::') + data[0]
-                                        }).replace(/this( |){1,}(\.|\[( |){1,}('|"|`))/g, data => {
-                                            /* Logic
-                                                    [if:else if:else statement]
-
-                                                > Return
-                                            */
-                                            if (data[~-data.length] === '.')
-                                                return "document.querySelector('[" + alphabetString + i + "').";
-
-                                            // Return
-                                            return "document.querySelector('[" + alphabetString + i + "')[" + data.getAfterChar('[')
-                                        }).replace(RegExp('::lapysjs_' + alphabetString + '::', 'g'), '')
-                                    );
-
-                                    // [Random String]
-                                    document.querySelectorAll('[lazy-script')[i].setAttribute(alphabetString + i, alphabetString + i);
-
-                                    // Remove
-                                    document.querySelectorAll('[lazy-script')[i]['LapysJS remove'] = document.querySelectorAll('[lazy-script')[i].remove.clone();
-                                    document.querySelectorAll('[lazy-script')[i].remove = function() { document.querySelectorAll('[lazy-script')[i]['LapysJS toBeRemoved'] = !0 }
-                            };
-
-                            /* Loop
-                                    Index 'lazily scripted' elements.
-
-                                > Logic
-                                        If
-                                            the element is in view.
-                            */
-                            for (let i = 0; i < document.querySelectorAll('[lazy-script').length; i += 1)
-                                if ((window.innerHeight + window.scrollY) > ~-document.querySelectorAll('[lazy-script')[i].getBoundingClientRect().top) {
-                                    // Modification > Element > Lazy Scripted
-                                    document.querySelectorAll('[lazy-script')[i].setAttribute('lazy-scripted', '');
-
-                                    // Execution
-                                    LapysJS.exec(document.querySelectorAll('[lazy-script')[i].getAttribute('lazy-script'));
-
-                                    // Update > Loop Counter
-                                    document.querySelectorAll('[lazy-script')[i] || i--
-                                };
-
-                            /* Loop
-                                    Index 'lazily scripted' elements.
-                            */
-                            for (let i = 0; i < document.querySelectorAll('[lazy-script').length; i += 1) {
-                                // Modification > Element > Outer HTML
-                                !document.querySelectorAll('[lazy-script')[i]['LapysJS outerHTML'] || (document.querySelectorAll('[lazy-script')[i].outerHTML = document.querySelectorAll('[lazy-script')[i--]['LapysJS outerHTML']);
-
-                                // Deletion
-                                !document.querySelectorAll('[lazy-script')[i]['LapysJS toBeRemoved'] || (document.querySelectorAll('[lazy-script')[i--].outerHTML = '')
-                            };
-
-                            /* Loop
-                                    Index "lazily-scripted" elements.
-
-                                > Modification > Element > Lazy Script
-                            */
-                            for (let i = 0; i < document.querySelectorAll('[lazy-script').length; i += 1)
-                                ((window.innerHeight + window.scrollY) < document.querySelectorAll('[lazy-script')[i].getBoundingClientRect().top) || document.querySelectorAll('[lazy-script')[i--].removeAttribute('lazy-script');
-                        })
-                    }, !0);
-
-                /* <input> */
-                    /* Loop
-                            [do:while statement]
-                    */
-                    while (document.querySelector('input[type=meter]:not([min]), input[type=number]:not([min]), input[type=range]:not([min])'))
-                        document.querySelector('input[type=meter]:not([min]), input[type=number]:not([min]), input[type=range]:not([min])').min = 0;
-
-                /* <option> */
-                    /* Loop
-                            While
-                                there is an <option> element without a label left.
-
-                        > Modification > <option> > Label
-                    */
-                    while (document.querySelector('option:not([label])'))
-                        document.querySelector('option:not([label])').label = document.querySelector('option:not([label])').innerText.trim();
-
-                /* <time> */
-                    // On DOM Ready
-                    onDOMReady(function() {
-                        /* On DOM Change
-                                --- NOTE ---
-                                    @lapys: The 'onDOMChange' function can also be used here,
-                                        actually it's more subtle.
-                        */
-                        setInterval(function() {
-                            /* Loop
-                                    Index Dynamic Time.
-                            */
-                            for (let i = 0; i < document.querySelectorAll('time.dynamic-time').length; i += 1)
-                                /* Logic
-                                        Switch case to Dynamic Time's Data Format.
-                                */
-                                switch (document.querySelectorAll('time.dynamic-time')[i].getAttribute('data-format').replace(/ /g, '')) {
-                                    // Day
-                                    case 'day':
-                                        (element => {
-                                            /* Logic
-                                                    If
-                                                        Dynamic Time specified the UTC Format.
-                                            */
-                                            if (element.hasAttribute('data-utc-format'))
-                                                /* Logic
-                                                        [switch:case:default statement]
-
-                                                    > Modification > Dynamic Time > Inner Text
-                                                */
-                                                switch ((new Date).getDay()) {
-                                                    // Sunday
-                                                    case 0:
-                                                        element.innerText = 'Monday';
-                                                        break;
-
-                                                    // Monday
-                                                    case 1:
-                                                        element.innerText = 'Monday';
-                                                        break;
-
-                                                    // Tuesday
-                                                    case 2:
-                                                        element.innerText = 'Tuesday';
-                                                        break;
-
-                                                    // Wednesday
-                                                    case 3:
-                                                        element.innerText = 'Wednesday';
-                                                        break;
-
-                                                    // Thursday
-                                                    case 4:
-                                                        element.innerText = 'Thursday';
-                                                        break;
-
-                                                    // Friday
-                                                    case 5:
-                                                        element.innerText = 'Friday';
-                                                        break;
-
-                                                    // Saturday
-                                                    case 6:
-                                                        element.innerText = 'Saturday';
-                                                        break;
-
-                                                    // Sunday
-                                                    case 7:
-                                                        element.innerText = 'Sunday'
-                                                }
-
-                                            else
-                                                // Modification > Dynamic Time > Inner Text
-                                                element.innerText = (new Date).getDay()
-                                        })(document.querySelectorAll('time.dynamic-time')[i]);
-                                        break;
-
-                                    // Date
-                                    case 'date':
-                                        document.querySelectorAll('time.dynamic-time')[i].innerText = Date();
-                                        break;
-
-                                    // [Default]
-                                    default:
-                                        // Error Handling
-                                        try {
-                                            // Initialization > Element
-                                            let element = document.querySelectorAll('time.dynamic-time')[i];
-
-                                            // Modification > Dynamic Time > Inner Text
-                                            element.innerText = (new Date)['get' + (element.hasAttribute('data-utc-format') ? 'UTC' : '') + element.getAttribute('data-format').replace(/ /g, '')[0].toUpperCase() + element.getAttribute('data-format').replace(/ /g, '').replace(/\-[a-z]/g, data => {
-                                                return data[1].toUpperCase()
-                                            }).slice(element.getAttribute('data-format').replace(/ /g, '')[0].length)]();
-
-                                            // Set Timeout
-                                            setTimeout(function() {
-                                                element.innerText = (new Date)['get' + (element.hasAttribute('data-utc-format') ? 'UTC' : '') + element.getAttribute('data-format').replace(/ /g, '')[0].toUpperCase() + element.getAttribute('data-format').replace(/ /g, '').replace(/\-[a-z]/g, data => {
-                                                    return data[1].toUpperCase()
-                                                }).slice(element.getAttribute('data-format').replace(/ /g, '')[0].length)]()
-                                            }, 10)
-                                        }
-
-                                        catch (error) {
-                                            // Modification > Dynamic Time > Inner Text
-                                            document.querySelectorAll('time.dynamic-time')[i].innerText = '[LapysJS ' + LapysJS.version + '] => SyntaxError: Error evaluating parsed value.'
-                                        }
-                                }
-                        }, 10)
-                    });
-
+            /* Assets, Components
+                    --- NOTE ---
+                        @lapys: The 'LapysJS isModified' property helps the loop know which
+                            Components have not been modified.
+            */
                 // Script
                     // On DOM Node Count Change
                     onDOMNodeCountChange(function() {
@@ -11197,2592 +14172,6 @@
                             }
                     });
 
-                /* Modification */
-                    // Element, EventTarget, HTML Collection, HTML (*) Element, Node, NodeList
-                        /* Has Class
-                                --- WARN ---
-                                    @lapys: Should be defined before the 'Element.addClass' and 'Element.delClass' methods.
-                        */
-                        (typeof Element.prototype.hasClass == 'function') || Object.defineProperty(Element.prototype, 'hasClass', {
-                            // Value
-                            value: function hasClass() {
-                                // Initialization > (Arguments, Target)
-                                let args = [...arguments] || [],
-                                    that = this;
-
-                                /* Logic
-                                        If
-                                            the Target has a class.
-                                */
-                                if (that.getAttribute('class')) {
-                                    /* Loop
-                                            Index Arguments.
-
-                                        > Update > Arguments
-                                    */
-                                    for (let i in args)
-                                        args[i] = String(args[i]);
-
-                                    // Initialization > (Data, Metadata)
-                                    let data = [],
-                                        metadata = [...args];
-
-                                    /* Loop
-                                            Index Arguments.
-                                    */
-                                    for (let i in args) {
-                                        // Initialization > Alpha
-                                        let alpha = args[i].split(/ /g);
-
-                                        /* Logic
-                                                [if:else if:else statement]
-                                        */
-                                        if (alpha.length > 1)
-                                            /* Loop
-                                                    Index split elements of that Argument.
-
-                                                > Update > Metadata
-                                            */
-                                            for (let i of alpha)
-                                                metadata.push(i)
-                                    }
-
-                                    // Update > Metadata
-                                    metadata = metadata.removeRepeatedElements().filter(data => {
-                                        // Return
-                                        return data.indexOf(' ') < 0
-                                    });
-
-                                    /* Loop
-                                            Index elements of Input Class.
-
-                                        > Update > Data
-                                    */
-                                    for (let i of metadata)
-                                        data.push(LapysJS.debug.formatText(that.getAttribute('class'), 4).indexOf(i) > -1);
-
-                                    // Return
-                                    return data.indexOf(!1) < 0
-                                }
-
-                                // Return
-                                return !1
-                            }
-                        });
-
-                        // Add Class
-                        (typeof Element.prototype.addClass == 'function') || Object.defineProperty(Element.prototype, 'addClass', {
-                            // Value
-                            value: function addClass() {
-                                // Initialization > (Arguments, Target)
-                                let args = [...arguments],
-                                    that = this;
-
-                                /* Loop
-                                        Index Arguments.
-                                */
-                                for (let i in args) {
-                                    // Initialization > (Data, Metadata)
-                                    let data = args[i],
-                                        metadata = data.split(/ /g);
-
-                                    /* Loop
-                                            Iterate over the number of white-spaces the Argument has.
-                                    */
-                                    for (let j of metadata)
-                                        // Update > Name
-                                        (LapysJS.debug.formatText(that.getAttribute('class') || '', 4).indexOf(j) < 0) || (data = data.replace(j, ''));
-
-                                    // Update > Arguments
-                                    data = data.trim();
-
-                                    // Modification > Target > Class
-                                    (that.hasClass(data) || (function() {
-                                        /* Logic
-                                                If
-                                                    the Target has a class value.
-                                        */
-                                        if (that.getAttribute('class'))
-                                            /* Logic
-                                                    If
-                                                        there are multiple class values.
-
-                                                > Return
-                                            */
-                                            if (that.getAttribute('class').indexOf(' ') > -1)
-                                                return (that.getAttribute('class').indexOf(data) > -1);
-
-                                            else
-                                                return that.hasClass(data);
-
-                                        // Return
-                                        return that.hasClass(data)
-                                    })()) || that.setAttribute('class', LapysJS.debug.formatText(((that.getAttribute('class') || '') + ' ' + data), 4).removeDuplicatedElements().join(' ').trim());
-                                    (data != '' && void data == !1) || (that.getAttribute('class') || that.removeAttribute('class'))
-                                }
-
-                                // Return
-                                return that.attributes.class || null
-                            }
-                        });
-
-                        // Change Element Tag
-                        (typeof Element.prototype.changeElementTag == 'function') || Object.defineProperty(Element.prototype, 'changeElementTag', {
-                            // Value
-                            value: function changeElementTag() {
-                                /* Logic
-                                        If
-                                            an Argument is provided.
-                                */
-                                if (arguments.length) {
-                                    // Error Handling
-                                    try {
-                                        // Initialization > (Data, Random)
-                                        let data = this.getEvents().clone(!0),
-                                            random = rand();
-
-                                        // Modification > Target
-                                            // LapysJS Random Attribute
-                                            this.setAttribute('lapysjs-random-attribute', random);
-
-                                            // Outer HTML
-                                            this.outerHTML = this.outerHTML.replace('<' + this.tagName.toLowerCase(), '<' + arguments[0]).replace('<' + this.tagName, '<' + arguments[0]).replace('</' + this.tagName.toLowerCase() + '>', '</' + arguments[0] + '>').replace('</' + this.tagName + '>', '</' + arguments[0] + '>');
-
-                                        // Initialization > Element
-                                        let element = document.querySelector("[lapysjs-random-attribute='" + random + "'");
-
-                                        /* Loop
-                                                [for statement]
-                                        */
-                                        for (let i = 0; i < Object.keys(data).length; i += 1)
-                                            /* Loop
-                                                    [for statement]
-
-                                                > Event > Element > [Data]
-                                            */
-                                            for (let j = 0; j < data[Object.keys(data)[i]].length; j += 1)
-                                                element.setEvent(Object.keys(data)[i], data[Object.keys(data)[i]][j].listener, data[Object.keys(data)[i]][j].useCapture);
-
-                                        // Modification > Element > LapysJS Random Attribute
-                                        element.removeAttribute('lapysjs-random-attribute')
-                                    }
-
-                                    catch (error) {
-                                        // LapysJS > Error
-                                        LapysJS.error(error)
-                                    }
-                                }
-
-                                else
-                                    LapysJS.error("Uncaught TypeError: Failed to execute 'changeElementTag' on 'Element': 1 argument required, but only 0 present.")
-                            }
-                        });
-
-                        // [Query Indexer]
-                        (typeof Element.prototype.$x == 'function') || Object.defineProperty(Element.prototype, '$x', {
-                            // Value
-                            value: function() {
-                                // Return
-                                return (this === window || this === document ? document.documentElement : this).children[arguments[0]] || null
-                            }
-                        });
-                            (typeof Element.prototype.$x != 'function') || (typeof $x == 'function') || Object.defineProperty(Window.prototype, '$x', {value: Element.prototype.$x});
-                            (typeof Element.prototype.$x != 'function') || (typeof document.$x == 'function') || Object.defineProperty(Document.prototype, '$x', {value: Element.prototype.$x});
-
-                        // Close
-                        (typeof Element.prototype.close == 'function') || Object.defineProperty(Element.prototype, 'close', {
-                            // Value
-                            value: function close() {
-                                // Modification > Target
-                                    // Data Close
-                                    this.setAttribute('data-close', !0);
-
-                                    // Data Open
-                                    this.setAttribute('data-open', !1)
-                            }
-                        });
-
-                        // Delete Attribute
-                        (typeof Element.prototype.delAttr == 'function') ||  Object.defineProperty(Element.prototype, 'delAttr', {
-                            // Value
-                            value: function delAttr() {
-                                if ((arguments[0] || _LapysJSObject).constructor !== window.Attr)
-                                    /* Logic
-                                            If
-                                                Argument is '_all'
-                                                    and
-                                                the Target has no '_all' attribute.
-                                    */
-                                    if (
-                                        [...arguments][0] === '_all' &&
-                                        !this.hasAttribute('_all')
-                                    )
-                                        /* Loop
-                                                Index the Target"s attributes.
-
-                                            > Modification > Target > [Name]
-                                        */
-                                        for (let i = 0; i < this.attributes.length; i += 1)
-                                            this.removeAttribute(this.attributes[i--].name);
-
-                                    else
-                                        /* Loop
-                                                Index Names.
-
-                                            > Modification > Target > [Name]
-                                        */
-                                        for (let i = 0; i < [...arguments].length; i += 1)
-                                            this.removeAttribute([...arguments][i]);
-
-                                else
-                                    // Modification > Target > Argument 0
-                                    this.removeAttribute(arguments[0].name)
-                            }
-                        });
-
-                        // Delete Class
-                        (typeof Element.prototype.delClass == 'function') || Object.defineProperty(Element.prototype, 'delClass', {
-                            // Value
-                            value: function delClass() {
-                                /* Loop
-                                        Index elements of Data.
-                                */
-                                for (let i = 0; i < [...arguments].length; i += 1)
-                                    /* Logic
-                                            If
-                                                Target has a class.
-                                    */
-                                    if (this.getAttribute('class')) {
-                                        // Target
-                                            /* Logic
-                                                    If
-                                                        Data is '_all'
-                                                            and
-                                                        Target does not have the '_all' class,
-
-                                                    else if
-                                                        Data is a 'number'
-
-                                                    else if
-                                                        Data is a 'string'.
-                                            */
-                                            if (
-                                                [...arguments][i] === '_all' &&
-                                                LapysJS.debug.formatText(this.getAttribute('class'), 4).indexOf('_all') < 0
-                                            )
-                                                this.removeAttribute('class');
-
-                                            else if (typeof [...arguments][i] == 'number') {
-                                                /* Logic
-                                                        If
-                                                            the element has a single class only.
-
-                                                    > Modification > Target > Class
-                                                */
-                                                if (
-                                                    this.getAttribute('class').indexOf(' ') < 0 &&
-                                                    [...arguments][i] == 0
-                                                )
-                                                    this.removeAttribute('class');
-
-                                                else
-                                                    this.setAttribute('class', String(LapysJS.debug.formatText(this.getAttribute('class'), 4).removeElement(LapysJS.debug.formatText(this.getAttribute('class'), 4)[[...arguments][i]])).replace(/,/g, ' ').trim())
-                                            }
-
-                                            else if (typeof [...arguments][i] == 'string')
-                                                /* Loop
-                                                        Index Data class values.
-
-                                                    > Modification > Target > Class
-                                                */
-                                                for (let j = 0; j < LapysJS.debug.formatText([...arguments][i], 4).length; j += 1)
-                                                    this.setAttribute('class', String(LapysJS.debug.formatText(this.getAttribute('class'), 4).removeElement(LapysJS.debug.formatText([...arguments][i], 4)[j])).replace(/,/g, ' ').trim());
-
-                                            // Modification > Target > Class
-                                            this.getAttribute('class') || this.removeAttribute('class')
-                                    }
-                            }
-                        });
-
-                        // Delete (Inline) Style
-                        (typeof Element.prototype.delStyle == 'function') || Object.defineProperty(Element.prototype, 'delStyle', {
-                            // Value
-                            value: function delStyle() {
-                                /* Loop
-                                        Index Arguments.
-                                */
-                                for (let i = 0; i < [...arguments].length; i += 1) {
-                                    /* Logic
-                                            If
-                                                Argument is '_all'
-                                                    and
-                                                Target does not have an '_all' CSS property.
-                                    */
-                                    if (
-                                        [...arguments][i] === '_all' &&
-                                        !this.style._all
-                                    )
-                                        // Modification > Target > Style
-                                        this.removeAttribute('style');
-
-                                    else {
-                                        /* Logic
-                                                If
-                                                    the element has the 'style' attribute.
-                                        */
-                                        if (this.hasAttribute('style')) {
-                                            // Initialization > Target
-                                            let that = this;
-
-                                            /* Logic
-                                                    [if:else if:else] statement.
-
-                                                > Modification > Style
-                                            */
-                                            if (
-                                                ([...arguments][i] !== 'animation' && that.getAttribute('style').indexOf('animation') < 0) &&
-                                                ([...arguments][i] !== 'background' && that.getAttribute('style').indexOf('background') < 0) &&
-                                                ([...arguments][i] !== 'border' && that.getAttribute('style').indexOf('border') < 0) &&
-                                                ([...arguments][i] !== 'flex' && that.getAttribute('style').indexOf('flex') < 0) &&
-                                                ([...arguments][i] !== 'font' && that.getAttribute('style').indexOf('font') < 0) &&
-                                                ([...arguments][i] !== 'overflow' && that.getAttribute('style').indexOf('overflow') < 0) &&
-                                                ([...arguments][i] !== 'transition' && that.getAttribute('style').indexOf('transition') < 0)
-                                            )
-                                                this.style = this.getAttribute('style').replace(
-                                                    /* --- NOTE ---
-                                                            Modify the element's 'style' attribute.
-                                                    */
-                                                    that.getAttribute('style').slice(
-                                                        /* --- NOTE ---
-                                                                The first construct of the style.
-                                                        */
-                                                            // [property]
-                                                            that.getAttribute('style').indexOf([...arguments][i]),
-
-                                                        /* --- NOTE ---
-                                                                The length of the style and its value.
-                                                        */
-                                                            // [property: value]
-                                                            (function() {
-                                                                /* Logic
-                                                                        If
-                                                                            [property: value],
-
-                                                                        else if
-                                                                            [property:value],
-
-                                                                        else if
-                                                                            [property :value],
-
-                                                                        else if
-                                                                            [property : value].
-                                                                */
-
-                                                                if (that.getAttribute('style').indexOf([...arguments][i] + ': ' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))) > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + String([...arguments][i] + ': ' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))).length);
-
-                                                                else if (that.getAttribute('style').indexOf([...arguments][i] + ':' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))) > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + String([...arguments][i] + ':' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))).length);
-
-                                                                else if (that.getAttribute('style').indexOf([...arguments][i] + ' :' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))) > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + String([...arguments][i] + ' :' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))).length);
-
-                                                                else if (that.getAttribute('style').indexOf([...arguments][i] + ' : ' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))) > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + String([...arguments][i] + ' : ' + (that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i]))).length);
-
-                                                                else
-                                                                    // Return
-                                                                    return 0
-                                                            })() +
-
-                                                            // [value;]
-                                                            (function() {
-                                                                /* Logic
-                                                                        If
-                                                                            [value; ],
-
-                                                                        else if
-                                                                            [value ;],
-
-                                                                        else if
-                                                                            [value;],
-
-                                                                        else if
-                                                                            [value ; ].
-                                                                */
-                                                                if (that.getAttribute('style').indexOf((that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i])) + '; ') > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + '; '.length);
-
-                                                                else if (that.getAttribute('style').indexOf((that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i])) + ' ;') > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + ' ;'.length);
-
-                                                                else if (that.getAttribute('style').indexOf((that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i])) + ';') > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + ';'.length);
-
-                                                                else if (that.getAttribute('style').indexOf((that.style[[...arguments][i]] || getComputedStyle(that).getPropertyValue([...arguments][i])) + ' ; ') > -1)
-                                                                    // Return
-                                                                    return (that.getAttribute('style').indexOf([...arguments][i]) + ' ; '.length);
-
-                                                                else
-                                                                    // Return
-                                                                    return 0
-                                                            })()
-                                                    ),
-
-                                                    /* --- NOTE ---
-                                                            Replace with nothing.
-                                                    */
-                                                    ''
-                                                );
-
-                                            else
-                                                this.style[[...arguments][i]] = ''
-                                        };
-
-                                        // Error Handling
-                                        try {
-                                            /* Modification > Target > Style
-                                                    --- NOTE ---
-                                                        This following line is executed twice just
-                                                        for consistency.
-                                            */
-                                            that.getAttribute('style') || that.removeAttribute('style');
-                                            that.getAttribute('style') || that.removeAttribute('style')
-                                        }
-
-                                        catch (error) {}
-                                    }
-                                }
-                            }
-                        });
-
-                        // [First Element Child]
-                        '$1' in Element.prototype || Object.defineProperty(Element.prototype, '$1', temporaryData = {
-                            // Get
-                            get: function() {
-                                // Return
-                                return (this === window || this === document ? document.documentElement : this).firstElementChild
-                            }
-                        });
-                            !('$1' in Element.prototype) || '$1' in window || Object.defineProperty(Window.prototype, '$1', temporaryData);
-                            !('$1' in Element.prototype) || '$1' in document || Object.defineProperty(Document.prototype, '$1', temporaryData);
-
-                        // Get Attribute
-                        (typeof Element.prototype.getAttr == 'function') || Object.defineProperty(Element.prototype, 'getAttr', {
-                            // Value
-                            value: function getAttr() {
-                                // Initialization > (Target, Attributes)
-                                let that = this,
-                                    Attributes = [];
-
-                                /* Loop
-                                        Index Arguments.
-                                */
-                                for (let i = 0; i < [...arguments].length; i += 1) {
-                                    /* Logic
-                                            If
-                                                Argument data type is a 'number',
-
-                                            else if
-                                                Argument data type is a 'object',
-
-                                            else if
-                                                Argument data type is a 'string'.
-                                    */
-                                    if (typeof [...arguments][i] == 'number')
-                                        // Update > Attributes
-                                        Attributes.push(that.getAttribute((that.attributes[[...arguments][i]] || document.createElement('a')).name));
-
-                                    else if (typeof [...arguments][i] == 'string')
-                                        /* Logic
-                                                If
-                                                    Argument is '_all' and
-                                                    the element does not have an '_all' attribute,
-
-                                                else if
-                                                    Argument does not have a comma.
-                                        */
-                                        if (
-                                            [...arguments][0] === '_all' &&
-                                            !that.hasAttribute('_all')
-                                        )
-                                            /* Loop
-                                                    Index the Target's attributes.
-
-                                                > Update > Attributes
-                                            */
-                                            for (let j = 0; j < that.attributes.length; j += 1)
-                                                Attributes = Attributes.concat(that.attributes[j].value);
-
-                                        else
-                                            // Update > Attributes
-                                            Attributes.push(that.getAttribute([...arguments][i]))
-                                }
-
-                                /* Logic
-                                        If
-                                            Attributes has more than 1 member.
-
-                                    > Return
-                                */
-                                if (Attributes[1])
-                                    return Attributes;
-
-                                // Return
-                                return Attributes[0]
-                            }
-                        });
-
-                        // Get CSS
-                        (typeof Element.prototype.getCSS == 'function') || Object.defineProperty(Element.prototype, 'getCSS', {
-                            // Value
-                            value: function getCSS() {
-                                // Initialization > Array
-                                let array = [];
-
-                                /* Loop
-                                        Index elements of Property.
-                                */
-                                for (let i = 0; i < [...arguments].length; i += 1)
-                                    // Return
-                                    array.push(
-                                        this.style[[...arguments][i].replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        })] || getComputedStyle(this).getPropertyValue([...arguments][i].replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        }))
-                                    );
-
-                                // Return
-                                return array[1] ? array : array[0]
-                            }
-                        });
-
-                        // Get Element By ID
-                        (typeof Element.prototype.getElementById == 'function') || Object.defineProperty(Element.prototype, 'getElementById', {
-                            // Value
-                            value: function getElementById() {
-                                // Return
-                                return this.querySelector('#' + String(arguments[0])) || null
-                            }
-                        });
-
-                        // Has Attribute
-                        (typeof Element.prototype.hasAttr == 'function') || Object.defineProperty(Element.prototype, 'hasAttr', {
-                            // Value
-                            value: function hasAttr() {
-                                // Initialization > Array
-                                let array = [];
-
-                                /* Loop
-                                        Index Arguments.
-                                */
-                                for (let i = 0; i < arguments.length; i += 1)
-                                    // Update > Array
-                                    array.push(this.hasAttribute(arguments[i]));
-
-                                // Return
-                                return array[1] ? array : array[0]
-                            }
-                        });
-
-                        // HTML
-                        (typeof Element.prototype.html == 'function') || Object.defineProperty(Element.prototype, 'html', {
-                            // Value
-                            value: function html() {
-                                // Modification > Target > Inner HTML
-                                this.innerHTML = arguments.length > 0 ? arguments[0] : ''
-                            }
-                        });
-
-                        /* In View
-                                --- NOTE ---
-                                    @lapys: Returns whether or not the element can be
-                                        seen in the viewport.
-                        */
-                        (typeof Element.prototype.inView == 'function') || Object.defineProperty(Element.prototype, 'inView', {
-                            // Value
-                            value: function inView() {
-                                // Initialization > (Left, Top)
-                                let left = this.offsetLeft,
-                                    top = this.offsetTop;
-
-                                /* Loop
-                                    Index parents of Target.
-
-                                   > Update > (Left, Top)
-                                */
-                                for (let i = 0; i < this.parentPath; i += 1) {
-                                    left += this.parentPath[i];
-                                    top += this.parentPath[i]
-                                }
-
-                                // Return
-                                return this.getCSS('display') == 'none' ? !1 : (!arguments[0] == !1 ? left < (innerWidth + pageXOffset) && pageXOffset < (left + this.offsetWidth) && pageYOffset < (this.offsetHeight + top) && top < (innerHeight + pageYOffset) : left > ~-pageXOffset && (left + this.offsetWidth) < (pageXOffset + innerWidth + 1) && top > ~-pageYOffset && (this.offsetHeight + top) < (pageYOffset + innerHeight + 1))
-                            }
-                        });
-
-                        // Insert Adjacent Comment
-                        (typeof Element.prototype.insertAdjacentComment == 'function') || Object.defineProperty(Element.prototype, 'insertAdjacentComment', {
-                            // Value
-                            value: function insertAdjacentComment() {
-                                // Target > Insert Adjacent HTML
-                                this.insertAdjacentHTML(String(arguments[0]), '<!--' + arguments[1] + '-->', [...arguments].slice(2))
-                            }
-                        });
-
-                        // [Last Element Child]
-                        '$n' in Element.prototype || Object.defineProperty(Element.prototype, '$n', temporaryData = {
-                            // Get
-                            get: function $n() {
-                                // Return
-                                return (this === window || this === document ? document.documentElement : this).lastElementChild
-                            }
-                        });
-                            !('$n' in Element.prototype) || '$n' in window || Object.defineProperty(Window.prototype, '$n', temporaryData);
-                            !('$n' in Element.prototype) || '$n' in document || Object.defineProperty(Document.prototype, '$n', temporaryData);
-
-                        // Open
-                        (typeof Element.prototype.open == 'function') || Object.defineProperty(Element.prototype, 'open', {
-                            // Value
-                            value: function open() {
-                                // Modification > Target
-                                    // Data Close
-                                    this.setAttribute('data-close', !1);
-
-                                    // Data Open
-                                    this.setAttribute('data-open', !0)
-                            }
-                        });
-
-                        // [Penultimate Element Child]
-                        '$n1' in Element.prototype || Object.defineProperty(Element.prototype, '$n1', temporaryData = {
-                            // Get
-                            get: function $n1() {
-                                // Return
-                                return (this === window || this === document ? document.documentElement : this).children[(this === window || this === document ? document.documentElement : this).children.length - 2] || null
-                            }
-                        });
-                            !('$n1' in Element.prototype) || '$n1' in window || Object.defineProperty(Window.prototype, '$n1', temporaryData);
-                            !('$n1' in Element.prototype) || '$n1' in document || Object.defineProperty(Document.prototype, '$n1', temporaryData);
-
-                        // Replace Attribute
-                        (typeof Element.prototype.replaceAttribute == 'function') || Object.defineProperty(Element.prototype, 'replaceAttribute', {
-                            // Value
-                            value: function replaceAttribute() {
-                                // Modification > Target > [Argument (0, 1)]
-                                !this[arguments[0]] || (this[arguments[0]] = '');
-                                this.removeAttribute(arguments[0]);
-                                this.setAttribute(arguments[1], arguments[2] || '')
-                            }
-                        });
-
-                        // [Second Element Child]
-                        '$2' in Element.prototype || Object.defineProperty(Element.prototype, '$2', temporaryData = {
-                            // Get
-                            get: function $2() {
-                                // Return
-                                return (this === window || this === document ? document.documentElement : this).children[1] || null
-                            }
-                        });
-                            !('$2' in Element.prototype) || '$2' in window || Object.defineProperty(Window.prototype, '$2', temporaryData);
-                            !('$2' in Element.prototype) || '$2' in document || Object.defineProperty(Document.prototype, '$2', temporaryData);
-
-                        // Set Attribute
-                        (typeof Element.prototype.setAttr == 'function') || Object.defineProperty(Element.prototype, 'setAttr', {
-                            // Value
-                            value: function setAttr() {
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (typeof arguments[0] == 'string')
-                                    // Modification > Target > [Argument 0]
-                                    this.setAttribute(arguments[0], arguments.length > 1 ? arguments[1] : '');
-
-                                else if ((arguments[0] || '').constructor == Array)
-                                    /* Loop
-                                            [for statement]
-                                    */
-                                    for (let i = 0; i < arguments[0].length; i += 1)
-                                        // Modification > Target > [Argument 0]
-                                        this.setAttribute(arguments[0][i], arguments[1][i]);
-
-                                else if (isObject(arguments[0]))
-                                    /* Loop
-                                            [for statement]
-                                    */
-                                    for (let i = 0; i < Object.keys(arguments[0]).length; i += 1)
-                                        // Modification > Target > [Argument 0]
-                                        this.setAttribute(Object.keys(arguments[0])[i], arguments[0][Object.keys(arguments[0])[i]]);
-
-                                else if ((arguments[0] || '').constructor == window.Attr)
-                                    // Modification > Target > [Argument 0]
-                                    this.setAttribute(arguments[0].name, arguments[0].value)
-                            }
-                        });
-
-                        /* Attribute
-                                --- WARN ---
-                                    This method can only be defined after the 'Element.getAttr' and 'Element.setAttr' method.
-                        */
-                        (typeof Element.prototype.attr == 'function') || Object.defineProperty(Element.prototype, 'attr', {
-                            // Value
-                            value: function attr() {
-                                // Modification > Target > [Argument 0]
-                                (arguments.length < 2) || this.setAttr(arguments[0], arguments[1]);
-                                ((arguments[0] || _LapysJSObject).constructor !== window.Attr) || this.setAttr(arguments[0]);
-
-                                // Return
-                                return this.getAttr(arguments[0].name || arguments[0])
-                            }
-                        });
-
-                        /* Set CSS
-                                --- NOTE ---
-                                    @lapys: The object encoder needs update.
-                        */
-                        (typeof Element.prototype.setCSS == 'function') || Object.defineProperty(Element.prototype, 'setCSS', {
-                            // Value
-                            value: function setCSS() {
-                                // Initialization > (Arguments, Data, Metadata)
-                                let args = [...arguments],
-                                    data = [],
-                                    metadata = [];
-
-                                // Function > Test
-                                function test(temporaryData, _metadata) {
-                                    // Update > Data
-                                    !(
-                                        _metadata == 'animation-delay' || _metadata == 'animation-duration' ||
-                                        _metadata == 'transition-delay' || _metadata == 'transition-duration'
-                                    ) || String(temporaryData).endsWith('s') || (temporaryData = temporaryData + 's');
-
-                                    !(
-                                        _metadata == 'background-position-x' || _metadata == 'background-position-y' || _metadata == 'block-size' || _metadata == 'border-bottom-left-radius' || _metadata == 'border-bottom-right-radius' || _metadata == 'border-bottom-width' || _metadata == 'border-image-outset' || _metadata == 'border-left-width' || _metadata == 'border-right-width' || _metadata == 'border-top-left-radius' || _metadata == 'border-top-right-radius' || _metadata == 'border-top-width' || _metadata == 'border-width' || _metadata == 'bottom' ||
-                                        _metadata == 'column-rule-width' ||
-                                        _metadata == 'font-size' ||
-                                        _metadata == 'grid-column-gap' || _metadata == 'grid-row-gap' ||
-                                        _metadata == 'height' ||
-                                        _metadata == 'inline-size' ||
-                                        _metadata == 'left' || _metadata == 'line-height-step' ||
-                                        _metadata == 'margin' || _metadata == 'margin-bottom' || _metadata == 'margin-left' || _metadata == 'margin-right' || _metadata == 'margin-top' || _metadata == 'max-block-size' || _metadata == 'max-height' || _metadata == 'max-inline-size' || _metadata == 'max-width' || _metadata == 'min-block-size' || _metadata == 'min-height' || _metadata == 'min-inline-size' || _metadata == 'min-width' ||
-                                        _metadata == 'padding' || _metadata == 'padding-bottom' || _metadata == 'padding-left' || _metadata == 'padding-right' || _metadata == 'padding-top' || _metadata == 'perspective' || _metadata == 'perspective-origin' ||
-                                        _metadata == 'r' || _metadata == 'rx' || _metadata == 'ry' || _metadata == 'right' ||
-                                        _metadata == 'shape-margin' || _metadata == 'stroke-dash-offset' || _metadata == 'stroke-width' ||
-                                        _metadata == 'text-indent' || _metadata == 'top' ||
-                                        _metadata == 'x' ||
-                                        _metadata == 'y' ||
-                                        _metadata == 'width'
-                                    ) || String(temporaryData).endsWith('px') || (temporaryData = temporaryData + 'px');
-
-                                    // Return
-                                    return temporaryData
-                                };
-
-                                // Modification > Target > Style
-                                this.setAttribute('style', this.getAttribute('style') || '');
-
-                                /* Logic
-                                        If
-                                            Argument 0 is an object
-                                                and
-                                            there is only a single Argument,
-
-                                        else if
-                                            Argument 0 is an array
-                                                and
-                                            Argument 1 is an array,
-
-                                        else if
-                                            Argument 0 is an array
-                                                and
-                                            Argument 1 is a string,
-
-                                        else if
-                                            Argument 0 is a string
-                                                and
-                                            Argument 1 is an array,
-
-                                        else if
-                                            Argument 0 is a string
-                                                and
-                                            there are multiple Arguments,
-
-                                        else if
-                                            Argument 0 is a string
-                                                and
-                                            there is only a single Argument.
-                                */
-                                if (isObject(args[0]) && args.length == 1) {
-                                    // Initialization > Property (Name, Value)
-                                    let propertyName = '',
-                                        propertyValue = '';
-
-                                    /* Loop
-                                            Index Argument 0.
-                                    */
-                                    for (let i = 0; i < Object.keys(args[0]).length; i += 1) {
-                                        /* Logic
-                                                If
-                                                    Argument 0`s value is an object.
-                                        */
-                                        if (isObject(args[0][Object.keys(args[0])[i]], !0)) {
-                                            /* Loop
-                                                    Index Argument 0`s value.
-                                            */
-                                            for (let j = 0; j < Object.keys(args[0][Object.keys(args[0])[i]]).length; j += 1) {
-                                                /* Logic
-                                                        If
-                                                            Argument 0`s value`s value is an object.
-                                                */
-                                                if (isObject(args[0][Object.keys(args[0])[i]][Object.keys(args[0][Object.keys(args[0])[i]])[j]], !0)) {
-                                                    /* Loop
-                                                            Index Argument 0`s value`s value.
-                                                    */
-                                                    for (let k = 0; k < Object.keys(args[0][Object.keys(args[0])[i]][Object.keys(args[0][Object.keys(args[0])[i]])[j]]).length; k += 1) {
-                                                        // Update > Property (Name, Value)
-                                                        propertyName = (
-                                                            Object.keys(args[0])[i] + '-' +
-                                                            Object.keys(args[0][Object.keys(args[0])[i]])[j] + '-' +
-                                                            Object.keys(args[0][Object.keys(args[0])[i]][Object.keys(args[0][Object.keys(args[0])[i]])[j]])[k]
-                                                        ).replace(/[A-Z]/g, data => {
-                                                            // Return
-                                                            return '-' + data.toLowerCase()
-                                                        });
-                                                        propertyValue = test(args[0][Object.keys(args[0])[i]][Object.keys(args[0][Object.keys(args[0])[i]])[j]][Object.keys(args[0][Object.keys(args[0])[i]][Object.keys(args[0][Object.keys(args[0])[i]])[j]])[k]], propertyName);
-
-                                                        // Update > (Data, Metadata)
-                                                        data.push(propertyName);
-                                                        metadata.push(propertyValue)
-                                                    }
-                                                }
-
-                                                else {
-                                                    // Update > Property (Name, Value)
-                                                    propertyName = (
-                                                        Object.keys(args[0])[i] + '-' +
-                                                        Object.keys(args[0][Object.keys(args[0])[i]])[j]
-                                                    ).replace(/[A-Z]/g, data => {
-                                                        // Return
-                                                        return '-' + data.toLowerCase()
-                                                    });
-                                                    propertyValue = test(args[0][Object.keys(args[0])[i]][Object.keys(args[0][Object.keys(args[0])[i]])[j]], propertyName);
-
-                                                    // Update > (Data, Metadata)
-                                                    data.push(propertyName);
-                                                    metadata.push(propertyValue)
-                                                }
-                                            }
-                                        }
-
-                                        else {
-                                            // Update > Property (Name, Value)
-                                            propertyName = Object.keys(args[0])[i].replace(/[A-Z]/g, data => {
-                                                // Return
-                                                return '-' + data.toLowerCase()
-                                            });
-                                            propertyValue = test(args[0][Object.keys(args[0])[i]], propertyName);
-
-                                            // Update > (Data, Metadata)
-                                            data.push(propertyName);
-                                            metadata.push(propertyValue)
-                                        }
-                                    }
-                                }
-
-                                else if ((args[0] || '').constructor == Array && (args[1] || '').constructor == Array) {
-                                    // Initialization > Property (Name, Value)
-                                    let propertyName = '',
-                                        propertyValue = '';
-
-                                    /* Loop
-                                            Index Argument 0.
-                                    */
-                                    for (let i = 0; i < args[0].length; i += 1) {
-                                        // Update > Property (Name, Value)
-                                        propertyName = args[0][i].replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        });
-                                        propertyValue = test(args[1][i], propertyName);
-
-                                        // Update > (Data, Metadata)
-                                        data.push(propertyName);
-                                        metadata.push(propertyValue)
-                                    }
-                                }
-
-                                else if ((args[0] || '').constructor == Array && typeof args[1] == 'string') {
-                                    // Initialization > Property (Name, Value)
-                                    let propertyName = '',
-                                        propertyValue = '';
-
-                                    for (let i = 0; i < args[0].length; i += 1) {
-                                        // Update > Property (Name, Value)
-                                        propertyName = args[0][i].replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        });
-                                        propertyValue = test(args[1], propertyName);
-
-                                        // Update > (Data, Metadata)
-                                        data.push(propertyName);
-                                        metadata.push(propertyValue)
-                                    }
-                                }
-
-                                else if (typeof args[0] == 'string' && (args[1] || '').constructor == Array) {
-                                    // Initialization > Property (Name, Value)
-                                    let propertyName = '',
-                                        propertyValue = '';
-
-                                    // Update > Property (Name, Value)
-                                    propertyName = args[0].replace(/[A-Z]/g, data => {
-                                        // Return
-                                        return '-' + data.toLowerCase()
-                                    });
-                                    propertyValue = test(args[1][~-args[1].length], propertyName);
-
-                                    // Update > (Data, Metadata)
-                                    data.push(propertyName);
-                                    metadata.push(propertyValue)
-                                }
-
-                                else if (typeof args[0] == 'string' && args.length > 1) {
-                                    // Initialization > Property (Name, Value)
-                                    let propertyName = '',
-                                        propertyValue = '';
-
-                                    // Update > Property (Name, Value)
-                                    propertyName = args[0].replace(/[A-Z]/g, data => {
-                                        // Return
-                                        return '-' + data.toLowerCase()
-                                    });
-                                    propertyValue = test((function(data, metadata) {
-                                        // Update > Metadata
-                                        metadata = metadata.trim().replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        }).trimChar('-');
-
-                                        /* Logic
-                                                If
-                                                    Data is a number.
-
-                                            > Update > Data
-                                        */
-                                        (typeof data != 'number') || (data = test(data, metadata));
-
-                                        // Return
-                                        return String(data)
-                                    })(args[1], propertyName), propertyName);
-
-                                    // Update > (Data, Metadata)
-                                    data.push(propertyName);
-                                    metadata.push(propertyValue)
-                                }
-
-                                else if (typeof args[0] == 'string' && args.length == 1) {
-                                    // Initialization > Alpha, Property (Name, Value)
-                                    let alpha = args[0],
-                                        propertyName = '',
-                                        propertyValue = '';
-
-                                    /* Update > Data
-                                            --- NOTE ---
-                                                @lapys: Ignore all strings.
-                                    */
-                                    alpha = alpha.replace(/'[^']{0,}'/g, data => {
-                                        // Return
-                                        return [...data].join('⯀').replace(/:/g, '�').replace(/;/g, '')
-                                    }).replace(/"[^"]{0,}"/g, data => {
-                                        // Return
-                                        return [...data].join('⯀').replace(/:/g, '�').replace(/;/g, '')
-                                    });
-
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (alpha.hasText(':')) {
-                                        // Update > Alpha
-                                        alpha.trim().endsWith(';') || (alpha = alpha.trim() + ';');
-                                        alpha = alpha.split(/;/g).removeFalsyElements();
-
-                                        /* Loop
-                                                Index Alpha.
-                                        */
-                                        for (let i in alpha)
-                                            /* Logic
-                                                    [if:else if:else statement]
-                                            */
-                                            if (alpha[i].trim()) {
-                                                // Update > Alpha
-                                                alpha[i] = alpha[i].trim();
-
-                                                /* Logic
-                                                        [if:else if:else statement]
-                                                */
-                                                if (alpha[i].split(/:/g).length > 1) {
-                                                    // Update > Property (Name, Value)
-                                                    propertyName = alpha[i].split(/:/g)[0].trim().replace(//g, ';').replace(/�/g, ':').replace(/⯀/g, '');
-                                                    propertyValue = alpha[i].split(/:/g)[1].trim().replace(//g, ';').replace(/�/g, ':').replace(/⯀/g, '');
-
-                                                    // Update > (Data, Metadata)
-                                                    data.push(propertyName);
-                                                    metadata.push(propertyValue)
-                                                }
-                                            }
-                                    }
-
-                                    else {
-                                        // Update > Property (Name, Value)
-                                        propertyName = args[0].replace(/[A-Z]/g, data => {
-                                            // Return
-                                            return '-' + data.toLowerCase()
-                                        });
-                                        propertyValue = 'initial';
-
-                                        // Update > (Data, Metadata)
-                                        data.push(propertyName.replace(//g, ';').replace(/�/g, ':').replace(/⯀/g, ''));
-                                        metadata.push(propertyValue.replace(//g, ';').replace(/�/g, ':').replace(/⯀/g, ''))
-                                    }
-                                }
-
-                                /* Loop
-                                        Index Data
-
-                                    > Update > Data
-                                */
-                                for (let i = 0; i < data.length; i += 1)
-                                    data[i] = String(data[i]).trim().trimChar('-').toLowerCase();
-
-                                /* Loop
-                                        Index Metadata
-
-                                    > Update > Metadata
-                                */
-                                for (let i = 0; i < metadata.length; i += 1)
-                                    metadata[i] = str(metadata[i]).trim();
-
-                                /* Loop
-                                        Index Data
-
-                                    > Style > Target > [Data]
-                                */
-                                for (let i = 0; i < data.length; i += 1)
-                                    this.style[data[i].replace(/\-[a-z]/g, data => {
-                                        // Return
-                                        return data.slice('-'.length).toUpperCase()
-                                    })] = metadata[i].replace(/(!importantpx)([^(!importantpx)]*)$|(!importants)([^(!importants)]*)$/, '!important').trimRightChar('!important').trim();
-
-                                // Modification > Target > Style
-                                this.setAttribute('style', (this.getAttribute('style') || '').endsWith(';') ? (this.getAttribute('style') || '') : (this.getAttribute('style') === null ? '' : this.getAttribute('style') + ';'));
-                                this.setAttribute('style', (this.getAttribute('style') || '').replace(/'[^']{1,}'|"[^"]{1,}"/g, data => {
-                                    // Return
-                                    return data.split(/(?:)/g).join('�')
-                                }).replace(/ {0,}: {0,}[^;]{1,};/g, data => {
-                                    // Return
-                                    return data.replace(/ {0,}: {0,}/, ': ')
-                                }).replace(/'[^']{1,}'|"[^"]{1,}"/g, data => {
-                                    // Return
-                                    return data.replace(/�/g, '')
-                                }));
-
-                                /* Loop
-                                        Index Data
-
-                                        --- NOTE ---
-                                            @lapys: For `!important` values.
-                                */
-                                for (let i = 0; i < data.length; i += 1) {
-                                    // Update > Metadata
-                                    metadata[i] = metadata[i].replace(/(!importantpx)([^(!importantpx)]*)$|(!importants)([^(!importants)]*)$/, '!important');
-
-                                    // Modification > Target > Style
-                                    !metadata[i].endsWith('!important') || this.setAttribute('style',
-                                        (this.getAttribute('style') || '').replace(RegExp(data[i].replace(/\-/g, '\\$&') + '[^;]{1,};'), data => {
-                                            // Return
-                                            return data.trim().trimRightChar(';') + ' !important;'
-                                        })
-                                    )
-                                }
-
-                                // Modification > Target > Style
-                                this.setAttribute('style', (this.getAttribute('style') || '').trim().trimRightChar(';'));
-                                this.getAttribute('style') || this.removeAttribute('style');
-
-                                // Return
-                                return this.attributes.style || null
-                            }
-                        });
-
-                        // Write
-                        (typeof Element.prototype.write == 'function') || Object.defineProperty(Element.prototype, 'write', {
-                            // Value
-                            value: function write() {
-                                // Modification > Target > Inner HTML
-                                this.innerHTML = LapysJS.perm.writtenElementsList.indexOf(this) < 0 ? arguments[0] : this.innerHTML + arguments[0];
-
-                                // Update > (LapysJS > Permanent Data > Written Elements List)
-                                (LapysJS.perm.writtenElementsList.indexOf(this) > -1) || LapysJS.perm.writtenElementsList.push(this)
-                            }
-                        });
-
-                        // Add Event
-                        (typeof EventTarget.prototype.addEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'addEvent', {
-                            // Value
-                            value: function addEvent() {
-                                /* Logic
-                                        If
-                                            Argument 1 is a Function.
-                                */
-                                if (typeof arguments[1] == 'function')
-                                    /* Loop
-                                            Index modified Arguments.
-                                    */
-                                    for (let i = 0; i < Object.values([...arguments].slice(1)).length; i += 1)
-                                        /* Loop
-                                                Index Listeners.
-                                        */
-                                        for (let j = 0; j < LapysJS.debug.formatText(String(arguments[0]), 4).length; j += 1) {
-                                            // Modification > Target > Custom Events
-                                            (this || window).customEvents = (this || window).customEvents || {fallback: !0};
-                                                // [Argument 0]
-                                                (this || window).customEvents[LapysJS.debug.formatText(String(arguments[0]), 4)[j]] = typeof document.createEvent == 'function' ? document.createEvent('Event') : document.createEventObject();
-                                                    // [Argument 0] > Initialize Event
-                                                    typeof (this || window).customEvents[LapysJS.debug.formatText(String(arguments[0]), 4)[j]].initEvent == 'function' ? (this || window).customEvents[LapysJS.debug.formatText(String(arguments[0]), 4)[j]].initEvent(LapysJS.debug.formatText(String(arguments[0]), 4)[j], !0, !0) : !1;
-
-                                            // Event > Target > [Argument 0]
-                                            (this || window).setEvent(LapysJS.debug.formatText(String(arguments[0]), 4)[j], Object.values([...arguments].slice(1))[i], !1)
-                                    }
-                            }
-                        });
-
-                        // Delete Event
-                        (typeof EventTarget.prototype.delEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'delEvent', {
-                            // Value
-                            value: function delEvent() {
-                                /* Logic
-                                        If
-                                            Argument 1 exists.
-                                */
-                                if (arguments.length > 1)
-                                    /* Loop
-                                            Index Events in Argument 0.
-                                    */
-                                    for (let i = 0; i < LapysJS.debug.formatText(String(arguments[0]), 4).length; i += 1)
-                                        /* Loop
-                                                Index Listeners in Argument 1.
-
-                                            > Error Handling
-                                        */
-                                        for (let j = 0; j < Object.values([...arguments].slice(1)).length; j += 1)
-                                            try {
-                                                // Deletion
-                                                typeof document.removeEventListener == 'function' ?
-                                                    (this || window).removeEventListener(LapysJS.debug.formatText(String(arguments[0]), 4)[i], Object.values([...arguments].slice(1))[j]) :
-                                                    (this || window).detachEvent('on' + LapysJS.debug.formatText(String(arguments[0]), 4)[i], Object.values([...arguments].slice(1))[j])
-                                            }
-
-                                            catch (error) {
-                                                // LapysJS > Error
-                                                LapysJS.error(error)
-                                            }
-
-                                else
-                                    /* Loop
-                                            Index Target's Event of the specified type.
-
-                                        > Deletion
-                                    */
-                                    for (let i = 0; i < (this || window).getEvents()[String(arguments[0])].length; i += 1)
-                                        document.removeEventListener ?
-                                            (this || window).removeEventListener((this || window).getEvents()[String(arguments[0])][i].type, (this || window).getEvents()[String(arguments[0])][i].listener) :
-                                            (this || window).detachEvent('on' + (this || window).getEvents()[String(arguments[0])][i].type, (this || window).getEvents()[String(arguments[0])][i].listener)
-                            }
-                        });
-
-                        // Events
-                        EventTarget.prototype['LapysJS events'] = new (function LapysJSEventMap() {});
-
-                        // Get Event
-                        (typeof EventTarget.prototype.getEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'getEvent', {
-                            // Value
-                            value: function getEvent() {
-                                // Initialization > Target
-                                let that = this;
-
-                                // Return
-                                return (
-                                    typeof window.getEventListeners == 'function' ?
-                                        (new (function LapysJSEventMap() {
-                                            /* Loop
-                                                    Index Event Listeners.
-
-                                                > Modification > Target > [Event Listener]
-                                            */
-                                            for (let i = 0; i < Object.keys(getEventListeners(that || window)).length; i += 1)
-                                                this[Object.keys(getEventListeners(that || window))[i]] = getEventListeners(that || window)[Object.keys(getEventListeners(that || window))[i]]
-                                        }))[String(arguments[0])] :
-                                        ((this || window)['LapysJS events'] || new (function LapysJSEventMap() {}))[String(arguments[0])]
-                                    ) || null
-                            }
-                        });
-
-                        // Get Events
-                        (typeof EventTarget.prototype.getEvents == 'function') || Object.defineProperty(EventTarget.prototype, 'getEvents', {
-                            // Value
-                            value: function getEvents() {
-                                // Initialization > Target
-                                let that = this,
-                                    metadata;
-
-                                /* Initialization > Data
-                                        --- NOTE ---
-                                            @lapys: If Meta Data is truthy, then there is no
-                                                need to track down Event handlers and add them to the Data.
-
-                                        --- UPDATE REQUIRED ---
-                                            @lapys: Fallback should be able to track Event handlers.
-                                */
-                                let data = typeof window.getEventListeners == 'function' ?
-                                    new (function LapysJSEventMap() {
-                                        // Update > Meta Data
-                                        metadata = !0;
-
-                                        /* Loop
-                                                Index Event Listeners.
-
-                                            > Modification > Target > [Event Listener]
-                                        */
-                                        for (let i = 0; i < Object.keys(getEventListeners(that || window)).length; i += 1)
-                                            this[Object.keys(getEventListeners(that || window))[i]] = getEventListeners(that || window)[Object.keys(getEventListeners(that || window))[i]]
-                                    }) :
-                                    (this || window)['LapysJS events'] || new (function LapysJSEventMap() {});
-
-                                // Return
-                                return data
-                            }
-                        });
-
-                        // Invoke Event
-                        (typeof EventTarget.prototype.invokeEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'invokeEvent', {
-                            // Value
-                            value: function invokeEvent() {
-                                // Target > (Add, Run) Event
-                                (this || window).addEvent.apply(this || window, [...arguments]);
-                                (this || window).runEvent.apply(this || window, [...arguments])
-                            }
-                        });
-
-                        // Invoke Full Screen
-                        (typeof EventTarget.prototype.invokeFullscreen == 'function') || Object.defineProperty(EventTarget.prototype, 'invokeFullscreen', {
-                            // Value
-                            value: function invokeFullscreen() {
-                                // Initialization > Target
-                                let that = this === window ? document.documentElement : (this || document.documentElement);
-
-                                // Error Handling
-                                try {
-                                    /* Logic
-                                            If
-                                                the document is in Fullscreen.
-
-                                        > <html> > ((| Mozilla | Microsoft | Webkit) Request Fullscreen | Alert | Modification > Target > Data Fullscreen)
-                                    */
-                                    if (
-                                        screen.height !== innerHeight &&
-                                        !that.hasAttribute('data-fullscreen')
-                                    ) {
-                                        !!arguments[0] || alert('[LapysJS ' + LapysJS.version + "] => Press the 'Esc' key to exit fullscreen.");
-
-                                        that.setAttribute('data-fullscreen', '');
-
-                                        (typeof that.requestFullscreen != 'function') || that.requestFullscreen();
-                                        (typeof that.mozRequestFullScreen != 'function') || that.mozRequestFullScreen();
-                                        (typeof that.msRequestFullscreen != 'function') || that.msRequestFullscreen();
-                                        (typeof that.webkitRequestFullScreen != 'function') || that.webkitRequestFullScreen()
-                                    }
-
-                                    else {
-                                        that.removeAttribute('data-fullscreen');
-
-                                        (typeof document.exitFullscreen != 'function') || document.exitFullscreen();
-                                        (typeof document.mozCancelFullScreen != 'function') || document.mozCancelFullScreen();
-                                        (typeof document.msExitFullscreen != 'function') || document.msExitFullscreen();
-                                        (typeof document.webkitCancelFullScreen != 'function') || document.webkitCancelFullScreen()
-                                    }
-                                }
-
-                                catch (error) {
-                                    // LapysJS > Error
-                                    LapysJS.error(error)
-                                }
-                            }
-                        });
-
-                        // Observe Event
-                        (typeof EventTarget.prototype.observeEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'observeEvent', {
-                            // Value
-                            value: function observeEvent() {
-                                // Initialization > (Data, Metadata, Target)
-                                let data = (arguments[0] || '').constructor === Array ? arguments[0] : [arguments[0]],
-                                    metadata = [...arguments].slice(1),
-                                    that = this;
-
-                                // Event > Target > [Metadata 0]
-                                !((data[0] || _LapysJSObject).nodeType == 1) || this.setEvent(String(metadata[0]), function observeEvent(event) {
-                                    // Function > Metadata 1
-                                    (data.indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement))) < 0) || metadata[1].call(that, event)
-                                }, metadata[2], metadata[3])
-                            }
-                        });
-
-                        // Observe Event By Query Selector
-                        (typeof EventTarget.prototype.observeEventByQuerySelector == 'function') || Object.defineProperty(EventTarget.prototype, 'observeEventByQuerySelector', {
-                            // Value
-                            value: function observeEventByQuerySelector() {
-                                // Initialization > (Data, Metadata, Target)
-                                let data = String(arguments[0]),
-                                    metadata = [...arguments].slice(1),
-                                    that = this;
-
-                                // Event > Target > [Metadata 0]
-                                this.setEvent(String(metadata[0]), function observeEvent(event) {
-                                    // Function > Metadata 1
-                                    ([...document.querySelectorAll(data)].indexOf((typeof event.path == 'object' ? event.path[0] : (event.target || event.srcElement))) < 0) || metadata[1].call(that, event)
-                                }, metadata[2], metadata[3])
-                            }
-                        });
-
-                        // [Query Selector (All)]
-                        (typeof EventTarget.prototype.$$ == 'function') || Object.defineProperty(EventTarget.prototype, '$$', {
-                            // Value
-                            value: function LapysJSQuerySelector() {
-                                // Initialization > (Arguments, Target)
-                                let args = [...arguments],
-                                    that = this;
-
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (arguments.length > 0) {
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (arguments.length > 1) {
-                                        /* Logic
-                                                [if:else if:else statement]
-                                        */
-                                        if (typeof arguments[1] == 'string')
-                                            /* Logic
-                                                    [if:else if:else statement]
-                                            */
-                                            if (arguments[1].startsWith('attr'))
-                                                // Return
-                                                return typeof arguments[2] == 'number' ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll('[' + arguments[1].slice('attr:'.length) + "='" + (String(arguments[0]) || '') + "'")[arguments[2]] : (function() {
-                                                    /* Logic
-                                                            Switch case to Argument 2.
-
-                                                        > Return
-                                                    */
-                                                    switch (args[2]) {
-                                                        // Array
-                                                        case 'array':
-                                                            return [...((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'")];
-                                                            break;
-
-                                                        // Length
-                                                        case 'length':
-                                                            return ((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'").length;
-                                                            break;
-
-                                                        // Decremented Length
-                                                        case '~length':
-                                                            return ~-((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'").length;
-                                                            break;
-
-                                                        // [Default]
-                                                        default:
-                                                            return (((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'") || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'") : (((that === window ? document : that) || document).querySelectorAll('[' + args[1].slice('attr:'.length) + "='" + (String(args[0]) || '') + "'") || [null])[0]
-                                                    }
-                                                })();
-
-                                        /* Logic
-                                                [switch:case:default statement]
-
-                                            > Return
-                                        */
-                                        switch (arguments[1]) {
-                                            // Array
-                                            case 'array':
-                                                return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || ''))];
-                                                break;
-
-                                            // Class
-                                            case 'c':
-                                                return typeof window.$c == 'function' ? $c.apply(this || window, [...arguments].removeElement('c')) : null;
-                                                break;
-
-                                            // Class
-                                            case 'class':
-                                                return typeof window.$c == 'function' ? $c.apply(this || window, [...arguments].removeElement('class')) : null;
-                                                break;
-
-                                            // CSS
-                                            case 'css':
-                                                return typeof arguments[2] == 'number' ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll("link[href*='" + arguments[0] + "'")[arguments[2]] : (function() {
-                                                    /* Logic
-                                                            Switch case to Argument 2.
-
-                                                        > Return
-                                                    */
-                                                    switch (args[2]) {
-                                                        // Array
-                                                        case 'array':
-                                                            return [...((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'")];
-                                                            break;
-
-                                                        // Length
-                                                        case 'length':
-                                                            return ((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'").length;
-                                                            break;
-
-                                                        // Decremented Length
-                                                        case '~length':
-                                                            return ~-((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'").length;
-                                                            break;
-
-                                                        // [Default]
-                                                        default:
-                                                            return (((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'") || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'") : (((that === window ? document : that) || document).querySelectorAll("link[href*='" + args[0] + "'") || [null])[0]
-                                                    }
-                                                })();
-                                                break;
-
-                                            // ID
-                                            case 'i':
-                                                return typeof window.$i == 'function' ? $i.apply(this || window, [...arguments].removeElement('i')) : null;
-                                                break;
-
-                                            // ID
-                                            case 'id':
-                                                return typeof window.$i == 'function' ? $i.apply(this || window, [...arguments].removeElement('id')) : null;
-                                                break;
-
-                                            // JavaScript
-                                            case 'js':
-                                                return typeof arguments[2] == 'number' ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll("script[src*='" + arguments[0] + "'][type='text/javascript'], script[src*='" + arguments[0] + "']:not([type])")[arguments[2]] : (function() {
-                                                    /* Logic
-                                                            Switch case to Argument 2.
-
-                                                        > Return
-                                                    */
-                                                    switch (args[2]) {
-                                                        // Array
-                                                        case 'array':
-                                                            return [...((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])")];
-                                                            break;
-
-                                                        // Length
-                                                        case 'length':
-                                                            return ((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])").length;
-                                                            break;
-
-                                                        // Decremented Length
-                                                        case '~length':
-                                                            return ~-((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])").length;
-                                                            break;
-
-                                                        // [Default]
-                                                        default:
-                                                            return (((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])") || []).length > 1 ? ((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + args[0] + "']:not([type])") : (((that === window ? document : that) || document).querySelectorAll("script[src*='" + args[0] + "'][type='text/javascript'], script[src*='" + arguments[0] + "']:not([type])") || [null])[0]
-                                                    }
-                                                })();
-                                                break;
-
-                                            // Tag Name
-                                            case 't':
-                                                return typeof window.$t == 'function' ? $t.apply(this || window, [...arguments].removeElement('t')) : null;
-                                                break;
-
-                                            // Tag Name
-                                            case 'tag':
-                                                return typeof window.$t == 'function' ? $t.apply(this || window, [...arguments].removeElement('tag')) : null;
-                                                break;
-
-                                            // Tag Name
-                                            case 'tag-name':
-                                                return typeof window.$t == 'function' ? $t.apply(this || window, [...arguments].removeElement('tag-name')) : null;
-                                                break;
-
-                                            // Length
-                                            case 'length':
-                                                return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')).length : NaN;
-                                                break;
-
-                                            // ~Length
-                                            case '~length':
-                                                return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')).length - 1) : NaN;
-                                        }
-                                    }
-
-                                    /* Logic
-                                            [if:else if:else statement]
-
-                                        > Return
-                                    */
-                                    if (typeof arguments[1] == 'number')
-                                        return ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || ''))[arguments[1]] || null;
-
-                                    else if (arguments.length < 2 && ('length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')).length : NaN) < 2)
-                                        return ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || ''))[0] || null;
-
-                                    // Return
-                                    return ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(String(arguments[0] || '')) || null
-                                }
-                            }
-                        });
-                            // [Get Elements By Class Name]
-                            (typeof EventTarget.prototype.$c == 'function') || Object.defineProperty(EventTarget.prototype, '$c', {
-                                // Value
-                                value: function LapysJSGetElementsByClassName() {
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (arguments.length > 0) {
-                                        /* Logic
-                                                [if:else if:else statement]
-                                        */
-                                        if (arguments.length > 1)
-                                            /* Logic
-                                                    [switch:case:default statement]
-
-                                                > Return
-                                            */
-                                            switch (arguments[1]) {
-                                                // Array
-                                                case 'array':
-                                                    return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))];
-                                                    break;
-
-                                                // Length
-                                                case 'length':
-                                                    return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))).length : NaN;
-                                                    break;
-
-                                                // Decremented Length
-                                                case '~length':
-                                                    return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))).length - 1 : NaN
-                                            }
-
-                                        // Return
-                                        return (typeof arguments[1] == 'number' ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))[arguments[1]] || null) : ((((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))).length > 1 ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0])))) : (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).querySelectorAll(((arguments[0] || '').constructor == Array) ? ('.' + arguments[0].join('.')) : (String(arguments[0]).indexOf(' ') > -1 ? ('.' + String(arguments[0]).getAfterChar(' ', !0)) : ('.' + arguments[0]))))[0])) || null
-                                    }
-                                }
-                            });
-
-                            // [Get Element By ID]
-                            (typeof EventTarget.prototype.$i == 'function') || Object.defineProperty(EventTarget.prototype, '$i', {
-                                // Value
-                                value: function LapysJSGetElementByID() {
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (arguments.length > 0) {
-                                        /* Logic
-                                                [if:else if:else statement]
-                                        */
-                                        if (arguments.length > 1)
-                                            /* Logic
-                                                    [switch:case:default statement]
-
-                                                > Return
-                                            */
-                                            switch (arguments[1]) {
-                                                // Array
-                                                case 'array':
-                                                    // Error Handling
-                                                    try {
-                                                        return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))]
-                                                    }
-
-                                                    catch (error) {
-                                                        return [((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))]
-                                                    }
-                                                    break;
-
-                                                // Length
-                                                case 'length':
-                                                    return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length : ('id' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? 1 : NaN);
-                                                    break;
-
-                                                // Decremented Length
-                                                case '~length':
-                                                    return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length - 1 : ('id' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? 0 : NaN)
-                                            }
-
-                                        // Return
-                                        return (typeof arguments[1] == 'number' ? ([((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))][arguments[1]] || null) : (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementById(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])))) || null
-                                    }
-                                }
-                            });
-
-                            // [Get Elements By Tag Name]
-                            (typeof EventTarget.prototype.$t == 'function') || Object.defineProperty(EventTarget.prototype, '$t', {
-                                // Value
-                                value: function LapysJSGetElementsByTagName() {
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (arguments.length > 0) {
-                                        /* Logic
-                                                [if:else if:else statement]
-                                        */
-                                        if (arguments.length > 1)
-                                            /* Logic
-                                                    [switch:case:default statement]
-
-                                                > Return
-                                            */
-                                            switch (arguments[1]) {
-                                                // Array
-                                                case 'array':
-                                                    return [...((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))];
-                                                    break;
-
-                                                // Length
-                                                case 'length':
-                                                    return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length : NaN;
-                                                    break;
-
-                                                // Decremented Length
-                                                case '~length':
-                                                    return 'length' in ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])) ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length - 1 : NaN
-                                            }
-
-                                        // Return
-                                        return typeof arguments[1] == 'number' ? (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))[arguments[1]] || null) : (((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])).length < 2 ? ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0]))[0] : ((this === window ? document : (this.constructor == DocumentFragment ? (this.querySelector('head + body') || this.children[0]) : this)) || document).getElementsByTagName(String(arguments[0]).indexOf(' ') > -1 ? String(arguments[0]).getAfterChar(' ', !0) : String(arguments[0])))
-                                    }
-                                }
-                            });
-
-                            // [Ancestor Element Query Selector (All)]
-                            (typeof EventTarget.prototype.$_ == 'function') || Object.defineProperty(EventTarget.prototype, '$_', {
-                                // Value
-                                value: function LapysJSQuerySelector() {
-                                    // Initialization > (Data, Metadata)
-                                    let data = document.$$(arguments[0], 'array'),
-                                        metadata = [];
-
-                                    /* Logic
-                                            Switch case to Argument 1.
-
-                                        > Update > Data
-                                    */
-                                    switch (arguments[1]) {
-                                        // Class
-                                        case 'c':
-                                            data = document.$c(arguments[0], 'array');
-                                            break;
-
-                                        // ID
-                                        case 'i':
-                                            data = document.$i(arguments[0], 'array');
-                                            break;
-
-                                        // Tag Name
-                                        case 't':
-                                            data = document.$t(arguments[0], 'array')
-                                    }
-
-                                    /* Loop
-                                            Index Data.
-
-                                        > Update > Metadata
-                                    */
-                                    for (let i = 0; i < data.length; i += 1)
-                                        ((this.parentPath || []).slice(1).indexOf(data[i]) < 0) || metadata.push(data[i]);
-
-                                    /* Logic
-                                            Switch case to Argument 1.
-
-                                        > Return
-                                    */
-                                    switch (arguments[1]) {
-                                        case 'array':
-                                            return metadata;
-                                            break;
-
-                                        case 'length':
-                                            return metadata.length;
-                                            break;
-
-                                        case '~length':
-                                            return ~-metadata.length
-                                    }
-
-                                    // Return
-                                    return (typeof arguments[1] == 'number' ? metadata[arguments[1]] : (metadata.length > 1 ? metadata : metadata[0])) || null
-                                }
-                            });
-
-                            /* [Descendant Element Query Selector (All)]
-                                    --- NOTE ---
-                                        @lapys: There might be some minor bugs (emphasis on the word, `might`).
-                            */
-                            (typeof EventTarget.prototype._$ == 'function') || Object.defineProperty(EventTarget.prototype, '_$', {
-                                // Value
-                                value: function LapysJSQuerySelector() {
-                                    // Initialization > (Data, Metadata)
-                                    let data = this.$$(arguments[0], 'array'),
-                                        metadata = [];
-
-                                    /* Logic
-                                            Switch case to Argument 1.
-
-                                        > Update > Data
-                                    */
-                                    switch (arguments[1]) {
-                                        // Class
-                                        case 'c':
-                                            data = this.$c(arguments[0], 'array');
-                                            break;
-
-                                        // ID
-                                        case 'i':
-                                            data = this.$i(arguments[0], 'array');
-                                            break;
-
-                                        // Tag Name
-                                        case 't':
-                                            data = this.$t(arguments[0], 'array')
-                                    }
-
-                                    /* Loop
-                                            Index Data.
-
-                                        > Update > Metadata
-                                    */
-                                    for (let i = 0; i < data.length; i += 1)
-                                        ([...(this.children || document.children)].indexOf(data[i]) < 0) || metadata.push(data[i]);
-
-                                    /* Logic
-                                            Switch case to Argument 1.
-
-                                        > Return
-                                    */
-                                    switch (arguments[1]) {
-                                        case 'array':
-                                            return metadata;
-                                            break;
-
-                                        case 'length':
-                                            return metadata.length;
-                                            break;
-
-                                        case '~length':
-                                            return ~-metadata.length
-                                    }
-
-                                    // Return
-                                    return (typeof arguments[1] == 'number' ? metadata[arguments[1]] : (metadata.length > 1 ? metadata : metadata[0])) || null
-                                }
-                            });
-
-                            // [Document (Fragment) > Prototype] > ([Query Selector (All)], [Get Elements By Class Name], [Get Element By ID], [Get Elements By Tag Name], [Ancestor Element Query Selector (All)], [Descendant Element Query Selector (All)])
-                            (typeof Document.prototype.$$ == 'function') || Object.defineProperty(Document.prototype, '$$', {value: $$});
-                            (typeof DocumentFragment.prototype.$$ == 'function') || Object.defineProperty(DocumentFragment.prototype, '$$', {value: $$});
-
-                            (typeof Document.prototype.$c == 'function') || Object.defineProperty(Document.prototype, '$c', {value: $c});
-                            (typeof DocumentFragment.prototype.$c == 'function') || Object.defineProperty(DocumentFragment.prototype, '$c', {value: $c});
-
-                            (typeof Document.prototype.$i == 'function') || Object.defineProperty(Document.prototype, '$i', {value: $i});
-                            (typeof DocumentFragment.prototype.$i == 'function') || Object.defineProperty(DocumentFragment.prototype, '$i', {value: $i});
-
-                            (typeof Document.prototype.$t == 'function') || Object.defineProperty(Document.prototype, '$t', {value: $t});
-                            (typeof DocumentFragment.prototype.$t == 'function') || Object.defineProperty(DocumentFragment.prototype, '$t', {value: $t});
-
-                            (typeof Document.prototype._$ == 'function') || Object.defineProperty(Document.prototype, '_$', {value: _$});
-                            (typeof DocumentFragment.prototype._$ == 'function') || Object.defineProperty(DocumentFragment.prototype, '_$', {value: _$});
-
-                            (typeof Document.prototype.$_ == 'function') || Object.defineProperty(Document.prototype, '$_', {value: $_});
-                            (typeof DocumentFragment.prototype.$_ == 'function') || Object.defineProperty(DocumentFragment.prototype, '$_', {value: $_});
-
-                        // Run Event
-                        (typeof EventTarget.prototype.runEvent == 'function') || (EventTarget.prototype.runEvent = function runEvent() {
-                            // Initialization > Arguments
-                            let args = [];
-
-                            /* Loop
-                                    Index Arguments.
-
-                                > Update > Arguments
-                            */
-                            for (let i = 0; i < arguments.length; i += 1)
-                                args = args.concat(LapysJS.debug.formatText(String(arguments[i]), 4));
-
-                            /* Loop
-                                    Index Arguments.
-                            */
-                            for (let i = 0; i < args.length; i += 1)
-                                // Error Handling
-                                try {
-                                    // Target > (DIspatch | Fire) Event
-                                    document.createEvent ? (this || window).dispatchEvent((this || window).customEvents[String(args[i])]) : (this || window).fireEvent('on ' + args[i], (this || window).customEvents[String(args[i])])
-                                }
-
-                                catch (error) {
-                                    /* Logic
-                                            If
-                                                Document.prototype.createEvent is defined.
-                                    */
-                                    if (typeof document.createEvent == 'function') {
-                                        // Initialization > Event
-                                        let event = document.createEvent('HTMLEvents');
-
-                                        // Event > Initialize Event
-                                        event.initEvent(String(args[i]), !1, !0);
-
-                                        // Target > Dispatch Event
-                                        (this || window).dispatchEvent(event)
-                                    }
-
-                                    else
-                                        // Target > Fire Event
-                                        (this || window).fireEvent('on ' + args[i])
-                                }
-                        });
-                            // Trigger
-                            (typeof EventTarget.prototype.trigger == 'function') || Object.defineProperty(EventTarget.prototype, 'trigger', {value: EventTarget.prototype.runEvent});
-
-                        // Set Event
-                        (typeof EventTarget.prototype.setEvent == 'function') || Object.defineProperty(EventTarget.prototype, 'setEvent', {
-                            // Value
-                            value: function setEvent() {
-                                // Initialization > Data
-                                let data = String(arguments[0]);
-
-                                /* Loop
-                                        Index Data.
-                                */
-                                for (let i = 0; i < LapysJS.debug.formatText(String(data), 4).length; i += 1) {
-                                    // Update > Data
-                                    (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_focus') || (data = data.replace('_focus', 'blur focus'));
-                                    (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_hover') || (data = data.replace('_hover', 'mouseleave mouseover'));
-                                    (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_key') || (data = data.replace('_key', 'keydown, keypress keyup'));
-                                    (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_mouse') || (data = data.replace('_mouse', 'mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup mousewheel'));
-                                    (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_seek') || (data = data.replace('_seek', 'seeked seeking'));
-                                    (LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, '') !== '_update') || (data = data.replace('_update', 'change input'))
-                                }
-
-                                // Modification > Target > Events
-                                (this || window)['LapysJS events'] = (this || window)['LapysJS events'] || new (function LapysJSEventMap() {});
-
-                                /* Loop
-                                        Index Data.
-                                */
-                                for (let i = 0; i < LapysJS.debug.formatText(String(data), 4).length; i += 1) {
-                                    // Update > Target > Events
-                                    (this || window)['LapysJS events'][
-                                        (index => {
-                                            /* Logic
-                                                    [if:else if:else statement]
-
-                                                > Return
-                                            */
-                                            if (
-                                                LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '') !== 'online' &&
-                                                LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').startsWith('on')
-                                            )
-                                                return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').replace('on', '');
-
-                                            else
-                                                return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
-                                        })(i)
-                                    ] = (this || window)['LapysJS events'][
-                                        (index => {
-                                            /* Logic
-                                                    [if:else if:else statement]
-
-                                                > Return
-                                            */
-                                            if (
-                                                LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '') !== 'online' &&
-                                                LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').startsWith('on')
-                                            )
-                                                return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').replace('on', '');
-
-                                            else
-                                                return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
-                                        })(i)
-                                    ] || [];
-
-                                    (this || window)['LapysJS events'][
-                                        (index => {
-                                            /* Logic
-                                                    [if:else if:else statement]
-
-                                                > Return
-                                            */
-                                            if (
-                                                LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '') !== 'online' &&
-                                                LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').startsWith('on')
-                                            )
-                                                return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '').replace('on', '');
-
-                                            else
-                                                return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
-                                        })(i)
-                                    ].push({
-                                        // Listener
-                                        listener: arguments[1],
-
-                                        // Type
-                                        type: (index => {
-                                            // Return
-                                            return LapysJS.debug.formatText(String(data), 4)[index].replace(/ /g, '')
-                                        })(i),
-
-                                        // Use Capture
-                                        useCapture: !!arguments[2],
-
-                                        // Wants Untrusted
-                                        wantsUntrusted: !!arguments[3]
-                                    });
-
-                                    // Event > Target > [Data]
-                                    typeof document.addEventListener == 'function' ?
-                                        (this || window).addEventListener(LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, ''), arguments[1], !!arguments[2], !!arguments[3]) :
-                                        (this || window).attachEvent(LapysJS.debug.formatText(String(data), 4)[i].replace(/ /g, ''), arguments[1], !!arguments[2], !!arguments[3])
-                                }
-                            }
-                        });
-
-                        (typeof EventTarget.prototype.smoothScrollTo == 'function') || Object.defineProperty(EventTarget.prototype, 'smoothScrollTo', {
-                            // Value
-                            value: function smoothScrollTo() {
-
-                            }
-                        });
-
-                        // Delete
-                        (typeof Node.prototype.delete == 'function') || (Node.prototype.delete = function Delete() {
-                            // Error Handling
-                            try {
-                                // Deletion
-                                this.remove()
-                            }
-
-                            catch (error) {
-                                // Initialization > Target
-                                let that = this;
-
-                                // Set Timeout
-                                setTimeout(function() {
-                                    // Error Handling
-                                    try {
-                                        try {
-                                            // Deletion
-                                            that.remove()
-                                        }
-
-                                        catch (error) {
-                                            // Error Handling
-                                            try {
-                                                // Deletion
-                                                that.parentNode.removeChild(that)
-                                            }
-
-                                            catch (error) {
-                                                // LapysJS > Error
-                                                LapysJS.error(error)
-                                            }
-                                        }
-                                    }
-
-                                    catch (error) {}
-                                })
-                            }
-                        });
-
-                        // Insert Child
-                        (typeof Node.prototype.insertChild == 'function') || Object.defineProperty(Node.prototype, 'insertChild', {
-                            // Value
-                            value: function insertChild() {
-                                // Insertion > Element
-                                this[(str((arguments[0] !== 'begin') || str((!this.prepend || 'prepend')).replace('true', 'cloneNode')).replace('true', str((arguments[0] !== 'end') || str((!this.append || 'append')).replace('true', 'appendChild')).replace('true', '')) || 'cloneNode')](arguments[1]);
-
-                                // Return
-                                return arguments[1]
-                            }
-                        });
-
-                        /* CSS Selector
-                                --- WARN ---
-                                    @lapys: Strings should not be placed as values in CSS attributes.
-                        */
-                        Element.prototype.CSSSelector || Object.defineProperty(Element.prototype, 'CSSSelector', {
-                            // Get
-                            get: function getCSSSelector() {
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (this != Element.prototype) {
-                                    // Initialization
-                                        // CSS Selector, Target
-                                        let CSSSelector = '',
-                                            that = this;
-
-                                    // Update > CSS Selector
-                                    CSSSelector = (
-                                        that.tagName.toLowerCase() +
-                                        (function() {
-                                            // Initialization > Classes
-                                            let Classes = '';
-
-                                            /* Logic
-                                                    If the Target has a class.
-                                            */
-                                            if (that.getAttribute('class'))
-                                                /* Loop
-                                                        Index the Target's class nodes.
-                                                */
-                                                for (let i = 0; i < LapysJS.debug.formatText(that.getAttribute('class'), 4).length; i += 1)
-                                                    /* Logic
-                                                            If
-                                                                the class node has any 'unusual''characters.
-
-                                                        > Update > Classes
-                                                    */
-                                                    if (LapysJS.debug.formatText(that.getAttribute('class'), 4)[i].replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
-                                                        Classes += "[class='" + LapysJS.debug.formatText(that.getAttribute('class'), 4)[i] + "']";
-
-                                                    else
-                                                        Classes += '.' + LapysJS.debug.formatText(that.getAttribute('class'), 4)[i];
-
-                                            // Return
-                                            return Classes
-                                        })() +
-
-                                        // ID
-                                        (function() {
-                                            /* Logic
-                                                    If
-                                                        the Target has an ID.
-                                            */
-                                            if (that.id)
-                                                /* Logic
-                                                        If
-                                                            the Target ID has any 'unusual''characters.
-
-                                                    > Return
-                                                */
-                                                if (that.id.replace(/[a-z]|[A-Z]|[0-9]|-|_|\$/g, '').trim() !== '')
-                                                    return "[id='" + that.id + "']";
-
-                                                else
-                                                    // Return
-                                                    return '#' + that.id;
-
-                                            // Return
-                                            return ''
-                                        })() +
-
-                                        // Attributes
-                                        (function() {
-                                            // Initialization > Attributes
-                                            let thatAttributes = '';
-
-                                            /* Loop
-                                                    Index the element"s attributes.
-                                            */
-                                            for (let i = 0; i < that.attributes.length; i += 1)
-                                                /* Logic
-                                                        If
-                                                            the attribute name is not 'class' and 'id'.
-                                                */
-                                                if (
-                                                    that.attributes[i].name !== 'class' &&
-                                                    that.attributes[i].name !== 'id'
-                                                )
-                                                    // Update > Attributes
-                                                    thatAttributes += '[' + that.attributes[i].name + "='" + (that.attributes[i].value || '').replace(/'/g, '"') + "']";
-
-                                            // Return
-                                            return thatAttributes
-                                        })()
-                                    );
-
-                                    // Return
-                                    return CSSSelector.replace(/=\'\'/g, '')
-                                }
-
-                                // Return
-                                return null
-                            },
-
-                            /* Set
-                                    --- WARN ---
-                                        @lapys: The CSSSelector parameter is necessary, trust me,
-                            */
-                            set: function setCSSSelector(CSSSelector) {
-                                // Update > CSS Selector
-                                CSSSelector += ' ';
-                                CSSSelector = CSSSelector.replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\'\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\{\}\«\»\ ]|){0,}\.([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\'\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\{\}\«\»\ ]|){0,}\]/g, data => {
-                                    // Return
-                                    return data.replace(/\./g, '::lapysjs_period' + alphabetString + '::')
-                                }).replace(/\.([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}/g, data => {
-                                    // Return
-                                    return "[class='" + data.slice('.'.length) + "']"
-                                }).replace(RegExp('::lapysjs_period' + alphabetString + '::', 'g'), '.').replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\$\%\&\'\(\)\*\+\,\;\-\.\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\'\(\)\{\}\«\»\ ]|){0,}\]/g, data => {
-                                    // Return
-                                    return data.replace(/#/g, '::lapysjs_hash' + alphabetString + '::')
-                                }).replace(/#([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}/g, data => {
-                                    // Return
-                                    return "[id='" + data.slice('.'.length) + "']"
-                                }).replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}\[/g, data => {
-                                    // Return
-                                    return '[' + data.slice('['.length).getBeforeChar('[') + ']['
-                                }).replace(RegExp('::lapysjs_hash' + alphabetString + '::', 'g'), '#').replace(/\[([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\#\%\&\(\)\*\+\,\-\.\;\$\/\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\(\)\{\}\«\»\ ]|){0,}(\]| )/g, data => {
-                                    // Return
-                                    return data.getBeforeChar('=') + "='" + data.getAfterChar('=').slice(0, -']'.length) + "'" + (data.lastChar.trim() || ']')
-                                }).trim();
-
-                                /* String Data > Match
-                                        --- WARN ---
-                                            This is a temporary cover-up for the String 'match' method.
-                                */
-                                String.prototype['LapysJS match'] = function match() {
-                                    // Return
-                                    return this.match.apply(this, arguments) || []
-                                };
-
-                                /* Loop
-                                        Index 'classes' in the CSS Selector.
-
-                                    > Modification > Target > Class
-                                */
-                                for (let i = 0; i < CSSSelector['LapysJS match'](/\[class='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g).length; i += 1)
-                                    this.addClass(CSSSelector['LapysJS match'](/\[class='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g)[i].slice("[class='".length, -"']".length));
-
-                                // Modification > Target > Class
-                                this.getAttribute('class') || this.removeAttribute('class');
-
-                                // Modification > Target > ID
-                                this.id = (CSSSelector['LapysJS match'](/\[id='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g)[~-CSSSelector['LapysJS match'](/\[id='([a-z]|[A-Z]|_|\$)([a-z]|[A-Z]|[0-9]|-|_|\$|){0,}'\]/g).length] || []).slice("[id='".length, -"']".length);
-                                this.id || this.removeAttribute('id');
-
-                                /* Loop
-                                        Index attributes in the CSS Selector.
-                                */
-                                for (let i = 0; i < (CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g)) || []).length; i += 1)
-                                    /* Logic
-                                            If
-                                                the attribute is not a 'class'
-                                                    and
-                                                the attribute is not an 'id'.
-                                    */
-                                    if (
-                                        !CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].startsWith("[class='") &&
-                                        !CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].startsWith("[id='")
-                                    )
-                                        /* Logic
-                                                If
-                                                    the attribute is a string property of the Target.
-
-                                            > Modification > Target > [CSS Selector]
-                                        */
-                                        if ((this[CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].slice('['.length).getBeforeChar('=').replace(/data-/g, 'dataset.').replace(/-[a-z]/g, data => { return data[1].toUpperCase() })] || _LapysJSObject).constructor.name === 'String')
-                                            this[CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].slice('['.length).getBeforeChar('=').replace(/data-/g, 'dataset.').replace(/-[a-z]/g, data => { return data[1].toUpperCase() })] = CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].getAfterChar('=').slice("'".length, -"']".length);
-
-                                        else
-                                            this.setAttribute(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].getBeforeChar('=').slice('['.length), CSSSelector['LapysJS match'](/\[([a-z]|-){1,}='([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\"\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\"\(\)\[\]\{\}\«\»\ ]|){0,}'\]/g).concat(CSSSelector['LapysJS match'](/\[([a-z]|-){1,}="([a-z]|[A-Z]|[0-9]|[\:\<\=\>\?\@\!\'\#\%\&\;\$\(\)\*\+\,\-\.\/\[\]\^\_\`\{\|\}\~\Ç\ü\é\â\ä\à\å\ç\ê\ë\è\ï\î\ì\Ä\Å\É\æ\Æ\ô\ö\ò\û\ù\ÿ\Ö\Ü\ø\£\Ø\×\ƒ\á\í\ó\ú\ñ\Ñ\ª\º\¿\®\¬\½\¼\¡\«\»\░\▒\▓\│\┤\Á\Â\À\©\╣\║\╗\╝\¢\¥\┐\└\┴\┬\├\─\┼\ã\Ã\╚\╔\╩\╦\╠\═\╬\¤\ð\Ð\Ê\Ë\È\ı\Í\Î\Ï\┘\┌\█\▄\¦\Ì\▀\Ó\ß\Ô\Ò\õ\Õ\µ\þ\Þ\Ú\Û\Ù\ý\Ý\¯\´\≡\±\‗\¾\¶\§\÷\¸\°\¨\·\¹\³\²\ñ\Ñ\@\¿\?\¡\!\:\/\á\é\í\ó\ú\Á\É\Í\Ó\Ú\ä\ë\ï\ö\ü\Ä\Ë\Ï\Ö\Ü\½\¼\¾\¹\³\²\ƒ\±\×\÷\£\¥\¢\¤\®\©\ª\º\°\'\(\)\[\]\{\}\«\»\ ]|){0,}"\]/g))[i].getAfterChar('=').slice("'".length, -"']".length));
-
-                                // Deletion
-                                delete String.prototype['LapysJS match']
-                            }
-                        });
-
-                        // Label
-                        'label' in Element.prototype || Object.defineProperty(Element.prototype, 'label', {
-                            // Get
-                            get: function getLabel() {
-                                // Return
-                                return this != Element.prototype ? (this.getAttribute('label') || '') : null
-                            },
-
-                            // Set
-                            set: function setLabel() {
-                                // Modification > Target > Role
-                                this.setAttribute('label', arguments[0])
-                            }
-                        });
-
-                        // Parent
-                        Element.prototype.parent || Object.defineProperty(Element.prototype, 'parent', {
-                            // Get
-                            get: function parent() {
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (this != Element.prototype)
-                                    // Return
-                                    return this.parentElement || this.parentNode;
-
-                                // Return
-                                return null
-                            }
-                        });
-
-                        // Parent Path
-                        document.createElement('a').parentPath || Object.defineProperty(Element.prototype, 'parentPath', {
-                            // Get
-                            get: function parentPath() {
-                                // Initialization
-                                    // Target
-                                    let that = this;
-
-                                    // Parent Nodes
-                                    let parents = [];
-
-                                /* Logic
-                                        While
-                                            the Target is still defined.
-                                */
-                                while (that) {
-                                    // Update
-                                        // Parent Nodes
-                                        parents.push(that);
-
-                                        // Target
-                                        that = that.parentNode || that.parentElement
-                                };
-
-                                // Update > Parent Nodes
-                                parents.push(window);
-
-                                // Return
-                                return parents
-                            }
-                        });
-
-                        // Previous Element Siblings
-                        Element.prototype.previousElementSiblings || Object.defineProperty(Element.prototype, 'previousElementSiblings', {
-                            // Get
-                            get: function previousElementSiblings() {
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (this != Element.prototype) {
-                                    // Initialization > Result
-                                    let result = [];
-
-                                    /* Loop
-                                            [for statement]
-
-                                        > Update > Result
-                                    */
-                                    for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
-                                        ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) > ~-[...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
-
-                                    // Return
-                                    return result.length > 0 ? result : null
-                                }
-
-                                // Return
-                                return null
-                            }
-                        });
-
-                        // Next Element Siblings
-                        Element.prototype.nextElementSiblings || Object.defineProperty(Element.prototype, 'nextElementSiblings', {
-                            // Get
-                            get: function nextElementSiblings() {
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (this != Element.prototype) {
-                                    // Initialization > Result
-                                    let result = [];
-
-                                    /* Loop
-                                            [for statement]
-
-                                        > Update > Result
-                                    */
-                                    for (let i = 0; i < [...(this.parentElement || this.parentNode || {children: []}).children].length; i += 1)
-                                        ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf([...(this.parentElement || this.parentNode || {children: []}).children][i]) < ([...(this.parentElement || this.parentNode || {children: []}).children].indexOf(this)) + 1) || result.push([...(this.parentElement || this.parentNode || {children: []}).children][i]);
-
-                                    // Return
-                                    return result
-                                }
-
-                                // Return
-                                return null
-                            }
-                        });
-
-                        // Insert Child
-                        (typeof Node.prototype.reverseChildElementsOrder == 'function') || Object.defineProperty(Node.prototype, 'reverseChildElementsOrder', {
-                            // Value
-                            value: function reverseChildElementsOrder() {
-                                let data = this.children;
-
-                                for (let i = 0; i < data.length; i += 1)
-                                    this.insertBefore(data[i], data[0]);
-
-                                return this
-                            }
-                        });
-
-                        // Role
-                        'role' in Element.prototype || Object.defineProperty(Element.prototype, 'role', {
-                            // Get
-                            get: function getRole() {
-                                // Return
-                                return this != Element.prototype ? (this.getAttribute('role') || '') : null
-                            },
-
-                            // Set
-                            set: function setRole() {
-                                // Modification > Target > Role
-                                this.setAttribute('role', arguments[0])
-                            }
-                        });
-
-                        // Siblings
-                        Element.prototype.siblings || Object.defineProperty(Element.prototype, 'siblings', {
-                            // Get
-                            get: function getSiblings() {
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (this != Element.prototype) {
-                                    // Initialization > (Target, Array)
-                                    let that = this,
-                                        array = [];
-
-                                    /* Loop
-                                            Index Target's Parent's Children.
-                                    */
-                                    for (let i = 0; i < this.parentElement.children.length; i += 1)
-                                        array.push(this.parentElement.children[i]);
-
-                                    // Return
-                                    return array.filter(data => {
-                                        // Return
-                                        return data !== that
-                                    })
-                                }
-
-                                // Return
-                                return null
-                            }
-                        });
-
-                        // Height
-                        Element.prototype.height || Object.defineProperty(HTMLElement.prototype, 'height', {
-                            // Get
-                            get: function getHeight() {
-                                // Return
-                                return this.getBoundingClientRect().height
-                            },
-
-                            // Set
-                            set: function setHeight(number) {
-                                // Target > Style > Height
-                                this.style.height = number + 'px'
-                            }
-                        });
-
-                        // Offset
-                        Element.prototype.offset || (Object.defineProperty(HTMLElement.prototype, 'offset', {
-                            // Get
-                            get: function offset() {
-                                // Initialization > (Data, Metadata, Target)
-                                let data = {},
-                                    metadata = this.getBoundingClientRect(),
-                                    that = this;
-
-                                /* Loop
-                                        Index Metadata.
-
-                                    > Modification > Data > [Property Name]
-                                */
-                                for (let i in metadata)
-                                    (typeof metadata[i] != 'number') || Object.defineProperty(data, i, {
-                                        // Get
-                                        get: function() {
-                                            // Return
-                                            return metadata[i]
-                                        },
-
-                                        // Set
-                                        set: function() {
-                                            // Style > Target > [Property Name]
-                                            that.style[i] = arguments[0] + 'px'
-                                        }
-                                    });
-
-                                // Return
-                                return data
-                            }
-                        }));
-
-                        // Width
-                        Element.prototype.width || Object.defineProperty(HTMLElement.prototype, 'width', {
-                            // Get
-                            get: function getWidth() {
-                                // Return
-                                return this.getBoundingClientRect().width
-                            },
-
-                            // Set
-                            set: function setWidth(number) {
-                                // Target > Style > Width
-                                this.style.width = number + 'px'
-                            }
-                        });
-
-                        // Body
-                        (typeof HTMLTableElement.prototype.body == 'function') || Object.defineProperty(HTMLTableElement.prototype, 'body', {
-                            // Configurable
-                            configurable: !0,
-
-                            // Enumerable
-                            enumerable: !0,
-
-                            // Get
-                            get: function body() {
-                                // Initialization > Data
-                                let data = [...this.children];
-
-                                /* Loop
-                                        [for statement]
-                                */
-                                for (let i of data)
-                                    /* Logic
-                                            [if:else if:else statement]
-
-                                        > Return
-                                    */
-                                    if (i.tagName == 'TBODY')
-                                        return i;
-
-                                // Return
-                                return null
-                            }
-                        });
-
-                        // Footer
-                        (typeof HTMLTableElement.prototype.footer == 'function') || Object.defineProperty(HTMLTableElement.prototype, 'footer', {
-                            // Configurable
-                            configurable: !0,
-
-                            // Enumerable
-                            enumerable: !0,
-
-                            // Get
-                            get: function footer() {
-                                // Initialization > Data
-                                let data = [...this.children];
-
-                                /* Loop
-                                        [for statement]
-                                */
-                                for (let i of data)
-                                    /* Logic
-                                            [if:else if:else statement]
-
-                                        > Return
-                                    */
-                                    if (i.tagName == 'TFOOT')
-                                        return i;
-
-                                // Return
-                                return null
-                            }
-                        });
-
-                        // Head
-                        (typeof HTMLTableElement.prototype.head == 'function') || Object.defineProperty(HTMLTableElement.prototype, 'head', {
-                            // Configurable
-                            configurable: !0,
-
-                            // Enumerable
-                            enumerable: !0,
-
-                            // Get
-                            get: function head() {
-                                // Initialization > Data
-                                let data = [...this.children];
-
-                                /* Loop
-                                        [for statement]
-                                */
-                                for (let i of data)
-                                    /* Logic
-                                            [if:else if:else statement]
-
-                                        > Return
-                                    */
-                                    if (i.tagName == 'THEAD')
-                                        return i;
-
-                                // Return
-                                return null
-                            }
-                        });
-
-                        /* Convert Frame to Image
-                                --- UPDATE REQUIRED ---
-                                    @lapys: There has to be a better way for this to be done.
-
-                                        The main goal is to return an <img> element whose source is
-                                        directed to the specified frame.
-                        */
-                        (typeof HTMLVideoElement.prototype.convertFrameToImage == 'function') || Object.defineProperty(HTMLVideoElement.prototype, 'convertFrameToImage', {
-                            // Value
-                            value: function convertFrameToImage() {
-                                // Initialization > (Data(, Context), Metadata, Target)
-                                let data = document.createElement('canvas'),
-                                    dataContext = data.getContext('2d'),
-                                    metadata = createElement('video', '', '', {src: this.src || decodeURIComponent(this.currentSrc)}),
-                                    that = this;
-
-                                // Modification > Data > (Height, Width)
-                                data.height = this.offset.height;
-                                data.width = this.offset.width;
-
-                                // Event > Metadata > Seeked
-                                metadata.setEvent('seeked', function() {
-                                    // Data Context > Draw Image
-                                    dataContext.drawImage(metadata, 0, 0, that.offset.width, that.offset.height);
-
-                                    // Update > (LapysJS > Permanent Data) > Framed Image
-                                    LapysJS.perm.framedImage = data
-                                });
-
-                                // Modification > Metadata > Current Time
-                                metadata.currentTime = parseInt(arguments[0]) || 0
-                            }
-                        });
-
-            /* Assets, Components
-                    --- NOTE ---
-                        @lapys: The 'LapysJS isModified' property helps the loop know which
-                            Components have not been modified.
-            */
                 // On DOM Ready
                 onDOMReady(LapysJS.script.scriptPlugIns = function LapysJSScriptPlugIns() {
                     // Accordion
@@ -13925,7 +14314,7 @@
                     */
                     (LapysJS.script.scriptCarousel = function LapysJSScriptCarousel() {
                         // Initialization > Carousel
-                        let carousel = [...document.querySelectorAll(".carousel:not(.accordion):not(.dropdown):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not(input):not(textarea)")];
+                        let carousel = [...document.querySelectorAll(".carousel:not(.accordion):not(.dropdown):not(.dynamic-time):not(.dynamic-text):not(.media):not(.media-playlist):not(.roulette):not([data-id*='drag-element']):not(input):not(textarea)")];
 
                         /* Loop
                                 Index Carousels.
@@ -14966,7 +15355,7 @@
                                         // Drag Start
                                         dragElement[i].setEvent('drag dragenter dragexit dragleave dragover touchmove touchstart', function(event) {
                                             // Initialization > (Metadata, Target)
-                                            let metadata = document.getElementsByTagName(alphabetString)[0] || document.createElement(alphabetString),
+                                            let metadata = document.getElementsByTagName(regexSet)[0] || document.createElement(regexSet),
                                                 that = this;
 
                                             // Select
@@ -15320,7 +15709,7 @@
                                                     // Modification > Element > Text
                                                     element['LapysJS text'] = (function(element) {
                                                         // Initialization > (Data, Metadata, Array)
-                                                        let data = (' ' + element.getAttribute('data-text')).slice(' '.length).replace(RegExp('\\\\' + element.getAttribute('data-text-separator'), 'g'), alphabetString),
+                                                        let data = (' ' + element.getAttribute('data-text')).slice(' '.length).replace(RegExp('\\\\' + element.getAttribute('data-text-separator'), 'g'), regexSet),
                                                             metadata = [],
                                                             array = [];
 
@@ -15340,7 +15729,7 @@
 
                                                             // Update
                                                                 // Result
-                                                                result = result.replace(RegExp(alphabetString, 'g'), element.getAttribute('data-text-separator'));
+                                                                result = result.replace(RegExp(regexSet, 'g'), element.getAttribute('data-text-separator'));
 
                                                                 // Metadata
                                                                 metadata.push(result)
@@ -15373,7 +15762,7 @@
                                                 get: function text() {
                                                     // Initialization > (Element, Data, Metadata, Array)
                                                     let element = dynamicText[i],
-                                                        data = (' ' + element.getAttribute('data-text')).slice(' '.length).replace(RegExp('\\\\' + element.getAttribute('data-text-separator'), 'g'), alphabetString),
+                                                        data = (' ' + element.getAttribute('data-text')).slice(' '.length).replace(RegExp('\\\\' + element.getAttribute('data-text-separator'), 'g'), regexSet),
                                                         metadata = [],
                                                         array = [];
 
@@ -15393,7 +15782,7 @@
 
                                                         // Update
                                                             // Result
-                                                            result = result.replace(RegExp(alphabetString, 'g'), this.getAttribute('data-text-separator'));
+                                                            result = result.replace(RegExp(regexSet, 'g'), this.getAttribute('data-text-separator'));
 
                                                             // Metadata
                                                             metadata.push(result)
@@ -18446,13 +18835,22 @@
             /* Modification */
                 /* LapysJS */
                     /* Executed
-                            --- WARN ---
-                                @lapys: The LapysJS Script function must run only once.
+                            --- NOTE ---
+                                @lapys: LapysJS is registered as complete.
                     */
-                    LapysJS.executed =
+                    LapysJS.executed = !!(LapysJS.readyState = 'complete');
 
-                    // Ready
-                    LapysJS.ready = !0;
+                    /* Ready
+                            --- NOTE ---
+                                @lapys: LapysJS ran smoothly without errors.
+                    */
+                    LapysJS.ready = LapysJS.executed;
+
+                    /* Ready State
+                            --- WARN ---
+                                @lapys: The `readyState` property becomes unchangeable.
+                    */
+                    Object.defineProperty(LapysJS, 'readyState', {value: 'complete'});
 
             // Console > (...)
             console.group('LapysJS');
