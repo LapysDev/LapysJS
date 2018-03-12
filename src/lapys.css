@@ -1,7 +1,8 @@
 /**
     @author: Lapys Dev Team
-    @description: LapysJS is a JavaScript library that uses its own CSS framework to beautify its JavaScript components and normalize DOM Elements.
-    @version: 0.0.1
+    @description: LapysJS is a JavaScript library with its independent CSS counterpart designed to simplify JavaScript.
+    @version: 0.0.2
+    @url: https://www.lapysjs.com
 */
 /* CSS At-Rules */
     /* Character-Set Encoding
@@ -1852,6 +1853,21 @@
         font-weight: bold
     }
 
+    /* Camel */
+    .camel {
+        text-transform: capitalize
+    }
+        /* Pseudo > First Letter */
+        .camel:first-letter {
+            text-transform: lowercase
+        }
+
+    /* Capital, Pascal */
+    .capital,
+    .pascal {
+        text-transform: capitalize
+    }
+
     /* Card */
     .card {
         box-shadow: 0 2.5px 2.5px 0 rgba(0, 0, 0, .3);
@@ -2081,16 +2097,16 @@
         width: 90%
     }
 
+    .dialog,
+    [data-id*=drag-element]:active,
+    screen-tip {
+        z-index: 2147483647
+    }
+
     /* Drag Element */
     [data-id*=drag-element] {
-        padding: 0;
         text-indent: 0
     }
-        /* States > Active */
-        .dialog,
-        [data-id*=drag-element]:active {
-            z-index: 2147483647
-        }
 
     /* Dynamic Text */
         /* <span> */
@@ -2106,7 +2122,6 @@
                 max-width: 1px;
                 min-height: 100%;
                 min-width: 1px;
-                padding: 0;
                 width: 1px
             }
                 /* @keyframes > Pulse */
@@ -2347,6 +2362,25 @@
     xmp {
         margin: 0
     }
+        /* Bottom */
+        .no-margin-bottom {
+            margin-bottom: 0
+        }
+
+        /* Left */
+        .no-margin-left {
+            margin-left: 0
+        }
+
+        /* Right */
+        .no-margin-right {
+            margin-right: 0
+        }
+
+        /* Top */
+        .no-margin-top {
+            margin-top: 0
+        }
 
     /* No Outline */
     [contenteditable=false],
@@ -2365,7 +2399,9 @@
     }
 
     /* No Padding */
+    [data-id*=drag-element],
     .carousel > [data-id=slides-container],
+    .dynamic-text span[data-id*=cursor],
     .jumbotron,
     .no-pad,
     .no-padding,
@@ -2675,8 +2711,7 @@
         left: -1000px;
         padding: 5px 10px;
         transition: opacity .3s ease-in-out;
-        top: -1000px;
-        z-index: 2147483647
+        top: -1000px
     }
 
     /* Single Line */
@@ -2945,12 +2980,34 @@
         hr {
             height: 0
         }
+            /* Maximum */
+            .max-crush,
+            .max-crush-h {
+                max-height: 0
+            }
+
+            /* Minimum */
+            .min-crush,
+            .min-crush-h {
+                max-height: 0
+            }
 
         /* Width */
         .crush,
         .crush-w {
             width: 0
         }
+            /* Minimum */
+            .min-crush,
+            .min-crush-h {
+                min-height: 0
+            }
+
+            /* Minimum */
+            .min-crush,
+            .min-crush-h {
+                min-height: 0
+            }
 
     /* Fill */
         /* Height */
@@ -2974,6 +3031,7 @@
         .fill-w,
         .jumbotron,
         .responsive table,
+        .row,
         .row-grp:not([class*=col-]):not([class*=grid-]),
         .row-grp > *,
         .row-group:not([class*=col-]):not([class*=grid-]),
@@ -2985,6 +3043,11 @@
         }
 
     /* Flow */
+        /* Crush */
+        .flow-crush {
+            flex-basis: 0
+        }
+
         /* Fill */
         .flow-fill,
         .col-grp:not([class*=col-]):not([class*=grid-]),
@@ -3000,7 +3063,7 @@
             flex-basis: 100vh
         }
 
-        /* Flow Match */
+        /* Match */
         .flow-match {
             flex-basis: inherit
         }
@@ -3011,12 +3074,34 @@
         .full-h {
             height: 100vh
         }
+            /* Maximum */
+            .max-full,
+            .max-full-h {
+                max-height: 100vh
+            }
+
+            /* Minimum */
+            .min-full,
+            .min-full-h {
+                min-height: 100vh
+            }
 
         /* Width */
         .full,
         .full-w {
             width: 100vh
         }
+            /* Maximum */
+            .max-full,
+            .max-full-w {
+                max-width: 100vh
+            }
+
+            /* Minimum */
+            .min-full,
+            .min-full-w {
+                min-width: 100vh
+            }
 
     /* Match */
         /* Height */
@@ -3024,6 +3109,17 @@
         .match-h {
             height: inherit
         }
+            /* Maximum */
+            .max-match,
+            .max-match-h {
+                max-height: inherit
+            }
+
+            /* Minimum */
+            .min-match,
+            .min-match-h {
+                max-height: inherit
+            }
 
         /* Width */
         .match,
@@ -3031,7 +3127,7 @@
             width: inherit
         }
 
-    /* Z (Order) */
+    /* Z (Index) */
         /* 0 */
         .z-0 {
             z-index: 0
@@ -3574,6 +3670,14 @@
         .flex {
             flex-direction: row
         }
+            /* End */
+            .flex-end {
+                align-content: flex-end;
+                align-items: flex-end;
+                align-self: flex-end;
+                justify-content: flex-end
+            }
+
             /* Reverse */
             .flex-reverse,
             .row-grp,
@@ -3587,6 +3691,14 @@
 
             .flex-reverse.reverse {
                 flex-direction: column-reverse
+            }
+
+            /* Start */
+            .flex-start {
+                align-content: flex-start;
+                align-items: flex-start;
+                align-self: flex-start;
+                justify-content: flex-start
             }
 
         /* Flow Root */
@@ -4591,6 +4703,8 @@
             .col-grp .max-grid-1,
             .grid-1:not(.strict-grid),
             .jumbotron,
+            .max-fill,
+            .max-fill-w,
             .max-grid-1,
             .responsive,
             .roulette > [data-id*=cards-container],
@@ -4598,6 +4712,8 @@
                 max-width: 100%
             }
 
+            .max-fill,
+            .max-fill-h,
             .row-grp .max-grid-1 {
                 max-height: 100%
             }
@@ -4605,10 +4721,14 @@
             /* Minimum */
             .col-grp .min-grid-1,
             .grid-1:not(.strict-grid),
+            .min-fill,
+            .min-fill-w,
             .min-grid-1 {
                 min-width: 100%
             }
 
+            .min-fill,
+            .min-fill-h,
             .row-grp .min-grid-1 {
                 min-height: 100%
             }

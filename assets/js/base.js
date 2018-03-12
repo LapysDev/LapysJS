@@ -1,36 +1,50 @@
 /* Function > Base Script
+        --- NOTE ---
+            @lapys:
+                - Variables defined in all caps represent constants (except in private/ special cases).
+
         --- WARN ---
-            @lapys: Do not use template strings, defer to standard concatenation instead.
+            @lapys:
+                - Do not use template strings, defer to standard string concatenation instead.
 */
 (function BaseScript(window = window, document = window.document, global = typeof global != 'undefined' ? global : null, undefined = window.undefined || void 0, LapysJS = typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false })) {
+    // Polyfill
+        // Data
+        let _data = new (function Data() {});
+
     /* {Global Object Test} Logic
             If
                 LapysJS is ready.
     */
-    if (typeof LapysJS == 'object' && (LapysJS || new (function Data() {})).ready === true) {
-        /* Global Data
-                --- NOTE ---
-                    @lapys: Variables defined in all caps represent constants.
-        */
-            // Allow Alternative Resource Files
-            def('ALLOW_ALTERNATIVE_RESOURCE_FILES', {
-                // Value
-                value: !global.ALLOW_ALTERNATIVE_RESOURCE_FILES ? true : ALLOW_ALTERNATIVE_RESOURCE_FILES,
+    if (typeof LapysJS == 'object' && (LapysJS || _data).ready === true) {
+        /* Function */
+            // Log
+                // Initialization > Log
+                let _log = log.clone(true);
 
-                // Writable
-                writable: false
-            });
+                // Definition
+                def('log', function log() {
+                    // Initialization > Arguments
+                    let args = [...arguments];
 
+                    // Log
+                    _log.apply(global, args);
+
+                    // Return
+                    return len(args) > 1 ? args : args[0]
+                });
+
+        /* Global Data */
             // Application
                 /* Logic
                         [if:else if:else statement]
 
                         --- NOTE ---
-                            @lapys: Configure the application from here.
+                            @lapys: Configure the 'application' from here.
 
                     > Modification > Application
                 */
-                if (typeof app == 'object') {
+                if (getType(app) == 'application-information') {
                     // Author
                     app.author = 'Lapys Dev Team';
 
@@ -50,7 +64,7 @@
                     app.keywords = 'JavaScript Library, Lapys Dev, LapysJS, Simplify JavaScript';
 
                     // Name
-                    app.name = 'LapysJS';
+                    app.name = 'LapysJS | Building web frameworks';
 
                     // Robots
                     app.robots = 'none';
@@ -62,257 +76,474 @@
                     app.version = LapysJS.version
                 }
 
-            // Dynamic Assets URL
-            def('DYNAMIC_ASSETS_URL', {
-                // Value
-                value: (function() {
-                    // Initialization > Data
-                    let data = '';
-
-                    /* Logic
-                            [if:else if:else statement]
-
-                        > Update > Data
-                    */
-                        // {Home}
-                        if (location.href.getBeforeChar('/', true).endsWith('LapysJS'))
-                            data = '';
-
-                        // {Internal Page}
-                        else if (location.href.getBeforeChar('/', true).endsWith('pages'))
-                            data = '../';
-
-                    // Return
-                    return data
-                })(),
-
-                // Writable
-                writable: false
-            });
-
-            // CSS > Link
-                /* Logic
-                        [if:else if:else statement]
-                */
-                if (ALLOW_ALTERNATIVE_RESOURCE_FILES) {
-                    // LapysJS Stylesheet
-                    css.link('LapysJSStylesheet', {href: decodeURIComponent(LapysJS.script.src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                    // Base Stylesheet
-                    css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[src*='base.'][src*='.js'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                    // App JS Stylesheet
-                    !$$("script[src*='app.'][src*='.js'", 0) || css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[src*='app.'][src*='.js'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                    // Interval JS Stylesheet
-                    !$$("script[src*='interval.'][src*='.js'", 0) || css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[src*='interval.'][src*='.js'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                    // Document Stylesheet
-                    !$$("script[data-id*='documentScript'", 0) || css.link('LapysJSStylesheet', {href: decodeURIComponent($$("script[data-id*='documentScript'", 0).src.replace(/js/g, 'css')), media: 'all', rel: 'stylesheet', type: 'text/css'})
-                }
-
             // Document
                 // Favorite Icon
                     // Initialization > Favorite Icon URL
                     let faviconURL = null;
 
-                    // LapysJS > Component > Image
-                    new LapysJS.component.Image(new (function Object() {
-                        // Initialization > Data
-                        let data = DYNAMIC_ASSETS_URL + 'favicon.ico';
-
-                        // On Error
-                        this.onerror = function() {
-                            // Update > Favorite Icon URL
-                            faviconURL = DYNAMIC_ASSETS_URL + 'assets/img/ico/icon.ico'
-                        },
-
-                        // On Load
-                        this.onload = function() {
-                            // Update > Favorite Icon URL
-                            faviconURL = data
-                        },
-
-                        // Source
-                        this.src = data
-                    }));
-
                     // Check
-                    check(function checkFavoriteIconReady() {
+                    check(function() {
                         // Return
-                        return faviconURL !== null
-                    }, function setFavoriteIcon() {
-                        // Modification > Document > Favorite Icon
-                        document.favicon = faviconURL
+                        return hasProperty('info')
+                    }, function() {
+                        // LapysJS > Component > Image
+                        new LapysJS.component.Image(new (function Object() {
+                            // Initialization > (Data, Target)
+                            let data = info.dynamicAssetsURL + 'favicon.ico',
+                                that = this;
+
+                            // On Error
+                            that.onerror = function() {
+                                // Update > Favorite Icon URL
+                                faviconURL = info.dynamicAssetsURL + 'assets/img/ico/icon.ico'
+                            },
+
+                            // On Load
+                            that.onload = function() {
+                                // Update > Favorite Icon URL
+                                faviconURL = data
+                            },
+
+                            // Source
+                            that.src = data
+                        }));
+
+                        // Check
+                        check(function() {
+                            // Return
+                            return faviconURL !== null
+                        }, function() {
+                            // Modification > Document > Favorite Icon
+                            document.favicon = faviconURL
+                        })
                     });
 
                 // Title
                 document.title = 'LapysJS';
 
-            // LapysJS > $ > Import > Font
-                // Calibri Light
-                LapysJS.$.import.font({format: 'truetype', name: 'Calibri Light', src: DYNAMIC_ASSETS_URL + 'assets/fonts/calibri-light.ttf'});
+            // Information (Manager)
+            def('informationManager', {
+                // Value
+                value: new (function InformationManager() {
+                    // Initialization > (Reset-Set, Target)
+                    let rs = true,
+                        that = this,
+                        _that = that.constructor.prototype;
 
-                // Calibri
-                LapysJS.$.import.font({format: 'truetype', name: 'Calibri', src: DYNAMIC_ASSETS_URL + 'assets/fonts/calibri.ttf'});
+                    // Function
+                        // Import Alternative Resources
+                        function importAlternativeResources() {
+                            // Target > Log
+                            that.log('Importing alternative resource files.');
 
-                // Droid Serif
-                LapysJS.$.import.font({format: 'truetype', name: 'Droid Serif', src: DYNAMIC_ASSETS_URL + 'assets/fonts/droid-serif.ttf'});
+                            // Initialization > (Data, Metadata, Alpha)
+                            let data = location.href,
+                                metadata = data.getAfterChar('/', true) || that.homePageFile.name,
+                                alpha = that.dynamicAssetsURL;
 
-                // Open Sans
-                LapysJS.$.import.font({format: 'truetype', name: 'Open Sans', src: DYNAMIC_ASSETS_URL + 'assets/fonts/open-sans.ttf'});
+                            // Function > Update
+                            function update() {
+                                // Return
+                                return decodeURIComponent(arguments[1] ? arguments[0].replace(/css/g, 'js') : arguments[0].replace(/js/g, 'css'))
+                            }
 
-                // PT Sans
-                LapysJS.$.import.font({format: 'truetype', name: 'PT Sans', src: DYNAMIC_ASSETS_URL + 'assets/fonts/pt-sans.ttf'});
+                            /* Logic
+                                    [if:else if:else statement]
+                            */
+                            if (rs) {
+                                // LapysJS > $ > Import
+                                    // Calibri Light
+                                    LapysJS.$.import('font', {format: 'truetype', name: 'Calibri Light', url: alpha + 'assets/fonts/ttf/calibri-light.ttf'});
 
-                // Roboto Mono
-                LapysJS.$.import.font({format: 'truetype', name: 'PT Sans', src: DYNAMIC_ASSETS_URL + 'assets/fonts/roboto-mono.ttf'});
+                                    // Calibri
+                                    LapysJS.$.import('font', {format: 'truetype', name: 'Calibri', url: alpha + 'assets/fonts/ttf/calibri.ttf'});
 
-            // Navigation Links
-            def('NAVIGATION_LINKS', new (function NavigationLinksList() {
-                // Initialization > (Data, Target)
-                let data = [
-                    // LapysJS
-                    new (function NavigationLink() {
-                        // Modification > Target > (...)
-                        this.class = 'col-1';
-                        this.href = 'index.html';
-                        this.role = 'home';
-                        this.target = '_self';
-                        this.textContent = 'LapysJS';
-                        this.title = 'Back to the main hub'
-                    }),
+                                    // Droid Serif
+                                    LapysJS.$.import('font', {format: 'truetype', name: 'Droid Serif', url: alpha + 'assets/fonts/ttf/droid-serif.ttf'});
 
-                    // JavaScript
-                    new (function NavigationLink() {
-                        // Modification > Target > (...)
-                        this.class = 'col-1';
-                        this.href = 'pages/javascript.html';
-                        this.role = 'javascript';
-                        this.target = '_self';
-                        this.textContent = 'JavaScript';
-                        this.title = 'Reference our JavaScript documentation'
-                    })
-                ], that = this;
+                                    // Open Sans
+                                    LapysJS.$.import('font', {format: 'truetype', name: 'Open Sans', url: alpha + 'assets/fonts/ttf/open-sans.ttf'});
 
-                // Repeat
-                repeat(index => {
-                    // Modification > Target > [Index]
-                    that[index] = data[index]
-                }, len(data));
+                                    // PT Sans
+                                    LapysJS.$.import('font', {format: 'truetype', name: 'PT Sans', url: alpha + 'assets/fonts/ttf/pt-sans.ttf'});
 
-                // Modification > Target > Length
-                that.length = data.length
-            }));
+                                    // Roboto Mono
+                                    LapysJS.$.import('font', {format: 'truetype', name: 'Roboto Mono', url: alpha + 'assets/fonts/ttf/roboto-mono.ttf'});
 
-            // Random Version Number
-            def('RANDOM_VER_NUMBER', {
-                /* Value
-                        --- NOTE ---
-                            @lapys: This simulates the current date in milliseconds,
-                                slices to the first 5 characters and provides the format
-                                x.xxx.x
-                */
-                value: str(+date).slice(-5).replace(/[0-9]/, '$&.').reverse().replace(/[0-9]/, '$&.').reverse(),
+                                // Update > Reset-Set
+                                rs = false
+                            }
 
-                // Writable
-                writable: false
-            });
+                            // JavaScript > Source
+                                // Document Script
+                                $$("script[src*='" + metadata + ".'][src*='.js'", 0) || js.src(false, alpha + 'assets/js/index.js', {type: 'text/javascript'});
 
-        /* Functions */
-            // On Node Added
-            onNodeAdded(document.documentElement, function() {
-                /* Loop
-                        [do:while statement]
+                            // CSS > Link
+                                // LapysJS Stylesheet
+                                $$("link[href*='lapys.'][href*='.css'", 0) || css.link(false, update(LapysJS.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
 
-                        --- NOTE ---
-                            @lapys: Attempt to update the
-                                caching power and the script breakage of
-                                scripting files in <script> elements.
+                                // Base Stylesheet
+                                $$("link[href*='" + (that.script.src.getAfterChar('/', true) || 'base').getBeforeChar('.', true) + ".'][href*='.css'", 0) || css.link(false, update(that.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
 
-                    > Modification > <script> > Source
-                */
-                while ($$("script:not([src*='?'])", 0))
-                    $$("script:not([src*='?'])", 0).src = decodeURIComponent($$("script:not([src*='?'])", 0).src + '?' + RANDOM_VER_NUMBER)
-            });
+                                // App JS Stylesheet
+                                !LapysJS.perm.vendors.hasElement('AppJS') || css.link(false, update(LapysJS.perm.vendors.appJS.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
 
-            // On DOM Ready
-            onDOMReady(function() {
-                /* DOM Elements */
-                    // <script>
-                        // On Node Added
-                        onNodeAdded(document.documentElement, function() {
-                            // Repeat
-                            repeat(function() {
-                                // Deletion
-                                $t('script', 0).delete()
-                            }, $t('script', 'length'))
+                                // Interval JS Stylesheet
+                                !LapysJS.perm.vendors.hasElement('IntervalJS') || css.link(false, update(LapysJS.perm.vendors.intervalJS.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
+
+                                // Document Stylesheet
+                                    // Check
+                                    check(function() {
+                                        // Return
+                                        return (LapysJS.tmp || _data).message == 'Document Script installed.'
+                                    }, function() {
+                                        // (...)
+                                        $$("link[href*='" + metadata + ".'][href*='.css'", 0) || css.link(false, update(($$("script[src*='" + metadata + ".'][src*='.js'", 0) || LapysJS.tmp.script).src), {media: 'all', rel: 'stylesheet', type: 'text/css'})
+                                    })
+                        }
+
+                    // Initialization
+                        // Alternative Resources
+                        let ALTERNATIVE_RESOURCES = false,
+                            // (...) Object
+                            alternativeResourcesObject = onPropertyAccess({
+                                // Set
+                                set: function onpropertychange() {
+                                    // Import Alternative Resources
+                                    !arguments[0] || importAlternativeResources();
+
+                                    // Update > Alternative Resources
+                                    ALTERNATIVE_RESOURCES = arguments[0]
+                                }
+                            }, function onpropertyaccess() {
+                                /*
+                                        --- NOTE ---
+                                            @lapys: This function is detecting if the Alternative Resources Object
+                                                has been accessed.
+                                */
+                            }),
+
+                        // Dynamic Assets URL
+                        DYNAMIC_ASSETS_URL = (function() {
+                            // Initialization > (Data, Metadata)
+                            let data = '',
+                                metadata = location.href;
+
+                            // Function > Test
+                            function test() {
+                                // Return
+                                return arguments[0].getBeforeChar('/', true)
+                            }
+
+                            /* Logic
+                                    [if:else if:else statement]
+
+                                > Update > Data
+                            */
+                                // {Home}
+                                if (test(metadata).endsWith('LapysJS'))
+                                    data = '';
+
+                                // {Internal Page}
+                                else if (test(metadata).endsWith('pages'))
+                                    data = '../';
+
+                            // Return
+                            return data
+                        })(),
+
+                        // Home Page File
+                        HOME_PAGE_FILE = new File([str(document.doctype) + $1.outerHTML], 'index', {type: 'text/html'});
+                            // On DOM Ready
+                            onDOMReady(function() {
+                                // Update > Home Page File
+                                HOME_PAGE_FILE = new File([str(document.doctype) + $1.outerHTML], 'index', {type: 'text/html'})
+                            });
+
+                    // Modification > Target
+                        // Alternative Resources
+                        _that.def('alternativeResources', {
+                            // Get
+                            get: function getAlternativeResources() {
+                                // Return
+                                return ALTERNATIVE_RESOURCES
+                            },
+
+                            // Set
+                            set: function setAlternativeResources() {
+                                // Return
+                                return alternativeResourcesObject.set(arguments[0])
+                            }
                         });
 
-                /* Assets */
-                    // Navigation Links Container > Repeat
-                    !global.NAVIGATION_LINKS_MODIFIER || repeat(index => {
-                        /* Logic
-                                [if:else if:else statement]
-                        */
-                        if (!$$("[role*='navigation-links-container'", index)['BaseScript elementIsModified']) {
-                            // Modification > Navigation Links Container > Inner HTML
-                            $$("[role*='navigation-links-container'", index).innerHTML = '';
+                        // Debugger
+                        _that.def('debugger', {
+                            // Value
+                            value: new (function Debugger() {
+                                // Initialization > Target
+                                let that = this,
+                                    _that = [that.constructor.prototype, global];
 
-                            // Repeat
-                            repeat(metaIndex => {
-                                // Modification > Navigation Links Container > Inner HTML
-                                $$("[role*='navigation-links-container'", index).innerHTML +=
-                                    "<a " + (function() {
+                                // Modification > Target
+                                    // Define
+                                    hasProperty('define') || repeat((index, limit, data, key, value) => {
+                                        // Modification > Value > Define
+                                        value.def('define', {
+                                            // Value
+                                            value: function define() {
+                                                // Initialization > Arguments
+                                                let args = [...arguments];
+
+                                                // Return
+                                                return eval((function() {
+                                                    // Initialization > Data
+                                                    let data = 'new LapysJSFunction(';
+
+                                                    /* Loop
+                                                            Index Arguments.
+
+                                                        > Update > Data
+                                                    */
+                                                    for (let i in args)
+                                                        data += 'args[' + i + '], ';
+
+                                                    // Return
+                                                    return data + ')'
+                                                })())
+                                            }
+                                        })
+                                    }, _that);
+
+                                    // False
+                                    hasProperty('False') || repeat((index, limit, data, key, value) => {
+                                        // Modification > Value > False
+                                        value.def('False', {value: bool()})
+                                    }, _that);
+
+                                    // True
+                                    hasProperty('True') || repeat((index, limit, data, key, value) => {
+                                        // Modification > Value > True
+                                        value.def('True', {value: bool(true)})
+                                    }, _that)
+                            })
+                        });
+
+                        // Dynamic Assets URL
+                        _that.def('dynamicAssetsURL', {
+                            // Get
+                            get: function dynamicAssetsURL() {
+                                // Return
+                                return DYNAMIC_ASSETS_URL
+                            }
+                        });
+
+                        // Home Page File
+                        _that.def('homePageFile', {
+                            // Get
+                            get: function homePageFile() {
+                                // Return
+                                return HOME_PAGE_FILE
+                            }
+                        });
+
+                        // Log
+                        _that.def('log', {
+                            // Value
+                            value: function Log() {
+                                // Initialization > Data
+                                let data = createElement('div', '', '[Information Manager] => ' + str(arguments[0])).textContent;
+
+                                // Log
+                                log.apply(console, browser.ie ? [data] : ['%c' + data, 'font-style: oblique'])
+                            }
+                        });
+
+                        // Navigation Links
+                        _that.def('navigationLinks', {
+                            // Value
+                            value: new (function NavigationLinks() {
+                                /* Initialization > (Data, Metadata, Alpha, Target)
+                                        --- NOTE ---
+                                            @lapys: The `target` property for objects
+                                                in Alpha default to `_self`, not `undefined`.
+                                */
+                                let data = _that.dynamicAssetsURL,
+                                    metadata = _that.homePageFile,
+                                    alpha = [
+                                        // Home
+                                        {
+                                            href: data + metadata.name + '.' + metadata.type.getAfterChar('/'),
+                                            name: 'home', target: '_self', text: 'LapysJS',
+                                            title: 'LapysJS | Home'
+                                        },
+
+                                        // JavaScript
+                                        {
+                                            href: data + 'assets/pages/javascript.html',
+                                            name: 'javascript', text: 'JavaScript',
+                                            title: 'Our JavaScript Compendium'
+                                        }
+                                    ],
+                                    that = this;
+
+                                /* Loop
+                                        Index Alpha.
+
+                                    > Modification > Target > ([Loop Counter], [String])
+                                */
+                                for (let i in alpha) {
+                                    (getType(alpha[i]) != 'object') || that.def([i, alpha[i].name], {
+                                        // Value
+                                        value: Object.assign(new (function NavigationLink() {}), alpha[i])
+                                    });
+                                        // Target
+                                        'target' in that[i] || (that[i].target = '_self');
+                                        'target' in that[alpha[i].name] || (that[alpha[i].name].target = '_self')
+                                }
+
+                                // Modification > Target > To HTML Syntax
+                                that.def('toHTMLSyntax', {
+                                    // Value
+                                    value: function toHTMLSyntax() {
                                         // Initialization > Data
                                         let data = '';
 
                                         /* Loop
-                                                Index Navigation Links.
-
-                                            > Update > Data
+                                                Index Alpha.
                                         */
-                                        for (let i in NAVIGATION_LINKS[metaIndex])
-                                            !(i != 'href' && i != 'target' && i != 'textContent' && i != 'title') || (data += i + "='" + NAVIGATION_LINKS[metaIndex][i] + "'");
+                                        for (let i of alpha) {
+                                            // Update > Data
+                                            data += '<a';
+
+                                            /* Loop
+                                                    [for statement]
+                                            */
+                                            for (let j in i) {
+                                                // Initialization > Metadata
+                                                let metadata = str(i[j]);
+
+                                                // Update > Data
+                                                !(j != 'name' && j != 'text') || (data += ' ' + j.replace(/\btitle\b/, 'data-title') + "=" + (metadata.hasText(' ') ? "'" + metadata + "'" : metadata));
+                                            }
+
+                                            // Update > Data
+                                            'target' in alpha || (data += " target=_self");
+                                            data += '>' + ('text' in i ? str(i.text) : '') + '</a>\n'
+                                        }
 
                                         // Return
-                                        return data
-                                    })() + ('title' in NAVIGATION_LINKS[metaIndex] ? "data-title='" + NAVIGATION_LINKS[metaIndex].title + "' " : '') + "href='" + DYNAMIC_ASSETS_URL + NAVIGATION_LINKS[metaIndex].href + "' target='" + (NAVIGATION_LINKS[metaIndex].target || '_self') + "''>" +
-                                        NAVIGATION_LINKS[metaIndex].textContent +
-                                    '</a>'
-                            }, len(NAVIGATION_LINKS));
+                                        return data.trim()
+                                    }
+                                })
+                            })
+                        });
+                            // Definition
+                            _that.def('nav', {
+                                // Get
+                                get: function navigationLinks() {
+                                    // Return
+                                    return _that.navigationLinks
+                                }
+                            });
 
-                            // Modification > Navigation Links Container > Element Is Modified
-                            $$("[role*='navigation-links-container'", index)['BaseScript elementIsModified'] = true
+                        // Script
+                        _that.def('script', {
+                            // Value
+                            value: document.currentScript || $$("script[src*='base.'][src*='.js'", 0) || document.scripts.lastElement
+                        })
+                })
+            });
+                // Definition
+                def('info', {
+                    // Get
+                    get: function getInformationManager() {
+                        // Return
+                        return informationManager
+                    }
+                });
+
+                // Modification( > Information Manager)
+                    /* Alternative Resources
+                            --- NOTE ---
+                                @lapys:
+                                    Set to `false` to prevent this script from requesting and/ or importing assumed resource files,
+                                    set to `true` otherwise.
+                    */
+                    info.alternativeResources = true;
+
+        /* Functions */
+            // Careful Sourcing
+            let carefulSourcing = function carefulSourcing(event) {
+                // Initialization > (Data, Metadata)
+                let data = this.attr('data-href'),
+                    metadata = this.hasAttr('href-data') ? this.attr('href-data') : '';
+
+                // LapysJS > $ > Request
+                new LapysJS.$.request('GET', data, {
+                    // On Load
+                    onload: function onload(event) {
+                        /* Logic
+                                [if:else if:else statement]
+                        */
+                        if (!str(this.status).startsWith('40')) {
+                            // Information Manager > Log
+                            info.log('Status: "' + this.statusText + '"');
+
+                            // {Redirect} Click
+                            click(createElement('a', '', '', {href: ('target' in event ? event.target : event).responseURL + metadata}))
                         }
-                    }, $$("[role*='navigation-links-container'", 'length'))
+                    },
+
+                    // On Load End
+                    onloadend: function onloadend(event) {
+                        // Information Manager > Log
+                        (this.status != 404) || info.log('Status: "' + this.statusText + '"')
+                    }
+                })
+            };
+
+            // On DOM Ready
+            onDOMReady(function() {
+                /* Special Information here */
+            }, 3e3);
+
+            // {Remove Redundant Nodes} On Node Added
+            onNodeAdded($1, function removeRedundantNodes() {
+                // Function
+                    // Remove All HTML Script Element
+                    (function removeAllHTMLScriptElement() {
+                        // Repeat
+                        repeat((index, limit, data, key, value) => {
+                            // Deletion
+                            value.delete()
+                        }, $$('script', 'array'))
+                    })();
+
+                    // Remove All Comment
+                    (function removeAllComment() {
+                        // Repeat
+                        repeat((index, limit, data, key, value) => {
+                            // Repeat
+                            repeat((index, limit, data, key, value) => {
+                                // Deletion
+                                !value || (value.nodeType != 8) || value.delete()
+                            }, value.childNodes)
+                        }, $$('*', 'array'))
+                    })()
             });
 
-            onDOMReady(function() {
-                /* Logic
-                        [if:else if:else statement]
-                */
-                if (hasProperty('QUIET_CONSOLE')) {
-                    // Clear
-                    clear();
+            // {Careful Links} On Node Change
+            onNodeChange($1, function carefulLinks() {
+                // Repeat
+                repeat((index, limit, data, key, value) => {
+                    // Event > Value > Click
+                    value.hasAttr('data-href') || value.delEvent('click', carefulSourcing)
+                }, $t('a', 'array'));
 
-                    // Timeout
-                    timeout(function() {
-                        // Update > Quiet Console
-                        QUIET_CONSOLE = true
-                    })
-                }
-
-                // Console > (...)
-                console.group(document.title);
-                    console.log('ALLOW_ALTERNATIVE_RESOURCE_FILES', ALLOW_ALTERNATIVE_RESOURCE_FILES);
-                    console.log('DYNAMIC_ASSETS_URL', '"' + DYNAMIC_ASSETS_URL + '"');
-                    console.log('NAVIGATION_LINKS', NAVIGATION_LINKS);
-                console.groupEnd()
-            }, LapysJS.totalProcessingTime)
+                repeat((index, limit, data, key, value) => {
+                    // Event > Value > Click
+                    value.setEvent('click', carefulSourcing)
+                }, $$('a[data-href', 'array'))
+            })
     }
-
-    else
-        // Error
-        throw new Error('Can not execute script without LapysJS.')
 })(window, window.document, typeof global != 'undefined' ? global : null, window.undefined || void 0, typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false }))

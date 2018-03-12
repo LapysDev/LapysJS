@@ -1,56 +1,108 @@
-/**
+/** ([Function] > {LapysJS Script})
     @author: Lapys Dev Team
-    @description: App JS is a web framework for configuring web pages to perform more like mobile apps.
+    @description: AppJS is a JavaScript framework designed to simplify the code process of LapysJS and make projects feel more like mobile applications (.a.k.a.: Progressive Web Applications).
     @version: 0.0.1
+    @url: https://github.com/LapysDev/App-JS
+
+        --- NOTE ---
+            @lapys:
+                - Variables defined in all caps represent constants (except in private/ special cases).
+
+        --- WARN ---
+            @lapys:
+                - Do not use template strings, defer to standard string concatenation instead.
 */
 (function AppJSScript(window = window, document = window.document, global = typeof global != 'undefined' ? global : null, undefined = window.undefined || void 0, LapysJS = typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false })) {
+    // Polyfill
+        // Data
+        let _data = new (function Data() {});
+
     /* {Global Object Test} Logic
             If
                 LapysJS is ready.
     */
-    if (typeof LapysJS == 'object' && (LapysJS || new (function Data() {})).ready === true) {
-        /* Global Data
-                --- NOTE ---
-                    @lapys: Variables defined in all caps represent constants.
-        */
+    if (typeof LapysJS == 'object' && (LapysJS || _data).ready === true && !(LapysJS || _data).vendors.hasElement('AppJS')) {
+        /* Global Data */
+            // App JS Script Total Processing Time
+            var AppJSScriptTotalProcessingTime = performance.now();
+
             // Application
                 /* Logic
                         [if:else if:else statement]
 
                         --- NOTE ---
-                            @lapys: Configure the application from here.
+                            @lapys: Configure the 'application' from here.
 
                     > Modification > Application
                 */
                 if (getType(app) == 'application-information') {
-                    // Author
-                    app.author = app.author || 'Author`s Name';
+                    /* Author
+                            --- NOTE ---
+                                @lapys: Creators of the app.
+                    */
+                    app.author = 'Lapys Dev Team';
 
-                    // Cache Control
-                    app.cacheControl = app.cacheControl || 'cache';
+                    /* Cache Control
+                            --- NOTE ---
+                                @lapys: Determine if information and requests to the app will be cached (or not).
+                    */
+                    app.cacheControl = 'cache';
 
-                    // Character Set
-                    app.charset = app.charset || document.characterSet || 'UTF-8';
+                    /* Character Encoding Set
+                            --- NOTE ---
+                                @lapys: Character encoding software used in the application.
+                    */
+                    app.charset = 'characterSet' in document ? document.characterSet : 'UTF-8';
 
-                    // Copyright
-                    app.copyright = app.copyright || 'Copyright Owner`s Name';
+                    /* Copyright
+                            --- NOTE ---
+                                @lapys: Owners of the app.
+                    */
+                    app.copyright = 'Lapys Dev Team';
 
-                    // Description
-                    app.description = app.description || 'Description of the Application.';
+                    /* Description
+                            --- NOTE ---
+                                @lapys: App description here.
+                    */
+                    app.description = 'An application made with LapysJS';
 
-                    // Robots
-                    app.robots = app.robots || 'none';
+                    /* Keywords
+                            --- NOTE ---
+                                @lapys: Search-engine optimization settings.
+                                    Keywords are comma-separated.
+                    */
+                    app.keywords = 'Application, app';
 
-                    // Theme Color
-                    app.themeColor = app.themeColor || 'rgba(0, 0, 0, 0)';
+                    /* Name
+                            --- NOTE ---
+                                @lapys: Name of the application here.
+                    */
+                    app.name = document.title || 'LapysJS Application';
 
-                    // Viewport
+                    /* Robots
+                            --- NOTE ---
+                                @lapys: Determine how robots will track (or not track) the project app.
+                    */
+                    app.robots = 'none';
+
+                    /* Theme Color
+                            --- NOTE ---
+                                @lapys: Activity/ viewport/ window theme color on supporting devices.
+                    */
+                    app.themeColor = 'rgba(0, 0, 0, 0)';
+
+                    /* Viewport
+                            --- NOTE ---
+                                @lapys: Revoke these settings via the syntax
+                                    `!$$('meta[name=viewport', 0) || $$('meta[name=viewport', 0).delete()` or
+                                    by tweaking some of the existing default values.
+                    */
                         /* Logic
                                 [if:else if:else statement]
                         */
-                        if (global.RESPONSIVE_VIEW) {
+                        if (!$$('meta[name=viewport', 0)) {
                             // Height
-                            app.viewport.height = app.viewport.height || 'device-height';
+                            app.height = app.height || 'device-height';
 
                             // Initial Scale
                             app.viewport.initialScale = app.viewport.initialScale || 1;
@@ -58,8 +110,8 @@
                             // Maximum Scale
                             app.viewport.maximumScale = app.viewport.maximumScale || 2;
 
-                            // Minimal U.I.
-                            app.viewport.minimalUI = true;
+                            // Minimal UI
+                            app.minimalUI = app.minimalUI || true;
 
                             // Minimum Scale
                             app.viewport.minimumScale = app.viewport.minimumScale || .1;
@@ -68,20 +120,18 @@
                             app.viewport.targetDensityDPI = app.viewport.targetDensityDPI || 96;
 
                             // User Scalable
-                            app.viewport.userScalable = app.viewport.userScalable || true;
+                            app.userScalable = app.userScalable || true;
 
                             // Width
-                            app.viewport.width = app.viewport.width || 'device-width'
+                            app.width = app.width || 'device-width'
                         }
-                }
 
-            // Console Fallback
-            let consoleFallback = {}
-                // Repeat
-                repeat((index, limit, data, keys, values) => {
-                    // Initialization
-                    consoleFallback[values + 'Fallback'] = console[values]
-                }, console.keys());
+                    /* Version
+                            --- NOTE ---
+                                @lapys: Development version of the app.
+                    */
+                    app.version = '1'
+                }
 
             // CSS > Style
                 // Error Handling
@@ -94,201 +144,280 @@
                 }
 
             // Document > Favorite Icon
-            (len(document.favicon) > 0) || (document.favicon = 'favicon.ico');
+            len(document.favicon) || (document.favicon = 'favicon.ico');
 
-            // Quiet Console
-            def('QUIET_CONSOLE', hasProperty('QUIET_CONSOLE') ? QUIET_CONSOLE : false);
-                // Repeat
-                repeat(function() {
-                    // Repeat
-                    QUIET_CONSOLE ? repeat((index, limit, data, keys) => {
-                        // Update > Console > (...)
-                        console[keys.slice(0, -len('Fallback'))] = func()
-                    }, consoleFallback) : repeat((index, limit, data, keys) => {
-                        // Update > Console > (...)
-                        console[keys.slice(0, -len('Fallback'))] = data[keys]
-                    }, consoleFallback)
-                }, Infinity);
-
-        /* DOM Elements */
-            // Component
-                // <dynamic-text-component>
-                    // Initialization > Dynamic Text Component
-                    def('DynamicTextComponent', {
+            // LapysJS
+                // Permanent Data > Vendors
+                LapysJS.perm.vendors.addElement('AppJS');
+                    // App JS
+                    LapysJS.perm.vendors.def('appJS', {
                         // Value
-                        value: class DynamicTextComponent extends HTMLElement {
+                        value: new (class AppJS extends (class AppJS {}) {
                             // Constructor
                             constructor() {
-                                // Super
-                                super();
+                                // Initialization > Arguments
+                                let args = [...arguments];
 
-                                // Return
-                                return registerElement() ? void 0 : createElement('dynamic-text-component', '.dynamic-text')
-                            }
-                        },
+                                // {Super} Execution
+                                eval((function() {
+                                    // Initialization > Data
+                                    let data = 'super(';
 
-                        // Writable
-                        writable: false
-                    });
+                                    /* Loop
+                                            Index Arguments.
 
-                    // Registration
-                    !registerElement() || registerElement('dynamic-text-component', DynamicTextComponent);
+                                        > Update > Data
+                                    */
+                                    for (let i in args)
+                                        data += 'args[' + i + '], ';
 
-                    // On Node Count Change
-                    onNodeCountChange(document.documentElement, function DynamicTextComponentModifier() {
-                        // Repeat
-                        !$$('dynamic-text-component:not(.dynamic-text)', 0) || repeat(index => {
-                            // Modification > <dynamic-text-component> > Class
-                            $t('dynamic-text-component', index).addClass('dynamic-text')
-                        }, $t('dynamic-text-component', 'length'));
+                                    // Return
+                                    return data + ')'
+                                })());
 
-                        /* Loop
-                                [do:while statement]
-
-                            > Deletion
-                        */
-                        while ($$('dynamic-text-component:not(.dynamic-text)', 0))
-                            $$('dynamic-text-component:not(.dynamic-text)', 0).delete()
-                    });
-
-            // Element
-                // <jumbotron-element>
-                    // Initialization > HTML Jumbotron Element
-                    def('HTMLJumbotronElement', {
-                        // Value
-                        value: class HTMLJumbotronElement extends HTMLElement {
-                            // Constructor
-                            constructor() {
-                                // Super
-                                super();
-
-                                // Return
-                                return registerElement() ? void 0 : createElement('jumbotron-element', '.jumbotron')
-                            }
-                        },
-
-                        // Writable
-                        writable: false
-                    });
-
-                    // Registration
-                    !registerElement() || registerElement('jumbotron-element', HTMLJumbotronElement);
-
-                    // On Node Count Change
-                    onNodeCountChange(document.body, function JumbotronElementModifier() {
-                        // Repeat
-                        !$$('jumbotron-element:not(.jumbotron)', 0) || repeat(index => {
-                            // Modification > <jumbotron-element> > Class
-                            $t('jumbotron-element', index).addClass('jumbotron')
-                        }, $t('jumbotron-element', 'length'));
-
-                        /* Loop
-                                [do:while statement]
-
-                            > Deletion
-                        */
-                        while ($$('jumbotron-element:not(.jumbotron)', 0))
-                            $$('jumbotron-element:not(.jumbotron)', 0).delete()
-                    });
-
-                // <logo-element>
-                    // Initialization > HTML Logo Element
-                    def('HTMLLogoElement', {
-                        // Value
-                        value: class HTMLLogoElement extends HTMLElement {
-                            // Constructor
-                            constructor() {
-                                // Super
-                                super();
+                                // Initialization > Target
+                                let that = this,
+                                    _that = that.constructor.prototype;
 
                                 // Modification > Target
-                                    // Image
-                                    this.def('img', {
+                                    // Permanent Data
+                                    _that.def('permanentData', {
+                                        // Value
+                                        value: new (function AppJSScriptPermanentData() {
+                                            // Initialization > Target
+                                            let that = this,
+                                                _that = that.constructor.prototype;
+
+                                            // Modification > Target
+                                                // Fallback
+                                                _that.def('fallback', {
+                                                    // Value
+                                                    value: new (function AppJSScriptFallbackObject() {
+                                                        // Initialization > Target
+                                                        let that = this,
+                                                            _that = that.constructor.prototype;
+
+                                                        // Modification > Target
+                                                            // Console
+                                                            _that.def('console', {
+                                                                // Value
+                                                                value: (function() {
+                                                                    // Initialization > Metadata
+                                                                    let metadata = {};
+
+                                                                    // Repeat
+                                                                    repeat((index, limit, data, key, value) => {
+                                                                        // Modification > Metadata > [Key]
+                                                                        metadata[key] = value.clone(!0)
+                                                                    }, console);
+
+                                                                    // Return
+                                                                    return metadata
+                                                                })()
+                                                            })
+                                                    })
+                                                })
+                                        })
+                                    });
+                                        // Definition
+                                        _that.def('perm', {
+                                            // Get
+                                            get: function permanentData() {
+                                                // Return
+                                                return _that.permanentData
+                                            }
+                                        });
+
+                                    // Silence
+                                    _that.def('silence', {
+                                        // Value
+                                        value: function silence() {
+                                            // Initialization > (Arguments, Arguments Set, Data)
+                                            let args = [...arguments],
+                                                argsSet = args.slice(1),
+                                                data = String(args[0]).trim(),
+                                                _data = _that.silence;
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (args.length && data.startsWith('/'))
+                                                /* Logic
+                                                        [switch:case:default statement]
+
+                                                    > [Function]
+                                                */
+                                                switch (data.slice(len('/'))) {
+                                                    // Console
+                                                    case 'console':
+                                                        _data.console.apply(_data, argsSet)
+                                                }
+                                        }
+                                    });
+                                        // Console
+                                        _that.silence.def('console', {
+                                            // Value
+                                            value: function Console() {
+                                                // Initialization > Metadata
+                                                let metadata = bool(arguments[0]),
+                                                    _metadata = arguments.length;
+
+                                                // Repeat
+                                                metadata || !_metadata ? repeat((index, limit, data, key, value) => {
+                                                    // Update > Console > [Value]
+                                                    console[value] = func()
+                                                }, console.keys()) : repeat((index, limit, data, key, value) => {
+                                                    // Update > Console > [Value]
+                                                    console[value] = _that.perm.fallback.console[value]
+                                                }, console.keys());
+
+                                                // Return
+                                                return console
+                                            }
+                                        });
+
+                                    // Screen Cover
+                                    _that.def('screenCover', {
                                         // Get
-                                        get: function() {
+                                        get: function screenCover() {
                                             // Return
-                                            return this.$t('img', 0)
+                                            return $i('appJSScreenCover', 0)
                                         }
                                     });
 
-                                    // Source
-                                    this.def('src', {
-                                        // Get
-                                        get: function getSrc() {
-                                            // Return
-                                            return this.attr('src') || this.img.src
-                                        },
-
-                                        // Set
-                                        set: function setSrc() {
-                                            // Modification > ((Target) > Image) > Source
-                                            !getType(this.img).hasText(/\belement\b/) || (this.img.src = str(arguments[0]));
-                                            this.delAttr('src')
-                                        }
+                                    // Script
+                                    _that.def('script', {
+                                        // Value
+                                        value: document.currentScript || $$("script[src*='app.'][src*='.js'", 0) || document.scripts.lastElement
                                     });
 
-                                // Return
-                                return registerElement() ? void 0 : 'logo-element'.html
+                                    // Temporary Data
+                                    _that.def('temporaryData', void 0);
+                                        // Interval
+                                        interval(function() {
+                                            // Update > Temporary Data > Temporary Data
+                                            !_that.tmp || (_that.tmp = void 0)
+                                        }, 6e4);
+
+                                        // Definition
+                                        _that.def('tmp', {
+                                            // Get
+                                            get: function getTemporaryData() {
+                                                // Return
+                                                return _that.temporaryData
+                                            },
+
+                                            // Set
+                                            set: function setTemporaryData() {
+                                                // Return
+                                                return _that.temporaryData = arguments[0]
+                                            }
+                                        });
+
+                                    // Tick Speed
+                                    _that.def('tickSpeed', {value: 1e3})
                             }
-                        },
+                        })
+                    })
 
-                        // Writable
-                        writable: false
+        /* DOM Elements */
+            // <jumbotron-element>
+                // Registration
+                !registerElement() || registerElement('jumbotron-element', def('HTMLJumbotronElement', {
+                    // Value
+                    value: class HTMLJumbotronElement extends HTMLElement {
+                        // Constructor
+                        constructor() {
+                            // Super
+                            super();
+
+                            // Return
+                            return registerElement() ? void 0 : createElement('jumbotron-element', '.jumbotron')
+                        }
+
+                        // Connected Callback
+                        connectedCallback() {
+                            // Return
+                            return this.addClass('jumbotron')
+                        }
+                    }
+                }));
+                    // On Node Added
+                    onNodeAdded($1, function() {
+                        // {Compatibility Correction} Repeat
+                        repeat(function compatibilityCorrection(index, limit, data, key, value) {
+                            // Modification > Value > Class
+                            value.addClass('jumbotron')
+                        }, $$('jumbotron-element:not(.jumbotron)', 'array'))
                     });
 
-                    // Registration
-                    !registerElement() || registerElement('logo-element', HTMLLogoElement);
+            // <screen-cover>
+                // Registration
+                !registerElement() || registerElement('screen-cover', def('HTMLScreenCoverElement', {
+                    // Value
+                    value: class HTMLScreenCoverElement extends HTMLElement {
+                        // Constructor
+                        constructor() {
+                            // Super
+                            super();
 
-                    // On Node Count Change
-                    onNodeCountChange(document.documentElement, function LogoElementModifier() {
-                        /* Loop
-                                [do:while statement]
+                            // Initialization > (Arguments, Data, Target)
+                            let args = [...arguments],
+                                data = bool(args[0]),
+                                that = this;
 
-                            > Repeat
-                        */
-                        while ($t('logo-element', 0) && !$$('logo-element > img', 0))
-                            repeat(index => {
-                                /* Logic
-                                        [if:else if:else statement]
-                                */
-                                if (!$t('logo-element', index).img) {
-                                    // Modification > <logo-element>
-                                        // Draggable
-                                        $t('logo-element', index).draggable = false;
+                            // Timeout
+                            !len(args) || timeout(function() {
+                                // Modification > Target > ID
+                                !data || (that.id = 'appJSScreenCover')
+                            });
 
-                                        // Inner HTML
-                                        $t('logo-element', index).innerHTML = '<img>';
+                            // Return
+                            return registerElement() ? void 0 : 'screen-cover'.html
+                        }
+                    }
+                }));
+                    // On DOM Ready
+                    onDOMReady(function() {
+                        // Initialization > (Data, Metadata)
+                        let data = document.documentElement,
+                            metadata = new HTMLScreenCoverElement(true);
 
-                                        // Image
-                                            // Class
-                                            $t('logo-element', index).img.addClass('responsive');
+                        // Insertion
+                        $i('appJSScreenCover') || data.insertChild('begin', metadata);
 
-                                            // Draggable
-                                            $t('logo-element', index).img.draggable = false;
+                        // Function
+                            // Check
+                            !$i('appJSScreenCover') || check(function() {
+                                // Return
+                                return data._$('#appJSScreenCover')
+                            }, '', function() {
+                                // Insertion
+                                (data = document.documentElement).insertChild('begin', $i('appJSScreenCover'))
+                            });
 
-                                            // Source
-                                            $t('logo-element', index).img.src = $t('logo-element', index).src
-                                }
-                            }, len($t('logo-element', 'array')))
-                    });
+                        // Modification > Metadata > Hidden
+                        metadata.hidden = true
+                    }, 0);
 
-        /* Function */
-            // On DOM Ready
-            onDOMReady(function updateLapysJSPlugIns() {
-                /* Function > Main
-                        --- NOTE ---
-                            @lapys: `Wake up` the DOM.
-                */
-                function main() {
-                    // Insertion
-                    LapysJS.debug.addNewElement();
-
-                    // Deletion
-                    LapysJS.debug.delOldElement()
-                };
-                invokeTimeout(main, 3e3)
-            })
+        // Console > (...)
+        console.group('AppJS | LapysJS.vendors.appJS');
+            browser.ie ? console.info('AppJS successfully installed.') : console.info('%cAppJS successfully installed.', 'font-style: oblique');
+            console.log('AppJS.totalProcessingTime', LapysJS.vendors.appJS.constructor.prototype.def('totalProcessingTime', {
+                // Value
+                value: performance.now() - AppJSScriptTotalProcessingTime
+            }));
+        console.groupEnd()
     }
+
+    else if ((LapysJS || _data).vendors.hasElement('AppJS'))
+        /* Execution
+                --- NOTE ---
+                    @lapys: Prevent compressors and minifiers from redacting the name
+                        of the Error.
+        */
+        eval("throw new (class AppJSScriptError extends Error {constructor(){super([...arguments]);Error.captureStackTrace(this,AppJSScriptError)}})('AppJS has already been executed.')");
+
 
     else
         /* Execution
@@ -296,5 +425,5 @@
                     @lapys: Prevent compressors and minifiers from redacting the name
                         of the Error.
         */
-        eval("throw new (class AppJSScriptError extends Error {constructor(){super([...arguments]);Error.captureStackTrace(this,AppJSScriptError)}})('[AppJS] => AppJS requires LapysJS to run.\\nYou can download the library here: `https://github.com/LapysDev/LapysJS`\\r')")
+        eval("throw new (class AppJSScriptError extends Error {constructor(){super([...arguments]);Error.captureStackTrace(this,AppJSScriptError)}})('AppJS can not be executed without LapysJS.\n\thttps://www.lapysjs.com')")
 })(window, window.document, typeof global != 'undefined' ? global : null, window.undefined || void 0, typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false }))

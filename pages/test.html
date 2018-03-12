@@ -13,18 +13,56 @@
 <body>
     <!-- Scripts -->
         <!-- LapysJS Script -->
-        <script src=../src/lapys.js type=text/javascript> </script>
-        <script defer type=text/javascript> def('command', {get: function() { return log(1) }}) </script>
+        <script data-enable=html-javascript src=../src/lapys.js type=text/javascript> </script>
 
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1 class=center data-id=header hidden script=this.write(`Debugging&nbsp;Room`)> </h1>
+        <h1 class='card center fixed single-line z-5' data-id=header script=this.innerHTML=this.innerHTML.trim() style='background-color: rgba(0, 0, 0, .65); color: #EFEFEF; font-size: 25px; margin: 0; padding: 15px 0'>
+            Debugging Room | Smooth Scroll Testing
+        </h1>
 
-        <div class=bg-c-r id=a style='height: 75vh; width: 100%'> </div>
-        <div class=bg-c-g id=b style='height: 75vh; width: 100%'> </div>
-        <div class=bg-c-b id=c style='height: 75vh; width: 100%'> </div>
-        <div id=d style='background-color: #780078; height: 75vh; width: 100%'> </div>
+        <div role=container style='font-family: "Open Sans"'>
+            <access-value value='(function() {
+                let html = "",
+                    rainbow = ["white", "red", "orange", "yellow", "green", "blue", "green", "indigo", "violet", "black", "gray"],
+                    rainbowEffects = ["#454545", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF", "#333333"];
+
+                repeat((index, limit, data, key, value) => {
+                    html += `<div class="center fill-w flex full-h" id=${value.slice(0, 3)} style="background-color: ${value}; z-index: ${index}"> <div class="center flex" style="color: ${rainbowEffects[index]}; font-size: 30vh; pointer-events: none; z-index: 0"> ${index} </div> </div>`;
+
+                    window.def(value.slice(0, 3), {
+                        get: function() {
+                            return $i(value.slice(0, 3))
+                        }
+                    })
+                }, rainbow);
+
+                function update() {
+                    let arg = arguments[0];
+
+                    check(function() {
+                        return $i(arg, 0)
+                    }, function() {
+                        timeout(function() {
+                            $i(arg, 0).delClass("flex");
+                            $i(arg, 0).firstElementChild.addClass("match");
+                            $i(arg, 0).firstElementChild.setCSS({opacity: .65, position: "absolute", textShadow: "0 0 2px #FFFFFF"});
+                            $i(arg, 0).innerHTML += `<div class="bg-c-r center flex match-h" id=a style="color: white; font-size: 20vh"> <div>0</div> </div><div class="bg-c-g center flex match-h" id=b style="color: white; font-size: 20vh"> <div>1</div> </div><div class="bg-c-b center flex match-h" id=c style="color: white; font-size: 20vh"> <div>2</div> </div>`;
+                            $i(arg, 0).setCSS("overflow: auto");
+
+                            $i(arg, 0).a = $i(arg, 0).$i("a", 0);
+                            $i(arg, 0).b = $i(arg, 0).$i("b", 0);
+                            $i(arg, 0).c = $i(arg, 0).$i("c", 0)
+                        })
+                    })
+                }
+
+                update("whi");
+
+                return html
+            })()'> </access-value>
+        </div>
     </main>
 </body>
 </html>

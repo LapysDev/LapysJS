@@ -1,5 +1,234 @@
+/* DOM Elements */
+    /* <body>, <html>, <main> */
+    body, html, main {
+       height: 100%;
+       width: 100%
+    }
+
+    /* <button> */
+    button {
+        background-color: transparent;
+        border: 0
+    }
+        /* States > Focus */
+        button:focus {
+            outline: 0
+        }
+
+    /* <main> */
+    main {
+        color: #ACACAC
+    }
+        /* Header, Sub Header */
+        main [data-id=header],
+        main [data-id=subheader] {
+            filter: brightness(.9)
+        }
+
 /* Assets */
-    /* Theme Color */
-    .theme-color {
+    /* Button */
+    .button {
+        background-color: #0033FF;
+        border: 1px solid rgba(0, 0, 0, .1);
+        border-bottom: 1px solid rgba(0, 0, 0, .5);
+        border-radius: 3px;
+        box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3),
+                            inset 0 0 0 0 transparent,
+                            0 0 0 0 transparent,
+                            inset 0 -25px 0 0 rgba(0, 0, 0, .15);
+        color: #F7F7F7;
+        cursor: pointer;
+        font-family: 'Open Sans', 'Droid Serif', 'PT Sans', 'Calibri Light', Calibri;
+        font-size: 117.5%;
+        font-variant: normal;
+        padding: 15px 20px;
+        text-transform: none;
+        transition: .3s ease-in-out;
+        user-drag: none
+    }
+        /* States */
+            /* Active */
+            .button:active {
+                animation: buttonActive .5s ease-in-out 0s 1 backwards running;
+                cursor: wait;
+                user-drag: none
+            }
+                /* @keyframes > Button Active */
+                @keyframes buttonActive {
+                    0% {
+                        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .3),
+                                            inset 0 0 0 0 rgba(0, 0, 0, .0675),
+                                            0 0 0 0 transparent,
+                                            inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                    }
+
+                    25% {
+                        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .3),
+                                            inset 0 0 0 1000px rgba(0, 0, 0, .1),
+                                            0 0 0 0 transparent,
+                                            inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                    }
+
+                    50% {
+                        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .3),
+                                            inset 0 0 0 1000px rgba(0, 0, 0, .15),
+                                            0 0 0 0 transparent,
+                                            inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                    }
+
+                    75% {
+                        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .3),
+                                            inset 0 0 0 1000px rgba(0, 0, 0, .1),
+                                            0 0 0 0 transparent,
+                                            inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                    }
+
+                    to {
+                        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .3),
+                                            inset 0 0 0 1000px rgba(0, 0, 0, .25),
+                                            0 0 0 0 transparent,
+                                            inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                    }
+                }
+
+                /* States > Focus */
+                .button:active:focus {
+                    transition-delay: .6s
+                }
+
+            /* Focus */
+                /* Not > (States > Active) */
+                .button:focus:not(:active) {
+                    background-color: #F7F7F7;
+                    color: #0033FF;
+                    box-shadow: 0 0 10px 0 rgba(0, 51, 255, .65),
+                                        inset 0 0 0 0 transparent,
+                                        0 2px 2px 0 rgba(0, 0, 0, .3),
+                                        inset 0 -25px 0 0 rgba(0, 0, 0, .075) !important;
+                    outline: 0 !important
+                }
+
+            /* Hover */
+                /* Not > (States > Focus) */
+                .button:hover:not(:focus) {
+                    animation: buttonHover .6s ease-in-out 0s 1 backwards running;
+                    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, .3),
+                                        inset 0 0 0 1000px rgba(0, 0, 0, .25),
+                                        0 0 0 0 transparent,
+                                        inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                }
+                    /* @keyframes > Button Hover */
+                    @keyframes buttonHover {
+                        0% {
+                            box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3),
+                                                inset 0 0 0 0 rgba(0, 0, 0, .0675),
+                                                0 0 0 0 transparent,
+                                                inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                        }
+
+                        25% {
+                            box-shadow: 0 3.5px 3.5px 0 rgba(0, 0, 0, .3),
+                                                inset 0 0 0 1000px rgba(0, 0, 0, .1),
+                                                0 0 0 0 transparent,
+                                                inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                        }
+
+                        50% {
+                            box-shadow: 0 4px 4px 0 rgba(0, 0, 0, .3),
+                                                inset 0 0 0 1000px rgba(0, 0, 0, .25),
+                                                0 0 0 0 transparent,
+                                                inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                        }
+
+                        75% {
+                            box-shadow: 0 4.5px 4.5px 0 rgba(0, 0, 0, .3),
+                                                inset 0 0 0 1000px rgba(0, 0, 0, .1),
+                                                0 0 0 0 transparent,
+                                                inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                        }
+
+                        to {
+                            box-shadow: 0 5px 5px 0 rgba(0, 0, 0, .3),
+                                                inset 0 0 0 1000px rgba(0, 0, 0, .25),
+                                                0 0 0 0 transparent,
+                                                inset 0 -25px 0 0 rgba(0, 0, 0, .15)
+                        }
+                    }
+
+    /* Color, Link */
+    .color,
+    .link {
         color: #0033FF
+    }
+
+    /* Description */
+    [data-id=description] {
+        background-color: transparent;
+        font-size: 17.5px
+    }
+        /* @media */
+            /* Mobile View */
+            @media only all
+                and (max-width: 425px) {
+                    [data-id=description] {
+                        font-size: 15px
+                    }
+            }
+
+            /* Tablet View */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 426px) {
+                    [data-id=description] {
+                        font-size: 16.5px
+                    }
+            }
+
+    /* Header */
+    [data-id=header],
+    [data-id=subheader],
+    .button,
+    .button:active {
+        user-select: none
+    }
+
+    /* Link */
+    .link {
+        color: #0033FF !important;
+        font-size: 100%;
+        font-weight: 400;
+        transition: .3s ease-in-out;
+        zoom: 1.025
+    }
+        /* States */
+            /* Active */
+            .link:active {
+                cursor: progress
+            }
+
+            /* Active, Focus, Hover */
+            .link:active,
+            .link:focus,
+            .link:hover {
+                color: #0099FF !important
+            }
+
+            /* Visited */
+            .link:visited {
+                color: #0000CC !important
+            }
+
+    /* Link, Text */
+    .link,
+    .text {
+        text-decoration: none
+    }
+
+    /* Text */
+    .text {
+        background-color: transparent;
+        box-shadow: none;
+        color: inherit;
+        cursor: inherit;
+        font: inherit
     }
