@@ -1132,7 +1132,6 @@
                                 // Return
                                 return args.length > 0 ? data.indexOf(LDK.false) < 0 : LDK.false
                             };
-                            window.LDK = LDK;
 
                             // Is Node
                             LDK.isNode = function isNode() {
@@ -1557,9 +1556,6 @@
                                         return (function eval() { return data.apply(this, [...arguments]) })
                                     })(),
 
-                                    // Get Event Listeners
-                                    getEventListeners: window.getEventListeners,
-
                                     // Group
                                     group: console.group,
 
@@ -1629,6 +1625,31 @@
                                     // Warn
                                     warn: console.warn
                                 };
+                                    // Get Event Listeners
+                                    tmp.functions.getEventListeners = (function() {
+                                        // Initialization > (Data, Metadata)
+                                        let data = window.getEventListeners,
+                                            metadata = 0;
+
+                                        /* Function > Main
+                                                --- NOTE ---
+                                                    #lapys: Please define `getEventListeners`! XD
+                                        */
+                                        (function main() {
+                                            // Update > Data
+                                            data = window.getEventListeners;
+
+                                            // Error Handling > (...)
+                                            try {
+                                                LDK.isNativeFunction(data) ?
+                                                    tmp.functions.getEventListeners = data :
+                                                    tmp.functions.setTimeout(main, 1 / LDK.constants.ANIMATION_TICK_SPEED)
+                                            } catch (error) { LapysJS.warn("LapysJS could not import private 'getEventListeners' function.") }
+                                        })();
+
+                                        // Return
+                                        return data
+                                    })();
 
                                 // Objects
                                     // Console
@@ -3061,8 +3082,20 @@
                                     LDK.objectDefProp($lapys, 'warn', {
                                         // Value
                                         value: function warn() {
-                                            // Warn
-                                            (tmp.objects.console.warn || tmp.functions.warn).call($lapys, message.apply(warn, [...arguments]))
+                                            // Initialization > Arguments
+                                            let args = [...arguments];
+
+                                            // Return
+                                            if (args[0] == tmp) {
+                                                // Warn
+                                                (tmp.objects.console.warn || tmp.functions.warn).call($lapys, message.apply(warn, ['This feature is still in development.']));
+
+                                                // Return
+                                                return LapysJS
+                                            }
+
+                                            // Return
+                                            return (tmp.objects.console.warn || tmp.functions.warn).call($lapys, message.apply(warn, args))
                                         }
                                     });
 
@@ -9879,70 +9912,17 @@
 
                             // Set
                             set: function setSelector() {
-                                // Initialization > (...)
-                                let arg = LapysJS.perm.regexSet.randomize(),
-                                    data = LDK.string(arguments[0]).trim().replace(/\\\./g, arg),
-                                    metadata, alpha,
-                                    beta = LapysJS.perm.regexSet.randomize(),
-                                    $attributes = '', $class = '', $id = '',
+                                let data = LDK.string(arguments[0]),
+                                    $attributes = '',
+                                    $class = '',
+                                    $id = '',
+                                    $tagName = '',
                                     that = this;
 
-                                // Error Handling > (...)
-                                try { LDK.docQueSel(data.replace(LDK.regex(arg, 'g'), '.')) }
-                                catch (error) { LapysJS.error(["'setSelector'", "'Element'"], 'argument', "'" + data + "' is not a valid selector") }
-
-                                /* Loop
-                                        Index Data.
-                                */
-                                for (let i of data) {
-                                    /* Logic
-                                            [switch:case statement]
-
-                                        > Update > Alpha
-                                    */
-                                    switch (i) {
-                                        case '.': alpha = 2; break;
-                                        case '#': alpha = 1; break;
-                                        case '[': alpha = 0
-                                    }
-
-                                    /* Logic
-                                            [switch:case statement]
-
-                                        > Update > (...)
-                                    */
-                                    switch (alpha) {
-                                        case 2: $attributes += beta; $class += i; $id += beta; break;
-                                        case 1: $attributes += beta; $class += beta; $id += i; break;
-                                        case 0: $attributes += i; $class += beta; $id += beta
-                                    }
-                                }
-
-                                // Update > (Attributes, Class, ID)
-                                $attributes = (a=>{for(let i in a)a[i]=a[i].trimRightChar(']');return a})(($attributes.replace(LDK.regex(beta, 'g'), '').trimRightChar(']') + ']').split('[').slice(1));
-                                $class = (a=>{for(let i in a)a[i]=a[i].trim();return a})($class.replace(LDK.regex(beta, 'g'), '').replace(/\./g, ' ').trim().split(' '));
-                                $id = (a=>{return a.indexOf(' ')>-1?a.slice(0,a.indexOf(' ')):a.trim()})($id.replace(LDK.regex(beta, 'g'), '').replace(/#/g, ' ').trim());
-
-                                /* Loop
-                                        Index Class.
-
-                                    > Modification > Target > Class
-                                */
-                                for (let i of $class)
-                                    that.addClass(i);
-
-                                // Modification > Target > ID
-                                !$id || (that.id = $id);
-
-                                /* Loop
-                                        Index Attributes.
-                                */
-                                for (let i of $attributes) {
-                                    // Initialization > Data
-                                    let data = i.getBeforeChar('=');
-
-                                    // Modification > Target > [Loop Iterator]
-                                    !(data != 'class' && data != 'id') || that.setAttribute(data, (function() {let a=i.getAfterChar('=').replace(LDK.regex(arg, 'g'), '.'),b=a[0];if(b==a[a.length-1]&&(b=="'"||b=='"'))return a.slice(1,-1);return a})());
+                                try { LDK.docQueSel(data) }
+                                catch (error) {
+                                    let metadata = error.message.getAfterChar(':').trimLeft().trimRightChar('.');
+                                    LapysJS.error(["'setSelector'", "'" + that.constructor.name + "'"], 'argument', metadata || "'" + data + "' is not a valid selector")
                                 }
                             }
                         });
@@ -10219,7 +10199,7 @@
                             }
                         });
 
-                        // Delete Event --- CHECKPOINT ---
+                        // Delete Event
                         LDK.objectDefProp(tmp.value, 'delEvent', {
                             // Value
                             value: function removeEvent() {
@@ -10242,441 +10222,812 @@
                                         return LDK.eventTargetProto.detachEvent.apply(that, args)
                                     }), quasiEvent = LDK.namedObject('QuasiEvent', {target: that});
 
-                                // Function
-                                    // Parse Array
-                                    function parseArray() {
-                                        // Initialization > (Data, Listeners, Type)
-                                        let data = [...arguments[0]],
-                                            listeners = data.slice(1),
-                                            type = LDK.string(data[0]);
+                                // Modification > Permanent Data > Event Nodes List
+                                perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
 
-                                        // LapysJS > Error
-                                        listeners.length || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Expected array to be in format: [<event type>, <event listener>]');
-
-                                        /* Loop
-                                                Index Listeners.
-
-                                            > Update > Listeners
-                                        */
-                                        for (let i = 0; i < listeners.length; i += 1)
-                                            LDK.isString(listeners[i]) && (listeners[i] = func(listeners[i]));
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (
+                                    !LDK.isObject(args[0]) &&
+                                    (function() {
+                                        // Initialization > Data
+                                        let data = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.string(a[i]);return a})(LDK.isArray(args[0]) ? args[0] : [args[0]]);
 
                                         /* Loop
-                                                Index Listeners.
-
-                                            > LapysJS > Error
+                                                [for:of statement]
                                         */
-                                        for (let i of listeners)
-                                            LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+                                        for (let i of data)
+                                            /* Logic
+                                                    [if statement]
 
-                                        /* Loop
-                                                Index Listeners.
+                                                > Return
+                                            */
+                                            if (LDK.isExecutableString(i) && i.replace(/[a-zA-Z_\$]{0,}/g, '').trim())
+                                                return LDK.false;
 
-                                            > Update > Event List > (Listener, Modifier, Type)
-                                        */
-                                        for (let i of listeners) {
-                                            eventList.listener.push(i);
-                                            eventList.modifier.push(defaultModifier);
-                                            eventList.type.push(type)
-                                        }
-                                    }
-
-                                    // Parse Object
-                                    function parseObject() {
+                                        // Return
+                                        return LDK.true
+                                    })() &&
+                                    args.length == 1
+                                ) {
+                                    // Initialization > Query Events
+                                    let queryEvents = LDK.isNativeFunction(tmp.functions.getEventListeners) ? (function() {
                                         // Initialization > (Data, Metadata)
-                                        let data = LDK.objectAssign({}, arguments[0]),
-                                            metadata = (a=>{for(let i in a)a[i]=!!a[i];return a});
+                                        let data = arguments[0],
+                                            metadata = tmp.functions.getEventListeners(data);
 
+                                        // Return
+                                        return metadata
+                                    }) : (function() {
+                                        // Initialization > (Data, Metadata)
+                                        let data = arguments[0],
+                                            metadata = {};
+
+                                        /* Loop
+                                                [for:of statement]
+                                        */
+                                        for (let i of perm.eventNodesList)
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (i.target == data)
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if ('type' in i)
+                                                    // Update > Metadata
+                                                    i.type in metadata ? metadata[i.type].push(i) : metadata[i.type] = [i];
+
+                                                else {
+                                                    /* Loop
+                                                            [for statement]
+                                                    */
+                                                    for (let j = 0; j < i.types.length; j += 1) {
+                                                        // Initialization > Alpha
+                                                        let alpha = (function() {
+                                                            // Initialization > Data
+                                                            let data = {
+                                                                // Listener
+                                                                listener: i.listeners[j],
+
+                                                                // Types
+                                                                type: i.types[j]
+                                                            };
+
+                                                            // Update > Data
+                                                            data = LDK.isBool(i.modifiers[j]) ? LDK.objectAssign({
+                                                                // Once
+                                                                once: LDK.false,
+
+                                                                // Passive
+                                                                passive: LDK.false,
+
+                                                                // Use Capture
+                                                                useCapture: i.modifiers[j]
+                                                            }, data) : LDK.objectAssign({
+                                                                // Once
+                                                                once: i.modifiers[j].once,
+
+                                                                // Passive
+                                                                passive: i.modifiers[j].passive,
+
+                                                                // Use Capture
+                                                                useCapture: i.modifiers[j].capture
+                                                            }, data);
+
+                                                            // Return
+                                                            return data
+                                                        })();
+
+                                                        // Update > Metadata
+                                                        i.types[j] in metadata ? metadata[i.types[j]].push(alpha) : metadata[i.types[j]] = [alpha]
+                                                    }
+                                                }
+
+                                        // Return
+                                        return metadata
+                                    });
+
+                                    // Modification
+                                        // Quasi Event
+                                            // Types
+                                            LDK.isArray(args[0]) && args[0].length > 1 ? quasiEvent.types = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.string(a[i]);return a})(args[0]) : quasiEvent.type = LDK.string(args[0]);
+
+                                            // Listeners
+                                            'types' in quasiEvent ? quasiEvent.listeners = [] : quasiEvent.listener = LDK.null;
+
+                                            // Modifiers
+                                            'types' in quasiEvent ? quasiEvent.modifiers = [] : quasiEvent.modifier = LDK.null;
+
+                                        // Event List > Types
+                                        eventList.types = 'types' in quasiEvent ? quasiEvent.types : [quasiEvent.type];
+
+                                    // Initialization > Data
+                                    let data = queryEvents(quasiEvent.target);
+
+                                    /* Loop
+                                            [for:of statement]
+                                    */
+                                    for (let i of eventList.types) {
                                         /* Loop
                                                 Index Data.
-
-                                            > LapysJS > Error
                                         */
-                                        for (let i = 0; i < data.length; i += 1)
-                                            (i != 'capture' && i != 'listener' && i != 'once' && i != 'passive' && i != 'type' && i != 'useCapture') && LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', "Unexpected object configuration '" + i + "'");
+                                        for (let j in data)
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (i == j)
+                                                /* Loop
+                                                        [for:of statement]
 
-                                        // LapysJS > Error
-                                        ('listener' in data) || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'listener' in JSON object");
-                                        ('type' in data) || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'type' in JSON object");
-
-                                        // Deletion
-                                        ('capture' in data || 'once' in data || 'passive' in data) && (delete data.useCapture);
-
-                                        // Update > Data
-                                        ('capture' in data || 'once' in data || 'passive' in data || 'useCapture' in data) || (data = LDK.objectAssign(defaultModifier, data));
-
-                                        // Modification > Data
-                                            // Listener
-                                            LDK.isArray(data.listener) || (data.listener = [data.listener]);
-
-                                            // Modifier
-                                            data.modifier = 'useCapture' in data ?
-                                                (LDK.isArray(data.useCapture) ? metadata(data.useCapture) : [!!data.useCapture]) :
-                                                (LDK.isArray(data.capture) || LDK.isArray(data.once) || LDK.isArray(data.passive) ?
-                                                    (function() {
-                                                        // Initialization > (Alpha, Beta)
-                                                        let alpha = {capture: data.capture, once: data.once, passive: data.passive},
-                                                            beta = {};
-
-                                                        // Modification > Beta > (Capture, Once, Passive)
-                                                        beta.capture = LDK.isArray(alpha.capture) ? metadata(alpha.capture) : [!!alpha.capture];
-                                                        beta.once = LDK.isArray(alpha.once) ? metadata(alpha.once) : [!!alpha.once];
-                                                        beta.passive = LDK.isArray(alpha.passive) ? metadata(alpha.passive) : [!!alpha.passive];
-
-                                                        // Return
-                                                        return [beta]
-                                                    })() :
-                                                    [{capture: [!!data.capture], once: [!!data.once], passive: [!!data.passive]}]
-                                                );
-
-                                            // Type
-                                            LDK.isArray(data.type) || (data.type = [LDK.string(data.type)]);
-
-                                        /* Loop
-                                                [for statement]
-
-                                            > Update > Data > Listener
-                                        */
-                                        for (let i = 0; i < data.listener.length; i += 1)
-                                            LDK.isString(data.listener[i]) && (data.listener[i] = func(data.listener[i]));
+                                                    > Parse Event
+                                                */
+                                                for (let k of data[j])
+                                                    parseEvent(k.type, k.listener, {capture: k.useCapture, once: k.once, passive: k.passive});
 
                                         /* Loop
                                                 [for:of statement]
 
-                                            > LapysJS > Error
+                                            > Error Handling
                                         */
-                                        for (let i of data.listener)
-                                            LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
-
-                                        // Initialization > (Alpha, Beta, Delta)
-                                        let alpha = (data.modifier.length = tmp.functions.max(data.listener.length, data.modifier.length, data.type.length)),
-                                            beta = [...data.listener],
-                                            delta = [...data.type];
+                                        for (let j of perm.eventNodesList)
+                                            try { j.type }
+                                            catch (error) {
+                                                // Modification > Permanent Data > Event Nodes List
+                                                perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)})
+                                            }
 
                                         /* Loop
                                                 [for statement]
-
-                                            > Update > Data > Modifier
                                         */
-                                        for (let i = 0; i < data.modifier.length; i += 1)
-                                            LDK.isUndefined(data.modifier[i]) && (data.modifier[i] = defaultModifier);
+                                        for (let j = 0; j < perm.eventNodesList.length; j += 1) {
+                                            // Initialization > Metadata
+                                            let metadata = perm.eventNodesList[j];
 
-                                        /* Loop
-                                                [while statement]
-
-                                            > Update > Data > Listener
-                                        */
-                                        while (data.listener.length < alpha)
-                                            LDK.arrayProto.push.apply(data.listener, beta);
-
-                                        /* Loop
-                                                [while statement]
-
-                                            > Update > Data > Type
-                                        */
-                                        while (data.listener.length > alpha)
-                                            LDK.arrayProto.push.apply(data.type, delta);
-
-                                        // Modification > Data > (Listener, Type) > Length
-                                        data.listener.length = data.type.length = alpha;
-
-                                        // Initialization > Gamma
-                                        let gamma = [];
-
-                                        // Modification > Gamma > Length
-                                        gamma.length = data.modifier.length;
-
-                                        /* Logic
-                                                [if statement]
-                                        */
-                                        if (LDK.isObject(data.modifier[0])) {
-                                            // Initialization > (Gamma, Epsilon, Upsilon, Pi)
-                                            let $gamma = gamma.length = tmp.functions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
-                                                epsilon = [...data.modifier[0].capture],
-                                                upsilon = [...data.modifier[0].once],
-                                                pi = [...data.modifier[0].passive];
-
-                                            /* Loop
-                                                    [while statement]
-
-                                                > Update > Data > Modifier > Capture
+                                            /* Logic
+                                                    [if:else if statement]
                                             */
-                                            while (data.modifier[0].capture.length < $gamma)
-                                                LDK.arrayProto.push.apply(data.modifier[0].capture, epsilon);
+                                            if (metadata.type == i)
+                                                // Update > Permanent Data > Event Nodes List
+                                                perm.eventNodesList[j] = LDK.undefined;
 
-                                            /* Loop
-                                                    [while statement]
+                                            else if ((metadata.types || []).indexOf(i) > -1)
+                                                /* Loop
+                                                        [while statement]
+                                                */
+                                                while ((metadata.types || []).indexOf(i) > -1 && ('type' in metadata || 'types' in metadata)) {
+                                                    // Initialization > Alpha
+                                                    let alpha = metadata.types.indexOf(i);
 
-                                                > Update > Data > Modifier > Once
-                                            */
-                                            while (data.modifier[0].once.length < $gamma)
-                                                LDK.arrayProto.push.apply(data.modifier[0].once, upsilon);
+                                                    // Update > Metadata > (Listeners, Modifiers, Types)
+                                                    metadata.listeners.removeElement(metadata.listeners[alpha]);
+                                                    metadata.modifiers.removeElement(metadata.modifiers[alpha]);
+                                                    metadata.types.removeElement(metadata.types[alpha]);
 
-                                            /* Loop
-                                                    [while statement]
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (metadata.listeners.length == 1) {
+                                                        // Modification > Metadata > Listener
+                                                        metadata.listener = metadata.listeners[0];
 
-                                                > Update > Data > Modifier > Passive
-                                            */
-                                            while (data.modifier[0].passive.length < $gamma)
-                                                LDK.arrayProto.push.apply(data.modifier[0].passive, pi);
+                                                        // Deletion
+                                                        delete metadata.listeners
+                                                    }
 
-                                            // Modification > Data > Modifier > (Capture, Once, Passive) > Length
-                                            data.modifier[0].capture.length = data.modifier[0].once.length = data.modifier[0].passive.length
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (metadata.modifiers.length == 1) {
+                                                        // Modification > Metadata > Modifier
+                                                        metadata.modifier = metadata.modifiers[0];
+
+                                                        // Deletion
+                                                        delete metadata.modifiers
+                                                    }
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (metadata.types.length == 1) {
+                                                        // Modification > Metadata > Type
+                                                        metadata.type = metadata.types[0];
+
+                                                        // Deletion
+                                                        delete metadata.types;
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (metadata.type == i) {
+                                                            // Deletion
+                                                            delete metadata.type;
+
+                                                            // Modification > Permanent Data > Event Nodes List > [Loop Iterator]
+                                                            perm.eventNodesList[j] = LDK.undefined
+                                                        }
+                                                    }
+                                                }
                                         }
 
                                         /* Loop
                                                 [for statement]
 
-                                            > Update > Data > Modifier
+                                            > Update > Permanent Data > Event Nodes List
                                         */
-                                        for (let i = 0; i < data.modifier.length; i += 1)
-                                            LDK.isNonConstructible(data.modifier[i]) && (data.modifier[i] = defaultModifier);
+                                        for (let j = 0; j < perm.eventNodesList.length; j += 1)
+                                            LDK.isUndefined(perm.eventNodesList[j]) && perm.eventNodesList.removeElement(perm.eventNodesList[j])
+                                    }
+                                }
 
-                                        /* Loop
-                                                [for statement]
-                                        */
-                                        for (let i = 0; i < data.type.length; i += 1)
+                                else {
+                                    // Function
+                                        // Parse Array
+                                        function parseArray() {
+                                            // Initialization > (Data, Listeners, Type)
+                                            let data = [...arguments[0]],
+                                                listeners = data.slice(1),
+                                                type = LDK.string(data[0]);
+
+                                            // LapysJS > Error
+                                            listeners.length || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Expected array to be in format: [<event type>, <event listener>]');
+
                                             /* Loop
-                                                    Index Gamma.
+                                                    Index Listeners.
+
+                                                > Update > Listeners
+                                            */
+                                            for (let i = 0; i < listeners.length; i += 1)
+                                                LDK.isString(listeners[i]) && (listeners[i] = func(listeners[i]));
+
+                                            /* Loop
+                                                    Index Listeners.
+
+                                                > LapysJS > Error
+                                            */
+                                            for (let i of listeners)
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                            /* Loop
+                                                    Index Listeners.
 
                                                 > Update > Event List > (Listener, Modifier, Type)
                                             */
-                                            for (let j = 0; j < gamma.length; j += 1) {
-                                                eventList.listener.push(data.listener[i]);
-                                                eventList.modifier.push(
-                                                    LDK.isObject(data.modifier[i]) ? {
-                                                        // Capture
-                                                        capture: !!data.modifier[i].capture[j],
-
-                                                        // Once
-                                                        once: !!data.modifier[i].once[j],
-
-                                                        // Passive
-                                                        passive: !!data.modifier[i].passive[j]
-                                                    } : !!data.modifier[j]
-                                                );
-                                                eventList.type.push(LDK.string(data.type[i]))
+                                            for (let i of listeners) {
+                                                eventList.listener.push(i);
+                                                eventList.modifier.push(defaultModifier);
+                                                eventList.type.push(type)
                                             }
-                                    }
-
-                                /* Logic
-                                        [if statement]
-                                */
-                                if (LDK.isConstructible(args[0]))
-                                    /* Logic
-                                            [if:else if statement]
-                                    */
-                                    if (
-                                        LDK.isObject(args[0]) ||
-                                        (LDK.isArray(args[0]) && ((LDK.isExecutableString((args[0] || tmp.object)[1]) || LDK.isFunction((args[0] || tmp.object)[1])) && LDK.string((args[0] || ['', ''])[1]).replace(/[a-zA-Z_\$]{0,}/g, '').trim()))
-                                    )
-                                        /* Loop
-                                                Index Arguments.
-                                        */
-                                        for (let i of args) {
-                                            // LapysJS > Error
-                                            LDK.isConstructible(i) || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
-
-                                            // Parse Array | (Parse Array | LapysJS > Error)
-                                            LDK.isObject(i) ? parseObject(i) : (LDK.isArray(i) ? parseArray(i) : LapysJS.error(i, 'must', ['array', 'object']));
-
-                                            // Update > Default Modifier
-                                            defaultModifier = {capture: LDK.false, once: LDK.false, passive: LDK.false}
                                         }
 
-                                    else if (!LDK.isObject(args[0]) && !LDK.isObject(args[1])) {
-                                        // Update > Argument (0, 1, 2)
-                                        LDK.isArray(args[0]) || (args[0] = [args[0]]);
-                                        LDK.isArray(args[1]) || (args[1] = [args[1]]);
-                                        args.length > 2 ? (LDK.isArray(args[2]) || (args[2] = [args[2]])) : args[2] = [defaultModifier];
+                                        // Parse Object
+                                        function parseObject() {
+                                            // Initialization > (Data, Metadata)
+                                            let data = LDK.objectAssign({}, arguments[0]),
+                                                metadata = (a=>{for(let i in a)a[i]=!!a[i];return a});
 
-                                        /* Loop
-                                                Index Argument 0.
+                                            /* Loop
+                                                    Index Data.
 
-                                            > Update > Argument 1
-                                        */
-                                        for (let i = 0; i < args[0].length; i += 1)
-                                            args[0][i] = LDK.string(args[0][i]);
+                                                > LapysJS > Error
+                                            */
+                                            for (let i = 0; i < data.length; i += 1)
+                                                (i != 'capture' && i != 'listener' && i != 'once' && i != 'passive' && i != 'type' && i != 'useCapture') && LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', "Unexpected object configuration '" + i + "'");
 
-                                        /* Loop
-                                                Index Argument 1.
+                                            // LapysJS > Error
+                                            ('listener' in data) || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'listener' in JSON object");
+                                            ('type' in data) || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'type' in JSON object");
 
-                                            > Update > Argument 1
-                                        */
-                                        for (let i = 0; i < args[1].length; i += 1)
-                                            LDK.isString(args[1][i]) && (args[1][i] = func(args[1][i]));
+                                            // Deletion
+                                            ('capture' in data || 'once' in data || 'passive' in data) && (delete data.useCapture);
 
-                                        /* Loop
-                                                Index Argument 1.
+                                            // Update > Data
+                                            ('capture' in data || 'once' in data || 'passive' in data || 'useCapture' in data) || (data = LDK.objectAssign(defaultModifier, data));
 
-                                            > LapysJS > Error
-                                        */
-                                        for (let i of args[1])
-                                            LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+                                            // Modification > Data
+                                                // Listener
+                                                LDK.isArray(data.listener) || (data.listener = [data.listener]);
 
-                                        /* Loop
-                                                Index Argument 2.
+                                                // Modifier
+                                                data.modifier = 'useCapture' in data ?
+                                                    (LDK.isArray(data.useCapture) ? metadata(data.useCapture) : [!!data.useCapture]) :
+                                                    (LDK.isArray(data.capture) || LDK.isArray(data.once) || LDK.isArray(data.passive) ?
+                                                        (function() {
+                                                            // Initialization > (Alpha, Beta)
+                                                            let alpha = {capture: data.capture, once: data.once, passive: data.passive},
+                                                                beta = {};
 
-                                            > Update > Argument 2
-                                        */
-                                        for (let i = 0; i < args[2].length; i += 1)
-                                            args[2][i] = LDK.isObject(args[2][i]) ? LDK.objectAssign({}, args[2][i]) : !!args[2][i];
+                                                            // Modification > Beta > (Capture, Once, Passive)
+                                                            beta.capture = LDK.isArray(alpha.capture) ? metadata(alpha.capture) : [!!alpha.capture];
+                                                            beta.once = LDK.isArray(alpha.once) ? metadata(alpha.once) : [!!alpha.once];
+                                                            beta.passive = LDK.isArray(alpha.passive) ? metadata(alpha.passive) : [!!alpha.passive];
 
-                                        /* Loop
-                                                Index Argument 2.
-                                        */
-                                        for (let i of args[2])
+                                                            // Return
+                                                            return [beta]
+                                                        })() :
+                                                        [{capture: [!!data.capture], once: [!!data.once], passive: [!!data.passive]}]
+                                                    );
+
+                                                // Type
+                                                LDK.isArray(data.type) || (data.type = [LDK.string(data.type)]);
+
+                                            /* Loop
+                                                    [for statement]
+
+                                                > Update > Data > Listener
+                                            */
+                                            for (let i = 0; i < data.listener.length; i += 1)
+                                                LDK.isString(data.listener[i]) && (data.listener[i] = func(data.listener[i]));
+
+                                            /* Loop
+                                                    [for:of statement]
+
+                                                > LapysJS > Error
+                                            */
+                                            for (let i of data.listener)
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                            // Initialization > (Alpha, Beta, Delta)
+                                            let alpha = (data.modifier.length = tmp.functions.max(data.listener.length, data.modifier.length, data.type.length)),
+                                                beta = [...data.listener],
+                                                delta = [...data.type];
+
+                                            /* Loop
+                                                    [for statement]
+
+                                                > Update > Data > Modifier
+                                            */
+                                            for (let i = 0; i < data.modifier.length; i += 1)
+                                                LDK.isUndefined(data.modifier[i]) && (data.modifier[i] = defaultModifier);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Data > Listener
+                                            */
+                                            while (data.listener.length < alpha)
+                                                LDK.arrayProto.push.apply(data.listener, beta);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Data > Type
+                                            */
+                                            while (data.listener.length > alpha)
+                                                LDK.arrayProto.push.apply(data.type, delta);
+
+                                            // Modification > Data > (Listener, Type) > Length
+                                            data.listener.length = data.type.length = alpha;
+
+                                            // Initialization > Gamma
+                                            let gamma = [];
+
+                                            // Modification > Gamma > Length
+                                            gamma.length = data.modifier.length;
+
                                             /* Logic
                                                     [if statement]
                                             */
-                                            if (LDK.isObject(i))
+                                            if (LDK.isObject(data.modifier[0])) {
+                                                // Initialization > (Gamma, Epsilon, Upsilon, Pi)
+                                                let $gamma = gamma.length = tmp.functions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
+                                                    epsilon = [...data.modifier[0].capture],
+                                                    upsilon = [...data.modifier[0].once],
+                                                    pi = [...data.modifier[0].passive];
+
                                                 /* Loop
-                                                        Index [Loop Iterator]
+                                                        [while statement]
 
-                                                    > Deletion
+                                                    > Update > Data > Modifier > Capture
                                                 */
-                                                for (let j in i)
-                                                    (j != 'capture' && j != 'once' && j != 'passive') && (delete i[j]);
+                                                while (data.modifier[0].capture.length < $gamma)
+                                                    LDK.arrayProto.push.apply(data.modifier[0].capture, epsilon);
 
-                                        // Initialization > (Data, Metadata, Alpha, Beta)
-                                        let data = tmp.functions.max(args[0].length, args[1].length, args[2].length),
-                                            metadata = [...args[0]],
-                                            alpha = [...args[1]],
-                                            beta = [...args[2]];
+                                                /* Loop
+                                                        [while statement]
 
-                                        /* Loop
-                                                [while statement]
+                                                    > Update > Data > Modifier > Once
+                                                */
+                                                while (data.modifier[0].once.length < $gamma)
+                                                    LDK.arrayProto.push.apply(data.modifier[0].once, upsilon);
 
-                                            > Update > Argument 0
-                                        */
-                                        while (args[0].length < data)
-                                            LDK.arrayProto.push.apply(args[0], metadata);
+                                                /* Loop
+                                                        [while statement]
 
-                                        /* Loop
-                                                [while statement]
+                                                    > Update > Data > Modifier > Passive
+                                                */
+                                                while (data.modifier[0].passive.length < $gamma)
+                                                    LDK.arrayProto.push.apply(data.modifier[0].passive, pi);
 
-                                            > Update > Argument 1
-                                        */
-                                        while (args[1].length < data)
-                                            LDK.arrayProto.push.apply(args[1], alpha);
+                                                // Modification > Data > Modifier > (Capture, Once, Passive) > Length
+                                                data.modifier[0].capture.length = data.modifier[0].once.length = data.modifier[0].passive.length
+                                            }
 
-                                        /* Loop
-                                                [while statement]
+                                            /* Loop
+                                                    [for statement]
 
-                                            > Update > Argument 2
-                                        */
-                                        while (args[2].length < data)
-                                            LDK.arrayProto.push.apply(args[2], beta);
+                                                > Update > Data > Modifier
+                                            */
+                                            for (let i = 0; i < data.modifier.length; i += 1)
+                                                LDK.isNonConstructible(data.modifier[i]) && (data.modifier[i] = defaultModifier);
 
-                                        // Modification > Argument (0, 1, 2) > Length
-                                        args[0].length = args[1].length = args[2].length = data;
+                                            /* Loop
+                                                    [for statement]
+                                            */
+                                            for (let i = 0; i < data.type.length; i += 1)
+                                                /* Loop
+                                                        Index Gamma.
 
-                                        /* Loop
-                                                Index Arguments.
+                                                    > Update > Event List > (Listener, Modifier, Type)
+                                                */
+                                                for (let j = 0; j < gamma.length; j += 1) {
+                                                    eventList.listener.push(data.listener[i]);
+                                                    eventList.modifier.push(
+                                                        LDK.isObject(data.modifier[i]) ? {
+                                                            // Capture
+                                                            capture: !!data.modifier[i].capture[j],
 
-                                            > Update > Event List
-                                        */
-                                        for (let i = 0; i < args[0].length; i += 1) {
-                                            // Listener
-                                            eventList.listener.push(args[1][i]);
+                                                            // Once
+                                                            once: !!data.modifier[i].once[j],
 
-                                            // Modifier
-                                            eventList.modifier.push(args[2][i]);
-
-                                            // Type
-                                            eventList.type.push(args[0][i])
+                                                            // Passive
+                                                            passive: !!data.modifier[i].passive[j]
+                                                        } : !!data.modifier[j]
+                                                    );
+                                                    eventList.type.push(LDK.string(data.type[i]))
+                                                }
                                         }
-                                    }
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDK.isConstructible(args[0]))
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (
+                                            LDK.isObject(args[0]) ||
+                                            (LDK.isArray(args[0]) && ((LDK.isExecutableString((args[0] || tmp.object)[1]) || LDK.isFunction((args[0] || tmp.object)[1])) && LDK.string((args[0] || ['', ''])[1]).replace(/[a-zA-Z_\$]{0,}/g, '').trim()))
+                                        )
+                                            /* Loop
+                                                    Index Arguments.
+                                            */
+                                            for (let i of args) {
+                                                // LapysJS > Error
+                                                LDK.isConstructible(i) || LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
+
+                                                // Parse Array | (Parse Array | LapysJS > Error)
+                                                LDK.isObject(i) ? parseObject(i) : (LDK.isArray(i) ? parseArray(i) : LapysJS.error(i, 'must', ['array', 'object']));
+
+                                                // Update > Default Modifier
+                                                defaultModifier = {capture: LDK.false, once: LDK.false, passive: LDK.false}
+                                            }
+
+                                        else if (!LDK.isObject(args[0]) && !LDK.isObject(args[1])) {
+                                            // Update > Argument (0, 1, 2)
+                                            LDK.isArray(args[0]) || (args[0] = [args[0]]);
+                                            LDK.isArray(args[1]) || (args[1] = [args[1]]);
+                                            args.length > 2 ? (LDK.isArray(args[2]) || (args[2] = [args[2]])) : args[2] = [defaultModifier];
+
+                                            /* Loop
+                                                    Index Argument 0.
+
+                                                > Update > Argument 1
+                                            */
+                                            for (let i = 0; i < args[0].length; i += 1)
+                                                args[0][i] = LDK.string(args[0][i]);
+
+                                            /* Loop
+                                                    Index Argument 1.
+
+                                                > Update > Argument 1
+                                            */
+                                            for (let i = 0; i < args[1].length; i += 1)
+                                                LDK.isString(args[1][i]) && (args[1][i] = func(args[1][i]));
+
+                                            /* Loop
+                                                    Index Argument 1.
+
+                                                > LapysJS > Error
+                                            */
+                                            for (let i of args[1])
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                            /* Loop
+                                                    Index Argument 2.
+
+                                                > Update > Argument 2
+                                            */
+                                            for (let i = 0; i < args[2].length; i += 1)
+                                                args[2][i] = LDK.isObject(args[2][i]) ? LDK.objectAssign({}, args[2][i]) : !!args[2][i];
+
+                                            /* Loop
+                                                    Index Argument 2.
+                                            */
+                                            for (let i of args[2])
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (LDK.isObject(i))
+                                                    /* Loop
+                                                            Index [Loop Iterator]
+
+                                                        > Deletion
+                                                    */
+                                                    for (let j in i)
+                                                        (j != 'capture' && j != 'once' && j != 'passive') && (delete i[j]);
+
+                                            // Initialization > (Data, Metadata, Alpha, Beta)
+                                            let data = tmp.functions.max(args[0].length, args[1].length, args[2].length),
+                                                metadata = [...args[0]],
+                                                alpha = [...args[1]],
+                                                beta = [...args[2]];
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Argument 0
+                                            */
+                                            while (args[0].length < data)
+                                                LDK.arrayProto.push.apply(args[0], metadata);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Argument 1
+                                            */
+                                            while (args[1].length < data)
+                                                LDK.arrayProto.push.apply(args[1], alpha);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Argument 2
+                                            */
+                                            while (args[2].length < data)
+                                                LDK.arrayProto.push.apply(args[2], beta);
+
+                                            // Modification > Argument (0, 1, 2) > Length
+                                            args[0].length = args[1].length = args[2].length = data;
+
+                                            /* Loop
+                                                    Index Arguments.
+
+                                                > Update > Event List
+                                            */
+                                            for (let i = 0; i < args[0].length; i += 1) {
+                                                // Listener
+                                                eventList.listener.push(args[1][i]);
+
+                                                // Modifier
+                                                eventList.modifier.push(args[2][i]);
+
+                                                // Type
+                                                eventList.type.push(args[0][i])
+                                            }
+                                        }
+
+                                        else
+                                            // LapysJS > Error
+                                            LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Invalid argument set given');
 
                                     else
                                         // LapysJS > Error
-                                        LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Invalid argument set given');
+                                        LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
 
-                                else
-                                    // LapysJS > Error
-                                    LapysJS.error(["'removeEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
+                                    // Modification > Quasi Event > (Listener(s), Modifier(s), Type(s))
+                                    eventList.listener.length > 1 ? quasiEvent.listeners = eventList.listener : quasiEvent.listener = eventList.listener[0];
+                                    eventList.modifier.length > 1 ? quasiEvent.modifiers = eventList.modifier : quasiEvent.modifier = eventList.modifier[0];
+                                    eventList.type.length > 1 ? quasiEvent.types = eventList.type : quasiEvent.type = eventList.type[0];
 
-                                // Modification > Quasi Event > (Listener(s), Modifier(s), Type(s))
-                                eventList.listener.length > 1 ? quasiEvent.listeners = eventList.listener : quasiEvent.listener = eventList.listener[0];
-                                eventList.modifier.length > 1 ? quasiEvent.modifiers = eventList.modifier : quasiEvent.modifier = eventList.modifier[0];
-                                eventList.type.length > 1 ? quasiEvent.types = eventList.type : quasiEvent.type = eventList.type[0];
+                                    // Initialization > Data
+                                    let data = [];
 
-                                for (let i = 0; i < perm.eventNodesList.length; i += 1)
-                                    if (perm.eventNodesList[i].target === quasiEvent.target)
-                                        if (
-                                            (
-                                                (LDK.getSourceCode(perm.eventNodesList[i].listener) == LDK.getSourceCode(quasiEvent.listener) && 'listener' in quasiEvent) ||
-                                                (((a,b)=>{let c=tmp.functions.max(a.length,b.length);for(let i=0;i<a.length;i+=1)a[i]=LDK.getSourceCode(a[i]);for(let i=0;i<b.length;i+=1)b[i]=LDK.getSourceCode(b[i]);for(let i=0;i<c;i+=1)if(a[i]!=b[i])return LDK.false;return LDK.true})([...perm.eventNodesList[i].listeners || []], [...quasiEvent.listeners || []]) && 'listeners' in quasiEvent)
-                                            ) &&
-                                            (
-                                                (tmp.functions.stringify(perm.eventNodesList[i].modifier) == tmp.functions.stringify(quasiEvent.modifier) && 'modifier' in quasiEvent) ||
-                                                (((a,b)=>{let c=tmp.functions.max(a.length,b.length);for(let i=0;i<a.length;i+=1)a[i]=tmp.functions.stringify(a[i]);for(let i=0;i<b.length;i+=1)b[i]=tmp.functions.stringify(b[i]);for(let i=0;i<c;i+=1)if(a[i]!=b[i])return LDK.false;return LDK.true})([...perm.eventNodesList[i].modifiers || []], [...quasiEvent.modifiers || []]) && 'modifiers' in quasiEvent)
-                                            ) &&
-                                            (
-                                                (perm.eventNodesList[i].type == quasiEvent.type && 'type' in quasiEvent) ||
-                                                (((a,b)=>{let c=tmp.functions.max(a.length,b.length);for(let i=0;i<c;i+=1)if(a[i]!=b[i])return LDK.false;return LDK.true})(perm.eventNodesList[i].types || [], quasiEvent.types || []) && 'types' in quasiEvent)
-                                            )
-                                        ) {
-                                            let data = perm.eventNodesList[i];
-
-                                            perm.eventNodesList.removeElement(data);
-
-                                            let listeners = [data.listener].concat(data.listeners || []).filter(a=>{return !LDK.isUndefined(a)}),
-                                                modifiers = [data.modifier].concat(data.modifiers || []).filter(a=>{return !LDK.isUndefined(a)}),
-                                                types = [data.type].concat(data.types || []).filter(a=>{return !LDK.isUndefined(a)});
-
-                                            for (let j = 0; j < listeners.length; j += 1)
-                                                parseEvent(types[j], listeners[j], modifiers[j]);
-
-                                            break
-                                        }
-
-                                        else if (
-                                            (a=>{for(let i=0;i<a.length;i+=1)a[i]=LDK.getSourceCode(a[i]);return a})([...perm.eventNodesList[i].listeners || []]).indexOf(LDK.getSourceCode(quasiEvent.listener)) > -1 && 'listener' in quasiEvent &&
-                                            (a=>{for(let i=0;i<a.length;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})([...perm.eventNodesList[i].modifiers || []]).indexOf(tmp.functions.stringify(quasiEvent.modifier)) > -1 && 'modifier' in quasiEvent &&
-                                            (perm.eventNodesList[i].types || []).indexOf(quasiEvent.type) > -1 && 'type' in quasiEvent
-                                        ) {
-                                            let data = perm.eventNodesList[i];
-
-                                            let listeners = [data.listeners[(a=>{for(let i=0;i<a.length;i+=1)a[i]=LDK.getSourceCode(a[i]);return a})([...data.listeners || []]).indexOf(LDK.getSourceCode(quasiEvent.listener))]],
-                                                modifiers = [data.modifiers[(a=>{for(let i=0;i<a.length;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})([...data.modifiers || []]).indexOf(tmp.functions.stringify(quasiEvent.modifier))]],
-                                                types = [data.types[(data.types || []).indexOf(quasiEvent.type)]];
-
-                                            data.listeners.removeElement(listeners[0]);
-                                            data.modifiers.removeElement(modifiers[0]);
-                                            data.types.removeElement(types[0]);
-
-                                            if (data.listeners.length == 1) {
-                                                data.listener = data.listeners[0];
-                                                delete data.listeners
-                                            }
-
-                                            if (data.modifiers.length == 1) {
-                                                data.modifier = data.modifiers[0];
-                                                delete data.modifiers
-                                            }
-
-                                            if (data.types.length == 1) {
-                                                data.type = data.types[0];
-                                                delete data.types
-                                            }
-
-                                            for (let j = 0; j < listeners.length; j += 1)
-                                                parseEvent(types[j], listeners[j], modifiers[j]);
-
-                                            break
-                                        }
-
-                                        /* --- LAPYS CHECKPOINT ---
-                                                - If the events to be deleted is within a quasi event in the event nodes list
+                                    /* Loop
+                                            [for:of statement]
+                                    */
+                                    for (let i of perm.eventNodesList)
+                                        /* Logic
+                                                [if statement]
                                         */
-                                        else if (
-                                            (((a,b)=>{let c=[...a];for(let i=0;i<a.length;i+=1)a[i]=LDK.getSourceCode(a[i]);for(let i=0;i<b.length;i+=1)b[i]=LDK.getSourceCode(b[i]);LDK.arrayProto.removeElement.apply(a,b);return a.length!=c.length})([...perm.eventNodesList[i].listeners || []], [...quasiEvent.listeners || []]) && 'listeners' in quasiEvent) &&
-                                            (((a,b)=>{let c=[...a];for(let i=0;i<a.length;i+=1)a[i]=tmp.functions.stringify(a[i]);for(let i=0;i<b.length;i+=1)b[i]=tmp.functions.stringify(b[i]);LDK.arrayProto.removeElement.apply(a,b);return a.length!=c.length})([...perm.eventNodesList[i].modifiers || []], [...quasiEvent.modifiers || []]) && 'modifiers' in quasiEvent) &&
-                                            (((a,b)=>{let c=[...a];LDK.arrayProto.removeElement.apply(a,b);return a.length!=c.length})([...perm.eventNodesList[i].types || []], [...quasiEvent.types || []]) && 'types' in quasiEvent)
-                                        ) {
-                                            console.log(3)
-                                        }
+                                        if (i.target == quasiEvent.target)
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (
+                                                (LDK.getSourceCode(i.listener) == quasiEvent.listener && LDK.isConstructible(quasiEvent.listener)) &&
+                                                (tmp.functions.stringify(i.modifier) == tmp.functions.stringify(quasiEvent.modifier) && LDK.isConstructible(quasiEvent.modifier)) &&
+                                                (i.type == quasiEvent.type && LDK.isConstructible(quasiEvent.type))
+                                            ) {
+                                                // Update > Permanent Data > Event Nodes List
+                                                perm.eventNodesList.removeElement(i);
+
+                                                // Parse Event
+                                                parseEvent(i.type, i.listener, i.modifier);
+
+                                                // Break
+                                                break
+                                            }
+
+                                            else if (
+                                                (function() {
+                                                    /* Initialization > (A, B, C)
+                                                            --- NOTE ---
+                                                                #lapys:
+                                                                    A = Listeners
+                                                                    B = Modifiers
+                                                                    C = Types
+                                                    */
+                                                    let a = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return data[0]=a})(i.listeners || []).indexOf(LDK.getSourceCode(quasiEvent.listener)),
+                                                        b = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return data[1]=a})(i.modifiers || []).indexOf(tmp.functions.stringify(quasiEvent.modifier)),
+                                                        c = (a=>{a=[...a];return data[2]=a})(i.types || []).indexOf(quasiEvent.type);
+
+                                                    // Return
+                                                    return (a > -1 && b > -1 && c > -1) && (a == b && a == c && b == c)
+                                                })()
+                                            ) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (data[0].length == data[1].length && data[0].length == data[2].length && data[1].length == data[2].length) {
+                                                    // Update > Data
+                                                    data[0] = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return a})(i.listeners || []).indexOf(LDK.getSourceCode(quasiEvent.listener));
+                                                    data[1] = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})(i.modifiers || []).indexOf(tmp.functions.stringify(quasiEvent.modifier));
+                                                    data[2] = (a=>{a=[...a];return a})(i.types || []).indexOf(quasiEvent.type);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (data[0] == data[1] && data[0] == data[2] && data[1] == data[2]) {
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (
+                                                            LDK.getSourceCode(i.listeners[data[2]]) == LDK.getSourceCode(quasiEvent.listener) &&
+                                                            tmp.functions.stringify(i.modifiers[data[2]]) == tmp.functions.stringify(quasiEvent.modifier) &&
+                                                            i.types[data[2]] == quasiEvent.type
+                                                        ) {
+                                                            // Parse Event
+                                                            parseEvent(i.types[data[2]], i.listeners[data[0]], i.modifiers[data[1]]);
+
+                                                            // Update > [Loop Iterator]
+                                                            i.listeners.removeElement(i.listeners[data[0]]);
+                                                            i.modifiers.removeElement(i.modifiers[data[1]]);
+                                                            i.types.removeElement(i.types[data[2]]);
+
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (i.listeners.length == 1) {
+                                                                // Modification > [Loop Iterator] > Listener
+                                                                i.listener = i.listeners[0];
+
+                                                                // Deletion
+                                                                delete i.listeners
+                                                            }
+
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (i.modifiers.length == 1) {
+                                                                // Modification > [Loop Iterator] > Modifier
+                                                                i.modifier = i.modifiers[0];
+
+                                                                // Deletion
+                                                                delete i.modifiers
+                                                            }
+
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (i.types.length == 1) {
+                                                                // Modification > [Loop Iterator] > Type
+                                                                i.type = i.types[0];
+
+                                                                // Deletion
+                                                                delete i.types
+                                                            }
+                                                        }
+
+                                                        else
+                                                            // LapysJS > Warn
+                                                            LapysJS.warn(["'removeEvent'", "'EventTarget'"], 'argument', 'Unexpected event argument pair given');
+
+                                                        // Break
+                                                        break
+                                                    }
+                                                }
+                                            }
+
+                                            else if (
+                                                LDK.arrayProto.removeElement.apply(
+                                                    (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return data[0]=a})(i.listeners || []),
+                                                    (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return data[0]=a})(quasiEvent.listeners || [])
+                                                ).length < i.listeners.length &&
+                                                LDK.arrayProto.removeElement.apply(
+                                                    (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return data[1]=a})(i.modifiers || []),
+                                                    (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return data[1]=a})(quasiEvent.modifiers || [])
+                                                ).length < i.modifiers.length &&
+                                                LDK.arrayProto.removeElement.apply(
+                                                    (a=>{a=[...a];return data[2]=a})(i.types || []),
+                                                    (a=>{a=[...a];return data[2]=a})(quasiEvent.types || [])
+                                                ).length < i.types.length
+                                            ) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (data[0].length == data[1].length && data[0].length == data[2].length && data[1].length == data[2].length) {
+                                                    /* Loop
+                                                            [for statement]
+                                                    */
+                                                    for (let j = 0; j < quasiEvent.listeners.length; j += 1)
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (
+                                                            LDK.getSourceCode(i.listeners[j]) == LDK.getSourceCode(quasiEvent.listeners[j]) &&
+                                                            tmp.functions.stringify(i.modifiers[j]) == tmp.functions.stringify(quasiEvent.modifiers[j]) &&
+                                                            i.types[j] == quasiEvent.types[j]
+                                                        ) {
+                                                            // Parse Event
+                                                            parseEvent(i.types[j], i.listeners[j], i.modifiers[j]);
+
+                                                            // Modification > [Loop Iterator] > (Listeners, Modifiers, Types)
+                                                            i.listeners[j] = i.modifiers[j] = i.types[j] = tmp.object
+                                                        }
+
+                                                        else
+                                                            // LapysJS > Warn
+                                                            LapysJS.warn(["'removeEvent'", "'EventTarget'"], 'argument', 'Unexpected event argument pair at index ' + j);
+
+                                                    // Modification > [Loop Iterator] > (Listeners, Modifiers, Types)
+                                                    i.listeners = i.listeners.filter(a=>{return a!=tmp.object});
+                                                    i.modifiers = i.modifiers.filter(a=>{return a!=tmp.object});
+                                                    i.types = i.types.filter(a=>{return a!=tmp.object});
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (i.listeners.length == 1) {
+                                                        // Modification > [Loop Iterator] > Listener
+                                                        i.listener = i.listeners[0];
+
+                                                        // Deletion
+                                                        delete i.listeners
+                                                    }
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (i.modifiers.length == 1) {
+                                                        // Modification > [Loop Iterator] > Modifier
+                                                        i.modifier = i.modifiers[0];
+
+                                                        // Deletion
+                                                        delete i.modifiers
+                                                    }
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (i.types.length == 1) {
+                                                        // Modification > [Loop Iterator] > Type
+                                                        i.type = i.types[0];
+
+                                                        // Deletion
+                                                        delete i.types
+                                                    }
+
+                                                    // Break
+                                                    break
+                                                }
+                                            }
+
+                                            else
+                                                // LapysJS > Warn
+                                                LapysJS.warn(["'removeEvent'", "'EventTarget'"], 'argument', 'Unexpected event argument pair given')
+                                }
 
                                 // Return
                                 return quasiEvent
@@ -10784,16 +11135,256 @@
                             }
                         });
 
-                        // Get Event --- CHECKPOINT ---
-                        LDK.objectDefProp(tmp.value, 'getEvent', {
-                            // Value
-                            value: function getEvent() {}
-                        });
-
-                        // Get Events --- CHECKPOINT ---
+                        // Get Events
                         LDK.objectDefProp(tmp.value, 'getEvents', {
                             // Value
-                            value: function getEvents() {}
+                            value: function getEvents() {
+                                // Initialization > (Arguments, Data, Target)
+                                let args = [...arguments],
+                                    data,
+                                    that = this;
+
+                                // Modification > Permanent Data > Event Nodes List
+                                perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
+
+                                // Update > Data
+                                data = LDK.isNativeFunction(tmp.functions.getEventListeners) ?
+                                    LDK.objectAssign({}, tmp.functions.getEventListeners(that)) :
+                                    (function() {
+                                        // Initialization > Data
+                                        let data = {};
+
+                                        /* Loop
+                                                [for:of statement]
+                                        */
+                                        for (let i of perm.eventNodesList)
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (i.target == that)
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if ('type' in i)
+                                                    // Update > Data
+                                                    i.type in data ? data[i.type].push(i) : data[i.type] = [i];
+
+                                                else {
+                                                    /* Loop
+                                                            [for statement]
+                                                    */
+                                                    for (let j = 0; j < i.types.length; j += 1) {
+                                                        // Initialization > Alpha
+                                                        let alpha = (function() {
+                                                            // Initialization > Metadata
+                                                            let metadata = {
+                                                                // Listener
+                                                                listener: i.listeners[j],
+
+                                                                // Types
+                                                                type: i.types[j]
+                                                            };
+
+                                                            // Update > Metadata
+                                                            metadata = LDK.isBool(i.modifiers[j]) ? LDK.objectAssign({
+                                                                // Once
+                                                                once: LDK.false,
+
+                                                                // Passive
+                                                                passive: LDK.false,
+
+                                                                // Use Capture
+                                                                useCapture: i.modifiers[j]
+                                                            }, metadata) : LDK.objectAssign({
+                                                                // Once
+                                                                once: i.modifiers[j].once,
+
+                                                                // Passive
+                                                                passive: i.modifiers[j].passive,
+
+                                                                // Use Capture
+                                                                useCapture: i.modifiers[j].capture
+                                                            }, metadata);
+
+                                                            // Return
+                                                            return metadata
+                                                        })();
+
+                                                        // Update > Data
+                                                        i.types[j] in data ? data[i.types[j]].push(alpha) : data[i.types[j]] = [alpha]
+                                                    }
+                                                }
+
+                                        // Return
+                                        return data
+                                    })();
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (args.length) {
+                                    // Initialization > Metadata
+                                    let metadata = LDK.isArray(args[0]) ? (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.string(a[i]);return a})(args[0]) : LDK.string(args[0]);
+
+                                    // Update > Data
+                                    data = LDK.isArray(metadata) ? (function() {
+                                        // Initialization > Alpha
+                                        let alpha = {};
+
+                                        /* Loop
+                                                Index Metadata.
+
+                                            > Modification > Alpha > [Loop Iterator]
+                                        */
+                                        for (let i of metadata)
+                                            (i in data && !(i in alpha)) && (alpha[i] = data[i]);
+
+                                        // Return
+                                        return alpha
+                                    })() : (metadata in data ? data[metadata] : LDK.null);
+
+                                    console.log(data);
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (args.length > 1) {
+                                        // Initialization > (Metadata, Alpha)
+                                        let metadata = args[0],
+                                            alpha = args[1];
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (LDK.isArray(alpha))
+                                            /* Loop
+                                                    Index Alpha.
+
+                                                > (...)
+                                            */
+                                            for (let i of alpha)
+                                                LDK.isArray(i) ? (function() {
+                                                    /* Loop
+                                                            [for:of statement]
+
+                                                        > LapysJS > Error
+                                                    */
+                                                    for (let j of i)
+                                                        LDK.isNumber(j) || LapysJS.error('Unexpected non-integer type in object passed as argument 1.')
+                                                })() : (LDK.isNumber(i) || LapysJS.error('Unexpected non-integer type in object passed as argument 1.'));
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (LDK.isArray(metadata) && LDK.isArray(alpha)) {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (alpha.filter(a=>{return LDK.isArray(a)}).length) {
+                                                // Initialization > Beta
+                                                let beta = 0;
+
+                                                /* Loop
+                                                        Index Data.
+                                                */
+                                                for (let i in data) {
+                                                    // Modification > Data > [Loop Iterator]
+                                                    data[i] = LDK.isArray(alpha[beta]) ? (function() {
+                                                        let epsilon = [];
+
+                                                        for (let j of alpha[beta])
+                                                            epsilon.push(j in data[i] ? data[i][j] : LDK.null);
+
+                                                        return epsilon
+                                                    })() : (alpha[beta] in data[i] ? data[i][alpha[beta]] : LDK.null);
+
+                                                    // Update > Beta
+                                                    beta += 1
+                                                }
+                                            }
+
+                                            else {
+                                                // Initialization > Beta
+                                                let beta = {};
+
+                                                /* Loop
+                                                        Index Alpha.
+                                                */
+                                                for (let i = 0; i < alpha.length; i += 1) {
+                                                    // Initialization > Delta
+                                                    let delta = alpha[i];
+
+                                                    /* Loop
+                                                            Index Data.
+                                                    */
+                                                    for (let j in data) {
+                                                        // Initialization > Epsilon
+                                                        let epsilon = delta in data[j] ? data[j][delta] : LDK.null;
+
+                                                        // (...)
+                                                        j in beta ? beta[j].push(epsilon) : beta[j] = [epsilon]
+                                                    }
+                                                }
+
+                                                // Update > Data
+                                                data = beta
+                                            }
+                                        }
+
+                                        else if (LDK.isArray(metadata) && LDK.isNumber(alpha))
+                                            /* Loop
+                                                    Index Data.
+
+                                                > Modification > Data > [Loop Iterator]
+                                            */
+                                            for (let i in data)
+                                                data[i] = alpha in data[i] ? data[i][alpha] : LDK.null;
+
+                                        else if (!LDK.isArray(metadata) && LDK.isArray(alpha)) {
+                                            // Initialization > Beta
+                                            let beta = [];
+
+                                            /* Loop
+                                                    Index Alpha.
+
+                                                > Update > Beta
+                                            */
+                                            for (let i of alpha)
+                                                beta.push(i in data ? data[i] : LDK.null);
+
+                                            // Update > Data
+                                            data = beta
+                                        }
+
+                                        else if (!LDK.isArray(metadata) && LDK.isNumber(alpha))
+                                            // Update > Data
+                                            data = alpha in data ? data[alpha] : LDK.null;
+
+                                        else
+                                            // LapysJS > Error
+                                            LapysJS.error(["'getEvents'", "'EventTarget'"], 'argument', 'Invalid argument set given')
+                                    }
+
+                                    else if (args.length != 1)
+                                        // LapysJS > Error
+                                        LapysJS.error(["'getEvents'", "'EventTarget'"], 'argument', 'Too many arguments')
+                                }
+
+                                // Return
+                                data = LDK.isObject(data) ? LDK.namedObject('NamedEventMap', data) : (LDK.isArray(data) ? LDK.namedArray.apply(LDK, LDK.arrayProto.addElementToFront.apply(['NamedEventList'], data)) : data)
+                            }
+                        });
+
+                        /* Has Events
+                                --- CHECKPOINT ---
+                                --- NOTE ---
+                                    #lapys: Another time for now... phew
+                        */
+                        LDK.objectDefProp(tmp.value, 'hasEvents', {
+                            // Value
+                            value: function hasEvents() {
+                                // Return
+                                return LapysJS.warn(tmp)
+                            }
                         });
 
                         // Last Child
@@ -11122,6 +11713,15 @@
                             }
                         });
 
+                        // Replace Event
+                        LDK.objectDefProp(tmp.value, 'replEvent', {
+                            // Value
+                            value: function replaceEvent() {
+                                // Return
+                                return LapysJS.warn(tmp)
+                            }
+                        });
+
                         // Set Event
                         LDK.objectDefProp(tmp.value, 'setEvent', {
                             // Value
@@ -11145,375 +11745,387 @@
                                         return LDK.eventTargetProto.addEventListener.apply(that, args)
                                     }), quasiEvent = LDK.namedObject('QuasiEvent', {target: that});
 
-                                // Function
-                                    // Parse Array
-                                    function parseArray() {
-                                        // Initialization > (Data, Listeners, Type)
-                                        let data = [...arguments[0]],
-                                            listeners = data.slice(1),
-                                            type = LDK.string(data[0]);
+                                // Modification > Permanent Data > Event Nodes List
+                                perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
 
-                                        // LapysJS > Error
-                                        listeners.length || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Expected array to be in format: [<event type>, <event listener>]');
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (args.length > 1) {
+                                    // Function
+                                        // Parse Array
+                                        function parseArray() {
+                                            // Initialization > (Data, Listeners, Type)
+                                            let data = [...arguments[0]],
+                                                listeners = data.slice(1),
+                                                type = LDK.string(data[0]);
 
-                                        /* Loop
-                                                Index Listeners.
-
-                                            > Update > Listeners
-                                        */
-                                        for (let i = 0; i < listeners.length; i += 1)
-                                            LDK.isString(listeners[i]) && (listeners[i] = func(listeners[i]));
-
-                                        /* Loop
-                                                Index Listeners.
-
-                                            > LapysJS > Error
-                                        */
-                                        for (let i of listeners)
-                                            LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
-
-                                        /* Loop
-                                                Index Listeners.
-
-                                            > Update > Event List > (Listener, Modifier, Type)
-                                        */
-                                        for (let i of listeners) {
-                                            eventList.listener.push(i);
-                                            eventList.modifier.push(defaultModifier);
-                                            eventList.type.push(type)
-                                        }
-                                    }
-
-                                    // Parse Object
-                                    function parseObject() {
-                                        // Initialization > (Data, Metadata)
-                                        let data = LDK.objectAssign({}, arguments[0]),
-                                            metadata = (a=>{for(let i in a)a[i]=!!a[i];return a});
-
-                                        /* Loop
-                                                Index Data.
-
-                                            > LapysJS > Error
-                                        */
-                                        for (let i = 0; i < data.length; i += 1)
-                                            (i != 'capture' && i != 'listener' && i != 'once' && i != 'passive' && i != 'type' && i != 'useCapture') && LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', "Unexpected object configuration '" + i + "'");
-
-                                        // LapysJS > Error
-                                        ('listener' in data) || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'listener' in JSON object");
-                                        ('type' in data) || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'type' in JSON object");
-
-                                        // Deletion
-                                        ('capture' in data || 'once' in data || 'passive' in data) && (delete data.useCapture);
-
-                                        // Update > Data
-                                        ('capture' in data || 'once' in data || 'passive' in data || 'useCapture' in data) || (data = LDK.objectAssign(defaultModifier, data));
-
-                                        // Modification > Data
-                                            // Listener
-                                            LDK.isArray(data.listener) || (data.listener = [data.listener]);
-
-                                            // Modifier
-                                            data.modifier = 'useCapture' in data ?
-                                                (LDK.isArray(data.useCapture) ? metadata(data.useCapture) : [!!data.useCapture]) :
-                                                (LDK.isArray(data.capture) || LDK.isArray(data.once) || LDK.isArray(data.passive) ?
-                                                    (function() {
-                                                        // Initialization > (Alpha, Beta)
-                                                        let alpha = {capture: data.capture, once: data.once, passive: data.passive},
-                                                            beta = {};
-
-                                                        // Modification > Beta > (Capture, Once, Passive)
-                                                        beta.capture = LDK.isArray(alpha.capture) ? metadata(alpha.capture) : [!!alpha.capture];
-                                                        beta.once = LDK.isArray(alpha.once) ? metadata(alpha.once) : [!!alpha.once];
-                                                        beta.passive = LDK.isArray(alpha.passive) ? metadata(alpha.passive) : [!!alpha.passive];
-
-                                                        // Return
-                                                        return [beta]
-                                                    })() :
-                                                    [{capture: [!!data.capture], once: [!!data.once], passive: [!!data.passive]}]
-                                                );
-
-                                            // Type
-                                            LDK.isArray(data.type) || (data.type = [LDK.string(data.type)]);
-
-                                        /* Loop
-                                                [for statement]
-
-                                            > Update > Data > Listener
-                                        */
-                                        for (let i = 0; i < data.listener.length; i += 1)
-                                            LDK.isString(data.listener[i]) && (data.listener[i] = func(data.listener[i]));
-
-                                        /* Loop
-                                                [for:of statement]
-
-                                            > LapysJS > Error
-                                        */
-                                        for (let i of data.listener)
-                                            LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
-
-                                        // Initialization > (Alpha, Beta, Delta)
-                                        let alpha = (data.modifier.length = tmp.functions.max(data.listener.length, data.modifier.length, data.type.length)),
-                                            beta = [...data.listener],
-                                            delta = [...data.type];
-
-                                        /* Loop
-                                                [for statement]
-
-                                            > Update > Data > Modifier
-                                        */
-                                        for (let i = 0; i < data.modifier.length; i += 1)
-                                            LDK.isUndefined(data.modifier[i]) && (data.modifier[i] = defaultModifier);
-
-                                        /* Loop
-                                                [while statement]
-
-                                            > Update > Data > Listener
-                                        */
-                                        while (data.listener.length < alpha)
-                                            LDK.arrayProto.push.apply(data.listener, beta);
-
-                                        /* Loop
-                                                [while statement]
-
-                                            > Update > Data > Type
-                                        */
-                                        while (data.listener.length > alpha)
-                                            LDK.arrayProto.push.apply(data.type, delta);
-
-                                        // Modification > Data > (Listener, Type) > Length
-                                        data.listener.length = data.type.length = alpha;
-
-                                        // Initialization > Gamma
-                                        let gamma = [];
-
-                                        // Modification > Gamma > Length
-                                        gamma.length = data.modifier.length;
-
-                                        /* Logic
-                                                [if statement]
-                                        */
-                                        if (LDK.isObject(data.modifier[0])) {
-                                            // Initialization > (Gamma, Epsilon, Upsilon, Pi)
-                                            let $gamma = gamma.length = tmp.functions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
-                                                epsilon = [...data.modifier[0].capture],
-                                                upsilon = [...data.modifier[0].once],
-                                                pi = [...data.modifier[0].passive];
+                                            // LapysJS > Error
+                                            listeners.length || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Expected array to be in format: [<event type>, <event listener>]');
 
                                             /* Loop
-                                                    [while statement]
+                                                    Index Listeners.
 
-                                                > Update > Data > Modifier > Capture
+                                                > Update > Listeners
                                             */
-                                            while (data.modifier[0].capture.length < $gamma)
-                                                LDK.arrayProto.push.apply(data.modifier[0].capture, epsilon);
+                                            for (let i = 0; i < listeners.length; i += 1)
+                                                LDK.isString(listeners[i]) && (listeners[i] = func(listeners[i]));
 
                                             /* Loop
-                                                    [while statement]
+                                                    Index Listeners.
 
-                                                > Update > Data > Modifier > Once
+                                                > LapysJS > Error
                                             */
-                                            while (data.modifier[0].once.length < $gamma)
-                                                LDK.arrayProto.push.apply(data.modifier[0].once, upsilon);
+                                            for (let i of listeners)
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
 
                                             /* Loop
-                                                    [while statement]
-
-                                                > Update > Data > Modifier > Passive
-                                            */
-                                            while (data.modifier[0].passive.length < $gamma)
-                                                LDK.arrayProto.push.apply(data.modifier[0].passive, pi);
-
-                                            // Modification > Data > Modifier > (Capture, Once, Passive) > Length
-                                            data.modifier[0].capture.length = data.modifier[0].once.length = data.modifier[0].passive.length
-                                        }
-
-                                        /* Loop
-                                                [for statement]
-
-                                            > Update > Data > Modifier
-                                        */
-                                        for (let i = 0; i < data.modifier.length; i += 1)
-                                            LDK.isNonConstructible(data.modifier[i]) && (data.modifier[i] = defaultModifier);
-
-                                        /* Loop
-                                                [for statement]
-                                        */
-                                        for (let i = 0; i < data.type.length; i += 1)
-                                            /* Loop
-                                                    Index Gamma.
+                                                    Index Listeners.
 
                                                 > Update > Event List > (Listener, Modifier, Type)
                                             */
-                                            for (let j = 0; j < gamma.length; j += 1) {
-                                                eventList.listener.push(data.listener[i]);
-                                                eventList.modifier.push(
-                                                    LDK.isObject(data.modifier[i]) ? {
-                                                        // Capture
-                                                        capture: !!data.modifier[i].capture[j],
-
-                                                        // Once
-                                                        once: !!data.modifier[i].once[j],
-
-                                                        // Passive
-                                                        passive: !!data.modifier[i].passive[j]
-                                                    } : !!data.modifier[j]
-                                                );
-                                                eventList.type.push(LDK.string(data.type[i]))
+                                            for (let i of listeners) {
+                                                eventList.listener.push(i);
+                                                eventList.modifier.push(defaultModifier);
+                                                eventList.type.push(type)
                                             }
-                                    }
-
-                                /* Logic
-                                        [if statement]
-                                */
-                                if (LDK.isConstructible(args[0]))
-                                    /* Logic
-                                            [if:else if statement]
-                                    */
-                                    if (
-                                        LDK.isObject(args[0]) ||
-                                        (LDK.isArray(args[0]) && ((LDK.isExecutableString((args[0] || tmp.object)[1]) || LDK.isFunction((args[0] || tmp.object)[1])) && LDK.string((args[0] || ['', ''])[1]).replace(/[a-zA-Z_\$]{0,}/g, '').trim()))
-                                    )
-                                        /* Loop
-                                                Index Arguments.
-                                        */
-                                        for (let i of args) {
-                                            // LapysJS > Error
-                                            LDK.isConstructible(i) || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
-
-                                            // Parse Array | (Parse Array | LapysJS > Error)
-                                            LDK.isObject(i) ? parseObject(i) : (LDK.isArray(i) ? parseArray(i) : LapysJS.error(i, 'must', ['array', 'object']));
-
-                                            // Update > Default Modifier
-                                            defaultModifier = {capture: LDK.false, once: LDK.false, passive: LDK.false}
                                         }
 
-                                    else if (!LDK.isObject(args[0]) && !LDK.isObject(args[1])) {
-                                        // Update > Argument (0, 1, 2)
-                                        LDK.isArray(args[0]) || (args[0] = [args[0]]);
-                                        LDK.isArray(args[1]) || (args[1] = [args[1]]);
-                                        args.length > 2 ? (LDK.isArray(args[2]) || (args[2] = [args[2]])) : args[2] = [defaultModifier];
+                                        // Parse Object
+                                        function parseObject() {
+                                            // Initialization > (Data, Metadata)
+                                            let data = LDK.objectAssign({}, arguments[0]),
+                                                metadata = (a=>{for(let i in a)a[i]=!!a[i];return a});
 
-                                        /* Loop
-                                                Index Argument 0.
+                                            /* Loop
+                                                    Index Data.
 
-                                            > Update > Argument 1
-                                        */
-                                        for (let i = 0; i < args[0].length; i += 1)
-                                            args[0][i] = LDK.string(args[0][i]);
+                                                > LapysJS > Error
+                                            */
+                                            for (let i = 0; i < data.length; i += 1)
+                                                (i != 'capture' && i != 'listener' && i != 'once' && i != 'passive' && i != 'type' && i != 'useCapture') && LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', "Unexpected object configuration '" + i + "'");
 
-                                        /* Loop
-                                                Index Argument 1.
+                                            // LapysJS > Error
+                                            ('listener' in data) || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'listener' in JSON object");
+                                            ('type' in data) || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'type' in JSON object");
 
-                                            > Update > Argument 1
-                                        */
-                                        for (let i = 0; i < args[1].length; i += 1)
-                                            LDK.isString(args[1][i]) && (args[1][i] = func(args[1][i]));
+                                            // Deletion
+                                            ('capture' in data || 'once' in data || 'passive' in data) && (delete data.useCapture);
 
-                                        /* Loop
-                                                Index Argument 1.
+                                            // Update > Data
+                                            ('capture' in data || 'once' in data || 'passive' in data || 'useCapture' in data) || (data = LDK.objectAssign(defaultModifier, data));
 
-                                            > LapysJS > Error
-                                        */
-                                        for (let i of args[1])
-                                            LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+                                            // Modification > Data
+                                                // Listener
+                                                LDK.isArray(data.listener) || (data.listener = [data.listener]);
 
-                                        /* Loop
-                                                Index Argument 2.
+                                                // Modifier
+                                                data.modifier = 'useCapture' in data ?
+                                                    (LDK.isArray(data.useCapture) ? metadata(data.useCapture) : [!!data.useCapture]) :
+                                                    (LDK.isArray(data.capture) || LDK.isArray(data.once) || LDK.isArray(data.passive) ?
+                                                        (function() {
+                                                            // Initialization > (Alpha, Beta)
+                                                            let alpha = {capture: data.capture, once: data.once, passive: data.passive},
+                                                                beta = {};
 
-                                            > Update > Argument 2
-                                        */
-                                        for (let i = 0; i < args[2].length; i += 1)
-                                            args[2][i] = LDK.isObject(args[2][i]) ? LDK.objectAssign({}, args[2][i]) : !!args[2][i];
+                                                            // Modification > Beta > (Capture, Once, Passive)
+                                                            beta.capture = LDK.isArray(alpha.capture) ? metadata(alpha.capture) : [!!alpha.capture];
+                                                            beta.once = LDK.isArray(alpha.once) ? metadata(alpha.once) : [!!alpha.once];
+                                                            beta.passive = LDK.isArray(alpha.passive) ? metadata(alpha.passive) : [!!alpha.passive];
 
-                                        /* Loop
-                                                Index Argument 2.
-                                        */
-                                        for (let i of args[2])
+                                                            // Return
+                                                            return [beta]
+                                                        })() :
+                                                        [{capture: [!!data.capture], once: [!!data.once], passive: [!!data.passive]}]
+                                                    );
+
+                                                // Type
+                                                LDK.isArray(data.type) || (data.type = [LDK.string(data.type)]);
+
+                                            /* Loop
+                                                    [for statement]
+
+                                                > Update > Data > Listener
+                                            */
+                                            for (let i = 0; i < data.listener.length; i += 1)
+                                                LDK.isString(data.listener[i]) && (data.listener[i] = func(data.listener[i]));
+
+                                            /* Loop
+                                                    [for:of statement]
+
+                                                > LapysJS > Error
+                                            */
+                                            for (let i of data.listener)
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                            // Initialization > (Alpha, Beta, Delta)
+                                            let alpha = (data.modifier.length = tmp.functions.max(data.listener.length, data.modifier.length, data.type.length)),
+                                                beta = [...data.listener],
+                                                delta = [...data.type];
+
+                                            /* Loop
+                                                    [for statement]
+
+                                                > Update > Data > Modifier
+                                            */
+                                            for (let i = 0; i < data.modifier.length; i += 1)
+                                                LDK.isUndefined(data.modifier[i]) && (data.modifier[i] = defaultModifier);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Data > Listener
+                                            */
+                                            while (data.listener.length < alpha)
+                                                LDK.arrayProto.push.apply(data.listener, beta);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Data > Type
+                                            */
+                                            while (data.listener.length > alpha)
+                                                LDK.arrayProto.push.apply(data.type, delta);
+
+                                            // Modification > Data > (Listener, Type) > Length
+                                            data.listener.length = data.type.length = alpha;
+
+                                            // Initialization > Gamma
+                                            let gamma = [];
+
+                                            // Modification > Gamma > Length
+                                            gamma.length = data.modifier.length;
+
                                             /* Logic
                                                     [if statement]
                                             */
-                                            if (LDK.isObject(i))
+                                            if (LDK.isObject(data.modifier[0])) {
+                                                // Initialization > (Gamma, Epsilon, Upsilon, Pi)
+                                                let $gamma = gamma.length = tmp.functions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
+                                                    epsilon = [...data.modifier[0].capture],
+                                                    upsilon = [...data.modifier[0].once],
+                                                    pi = [...data.modifier[0].passive];
+
                                                 /* Loop
-                                                        Index [Loop Iterator]
+                                                        [while statement]
 
-                                                    > Deletion
+                                                    > Update > Data > Modifier > Capture
                                                 */
-                                                for (let j in i)
-                                                    (j != 'capture' && j != 'once' && j != 'passive') && (delete i[j]);
+                                                while (data.modifier[0].capture.length < $gamma)
+                                                    LDK.arrayProto.push.apply(data.modifier[0].capture, epsilon);
 
-                                        // Initialization > (Data, Metadata, Alpha, Beta)
-                                        let data = tmp.functions.max(args[0].length, args[1].length, args[2].length),
-                                            metadata = [...args[0]],
-                                            alpha = [...args[1]],
-                                            beta = [...args[2]];
+                                                /* Loop
+                                                        [while statement]
 
-                                        /* Loop
-                                                [while statement]
+                                                    > Update > Data > Modifier > Once
+                                                */
+                                                while (data.modifier[0].once.length < $gamma)
+                                                    LDK.arrayProto.push.apply(data.modifier[0].once, upsilon);
 
-                                            > Update > Argument 0
-                                        */
-                                        while (args[0].length < data)
-                                            LDK.arrayProto.push.apply(args[0], metadata);
+                                                /* Loop
+                                                        [while statement]
 
-                                        /* Loop
-                                                [while statement]
+                                                    > Update > Data > Modifier > Passive
+                                                */
+                                                while (data.modifier[0].passive.length < $gamma)
+                                                    LDK.arrayProto.push.apply(data.modifier[0].passive, pi);
 
-                                            > Update > Argument 1
-                                        */
-                                        while (args[1].length < data)
-                                            LDK.arrayProto.push.apply(args[1], alpha);
+                                                // Modification > Data > Modifier > (Capture, Once, Passive) > Length
+                                                data.modifier[0].capture.length = data.modifier[0].once.length = data.modifier[0].passive.length
+                                            }
 
-                                        /* Loop
-                                                [while statement]
+                                            /* Loop
+                                                    [for statement]
 
-                                            > Update > Argument 2
-                                        */
-                                        while (args[2].length < data)
-                                            LDK.arrayProto.push.apply(args[2], beta);
+                                                > Update > Data > Modifier
+                                            */
+                                            for (let i = 0; i < data.modifier.length; i += 1)
+                                                LDK.isNonConstructible(data.modifier[i]) && (data.modifier[i] = defaultModifier);
 
-                                        // Modification > Argument (0, 1, 2) > Length
-                                        args[0].length = args[1].length = args[2].length = data;
+                                            /* Loop
+                                                    [for statement]
+                                            */
+                                            for (let i = 0; i < data.type.length; i += 1)
+                                                /* Loop
+                                                        Index Gamma.
 
-                                        /* Loop
-                                                Index Arguments.
+                                                    > Update > Event List > (Listener, Modifier, Type)
+                                                */
+                                                for (let j = 0; j < gamma.length; j += 1) {
+                                                    eventList.listener.push(data.listener[i]);
+                                                    eventList.modifier.push(
+                                                        LDK.isObject(data.modifier[i]) ? {
+                                                            // Capture
+                                                            capture: !!data.modifier[i].capture[j],
 
-                                            > Update > Event List
-                                        */
-                                        for (let i = 0; i < args[0].length; i += 1) {
-                                            // Listener
-                                            eventList.listener.push(args[1][i]);
+                                                            // Once
+                                                            once: !!data.modifier[i].once[j],
 
-                                            // Modifier
-                                            eventList.modifier.push(args[2][i]);
-
-                                            // Type
-                                            eventList.type.push(args[0][i])
+                                                            // Passive
+                                                            passive: !!data.modifier[i].passive[j]
+                                                        } : !!data.modifier[j]
+                                                    );
+                                                    eventList.type.push(LDK.string(data.type[i]))
+                                                }
                                         }
-                                    }
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDK.isConstructible(args[0]))
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (
+                                            LDK.isObject(args[0]) ||
+                                            (LDK.isArray(args[0]) && ((LDK.isExecutableString((args[0] || tmp.object)[1]) || LDK.isFunction((args[0] || tmp.object)[1])) && LDK.string((args[0] || ['', ''])[1]).replace(/[a-zA-Z_\$]{0,}/g, '').trim()))
+                                        )
+                                            /* Loop
+                                                    Index Arguments.
+                                            */
+                                            for (let i of args) {
+                                                // LapysJS > Error
+                                                LDK.isConstructible(i) || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
+
+                                                // Parse Array | (Parse Array | LapysJS > Error)
+                                                LDK.isObject(i) ? parseObject(i) : (LDK.isArray(i) ? parseArray(i) : LapysJS.error(i, 'must', ['array', 'object']));
+
+                                                // Update > Default Modifier
+                                                defaultModifier = {capture: LDK.false, once: LDK.false, passive: LDK.false}
+                                            }
+
+                                        else if (!LDK.isObject(args[0]) && !LDK.isObject(args[1])) {
+                                            // Update > Argument (0, 1, 2)
+                                            LDK.isArray(args[0]) || (args[0] = [args[0]]);
+                                            LDK.isArray(args[1]) || (args[1] = [args[1]]);
+                                            args.length > 2 ? (LDK.isArray(args[2]) || (args[2] = [args[2]])) : args[2] = [defaultModifier];
+
+                                            /* Loop
+                                                    Index Argument 0.
+
+                                                > Update > Argument 1
+                                            */
+                                            for (let i = 0; i < args[0].length; i += 1)
+                                                args[0][i] = LDK.string(args[0][i]);
+
+                                            /* Loop
+                                                    Index Argument 1.
+
+                                                > Update > Argument 1
+                                            */
+                                            for (let i = 0; i < args[1].length; i += 1)
+                                                LDK.isString(args[1][i]) && (args[1][i] = func(args[1][i]));
+
+                                            /* Loop
+                                                    Index Argument 1.
+
+                                                > LapysJS > Error
+                                            */
+                                            for (let i of args[1])
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                            /* Loop
+                                                    Index Argument 2.
+
+                                                > Update > Argument 2
+                                            */
+                                            for (let i = 0; i < args[2].length; i += 1)
+                                                args[2][i] = LDK.isObject(args[2][i]) ? LDK.objectAssign({}, args[2][i]) : !!args[2][i];
+
+                                            /* Loop
+                                                    Index Argument 2.
+                                            */
+                                            for (let i of args[2])
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (LDK.isObject(i))
+                                                    /* Loop
+                                                            Index [Loop Iterator]
+
+                                                        > Deletion
+                                                    */
+                                                    for (let j in i)
+                                                        (j != 'capture' && j != 'once' && j != 'passive') && (delete i[j]);
+
+                                            // Initialization > (Data, Metadata, Alpha, Beta)
+                                            let data = tmp.functions.max(args[0].length, args[1].length, args[2].length),
+                                                metadata = [...args[0]],
+                                                alpha = [...args[1]],
+                                                beta = [...args[2]];
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Argument 0
+                                            */
+                                            while (args[0].length < data)
+                                                LDK.arrayProto.push.apply(args[0], metadata);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Argument 1
+                                            */
+                                            while (args[1].length < data)
+                                                LDK.arrayProto.push.apply(args[1], alpha);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Argument 2
+                                            */
+                                            while (args[2].length < data)
+                                                LDK.arrayProto.push.apply(args[2], beta);
+
+                                            // Modification > Argument (0, 1, 2) > Length
+                                            args[0].length = args[1].length = args[2].length = data;
+
+                                            /* Loop
+                                                    Index Arguments.
+
+                                                > Update > Event List
+                                            */
+                                            for (let i = 0; i < args[0].length; i += 1) {
+                                                // Listener
+                                                eventList.listener.push(args[1][i]);
+
+                                                // Modifier
+                                                eventList.modifier.push(args[2][i]);
+
+                                                // Type
+                                                eventList.type.push(args[0][i])
+                                            }
+                                        }
+
+                                        else
+                                            // LapysJS > Error
+                                            LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Invalid argument set given');
 
                                     else
                                         // LapysJS > Error
-                                        LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Invalid argument set given');
+                                        LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
+
+                                    /* Loop
+                                            Index Event List.
+
+                                        > Parse Event
+                                    */
+                                    for (let i = 0; i < eventList.type.length; i += 1)
+                                        parseEvent(eventList.type[i], eventList.listener[i], eventList.modifier[i]);
+
+                                    // Modification > Quasi Event > (Listener(s), Modifier(s), Type(s))
+                                    eventList.listener.length > 1 ? quasiEvent.listeners = eventList.listener : quasiEvent.listener = eventList.listener[0];
+                                    eventList.modifier.length > 1 ? quasiEvent.modifiers = eventList.modifier : quasiEvent.modifier = eventList.modifier[0];
+                                    eventList.type.length > 1 ? quasiEvent.types = eventList.type : quasiEvent.type = eventList.type[0];
+
+                                    // Update > Permanent Data > Event Nodes List
+                                    perm.eventNodesList.push(quasiEvent);
+                                }
 
                                 else
                                     // LapysJS > Error
-                                    LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Unexpected non-constructible value parsed');
-
-                                /* Loop
-                                        Index Event List.
-
-                                    > Parse Event
-                                */
-                                for (let i = 0; i < eventList.type.length; i += 1)
-                                    parseEvent(eventList.type[i], eventList.listener[i], eventList.modifier[i]);
-
-                                // Modification > Quasi Event > (Listener(s), Modifier(s), Type(s))
-                                eventList.listener.length > 1 ? quasiEvent.listeners = eventList.listener : quasiEvent.listener = eventList.listener[0];
-                                eventList.modifier.length > 1 ? quasiEvent.modifiers = eventList.modifier : quasiEvent.modifier = eventList.modifier[0];
-                                eventList.type.length > 1 ? quasiEvent.types = eventList.type : quasiEvent.type = eventList.type[0];
-
-                                // Update > Permanent Data > Event Nodes List
-                                perm.eventNodesList.push(quasiEvent);
+                                    LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Invalid argument set given');
 
                                 // Return
                                 return quasiEvent
@@ -13011,7 +13623,11 @@
                                 // Return
                                 return that
                             }
-                        })
+                        });
+
+                    // --- CHECKPOINT ---
+                    window.LDK = LDK;
+                    window.tmp = tmp
                 }
 
                 /* Return
