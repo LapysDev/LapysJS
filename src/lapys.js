@@ -9917,6 +9917,7 @@
                                     $class = '',
                                     $id = '',
                                     $tagName = '',
+                                    $text = '',
                                     that = this;
 
                                 try { LDK.docQueSel(data) }
@@ -9924,6 +9925,8 @@
                                     let metadata = error.message.getAfterChar(':').trimLeft().trimRightChar('.');
                                     LapysJS.error(["'setSelector'", "'" + that.constructor.name + "'"], 'argument', metadata || "'" + data + "' is not a valid selector")
                                 }
+
+                                $tagName = data.getBeforeChar(/\.|#|\[/)
                             }
                         });
 
