@@ -1,7 +1,7 @@
 /**
     @author: Lapys Dev Team
-    @description: LapysJS is a JavaScript library with its independent CSS counterpart designed to simplify JavaScript.
-    @version: 0.0.2
+    @description: LapysJS is a JavaScript library designed to challenge the status quo of the JavaScript language and its other related vendors.
+    @version: 0.0.3
     @url: https://www.lapysjs.com
 */
 /* CSS At-Rules */
@@ -20,7 +20,11 @@
     }
 
     .accordion[data-close=true] [data-id=content],
-    .carousel > [data-id=slides-container] > .slide,
+    .carousel:not([data-buttons]) > [data-id*=buttonsContainer],
+    .carousel:not([data-indicators]) > [data-id*=indicatorsContainer],
+    .carousel > [data-id*=slidesContainer] > .slide,
+    .roulette:not([data-buttons]) > [data-id*=buttonsContainer],
+    .roulette:not([data-indicators]) > [data-id*=indicatorsContainer],
     input:focus::placeholder,
     screen-tip {
         opacity: 0
@@ -224,7 +228,7 @@
             ::before,
             ::placeholder,
             [data-id=placeholder][data-selected],
-            .carousel > [data-id=slides-container] > .slide[data-active],
+            .carousel > [data-id*=slidesContainer] > .slide[data-active],
             img[lazy-loaded][src] {
                 opacity: 1
             }
@@ -355,7 +359,8 @@
             /* Link */
             :link,
             a,
-            abbr[abbr] {
+            abbr[abbr],
+            .indicator {
                 text-decoration: none
             }
 
@@ -819,8 +824,19 @@
         h4 > p,
         h5 > p,
         h6 > p {
+            margin-bottom: 0;
             margin-top: 0
         }
+
+    /* <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <p> */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        font-family: Aileron, 'PT Sans', 'Calibri Light', Calibri, sans-serif
+    }
 
     /* <h1> */
     h1 {
@@ -989,7 +1005,7 @@
         box-shadow: 0 0 0 5px rgba(0, 0, 0, .75)
     }
 
-    .carousel > [data-id=indicators-container] > .indicator,
+    .carousel > [data-id*=indicatorsContainer] > .indicator,
     input[type=color] {
         width: 15px
     }
@@ -1001,6 +1017,11 @@
         -webkit-appearance: textfield
     }
         /* Pseudo */
+            /* Before */
+            input[type*=date]::before {
+                overflow: hidden
+            }
+
             /* Mozilla Focus Inner */
             [type=button]::-moz-focus-inner,
             [type=reset]::-moz-focus-inner,
@@ -1034,6 +1055,11 @@
                         min-width: 3px;
                         width: 100%
                     }
+
+            /* Placeholder */
+            input::placeholder {
+                overflow: hidden
+            }
 
             /* Web Kit Color Swatch */
             input[type=color]::-webkit-color-swatch {
@@ -1112,7 +1138,7 @@
 
             /* Web Kit Slider Runnable Track
                     --- CONSIDER ---
-                        @lapys: The 'box-shadow' property without the 'border-radius' creates
+                        #lapys: The 'box-shadow' property without the 'border-radius' creates
                             the illusion of an existing track on a solid backdrop.
             */
             input[type=range]::-webkit-slider-runnable-track {
@@ -1213,7 +1239,7 @@
         }
 
     /* <input>, <meter>, <progress> */
-    .carousel > [data-id=indicators-container] > .indicator,
+    .carousel > [data-id*=indicatorsContainer] > .indicator,
     input[type=color],
     meter,
     progress {
@@ -1239,11 +1265,12 @@
     }
 
     /*<input>, <textarea> */
-        /*States > Placeholder */
+        /* Pseudo > Placeholder */
         input::placeholder,
         textarea::placeholder {
             ime-mode: inherit;
             padding: inherit;
+            overflow: hidden;
             overflow-clip-box: inherit;
             resize: none;
             text-decoration: inherit;
@@ -1637,6 +1664,11 @@
     }
 
     /* <svg> */
+        /* Not > (States > Root) */
+        svg:not(:root) {
+            overflow: hidden
+        }
+
         /* Content */
         svg * {
             transform-origin: 0 0 0
@@ -1753,10 +1785,10 @@
     /* Absolute */
     .abs,
     .absolute,
-    .carousel > [data-id=buttons-container],
-    .carousel > [data-id=indicators-container],
-    .roulette > [data-id=buttons-container],
-    .roulette > [data-id=indicators-container] {
+    .carousel > [data-id*=buttonsContainer],
+    .carousel > [data-id*=indicatorsContainer],
+    .roulette > [data-id*=buttonsContainer],
+    .roulette > [data-id*=indicatorsContainer] {
         position: absolute
     }
 
@@ -1854,15 +1886,13 @@
     }
 
     /* Camel */
-    .camel {
-        text-transform: capitalize
-    }
         /* Pseudo > First Letter */
         .camel:first-letter {
             text-transform: lowercase
         }
 
     /* Capital, Pascal */
+    .camel,
     .capital,
     .pascal {
         text-transform: capitalize
@@ -1897,16 +1927,16 @@
         outline: 1px solid #0033FF
     }
         /* Buttons Container */
-        .carousel > [data-id=buttons-container] {
+        .carousel > [data-id*=buttonsContainer] {
             width: 85%
         }
 
-        .carousel > [data-id=buttons-container],
-        .roulette > [data-id=buttons-container] {
+        .carousel > [data-id*=buttonsContainer],
+        .roulette > [data-id*=buttonsContainer] {
             justify-content: space-between
         }
             /* Button */
-            .carousel > [data-id=buttons-container] > .button {
+            .carousel > [data-id*=buttonsContainer] > .button {
                 background-color: #F7F7F7;
                 box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
                 color: #0078FF;
@@ -1916,32 +1946,32 @@
                 width: 33.3px
             }
 
-            .carousel > [data-id=buttons-container] > .button,
-            .carousel > [data-id=indicators-container] > .indicator,
-            .carousel > [data-id=indicators-container],
-            .roulette > [data-id=buttons-container] > .button,
-            .roulette > [data-id=indicators-container],
-            .roulette > [data-id=indicators-container] > .indicator,
+            .carousel > [data-id*=buttonsContainer] > .button,
+            .carousel > [data-id*=indicatorsContainer] > .indicator,
+            .carousel > [data-id*=indicatorsContainer],
+            .roulette > [data-id*=buttonsContainer] > .button,
+            .roulette > [data-id*=indicatorsContainer],
+            .roulette > [data-id*=indicatorsContainer] > .indicator,
             .center,
             .jumbotron {
                 justify-content: center
             }
 
         /* Indicators Container */
-        .carousel > [data-id=indicators-container] {
+        .carousel > [data-id*=indicatorsContainer] {
             width: 10%
         }
             /* @media > (Mobile, Tablet) View */
             @media only all
                 and (max-width: 768px) {
-                    .carousel > [data-id=indicators-container] {
+                    .carousel > [data-id*=indicatorsContainer] {
                         width: 30%
                     }
             }
 
             /* Indicator */
-            .carousel > [data-id=indicators-container] > .indicator,
-            .roulette > [data-id=indicators-container] > .indicator {
+            .carousel > [data-id*=indicatorsContainer] > .indicator,
+            .roulette > [data-id*=indicatorsContainer] > .indicator {
                 background-color: rgba(0, 0, 0, .3);
                 border: 2px solid;
                 box-shadow: 0 0 7.5px 0 rgba(0, 0, 0, .3),
@@ -1955,16 +1985,16 @@
             }
                 /* States */
                     /* Focus */
-                    .carousel > [data-id=indicators-container] > .indicator:focus,
-                    .roulette > [data-id=indicators-container] > .indicator:focus {
+                    .carousel > [data-id*=indicatorsContainer] > .indicator:focus,
+                    .roulette > [data-id*=indicatorsContainer] > .indicator:focus {
                         background-color: rgba(255, 255, 255, .5);
                         box-shadow: 0 0 7.5px 0 rgba(0, 0, 0, .3),
                                             0 0 5px 0 rgba(255, 255, 255, .3)
                     }
 
                     /* Hover */
-                    .carousel > [data-id=indicators-container] > .indicator:hover,
-                    .roulette > [data-id=indicators-container] > .indicator:hover {
+                    .carousel > [data-id*=indicatorsContainer] > .indicator:hover,
+                    .roulette > [data-id*=indicatorsContainer] > .indicator:hover {
                         background-color: rgba(0, 0, 0, .5);
                         box-shadow: 0 0 7.5px 0 rgba(255, 255, 255, .3),
                                             0 0 5px 0 rgba(0, 0, 0, .3)
@@ -1972,7 +2002,7 @@
 
         /* Slides Container */
             /* Slide */
-            .carousel > [data-id=slides-container] > .slide {
+            .carousel > [data-id*=slidesContainer] > .slide {
                 transition: .3s ease-in-out
             }
 
@@ -1982,21 +2012,21 @@
         top: auto
     }
 
-    .carousel > [data-id=buttons-container],
-    .carousel > [data-id=indicators-container],
-    .roulette > [data-id=buttons-container],
-    .roulette > [data-id=indicators-container],
+    .carousel > [data-id*=buttonsContainer],
+    .carousel > [data-id*=indicatorsContainer],
+    .roulette > [data-id*=buttonsContainer],
+    .roulette > [data-id*=indicatorsContainer],
     .center,
     .dialog {
         left: 0
     }
 
-    .carousel > [data-id=buttons-container],
-    .carousel > [data-id=indicators-container],
-    .carousel > [data-id=indicators-container] > .indicator,
-    .roulette > [data-id=buttons-container],
-    .roulette > [data-id=indicators-container],
-    .roulette > [data-id=indicators-container] > .indicator,
+    .carousel > [data-id*=buttonsContainer],
+    .carousel > [data-id*=indicatorsContainer],
+    .carousel > [data-id*=indicatorsContainer] > .indicator,
+    .roulette > [data-id*=buttonsContainer],
+    .roulette > [data-id*=indicatorsContainer],
+    .roulette > [data-id*=indicatorsContainer] > .indicator,
     .center,
     .center > *,
     .dialog {
@@ -2006,26 +2036,25 @@
         margin-top: auto
     }
 
-    .carousel > [data-id=buttons-container],
-    .carousel > [data-id=indicators-container],
-    .roulette > [data-id=buttons-container],
-    .roulette > [data-id=indicators-container],
+    .carousel > [data-id*=buttonsContainer],
+    .carousel > [data-id*=indicatorsContainer],
+    .roulette > [data-id*=buttonsContainer],
+    .roulette > [data-id*=indicatorsContainer],
     .center,
     .dialog {
         right: 0
     }
 
-    .carousel > [data-id=buttons-container],
-    .carousel > [data-id=buttons-container] > .button,
-    .carousel > [data-id=indicators-container],
-    .carousel > [data-id=indicators-container] > .indicator,
-    .roulette > [data-id=buttons-container],
-    .roulette > [data-id=buttons-container] > .button,
-    .roulette > [data-id=indicators-container],
-    .roulette > [data-id=indicators-container] > .indicator,
+    .carousel > [data-id*=buttonsContainer],
+    .carousel > [data-id*=buttonsContainer] > .button,
+    .carousel > [data-id*=indicatorsContainer],
+    .carousel > [data-id*=indicatorsContainer] > .indicator,
+    .roulette > [data-id*=buttonsContainer],
+    .roulette > [data-id*=buttonsContainer] > .button,
+    .roulette > [data-id*=indicatorsContainer],
+    .roulette > [data-id*=indicatorsContainer] > .indicator,
     .center,
-    .jumbotron,
-    .roulette > [data-id*=cards-container] {
+    .jumbotron {
         align-items: center
     }
 
@@ -2081,6 +2110,8 @@
     input:active,
     label,
     object,
+    screen-tip,
+    screen-toast,
     select,
     textarea > scrollbar,
     video {
@@ -2110,10 +2141,7 @@
 
     /* Dynamic Text */
         /* <span> */
-            /* Cursor
-                    --- UPDATE REQUIRED ---
-                        @lapys: Does not display. Why is that and how do we fix it?;
-            */
+            /* Cursor */
             .dynamic-text span[data-id*=cursor] {
                 animation: pulse .3s ease-in-out 0s infinite alternate-reverse;
                 background-color: #333333;
@@ -2210,17 +2238,19 @@
         background-size: 100%;
         height: 42.5vh
     }
-        /* First Child */
-        .jumbotron > :first-child {
-            margin-top: 0;
-            padding-top: 0
-        }
+        /* Content */
+            /* States */
+                /* First Child */
+                .jumbotron > :first-child {
+                    margin-top: 0;
+                    padding-top: 0
+                }
 
-        /* Last Child */
-        .jumbotron > :last-child {
-            margin-bottom: 0;
-            padding-top: 0
-        }
+                /* Last Child */
+                .jumbotron > :last-child {
+                    margin-bottom: 0;
+                    padding-top: 0
+                }
 
     .jumbotron {
         justify-content: space-around
@@ -2252,6 +2282,12 @@
     /* Lower */
     .lower {
         text-transform: lowercase
+    }
+
+    /* Marquee */
+    .marquee {
+        overflow: hidden !important;
+        transition: 0s linear 0s !important
     }
 
     /* Medium */
@@ -2348,8 +2384,8 @@
     }
 
     /* No Margin */
-    .carousel > [data-id=slides-container],
-    .carousel > [data-id=slides-container] > .slide,
+    .carousel > [data-id*=slidesContainer],
+    .carousel > [data-id*=slidesContainer] > .slide,
     .jumbotron,
     .no-margin,
     body,
@@ -2386,8 +2422,8 @@
     [contenteditable=false],
     :focus,
     :host,
-    .carousel > [data-id=buttons-container] > .button,
-    .roulette > [data-id=buttons-container] > .button,
+    .carousel > [data-id*=buttonsContainer] > .button,
+    .roulette > [data-id*=buttonsContainer] > .button,
     .no-outline,
     .thumbnail,
     a,
@@ -2400,7 +2436,7 @@
 
     /* No Padding */
     [data-id*=drag-element],
-    .carousel > [data-id=slides-container],
+    .carousel > [data-id*=slidesContainer],
     .dynamic-text span[data-id*=cursor],
     .jumbotron,
     .no-pad,
@@ -2458,7 +2494,11 @@
     ::before,
     [data-id=placeholder],
     [data-id*=drag-element] > *,
+    .carousel:not([data-buttons]) > [data-id*=buttonsContainer],
+    .carousel:not([data-indicators]) > [data-id*=indicatorsContainer],
     .no-touch,
+    .roulette:not([data-buttons]) > [data-id*=buttonsContainer],
+    .roulette:not([data-indicators]) > [data-id*=indicatorsContainer],
     input::placeholder,
     textarea::placeholder {
         pointer-events: none
@@ -2475,7 +2515,7 @@
 
     /* No Transition */
     .no-transition,
-    .roulette > [data-id*=cards-container] > * {
+    .roulette > [data-id*=cardsContainer] > .card {
         transition: none
     }
 
@@ -2588,10 +2628,10 @@
 
     /* Pointer */
     .accordion [data-id=header],
-    .carousel > [data-id=buttons-container] > .button,
-    .carousel > [data-id=indicators-container] > .indicator,
-    .roulette > [data-id=buttons-container] > .button,
-    .roulette > [data-id=indicators-container] > .indicator,
+    .carousel > [data-id*=buttonsContainer] > .button,
+    .carousel > [data-id*=indicatorsContainer] > .indicator,
+    .roulette > [data-id*=buttonsContainer] > .button,
+    .roulette > [data-id*=indicatorsContainer] > .indicator,
     .dropdown,
     .pointer,
     a,
@@ -2608,10 +2648,9 @@
 
     /* Relative */
     [class*=grid-],
-    .carousel > [data-id=slides-container] > .slide,
     .rel,
     .relative,
-    .roulette > [data-id*=cards-container],
+    .roulette > [data-id*=cardsContainer],
     p,
     sub,
     sup {
@@ -2640,37 +2679,40 @@
 
     /* Roulette */
     .roulette {
-        height: 150px;
-        padding: 5px 2.5%;
-        width: 2147483646%
+        height: 300px;
+        padding: 0
     }
         /* Buttons Container */
-        .roulette > [data-id=buttons-container] {
+        .roulette > [data-id*=buttonsContainer] {
             width: 95%
         }
             /* Button */
-            .roulette > [data-id=buttons-container] > .button {
+            .roulette > [data-id*=buttonsContainer] > .button {
                 background-color: #F7F7F7;
                 box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
                 color: #0078FF;
                 height: 33.3px;
-                margin-top: -116.7px;
+                margin-top: -350px;
                 padding: 10px;
                 width: 33.3px
             }
 
         /* Cards Container */
+        .roulette > [data-id*=cardsContainer] {
+            width: 2147483646%
+        }
             /* Content */
-            .roulette > [data-id*=cards-container] > * {
+            .roulette > [data-id*=cardsContainer] > .card {
                 box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
-                height: 85%;
+                display: inline-block;
                 margin: auto 7.5px;
+                min-height: 85%;
                 width: 100px
             }
 
             /* Drag Element */
                 /* States > Active */
-                .roulette > [data-id*=cards-container] > [data-id*=drag-element]:active {
+                .roulette > [data-id*=cardsContainer] > [data-id*=drag-element]:active {
                     bottom: initial;
                     margin: 0;
                     right: initial
@@ -2708,8 +2750,10 @@
         background-color: #000000;
         box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
         color: #FFFFFF;
+        font-size: 14px;
         left: -1000px;
         padding: 5px 10px;
+        pointer-events: none !important;
         transition: opacity .3s ease-in-out;
         top: -1000px
     }
@@ -2728,7 +2772,7 @@
     }
 
     /* Smooth */
-    .roulette > [data-id*=cards-container],
+    .roulette > [data-id*=cardsContainer],
     .smooth {
         animation-direction: normal;
         animation-duration: .3s;
@@ -2841,7 +2885,7 @@
 
     /* Table */
     table.table {
-        font-family: Roboto, 'Open Sans', 'Calibri Light';
+        font-family: Roboto, 'PT Sans', 'Calibri Light';
         max-width: initial;
         overflow-x: auto;
         -ms-overflow-style: -ms-autohiding-scrollbar
@@ -3011,8 +3055,8 @@
 
     /* Fill */
         /* Height */
-        .carousel > [data-id=slides-container],
-        .carousel > [data-id=slides-container] > .slide,
+        .carousel > [data-id*=slidesContainer],
+        .carousel > [data-id*=slidesContainer] > .slide,
         .col-grp > *,
         .column-group > *,
         .dynamic-text span[data-id*=cursor],
@@ -3023,14 +3067,15 @@
         }
 
         /* Width */
-        .carousel > [data-id=slides-container],
-        .carousel > [data-id=slides-container] > .slide,
+        .carousel > [data-id*=slidesContainer],
+        .carousel > [data-id*=slidesContainer] > .slide,
         .col-grp:not([class*=col-]):not([class*=grid-]),
         .column-group:not([class*=col-]):not([class*=grid-]),
         .fill,
         .fill-w,
         .jumbotron,
         .responsive table,
+        .roulette,
         .row,
         .row-grp:not([class*=col-]):not([class*=grid-]),
         .row-grp > *,
@@ -3139,7 +3184,7 @@
         }
 
         /* 2 */
-        .carousel > [data-id=slides-container] > .slide,
+        .carousel > [data-id*=slidesContainer] > .slide,
         .z-2 {
             z-index: 4
         }
@@ -3147,15 +3192,15 @@
         /* 3 */
         .accordion,
         .carousel,
-        .carousel > [data-id=slides-container] > .slide[data-active],
+        .carousel > [data-id*=slidesContainer] > .slide[data-active],
         .jumbotron,
         .z-3 {
             z-index: 7
         }
 
         /* 4 */
-        .carousel > [data-id=buttons-container],
-        .carousel > [data-id=indicators-container],
+        .carousel > [data-id*=buttonsContainer],
+        .carousel > [data-id*=indicatorsContainer],
         .z-4 {
             z-index: 10
         }
@@ -3316,7 +3361,7 @@
 
         /* Color
                 --- NOTE ---
-                    @lapys: For development purposes only.
+                    #lapys: For development purposes only.
         */
             /* Blue */
             .bg-c-b {
@@ -3414,10 +3459,10 @@
     }
         /* None */
         .border-none,
-        .carousel > [data-id=buttons-container] > .button,
+        .carousel > [data-id*=buttonsContainer] > .button,
         .no-bdr,
         .no-border,
-        .roulette > [data-id=buttons-container] > .button,
+        .roulette > [data-id*=buttonsContainer] > .button,
         blockquote[cite],
         blockquote[type=cite],
         frameset,
@@ -3435,11 +3480,11 @@
             .bdr-rd-comp,
             .border-circle,
             .border-radius-complete,
-            .carousel > [data-id=buttons-container] > .button,
-            .carousel > [data-id=indicators-container] > .indicator,
+            .carousel > [data-id*=buttonsContainer] > .button,
+            .carousel > [data-id*=indicatorsContainer] > .indicator,
             .circle,
-            .roulette > [data-id=buttons-container] > .button,
-            .roulette > [data-id=indicators-container] > .indicator,
+            .roulette > [data-id*=buttonsContainer] > .button,
+            .roulette > [data-id*=indicatorsContainer] > .indicator,
             .round,
             input[type=color],
             input[type=radio] {
@@ -3647,27 +3692,28 @@
         }
 
         /* Flex */
-        .carousel > [data-id=buttons-container],
-        .carousel > [data-id=buttons-container] > .button,
-        .carousel > [data-id=indicators-container],
+        .carousel > [data-id*=buttonsContainer],
+        .carousel > [data-id*=buttonsContainer] > .button,
+        .carousel > [data-id*=indicatorsContainer],
         .col-grp,
         .column-group,
         .d-flx,
         .display-flex,
         .flex,
         .flex-reverse,
-        .roulette > [data-id=buttons-container],
-        .roulette > [data-id=buttons-container] > .button,
-        .roulette > [data-id=indicators-container],
+        .roulette > [data-id*=buttonsContainer],
+        .roulette > [data-id*=buttonsContainer] > .button,
+        .roulette > [data-id*=indicatorsContainer],
         .row-grp,
         .row-group {
             display: flex
         }
 
-        .carousel > [data-id=slides-container],
+        .carousel > [data-id*=slidesContainer],
         .col-grp,
         .column-group,
-        .flex {
+        .flex,
+        .roulette > [data-id*=cardsContainer] {
             flex-direction: row
         }
             /* End */
@@ -3745,7 +3791,7 @@
         .overflow-visible,
         .ovflow-v,
         .pre,
-        .roulette > [data-id*=cards-container] > *,
+        .roulette > [data-id*=cardsContainer] > .card,
         audio,
         button,
         canvas,
@@ -3767,11 +3813,11 @@
         }
 
         /* Inline Flex */
-        .carousel > [data-id=indicators-container] > .indicator,
+        .carousel > [data-id*=indicatorsContainer] > .indicator,
         .d-if,
         .display-inline-flex,
         .inline-flex,
-        .roulette > [data-id=indicators-container] > .indicator {
+        .roulette > [data-id*=indicatorsContainer] > .indicator {
             display: inline-flex
         }
 
@@ -3801,8 +3847,12 @@
         /* None */
         [hidden],
         .accordion[data-close=true] [data-id=content],
+        .carousel:not([data-buttons]) > [data-id*=buttonsContainer],
+        .carousel:not([data-indicators]) > [data-id*=indicatorsContainer],
         .d-none,
         .display-none,
+        .roulette:not([data-buttons]) > [data-id*=buttonsContainer],
+        .roulette:not([data-indicators]) > [data-id*=indicatorsContainer],
         access-value,
         area,
         base,
@@ -3922,10 +3972,10 @@
 
         /* Ruby Text Container */
         .d-rtc,
-        .display-ruby-text-container,
-        .ruby-text-container,
+        .display-ruby-textContainer,
+        .ruby-textContainer,
         ruby rtc {
-            display: ruby-text-container
+            display: ruby-textContainer
         }
 
         /* Run In */
@@ -4020,7 +4070,7 @@
             .fantasy,
             .fnt-f-f,
             .font-fam-fantasy {
-                font-family: 'Trajan Pro', fantasy
+                font-family: fantasy
             }
 
             /* Inherit */
@@ -4052,7 +4102,7 @@
             pre,
             tt,
             xmp {
-                font-family: 'Roboto Mono', Inconsolata, monospace, monospace
+                font-family: 'Deja Vu Sans Mono', 'Roboto Mono', Inconsolata, monospace, monospace
             }
 
             /* Sans Serif */
@@ -4062,7 +4112,7 @@
             .sans-serif,
             html,
             input[type*=date]::before {
-                font-family: 'Open Sans', 'Calibri Light', Calibri, sans-serif
+                font-family: 'PT Sans', 'Calibri Light', Calibri, sans-serif
             }
 
             /* Serif */
@@ -4102,24 +4152,21 @@
 
         /* Hidden */
         .carousel,
-        .carousel > [data-id=indicators-container] > .indicator,
-        .carousel > [data-id=slides-container],
+        .carousel > [data-id*=indicatorsContainer] > .indicator,
+        .carousel > [data-id*=slidesContainer],
         .no-overflow,
         .overflow-hidden,
         .ovflow-h,
-        .roulette > [data-id*=cards-container] > *,
-        .roulette > [data-id=indicators-container] > .indicator,
+        .roulette,
+        .roulette > [data-id*=cardsContainer] > .card,
+        .roulette > [data-id*=indicatorsContainer] > .indicator,
         .single-line,
         foreignObject,
         frameset,
         image,
-        input::placeholder,
-        input[type*=date]::before,
         marker,
         pattern,
-        svg:not(:root),
-        symbol,
-        textarea::placeholder {
+        symbol {
             overflow: hidden
         }
 
@@ -4165,16 +4212,16 @@
             [type=reset],
             [type=submit],
             .btn,
-            .carousel > [data-id=buttons-container],
-            .carousel > [data-id=buttons-container] > .button,
-            .carousel > [data-id=indicators-container],
+            .carousel > [data-id*=buttonsContainer],
+            .carousel > [data-id*=buttonsContainer] > .button,
+            .carousel > [data-id*=indicatorsContainer],
             .center:not([class*=text-]):not([class*=text-align-]):not([class*=txt-a-]),
             .center-text,
             .dialog,
             .jumbotron,
-            .roulette > [data-id=buttons-container],
-            .roulette > [data-id=buttons-container] > .button,
-            .roulette > [data-id=indicators-container],
+            .roulette > [data-id*=buttonsContainer],
+            .roulette > [data-id*=buttonsContainer] > .button,
+            .roulette > [data-id*=indicatorsContainer],
             .text-align-center,
             .text-center,
             .txt-a-c,
@@ -4676,8 +4723,7 @@
             }
 
         /* Grid 1 */
-        .col-grp .grid-1,
-        .roulette > [data-id*=cards-container] {
+        .col-grp .grid-1 {
             width: 100%
         }
 
@@ -4685,7 +4731,7 @@
             flex-basis: 100%
         }
 
-        .roulette > [data-id*=cards-container],
+        .roulette > [data-id*=cardsContainer],
         .row-grp .grid-1 {
             height: 100%
         }
@@ -4703,11 +4749,11 @@
             .col-grp .max-grid-1,
             .grid-1:not(.strict-grid),
             .jumbotron,
+            .marquee,
             .max-fill,
             .max-fill-w,
             .max-grid-1,
             .responsive,
-            .roulette > [data-id*=cards-container],
             .single-line {
                 max-width: 100%
             }

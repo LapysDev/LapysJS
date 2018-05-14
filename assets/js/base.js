@@ -1,549 +1,259 @@
-/* Function > Base Script
-        --- NOTE ---
-            @lapys:
-                - Variables defined in all caps represent constants (except in private/ special cases).
-
-        --- WARN ---
-            @lapys:
-                - Do not use template strings, defer to standard string concatenation instead.
+/* Function > Main
+    @author: Lapys Dev Team
+    @url: https://www.lapysjs.com
 */
-(function BaseScript(window = window, document = window.document, global = typeof global != 'undefined' ? global : null, undefined = window.undefined || void 0, LapysJS = typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false })) {
-    // Polyfill
-        // Data
-        let _data = new (function Data() {});
+(function Main(argc, argv) {
+    /* Logic
+            [if:else if:else statement]
 
-    /* {Global Object Test} Logic
-            If
-                LapysJS is ready.
+        > Return
     */
-    if (typeof LapysJS == 'object' && (LapysJS || _data).ready === true) {
-        /* Function */
-            // Log
-                // Initialization > Log
-                let _log = log.clone(true);
+    if (!window)
+        return;
 
-                // Definition
-                def('log', function log() {
-                    // Initialization > Arguments
-                    let args = [...arguments];
+    // Function > Initialize
+    (function Init(window = window.parent, document = window.parent.document, global = typeof global != 'undefined' ? global : null, undefined = window.parent.undefined || void 0) {
+        /* Global Data
+                --- NOTE ---
+                    #lapys: Constants are defined in capital
+                        but should originate from the Information Manager.
+        */
+            // Temporary Data
+            let tmp = new (function LapysJSObject() {});
 
-                    // Log
-                    _log.apply(global, args);
-
-                    // Return
-                    return len(args) > 1 ? args : args[0]
-                });
-
-        /* Global Data */
             // Application
-                /* Logic
-                        [if:else if:else statement]
+                // Author
+                app.author = 'Lapys Dev Team';
 
-                        --- NOTE ---
-                            @lapys: Configure the 'application' from here.
+                // Cache Control
+                app.cacheControl = 'cache';
 
-                    > Modification > Application
-                */
-                if (getType(app) == 'application-information') {
-                    // Author
-                    app.author = 'Lapys Dev Team';
+                // Character Set
+                app.charset = 'UTF-8';
 
-                    // Cache Control
-                    app.cacheControl = 'cache';
+                // Description
+                app.description = sequence('A framework that&rsquo;s yours', 'HTML');
 
-                    // Character Encoding Set
-                    app.charset = 'characterSet' in document ? document.characterSet : 'UTF-8';
+                // Height
+                app.height = 'device-height';
 
-                    // Copyright
-                    app.copyright = 'Lapys Dev Team';
+                // Keywords
+                app.keywords = 'Lapys, JavaScript Library';
 
-                    // Description
-                    app.description = 'LapysJS is a JavaScript library with its independent CSS counterpart designed to simplify JavaScript';
+                // Name
+                app.name = 'LapysJS';
 
-                    // Keywords
-                    app.keywords = 'JavaScript Library, Lapys Dev, LapysJS, Simplify JavaScript';
+                // Robots
+                app.robots = 'none';
 
-                    // Name
-                    app.name = 'LapysJS | Building web frameworks';
+                // Theme Color
+                app.themeColor = '#0033FF';
 
-                    // Robots
-                    app.robots = 'none';
+                // User Scalable
+                app.userScalable = true;
 
-                    // Theme Color
-                    app.themeColor = '#0033FF';
+                // Viewport
+                    // Initial Scale
+                    app.viewport.initialScale = 1;
 
-                    // Version
-                    app.version = LapysJS.version
-                }
+                    // Maximum Scale
+                    app.viewport.maximumScale = 2;
+
+                    // Minimum Scale
+                    app.viewport.minimumScale = .1;
+
+                    // Target Density DPI
+                    app.viewport.targetDensityDPI = 96;
+
+                // Width
+                app.width = 'device-width';
 
             // Document
-                // Favorite Icon
-                    // Initialization > Favorite Icon URL
-                    let faviconURL = null;
-
-                    // Check
-                    check(function() {
-                        // Return
-                        return hasProperty('info')
-                    }, function() {
-                        // LapysJS > Component > Image
-                        new LapysJS.component.Image(new (function Object() {
-                            // Initialization > (Data, Target)
-                            let data = info.dynamicAssetsURL + 'favicon.ico',
-                                that = this;
-
-                            // On Error
-                            that.onerror = function() {
-                                // Update > Favorite Icon URL
-                                faviconURL = info.dynamicAssetsURL + 'assets/img/ico/icon.ico'
-                            },
-
-                            // On Load
-                            that.onload = function() {
-                                // Update > Favorite Icon URL
-                                faviconURL = data
-                            },
-
-                            // Source
-                            that.src = data
-                        }));
-
-                        // Check
-                        check(function() {
-                            // Return
-                            return faviconURL !== null
-                        }, function() {
-                            // Modification > Document > Favorite Icon
-                            document.favicon = faviconURL
-                        })
-                    });
-
                 // Title
                 document.title = 'LapysJS';
 
-            // Information (Manager)
+            // Default Root File
+            def('DEFAULT_ROOT_FILE', {
+                // Get
+                get: function defaultRootFile() {
+                    // Return
+                    return (window.informationManager || tmp).defaultRootFile
+                }
+            });
+
+            // Dynamic Assets URL
+            def('DYNAMIC_ASSETS_URL', {
+                // Get
+                get: function dynamicAssetsURL() {
+                    // Return
+                    return (window.informationManager || tmp).dynamicAssetsURL
+                }
+            });
+
+            // Information Manger
             def('informationManager', {
                 // Value
-                value: new (function InformationManager() {
-                    // Initialization > (Reset-Set, Target)
-                    let rs = true,
-                        that = this,
-                        _that = that.constructor.prototype;
+                value: (function InformationManager() {
+                    // Initialization > (Data, Temporary Data)
+                    let data = namedObject('InformationManager'),
+                        _data = data.constructor.prototype,
+                        tmp = str(location.href.removeChar(location.search).getAfterChar('/', true).trimRightChar(/\\|#|\?/).getBeforeChar('.', true));
 
-                    // Function
-                        // Import Alternative Resources
-                        function importAlternativeResources() {
-                            // Target > Log
-                            that.log('Importing alternative resource files.');
-
-                            // Initialization > (Data, Metadata, Alpha)
-                            let data = location.href,
-                                metadata = data.getAfterChar('/', true) || that.homePageFile.name,
-                                alpha = that.dynamicAssetsURL;
-
-                            // Function > Update
-                            function update() {
-                                // Return
-                                return decodeURIComponent(arguments[1] ? arguments[0].replace(/css/g, 'js') : arguments[0].replace(/js/g, 'css'))
-                            }
-
-                            /* Logic
-                                    [if:else if:else statement]
-                            */
-                            if (rs) {
-                                // LapysJS > $ > Import
-                                    // Calibri Light
-                                    LapysJS.$.import('font', {format: 'truetype', name: 'Calibri Light', url: alpha + 'assets/fonts/ttf/calibri-light.ttf'});
-
-                                    // Calibri
-                                    LapysJS.$.import('font', {format: 'truetype', name: 'Calibri', url: alpha + 'assets/fonts/ttf/calibri.ttf'});
-
-                                    // Droid Serif
-                                    LapysJS.$.import('font', {format: 'truetype', name: 'Droid Serif', url: alpha + 'assets/fonts/ttf/droid-serif.ttf'});
-
-                                    // Open Sans
-                                    LapysJS.$.import('font', {format: 'truetype', name: 'Open Sans', url: alpha + 'assets/fonts/ttf/open-sans.ttf'});
-
-                                    // PT Sans
-                                    LapysJS.$.import('font', {format: 'truetype', name: 'PT Sans', url: alpha + 'assets/fonts/ttf/pt-sans.ttf'});
-
-                                    // Roboto Mono
-                                    LapysJS.$.import('font', {format: 'truetype', name: 'Roboto Mono', url: alpha + 'assets/fonts/ttf/roboto-mono.ttf'});
-
-                                // Update > Reset-Set
-                                rs = false
-                            }
-
-                            // JavaScript > Source
-                                // Document Script
-                                $$("script[src*='" + metadata + ".'][src*='.js'", 0) || js.src(false, alpha + 'assets/js/index.js', {type: 'text/javascript'});
-
-                            // CSS > Link
-                                // LapysJS Stylesheet
-                                $$("link[href*='lapys.'][href*='.css'", 0) || css.link(false, update(LapysJS.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                                // Base Stylesheet
-                                $$("link[href*='" + (that.script.src.getAfterChar('/', true) || 'base').getBeforeChar('.', true) + ".'][href*='.css'", 0) || css.link(false, update(that.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                                // App JS Stylesheet
-                                !LapysJS.perm.vendors.hasElement('AppJS') || css.link(false, update(LapysJS.perm.vendors.appJS.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                                // Interval JS Stylesheet
-                                !LapysJS.perm.vendors.hasElement('IntervalJS') || css.link(false, update(LapysJS.perm.vendors.intervalJS.script.src), {media: 'all', rel: 'stylesheet', type: 'text/css'});
-
-                                // Document Stylesheet
-                                    // Check
-                                    check(function() {
-                                        // Return
-                                        return (LapysJS.tmp || _data).message == 'Document Script installed.'
-                                    }, function() {
-                                        // (...)
-                                        $$("link[href*='" + metadata + ".'][href*='.css'", 0) || css.link(false, update(($$("script[src*='" + metadata + ".'][src*='.js'", 0) || LapysJS.tmp.script).src), {media: 'all', rel: 'stylesheet', type: 'text/css'})
-                                    })
-                        }
-
-                    // Initialization
-                        // Alternative Resources
-                        let ALTERNATIVE_RESOURCES = false,
-                            // (...) Object
-                            alternativeResourcesObject = onPropertyAccess({
-                                // Set
-                                set: function onpropertychange() {
-                                    // Import Alternative Resources
-                                    !arguments[0] || importAlternativeResources();
-
-                                    // Update > Alternative Resources
-                                    ALTERNATIVE_RESOURCES = arguments[0]
-                                }
-                            }, function onpropertyaccess() {
-                                /*
-                                        --- NOTE ---
-                                            @lapys: This function is detecting if the Alternative Resources Object
-                                                has been accessed.
-                                */
-                            }),
-
-                        // Dynamic Assets URL
-                        DYNAMIC_ASSETS_URL = (function() {
-                            // Initialization > (Data, Metadata)
-                            let data = '',
-                                metadata = location.href;
-
-                            // Function > Test
-                            function test() {
-                                // Return
-                                return arguments[0].getBeforeChar('/', true)
-                            }
-
-                            /* Logic
-                                    [if:else if:else statement]
-
-                                > Update > Data
-                            */
-                                // {Home}
-                                if (test(metadata).endsWith('LapysJS'))
-                                    data = '';
-
-                                // {Internal Page}
-                                else if (test(metadata).endsWith('pages'))
-                                    data = '../';
-
-                            // Return
-                            return data
-                        })(),
-
-                        // Home Page File
-                        HOME_PAGE_FILE = new File([str(document.doctype) + $1.outerHTML], 'index', {type: 'text/html'});
-                            // On DOM Ready
-                            onDOMReady(function() {
-                                // Update > Home Page File
-                                HOME_PAGE_FILE = new File([str(document.doctype) + $1.outerHTML], 'index', {type: 'text/html'})
-                            });
-
-                    // Modification > Target
-                        // Alternative Resources
-                        _that.def('alternativeResources', {
+                    // Modification > Data
+                        // Default Root File
+                        _data.def('defaultRootFile', {
                             // Get
-                            get: function getAlternativeResources() {
-                                // Return
-                                return ALTERNATIVE_RESOURCES
-                            },
+                            get: function defaultRootFile() {
+                                // Initialization > Data
+                                let data = namedObject('DefaultRootFile', {
+                                    // Name
+                                    name: 'index'
+                                });
 
-                            // Set
-                            set: function setAlternativeResources() {
                                 // Return
-                                return alternativeResourcesObject.set(arguments[0])
+                                return data
                             }
                         });
 
-                        // Debugger
-                        _that.def('debugger', {
-                            // Value
-                            value: new (function Debugger() {
-                                // Initialization > Target
-                                let that = this,
-                                    _that = [that.constructor.prototype, global];
-
-                                // Modification > Target
-                                    // Define
-                                    hasProperty('define') || repeat((index, limit, data, key, value) => {
-                                        // Modification > Value > Define
-                                        value.def('define', {
-                                            // Value
-                                            value: function define() {
-                                                // Initialization > Arguments
-                                                let args = [...arguments];
-
-                                                // Return
-                                                return eval((function() {
-                                                    // Initialization > Data
-                                                    let data = 'new LapysJSFunction(';
-
-                                                    /* Loop
-                                                            Index Arguments.
-
-                                                        > Update > Data
-                                                    */
-                                                    for (let i in args)
-                                                        data += 'args[' + i + '], ';
-
-                                                    // Return
-                                                    return data + ')'
-                                                })())
-                                            }
-                                        })
-                                    }, _that);
-
-                                    // False
-                                    hasProperty('False') || repeat((index, limit, data, key, value) => {
-                                        // Modification > Value > False
-                                        value.def('False', {value: bool()})
-                                    }, _that);
-
-                                    // True
-                                    hasProperty('True') || repeat((index, limit, data, key, value) => {
-                                        // Modification > Value > True
-                                        value.def('True', {value: bool(true)})
-                                    }, _that)
-                            })
-                        });
-
                         // Dynamic Assets URL
-                        _that.def('dynamicAssetsURL', {
+                        _data.def('dynamicAssetsURL', {
                             // Get
                             get: function dynamicAssetsURL() {
+                                // Initialization > (Data, Metadata)
+                                let data = location.href,
+                                    metadata = data.trimRightChar(/[^\w\/]/);
+
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (metadata.endsWith(app.name + '/'))
+                                    data = '';
+
+                                else if (metadata.endsWith('pages/') || metadata.getBeforeChar('/', True).endsWith('pages/'))
+                                    data = '../';
+
                                 // Return
-                                return DYNAMIC_ASSETS_URL
+                                return data
                             }
                         });
 
-                        // Home Page File
-                        _that.def('homePageFile', {
-                            // Get
-                            get: function homePageFile() {
-                                // Return
-                                return HOME_PAGE_FILE
-                            }
-                        });
-
-                        // Log
-                        _that.def('log', {
+                        // Import Resources
+                        _data.def('importResources', {
                             // Value
-                            value: function Log() {
-                                // Initialization > Data
-                                let data = createElement('div', '', '[Information Manager] => ' + str(arguments[0])).textContent;
+                            value: function importResources() {
+                                // Initialization > (Arguments, Data, Metadata)
+                                let args = stringify([...arguments]),
+                                    data = args[0],
+                                    metadata = args[1];
 
-                                // Log
-                                log.apply(console, browser.ie ? [data] : ['%c' + data, 'font-style: oblique'])
+                                // When
+                                when(
+                                    // CSS
+                                    metadata == 'css' || metadata == 'stylesheet', function() {
+                                        // LapysJS > $ > Import > CSS
+                                        LapysJS.$.import.css('external', (DYNAMIC_ASSETS_URL || '') + (eval(args[2]) ? 'assets' : 'vendors') + '/css/' + data + '.' + (eval(args[3]) ? 'min.' : '') + 'css')
+                                    },
+
+                                    // Font
+                                    metadata == 'font', function() {
+                                        // LapysJS > $ > Import > Font
+                                        LapysJS.$.import.font(data, {
+                                            // Format
+                                            format: 4 in args ? args[4] : 'truetype',
+
+                                            // Source
+                                            src: (DYNAMIC_ASSETS_URL || '') + 'assets/font/' + args[3] + '/' + args[2] + '.' + args[3]
+                                        })
+                                    },
+
+                                    // JavaScript
+                                    metadata == 'javascript' || metadata == 'js', function() {
+                                        // LapysJS > $ > Import > JavaScript
+                                        LapysJS.$.import.js('external', (DYNAMIC_ASSETS_URL || '') + (eval(args[2]) ? 'assets' : 'vendors') + '/js/' + data + '.' + (eval(args[3]) ? 'min.' : '') + 'js')
+                                    },
+                                    ''
+                                )
                             }
                         });
+                            // {Font}
+                                // Candara
+                                _data.importResources('Candara', 'font', 'candara', 'ttf', 'truetype');
+
+                                // Gadugi
+                                _data.importResources('Gadugi', 'font', 'gadugi', 'ttf', 'truetype');
+
+                                // Raleway
+                                _data.importResources('Raleway', 'font', 'raleway', 'ttf', 'truetype');
+
+                            // {JavaScript}
+                                // Application Script
+                                _data.importResources('app', 'js', false);
+
+                                // Document Script
+                                _data.importResources(tmp || _data.defaultRootFile.name, 'js', true);
+
+                            // {Stylesheet}
+                                // Application Stylesheet
+                                _data.importResources('app', 'css', false);
+
+                                // Base Stylesheet
+                                _data.importResources('base', 'css', true);
+
+                                // Document Stylesheet
+                                _data.importResources(tmp || _data.defaultRootFile.name, 'css', true);
 
                         // Navigation Links
-                        _that.def('navigationLinks', {
+                        _data.def('navigationLinks', {
                             // Value
-                            value: new (function NavigationLinks() {
-                                /* Initialization > (Data, Metadata, Alpha, Target)
-                                        --- NOTE ---
-                                            @lapys: The `target` property for objects
-                                                in Alpha default to `_self`, not `undefined`.
-                                */
-                                let data = _that.dynamicAssetsURL,
-                                    metadata = _that.homePageFile,
-                                    alpha = [
-                                        // Home
-                                        {
-                                            href: data + metadata.name + '.' + metadata.type.getAfterChar('/'),
-                                            name: 'home', target: '_self', text: 'LapysJS',
-                                            title: 'LapysJS | Home'
-                                        },
-
-                                        // JavaScript
-                                        {
-                                            href: data + 'assets/pages/javascript.html',
-                                            name: 'javascript', text: 'JavaScript',
-                                            title: 'Our JavaScript Compendium'
-                                        }
-                                    ],
-                                    that = this;
+                            value: (function navigationLinks() {
+                                // Initialization > Data
+                                let data = namedArray('NavigationLinks',
+                                    // Home
+                                    namedObject('NavigationLink', {
+                                        content: 'LapysJS',
+                                        id: 'home',
+                                        name: 'Home',
+                                        title: 'Home'
+                                    })
+                                );
 
                                 /* Loop
-                                        Index Alpha.
-
-                                    > Modification > Target > ([Loop Counter], [String])
+                                        Index Data.
                                 */
-                                for (let i in alpha) {
-                                    (getType(alpha[i]) != 'object') || that.def([i, alpha[i].name], {
-                                        // Value
-                                        value: Object.assign(new (function NavigationLink() {}), alpha[i])
-                                    });
-                                        // Target
-                                        'target' in that[i] || (that[i].target = '_self');
-                                        'target' in that[alpha[i].name] || (that[alpha[i].name].target = '_self')
+                                for (let i of data) {
+                                    // Initialization > Metadata
+                                    let metadata = i.name.lower().replace(/\-/g, '_');
+
+                                    // Modification > Data > [Loop Counter]
+                                    !(!(metadata in data) && metadata !== 'length') || (data[metadata] = i)
                                 }
 
-                                // Modification > Target > To HTML Syntax
-                                that.def('toHTMLSyntax', {
-                                    // Value
-                                    value: function toHTMLSyntax() {
-                                        // Initialization > Data
-                                        let data = '';
-
-                                        /* Loop
-                                                Index Alpha.
-                                        */
-                                        for (let i of alpha) {
-                                            // Update > Data
-                                            data += '<a';
-
-                                            /* Loop
-                                                    [for statement]
-                                            */
-                                            for (let j in i) {
-                                                // Initialization > Metadata
-                                                let metadata = str(i[j]);
-
-                                                // Update > Data
-                                                !(j != 'name' && j != 'text') || (data += ' ' + j.replace(/\btitle\b/, 'data-title') + "=" + (metadata.hasText(' ') ? "'" + metadata + "'" : metadata));
-                                            }
-
-                                            // Update > Data
-                                            'target' in alpha || (data += " target=_self");
-                                            data += '>' + ('text' in i ? str(i.text) : '') + '</a>\n'
-                                        }
-
-                                        // Return
-                                        return data.trim()
-                                    }
-                                })
-                            })
+                                // Return
+                                return data
+                            })()
                         });
-                            // Definition
-                            _that.def('nav', {
-                                // Get
-                                get: function navigationLinks() {
-                                    // Return
-                                    return _that.navigationLinks
-                                }
-                            });
 
-                        // Script
-                        _that.def('script', {
-                            // Value
-                            value: document.currentScript || $$("script[src*='base.'][src*='.js'", 0) || document.scripts.lastElement
-                        })
-                })
+                    // Return
+                    return data
+                })()
             });
                 // Definition
-                def('info', {
-                    // Get
-                    get: function getInformationManager() {
-                        // Return
-                        return informationManager
-                    }
-                });
-
-                // Modification( > Information Manager)
-                    /* Alternative Resources
-                            --- NOTE ---
-                                @lapys:
-                                    Set to `false` to prevent this script from requesting and/ or importing assumed resource files,
-                                    set to `true` otherwise.
-                    */
-                    info.alternativeResources = true;
-
-        /* Functions */
-            // Careful Sourcing
-            let carefulSourcing = function carefulSourcing(event) {
-                // Initialization > (Data, Metadata)
-                let data = this.attr('data-href'),
-                    metadata = this.hasAttr('href-data') ? this.attr('href-data') : '';
-
-                // LapysJS > $ > Request
-                new LapysJS.$.request('GET', data, {
-                    // On Load
-                    onload: function onload(event) {
-                        /* Logic
-                                [if:else if:else statement]
-                        */
-                        if (!str(this.status).startsWith('40')) {
-                            // Information Manager > Log
-                            info.log('Status: "' + this.statusText + '"');
-
-                            // {Redirect} Click
-                            click(createElement('a', '', '', {href: ('target' in event ? event.target : event).responseURL + metadata}))
+                    // Information
+                    def('info', {
+                        // Get
+                        get: function InformationManager() {
+                            // Return
+                            return informationManager
                         }
-                    },
+                    });
 
-                    // On Load End
-                    onloadend: function onloadend(event) {
-                        // Information Manager > Log
-                        (this.status != 404) || info.log('Status: "' + this.statusText + '"')
-                    }
-                })
-            };
-
-            // On DOM Ready
-            onDOMReady(function() {
-                /* Special Information here */
-            }, 3e3);
-
-            // {Remove Redundant Nodes} On Node Added
-            onNodeAdded($1, function removeRedundantNodes() {
-                // Function
-                    // Remove All HTML Script Element
-                    (function removeAllHTMLScriptElement() {
-                        // Repeat
-                        repeat((index, limit, data, key, value) => {
-                            // Deletion
-                            value.delete()
-                        }, $$('script', 'array'))
-                    })();
-
-                    // Remove All Comment
-                    (function removeAllComment() {
-                        // Repeat
-                        repeat((index, limit, data, key, value) => {
-                            // Repeat
-                            repeat((index, limit, data, key, value) => {
-                                // Deletion
-                                !value || (value.nodeType != 8) || value.delete()
-                            }, value.childNodes)
-                        }, $$('*', 'array'))
-                    })()
-            });
-
-            // {Careful Links} On Node Change
-            onNodeChange($1, function carefulLinks() {
-                // Repeat
-                repeat((index, limit, data, key, value) => {
-                    // Event > Value > Click
-                    value.hasAttr('data-href') || value.delEvent('click', carefulSourcing)
-                }, $t('a', 'array'));
-
-                repeat((index, limit, data, key, value) => {
-                    // Event > Value > Click
-                    value.setEvent('click', carefulSourcing)
-                }, $$('a[data-href', 'array'))
-            })
-    }
-})(window, window.document, typeof global != 'undefined' ? global : null, window.undefined || void 0, typeof LapysJS != 'undefined' ? LapysJS : new (function LapysJS() { this.ready = false }))
+                    // Navigation
+                    def('nav', {
+                        // Get
+                        get: function navigation() {
+                            // Return
+                            return informationManager.navigationLinks
+                        }
+                    })
+    })(window.parent, window.parent.document, typeof global != 'undefined' ? global : null, window.undefined || void 0)
+})(Number(), String())

@@ -1,2 +1,2 @@
-// Console > Information
-console.info('TEST SUCCESSFUL')
+// Console > Log
+console.log('Hello, World!')
