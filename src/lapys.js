@@ -1547,6 +1547,21 @@
                                     // Cube Root
                                     cbrt: Math.cbrt,
 
+                                    // Decode URI
+                                    decodeURI: window.decodeURI,
+
+                                    // Decode URI Component
+                                    decodeURIComponent: window.decodeURIComponent,
+
+                                    // Encode URI
+                                    encodeURI: window.encodeURI,
+
+                                    // Encode URI Component
+                                    encodeURIComponent: window.encodeURIComponent,
+
+                                    // Escape
+                                    escape: window.escape,
+
                                     // Evaluate
                                     eval: (function() {
                                         // Initialization > Data
@@ -4504,7 +4519,7 @@
                                         })();
 
                                         // Return
-                                        return 0
+                                        return tmp.functions.setInterval(function() {}, LDK.infinity)
                                     }
 
                                     else
@@ -5743,6 +5758,64 @@
                             }
                         });
 
+                        // Sequence
+                        LDK.objectDefProp(tmp.value, 'sequence',{
+                            // Value
+                            value: function sequence() {
+                                // Initialization > (Data, Metadata)
+                                let data = LDK.string(arguments[0]),
+                                    metadata = arguments[1];
+
+                                /* Logic
+                                        [switch:case:default statement]
+
+                                    > (...)
+                                */
+                                switch (metadata) {
+                                    // Decode URI
+                                    case 'decodeURI':
+                                        data = LDK.isNativeFunction(tmp.functions.decodeURI) ? tmp.functions.decodeURI(data) : data;
+                                        break;
+
+                                    // Decode URI Component
+                                    case 'decodeURIComponent':
+                                        data = LDK.isNativeFunction(tmp.functions.decodeURIComponent) ? tmp.functions.decodeURIComponent(data) : data;
+                                        break;
+
+                                    // Encode
+                                    case 'encode':
+                                        data = tmp.functions.escape(data);
+                                        break;
+
+                                    // Encode URI
+                                    case 'encodeURI':
+                                        data = LDK.isNativeFunction(tmp.functions.encodeURI) ? tmp.functions.encodeURI(data) : data;
+                                        break;
+
+                                    // Encode URI Component
+                                    case 'encodeURIComponent':
+                                        data = LDK.isNativeFunction(tmp.functions.encodeURIComponent) ? tmp.functions.encodeURIComponent(data) : data;
+                                        break;
+
+                                    // HTML
+                                    case 'html':
+                                        tmp.element.innerHTML = data;
+                                        data = tmp.element.innerHTML;
+                                        break;
+
+                                    // [Default]
+                                    default:
+                                        LapysJS.error(metadata, 'only', ['html', 'decodeURI', 'decodeURIComponent', 'encode', 'encodeURI', 'encodeURIComponent'])
+                                }
+
+                                // Return
+                                return data
+                            },
+
+                            // Writable
+                            writable: LDK.true
+                        });
+
                         /* Sleep
                                 --- NOTE ---
                                     #lapys: Inspired from PHP syntax.
@@ -6131,14 +6204,7 @@
                             }
                         });
 
-                    /* Array Data
-                            --- CHECKPOINT ---
-                                #lapys: Stopped at 'build' method.
-
-                            --- WARN ---
-                                #lapys: Do not use the
-                                    `for...in` statement for array prototypes.
-                    */
+                    // Array Data
                         // Update > Temporary Data > Value
                         tmp.value = LDK.arrayProto;
 
@@ -6266,7 +6332,7 @@
 
                                         > Update > Arguments
                                     */
-                                    for (let i in args)
+                                    for (let i = 0; i < args.length; i += 1)
                                         !LDK.isString(args[i]) || (args[i] = func(args[i]));
 
                                     /* Loop
@@ -6456,7 +6522,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 // Return
@@ -6512,7 +6578,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 // Return
@@ -6590,7 +6656,7 @@
                                     /* Loop
                                             Index Arguments.
                                     */
-                                    for (let i in that) {
+                                    for (let i = 0; i < that.length; i += 1) {
                                         // Initialization > Metadata
                                         let metadata = that[i];
 
@@ -6759,7 +6825,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 // Return
@@ -6815,7 +6881,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 // Return
@@ -6947,7 +7013,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 // Return
@@ -7066,7 +7132,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -7130,7 +7196,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -7194,7 +7260,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -7258,7 +7324,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -7396,7 +7462,7 @@
                                     /* Loop
                                             Index Arguments.
                                     */
-                                    for (let i in that) {
+                                    for (let i = 0; i < that.length; i += 1) {
                                         // Initialization > Metadata
                                         let metadata = that[i];
 
@@ -7721,7 +7787,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -7785,7 +7851,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -7849,7 +7915,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -7913,7 +7979,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8014,7 +8080,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8082,7 +8148,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8150,7 +8216,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8218,7 +8284,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8360,7 +8426,7 @@
                                     /* Loop
                                             Index Arguments.
                                     */
-                                    for (let i in that) {
+                                    for (let i = 0; i < that.length; i += 1) {
                                         // Initialization > Metadata
                                         let metadata = that[i];
 
@@ -8400,7 +8466,7 @@
                                     /* Loop
                                             Index Arguments.
                                     */
-                                    for (let i in that) {
+                                    for (let i = 0; i < that.length; i += 1) {
                                         // Initialization > Metadata
                                         let metadata = that[i];
 
@@ -8725,7 +8791,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8793,7 +8859,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8861,7 +8927,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -8929,7 +8995,7 @@
 
                                     > Update > Alpha
                                 */
-                                for (let i in that)
+                                for (let i = 0; i < that.length; i += 1)
                                     (data[i].count != metadata) || alpha.push(that[i]);
 
                                 /* Loop
@@ -9035,7 +9101,7 @@
                                 /* Loop
                                         Index Arguments.
                                 */
-                                for (let i in args) {
+                                for (let i = 0; i < args.length; i += 1) {
                                     // Initialization > Data
                                     let data = args[i];
 
@@ -9105,7 +9171,7 @@
 
                                     > Update > Arguments
                                 */
-                                for (let i in args)
+                                for (let i = 0; i < args.length; i += 1)
                                     !LDK.isString(args[i]) || (args[i] = func(args[i]));
 
                                 /* Loop
@@ -9163,7 +9229,7 @@
 
                                     > Update > Arguments
                                 */
-                                for (let i in args)
+                                for (let i = 0; i < args.length; i += 1)
                                     !LDK.isString(args[i]) || (args[i] = func(args[i]));
 
                                 /* Loop
@@ -9826,9 +9892,17 @@
                                             Index Permanent Data > Scripted Nodes List
                                     */
                                     for (let j of perm.scriptedNodesList) {
+                                        // Initialization > Metadata
                                         let metadata = i.getAttribute('script');
+
+                                        /* Logic
+                                                [if statement]
+                                        */
                                         if (metadata != j.script) {
+                                            // [Loop Iterator] > Script
                                             i.script.call(i);
+
+                                            // Modification > [Loop Iterator] > Script
                                             j.script = metadata
                                         }
                                     }
@@ -9912,21 +9986,131 @@
 
                             // Set
                             set: function setSelector() {
+                                // Initialization > (Data, Target)
                                 let data = LDK.string(arguments[0]),
-                                    $attributes = '',
-                                    $class = '',
-                                    $id = '',
-                                    $tagName = '',
-                                    $text = '',
                                     that = this;
 
+                                // Error Handling
                                 try { LDK.docQueSel(data) }
                                 catch (error) {
+                                    // Initialization > Metadata
                                     let metadata = error.message.getAfterChar(':').trimLeft().trimRightChar('.');
+
+                                    // LapysJS > Error
                                     LapysJS.error(["'setSelector'", "'" + that.constructor.name + "'"], 'argument', metadata || "'" + data + "' is not a valid selector")
                                 }
 
-                                $tagName = data.getBeforeChar(/\.|#|\[/)
+                                // Initialization > Beta
+                                let beta = [LapysJS.perm.regexSet.randomize(), LapysJS.perm.regexSet.randomize()];
+
+                                // Update > Data
+                                data = data.replace(/'[^']{0,}'/g, data => {
+                                    // Return
+                                    return data.replace(/\./g, beta[0])
+                                }).replace(/"[^"]{0,}"/g, data => {
+                                    // Return
+                                    return data.replace(/\./g, beta[0])
+                                }).replace(/'[^']{0,}'/g, data => {
+                                    // Return
+                                    return data.replace(/#/g, beta[1])
+                                }).replace(/"[^"]{0,}"/g, data => {
+                                    // Return
+                                    return data.replace(/#/g, beta[1])
+                                });
+
+                                // Initialization > (Data, Attributes, Class, ID, Mode)
+                                let $data = data.length,
+                                    $attributes = '',
+                                    $class = '',
+                                    $id = '',
+                                    mode = {value: LDK.null};
+
+                                /* Modification > Mode > (Attributes, Class, ID)
+                                        --- NOTE ---
+                                            #lapys: These act as locks to guide the rules of how attributes are selected.
+                                */
+                                mode.attributes = LDK.false;
+                                mode.class = LDK.false;
+                                mode.id = LDK.false;
+
+                                /* Loop
+                                        Index Data.
+                                */
+                                for (let i = 0; i < $data; i += 1) {
+                                    // Initialization > Metadata
+                                    let metadata = data[i];
+
+                                    /* Logic
+                                            [switch:case statement]
+
+                                        > (...)
+                                    */
+                                    switch (metadata) {
+                                        // Attribute
+                                        case '[':
+                                            mode.value = 'attributes';
+                                            break;
+
+                                        // Class
+                                        case '.':
+                                            mode.value = 'class';
+                                            break;
+
+                                        // ID
+                                        case '#':
+                                            (!mode.id && i != data.indexOf(metadata)) && (mode.id = LDK.true);
+                                            mode.value = 'id'
+                                    }
+
+                                    /* Logic
+                                            [if:else if statement]
+
+                                        > Update
+                                    */
+                                    if (mode.value == 'attributes' && !mode.attributes)
+                                        // Attributes
+                                        $attributes += metadata;
+
+                                    else if (mode.value == 'class' && !mode.class)
+                                        // Class
+                                        $class += metadata;
+
+                                    else if (mode.value == 'id' && !mode.id)
+                                        // ID
+                                        $id += metadata
+                                }
+
+                                // Update > (Attributes, Class, ID)
+                                $attributes = (a=>{for(let i=0;i<a.length;i+=1)a[i]=a[i].slice(0,-']'.length);return a})($attributes.trim().split('[').filter(LDK.bool));
+                                $class = $class.trim().split('.').filter(LDK.bool);
+                                $id = [$id.trim().slice('#'.length)];
+
+                                /* Loop
+                                        Index Attributes.
+                                */
+                                for (let i of $attributes) {
+                                    // Initialization > Metadata
+                                    let metadata = i.getBeforeChar('=');
+
+                                    // Modification > Target > [Metadata]
+                                    (metadata != 'class' && metadata != 'id') && that.setAttribute(metadata, (function() {
+                                        // Initialization > Alpha
+                                        let alpha = i.getAfterChar('=');
+
+                                        // Update > Alpha
+                                        ((alpha.endsWith('"') && alpha.startsWith('"')) || (alpha.endsWith("'") && alpha.startsWith("'"))) && (alpha = alpha.slice(1, -1));
+
+                                        // Return
+                                        return alpha.replace(LDK.regex(beta[0], 'g'), '.').replace(LDK.regex(beta[1], 'g'), '#')
+                                    })())
+                                }
+
+                                // Modification > Target
+                                    // Class
+                                    that.setAttribute('class', ((that.getAttribute('class') || '') + $class.join(' ')).trim());
+
+                                    // ID
+                                    $id[0] && that.setAttribute('id', $id[0])
                             }
                         });
 
@@ -11138,10 +11322,10 @@
                             }
                         });
 
-                        // Get Events
-                        LDK.objectDefProp(tmp.value, 'getEvents', {
+                        // Get Event
+                        LDK.objectDefProp(tmp.value, 'getEvent', {
                             // Value
-                            value: function getEvents() {
+                            value: function getEvent() {
                                 // Initialization > (Arguments, Data, Target)
                                 let args = [...arguments],
                                     data,
@@ -11364,12 +11548,12 @@
 
                                         else
                                             // LapysJS > Error
-                                            LapysJS.error(["'getEvents'", "'EventTarget'"], 'argument', 'Invalid argument set given')
+                                            LapysJS.error(["'getEvent'", "'EventTarget'"], 'argument', 'Invalid argument set given')
                                     }
 
                                     else if (args.length != 1)
                                         // LapysJS > Error
-                                        LapysJS.error(["'getEvents'", "'EventTarget'"], 'argument', 'Too many arguments')
+                                        LapysJS.error(["'getEvent'", "'EventTarget'"], 'argument', 'Too many arguments')
                                 }
 
                                 // Return
@@ -11377,14 +11561,14 @@
                             }
                         });
 
-                        /* Has Events
+                        /* Has Event
                                 --- CHECKPOINT ---
                                 --- NOTE ---
                                     #lapys: Another time for now... phew
                         */
-                        LDK.objectDefProp(tmp.value, 'hasEvents', {
+                        LDK.objectDefProp(tmp.value, 'hasEvent', {
                             // Value
-                            value: function hasEvents() {
+                            value: function hasEvent() {
                                 // Return
                                 return LapysJS.warn(tmp)
                             }
@@ -11716,7 +11900,7 @@
                             }
                         });
 
-                        // Replace Event
+                        // Replace Event --- CHECKPOINT ---
                         LDK.objectDefProp(tmp.value, 'replEvent', {
                             // Value
                             value: function replaceEvent() {
@@ -13311,10 +13495,7 @@
                             }
                         });
 
-                        /* HTML
-                                --- CHECKPOINT ---
-                                    #lapys: Escape sequences for # and . syntaxes.
-                        */
+                        // HTML
                         LDK.objectDefProp(tmp.value, 'html', {
                             // Get
                             get: function createElement() {
