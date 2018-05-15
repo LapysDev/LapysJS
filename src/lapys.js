@@ -10382,7 +10382,7 @@
                                 let that = LDK.isWindow(this) ? document : this;
 
                                 // Return
-                                return LDK.arrayProto.addElement.apply(LDK.namedArray('HTMLCollection'), LDK.toArray(that.children || []))
+                                return LDK.arrayProto.addElement.apply(LDK.namedArray('HTMLCollection'), LDK.toArray(that.childNodes || that.children || []))
                             }
                         });
 
@@ -11897,6 +11897,34 @@
 
                                 // Return
                                 return metadata ? metadata.nextSibling || LDK.null : LDK.null
+                            }
+                        });
+
+                        // Third Child
+                        LDK.objectDefProp(tmp.value, '$3', {
+                            // Get
+                            get: function thirdChild() {
+                                // Initialization > (Target, Data, Metadata)
+                                let that = LDK.isWindow(this) ? document : this,
+                                    data = that.children || [],
+                                    metadata = that.firstElementChild || that.firstChild || data[0] || LDK.null;
+
+                                // Return
+                                return metadata ? (metadata.nextSibling ? (metadata.nextSibling.nextSibling || LDK.null) : LDK.null) : LDK.null
+                            }
+                        });
+
+                        // Fourth Child
+                        LDK.objectDefProp(tmp.value, '$4', {
+                            // Get
+                            get: function fourthChild() {
+                                // Initialization > (Target, Data, Metadata)
+                                let that = LDK.isWindow(this) ? document : this,
+                                    data = that.children || [],
+                                    metadata = that.firstElementChild || that.firstChild || data[0] || LDK.null;
+
+                                // Return
+                                return metadata ? (metadata.nextSibling ? (metadata.nextSibling.nextSibling ? metadata.nextSibling.nextSibling.nextSibling : LDK.null) : LDK.null) : LDK.null
                             }
                         });
 
