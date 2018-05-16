@@ -2,7 +2,7 @@
     @author: Lapys Dev Team
     @description: LapysJS is a JavaScript library designed to challenge the status quo of the JavaScript language and its other related vendors.
     @version: 0.0.3
-    @url: https://www.lapysjs.com
+    @url: https://github.com/LapysDev/LapysJS
 
     --- RULES ---
         #lapys:
@@ -11,3 +11,57 @@
 /* CSS At-Rules */
     /* Character-Set Encoding */
     @charset 'UTF-8';
+
+/* DOM Elements */
+    /* All */
+        /* States */
+            /* Link */
+            :link {
+                text-decoration: none
+            }
+
+            /* Selection */
+            ::selection {
+                background-color: #0066FF;
+                color: #FFFFFF;
+                text-shadow: none
+            }
+
+    /* <a> */
+    a {
+        color: #0099FF;
+        cursor: default;
+        fill: #0099FF;
+        line-height: inherit;
+        stroke: #0099FF;
+        text-align: inherit;
+        text-decoration: none;
+        -webkit-text-decoration-skip: objects
+    }
+        /* States > (Active, Focus, Unvisited, Visited) */
+        a[href],
+        a:active,
+        a:focus,
+        a:unvisited,
+        a:visited {
+            color: #0066FF;
+            fill: #0066FF;
+            stroke: #0066FF
+        }
+
+    /* <abbr> */
+    abbr[abbr] {
+        text-decoration: none
+    }
+
+    abbr[data-title],
+    abbr[title] {
+        border-bottom: 1px dotted
+    }
+
+    /* <body> */
+    body {
+        background-color: #FEFEFE;
+        color: #333;
+        font-family: Gadugi, 'PT Sans', Raleway, sans-serif
+    }
