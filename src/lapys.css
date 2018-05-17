@@ -56,12 +56,118 @@
 
     abbr[data-title],
     abbr[title] {
-        border-bottom: 1px dotted
+        border-bottom-style: dotted;
+        border-bottom-width: 1px
     }
 
     /* <body> */
     body {
         background-color: #FEFEFE;
         color: #333;
-        font-family: Gadugi, 'PT Sans', Raleway, sans-serif
+        font-family: Gadugi, 'PT Sans', 'Calibri Light', sans-serif;
+        font-size: 1em
+    }
+
+    /* <h1> */
+    h1 {
+        font-size: 3.25em;
+        margin: 1rem 0
+    }
+
+    /* <h1>, <h2>, <h3>, <h4>, <h5>, <h6> */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: Raleway, 'PT Sans', 'Calibri Light', Calibri, Arial, sans-serif;
+        font-weight: 300;
+        margin-block-end: .67em;
+        margin-block-start: .67em
+    }
+        /* <p> */
+        h1 + p,
+        h2 + p,
+        h3 + p,
+        h4 + p,
+        h5 + p,
+        h6 + p {
+            opacity: .9
+        }
+
+        h1 > p,
+        h2 > p,
+        h3 > p,
+        h4 > p,
+        h5 > p,
+        h6 > p {
+            margin-bottom: 0;
+            margin-top: 0
+        }
+
+    /* <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <p> */
+    h1, h2, h3, h4, h5, h6, p {
+        orphans: 3;
+        widows: 3
+    }
+
+    /* <h2> */
+    h2 {
+        font-size: 2.875em;
+        margin: .5rem 0
+    }
+
+    /* <h3> */
+    h3 {
+        font-size: 2.375em;
+        margin: .25rem 0
+    }
+
+    /* <h4> */
+    h4 {
+        font-size: 2em;
+        margin: .125rem 0
+    }
+
+    /* <h4> */
+    h4 {
+        font-size: 1.875em;
+        margin: .0625rem 0
+    }
+
+    /* <h5> */
+    h5 {
+        font-size: 1.375em;
+        margin: .03125rem 0
+    }
+
+    /* <h6> */
+    h6 {
+        font-size: 1em;
+        margin: .015625rem 0
+    }
+
+    /* <hr> */
+    hr {
+        background-color: #333;
+        border-bottom-style: solid;
+        border-bottom-width: 1px;
+        box-sizing: content-box
+    }
+
+    /* <html>
+            --- NOTE ---
+                #lapys: Should contain base styles only
+    */
+    html {
+        font-size: 16.5px;
+        -ms-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, .1);
+        -webkit-text-size-adjust: 100%
+    }
+        /* <svg> */
+        html | * > svg {
+            transform-origin: 50% 50% 0px
+        }
+
+    /* <i> */
+    i {
+        font-style: oblique;
+        line-height: inherit
     }
