@@ -11226,7 +11226,7 @@
                     });
 
                     // Height
-                    'width' in eleProto || objectDefProp(eleProto, 'height', {
+                    'height' in eleProto || objectDefProp(eleProto, 'height', {
                         // Get
                         get: function getHeight() {
                             // Return

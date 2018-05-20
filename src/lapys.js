@@ -325,23 +325,7 @@
                         const LDK = this,
 
                         // Maximum Call Stack Size
-                        maximumCallStackSize = (tmp.value = 0, function main() {
-                            /* Error Handling
-                                    --- NOTE ---
-                                        #lapys: Overload the given stack
-                                            to get it`s size.
-                            */
-                            try {
-                                // Update > Temporary Data > Value
-                                tmp.value += 1;
-
-                                // Main
-                                main()
-                            } catch (error) {}
-
-                            // Return
-                            return tmp.value
-                        })(),
+                        maximumCallStackSize = (function a(){try{return 1+a()}catch(b){return 1}})(),
 
                         // Processing Time
                         processingTime = tmp.processingTime = (function() {
@@ -1133,9 +1117,15 @@
                                 */
                                 for (let i of args)
                                     data.push(LDK.isConstructible(i) ? (
-                                        ((LDK.getSourceCode(i) || '') + '\n').replace(/\/\/[^\n]{0,}\n|(\/\*[^\*]{0,}\*\/|\/\*[^\/]{0,}\*\/)/g, '').indexOf('[native code]') > -1 &&
-                                        LDK.isFunction(i) &&
-                                        typeof i == 'function'
+                                        (function() {
+                                            // Error Handling > Return
+                                            try { tmp.functions.eval(LDK.string(i)); return LDK.false }
+                                            catch (error) {}
+
+                                            // Return
+                                            return LDK.true
+                                        })() &&
+                                        LDK.isFunction(i)
                                     ) : LDK.false);
 
                                 // Return
@@ -1559,6 +1549,15 @@
                                         return (function addEventListener() { return data.apply(arguments[0], [...arguments].slice(1)) })
                                     })(),
 
+                                    // Alert
+                                    alert: (function() {
+                                        // Initialization > Data
+                                        let data = alert;
+
+                                        // Return
+                                        return (function alert() { return data.apply(window, [...arguments]) })
+                                    })(),
+
                                     // Clear
                                     clear: console.clear,
 
@@ -1688,11 +1687,47 @@
                                     // Console
                                     tmp.objects.console = LDK.objectAssign(LDK.namedObject('LapysJSConsole'), console);
 
+                                    // Inner Height
+                                    LDK.objectDefProp(tmp.objects, 'innerHeight', new (function Object() {
+                                        // Initialization > Data
+                                        let data = LDK.objectGetOwnPropDesc(window, 'innerHeight').get;
+
+                                        // Modification > Target > Get
+                                        this.get = function innerHeight() {
+                                            // Return
+                                            return data()
+                                        }
+                                    }));
+
+                                    // Inner Width
+                                    LDK.objectDefProp(tmp.objects, 'innerWidth', new (function Object() {
+                                        // Initialization > Data
+                                        let data = LDK.objectGetOwnPropDesc(window, 'innerWidth').get;
+
+                                        // Modification > Target > Get
+                                        this.get = function innerWidth() {
+                                            // Return
+                                            return data()
+                                        }
+                                    }));
+
                                     // JSON
                                     tmp.objects.JSON = LDK.objectAssign(LDK.namedObject('LapysJSJSON'), JSON);
 
                                     // Math
                                     tmp.objects.Math = LDK.objectAssign(LDK.namedObject('LapysJSMath'), Math);
+
+                                    // Screen
+                                    LDK.objectDefProp(tmp.objects, 'screen', new (function Object() {
+                                        // Initialization > Data
+                                        let data = LDK.objectGetOwnPropDesc(window, 'screen').get;
+
+                                        // Modification > Target > Get
+                                        this.get = function innerWidth() {
+                                            // Return
+                                            return data.call(window)
+                                        }
+                                    }));
 
                                     // Storage
                                     const perm = tmp.objects.storage = {
@@ -1893,7 +1928,7 @@
                                                     case 'argument':
                                                         !LDK.isArray(argSet[0]) ?
                                                             (function() { throw new LDK.typeError('Arguments 0 must be an array.') })() :
-                                                            data = 'Failed to execute ' + argSet[0][0] + ' on ' + argSet[0][1] + ': ' +
+                                                            data = 'Failed to execute ' + argSet[0][0] + ' on ' + argSet[0][1] + (argSet[1] ? ': ' : '') +
                                                             (LDK.isArray(argSet[1]) ? (argSet[1][0] + ' argument' + (argSet[1][0] > 1 ? 's' : '') + ' required, but ' + (argSet[1][1] < 2 ? 'only ' + argSet[1][1] : argSet[1][1]) + ' present') : argSet[1]);
                                                         break;
 
@@ -5886,6 +5921,18 @@
                             }
                         });
 
+                        // Square Root
+                        LDK.objectDefProp(tmp.value, 'sqrt', {
+                            // Value
+                            value: function sqrt() {
+                                // Return
+                                return tmp.functions.sqrt.apply(tmp.objects.Math, [...arguments])
+                            },
+
+                            // Writable
+                            writable: LDK.true
+                        });
+
                         // Strict Input
                         LDK.objectDefProp(tmp.value, 'strictInput', {
                             // Value
@@ -6262,6 +6309,18 @@
                                         // LapysJS > Error
                                         LapysJS.error(["'when'", "'" + that.constructor.name + "'"], 'argument', 'uneven amount of arguments provided')
                             }
+                        });
+
+                        // Write
+                        LDK.objectDefProp(tmp.value, 'write', {
+                            // Value
+                            value: function write() {
+                                // (...)
+                                LDK.eleProto.write.call(document.documentElement, arguments[0])
+                            },
+
+                            // Writable
+                            writable: LDK.true
                         });
 
                     // Array Data
@@ -9542,6 +9601,98 @@
                             }
                         });
 
+                        // Attribute
+                        LDK.objectDefProp(tmp.value, 'attr', {
+                            // Value
+                            value: function attr() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                // Return
+                                return args.length > 1 ? LDK.eleProto.setAttr.apply(that, args) : LDK.eleProto.getAttr.apply(that, args)
+                            },
+
+                            // Writable
+                            writable: LDK.true
+                        });
+
+                        // Bounding Box
+                        LDK.objectDefProp(tmp.value, 'boundingBox', {
+                            // Get
+                            get: function boundingBox() {
+                                // Initialization > (Target, Data, Metadata)
+                                let that = this,
+                                    data = LDK.eleProto.getBoundingClientRect.call(that),
+                                    metadata = LDK.namedObject('BoundingBox'),
+                                    $metadata = metadata.constructor.prototype;
+
+                                /* Loop
+                                        Index Data.
+                                */
+                                for (let i in data)
+                                    /* Logic
+                                            [if statement]
+
+                                        > Modification > Metadata > [Loop Iterator]
+                                    */
+                                    if (i == 'bottom' || i == 'left' || i == 'right' || i == 'top' || i == 'x' || i == 'y' || i == 'z') {
+                                        LDK.objectDefProp(metadata, i, {
+                                            // Configurable
+                                            configurable: LDK.false,
+
+                                            // Value
+                                            value: data[i],
+
+                                            // Writable
+                                            writable: LDK.false
+                                        });
+
+                                        LDK.objectDefProp($metadata, i, {
+                                            // Get
+                                            get: function getCoord() {
+                                                // Return
+                                                return data[i]
+                                            },
+
+                                            // Set
+                                            set: function setCoord() {
+                                                // Initialization > Alpha
+                                                let alpha = LDK.numberParseNumber(arguments[0]);
+
+                                                // Style > Target > (...)
+                                                i == 'x' || i == 'y' || i == 'z' ? LDK.htmlEleProto.setCSS.call(that, (function() {
+                                                    // Initialization > Beta
+                                                    let beta;
+
+                                                    /* Logic
+                                                            [switch:case statement]
+
+                                                        > Update > Beta
+                                                    */
+                                                    switch (i) {
+                                                        // X
+                                                        case 'x': beta = 'left'; break;
+
+                                                        // Y
+                                                        case 'y': beta = 'top'; break;
+
+                                                        // Z
+                                                        case 'z': beta = 'z-index'
+                                                    }
+
+                                                    // Return
+                                                    return beta
+                                                })(), alpha) : LDK.htmlEleProto.setCSS.call(that, i, alpha);
+                                            }
+                                        })
+                                    }
+
+                                // Return
+                                return metadata
+                            }
+                        });
+
                         // Delete Attribute
                         LDK.objectDefProp(tmp.value, 'delAttr', {
                             // Value
@@ -9573,6 +9724,19 @@
 
                                 // Return
                                 return that.attributes.length ? that.attributes : that
+                            }
+                        });
+
+                        // Descendant Element Index
+                        LDK.objectDefProp(tmp.value, 'descendantElementIndex', {
+                            // Get
+                            get: function descendantElementIndex() {
+                                // Initialization > (Target, Data)
+                                let that = this,
+                                    data = LDK.objectGetOwnPropDesc(LDK.nodeProto, 'parent').get.call(that);
+
+                                // Return
+                                return data ? LDK.arrayFrom(data.children).indexOf(that) : -1
                             }
                         });
 
@@ -9700,6 +9864,30 @@
                             }
                         });
 
+                        // Height
+                        LDK.objectDefProp(tmp.value, 'height', {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function height() {
+                                // Return
+                                return LDK.eleProto.getBoundingClientRect.call(this).height
+                            }
+                        });
+
+                        // In Fullscreen
+                        LDK.objectDefProp(tmp.value, 'inFullscreen', {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function inFullscreen() {
+                                // Return
+                                return screen.height !== innerHeight ? this === perm.fullscreenElement : LDK.false
+                            }
+                        });
+
                         // Insert Adjacent Comment
                         LDK.objectDefProp(tmp.value, 'insertAdjacentComment', {
                             // Value
@@ -9732,6 +9920,7 @@
                             writable: LDK.true
                         });
 
+                        // Insert Child
                         LDK.objectDefProp(tmp.value, 'insertChild', {
                             // Value
                             value: function insertChild() {
@@ -9788,6 +9977,70 @@
                                 else
                                     // LapysJS > Error
                                     LapysJS.error(["'insertChild'", "'" + that.constructor.name + "'"], 'argument', [2, 0])
+                            }
+                        });
+
+                        // Next Element Siblings
+                        LDK.objectDefProp(tmp.value, 'nextElementSiblings', {
+                            // Get
+                            get: function nextElementSiblings() {
+                                // Initialization > (Target, Data, Metadata)
+                                let that = this,
+                                    data = LDK.objectGetOwnPropDesc(LDK.nodeProto, 'parent').get.call(that),
+                                    metadata = LDK.namedArray('HTMLCollection');
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (data) {
+                                    // Initialization > Alpha
+                                    let alpha = LDK.arrayFrom(data.children);
+
+                                    // Update
+                                        // Alpha
+                                        alpha = alpha.slice(alpha.indexOf(that) + 1);
+
+                                        // Metadata
+                                        LDK.arrayProto.push.apply(metadata, alpha);
+
+                                    // Return
+                                    return metadata
+                                }
+
+                                // Return
+                                return metadata
+                            }
+                        });
+
+                        // Previous Element Siblings
+                        LDK.objectDefProp(tmp.value, 'previousElementSiblings', {
+                            // Get
+                            get: function previousElementSiblings() {
+                                // Initialization > (Target, Data, Metadata)
+                                let that = this,
+                                    data = LDK.objectGetOwnPropDesc(LDK.nodeProto, 'parent').get.call(that),
+                                    metadata = LDK.namedArray('HTMLCollection');
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (data) {
+                                    // Initialization > Alpha
+                                    let alpha = LDK.arrayFrom(data.children);
+
+                                    // Update
+                                        // Alpha
+                                        alpha = alpha.slice(0, alpha.indexOf(that));
+
+                                        // Metadata
+                                        LDK.arrayProto.push.apply(metadata, alpha);
+
+                                    // Return
+                                    return metadata
+                                }
+
+                                // Return
+                                return metadata
                             }
                         });
 
@@ -10367,6 +10620,106 @@
                             }
                         });
 
+                        // Toggle Fullscreen
+                        LDK.objectDefProp(tmp.value, 'toggleFullscreen', {
+                            // Value
+                            value: function toggleFullscreen() {
+                                // Initialization > (Data, Metadata, Target, Inner (Height, Width), Screen)
+                                let data = document,
+                                    metadata = arguments[0],
+                                    that = LDK.isWindow(this) ? data.documentElement : (this || data.documentElement),
+                                    innerHeight = tmp.objects.innerHeight,
+                                    innerWidth = tmp.objects.innerWidth,
+                                    screen = tmp.objects.screen;
+
+                                // Error Handling
+                                try {
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (screen.height == innerHeight) {
+                                        // Initialization > Alpha
+                                        let alpha = LDK.docProto;
+
+                                        // Update > Permanent Data > Fullscreen Element
+                                        (screen.height == innerHeight) || (perm.fullscreenElement = LDK.null);
+
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > (...)
+                                        */
+                                        if (LDK.isNativeFunction(alpha.exitFullscreen))
+                                            alpha.exitFullscreen.call(data);
+
+                                        else if (LDK.isNativeFunction(alpha.mozCancelFullScreen))
+                                            alpha.mozCancelFullScreen.call(data);
+
+                                        else if (LDK.isNativeFunction(alpha.msExitFullscreen))
+                                            alpha.msExitFullscreen.call(data);
+
+                                        else if (LDK.isNativeFunction(alpha.webkitCancelFullScreen))
+                                            alpha.webkitCancelFullScreen.call(data);
+
+                                        else
+                                            LapysJS.error(["'toggleFullscreen'", "'Element'"], 'argument', 'Could not cancel fullscreen')
+                                    }
+
+                                    else {
+                                        // Initialization > Alpha
+                                        let alpha = LDK.eleProto;
+
+                                        // Alert
+                                        metadata && tmp.functions.alert('[LapysJS ' + LDK.constants.VERSION + "] => Press the 'Esc' key to exit fullscreen.");
+
+                                        // Update > Permanent Data > Fullscreen Element
+                                        (screen.height == innerHeight) && (perm.fullscreenElement = that);
+
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > (...)
+                                        */
+                                        if (LDK.isNativeFunction(alpha.requestFullscreen))
+                                            alpha.requestFullscreen.call(that);
+
+                                        else if (LDK.isNativeFunction(alpha.mozRequestFullScreen))
+                                            alpha.mozRequestFullScreen.call(that);
+
+                                        else if (LDK.isNativeFunction(alpha.msRequestFullscreen))
+                                            alpha.msRequestFullscreen.call(that);
+
+                                        else if (LDK.isNativeFunction(alpha.webkitRequestFullScreen))
+                                            alpha.webkitRequestFullScreen.call(that);
+
+                                        else
+                                            LapysJS.error(["'toggleFullscreen'", "'Element'"], 'argument', 'Could not request fullscreen');
+
+                                        // Return
+                                        return that
+                                    }
+                                } catch (error) {
+                                    // LapysJS > Error
+                                    LapysJS.error(["'toggleFullscreen'", "'Element'"], 'argument', '')
+                                }
+
+                                // Return
+                                return LDK.null
+                            }
+                        });
+
+                        // Width
+                        LDK.objectDefProp(tmp.value, 'width', {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function width() {
+                                // Return
+                                return LDK.eleProto.getBoundingClientRect.call(this).width
+                            }
+                        });
+
                         // Write
                         LDK.objectDefProp(tmp.value, 'write', {
                             // Value
@@ -10392,7 +10745,10 @@
 
                                 // Return
                                 return data
-                            }
+                            },
+
+                            // Writable
+                            writable: LDK.true
                         });
 
                     /* Event Target Data */
@@ -11550,7 +11906,6 @@
                                         return alpha
                                     })() : (metadata in data ? data[metadata] : LDK.null);
 
-                                    console.log(data);
                                     /* Logic
                                             [if:else statement]
                                     */
@@ -11676,8 +12031,11 @@
                                         LapysJS.error(["'getEvent'", "'EventTarget'"], 'argument', 'Too many arguments')
                                 }
 
+                                // Update > Data
+                                data = LDK.isObject(data) ? LDK.namedObject('NamedEventMap', data) : (LDK.isArray(data) ? LDK.namedArray.apply(LDK, LDK.arrayProto.addElementToFront.apply(['NamedEventList'], data)) : data);
+
                                 // Return
-                                data = LDK.isObject(data) ? LDK.namedObject('NamedEventMap', data) : (LDK.isArray(data) ? LDK.namedArray.apply(LDK, LDK.arrayProto.addElementToFront.apply(['NamedEventList'], data)) : data)
+                                return data
                             }
                         });
 
@@ -11735,7 +12093,7 @@
                                     // Get Nodes
                                     function getNodes() {
                                         // Initialization > (Data, Metadata, Alpha, Beta)
-                                        let data = [], metadata = [], alpha = [], beta = LDK.isWindow(that) ? LDK.docQueSelAll('*') : LDK.eleProto.querySelectorAll.call(that, '*');
+                                        let data = [], metadata = [], alpha = [], beta = LDK.isWindow(that) ? LDK.docQueSelAll('*') : (LDK.isElement(that) ? LDK.eleProto.querySelectorAll.call(that, '*') : (LDK.isDocument(that) ? LDK.docProto.querySelectorAll.call(that, '*') : (LDK.isNativeFunction(that.querySelectorAll) ? that.querySelectorAll('*') : [])));
 
                                         // Update > Data
                                         data.push(LDK.arrayFrom(that.childNodes));
@@ -11815,6 +12173,9 @@
                                 let args = [...arguments],
                                     that = this;
 
+                                // LapysJS > Error
+                                (LDK.isDocumentLike(that) || LDK.isWindow(that)) && LapysJS.error(["'onNodeAttributeAdded'", "'" + that.constructor.name + "'"], 'argument', "'this' must not be a document-like or window object");
+
                                 /* Loop
                                         Index Arguments.
 
@@ -11884,6 +12245,9 @@
                                 // Initialization > (Arguments, Target)
                                 let args = [...arguments],
                                     that = this;
+
+                                // LapysJS > Error
+                                (LDK.isDocumentLike(that) || LDK.isWindow(that)) && LapysJS.error(["'onNodeAttributeChange'", "'" + that.constructor.name + "'"], 'argument', "'this' must not be a document-like or window object");
 
                                 /* Loop
                                         Index Arguments.
@@ -11982,6 +12346,9 @@
                                 let args = [...arguments],
                                     that = this;
 
+                                // LapysJS > Error
+                                (LDK.isDocumentLike(that) || LDK.isWindow(that)) && LapysJS.error(["'onNodeAttributeCountChange'", "'" + that.constructor.name + "'"], 'argument', "'this' must not be a document-like or window object");
+
                                 /* Loop
                                         Index Arguments.
 
@@ -12052,6 +12419,9 @@
                                 let args = [...arguments],
                                     that = this;
 
+                                // LapysJS > Error
+                                (LDK.isDocumentLike(that) || LDK.isWindow(that)) && LapysJS.error(["'onNodeAttributeRemoved'", "'" + that.constructor.name + "'"], 'argument', "'this' must not be a document-like or window object");
+
                                 /* Loop
                                         Index Arguments.
 
@@ -12114,13 +12484,544 @@
                             }
                         });
 
-                        // On Node Change --- CHECKPOINT ---
+                        // On Node Change
                         LDK.objectDefProp(tmp.value, 'onNodeChange', {
                             // Value
                             value: function onNodeChange() {
                                 // Initialization > (Arguments, Target)
                                 let args = [...arguments],
                                     that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (let i = 0; i < args.length; i += 1)
+                                    LDK.isString(args[i]) && (args[i] = func(args[i]));
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                // Function
+                                    // Get Nodes
+                                    let getNodes = LDK.isElement(that) ?
+                                        function getNodes() { return that.outerHTML + getValues() } :
+                                        function getNodes() { return getValues() };
+
+                                    // Get Values
+                                    function getValues() {
+                                        // Initialization > (Data, Metadata)
+                                        let data = LDK.objectGetOwnPropDescs(that),
+                                            metadata = '';
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Metadata
+                                        */
+                                        for (let i in data)
+                                            metadata += (function() {
+                                                // Initialization > Metadata
+                                                let metadata = data[i];
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if ('get' in metadata)
+                                                    return LDK.getSourceCode(metadata.get);
+
+                                                else {
+                                                    // Initialization > Data
+                                                    let data = metadata.value;
+
+                                                    /* Logic
+                                                            [if:else if statement]
+                                                    */
+                                                    if (LDK.isFunction(data))
+                                                        // Return
+                                                        return LDK.getSourceCode(data);
+
+                                                    else if (LDK.isObject(data)) {
+                                                        // Initialization > (Alpha, Beta)
+                                                        let alpha = LDK.objectGetOwnPropDescs(data),
+                                                            beta = '';
+
+                                                        /* Loop
+                                                                Index Alpha.
+
+                                                            > Update > Beta
+                                                        */
+                                                        for (let j in alpha)
+                                                            beta += "'" + j + "': " + LDK.string(alpha[j]) + '; ';
+
+                                                        // Return
+                                                        return beta.trim()
+                                                    }
+
+                                                    // Return
+                                                    return LDK.string(data)
+                                                }
+                                            })();
+
+                                        // Return
+                                        return metadata
+                                    }
+
+                                    // Parse
+                                    function parse() {
+                                        /* Loop
+                                                Index Arguments.
+
+                                            > [Function]
+                                        */
+                                        for (let i of args)
+                                            i.call(that)
+                                    }
+
+                                // Initialization > Information
+                                let info = getNodes().length;
+
+                                // Function > Watch
+                                (function watch() {
+                                    // Initialization > Information
+                                    let $info = getNodes().length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (info != $info) {
+                                        // Parse
+                                        parse();
+
+                                        // Update > Information
+                                        info = $info
+                                    }
+
+                                    // Update > Information
+                                    (info == $info) || (info = $info);
+
+                                    // Request Animation Frame > Watch
+                                    tmp.functions.requestAnimationFrame(watch)
+                                })()
+                            }
+                        });
+
+                        // On Node Count Change
+                        LDK.objectDefProp(tmp.value, 'onNodeCountChange', {
+                            // Value
+                            value: function onNodeCountChange() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (let i = 0; i < args.length; i += 1)
+                                    LDK.isString(args[i]) && (args[i] = func(args[i]));
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                // Function
+                                    // Get Nodes
+                                    function getNodes() {
+                                        // Initialization > (Data, Metadata, Alpha, Beta)
+                                        let data = [], metadata = [], alpha = [], beta = LDK.isWindow(that) ? LDK.docQueSelAll('*') : (LDK.isElement(that) ? LDK.eleProto.querySelectorAll.call(that, '*') : (LDK.isDocument(that) ? LDK.docProto.querySelectorAll.call(that, '*') : (LDK.isNativeFunction(that.querySelectorAll) ? that.querySelectorAll('*') : [])));
+
+                                        // Update > Data
+                                        data.push(LDK.arrayFrom(that.childNodes));
+
+                                        /* Loop
+                                                Index Beta.
+
+                                            > Update > Data
+                                        */
+                                        for (let i of beta)
+                                            data.push(LDK.arrayFrom(i.childNodes));
+
+                                        /* Loop
+                                                [while statement]
+
+                                            > Update > Data
+                                        */
+                                        while (data.filter(a=>{return LDK.isArray(a)}).length)
+                                            data = LDK.arrayProto.concat.apply(metadata, data);
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Alpha
+                                        */
+                                        for (let i of data)
+                                            (alpha.indexOf(i) > -1) || alpha.push(i);
+
+                                        // Return
+                                        return alpha
+                                    }
+
+                                    // Parse
+                                    function parse() {
+                                        /* Loop
+                                                Index Arguments.
+
+                                            > [Function]
+                                        */
+                                        for (let i of args)
+                                            i.call(that)
+                                    }
+
+                                // Initialization > Count
+                                let count = getNodes().length;
+
+                                // Function > Watch
+                                (function watch() {
+                                    // Initialization > Count
+                                    let $count = getNodes().length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (count != $count) {
+                                        // Parse
+                                        parse();
+
+                                        // Update > Count
+                                        count = $count
+                                    }
+
+                                    // Update > Count
+                                    (count == $count) || (count = $count);
+
+                                    // Request Animation Frame > Watch
+                                    tmp.functions.requestAnimationFrame(watch)
+                                })()
+                            }
+                        });
+
+                        // On Node Element Added
+                        LDK.objectDefProp(tmp.value, 'onNodeElementAdded', {
+                            // Value
+                            value: function onNodeElementAdded() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (let i = 0; i < args.length; i += 1)
+                                    LDK.isString(args[i]) && (args[i] = func(args[i]));
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                // Function
+                                    // Get Nodes
+                                    function getNodes() {
+                                        // Initialization > (Data, Metadata, Alpha, Beta)
+                                        let data = [], metadata = [], alpha = [], beta = LDK.isWindow(that) ? LDK.docQueSelAll('*') : (LDK.isElement(that) ? LDK.eleProto.querySelectorAll.call(that, '*') : (LDK.isDocument(that) ? LDK.docProto.querySelectorAll.call(that, '*') : (LDK.isNativeFunction(that.querySelectorAll) ? that.querySelectorAll('*') : [])));
+
+                                        // Update > Data
+                                        data.push(LDK.arrayFrom(that.children));
+
+                                        /* Loop
+                                                Index Beta.
+
+                                            > Update > Data
+                                        */
+                                        for (let i of beta)
+                                            data.push(LDK.arrayFrom(i.children));
+
+                                        /* Loop
+                                                [while statement]
+
+                                            > Update > Data
+                                        */
+                                        while (data.filter(a=>{return LDK.isArray(a)}).length)
+                                            data = LDK.arrayProto.concat.apply(metadata, data);
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Alpha
+                                        */
+                                        for (let i of data)
+                                            (alpha.indexOf(i) > -1) || alpha.push(i);
+
+                                        // Return
+                                        return alpha
+                                    }
+
+                                    // Parse
+                                    function parse() {
+                                        /* Loop
+                                                Index Arguments.
+
+                                            > [Function]
+                                        */
+                                        for (let i of args)
+                                            i.call(that)
+                                    }
+
+                                // Initialization > Count
+                                let count = getNodes().length;
+
+                                // Function > Watch
+                                (function watch() {
+                                    // Initialization > Count
+                                    let $count = getNodes().length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (count < $count) {
+                                        // Parse
+                                        parse();
+
+                                        // Update > Count
+                                        count = $count
+                                    }
+
+                                    // Update > Count
+                                    (count == $count) || (count = $count);
+
+                                    // Request Animation Frame > Watch
+                                    tmp.functions.requestAnimationFrame(watch)
+                                })()
+                            }
+                        });
+
+                        // On Node Element Count Change
+                        LDK.objectDefProp(tmp.value, 'onNodeElementCountChange', {
+                            // Value
+                            value: function onNodeElementCountChange() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (let i = 0; i < args.length; i += 1)
+                                    LDK.isString(args[i]) && (args[i] = func(args[i]));
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                // Function
+                                    // Get Nodes
+                                    function getNodes() {
+                                        // Initialization > (Data, Metadata, Alpha, Beta)
+                                        let data = [], metadata = [], alpha = [], beta = LDK.isWindow(that) ? LDK.docQueSelAll('*') : (LDK.isElement(that) ? LDK.eleProto.querySelectorAll.call(that, '*') : (LDK.isDocument(that) ? LDK.docProto.querySelectorAll.call(that, '*') : (LDK.isNativeFunction(that.querySelectorAll) ? that.querySelectorAll('*') : [])));
+
+                                        // Update > Data
+                                        data.push(LDK.arrayFrom(that.children));
+
+                                        /* Loop
+                                                Index Beta.
+
+                                            > Update > Data
+                                        */
+                                        for (let i of beta)
+                                            data.push(LDK.arrayFrom(i.children));
+
+                                        /* Loop
+                                                [while statement]
+
+                                            > Update > Data
+                                        */
+                                        while (data.filter(a=>{return LDK.isArray(a)}).length)
+                                            data = LDK.arrayProto.concat.apply(metadata, data);
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Alpha
+                                        */
+                                        for (let i of data)
+                                            (alpha.indexOf(i) > -1) || alpha.push(i);
+
+                                        // Return
+                                        return alpha
+                                    }
+
+                                    // Parse
+                                    function parse() {
+                                        /* Loop
+                                                Index Arguments.
+
+                                            > [Function]
+                                        */
+                                        for (let i of args)
+                                            i.call(that)
+                                    }
+
+                                // Initialization > Count
+                                let count = getNodes().length;
+
+                                // Function > Watch
+                                (function watch() {
+                                    // Initialization > Count
+                                    let $count = getNodes().length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (count != $count) {
+                                        // Parse
+                                        parse();
+
+                                        // Update > Count
+                                        count = $count
+                                    }
+
+                                    // Update > Count
+                                    (count == $count) || (count = $count);
+
+                                    // Request Animation Frame > Watch
+                                    tmp.functions.requestAnimationFrame(watch)
+                                })()
+                            }
+                        });
+
+                        // On Node Element Removed
+                        LDK.objectDefProp(tmp.value, 'onNodeElementRemoved', {
+                            // Value
+                            value: function onNodeElementRemoved() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (let i = 0; i < args.length; i += 1)
+                                    LDK.isString(args[i]) && (args[i] = func(args[i]));
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                // Function
+                                    // Get Nodes
+                                    function getNodes() {
+                                        // Initialization > (Data, Metadata, Alpha, Beta)
+                                        let data = [], metadata = [], alpha = [], beta = LDK.isWindow(that) ? LDK.docQueSelAll('*') : (LDK.isElement(that) ? LDK.eleProto.querySelectorAll.call(that, '*') : (LDK.isDocument(that) ? LDK.docProto.querySelectorAll.call(that, '*') : (LDK.isNativeFunction(that.querySelectorAll) ? that.querySelectorAll('*') : [])));
+
+                                        // Update > Data
+                                        data.push(LDK.arrayFrom(that.children));
+
+                                        /* Loop
+                                                Index Beta.
+
+                                            > Update > Data
+                                        */
+                                        for (let i of beta)
+                                            data.push(LDK.arrayFrom(i.children));
+
+                                        /* Loop
+                                                [while statement]
+
+                                            > Update > Data
+                                        */
+                                        while (data.filter(a=>{return LDK.isArray(a)}).length)
+                                            data = LDK.arrayProto.concat.apply(metadata, data);
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Alpha
+                                        */
+                                        for (let i of data)
+                                            (alpha.indexOf(i) > -1) || alpha.push(i);
+
+                                        // Return
+                                        return alpha
+                                    }
+
+                                    // Parse
+                                    function parse() {
+                                        /* Loop
+                                                Index Arguments.
+
+                                            > [Function]
+                                        */
+                                        for (let i of args)
+                                            i.call(that)
+                                    }
+
+                                // Initialization > Count
+                                let count = getNodes().length;
+
+                                // Function > Watch
+                                (function watch() {
+                                    // Initialization > Count
+                                    let $count = getNodes().length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (count > $count) {
+                                        // Parse
+                                        parse();
+
+                                        // Update > Count
+                                        count = $count
+                                    }
+
+                                    // Update > Count
+                                    (count == $count) || (count = $count);
+
+                                    // Request Animation Frame > Watch
+                                    tmp.functions.requestAnimationFrame(watch)
+                                })()
+                            }
+                        });
+
+                        // On Node HTML Change
+                        LDK.objectDefProp(tmp.value, 'onNodeHTMLChange', {
+                            // Value
+                            value: function onNodeHTMLChange() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                // LapysJS > Error
+                                (LDK.isDocumentLike(that) || LDK.isWindow(that)) && LapysJS.error(["'onNodeHTMLChange'", "'" + that.constructor.name + "'"], 'argument', "'this' must not be a document-like or window object");
 
                                 /* Loop
                                         Index Arguments.
@@ -12167,7 +13068,7 @@
                                     /* Logic
                                             [if statement]
                                     */
-                                    if (info > $info) {
+                                    if (info != $info) {
                                         // Parse
                                         parse();
 
@@ -12177,6 +13078,229 @@
 
                                     // Update > Information
                                     (info == $info) || (info = $info);
+
+                                    // Request Animation Frame > Watch
+                                    tmp.functions.requestAnimationFrame(watch)
+                                })()
+                            }
+                        });
+
+                        // On Node Property Change
+                        LDK.objectDefProp(tmp.value, 'onNodePropChange', {
+                            // Value
+                            value: function onNodePropChange() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (let i = 0; i < args.length; i += 1)
+                                    LDK.isString(args[i]) && (args[i] = func(args[i]));
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                // Function
+                                    // Get Nodes
+                                    function getNodes() {
+                                        // Initialization > (Data, Metadata)
+                                        let data = LDK.objectGetOwnPropDescs(that),
+                                            metadata = '';
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Metadata
+                                        */
+                                        for (let i in data)
+                                            metadata += (function() {
+                                                // Initialization > Metadata
+                                                let metadata = data[i];
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if ('get' in metadata)
+                                                    return LDK.getSourceCode(metadata.get);
+
+                                                else {
+                                                    // Initialization > Data
+                                                    let data = metadata.value;
+
+                                                    /* Logic
+                                                            [if:else if statement]
+                                                    */
+                                                    if (LDK.isFunction(data))
+                                                        // Return
+                                                        return LDK.getSourceCode(data);
+
+                                                    else if (LDK.isObject(data)) {
+                                                        // Initialization > (Alpha, Beta)
+                                                        let alpha = LDK.objectGetOwnPropDescs(data),
+                                                            beta = '';
+
+                                                        /* Loop
+                                                                Index Alpha.
+
+                                                            > Update > Beta
+                                                        */
+                                                        for (let j in alpha)
+                                                            beta += "'" + j + "': " + LDK.string(alpha[j]) + '; ';
+
+                                                        // Return
+                                                        return beta.trim()
+                                                    }
+
+                                                    // Return
+                                                    return LDK.string(data)
+                                                }
+                                            })();
+
+                                        // Return
+                                        return metadata
+                                    }
+
+                                    // Parse
+                                    function parse() {
+                                        /* Loop
+                                                Index Arguments.
+
+                                            > [Function]
+                                        */
+                                        for (let i of args)
+                                            i.call(that)
+                                    }
+
+                                // Initialization > Information
+                                let info = getNodes().length;
+
+                                // Function > Watch
+                                (function watch() {
+                                    // Initialization > Information
+                                    let $info = getNodes().length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (info != $info) {
+                                        // Parse
+                                        parse();
+
+                                        // Update > Information
+                                        info = $info
+                                    }
+
+                                    // Update > Information
+                                    (info == $info) || (info = $info);
+
+                                    // Request Animation Frame > Watch
+                                    tmp.functions.requestAnimationFrame(watch)
+                                })()
+                            }
+                        });
+
+                        // On Node Removed
+                        LDK.objectDefProp(tmp.value, 'onNodeRemoved', {
+                            // Value
+                            value: function onNodeRemoved() {
+                                // Initialization > (Arguments, Target)
+                                let args = [...arguments],
+                                    that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (let i = 0; i < args.length; i += 1)
+                                    LDK.isString(args[i]) && (args[i] = func(args[i]));
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                // Function
+                                    // Get Nodes
+                                    function getNodes() {
+                                        // Initialization > (Data, Metadata, Alpha, Beta)
+                                        let data = [], metadata = [], alpha = [], beta = LDK.isWindow(that) ? LDK.docQueSelAll('*') : (LDK.isElement(that) ? LDK.eleProto.querySelectorAll.call(that, '*') : (LDK.isDocument(that) ? LDK.docProto.querySelectorAll.call(that, '*') : (LDK.isNativeFunction(that.querySelectorAll) ? that.querySelectorAll('*') : [])));
+
+                                        // Update > Data
+                                        data.push(LDK.arrayFrom(that.childNodes));
+
+                                        /* Loop
+                                                Index Beta.
+
+                                            > Update > Data
+                                        */
+                                        for (let i of beta)
+                                            data.push(LDK.arrayFrom(i.childNodes));
+
+                                        /* Loop
+                                                [while statement]
+
+                                            > Update > Data
+                                        */
+                                        while (data.filter(a=>{return LDK.isArray(a)}).length)
+                                            data = LDK.arrayProto.concat.apply(metadata, data);
+
+                                        /* Loop
+                                                Index Data.
+
+                                            > Update > Alpha
+                                        */
+                                        for (let i of data)
+                                            (alpha.indexOf(i) > -1) || alpha.push(i);
+
+                                        // Return
+                                        return alpha
+                                    }
+
+                                    // Parse
+                                    function parse() {
+                                        /* Loop
+                                                Index Arguments.
+
+                                            > [Function]
+                                        */
+                                        for (let i of args)
+                                            i.call(that)
+                                    }
+
+                                // Initialization > Count
+                                let count = getNodes().length;
+
+                                // Function > Watch
+                                (function watch() {
+                                    // Initialization > Count
+                                    let $count = getNodes().length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (count > $count) {
+                                        // Parse
+                                        parse();
+
+                                        // Update > Count
+                                        count = $count
+                                    }
+
+                                    // Update > Count
+                                    (count == $count) || (count = $count);
 
                                     // Request Animation Frame > Watch
                                     tmp.functions.requestAnimationFrame(watch)
@@ -12480,6 +13604,15 @@
 
                                 // Return
                                 return LDK.eventTargetProto.$$.call(this, data, 'tag-name', metadata)
+                            }
+                        });
+
+                        // Run Event --- CHECKPOINT ---
+                        LDK.objectDefProp(tmp.value, 'runEvent', {
+                            // Value
+                            value: function runEvent() {
+                                // Return
+                                return LapysJS.warn(tmp)
                             }
                         });
 
@@ -13439,9 +14572,118 @@
                             }
                         });
 
+                        // Set CSS --- CHECKPOINT ---
+                        LDK.objectDefProp(tmp.value, 'setCSS', {
+                            // Value
+                            value: function setCSS() {
+                                let args = [...arguments],
+                                    data = args[0],
+                                    metadata = args[1],
+                                    names = [],
+                                    values = [],
+                                    that = this,
+                                    $that = that.getAttribute('style'),
+                                    _that = that.style,
+                                    alpha = LDK.docCreateEle(that.tagName);
+
+                                if (args.length) {
+                                    function camel() {
+                                        let data = LDK.string(arguments[0]).replace(/ /g, '').replace(/[^a-zA-Z\-]/g, '');
+                                        return (data[0].toLowerCase() + data.replace(/\b\w/g, data => { return data.toUpperCase() }).slice(1)).replace(/\-[a-zA-Z]/g, data => { return data[1].toUpperCase() })
+                                    }
+
+                                    function hyphenated() {
+                                        let data = LDK.string(arguments[0]).replace(/ /g, '').replace(/[^a-zA-Z\-]/g, '');
+                                        return data.replace(/[a-z][A-Z]/g, data => { return data[0] + '-' + data[1].toLowerCase() }).toLowerCase()
+                                    }
+
+                                    function validateName() {
+                                        let data = arguments[0];
+
+                                        if (!LDK.isString(data))
+                                            return LDK.false;
+
+                                        if (!(camel(data) in _that) && !(hyphenated(data) in _that))
+                                            return LDK.false;
+
+                                        return LDK.true
+                                    }
+
+                                    function validateProperty() {
+                                        let data = arguments[0]
+                                    }
+
+                                    if (
+                                        (LDK.isString(data) && LDK.isString(metadata)) &&
+                                        args.length == 2
+                                    ) {}
+
+                                    else {
+                                        for (let i of args)
+                                            LDK.isArray(i) || LDK.isObject(i) || LapysJS.error(i, 'must', ['dual-array', 'CSS declaration object']);
+
+                                        let $args = args.filter(data => { return LDK.isArray(data) });
+
+                                        for (let i of $args)
+                                            (i.length == 2) || LapysJS(i, 'must', 'dual-array of two elements only')
+                                    }
+                                }
+
+                                else
+                                    LapysJS.error(["'setCSS'", "'Element'"], 'argument', [1, 0]);
+
+                                return that
+                            }
+                        });
+
                     /* Node Data */
                         // Update > Temporary Data > Value
                         tmp.value = LDK.nodeProto;
+
+                        // Descendant Index
+                        LDK.objectDefProp(tmp.value, 'descendantIndex', {
+                            // Get
+                            get: function descendantIndex() {
+                                // Initialization > (Target, Data)
+                                let that = this,
+                                    data = LDK.objectGetOwnPropDesc(LDK.nodeProto, 'parent').get.call(that);
+
+                                // Return
+                                return data ? LDK.arrayFrom(data.childNodes).indexOf(that) : -1
+                            }
+                        });
+
+                        // Next Siblings
+                        LDK.objectDefProp(tmp.value, 'nextSiblings', {
+                            // Get
+                            get: function nextSiblings() {
+                                // Initialization > (Target, Data, Metadata)
+                                let that = this,
+                                    data = LDK.objectGetOwnPropDesc(LDK.nodeProto, 'parent').get.call(that),
+                                    metadata = LDK.namedArray('HTMLCollection');
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (data) {
+                                    // Initialization > Alpha
+                                    let alpha = LDK.arrayFrom(data.childNodes);
+
+                                    // Update
+                                        // Alpha
+                                        alpha = alpha.slice(alpha.indexOf(that) + 1);
+
+                                        // Metadata
+                                        LDK.arrayProto.push.apply(metadata, alpha);
+
+                                    // Return
+                                    return metadata
+                                }
+
+                                // Return
+                                return metadata
+                            }
+                        });
 
                         // Parent
                         LDK.objectDefProp(tmp.value, 'parent', {
@@ -13453,6 +14695,38 @@
                         LDK.objectDefProp(tmp.value, 'parentPath', {
                             // Get
                             get: function parentPath() {let a=this,b=a=>{return a.parentElement||a.parentNode||a.parent},c=[],d=this;try{while(b(a)&&b(a)!=window){c.push(a);a=b(a)}return LDK.namedArray.apply(LDK,LDK.arrayProto.addElementToFront.apply(['NodeList'],document.contains(d)?c.concat(document,window):c)).removeDuplicatedElements()}catch(e){}return LDK.null}
+                        });
+
+                        // Previous Siblings
+                        LDK.objectDefProp(tmp.value, 'previousSiblings', {
+                            // Get
+                            get: function previousSiblings() {
+                                // Initialization > (Target, Data, Metadata)
+                                let that = this,
+                                    data = LDK.objectGetOwnPropDesc(LDK.nodeProto, 'parent').get.call(that),
+                                    metadata = LDK.namedArray('HTMLCollection');
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (data) {
+                                    // Initialization > Alpha
+                                    let alpha = LDK.arrayFrom(data.childNodes);
+
+                                    // Update
+                                        // Alpha
+                                        alpha = alpha.slice(0, alpha.indexOf(that));
+
+                                        // Metadata
+                                        LDK.arrayProto.push.apply(metadata, alpha);
+
+                                    // Return
+                                    return metadata
+                                }
+
+                                // Return
+                                return metadata
+                            }
                         });
 
                     /* Number Data */
@@ -14375,6 +15649,289 @@
                             writable: LDK.true
                         });
 
+                        // Depth
+                        LDK.objectDefProp(tmp.value, 'depth', {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function depth() {
+                                // Initialization > Target
+                                let that = this,
+                                    $that = that.constructor;
+
+                                /* Logic
+                                        [if:else if:else statement]
+
+                                        --- NOTE ---
+                                            #lapys: On the off-chance that the
+                                                `this` operator is non-constructible, we don`t
+                                                want to miss it.
+                                */
+                                if (LDK.isNonConstructible(that))
+                                    // Return
+                                    return 0;
+
+                                else if (LDK.isArrayLike(that)) {
+                                    // Initialization > (Metadata, Alpha, Beta)
+                                    let metadata = 1,
+                                        alpha = [],
+                                        beta = LDK.arrayFrom(that);
+
+                                    /* Loop
+                                            [while statement]
+
+                                        > Update > (Metadata, Beta)
+                                    */
+                                    while (beta.filter(a=>{return LDK.isConstructible(a)?a.constructor==$that:a!==a}).length) {
+                                        metadata += 1;
+                                        beta = LDK.arrayProto.concat.apply(alpha, beta)
+                                    }
+
+                                    // Return
+                                    return metadata
+                                }
+
+                                else if (LDK.isObject(that)) {
+                                    /* Initialization > (...)
+                                            --- NOTE ---
+                                                #lapys:
+                                                    - Call Stack Size = Keep track of how many times we`ve used our recursive function: Search For Objects Within Object
+                                                    - Collective Search Index = Keep track of what object is being searched
+                                                    - Depth = Keep track of the depth of the object being searched
+                                                    - Property Descriptors = Best to index the Target using this value
+                                                    - Property Descriptors (prefixed with `$`) = For testing reasons...
+                                                    - Maximum Call Stack Size = The limit we place on our recursive function (which should not be the actual maximum call stack size)
+                                    */
+                                    let callStackSize = 0,
+                                        collectiveSearchIndex = [],
+                                        depth = [],
+                                        propertyDescriptors = LDK.objectGetOwnPropDescs(that),
+                                        $propertyDescriptors = LDK.objectValues(propertyDescriptors),
+                                        maximumCallStackSize = (function a(){try{return 1+a()}catch(b){return 1}})() / $propertyDescriptors.length,
+                                        searchIndex = [];
+
+                                    // Function
+                                        /* Index Object
+                                                --- NOTE ---
+                                                    #lapys: Unconventional but functionally efficient means of
+                                                        iterating through an object.
+                                        */
+                                        function indexObject() {
+                                            // Initialization > (Data, Metadata)
+                                            let data = arguments[0],
+                                                metadata = arguments[1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDK.isConstructible(data)) {
+                                                // Function > Parse
+                                                function parse() {
+                                                    // Initialization > Arguments
+                                                    let args = [...arguments];
+
+                                                    // Metadata
+                                                    args.length ? metadata.apply(data, args) : metadata.call(data)
+                                                }
+
+                                                /* Logic
+                                                        [if:else if:else statement]
+                                                */
+                                                if (LDK.isArrayLike(data)) {
+                                                    // Initialization > Data
+                                                    let $data = data.length;
+
+                                                    /* Loop
+                                                            Index Data.
+
+                                                        > Parse
+                                                    */
+                                                    for (let i = 0; i < $data; i += 1)
+                                                        parse(i, data[i])
+                                                }
+
+                                                else if (LDK.isObject(data))
+                                                    /* Loop
+                                                            Index Data.
+
+                                                        > Parse
+                                                    */
+                                                    for (let i in data)
+                                                        parse(i, data[i]);
+
+                                                else
+                                                    // Parse
+                                                    parse()
+                                            }
+                                        }
+
+                                        // Has Same Constructor With Object
+                                        function hasSameConstructorWithObject() {
+                                            /* Logic
+                                                    [if statement]
+
+                                                    --- NOTE ---
+                                                        #lapys: No need to return a falsy value,
+                                                            not returning anything does that already.
+
+                                                > Return
+                                            */
+                                            if (LDK.getConstructor(arguments[0]) == $that)
+                                                return LDK.true
+                                        }
+
+                                        /* Search For Objects Within Object
+                                                --- NOTE ---
+                                                    #lapys: The bulk of the recursive algorithm.
+                                        */
+                                        function searchForObjectsWithinObject() {
+                                            // Update > Call Stack Size
+                                            callStackSize += 1;
+
+                                            // Initialization > Index
+                                            let index = arguments[1];
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (callStackSize > maximumCallStackSize)
+                                                // Update > Depth
+                                                depth = tmp.object;
+
+                                            else {
+                                                /* Logic
+                                                        [if:else statement]
+
+                                                        --- NOTE ---
+                                                            #lapys: If the Search Index is populated,
+                                                                it means we`ve iterated through the first layer of our object.
+                                                */
+                                                if (searchIndex.length)
+                                                    // Index Object > Argument 0
+                                                    indexObject(arguments[0], function(key, value) {
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (hasSameConstructorWithObject(value)) {
+                                                            // Update > (Collective Search Index, Depth)
+                                                            collectiveSearchIndex[index] = value;
+                                                            index in depth ? depth[index] += 1 : depth[index] = 0;
+
+                                                            // Search For Objects Within Object
+                                                            searchForObjectsWithinObject(value, index)
+                                                        }
+
+                                                        else
+                                                            /* Update > Collective Search Index
+                                                                    --- NOTE ---
+                                                                        #lapys: Updated to be `undefined` so that
+                                                                            this item will not be searched again.
+                                                            */
+                                                            collectiveSearchIndex[index] = LDK.undefined
+                                                    });
+
+                                                else
+                                                    /* Loop
+                                                            [for:in statement]
+
+                                                            --- NOTE ---
+                                                                #lapys: The variable naming here is less ambiguous
+                                                                    than the rest of this script`s, I know...
+                                                    */
+                                                    for (let propertyDescriptorKey in propertyDescriptors) {
+                                                        // Initialization > Property Descriptor Value
+                                                        let propertyDescriptorValue = propertyDescriptors[propertyDescriptorKey];
+
+                                                        /* Logic
+                                                                [if statement]
+
+                                                                --- NOTE ---
+                                                                    #lapys: This function does not work
+                                                                        with `getters` or `setters`, nope.
+                                                        */
+                                                        if ('value' in propertyDescriptorValue)
+                                                            /* Logic
+                                                                    [if statement]
+
+                                                                > Update > (Depth, Search Index)
+                                                            */
+                                                            if (hasSameConstructorWithObject(propertyDescriptorValue.value)) {
+                                                                depth.push(1);
+                                                                searchIndex.push(propertyDescriptorValue.value)
+                                                            }
+                                                    }
+                                            }
+                                        }
+
+                                    /* Logic
+                                            If
+                                                the Target has a property whose value is set
+                                                to the Target itself,
+
+                                            else
+                                                index and search through Target using
+                                                the plethora of algorithms above.
+                                    */
+                                    if ((a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]='value'in a[i]?a[i].value:tmp.object;return a})($propertyDescriptors).filter(a=>{return a!==tmp.object}).indexOf(that) > -1)
+                                        // Return
+                                        return LDK.infinity;
+
+                                    else {
+                                        // Search For Objects Within Object
+                                        searchForObjectsWithinObject();
+
+                                        // Initialization > Search Index
+                                        let $searchIndex = searchIndex.length;
+
+                                        /* Loop
+                                                Iterate over Search Index.
+                                        */
+                                        for (let i = 0; i < $searchIndex; i += 1) {
+                                            // Update > Collective Search Index
+                                            collectiveSearchIndex.push([]);
+
+                                            // Search For Objects Within Object
+                                            searchForObjectsWithinObject(searchIndex[i], i)
+                                        }
+
+                                        /* Logic
+                                                If
+                                                    some limit has been exceeded in the algorithms
+                                                    above, then Depth would have this value
+                                                    and we would return Infinity.
+                                        */
+                                        if (depth === tmp.object)
+                                            // Return
+                                            return LDK.infinity;
+
+                                        else {
+                                            /* Update > Depth
+                                                    --- NOTE ---
+                                                        #lapys:
+                                                            - In this state Depth is a collection of
+                                                                the depths of each property of our objects.
+
+                                                            - We find the maximum of all these which should be our result.
+                                            */
+                                            depth = tmp.functions.max.apply(tmp.functions, depth);
+
+                                            /* Return
+                                                    --- NOTE ---
+                                                        #lapys: Of course, not everything goes as planned,
+                                                            so we are left with manually fixing edge cases.
+                                            */
+                                            return LDK.numberIsSafeInteger(depth) ? depth + 1 : 1
+                                        }
+                                    }
+                                }
+
+                                else
+                                    // Return
+                                    return 1
+                            }
+                        });
+
                         // Properties
                         LDK.objectDefProp(tmp.value, 'prop', {
                             // Value
@@ -14614,7 +16171,7 @@
                             writable: LDK.true
                         });
 
-                        // Watch --- CHECKPOINT ---
+                        // Watch
                         LDK.objectDefProp(tmp.value, 'watch', {
                             // Configurable
                             configurable: LDK.true,
@@ -14869,7 +16426,8 @@
                                             // Initialization > (Data, Metadata, Alpha)
                                             let data = arguments[0],
                                                 metadata = arguments[1],
-                                                alpha = LDK.objectGetOwnPropDesc(data, metadata);
+                                                alpha = LDK.objectGetOwnPropDesc(data, metadata) || {value: data[metadata]};
+
 
                                             /* Logic
                                                     [if:else statement]
@@ -14928,7 +16486,7 @@
                                                 */
                                                 if (prop != $prop) {
                                                     // Initialization > (Data, Metadata)
-                                                    let data = LDK.objectGetOwnPropDesc(that, i),
+                                                    let data = LDK.objectGetOwnPropDesc(that, i) || {value: that[i]},
                                                         metadata = LDK.namedObject('Property');
 
                                                     // Modification > Metadata > [Loop Iterator]
@@ -14966,19 +16524,25 @@
 
                         // Camel
                         LDK.objectDefProp(tmp.value, 'camel', {
-                            // Value
-                            value: function camel() {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function camel() {
                                 // Return
-                                return this[0].toLowerCase()+this.replace(/\b\w/g,a=>{return a.toUpperCase()}).slice(1)
+                                return LDK.stringProto.toLowerCase.call(this[0])+LDK.stringProto.replace.call(this,/\b\w/g,a=>{return LDK.stringProto.toUpperCase.call(a)}).slice(1)
                             }
                         });
 
                         // Capital
                         LDK.objectDefProp(tmp.value, 'capital', {
-                            // Value
-                            value: function capital() {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function capital() {
                                 // Return
-                                return this.replace(/\b\w/g,a=>{return a.toUpperCase()})
+                                return LDK.stringProto.replace.call(this,/\b\w/g,a=>{return LDK.stringProto.toUpperCase.call(a)})
                             }
                         });
 
@@ -15198,8 +16762,11 @@
 
                         // Lower
                         LDK.objectDefProp(tmp.value, 'lower', {
-                            // Value
-                            value: function lower() {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function lower() {
                                 // Return
                                 return LDK.stringProto.toLowerCase.call(LDK.string(this))
                             }
@@ -15207,10 +16774,13 @@
 
                         // Pascal
                         LDK.objectDefProp(tmp.value, 'pascal', {
-                            // Value
-                            value: function pascal() {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function pascal() {
                                 // Return
-                                return this.replace(/\b\w/g,a=>{return a.toUpperCase()})
+                                return LDK.stringProto.replace.call(this,/\b\w/g,a=>{return LDK.stringProto.toUpperCase.call(a)})
                             }
                         });
 
@@ -15299,6 +16869,55 @@
                             value: function reverse() {
                                 // Return
                                 return this.split('').reverse().join('')
+                            }
+                        });
+
+                        // Swap Case
+                        LDK.objectDefProp(tmp.value, 'swapCase', {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function swapCase() {
+                                // Return
+                                return this.replace(/[a-zA-Z]/g,a=>{return a.match(/[a-z]/) ? LDK.stringProto.toUpperCase.call(a) : LDK.stringProto.toLowerCase.call(a)})
+                            }
+                        });
+
+                        // Swap Character
+                        LDK.objectDefProp(tmp.value, 'swapChar', {
+                            // Value
+                            value: function swapChar() {
+                                // Initialization > (Arguments, Target, Data)
+                                let args = [...arguments].filter(data => { return LDK.isNumber(data) }),
+                                    that = this,
+                                    data = that.split(''),
+                                    $data = [...data];
+
+                                /* Loop
+                                        Index Arguments.
+                                */
+                                for (let i = 0; i < args.length; i += 1) {
+                                    // Initialization > Metadata
+                                    let metadata = args[i];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (metadata in data && (+i + 1) in args) {
+                                        // Initialization > (Alpha, Beta)
+                                        let alpha = data[metadata],
+                                            beta = that[args[+i + 1]];
+
+                                        // Update > Data
+                                        $data[metadata] = beta;
+                                        $data[args[+i + 1]] = alpha;
+                                        data = [...$data]
+                                    }
+                                }
+
+                                // Return
+                                return $data.join('')
                             }
                         });
 
@@ -15430,8 +17049,11 @@
 
                         // Upper
                         LDK.objectDefProp(tmp.value, 'upper', {
-                            // Value
-                            value: function upper() {
+                            // Configurable
+                            configurable: LDK.true,
+
+                            // Get
+                            get: function upper() {
                                 // Return
                                 return LDK.stringProto.toUpperCase.call(LDK.string(this))
                             }
@@ -15457,9 +17079,15 @@
                                 configurable: LDK.true,
 
                                 // Get
-                                get: function titleElement() {
+                                get: function getTitleElement() {
                                     // Return
                                     return LDK.docQueSel('title')
+                                },
+
+                                // Set
+                                set: function setTitleElement() {
+                                    // Return
+                                    return LDK.objectGetOwnPropDesc(LDK.docProto, 'title').set.call(document, LDK.string(arguments[0]))
                                 }
                             });
 
@@ -15641,7 +17269,7 @@
                     */
                     (function HTMLJavaScript() {
                         // (...)
-                        tmp.functions.addEventListener(window,'load',function(){let j=LDK.arrayFrom(LDK.docQueSelAll('[script'));for(let k of j)k.script.call(k)}),function a(){if(-1<LDK.constants.FEATURES.active.indexOf('html-javascript')){let j=LDK.arrayFrom(LDK.docQueSelAll('[script')),k=perm.scriptedNodesList;for(let l of k)l.element.hasAttribute('script')||k.removeElement(l);for(let l of j){let m=0,n=l.getAttribute('script');-1<(m=(o=>{o=[...o];for(let p=0;p<o.length;p+=1)o[p]=o[p].element;return o})(k).indexOf(l))?n!=k[m].script&&(k[m].script=n,l.script.call(l)):k.push({element:l,script:n})}}tmp.functions.requestAnimationFrame(a)}();
+                        tmp.functions.addEventListener(window,'load',function(){let j=LDK.arrayFrom(LDK.docQueSelAll('[script'));for(let k of j)k.script.call(k)}),function a(){if(-1<LDK.constants.FEATURES.active.indexOf('html-javascript')){let j=LDK.arrayFrom(LDK.docQueSelAll('[script')),k=perm.scriptedNodesList;for(let l of k)l.element.hasAttribute('script')||k.removeElement(l);for(let l of j){let m=0,n=l.getAttribute('script');-1<(m=(o=>{o=[...o];for(let p=0;p<o.length;p+=1)o[p]=o[p].element;return o})(k).indexOf(l))?n!=k[m].script&&(k[m].script=n,(l.script||LDK.func()).call(l)):k.push({element:l,script:n})}}tmp.functions.requestAnimationFrame(a)}();
                     })();
 
                 /* Return
