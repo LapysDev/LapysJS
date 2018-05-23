@@ -1588,6 +1588,15 @@
                                         return (function eval() { return data.apply(this, [...arguments]) })
                                     })(),
 
+                                    // Get Computed Style
+                                    getComputedStyle: (function() {
+                                        // Initialization > Data
+                                        let data = getComputedStyle;
+
+                                        // Return
+                                        return (function getComputedStyle() { return data.apply(window, [...arguments]) })
+                                    })(),
+
                                     // Group
                                     group: console.group,
 
@@ -2204,7 +2213,7 @@
                                                     css: {
                                                         // Value
                                                         value: function css() {
-                                                            // Initialization > (Arguments, Data)
+                                                            // Initialization > (Arguments, Data, Target)
                                                             let args = [...arguments],
                                                                 data = {
                                                                     // Indent
@@ -2219,7 +2228,7 @@
                                                                         // Return
                                                                         return LDK.getConstructor(metadata.previousSibling) == Text ? metadata.previousSibling.wholeText : '\r'
                                                                     })()
-                                                                };
+                                                                }, that = this;
 
                                                             /* Logic
                                                                     [if statement]
@@ -2363,7 +2372,7 @@
 
                                                                 else
                                                                     // LapysJS > Error
-                                                                    LapysJS.error('Invalid argument list provided.');
+                                                                    LapysJS.error(["'css'", "'" + that.constructor.name + "'"], 'argument', 'Invalid argument set given');
 
                                                                 // Modification > Data
                                                                     // Element
@@ -2560,7 +2569,7 @@
                                                     js: {
                                                         // Value
                                                         value: function javascript() {
-                                                            // Initialization > (Arguments, Data)
+                                                            // Initialization > (Arguments, Data, Target)
                                                             let args = [...arguments],
                                                                 data = {
                                                                     // Indent
@@ -2575,7 +2584,7 @@
                                                                         // Return
                                                                         return LDK.getConstructor(metadata.previousSibling) == Text ? metadata.previousSibling.wholeText : '\r'
                                                                     })()
-                                                                };
+                                                                }, that = this;
 
                                                             /* Logic
                                                                     [if statement]
@@ -2719,7 +2728,7 @@
 
                                                                 else
                                                                     // LapysJS > Error
-                                                                    LapysJS.error('Invalid argument list provided.');
+                                                                    LapysJS.error(["'js'", "'" + that.constructor.name + "'"], 'argument', 'Invalid argument set given');
 
                                                                 // Modification > Data
                                                                     // Element
@@ -5633,7 +5642,79 @@
                             }
                         });
 
-                        // Repeat
+                        /* Recur
+                                --- CHECKPOINT ---
+                                --- NOTE ---
+                                    #lapys: This function focuses on depth.
+                                        Returns [this] (value, key, level, parent, this) as parameters.
+                        */
+                        LDK.objectDefProp(tmp.value, 'recur', {
+                            // Value
+                            value: function recur() {
+                                // Initialization > (Arguments, Callback, Object, Mode, Target)
+                                let args = [...arguments],
+                                    $args = args.length,
+                                    callback = args[0],
+                                    object = args[1],
+                                    mode = $args == 3 ? args[2] : 'defer',
+                                    that = this;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (LDK.isConstructible(object)) {
+                                    // Update > Callback
+                                    LDK.isString(callback) && (callback = func(callback));
+
+                                    // LapysJS > Error
+                                    LDK.isFunction(callback) || LapysJS.error(callback, 'must', 'function');
+                                    (mode == 'async') || (mode == 'defer') || LapysJS.error(mode, 'only', ["'async'", "'defer'"]);
+
+                                    // Initialization > Object
+                                    let $object = object.depth;
+
+                                    // Function
+                                        // Main
+                                        function main() {
+                                            // Initialization > Arguments
+                                            let args = [...arguments];
+
+                                            // Callback
+                                            args.length ? callback.apply(that, args) : callback.call(that)
+                                        }
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if ($object == 1) {
+                                        /* Initialization > Main
+                                                --- NOTE ---
+                                                    #lapys: For caching purposes...
+                                        */
+                                        let $main = (function() { main(that, LDK.null, LDK.null, LDK.null, that) }),
+                                            _main = -1;
+
+                                        // Main
+                                        mode == 'async' ?
+                                            (function watch() { _main || $main(); _main += 1; (_main > 0) || tmp.functions.requestAnimationFrame(watch) })() :
+                                            $main()
+                                    }
+
+                                    else {}
+
+                                    // Return
+                                    return $object
+                                }
+
+                                // Return
+                                return 0
+                            }
+                        });
+
+                        /* Repeat
+                                --- NOTE ---
+                                    #lapys: This function focuses on length.
+                        */
                         LDK.objectDefProp(tmp.value, 'repeat', {
                             // Value
                             value: function repeat() {
@@ -7176,7 +7257,7 @@
                             // Get
                             get: function randomElement() {
                                 // Return
-                                return this[LDK.numberParseInt(Math.random() * this.length)]
+                                return this[LDK.numberParseInt(tmp.functions.random() * this.length)]
                             }
                         });
 
@@ -11697,6 +11778,12 @@
                             }
                         });
 
+                        // Delete Style --- CHECKPOINT ---
+                        LDK.objectDefProp(tmp.value, 'delStyle', {
+                            // Value
+                            value: function removeStyle() {}
+                        });
+
                         // Descendant Query Selector
                         LDK.objectDefProp(tmp.value, 'descendantQuerySelector', {
                             // Value
@@ -11796,6 +11883,18 @@
                                 // Return
                                 return that.firstElementChild || that.firstChild || data[0] || LDK.null
                             }
+                        });
+
+                        // Get CSS --- CHECKPOINT ---
+                        LDK.objectDefProp(tmp.value, 'getCSS', {
+                            // Value
+                            value: function getCSS() {}
+                        });
+
+                        // Get Style --- CHECKPOINT ---
+                        LDK.objectDefProp(tmp.value, 'getStyle', {
+                            // Value
+                            value: function getStyle() {}
                         });
 
                         // Get Event
@@ -12050,6 +12149,12 @@
                                 // Return
                                 return LapysJS.warn(tmp)
                             }
+                        });
+
+                        // Has Style --- CHECKPOINT ---
+                        LDK.objectDefProp(tmp.value, 'hasStyle', {
+                            // Value
+                            value: function hasStyle() {}
                         });
 
                         // Last Child
@@ -14572,67 +14677,550 @@
                             }
                         });
 
-                        // Set CSS --- CHECKPOINT ---
+                        /* Set CSS
+                                --- NOTE ---
+                                    #lapys:
+                                        - The reasons for the size of this method:
+                                            -- First attempt at recursively indexing an object
+                                            -- Validating CSS property names and values given
+                                            -- Checking property name and value match
+                                            -- Multiple approaches of calling this method (e.g.: objects, arrays, argument sets)
+                        */
                         LDK.objectDefProp(tmp.value, 'setCSS', {
                             // Value
                             value: function setCSS() {
+                                // Initialization > (Arguments, Names, Values, Style, Target)
                                 let args = [...arguments],
-                                    data = args[0],
-                                    metadata = args[1],
+                                    $args = args.length,
                                     names = [],
                                     values = [],
-                                    that = this,
-                                    $that = that.getAttribute('style'),
-                                    _that = that.style,
-                                    alpha = LDK.docCreateEle(that.tagName);
+                                    randomChar = LapysJS.perm.regexSet.randomize().slice(0, 2),
+                                    style = '',
+                                    that = this;
 
+                                /* Logic
+                                        [if statement]
+                                */
                                 if (args.length) {
-                                    function camel() {
-                                        let data = LDK.string(arguments[0]).replace(/ /g, '').replace(/[^a-zA-Z\-]/g, '');
-                                        return (data[0].toLowerCase() + data.replace(/\b\w/g, data => { return data.toUpperCase() }).slice(1)).replace(/\-[a-zA-Z]/g, data => { return data[1].toUpperCase() })
-                                    }
+                                    // Initialization > Target
+                                    let $that = that.style,
+                                        __that = data => { return data.replace(/;/g, randomChar[0]) },
+                                        _that = ((that.getAttribute('style') || '') + randomChar[1]).replace(/'[^']{0,}'/g, __that).replace(/"[^"]{0,}"/g, __that);
 
-                                    function hyphenated() {
-                                        let data = LDK.string(arguments[0]).replace(/ /g, '').replace(/[^a-zA-Z\-]/g, '');
-                                        return data.replace(/[a-z][A-Z]/g, data => { return data[0] + '-' + data[1].toLowerCase() }).toLowerCase()
-                                    }
+                                    // Function
+                                        // Get CSS
+                                        function getCSS() {
+                                            // Return
+                                            return LDK.isElement(arguments[1]) ?
+                                                tmp.functions.getComputedStyle(arguments[1]).getPropertyValue(LDK.string(arguments[0])) :
+                                                tmp.functions.getComputedStyle(that).getPropertyValue(LDK.string(arguments[0]))
+                                        }
 
-                                    function validateName() {
-                                        let data = arguments[0];
+                                        // Is Name-Value Array
+                                        function isNameValueArray() {
+                                            // Initialization > Data
+                                            let data = arguments[0];
 
-                                        if (!LDK.isString(data))
-                                            return LDK.false;
+                                            // Return
+                                            return isValidName(data[0]) && data.length == 2
+                                        }
 
-                                        if (!(camel(data) in _that) && !(hyphenated(data) in _that))
-                                            return LDK.false;
+                                        // Is Valid Name
+                                        function isValidName() {
+                                            // Initialization > Data
+                                            let data = arguments[0];
 
-                                        return LDK.true
-                                    }
+                                            /* Logic
+                                                    [if statement]
 
-                                    function validateProperty() {
-                                        let data = arguments[0]
-                                    }
+                                                > Return
+                                            */
+                                            if (!LDK.isString(data) || !(updateName(data, LDK.true) in $that))
+                                                return LDK.false;
 
+                                            // Return
+                                            return LDK.true
+                                        }
+
+                                        // Update Name
+                                        function updateName() {
+                                            // Initialization > Data
+                                            let data = arguments[0];
+
+                                            // Return
+                                            return (arguments[1] ? (function camel() {
+                                                // Initialization > Data
+                                                let data = LDK.string(arguments[0]).replace(/ /g, '').replace(/\-./g, data => { return data[1].toUpperCase() });
+
+                                                // Return
+                                                return data[0].toLowerCase() + data.replace(/\b\w/g, data => { return data.toUpperCase() }).slice(1)
+                                            })(data) : (function hyphenate() {
+                                                // Initialization > Data
+                                                let data = LDK.string(arguments[0]).replace(/ /g, '').replace(/\-/g, '');
+
+                                                // Update > Data
+                                                data = data.replace(/[A-Z]/g, data => { return '-' + data.toLowerCase() }).toLowerCase();
+
+                                                // Return
+                                                return data[0] == '-' ? data.slice(1) : data
+                                            })(data)).replace(/[^a-zA-Z\-]/g, '')
+                                        }
+
+                                        // Update Value
+                                        function updateValue() {
+                                            // Initialization > (Data, Metadata)
+                                            let data = arguments[0],
+                                                metadata = arguments[1];
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDK.isArray(data))
+                                                // Update > Data
+                                                data = data[LDK.numberParseInt(tmp.functions.random() * data.length)];
+
+                                            else if (LDK.isObject(data)) {
+                                                // Update > Data
+                                                data = [data, LDK.objectKeys(data), LDK.objectGetOwnPropDescs(data)];
+
+                                                /* Logic
+                                                        [if:else statement]
+
+                                                    > Update > Data
+                                                */
+                                                if (data[1].length)
+                                                    data = data[0][data[1][0]];
+
+                                                else {
+                                                    data = [data[0], data[2][LDK.objectKeys(data[2])[0]]];
+                                                    data = 'get' in data[1] ? data[1].get.call(data[0]) : data[1].value
+                                                }
+                                            }
+
+                                            // Initialization > Alpha
+                                            let alpha = LDK.isString(data) ?
+                                                (data.trimRightChar(/[a-z \n\t]/).endsWith('!') ? '!' + data.getAfterChar('!', LDK.true) : '') :
+                                                tmp.object;
+
+                                            // Update > Data
+                                            LDK.isString(data) && (data = data.getBeforeChar('!', LDK.true));
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDK.isSymbol(data)) {
+                                                // Update > Data
+                                                data = LDK.string(data).slice('Symbol('.length, -')'.length);
+
+                                                // Error Handling > Execution
+                                                try { eval('data = (' + data + ')') }
+                                                catch (error) {}
+                                            }
+
+                                            /* Logic
+                                                    [if statement]
+
+                                                > Update > Data
+                                            */
+                                            if (LDK.isFunction(data))
+                                                data = data.call(that, that);
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDK.isNumber(data, +data)) {
+                                                // Update > Metadata
+                                                metadata = updateName(metadata);
+
+                                                // Initialization > Alpha
+                                                let alpha = metadata.indexOf('-');
+
+                                                // Update > Alpha
+                                                alpha = alpha > 0 ? metadata.slice(0, alpha) : LDK.false;
+
+                                                // Initialization > Beta
+                                                let beta = alpha > 0 ? metadata.slice(alpha + 1) : LDK.false;
+
+                                                /* Logic
+                                                        [if:else if statement]
+
+                                                    > Update > Data
+                                                */
+
+                                                if (
+                                                    (alpha == 'animation' || alpha == 'transition') &&
+                                                    (beta == 'delay' || beta == 'duration')
+                                                )
+                                                    data += 's';
+
+                                                else if (
+                                                    metadata == 'background-position' || metadata == 'background-position-x' || metadata == 'background-position-y' || metadata == 'background-size' || metadata == 'block-size' || metadata == 'border-bottom-left-radius' || metadata == 'border-bottom-right-radius' || metadata == 'border-bottom-width' || metadata == 'border-image-outset' || metadata == 'border-left-width' || metadata == 'border-right-width' || metadata == 'border-top-left-radius' || metadata == 'border-top-right-radius' || metadata == 'border-top-width' || metadata == 'border-width' || metadata == 'bottom' ||
+                                                    metadata == 'column-rule-width' ||
+                                                    metadata == 'font-size' ||
+                                                    metadata == 'grid-column-gap' || metadata == 'grid-row-gap' ||
+                                                    metadata == 'height' ||
+                                                    metadata == 'inline-size' ||
+                                                    metadata == 'left' || metadata == 'line-height-step' ||
+                                                    metadata == 'margin' || metadata == 'margin-bottom' || metadata == 'margin-left' || metadata == 'margin-right' || metadata == 'margin-top' || metadata == 'max-block-size' || metadata == 'max-height' || metadata == 'max-inline-size' || metadata == 'max-width' || metadata == 'min-block-size' || metadata == 'min-height' || metadata == 'min-inline-size' || metadata == 'min-width' ||
+                                                    metadata == 'padding' || metadata == 'padding-bottom' || metadata == 'padding-left' || metadata == 'padding-right' || metadata == 'padding-top' || metadata == 'perspective' || metadata == 'perspective-origin' ||
+                                                    metadata == 'r' || metadata == 'rx' || metadata == 'ry' || metadata == 'right' ||
+                                                    metadata == 'shape-margin' || metadata == 'stroke-dash-offset' || metadata == 'stroke-width' ||
+                                                    metadata == 'text-indent' || metadata == 'top' ||
+                                                    metadata == 'x' ||
+                                                    metadata == 'y' ||
+                                                    metadata == 'width'
+                                                )
+                                                    data += 'px'
+                                            }
+
+                                            // Return
+                                            return alpha === tmp.object ? LDK.string(data) : LDK.string(data) + alpha
+                                        }
+
+                                    /* Logic
+                                            [if statement]
+                                    */
                                     if (
-                                        (LDK.isString(data) && LDK.isString(metadata)) &&
-                                        args.length == 2
-                                    ) {}
+                                        LDK.isString(args[0]) &&
+                                        $args == 2
+                                    ) {
+                                        // Update > Arguments
+                                        args[0] = [args[0], args[1]];
 
-                                    else {
-                                        for (let i of args)
-                                            LDK.isArray(i) || LDK.isObject(i) || LapysJS.error(i, 'must', ['dual-array', 'CSS declaration object']);
-
-                                        let $args = args.filter(data => { return LDK.isArray(data) });
-
-                                        for (let i of $args)
-                                            (i.length == 2) || LapysJS(i, 'must', 'dual-array of two elements only')
+                                        // Modification > Arguments > Length
+                                        args.length = 1
                                     }
+
+                                    /* Loop
+                                            Index Arguments.
+
+                                        > LapysJS > Error
+                                    */
+                                    for (let i of args)
+                                        isNameValueArray(i) || LDK.isObject(i) || LapysJS.error(["'setCSS'", "'HTMLElement'"], 'argument', 'Invalid argument set given');
+
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    for (let i of args)
+                                        /* Logic
+                                                If
+                                                    Update Name and Value arrays.
+
+                                                else
+                                                    Iterate through a roughly calculated depth of the
+                                                    expected object to generate syntax (which can be innumerable, unlike functions) to
+                                                    attain Name and Value values.
+
+                                                --- NOTE ---
+                                                    #lapys: This was my first attempt at recursively searching through an object.
+                                        */
+                                        if (isNameValueArray(i)) {
+                                            // Initialization > Data
+                                            let data = i[1];
+
+                                            /* Logic
+                                                    [if:else if statement]
+                                            */
+                                            if (LDK.isArray(data))
+                                                // Update > Data
+                                                data = data[tmp.functions.numberParseInt(tmp.functions.random() * data.length)];
+
+                                            else if (LDK.isObject(data)) {
+                                                // Update > Data
+                                                data = [data, LDK.objectKeys(data), LDK.objectGetOwnPropDescs(data)];
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (data[1].length)
+                                                    // Update > Data
+                                                    data = data[0][data[1][0]];
+
+                                                else {
+                                                    data = [data[0], data[2][LDK.objectKeys(data[2])[0]]];
+                                                    data = 'get' in data[1] ? data[1].get.call(data[0]) : data[1].value
+                                                }
+                                            }
+
+                                            // Update > (Names, Values)
+                                            names.push(i[0]);
+                                            values.push(data)
+                                        }
+
+                                        else {
+                                            // Initialization > Depth
+                                            let depth = i.depth;
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (depth && LDK.numberIsSafeInteger(depth)) {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (depth == 1)
+                                                    /* Loop
+                                                            [for:in statement]
+
+                                                        > Update > (Names, Values)
+                                                    */
+                                                    for (let j in i) {
+                                                        names.push(j);
+                                                        values.push(i[j])
+                                                    }
+
+                                                else {
+                                                    /* Initialization > (Code, Iterators)
+                                                            --- NOTE ---
+                                                                #lapys: Generate a specific number of iterators.
+                                                    */
+                                                    let code = '',
+                                                        iterators = (function(depth) {
+                                                            // Initialization > (Element, Index, Iterators (Counted))
+                                                            let element = tmp.element,
+                                                                index = 0,
+                                                                iterators = '',
+                                                                iteratorsCounted = 0;
+
+                                                            /* Loop
+                                                                    [while statement]
+                                                            */
+                                                            while (iteratorsCounted < depth && index < maximumCallStackSize) {
+                                                                // Error Handling
+                                                                try {
+                                                                    // Modification > Element > Inner HTML
+                                                                    element.innerHTML = '';
+                                                                    element.innerHTML = '&#' + index + ';';
+
+                                                                    // Initialization > Possible Iterator
+                                                                    let possibleIterator = element.innerHTML;
+
+                                                                    /* Logic
+                                                                            If
+                                                                                the parsed possible iterator is `i`,
+                                                                                do not add it to our list of iterators because
+                                                                                we have reserved `i` for other functions.
+
+                                                                        > Error
+                                                                    */
+                                                                    if (possibleIterator == 'i')
+                                                                        throw new LDK.err;
+
+                                                                    // Execution
+                                                                    tmp.functions.eval('(function(){var ' + possibleIterator + '})');
+
+                                                                    // Update > Iterators (Counted)
+                                                                    iterators += possibleIterator;
+                                                                    iteratorsCounted += 1
+                                                                } catch (error) {}
+
+                                                                // Update > Index
+                                                                index += 1
+                                                            }
+
+                                                            // Return
+                                                            return iterators
+                                                        })(depth);
+
+                                                    /* Update > (Code, Depth)
+                                                            --- NOTE ---
+                                                                #lapys: From here on, newlines can be added to Code
+                                                                    for legibility.
+                                                    */
+                                                    code += 'for(' + iterators[0] + ' in i)';
+                                                    depth -= 1;
+
+                                                    // Initialization > [Temporary Data]
+                                                    let k = '';
+
+                                                    /* Loop
+                                                            Iterate over Depth.
+                                                    */
+                                                    for (let j = 0; j < depth; j += 1) {
+                                                        // Initialization > Object
+                                                        let object = k = (j ? k + '[' + iterators[j] : 'i[' + iterators[j]) + ']';
+
+                                                        // Code
+                                                        code += 'if(LDK.isObject(' + object + ')){'+
+                                                            'for(let ' + iterators[j + 1] + ' in ' + object + '){'
+                                                    }
+
+                                                    // Update > (Iterators, Depth, [Temporary Data])
+                                                    iterators = 'i' + iterators;
+                                                    depth *= 2;
+                                                    k = 1;
+
+                                                    /* Initialization > (Code, [Temporary Data])
+                                                            --- NOTE ---
+                                                                #lapys: This is not convention but again, my first time doing
+                                                                    something like this in code.
+
+                                                                    Code`s second element is a store for a loop iterator while it`s first element
+                                                                    is it`s actual value for all practical purposes.
+                                                    */
+                                                    let $code = ['', -1], l = '';
+
+                                                    /* Loop
+                                                            Iterate over Depth.
+                                                    */
+                                                    for (let j = 0; j < depth; j += 1) {
+                                                        // Initialization > Code
+                                                        let _code = '';
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (j % 2) {
+                                                            // Initialization > Code
+                                                            let __code = iterators[k - 1] + '[' + iterators[k] + ']';
+
+                                                            // Update > (Code, [Temporary Data])
+                                                            _code += '}else{' +
+                                                                'names.push(' + iterators[k] + ');' +
+                                                                'values.push(' + (l = (l ? l + __code.slice(1) : __code)) + ')' +
+                                                            '}';
+                                                            k += 1
+                                                        }
+
+                                                        else
+                                                            // Update > Code
+                                                            _code += '\n}';
+
+                                                        // Update > Code
+                                                        code += _code;
+                                                        $code[0] += _code
+                                                    }
+
+                                                    // Update > Code
+                                                    $code[0] = $code[0].match(/else\{[^\}]{0,}\}/g);
+                                                    code = code.replace(/else\{[^\}]{0,}\}/g, data => {
+                                                        // Update > Code
+                                                        $code[1] += 1;
+
+                                                        // Return
+                                                        return $code[0][$code.length - $code[1] - 1]
+                                                    }).replace(/for\([^\)]{0,}\)\{( |\n|\t){0,}\}/g, data => {
+                                                        // Initialization > (Metadata)
+                                                        let metadata = data.slice(0, data.indexOf('\n'));
+                                                        metadata = metadata.slice(data.indexOf('let') + 'let'.length, data.indexOf('in')).trim();
+
+                                                        // Return
+                                                        return data.slice(0, data.indexOf('\n')) +
+                                                            '\nnames.push(updateName(' + iterators.slice(1, iterators.indexOf(metadata) + 1).replace(/./g, "$& + '-' + ").trimRightChar(/\+|\-|'| /) + ', LDK.true));' +
+                                                            '\nvalues.push(' + iterators[0] + iterators.slice(1, iterators.indexOf(metadata) + 1).replace(/./g, '[$&]') + ')' +
+                                                            data.slice(data.indexOf('\n'))
+                                                    });
+
+                                                    /* Update > (...)
+                                                            --- NOTE ---
+                                                                #lapys: Temporary data for the evaluation string.
+                                                    */
+                                                    tmp.tmp = [i, names, values, updateName];
+
+                                                    /* Execution
+                                                            --- NOTE ---
+                                                                #lapys: This really should not return an error.
+                                                    */
+                                                    tmp.functions.eval('var i = tmp.tmp[0], names = tmp.tmp[1], values = tmp.tmp[2], updateName = tmp.tmp[3];' + code)
+                                                }
+                                            }
+                                        }
+
+                                    // Modification > (Temporary Data > Element) > Inner HTML
+                                    tmp.element.innerHTML = '';
+
+                                    /* Initialization > Names
+                                            --- NOTE ---
+                                                #lapys: At this point,
+                                                    Names and Values should be of equal length, hopefully...
+                                    */
+                                    let $names = names.length;
+
+                                    /* Loop
+                                            Iterate over Names.
+                                    */
+                                    for (let i = 0; i < $names; i += 1) {
+                                        // Initialization > (Name, Value)
+                                        let name = names[i],
+                                            value = values[i];
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (isValidName(name)) {
+                                            // Update > (Name, Value)
+                                            name = [updateName(name), updateName(name, LDK.true)];
+                                            value = updateValue(value, name);
+
+                                            // Initialization > Modifier
+                                            let modifier = value.indexOf('!') > -1 ? ' !' + value.getAfterChar('!', LDK.true) : '';
+
+                                            // Update > Value
+                                            value = value.replace(modifier, '');
+
+                                            // Style > (Temporary Data > Element) > [Name]
+                                            tmp.element.style[name[1]] = value;
+
+                                            /* Logic
+                                                    If
+                                                        the style was added to temporary element,
+                                                        ergo a valid CSS value was used.
+
+                                                > Update > (Target, Style)
+                                            */
+                                            if (tmp.element.getAttribute('style').match(LDK.regex(name[0].replace(/\-/g, '\\-') + '( |\n|\t){0,}:'))) {
+                                                _that = _that.replace(LDK.regex(name[0].replace(/\-/g, '\\-') + '( |\n|\t){0,}:[^;' + randomChar[1] + ']{0,}(;' + '|' + randomChar[1] + ')'), '');
+                                                style += name[0] + ': ' + (getCSS(name[0], tmp.element) || tmp.element.style[name[1]]) + modifier + '; '
+                                            }
+                                        }
+
+                                        else
+                                            // LapysJS > Warn
+                                            LapysJS.warn(name, 'must', 'valid CSS property', ' and so has been ignored')
+                                    }
+
+                                    // Update > Style
+                                    style = [(_that.trimRightChar(/;|\n| /) + '; ' + style.trimRightChar(/;|\n| /)).trim().replace(LDK.regex(randomChar[0], 'g'), ';').reverse().replace(randomChar[1], '').reverse(), [], []];
+                                    style[0] = style[0].replace(/'[^']{0,}'/g, data => {
+                                        // Update > Style
+                                        style[1].push(data);
+
+                                        // Return
+                                        return randomChar[0]
+                                    }).replace(/"[^"]{0,}"/g, data => {
+                                        // Update > Style
+                                        style[2].push(data);
+
+                                        // Return
+                                        return randomChar[1]
+                                    }).replace(/  /g, ' ').replace(/  /g, ' ');
+
+                                    /* Loop
+                                            Index Style.
+
+                                        > Update > Style
+                                    */
+                                    for (let i of style[2])
+                                        style[0] = style[0].replace(randomChar[1], i);
+
+                                    /* Loop
+                                            Index Style.
+
+                                        > Update > Style
+                                    */
+                                    for (let i of style[1])
+                                        style[0] = style[0].replace(randomChar[0], i);
+
+                                    // Modification > Target > Style
+                                    that.setAttribute('style', style[0].trimLeftChar(/;|\n| /))
                                 }
 
-                                else
-                                    LapysJS.error(["'setCSS'", "'Element'"], 'argument', [1, 0]);
+                                // Modification > Target > Style
+                                that.getAttribute('style') || that.removeAttribute('style');
 
-                                return that
+                                // Return
+                                return that.getAttributeNode('style') || LDK.null
                             }
                         });
 
@@ -15300,9 +15888,57 @@
                         LDK.objectDefProp(tmp.value, 'clone', {
                             // Value
                             value: function clone() {
-                                // Initialization > (Target, Data, Metadata)
-                                let that = this,
-                                    data = LDK.namedObject(that.constructor.name),
+                                /* Initialization > (Target, Data, Metadata)
+                                        --- NOTE ---
+                                            #lapys: Coax the actual value of
+                                                the `this` reference and not just a constructed object.
+                                */
+                                let that = (function() {
+                                    // Initialization > (Target, Metadata)
+                                    let that = this,
+                                        metadata = LDK.objectProto;
+
+                                    /* Logic
+                                            [switch:case statement]
+
+                                            --- NOTE ---
+                                                #lapys: As many constructors as you can fit in here.
+                                                    We`ll come up with a better solution later.
+
+                                        > Update > Metadata
+                                    */
+                                    switch (that.constructor) {
+                                        case LDK.array: metadata = LDK.arrayProto; break;
+                                        case LDK.attr: metadata = LDK.attrProto; break;
+                                        case LDK.bool: metadata = LDK.boolProto; break;
+                                        case LDK.doc: metadata = LDK.docProto; break;
+                                        case LDK.docFrag: metadata = LDK.docFragProto; break;
+                                        case LDK.ele: metadata = LDK.eleProto; break;
+                                        case LDK.err: metadata = LDK.errProto; break;
+                                        case LDK.event: metadata = LDK.eventProto; break;
+                                        case LDK.eventTarget: metadata = LDK.eventTargetProto; break;
+                                        case LDK.func: metadata = LDK.funcProto; break;
+                                        case LDK.htmlAllCollection: metadata = LDK.htmlAllCollectionProto; break;
+                                        case LDK.htmlCollection: metadata = LDK.htmlCollectionProto; break;
+                                        case LDK.htmlDoc: metadata = LDK.htmlDocProto; break;
+                                        case LDK.htmlEle: metadata = LDK.htmlEleProto; break;
+                                        case LDK.htmlTableEle: metadata = LDK.htmlTableEleProto; break;
+                                        case LDK.htmlTextAreaEle: metadata = LDK.htmlTextAreaEleProto; break;
+                                        case LDK.node: metadata = LDK.nodeProto; break;
+                                        case LDK.nodeList: metadata = LDK.nodeListProto; break;
+                                        case LDK.number: metadata = LDK.numberProto; break;
+                                        case LDK.promise: metadata = LDK.promiseProto; break;
+                                        case LDK.refError: metadata = LDK.refErrorProto; break;
+                                        case LDK.regex: metadata = LDK.regexProto; break;
+                                        case LDK.string: metadata = LDK.stringProto; break;
+                                        case LDK.symbol: metadata = LDK.symbolProto; break;
+                                        case LDK.text: metadata = LDK.textProto; break;
+                                        case LDK.window: metadata = LDK.windowProto
+                                    }
+
+                                    // Return
+                                    return metadata.valueOf.call(that)
+                                }).call(this), data = LDK.namedObject(that.constructor.name),
                                     metadata = {};
 
                                 /* Logic
@@ -15352,8 +15988,8 @@
                                         }
 
                                     else if (LDK.isNumber(that))
-                                        // Update > Target
-                                        that = +LDK.string(that);
+                                        // Update > Data
+                                        data = +LDK.string(that);
 
                                     else if (LDK.isObject(that)) {
                                         // Initialization > (Alpha, Beta)
