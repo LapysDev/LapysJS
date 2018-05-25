@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html style='color: #333; font-size: 20px; font-weight: 400'>
+<html>
 <head>
     <!-- Document Metadata -->
         <!-- Character Encoding Set -->
@@ -12,12 +12,26 @@
 
 <body>
     <!-- Scripts -->
-        <!-- LapysJS Script (Names: Vincent/ Garreau/ Raoul/ Mycroft/ Anthea/ Neil/ Lucia/ Sixto/ Tsuna/ Mirza/ Awais/ Angeal/ Genesis/ Nereid/ Naiad/ Larissa/ Tristan/ Deimos) -->
+        <!-- LapysJS Script -->
         <script lapys-features=html-javascript src=../src/lapys.js type=text/javascript> </script>
 
     <!-- Main -->
     <main>
+        <!-- Header -->
         <h1 script='this.write("Debugging Room")'> </h1>
+
+        <hr>
+
+        <!-- Accordion -->
+        <div class=accordion>
+            <!-- Title -->
+            <div class=title data-id=title> Accordion Header </div>
+
+            <!-- Content -->
+            <div data-id=content>
+                <p> This is the accordion content. </p>
+            </div>
+        </div>
     </main>
 </body>
 </html>

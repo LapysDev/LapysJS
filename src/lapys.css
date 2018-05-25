@@ -63,9 +63,153 @@
     /* <body> */
     body {
         background-color: #FEFEFE;
+        box-decoration-break: slice;
+        break-after: auto;
+        break-before: auto;
+        break-inside: auto;
+        caption-sidetopclear: none;
         color: #333;
+        color-adjust: economy;
+        color-interpolation: sRGB;
+        color-interpolation-filters: linearRGB;
+        counter-increment: none;
+        counter-reset: none;
+        fill: #FFF;
+        fill-opacity: 1;
+        fill-rule: nonzero;
+        filter: none;
+        flood-color: #000;
+        flood-opacity: 1;
         font-family: Gadugi, 'PT Sans', 'Calibri Light', sans-serif;
-        font-size: 1em
+        font-feature-settings: inherit;
+        font-size: 1em;
+        font-language-override: normal;
+        font-kerning: auto;
+        font-size-adjust: none;
+        font-synthesis: weight style;
+        font-variant-alternates: normal;
+        font-variant-caps: normal;
+        font-variant-east-asian: normal;
+        font-variant-ligatures: normal;
+        font-variant-numeric: normal;
+        font-variant-position: normal;
+        hyphens: manual;
+        image-orientation: 0deg;
+        image-rendering: auto;
+        ime-mode: auto;
+        isolation: auto;
+        letter-spacing: normal;
+        lighting-color: #FFF;
+        list-style-image: none;
+        list-style-position: outside;
+        list-style-type: circle;
+        margin: 0;
+        marker-end: none;
+        marker-mid: none;
+        marker-offset: auto;
+        marker-start: none;
+        mask: none;
+        mask-type: luminance;
+        mix-blend-mode: normal;
+        order: 0;
+        orphans: 1;
+        pointer-events: all;
+        quotes: '“' '”' '‘' '’';
+        resize: none;
+        ruby-align: space-around;
+        ruby-position: over;
+        scroll-behavior: smooth;
+        scroll-snap-coordinate: none;
+        scroll-snap-points-x: none;
+        scroll-snap-points-y: none;
+        scroll-snap-type-x: none;
+        scroll-snap-type-y: none;
+        shape-rendering: auto;
+        stop-color: #FFFFFF;
+        stop-opacity: 1;
+        stroke-dasharray: none;
+        stroke-dashoffset: 0px;
+        stroke-linecap: butt;
+        stroke-linejoin: miter;
+        stroke-miterlimit: 4;
+        stroke-opacity: 1;
+        stroke-width: 1px;
+        tab-size: 8;
+        table-layout: auto;
+        text-align: start;
+        text-align-last: auto;
+        text-anchor: start;
+        text-combine-upright: none;
+        text-decoration-color: rgb(0, 0, 0);
+        text-decoration-line: none;
+        text-decoration-style: solid;
+        text-emphasis-color: rgb(0, 0, 0);
+        text-emphasis-position: over right;
+        text-emphasis-style: none;
+        text-orientation: mixed;
+        text-overflow: clip;
+        text-overflowcliptext-rendering: auto;
+        text-rendering: auto;
+        text-security: circle;
+        text-size-adjust: auto;
+        touch-action: auto;
+        transform: matrix(0, 0, 0, 0);
+        transition-delay: 0s;
+        transition-duration: 0s;
+        transition-property: all;
+        transition-timing-function: linear;
+        unicode-bidi: normal;
+        user-select: text;
+        vector-effect: inherit;
+        vertical-align: baseline;
+        widows: 1;
+        word-break: normal;
+        zoom: 1;
+        -moz-border-bottom-colors: none;
+        -moz-border-left-colors: none;
+        -moz-border-right-colors: none;
+        -moz-border-top-colors: none;
+        -moz-box-align: stretch;
+        -moz-box-direction: normal;
+        -moz-box-flex: 0;
+        -moz-box-ordinal-group: 1;
+        -moz-box-orient: horizontal;
+        -moz-box-pack: start;
+        -moz-column-count: auto;
+        -moz-column-fill: balance;
+        -moz-column-gap: 8px;
+        -moz-column-rule-color: rgba(0, 120, 255, 1);
+        -moz-column-rule-style: none;
+        -moz-column-rule-width: 0px;
+        -moz-column-width: auto;
+        -moz-float-edge: content-box;
+        -moz-force-broken-image-icon: 0;
+        -moz-image-region: auto;
+        -moz-orient: inline;
+        -moz-outline-radius-bottomleft: 0px;
+        -moz-outline-radius-bottomright: 0px;
+        -moz-outline-radius-topleft: 0px;
+        -moz-outline-radius-topright: 0px;
+        -moz-stack-sizing: stretch-to-fit;
+        -moz-tab-size: 8;
+        -moz-text-size-adjust: auto;
+        -moz-user-focus: none;
+        -moz-user-input: auto;
+        -moz-user-modify: read-only;
+        -moz-user-select: auto;
+        -moz-window-dragging: default;
+        -webkit-box-pack: center;
+        -webkit-text-combine: none;
+        -webkit-text-decorations-in-effect: none;
+        -webkit-text-emphasis-color: inherit;
+        -webkit-text-emphasis-position: over;
+        -webkit-text-emphasis-style: none;
+        -webkit-text-fill-color: inherit;
+        -webkit-locale: 'en', 'en-US', 'en-UK', 'en-NG';
+        -webkit-text-security: none;
+        -webkit-text-stroke-color: rgba(0, 0, 0, 1);
+        -webkit-text-stroke-width: 0px;
+        -webkit-writing-mode: horizontal-tb
     }
 
     /* <h1> */
@@ -171,3 +315,145 @@
         font-style: oblique;
         line-height: inherit
     }
+
+/* Assets */
+    /* Casing */
+        /* Capital */
+        .capital,
+        .title {
+            text-transform: capitalize
+        }
+
+        /* Lower */
+        .lower {
+            text-transform: lowercase
+        }
+
+        /* Upper */
+        .upper {
+            text-transform: uppercase
+        }
+
+    /* Components */
+        /* Accordion */
+            /* Title */
+            .accordion > [data-id=title] {
+                cursor: pointer;
+                font-size: 110%;
+                font-weight: 500
+            }
+
+    /* Restrictions */
+        /* Animation */
+        .no-animation { animation: none !important }
+
+        /* Border */
+        .no-border { border: 0 !important }
+            /* Radius */
+            .no-border-radius,
+            .square { border-radius: none !important }
+
+        /* Delay */
+        .no-delay {
+            animation-delay: 0s !important;
+            transition-delay: 0s !important
+        }
+
+        /* Duration */
+        .no-duration {
+            animation-duration: 0s !important;
+            transition-duration: 0s !important
+        }
+
+        /* Float */
+        .no-float { float: none !important }
+
+        /* Indent */
+        .no-indent { text-indent: 0 !important }
+
+        /* List */
+        .no-list { list-style: none !important }
+
+        /* Margin */
+        .no-margin { margin: 0 !important }
+            /* Bottom */
+            .no-margin-bottom { margin-bottom: 0 !important }
+
+            /* Left */
+            .no-margin-left { margin-left: 0 !important }
+
+            /* Right */
+            .no-margin-right { margin-right: 0 !important }
+
+            /* Top */
+            .no-margin-top { margin-top: 0 !important }
+
+        /* Overflow */
+        .no-overflow { overflow: hidden !important }
+
+        /* Padding */
+        .no-padding { padding: 0 !important }
+            /* Bottom */
+            .no-padding-bottom { padding-bottom: 0 !important }
+
+            /* Left */
+            .no-padding-left { padding-left: 0 !important }
+
+            /* Right */
+            .no-padding-right { padding-right: 0 !important }
+
+            /* Top */
+            .no-padding-top { padding-top: 0 !important }
+
+        /* Select */
+        .no-select { user-select: none !important }
+
+        /* Style */
+        .no-style { all: initial !important }
+
+        /* Text Decoration */
+        .no-text-decor { text-decoration: none !important }
+
+        /* Text Shadow */
+        .no-text-shadow { text-shadow: none !important }
+
+        /* Touch */
+        .no-touch {
+            pointer-events: none !important;
+            touch-action: none !important;
+            user-drag: none !important
+        }
+
+    /* Text */
+        /* Transparent Selection */
+            /* States > Selection */
+            .accordion > [data-id=title]::selection,
+            .no-select::selection,
+            .transp-select::selection,
+            .transparent-select::selection {
+                background-color: rgba(0, 0, 0, 0);
+                color: inherit;
+                text-shadow: none
+            }
+
+/* CSS Sets */
+    /* Z Index */
+        /* Level 0 */
+        .z-0 { z-index: 0 }
+
+        /* Level 1 */
+        .accordion > [data-id=content],
+        .z-1 { z-index: 1 }
+
+        /* Level 2 */
+        .accordion > [data-id=title],
+        .z-2 { z-index: 2 }
+
+        /* Level 3 */
+        .z-3 { z-index: 4 }
+
+        /* Level 4 */
+        .z-4 { z-index: 8 }
+
+        /* Level 5 */
+        .z-5 { z-index: 16 }
