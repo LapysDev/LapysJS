@@ -811,6 +811,55 @@
                                 return new Event('')
                             };
 
+                            // Function
+                            LDK.$func = function func() {
+                                /* Logic
+                                        [switch statement]
+
+                                    ((>> Error Handling) > Return | > Error)
+                                */
+                                switch (arguments.length) {
+                                    // 0
+                                    case 0:
+                                        return (function() {});
+                                        break;
+
+                                    // 1
+                                    case 1:
+                                        try { return eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? arguments[0].getBody() : LDK.string(arguments[0])) + '})') }
+                                        catch (error) { return eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? arguments[0].getBody() : LDK.string(arguments[0])) + '\n})') }
+                                        break;
+
+                                    // 2
+                                    case 2:
+                                        try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + ') {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '})') }
+                                        catch (error) {
+                                            try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + ') {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '\n})') }
+                                            catch (error) {
+                                                try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + '\n) {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '})') }
+                                                catch (error) { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + '\n) {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '\n})') }
+                                            }
+                                        }
+                                        break;
+
+                                    // 3
+                                    case 3:
+                                        try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + ') {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '})') }
+                                        catch (error) {
+                                            try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + ') {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '\n})') }
+                                            catch (error) {
+                                                try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + '\n) {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '})') }
+                                                catch (error) { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + '\n) {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '\n})') }
+                                            }
+                                        }
+                                        break;
+
+                                    // [Default]
+                                    default:
+                                        LapysJS.error('Invalid number of arguments given.')
+                                }
+                            };
+
                             // Get Constructor
                             LDK.getConstructor = function getConstructor() {
                                 // Return
@@ -884,11 +933,16 @@
 
                             // Get Source Code
                             LDK.getSourceCode = function getSourceCode() {
-                                // Initialization > Data
-                                let data = arguments[0];
+                                // Initialization > (Data, Metadata)
+                                let data = arguments[0],
+                                    metadata = typeof data == 'function';
+
+                                // Error Handling > Return
+                                try { return metadata ? data.toString() : LDK.null }
+                                catch (error) {}
 
                                 // Return
-                                return LDK.isFunction(data) ? data + '' : LDK.null
+                                return metadata ? LDK.funcProto.toString.call(data) : LDK.null
                             };
 
                             // Get Value Of
@@ -1727,6 +1781,15 @@
                                         return (function getComputedStyle() { return data.apply(window, [...arguments]) })
                                     })(),
 
+                                    // Get Event Listeners
+                                    getEventListeners: (function() {
+                                        // Initialization > Data
+                                        let data = window.getEventListeners;
+
+                                        // Return
+                                        return (function getEventListeners() { return data.apply(window, [...arguments]) })
+                                    })(),
+
                                     // Group
                                     group: console.group,
 
@@ -1796,31 +1859,6 @@
                                     // Warn
                                     warn: console.warn
                                 };
-                                    // Get Event Listeners
-                                    tmp.functions.getEventListeners = (function() {
-                                        // Initialization > (Data, Metadata)
-                                        let data = window.getEventListeners,
-                                            metadata = 0;
-
-                                        /* Function > Main
-                                                --- NOTE ---
-                                                    #lapys: Please define `getEventListeners`! XD
-                                        */
-                                        (function main() {
-                                            // Update > Data
-                                            data = window.getEventListeners;
-
-                                            // Error Handling > (...)
-                                            try {
-                                                LDK.isNativeFunction(data) ?
-                                                    tmp.functions.getEventListeners = data :
-                                                    tmp.functions.setTimeout(main, 1 / LDK.constants.ANIMATION_TICK_SPEED)
-                                            } catch (error) { LapysJS.warn("LapysJS could not import private 'getEventListeners' function.") }
-                                        })();
-
-                                        // Return
-                                        return data
-                                    })();
 
                                 // Objects
                                     // Console
@@ -4162,6 +4200,9 @@
 
                         // Array
                         LDK.objectDefProp(tmp.value, 'array', {
+                            // Configurable
+                            configurable: LDK.true,
+
                             // Value
                             value: function Array() {
                                 // Initialization > (Arguments, Data)
@@ -4183,6 +4224,9 @@
 
                         // Boolean
                         LDK.objectDefProp(tmp.value, 'bool', {
+                            // Configurable
+                            configurable: LDK.true,
+
                             // Value
                             value: function Boolean() {
                                 // Initialization > (Arguments, Data, Metadata)
@@ -4711,53 +4755,13 @@
 
                         // Function
                         LDK.objectDefProp(tmp.value, 'func', {
+                            // Configurable
+                            configurable: LDK.true,
+
                             // Value
                             value: function Function() {
-                                /* Logic
-                                        [switch statement]
-
-                                    ((>> Error Handling) > Return | > Error)
-                                */
-                                switch (arguments.length) {
-                                    // 0
-                                    case 0:
-                                        return (function() {});
-                                        break;
-
-                                    // 1
-                                    case 1:
-                                        try { return eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? arguments[0].getBody() : LDK.string(arguments[0])) + '})') }
-                                        catch (error) { return eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? arguments[0].getBody() : LDK.string(arguments[0])) + '\n})') }
-                                        break;
-
-                                    // 2
-                                    case 2:
-                                        try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + ') {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '})') }
-                                        catch (error) {
-                                            try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + ') {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '\n})') }
-                                            catch (error) {
-                                                try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + '\n) {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '})') }
-                                                catch (error) { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + '\n) {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '\n})') }
-                                            }
-                                        }
-                                        break;
-
-                                    // 3
-                                    case 3:
-                                        try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + ') {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '})') }
-                                        catch (error) {
-                                            try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + ') {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '\n})') }
-                                            catch (error) {
-                                                try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + '\n) {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '})') }
-                                                catch (error) { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + '\n) {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '\n})') }
-                                            }
-                                        }
-                                        break;
-
-                                    // [Default]
-                                    default:
-                                        LapysJS.error('Invalid number of arguments given.')
-                                }
+                                // Return
+                                return LDK.$func.apply(this, [...arguments])
                             }
                         });
 
@@ -5427,6 +5431,9 @@
 
                         // Number
                         LDK.objectDefProp(tmp.value, 'num', {
+                            // Configurable
+                            configurable: LDK.true,
+
                             // Value
                             value: function Number() {
                                 // Return
@@ -5436,6 +5443,9 @@
 
                         // Object
                         LDK.objectDefProp(tmp.value, 'obj', {
+                            // Configurable
+                            configurable: LDK.true,
+
                             // Value
                             value: function Object() {
                                 // Initialization > (Arguments, Data)
@@ -6615,6 +6625,9 @@
 
                         // Symbol
                         LDK.objectDefProp(tmp.value, 'sym', {
+                            // Configurable
+                            configurable: LDK.true,
+
                             // Value
                             value: function Symbol() {
                                 // Initialization > (Arguments, Data)
@@ -12738,12 +12751,368 @@
                             }
                         });
 
-                        // Has Event --- CHECKPOINT --- --- NOTE --- #lapys: Use 'delEvent'`s code
+                        // Has Event
                         LDK.objectDefProp(tmp.value, 'hasEvent', {
                             // Value
                             value: function hasEvent() {
+                                // Initialization > (Arguments, Data, Default Modifier, Target)
+                                let args = [...arguments],
+                                    data = LDK.false,
+                                    defaultModifier = {capture: LDK.false, once: LDK.false, passive: LDK.false},
+                                    that = this;
+
+                                // Modification > Permanent Data > Event Nodes List
+                                perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (
+                                    !LDK.isObject(args[0]) &&
+                                    (function() {
+                                        // Initialization > Data
+                                        let data = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.string(a[i]);return a})(LDK.isArray(args[0]) ? args[0] : [args[0]]);
+
+                                        /* Loop
+                                                [for:of statement]
+                                        */
+                                        for (let i of data)
+                                            /* Logic
+                                                    [if statement]
+
+                                                > Return
+                                            */
+                                            if (LDK.isExecutableString(i) && i.replace(/[a-zA-Z_\$]{0,}/g, '').trim())
+                                                return LDK.false;
+
+                                        // Return
+                                        return LDK.true
+                                    })() &&
+                                    args.length == 1
+                                ) {
+                                    // Initialization > (Listeners, Modifiers, Types)
+                                    let listeners = [],
+                                        modifiers = [],
+                                        types = [];
+
+                                    // Function
+                                        // Parse Array
+                                        function parseArray() {
+                                            // Initialization > (Data, Metadata)
+                                            let data = [...arguments[0]],
+                                                metadata = LDK.string(data[0]);
+
+                                            // LapysJS > Error
+                                            (data.length < 2) && LapysJS.error(["'hasEvent'", "'EventTarget'"], 'argument', 'Invalid argument set given');
+
+                                            // Update > (Types, Data)
+                                            LDK.arrayProto.push.call(types, metadata);
+                                            LDK.arrayProto.pop.call(data, 1);
+
+                                            // Initialization > Data
+                                            let $data = data.length;
+
+                                            /* Loop
+                                                    Index Data.
+
+                                                > Update > Data
+                                            */
+                                            for (let i = 0; i < $data; i += 1)
+                                                LDK.isString(data[i]) && (data[i] = func(data[i]));
+
+                                            /* Loop
+                                                    Index Data.
+
+                                                > LapysJS > Error
+                                            */
+                                            for (let i of data)
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                            // Update > Listeners
+                                            LDK.arrayProto.push.apply(listeners, data);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Types
+                                            */
+                                            while (types.length < listeners.length)
+                                                LDK.arrayProto.push.call(types, metadata);
+
+                                            // Update > Data
+                                            data = types.length;
+
+                                            /* Loop
+                                                    Iterate over Data.
+
+                                                > Update > Modifiers
+                                            */
+                                            for (let i = 0; i < data; i += 1)
+                                                LDK.arrayProto.push.call(modifiers, defaultModifier)
+                                        }
+
+                                        // Parse Object
+                                        function parseObject() {
+                                            // Initialization > Data
+                                            let data = LDK.objectAssign({}, arguments[0]);
+
+                                            // LapysJS > Error
+                                            ('type' in data) || LapysJS.error(["'hasEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'type' in JSON object.");
+                                            ('listener' in data) || LapysJS.error(["'hasEvent'", "'EventTarget'"], 'argument', "Expected object configuration 'listener' in JSON object.");
+
+                                            // Deletion | (Modification > Data > Use Capture)
+                                            'capture' in data || 'once' in data || 'passive' in data ? delete data.useCapture : data.useCapture = !!data.useCapture;
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if ('useCapture' in data) {
+                                                // Modification > Data > Use Capture
+                                                LDK.isArray(data.useCapture)  || (data.useCapture = [data.useCapture]);
+
+                                                // Initialization > Use Capture
+                                                let $useCapture = useCapture.length;
+
+                                                /* Loop
+                                                        [for statement]
+
+                                                    > Modification > Data > Use Capture
+                                                */
+                                                for (let i = 0; i < $useCapture; i += 1)
+                                                    data.useCapture[i] = !!data.useCapture
+                                            }
+
+                                            else {
+                                                // Modification > Data
+                                                    // Capture
+                                                    LDK.isArray(data.capture)  || (data.capture = [data.capture]);
+
+                                                    // Once
+                                                    LDK.isArray(data.once)  || (data.once = [data.once]);
+
+                                                    // Passive
+                                                    LDK.isArray(data.passive)  || (data.passive = [data.passive]);
+
+                                                // Modification > Data > (Capture, Once, Passive) > Length
+                                                data.capture.length = data.once.length = (data.passive.length = tmp.functions.max(data.capture.length, data.once.length, data.passive.length));
+
+                                                // Initialization > Length
+                                                let length = data.capture.length;
+
+                                                /* Loop
+                                                        Iterate over Length.
+
+                                                    > Modification > Data > (Capture, Once, Passive)
+                                                */
+                                                for (let i = 0; i < length; i += 1) {
+                                                    data.capture[i] = !!data.capture[i];
+                                                    data.once[i] = !!data.once[i];
+                                                    data.passive[i] = !!data.passive[i]
+                                                }
+                                            }
+
+                                            // Modification > Data > (Listener, Modifier, Type)
+                                            LDK.isArray(data.listener) || (data.listener = [data.listener]);
+                                            data.modifier = 'useCapture' in data ? data.useCapture : (function() {
+                                                // Initialization > (Data, Length)
+                                                let data = [],
+                                                    length = data.capture.length;
+
+                                                /* Loop
+                                                        Iterate over Length.
+
+                                                    > Update > Data
+                                                */
+                                                for (let i = 0; i < length; i += 1)
+                                                    data.push({capture: data.capture[i], once: data.once[i], passive: data.passive[i]});
+
+                                                // Return
+                                                return data
+                                            })();
+                                            LDK.isArray(data.type) || (data.type = [data.type]);
+
+                                            // Initialization > (Listeners, Modifiers)
+                                            let $listeners = data.listener.length,
+                                                $modifiers = data.modifer.length;
+
+                                            /* Loop
+                                                    [for statement]
+
+                                                > Modification > Data > Listener
+                                            */
+                                            for (let i = 0; i < $listeners; i += 1)
+                                                LDK.isString(data.listener[i]) && (data.listener[i] = func(data.listener[i]));
+
+                                            /* Loop
+                                                    [for:of statement]
+
+                                                > LapysJS > Error
+                                            */
+                                            for (let i of data.listeners)
+                                                LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
+
+                                            /* Loop
+                                                    [for statement]
+
+                                                > Modification > Data > Modifier
+                                            */
+                                            for (let i = 0; i < $modifiers; i += 1)
+                                                data.modifer[i] = LDK.isObject(data.modifer[i]) ?
+                                                    LDK.objectAssign({}, data.modifer[i]) :
+                                                    !!data.modifer[i];
+
+                                            // Update > (Listeners, Modifiers, Types)
+                                            LDK.arrayProto.push.apply(listeners, [...data.listener]);
+                                            LDK.arrayProto.push.apply(modifiers, [...data.modifier]);
+                                            LDK.arrayProto.push.apply(types, (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.string(a[i]);return a})([...data.type]));
+
+                                            // Update > Listeners
+                                            $listeners = [...listeners];
+
+                                            // Initialization > Types
+                                            let $types = [...types];
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Listeners
+                                            */
+                                            while (listeners.length < types.length)
+                                                LDK.arrayProto.push.apply(listeners, $listeners);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Types
+                                            */
+                                            while (listeners.length > types.length)
+                                                LDK.arrayProto.push.apply(types, $types);
+
+                                            // Modification > (Listeners, Types) > Length
+                                            listeners.length = types.length;
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                > Update > Modifiers
+                                            */
+                                            while (modifiers.length < types.length)
+                                                LDK.arrayProto.push.call(modifiers, defaultModifier);
+
+                                            // Modification > Modifiers > Length
+                                            modifiers.length = listeners.length
+                                        }
+
+                                    /* Loop
+                                            Index Arguments.
+
+                                        > Parse (Array | Object)
+                                    */
+                                    for (let i of args)
+                                        LDK.isArray(i) ? parseArray(i) : parseObject(i);
+
+                                    // Modification > Argument (0, 1, 2)
+                                    args[0] = types;
+                                    args[1] = listeners;
+                                    args[2] = modifiers
+                                }
+
+                                else {
+                                    // Update > Argument (1, 2)
+                                    LDK.isString(args[1]) && (args[1] = func(args[1]));
+                                    args[2] = args.length == 3 ? (LDK.isObject(args[2]) ? LDK.objectAssign({}, args[2]) : !!args[2]) : defaultModifier
+                                }
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDK.isNativeFunction(tmp.functions.getEventListeners)) {
+                                    // Initialization > Metadata
+                                    let metadata = tmp.functions.getEventListeners(that);
+
+                                    /* Loop
+                                            Index Metadata
+                                    */
+                                    for (let i of metadata)
+                                        /* Loop
+                                                [for:of statement]
+                                        */
+                                        for (let j of i) {
+                                            /* Logic
+                                                    [if statement]
+
+                                                > Update > Data
+                                            */
+                                            if (
+                                                (LDK.getSourceCode(j.listener) == LDK.getSourceCode(args[1])) &&
+                                                (function() {
+                                                    // Initialization > Data
+                                                    let data = args[2];
+
+                                                    /* Logic
+                                                            [if:else statement]
+                                                    */
+                                                    if (LDK.isObject(data)) {
+                                                        /* Logic
+                                                                [if statement]
+
+                                                            > Return
+                                                        */
+                                                        if (
+                                                            j.once == data.once &&
+                                                            j.passive == data.passive &&
+                                                            j.useCapture == data.capture
+                                                        )
+                                                            return LDK.true
+                                                    }
+
+                                                    else
+                                                        // Return
+                                                        return j.useCapture == data
+                                                })() &&
+                                                j.type == args[0]
+                                            )
+                                                data = LDK.true
+                                        }
+                                }
+
+                                else
+                                    /* Loop
+                                            [for:of statement]
+                                    */
+                                    for (let i of perm.eventNodesList)
+                                        /* Logic
+                                                [if statement]
+
+                                            > Update > Data
+                                        */
+                                        if (
+                                            (
+                                                (LDK.getSourceCode(i.listener) == LDK.getSourceCode(args[1])) ||
+                                                LDK.arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return a})([...i.listeners || []]), LDK.getSourceCode(args[1])) > -1 ||
+                                                LDK.arrayProto.removeElement.apply(
+                                                    (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return a})([...i.modifiers || []]),
+                                                    (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return a})(LDK.toArray(args[2]))
+                                                ).length < (i.modifiers || []).length
+                                            ) &&
+                                            (
+                                                tmp.functions.stringify(i.modifier) == tmp.functions.stringify(args[2]) ||
+                                                LDK.arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})([...i.modifiers || []]), tmp.functions.stringify(args[2])) > -1 ||
+                                                LDK.arrayProto.removeElement.apply(
+                                                    (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})([...i.modifiers || []]),
+                                                    (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})(LDK.toArray(args[2]))
+                                                ).length < (i.modifiers || []).length
+                                            ) &&
+                                            (
+                                                i.type == args[0] ||
+                                                LDK.arrayProto.indexOf.call(i.types || [], args[0]) > -1 ||
+                                                (LDK.arrayProto.removeElement.apply([...i.types || []], LDK.toArray(args[0]))).length < (i.types || []).length
+                                            )
+                                        )
+                                            data = LDK.true;
+
                                 // Return
-                                return LapysJS.warn(tmp)
+                                return data
                             }
                         });
 
@@ -14446,7 +14815,7 @@
                                                 type = LDK.string(data[0]);
 
                                             // LapysJS > Error
-                                            listeners.length || LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Expected array to be in format: [<event type>, <event listener>]');
+                                            (listeners.length < 2) && LapysJS.error(["'setEvent'", "'EventTarget'"], 'argument', 'Expected array to be in format: [<event type>, <event listener>]');
 
                                             /* Loop
                                                     Index Listeners.
@@ -18883,7 +19252,14 @@
                                     LDK.arrayProto.indexOf.call(metadata, 'accordion') > -1
                                 ) {
                                     // Deletion
+                                    delete data.close;
+                                    delete data.open;
+                                    delete data.state;
                                     delete data.title.accordion;
+                                    delete data.toggleState;
+
+                                    // Event > (Data > Title) > Click
+                                    data.title.onclick = LDK.null;
 
                                     /* Modification > Data > Title
                                             --- NOTE ---
@@ -18908,7 +19284,7 @@
                         }
                     })();
 
-                    /* Accordion --- CHECKPOINT --- */
+                    /* Accordion */
                     (function Accordion() {
                         // Error Handling
                         try {
@@ -18931,6 +19307,20 @@
                                             If the Accordion is registered.
                                     */
                                     if (LDK.arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=a[i].element;return a})([...metadata]), i) > -1) {
+                                        // Initialization > Data
+                                        let data = LDK.arrayFrom(i.children);
+
+                                        /* Loop
+                                                Index Data.
+                                        */
+                                        for (let i of data) {
+                                            // Initialization > Metadata
+                                            let metadata = LDK.eleProto.getAttribute.call(i, 'data-id');
+
+                                            // Deletion
+                                            (metadata != 'content' && metadata != 'title') && i.remove()
+                                        }
+
                                         /* Logic
                                                 If
                                                     the Accordion is missing a title.
@@ -18950,17 +19340,22 @@
                                             tmp.functions.warn('[LapysJS v' + LDK.constants.VERSION + '] => Found Accordion with missing title.\n', i)
                                         }
 
-                                        // Initialization > Data
-                                        let data = LDK.eleProto.querySelector.call(i, '[data-id=title');
+                                        // Update > Data
+                                        data = LDK.eleProto.querySelector.call(i, '[data-id=title');
                                             // Modification > Data > Accordion
-                                            ((data.accordion || tmp.object).nodeType == 1) || LDK.objectDefProp(data, 'accordion', {
+                                            ((data.accordion || tmp.object) == data.parentElement) || LDK.objectDefProp(data, 'accordion', {
                                                 // Configurable
                                                 configurable: LDK.true,
 
                                                 // Get
                                                 get: function accordion() { return i }
                                             });
-                                            data.hasAttribute('state') || (data.state = LDK.false);
+
+                                            // Function > Toggle Accordion
+                                            function toggleAccordion() { this.accordion.toggleState() }
+
+                                            // Event > Data > Click
+                                            (LDK.getSourceCode(data.onclick) == LDK.getSourceCode(toggleAccordion)) || (data.onclick = toggleAccordion);
 
                                         // Modification > [Loop Iterator]
                                             // Close
@@ -18969,7 +19364,7 @@
                                                 configurable: LDK.true,
 
                                                 // Value
-                                                value: function close() {}
+                                                value: function close() { return this.state = LDK.false }
                                             });
 
                                             // Open
@@ -18978,11 +19373,28 @@
                                                 configurable: LDK.true,
 
                                                 // Value
-                                                value: function open() {}
+                                                value: function open() { return this.state = LDK.true }
                                             });
 
+                                            // State
+                                            ('state' in i) || LDK.objectDefProp(i, 'state', new (function Object() {
+                                                // Initialization > Target
+                                                let that = this;
+
+                                                // Modification > (Configurable, Get, Set)
+                                                that.configurable = LDK.true;
+                                                that.get = function getState() { return this.getAttribute('state') };
+                                                that.set = function setState() { return this.setAttribute('state', arguments[0] ? 'open' : 'close') };
+
+                                                // Set Timeout > Modification > [Loop Iterator] > State
+                                                tmp.functions.setTimeout(function() { LDK.eleProto.setAttribute.call(i, 'state', LDK.eleProto.getAttribute.call(i, 'state') == 'open' ? 'open' : 'close') });
+
+                                                // Return
+                                                return that
+                                            }));
+
                                             // Title
-                                            ((i.title || tmp.object).nodeType == 1) || LDK.objectDefProp(i, 'title', {
+                                            ((i.title || tmp.object) == i.firstElementChild) || LDK.objectDefProp(i, 'title', {
                                                 // Configurable
                                                 configurable: LDK.true,
 
@@ -18991,13 +19403,17 @@
                                             });
 
                                             // Toggle State
-                                            (typeof i.toggleState == 'function') || LDK.objectDefProp(i, 'toggleState', {
-                                                // Configurable
-                                                configurable: LDK.true,
+                                                // Function
+                                                function toggleState() { this.state = this.state == 'open' ? LDK.false : LDK.true }
 
-                                                // Value
-                                                value: function toggleState() {}
-                                            })
+                                                // Definition
+                                                (LDK.getSourceCode(i.toggleState) == LDK.getSourceCode(toggleState)) || LDK.objectDefProp(i, 'toggleState', {
+                                                    // Configurable
+                                                    configurable: LDK.true,
+
+                                                    // Value
+                                                    value: toggleState
+                                                })
                                     }
 
                                     else

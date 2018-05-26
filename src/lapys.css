@@ -336,12 +336,42 @@
 
     /* Components */
         /* Accordion */
+            /* Content */
+            .accordion[state=close] > [data-id=content] { display: none }
+
             /* Title */
             .accordion > [data-id=title] {
                 cursor: pointer;
                 font-size: 110%;
                 font-weight: 500
             }
+
+    /* Filters */
+        /* Hidden */
+        .hidden {
+            display: none;
+            filter: opacity(0);
+            opacity: 0;
+            visibility: none
+        }
+
+        /* Opaque */
+        .opaque {
+            filter: opacity(1);
+            opacity: 1 !important
+        }
+
+        /* Translucent */
+        .translucent {
+            filter: opacity(.5);
+            opacity: .5
+        }
+
+        /* Transparent */
+        .transparent {
+            filter: opacity(0);
+            opacity: 0 !important
+        }
 
     /* Restrictions */
         /* Animation */
@@ -357,6 +387,12 @@
         .no-delay {
             animation-delay: 0s !important;
             transition-delay: 0s !important
+        }
+
+        /* Display */
+        .accordion > :not([data-id=content]):not([data-id=title]),
+        .no-display {
+            display: none !important
         }
 
         /* Duration */
