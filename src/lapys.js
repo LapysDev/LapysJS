@@ -12738,7 +12738,7 @@
                             }
                         });
 
-                        // Has Event --- CHECKPOINT ---
+                        // Has Event --- CHECKPOINT --- --- NOTE --- #lapys: Use 'delEvent'`s code
                         LDK.objectDefProp(tmp.value, 'hasEvent', {
                             // Value
                             value: function hasEvent() {
@@ -18092,6 +18092,40 @@
                             get: function capital() {
                                 // Return
                                 return LDK.stringProto.replace.call(this,/\b\w/g,a=>{return LDK.stringProto.toUpperCase.call(a)})
+                            }
+                        });
+
+                        // Count
+                        LDK.objectDefProp(tmp.value, 'count', {
+                            // Value
+                            value: function count() {
+                                // Initialization > (Arguments, Data, Target)
+                                let args = [...arguments],
+                                    data = [],
+                                    $data = (function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})()[1].replace(/./g, '\\$&'),
+                                    that = this;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > LapysJS > Error
+                                */
+                                for (let i of args)
+                                    LDK.isConstructible(i) || LapysJS.error(i, 'must', 'constructible object');
+
+                                /* Loop
+                                        Index Arguments.
+                                */
+                                for (let i of args) {
+                                    // Initialization > Metadata
+                                    let metadata = LDK.isRegex(i);
+
+                                    // Update > Data
+                                    LDK.arrayProto.push.call(data, (LDK.stringProto.match.call(that, LDK.regex(metadata ? i.source : LDK.stringProto.replace.call(LDK.string(i), LDK.regex('[' + $data + ']', 'g'), '\\$&'), LDK.stringProto.replace.call(metadata ? i.flags : '', 'g', '') + 'g')) || []).length)
+                                }
+
+                                // Return
+                                return args.length > 1 ? data : data[0]
                             }
                         });
 
