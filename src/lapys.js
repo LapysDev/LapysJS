@@ -11,6 +11,7 @@
 
     --- RULES ---
         #lapys:
+            - All constants/ dynamic DOM operations must be designed with speed and memory in mind.
             - All event callbacks will not be arrow functions and will use the `event` parameter if necessary.
             - Avoid use of the `for... in` statement for arrays.
             - Do not use ambiguous function or variable names e.g.: `aFunctionWithAReallyLongFunctionName`.
@@ -1504,6 +1505,80 @@
                                 return {}
                             };
 
+                            // String
+                            LDK.str = function str() {
+                                // Initialization > (Arguments, Data)
+                                let args = [...arguments],
+                                    data = '';
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Data
+                                */
+                                for (let i of args)
+                                    data += (function() {
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (LDK.isArrayLike(i)) {
+                                            // Initialization > Data
+                                            let data = [...i];
+
+                                            /* Loop
+                                                    Index Data.
+                                            */
+                                            for (let i in data) {
+                                                // Initialization > Metadata
+                                                let metadata = data[i];
+
+                                                // Update > Data
+                                                data[i] = LDK.isString(metadata) ? '"' + metadata.replace(/"/g, '\\"') + '"' : LDK.string(metadata);
+                                            }
+
+                                            // Return
+                                            return '[' + data.join(', ') + ']'
+                                        }
+
+                                        else if (LDK.isFunction(i)) {
+                                            // Initialization > Data
+                                            let data = LDK.string(i);
+
+                                            // Return
+                                            return data.length > 300 ? (data.getBeforeChar('(') + '(' + i.getHead() + ') { … }') : data
+                                        }
+
+                                        else if (LDK.isObject(i)) {
+                                            // Initialization > Data
+                                            let data = '';
+
+                                            /* Loop
+                                                    Index [Loop Iterator].
+                                            */
+                                            for (let j in i) {
+                                                // Initialization > Metadata
+                                                let metadata = i[j];
+
+                                                // Update > Data
+                                                data += j + ': ' + (LDK.isString(metadata) ? '"' + metadata.replace(/"/g, '\\"') + '"' : LDK.string(metadata)) + ', ';
+                                            }
+
+                                            // Return
+                                            return '{' + data.trimRightChar(', ') + '}'
+                                        }
+
+                                        else if (LDK.getConstructor(i) == LDK.attr)
+                                            // Return
+                                            return i.name + "='" + i.value + "'";
+
+                                        // Return
+                                        return LDK.string(i)
+                                    })();
+
+                                // Return
+                                return data
+                            };
+
                             // To Array
                             LDK.toArray = function toArray() {
                                 // Initialization > (Arguments, Data)
@@ -1586,9 +1661,6 @@
                                         })
                                 });
 
-                                // Plugins
-                                LDK.plugins = ['accordion', 'carousel', 'dropdown', 'dynamic-text', 'dynamic-time', 'marquee', 'media', 'option-box', 'placeholder', 'roulette', 'select-box'];
-
                                 // Random Element List
                                 LDK.randomElementList = ['a', 'audio', 'br', 'button', 'canvas', 'caption', 'div', 'dl', 'element', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'img', 'input', 'li', 'ol', 'p', 'q', 'script', 'style', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'tr', 'ul', 'video', 'lapysjs-element'];
 
@@ -1643,7 +1715,7 @@
                                         let data = eval;
 
                                         // Return
-                                        return (function eval() { return data.apply(this, [...arguments]) })
+                                        return (function Eval() { return data.apply(this, [...arguments]) })
                                     })(),
 
                                     // Get Computed Style
@@ -1810,11 +1882,11 @@
                                         // Identified Elements
                                         identifiedElements: [],
 
+                                        // Modified Components List
+                                        modifiedComponentsList: LDK.namedArray('LapysJSModifiedComponentsList'),
+
                                         // Modified Nodes List
                                         modifiedNodesList: LDK.namedArray('LapysJSModifiedNodesList'),
-
-                                        // Modified Plugins List
-                                        modifiedPluginsList: LDK.namedArray('LapysJSModifiedPluginsList'),
 
                                         // Screen Tip Nodes List
                                         screenTipNodesList: LDK.namedArray('LapysJSScreenTipNodesList'),
@@ -3087,21 +3159,21 @@
                                                     }
                                                 },
 
+                                                // Modified Components List
+                                                modifiedComponentsList: {
+                                                    // Get
+                                                    get: function modifiedComponentsList() {
+                                                        // Return
+                                                        return perm.modifiedComponentsList
+                                                    }
+                                                },
+
                                                 // Modified Nodes List
                                                 modifiedNodesList: {
                                                     // Get
                                                     get: function modifiedNodesList() {
                                                         // Return
                                                         return perm.modifiedNodesList
-                                                    }
-                                                },
-
-                                                // Modified Plugins List
-                                                modifiedPluginsList: {
-                                                    // Get
-                                                    get: function modifiedPluginsList() {
-                                                        // Return
-                                                        return perm.modifiedPluginsList
                                                     }
                                                 },
 
@@ -6434,78 +6506,13 @@
 
                         // String
                         LDK.objectDefProp(tmp.value, 'str', {
+                            // Configurable
+                            configurable: LDK.true,
+
                             // Value
                             value: function String() {
-                                // Initialization > (Arguments, Data)
-                                let args = [...arguments],
-                                    data = '';
-
-                                /* Loop
-                                        Index Arguments.
-
-                                    > Update > Data
-                                */
-                                for (let i of args)
-                                    data += (function() {
-                                        /* Logic
-                                                [if:else if statement]
-                                        */
-                                        if (LDK.isArrayLike(i)) {
-                                            // Initialization > Data
-                                            let data = [...i];
-
-                                            /* Loop
-                                                    Index Data.
-                                            */
-                                            for (let i in data) {
-                                                // Initialization > Metadata
-                                                let metadata = data[i];
-
-                                                // Update > Data
-                                                data[i] = LDK.isString(metadata) ? '"' + metadata.replace(/"/g, '\\"') + '"' : LDK.string(metadata);
-                                            }
-
-                                            // Return
-                                            return '[' + data.join(', ') + ']'
-                                        }
-
-                                        else if (LDK.isFunction(i)) {
-                                            // Initialization > Data
-                                            let data = LDK.string(i);
-
-                                            // Return
-                                            return data.length > 300 ? (data.getBeforeChar('(') + '(' + i.getHead() + ') { … }') : data
-                                        }
-
-                                        else if (LDK.isObject(i)) {
-                                            // Initialization > Data
-                                            let data = '';
-
-                                            /* Loop
-                                                    Index [Loop Iterator].
-                                            */
-                                            for (let j in i) {
-                                                // Initialization > Metadata
-                                                let metadata = i[j];
-
-                                                // Update > Data
-                                                data += j + ': ' + (LDK.isString(metadata) ? '"' + metadata.replace(/"/g, '\\"') + '"' : LDK.string(metadata)) + ', ';
-                                            }
-
-                                            // Return
-                                            return '{' + data.trimRightChar(', ') + '}'
-                                        }
-
-                                        else if (LDK.getConstructor(i) == LDK.attr)
-                                            // Return
-                                            return i.name + "='" + i.value + "'";
-
-                                        // Return
-                                        return LDK.string(i)
-                                    })();
-
                                 // Return
-                                return data
+                                return LDK.str.apply(this, [...arguments])
                             }
                         });
 
@@ -18815,9 +18822,161 @@
                     })();
 
                 /* Assets */
-                    // Accordion
-                    (function Accordion() {
+                    /* Components Manager
+                            --- NOTE ---
+                                #lapys: If a DOM element ceases to be a registered component,
+                                    then it will be updated via the Components Manager.
+                    */
+                    (function ComponentsManager() {
+                        // Error Handling
+                        try {
+                            /* Loop
+                                    [for:of statement]
+                            */
+                            for (let i of perm.modifiedComponentsList) {
+                                /* Initialization > (Data, Metadata)
+                                        --- NOTE ---
+                                            #lapys: Caching...
+                                */
+                                let data = i.element,
+                                    metadata = i.type;
 
+                                /* {Accordion} Logic
+                                        [if statement]
+                                */
+                                if (
+                                    LDK.stringProto.indexOf.call(data.getAttribute('class') || '', 'accordion') < 0 &&
+                                    LDK.arrayProto.indexOf.call(metadata, 'accordion') > -1
+                                ) {
+                                    // Deletion
+                                    delete data.title.accordion;
+
+                                    /* Modification > Data > Title
+                                            --- NOTE ---
+                                                #lapys: Restore the `title` property to it`s default state.
+                                    */
+                                    LDK.objectDefProp(data, 'title', LDK.objectGetOwnPropDesc(LDK.htmlEleProto, 'title'));
+
+                                    // Update > (Permanent Data > Modified Components List)
+                                    LDK.arrayProto.removeElement.call(perm.modifiedComponentsList, i)
+                                }
+                            }
+
+                            // Request Animation Frame > Components Manager
+                            tmp.functions.requestAnimationFrame(ComponentsManager)
+                        } catch (error) {
+                            /* Error
+                                    --- NOTE ---
+                                        #lapys: A little professionalism when throwing errors does not kill anyone...
+                                            but `evals` do, damned minifiers and compressors removing error names.
+                            */
+                            tmp.functions.eval("throw new (class LapysJSComponentsManagementError extends (class LapysJSError extends Error { constructor() { super('" + LDK.stringProto.replace.call(error.message, /'/g, "\\'") + "') } }) { constructor() { super() } })")
+                        }
+                    })();
+
+                    /* Accordion --- CHECKPOINT --- */
+                    (function Accordion() {
+                        // Error Handling
+                        try {
+                            // Initialization > Data
+                            let data = LDK.docQueSel('.accordion');
+
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (data) {
+                                // Initialization > (Data, Metadata)
+                                let data = LDK.arrayFrom(LDK.docGetEleByClass('accordion')),
+                                    metadata = perm.modifiedComponentsList;
+
+                                /* Loop
+                                        Index Data.
+                                */
+                                for (let i of data)
+                                    /* Logic
+                                            If the Accordion is registered.
+                                    */
+                                    if (LDK.arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=a[i].element;return a})([...metadata]), i) > -1) {
+                                        /* Logic
+                                                If
+                                                    the Accordion is missing a title.
+                                        */
+                                        if (!LDK.eleProto.querySelector.call(i, '[data-id=title')) {
+                                            // Initialization > Data
+                                            let data = LDK.docCreateEle('accordion-title');
+
+                                            // Modification > Data > Data ID
+                                            LDK.eleProto.setAttribute.call(data, 'data-id', 'title');
+
+                                            // Insertion
+                                            LDK.eleProto.appendChild.call(i, data);
+                                            LDK.nodeProto.insertBefore.call(i, data, i.firstChild);
+
+                                            // Warn
+                                            tmp.functions.warn('[LapysJS v' + LDK.constants.VERSION + '] => Found Accordion with missing title.\n', i)
+                                        }
+
+                                        // Initialization > Data
+                                        let data = LDK.eleProto.querySelector.call(i, '[data-id=title');
+                                            // Modification > Data > Accordion
+                                            ((data.accordion || tmp.object).nodeType == 1) || LDK.objectDefProp(data, 'accordion', {
+                                                // Configurable
+                                                configurable: LDK.true,
+
+                                                // Get
+                                                get: function accordion() { return i }
+                                            });
+                                            data.hasAttribute('state') || (data.state = LDK.false);
+
+                                        // Modification > [Loop Iterator]
+                                            // Close
+                                            (typeof i.close == 'function') || LDK.objectDefProp(i, 'close', {
+                                                // Configurable
+                                                configurable: LDK.true,
+
+                                                // Value
+                                                value: function close() {}
+                                            });
+
+                                            // Open
+                                            (typeof i.open == 'function') || LDK.objectDefProp(i, 'open', {
+                                                // Configurable
+                                                configurable: LDK.true,
+
+                                                // Value
+                                                value: function open() {}
+                                            });
+
+                                            // Title
+                                            ((i.title || tmp.object).nodeType == 1) || LDK.objectDefProp(i, 'title', {
+                                                // Configurable
+                                                configurable: LDK.true,
+
+                                                // Get
+                                                get: function title() { return data }
+                                            });
+
+                                            // Toggle State
+                                            (typeof i.toggleState == 'function') || LDK.objectDefProp(i, 'toggleState', {
+                                                // Configurable
+                                                configurable: LDK.true,
+
+                                                // Value
+                                                value: function toggleState() {}
+                                            })
+                                    }
+
+                                    else
+                                        // Update > Metadata
+                                        LDK.arrayProto.push.call(metadata, {element: i, type: ['accordion']})
+                            }
+
+                            // Request Animation Frame > Accordion
+                            tmp.functions.requestAnimationFrame(Accordion)
+                        } catch (error) {
+                            // LapysJS > Error
+                            LapysJS.error('Accordion Components Manager is broken.\n\t' + error.message)
+                        }
                     })();
 
                 /* Return
