@@ -7,6 +7,7 @@
     --- RULES ---
         #lapys:
             - Do not repeat CSS style declarations. You can use 'prettify.js' to optimize the CSS code here.
+            - Maximum of 6 digits with each numeral only.
 */
 /* CSS At-Rules */
     /* Character-Set Encoding */
@@ -350,22 +351,39 @@
         .jumbotron {
             background-color: rgba(0, 0, 0, .1);
             background-size: 100%;
+            font-size: 3.5em;
             height: 42.5vh;
             justify-content: space-around;
             margin: 0;
+            min-height: 50%;
             padding: 0
         }
-            /* All > States */
-                /* First Child */
-                .jumbotron > :first-child {
-                    margin-top: 0;
-                    padding-top: 0
+            /* All */
+            .jumbotron > * {
+                font-size: inherit
+            }
+                /* States */
+                    /* First Child */
+                    .jumbotron > :first-child {
+                        margin-top: 0;
+                        padding-top: 0
+                    }
+
+                    /* Last Child */
+                    .jumbotron > :last-child {
+                        margin-bottom: 0;
+                        padding-bottom: 0
+                    }
+
+                /* Header */
+                .jumbotron > [role=header] {
+                    font-weight: bold
                 }
 
-                /* Last Child */
-                .jumbotron > :last-child {
-                    margin-bottom: 0;
-                    padding-bottom: 0
+                /* Sub Header */
+                .jumbotron > [role=subheader] {
+                    font-size: 75%;
+                    font-style: italic
                 }
 
     /* Features */
@@ -424,16 +442,383 @@
                 opacity: 0 !important
             }
 
+        /* Grid */
+            /* Group */
+                /* Column */
+                .col-group,
+                .col-grp,
+                .column-group {
+                    flex-direction: row;
+                    flex-wrap: nowrap
+                }
+
+                /* Column, Row */
+                .col-group,
+                .col-grp,
+                .column-group,
+                .row-group,
+                .row-grp {
+                    align-content: inherit;
+                    align-items: inherit;
+                    align-self: inherit;
+                    display: flex;
+                    justify-content: inherit;
+                    width: 100%
+                }
+                    /* All */
+                    .col-group > *,
+                    .col-grp > *,
+                    .column-group > *,
+                    .row-group > *,
+                    .row-grp > * { flex-grow: 1 }
+
+                    /* Column Levels */
+                        /* 0 */
+                        .col-group > .col-0,
+                        .col-grp > .col-0,
+                        .column-group > .col-0,
+                        .row-group > .col-0,
+                        .row-grp > .col-0 { flex-grow: 0 }
+
+                        /* 1 */
+                        .col-group > .col-1,
+                        .col-grp > .col-1,
+                        .column-group > .col-1,
+                        .row-group > .col-1,
+                        .row-grp > .col-1 { flex-grow: 1 }
+
+                        /* 2 */
+                        .col-group > .col-2,
+                        .col-grp > .col-2,
+                        .column-group > .col-2,
+                        .row-group > .col-2,
+                        .row-grp > .col-2 { flex-grow: 2 }
+
+                        /* 3 */
+                        .col-group > .col-3,
+                        .col-grp > .col-3,
+                        .column-group > .col-3,
+                        .row-group > .col-3,
+                        .row-grp > .col-3 { flex-grow: 3 }
+
+                        /* 4 */
+                        .col-group > .col-4,
+                        .col-grp > .col-4,
+                        .column-group > .col-4,
+                        .row-group > .col-4,
+                        .row-grp > .col-4 { flex-grow: 4 }
+
+                        /* 5 */
+                        .col-group > .col-5,
+                        .col-grp > .col-5,
+                        .column-group > .col-5,
+                        .row-group > .col-5,
+                        .row-grp > .col-5 { flex-grow: 5 }
+
+                        /* 6 */
+                        .col-group > .col-6,
+                        .col-grp > .col-6,
+                        .column-group > .col-6,
+                        .row-group > .col-6,
+                        .row-grp > .col-6 { flex-grow: 6 }
+
+                        /* 7 */
+                        .col-group > .col-7,
+                        .col-grp > .col-7,
+                        .column-group > .col-7,
+                        .row-group > .col-7,
+                        .row-grp > .col-7 { flex-grow: 7 }
+
+                        /* 8 */
+                        .col-group > .col-8,
+                        .col-grp > .col-8,
+                        .column-group > .col-8,
+                        .row-group > .col-8,
+                        .row-grp > .col-8 { flex-grow: 8 }
+
+                        /* 9 */
+                        .col-group > .col-9,
+                        .col-grp > .col-9,
+                        .column-group > .col-9,
+                        .row-group > .col-9,
+                        .row-grp > .col-9 { flex-grow: 9 }
+
+                        /* 10 */
+                        .col-group > .col-10,
+                        .col-grp > .col-10,
+                        .column-group > .col-10,
+                        .row-group > .col-10,
+                        .row-grp > .col-10 { flex-grow: 10 }
+
+                        /* 11 */
+                        .col-group > .col-11,
+                        .col-grp > .col-11,
+                        .column-group > .col-11,
+                        .row-group > .col-11,
+                        .row-grp > .col-11 { flex-grow: 11 }
+
+                        /* 12 */
+                        .col-group > .col-12,
+                        .col-grp > .col-12,
+                        .column-group > .col-12,
+                        .row-group > .col-12,
+                        .row-grp > .col-12 { flex-grow: 12 }
+
+                    /* Grid Levels */
+                        /* 0 */
+                        .col-group > .grid-0,
+                        .col-grp > .grid-0,
+                        .column-group > .grid-0,
+                        .row-group > .grid-0,
+                        .row-grp > .grid-0 { flex-basis: 0 }
+
+                        /* 1 */
+                        .col-group > .grid-1,
+                        .col-grp > .grid-1,
+                        .column-group > .grid-1,
+                        .row-group > .grid-1,
+                        .row-grp > .grid-1 { flex-basis: 100% }
+
+                        /* 2 */
+                        .col-group > .grid-2,
+                        .col-grp > .grid-2,
+                        .column-group > .grid-2,
+                        .row-group > .grid-2,
+                        .row-grp > .grid-2 {
+                            height: 50%;
+                            flex-basis: 50%;
+                            width: 50%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-2:not(.strict-grid),
+                            .col-grp > .grid-2:not(.strict-grid),
+                            .column-group > .grid-2:not(.strict-grid),
+                            .row-group > .grid-2:not(.strict-grid),
+                            .row-grp > .grid-2:not(.strict-grid) {
+                                min-height: 50%;
+                                min-width: 50%
+                            }
+
+                        /* 3 */
+                        .col-group > .grid-3,
+                        .col-grp > .grid-3,
+                        .column-group > .grid-3,
+                        .row-group > .grid-3,
+                        .row-grp > .grid-3 {
+                            height: 33.3333%;
+                            flex-basis: 33.3333%;
+                            width: 33.3333%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-3:not(.strict-grid),
+                            .col-grp > .grid-3:not(.strict-grid),
+                            .column-group > .grid-3:not(.strict-grid),
+                            .row-group > .grid-3:not(.strict-grid),
+                            .row-grp > .grid-3:not(.strict-grid) {
+                                min-height: 33.3333%;
+                                min-width: 33.3333%
+                            }
+
+                        /* 4 */
+                        .col-group > .grid-4,
+                        .col-grp > .grid-4,
+                        .column-group > .grid-4,
+                        .row-group > .grid-4,
+                        .row-grp > .grid-4 {
+                            height: 25%;
+                            flex-basis: 25%;
+                            width: 25%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-4:not(.strict-grid),
+                            .col-grp > .grid-4:not(.strict-grid),
+                            .column-group > .grid-4:not(.strict-grid),
+                            .row-group > .grid-4:not(.strict-grid),
+                            .row-grp > .grid-4:not(.strict-grid) {
+                                min-height: 25%;
+                                min-width: 25%
+                            }
+
+                        /* 5 */
+                        .col-group > .grid-5,
+                        .col-grp > .grid-5,
+                        .column-group > .grid-5,
+                        .row-group > .grid-5,
+                        .row-grp > .grid-5 {
+                            height: 20%;
+                            flex-basis: 20%;
+                            width: 20%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-5:not(.strict-grid),
+                            .col-grp > .grid-5:not(.strict-grid),
+                            .column-group > .grid-5:not(.strict-grid),
+                            .row-group > .grid-5:not(.strict-grid),
+                            .row-grp > .grid-5:not(.strict-grid) {
+                                min-height: 20%;
+                                min-width: 20%
+                            }
+
+                        /* 6 */
+                        .col-group > .grid-6,
+                        .col-grp > .grid-6,
+                        .column-group > .grid-6,
+                        .row-group > .grid-6,
+                        .row-grp > .grid-6 {
+                            height: 16.6666%;
+                            flex-basis: 16.6666%;
+                            width: 16.6666%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-6:not(.strict-grid),
+                            .col-grp > .grid-6:not(.strict-grid),
+                            .column-group > .grid-6:not(.strict-grid),
+                            .row-group > .grid-6:not(.strict-grid),
+                            .row-grp > .grid-6:not(.strict-grid) {
+                                min-height: 16.6666%;
+                                min-width: 16.6666%
+                            }
+
+                        /* 7 */
+                        .col-group > .grid-7,
+                        .col-grp > .grid-7,
+                        .column-group > .grid-7,
+                        .row-group > .grid-7,
+                        .row-grp > .grid-7 {
+                            height: 14.2857%;
+                            flex-basis: 14.2857%;
+                            width: 14.2857%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-7:not(.strict-grid),
+                            .col-grp > .grid-7:not(.strict-grid),
+                            .column-group > .grid-7:not(.strict-grid),
+                            .row-group > .grid-7:not(.strict-grid),
+                            .row-grp > .grid-7:not(.strict-grid) {
+                                min-height: 14.2857%;
+                                min-width: 14.2857%
+                            }
+
+                        /* 8 */
+                        .col-group > .grid-8,
+                        .col-grp > .grid-8,
+                        .column-group > .grid-8,
+                        .row-group > .grid-8,
+                        .row-grp > .grid-8 {
+                            height: 12.5%;
+                            flex-basis: 12.5%;
+                            width: 12.5%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-8:not(.strict-grid),
+                            .col-grp > .grid-8:not(.strict-grid),
+                            .column-group > .grid-8:not(.strict-grid),
+                            .row-group > .grid-8:not(.strict-grid),
+                            .row-grp > .grid-8:not(.strict-grid) {
+                                min-height: 12.5%;
+                                min-width: 12.5%
+                            }
+
+                        /* 9 */
+                        .col-group > .grid-9,
+                        .col-grp > .grid-9,
+                        .column-group > .grid-9,
+                        .row-group > .grid-9,
+                        .row-grp > .grid-9 {
+                            height: 11.1111%;
+                            flex-basis: 11.1111%;
+                            width: 11.1111%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-9:not(.strict-grid),
+                            .col-grp > .grid-9:not(.strict-grid),
+                            .column-group > .grid-9:not(.strict-grid),
+                            .row-group > .grid-9:not(.strict-grid),
+                            .row-grp > .grid-9:not(.strict-grid) {
+                                min-height: 11.1111%;
+                                min-width: 11.1111%
+                            }
+
+                        /* 10 */
+                        .col-group > .grid-10,
+                        .col-grp > .grid-10,
+                        .column-group > .grid-10,
+                        .row-group > .grid-10,
+                        .row-grp > .grid-10 {
+                            height: 10%;
+                            flex-basis: 10%;
+                            width: 10%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-10:not(.strict-grid),
+                            .col-grp > .grid-10:not(.strict-grid),
+                            .column-group > .grid-10:not(.strict-grid),
+                            .row-group > .grid-10:not(.strict-grid),
+                            .row-grp > .grid-10:not(.strict-grid) {
+                                min-height: 10%;
+                                min-width: 10%
+                            }
+
+                        /* 11 */
+                        .col-group > .grid-11,
+                        .col-grp > .grid-11,
+                        .column-group > .grid-11,
+                        .row-group > .grid-11,
+                        .row-grp > .grid-11 {
+                            height: 9.09091%;
+                            flex-basis: 9.09091%;
+                            width: 9.09091%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-11:not(.strict-grid),
+                            .col-grp > .grid-11:not(.strict-grid),
+                            .column-group > .grid-11:not(.strict-grid),
+                            .row-group > .grid-11:not(.strict-grid),
+                            .row-grp > .grid-11:not(.strict-grid) {
+                                min-height: 9.09091%;
+                                min-width: 9.09091%
+                            }
+
+                        /* 12 */
+                        .col-group > .grid-12,
+                        .col-grp > .grid-12,
+                        .column-group > .grid-12,
+                        .row-group > .grid-12,
+                        .row-grp > .grid-12 {
+                            height: 8.33334%;
+                            flex-basis: 8.33334%;
+                            width: 8.33334%
+                        }
+                            /* Not > Strict Grid */
+                            .col-group > .grid-12:not(.strict-grid),
+                            .col-grp > .grid-12:not(.strict-grid),
+                            .column-group > .grid-12:not(.strict-grid),
+                            .row-group > .grid-12:not(.strict-grid),
+                            .row-grp > .grid-12:not(.strict-grid) {
+                                min-height: 8.33334%;
+                                min-width: 8.33334%
+                            }
+
+                /* Row */
+                .row-group,
+                .row-grp {
+                    flex-direction: column;
+                    flex-wrap: wrap
+                }
+
         /* Layout */
             /* Height */
                 /* Crush */
                 .crush,
-                .crush-h { height: 0 }
+                .crush-h,
+                .grid-0,
+                .grid-h-0 { height: 0 }
 
                 /* Fill */
                 .fill,
                 .fill-h,
-                .jumbotron,
+                .grid-1,
+                .grid-h-1,
                 .responsive { height: 100% }
 
                 /* Full */
@@ -461,10 +846,14 @@
 
             /* Maximum Height */
                 /* Crush */
+                .grid-0:not(.strict-grid),
+                .grid-h-0:not(.strict-grid),
                 .max-crush,
                 .max-crush-h { max-height: 0 }
 
                 /* Fill */
+                .grid-1:not(.strict-grid),
+                .grid-h-1:not(.strict-grid),
                 .max-fill,
                 .max-fill-h { max-height: 100% }
 
@@ -478,10 +867,14 @@
 
             /* Maximum Width */
                 /* Crush */
+                .grid-0:not(.strict-grid),
+                .grid-w-0:not(.strict-grid),
                 .max-crush,
                 .max-crush-w { max-width: 0 }
 
                 /* Fill */
+                .grid-1:not(.strict-grid),
+                .grid-w-1:not(.strict-grid),
                 .jumbotron,
                 .max-fill,
                 .max-fill-w { max-width: 100% }
@@ -496,10 +889,14 @@
 
             /* Minimum Height */
                 /* Crush */
+                .grid-0:not(.strict-grid),
+                .grid-h-0:not(.strict-grid),
                 .min-crush,
                 .min-crush-h { min-height: 0 }
 
                 /* Fill */
+                .grid-1:not(.strict-grid),
+                .grid-h-1:not(.strict-grid),
                 .min-fill,
                 .min-fill-h { min-height: 100% }
 
@@ -513,10 +910,14 @@
 
             /* Minimum Width */
                 /* Crush */
+                .grid-0:not(.strict-grid),
+                .grid-w-0:not(.strict-grid),
                 .min-crush,
                 .min-crush-w { min-width: 0 }
 
                 /* Fill */
+                .grid-1:not(.strict-grid),
+                .grid-w-1:not(.strict-grid),
                 .min-fill,
                 .min-fill-w { min-width: 100% }
 
@@ -531,11 +932,15 @@
             /* Width */
                 /* Crush */
                 .crush,
-                .crush-w { width: 0 }
+                .crush-w,
+                .grid-0,
+                .grid-w-0 { width: 0 }
 
                 /* Fill */
                 .fill,
                 .fill-w,
+                .grid-1,
+                .grid-w-1,
                 .jumbotron,
                 .responsive { width: 100% }
 

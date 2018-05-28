@@ -14,7 +14,29 @@
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1 class=center script='this.write("<em class=small> Accordions now working, yay! </em>")'> </h1>
+        <h1 class=center script='this.write("Debugging Room")'> </h1>
+
+        <!-- CSS Testing Area -->
+        <section id=cssTestingArea script=this.remove()>
+            <!-- Jumbotron -->
+            <div class=jumbotron>
+                <!-- Header -->
+                <h1 role=header> Header Text </h1>
+
+                <!-- Sub Header -->
+                <h1 role=subheader> Subheader Text </h1>
+            </div>
+        </section>
+
+        <!-- JavaScript Testing Area -->
+        <section id=javascriptTestingArea script=this.remove()>
+            <!-- Dropdown -->
+            <div class=dropdown data-id=lapys id=dropdown>
+                <button data-id=toggle> Dropdown Toggler </button>
+            </div>
+
+            <p data-id=lapys> This is Dropdown content. </p>
+        </section>
     </main>
 
     <!-- Scripts -->
