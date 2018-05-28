@@ -341,8 +341,19 @@
                         })();
 
                     /* Cache/ Polyfill */
-                        // Modification > LapysJS Development Kit
-                            // Clone
+                        /* Modification > LapysJS Development Kit
+                                --- NOTE ---
+                                    #lapys: Normally, when defining properties we like to be alphabetical
+                                        but seeing as prototype properties could be overridden,
+                                        it`s best to bridge the gap of being useless when overridden as soon as possible.
+
+                                        Hence, we clone each prototype object we use using a cloning function.
+                        */
+                            /* Clone
+                                    --- NOTE ---
+                                        #lapys: Does the best possible unique duplication
+                                            of JavaScript objects/ properties and values.
+                            */
                             LDK.clone = function clone() {
                                 /* Initialization > (Target, Data, Metadata)
                                         --- NOTE ---
@@ -357,7 +368,10 @@
                                 let $LDK = LDK.objectKeys(LDK),
                                     _LDK = $LDK.length;
 
-                                // Function > Parse
+                                /* Function > Parse
+                                        --- NOTE ---
+                                            #lapys: For cloning prototypes.
+                                */
                                 function parse() {
                                     // Initialization > Metadata
                                     let metadata = LDK.objectGetOwnPropDescs(arguments[0]);
@@ -407,8 +421,9 @@
                                                         it can not sustain overrides such as `<constructor>.prototype.<writable-property> = <value>`
 
                                                 --- WARN ---
-                                                    #lapys: Also be wary of `Symbol.prototype` comparisons
-                                                        with non-prototype objects.
+                                                    #lapys:
+                                                        - Also be wary of `Symbol.prototype` comparisons with non-prototype objects.
+                                                        - Although that can be alleviated with the `===` operator... :|
                                         */
                                         if (LDK.symbolProto == LDK[$$LDK])
                                             // Error Handling
@@ -546,7 +561,7 @@
                             LDK.getValueOf = function getValueOf() {
                                 // Initialization > (Target, Metadata)
                                 let data = arguments[0],
-                                    metadata = LDK.objectProto;
+                                    metadata = LDK.$objectProto;
 
                                 /* Logic
                                         [if statement]
@@ -995,15 +1010,21 @@
                                 // Prototype
                                 LDK.stringProto = LDK.string.prototype;
 
-                            // Attribute
+                            /* Attribute
+                                    --- NOTE ---
+                                        #lapys: All specified properties before here are needed
+                                            for our initial cloning mechanism for prototypes.
+                            */
                             LDK.attr = Attr;
                                 // Prototype
                                 LDK.attrProto = LDK.attr.prototype;
+                                LDK.$attrProto = LDK.clone.call(LDK.attrProto);
 
                             // Boolean
                             LDK.bool = Boolean;
                                 // Prototype
                                 LDK.boolProto = LDK.bool.prototype;
+                                LDK.$boolProto = LDK.clone.call(LDK.boolProto);
 
                             // Create Element
                             LDK.createElement = function createElement() {
@@ -1139,6 +1160,7 @@
 
                                 // Prototype
                                 LDK.docProto = LDK.doc.prototype;
+                                LDK.$docProto = LDK.clone.call(LDK.docProto);
 
                                 // Query Command Enabled
                                 LDK.docQueComEnabled = (function() {let a=LDK.$doc.queryCommandEnabled;return(function queryCommandEnabled(){return a.apply(LDK.$doc, [...arguments])})})();
@@ -1156,6 +1178,7 @@
                             LDK.docFrag = DocumentFragment;
                                 // Prototype
                                 LDK.docFragProto = LDK.docFrag.prototype;
+                                LDK.$docFragProto = LDK.clone.call(LDK.docFragProto);
 
                             // Documents
                             LDK.docs = [LDK.doc, LDK.docFrag];
@@ -1166,6 +1189,7 @@
                             LDK.err = Error,
                                 // Prototype
                                 LDK.errProto = LDK.err.prototype;
+                                LDK.$errProto = LDK.clone.call(LDK.errProto);
 
                             // False
                             LDK.false = !1;
@@ -1174,46 +1198,55 @@
                             LDK.file = File;
                                 // Prototype
                                 LDK.fileProto = LDK.file.prototype;
+                                LDK.$fileProto = LDK.clone.call(LDK.fileProto);
 
                             // HTML All Collection
                             LDK.htmlAllCollection = HTMLAllCollection;
                                 // Prototype
                                 LDK.htmlAllCollectionProto = LDK.htmlAllCollection.prototype;
+                                LDK.$htmlAllCollectionProto = LDK.clone.call(LDK.htmlAllCollectionProto);
 
                             // HTML Collection
                             LDK.htmlCollection = HTMLCollection;
                                 // Prototype
                                 LDK.htmlCollectionProto = LDK.htmlCollection.prototype;
+                                LDK.$htmlCollectionProto = LDK.clone.call(LDK.htmlCollectionProto);
 
                             // HTML Document
                             LDK.htmlDoc = HTMLDocument;
                                 // Prototype
                                 LDK.htmlDocProto = LDK.htmlDoc.prototype;
+                                LDK.$htmlDocProto = LDK.clone.call(LDK.htmlDocProto);
 
                             // HTML Element
                             LDK.htmlEle = HTMLElement;
                                 // Prototype
                                 LDK.htmlEleProto = LDK.htmlEle.prototype;
+                                LDK.$htmlEleProto = LDK.clone.call(LDK.htmlEleProto);
 
                             // HTML Input Element
                             LDK.htmlInputEle = HTMLInputElement;
                                 // Prototype
                                 LDK.htmlInputEleProto = LDK.htmlInputEle.prototype;
+                                LDK.$htmlInputEleProto = LDK.clone.call(LDK.htmlInputEleProto);
 
                             // HTML Table Element
                             LDK.htmlTableEle = HTMLTableElement;
                                 // Prototype
                                 LDK.htmlTableEleProto = LDK.htmlTableEle.prototype;
+                                LDK.$htmlTableEleProto = LDK.clone.call(LDK.htmlTableEleProto);
 
                             // HTML Text Area Element
                             LDK.htmlTextAreaEle = HTMLTextAreaElement;
                                 // Prototype
                                 LDK.htmlTextAreaEleProto = LDK.htmlTextAreaEle.prototype;
+                                LDK.$htmlTextAreaEleProto = LDK.clone.call(LDK.htmlTextAreaEleProto);
 
                             // Named Node Map
                             LDK.namedNodeMap = NamedNodeMap;
                                 // Prototype
                                 LDK.namedNodeMapProto = LDK.namedNodeMap.prototype;
+                                LDK.$namedNodeMapProto = LDK.clone.call(LDK.namedNodeMapProto);
 
                             // Number
                             LDK.number = Number;
@@ -1255,6 +1288,7 @@
 
                                 // Prototype
                                 LDK.numberProto = LDK.number.prototype;
+                                LDK.$numberProto = LDK.clone.call(LDK.numberProto);
 
                             // Infinity
                             LDK.infinity = LDK.number.POSITIVE_INFINITY || 1 / 0;
@@ -1266,6 +1300,7 @@
                             LDK.typeError = TypeError;
                                 // Prototype
                                 LDK.typeErrorProto = LDK.typeError.prototype;
+                                LDK.$typeErrorProto = LDK.clone.call(LDK.typeErrorProto);
 
                             // Undefined
                             LDK.undefined = void 0;
@@ -1278,6 +1313,7 @@
 
                                 // Prototype
                                 LDK.arrayProto = LDK.array.prototype;
+                                LDK.$arrayProto = LDK.clone.call(LDK.arrayProto);
                                     // Index Of
                                     (typeof LDK.arrayProto.indexOf=='function')||LDK.objectDefProp(LDK.arrayProto,'indexOf',{value:function indexOf(){if(this===LDK.null)throw LDK.typeError("'this' is null or not defined");var a,c=LDK.object(this),b=c.length>>>0;if(0===b)return -1;a=LDK.numberParseFloat(arguments[1])||0;LDK.infinity===Math.abs(a)&&(a=0);if(a>=b)return -1;for(a=Math.max(0<=a?a:b-Math.abs(a),0);a<b;){if(a in c&&c[a]===arguments[0])return a;a += 1}return -1},writable:LDK.true});
 
@@ -1288,6 +1324,7 @@
                             LDK.ele = Element;
                                 // Prototype
                                 LDK.eleProto = LDK.ele.prototype;
+                                LDK.$eleProto = LDK.clone.call(LDK.eleProto);
 
                                 // Text Content
                                 LDK.objectDefProp&&LDK.objectGetOwnPropDesc&&LDK.objectGetOwnPropDesc(LDK.eleProto,'textContent')&&!LDK.objectGetOwnPropDesc(LDK.eleProto,'textContent').get&&function(){var a=LDK.objectGetOwnPropDesc(LDK.eleProto,'innerText');LDK.objectDefProp(LDK.eleProto,'textContent',{get:function(){return a.get.call(this)},set:function(b){return a.set.call(this,b)}})}();
@@ -1296,16 +1333,19 @@
                             LDK.event = Event;
                                 // Prototype
                                 LDK.eventProto = LDK.event.prototype;
+                                LDK.$eventProto = LDK.clone.call(LDK.eventProto);
 
                             // Event Target
                             LDK.eventTarget = EventTarget;
                                 // Prototype
                                 LDK.eventTargetProto = LDK.eventTarget.prototype;
+                                LDK.$eventTargetProto = LDK.clone.call(LDK.eventTargetProto);
 
                             // Function
                             LDK.func = Function;
                                 // Prototype
                                 LDK.funcProto = LDK.func.prototype;
+                                LDK.$funcProto = LDK.clone.call(LDK.funcProto);
                                     // Bind
                                     (typeof LDK.funcProto=='function')||LDK.objectDefProp(LDK.funcProto,'bind',{value:function bind(){var a;try{a=eval('(function(){return('+this+')})()')}catch(e){a=this}return a},writable:LDK.true});
 
@@ -1320,34 +1360,40 @@
                             LDK.nodeList = NodeList;
                                 // Prototype
                                 LDK.nodeListProto = LDK.nodeList.prototype;
+                                LDK.$nodeListProto = LDK.clone.call(LDK.nodeListProto);
 
                             // Not A Number
                             LDK.nan = NaN;
 
                             // Promise
-                            LDK.promise = Promise,
+                            LDK.promise = Promise;
                                 // Prototype
-                                LDK.promiseProto = (LDK.promise || tmp).prototype,
+                                LDK.promiseProto = (LDK.promise || tmp).prototype;
+                                LDK.$promiseProto = LDK.clone.call(LDK.promiseProto);
 
                             // Reference Error
                             LDK.refError = ReferenceError;
                                 // Prototype
                                 LDK.refErrorProto = LDK.refError.prototype;
+                                LDK.$refErrorProto = LDK.clone.call(LDK.refErrorProto);
 
                             // Regular Expression
                             LDK.regex = RegExp;
                                 // Prototype
                                 LDK.regexProto = LDK.regex.prototype;
+                                LDK.$regexProto = LDK.clone.call(LDK.regexProto);
 
                             // Symbol
                             LDK.symbol = Symbol;
                                 // Prototype
                                 LDK.symbolProto = LDK.symbol.prototype;
+                                LDK.$symbolProto = LDK.clone.call(LDK.symbolProto);
 
                             // Text
                             LDK.text = Text;
                                 // Prototype
                                 LDK.textProto = LDK.text.prototype;
+                                LDK.$textProto = LDK.clone.call(LDK.textProto);
 
                             // True
                             LDK.true = !0;
@@ -1355,7 +1401,8 @@
                             // Window
                             LDK.window = Window;
                                 // Prototype
-                                LDK.windowProto = LDK.window.prototype
+                                LDK.windowProto = LDK.window.prototype;
+                                LDK.$windowProto = LDK.clone.call(LDK.windowProto);
 
                     /* Function */
                         // Modification > LapysJS Development Kit
