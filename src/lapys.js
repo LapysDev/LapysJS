@@ -1000,14 +1000,14 @@
                                     // Return
                                     return (function() {
                                         // Initialization > Alpha
-                                        let alpha = eval('function ' + data + '(){this.constructor.prototype.splice=LDK.arrayProto.splice;this.length=LDK.arrayProto.length}let metadata=new ' + data + ';metadata.__proto__=LDK.objectCreate(LDK.arrayProto);metadata');
+                                        let alpha = eval('function ' + data + '(){this.constructor.prototype.splice=(LDK.arrayProto||LDK.$arrayProto).splice;this.length=0}let metadata=new ' + data + ';metadata.__proto__=LDK.objectCreate(LDK.arrayProto);metadata');
 
                                         /* Update > Alpha
                                                 --- NOTE ---
                                                     #lapys: Test the named array.
                                         */
-                                        alpha.push(tmp.object);
-                                        alpha.pop(1);
+                                        (LDK.$arrayProto || LDK.arrayProto).push.call(alpha, tmp.object);
+                                        (LDK.$arrayProto || LDK.arrayProto).pop.call(alpha, 1);
 
                                         /* Loop
                                                 Index Arguments.
@@ -1015,7 +1015,7 @@
                                             > Update > Alpha
                                         */
                                         for (let i of args.slice(1))
-                                            alpha.push(i);
+                                            (LDK.$arrayProto || LDK.arrayProto).push.call(alpha, i);
 
                                         // Return
                                         return alpha
