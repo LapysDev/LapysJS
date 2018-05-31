@@ -668,7 +668,7 @@
                                 LDK.getValueOf = function getValueOf() {
                                     // Initialization > (Target, Metadata)
                                     let data = arguments[0],
-                                        metadata = LDK.$objectProto;
+                                        metadata = LDK.objectProto;
 
                                     /* Logic
                                             [if statement]
@@ -1286,7 +1286,12 @@
 
                                 // Document Fragment
                                 LDK.docFrag = DocumentFragment;
-                                    // Prototype
+                                    /* Prototype
+                                            --- NOTE ---
+                                                #lapys: The `setTimeout` function is used for
+                                                    the cloned prototype so that all properties (pre-defined and newly added from this script)
+                                                    are collated.
+                                    */
                                     LDK.docFragProto = LDK.docFrag.prototype;
                                     setTimeout(function() { LDK.$docFragProto = LDK.clone.call(LDK.docFragProto) });
 
@@ -1411,12 +1416,7 @@
                                     (typeof LDK.array.from=='function')||LDK.objectDefProp(LDK.array,'from',{value:function from(){var a=LDK.objectProto.toString,b=function(f){return'function'==typeof f||'[object Function]'===a.call(f)},c=function(f){var g=+f;return LDK.numberIsNaN(g)?0:0!=g&&LDK.numberIsFinite(g)?(0<g?1:-1)*Math.floor(Math.abs(g)):g},d=Math.pow(2,53)-1,e=function(f){var g=c(f);return Math.min(Math.max(g,0),d)};return function(g){var h=this,i=LDK.object(g);if(null==g)throw new LDK.typeError('Array.from requires an array-like object - not null or undefined');var l,j=1<arguments.length?arguments[1]:LDK.undefined;if('undefined'!=typeof j){if(!b(j))throw new typeError('Array.from: when provided, the second argument must be a function');2<arguments.length&&(l=arguments[2])}for(var p,m=e(i.length),n=b(h)?LDK.object(new h(m)):LDK.array(m),o=0;o<m;)p=i[o],n[o]=j?'undefined'==typeof l?j(p,o):j.call(l,p,o):p,o+=1;return n.length=m,n}}(),writable:LDK.true});
                                     LDK.arrayFrom = LDK.array.from;
 
-                                    /* Prototype
-                                            --- NOTE ---
-                                                #lapys: The `setTimeout` function is used for
-                                                    the cloned prototype so that all properties (pre-defined and newly added from this script)
-                                                    are collated.
-                                    */
+                                    // Prototype
                                     LDK.arrayProto = LDK.array.prototype;
                                     setTimeout(function() { LDK.$arrayProto = LDK.clone.call(LDK.arrayProto) });
                                         // Index Of
@@ -1467,7 +1467,7 @@
                                     LDK.nodeListProto = LDK.nodeList.prototype;
 
                                 // Not A Number
-                                LDK.nan = NaN;
+                                LDK.nan = NaN || 0 / 0;
 
                                 // Promise
                                 LDK.promise = Promise;
@@ -1529,7 +1529,7 @@
                                         // Initialization > Alpha
                                         let alpha = (function() {
                                             // Initialization > (Metadata, Alpha, Beta)
-                                            let metadata = LDK.namedObject(LDK.$stringProto.toUpperCase.call(data[0]) + LDK.$stringProto.slice.call(data, data[0].length) + 'Event'),
+                                            let metadata = LDK.namedObject(LDK.toUpperCaseString(data[0]) + LDK.sliceString(data, data[0].length) + 'Event'),
                                                 $metadata = metadata.constructor.prototype,
                                                 alpha = LDK.eventProto,
                                                 beta = new LDK.event('');
@@ -1579,50 +1579,63 @@
                                                 I consider this method a God-send when it comes to debugging.
                                 */
                                 LDK.$func = function func() {
-                                    /* Logic
-                                            [switch statement]
+                                    // Error Handling
+                                    try {
+                                        /* Logic
+                                                [switch statement]
 
-                                        ((>> Error Handling) > Return | > Error)
-                                    */
-                                    switch (arguments.length) {
-                                        // 0
-                                        case 0:
-                                            return (function() {});
-                                            break;
+                                            ((>> Error Handling) > Return | > Error)
+                                        */
+                                        switch (arguments.length) {
+                                            // 0
+                                            case 0:
+                                                return (function() {});
+                                                break;
 
-                                        // 1
-                                        case 1:
-                                            try { return eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? arguments[0].getBody() : LDK.string(arguments[0])) + '})') }
-                                            catch (error) { return eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? arguments[0].getBody() : LDK.string(arguments[0])) + '\n})') }
-                                            break;
+                                            // 1
+                                            case 1:
+                                                try { return tmp.functions.eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? LDK.getFunctionBody(arguments[0]) : (LDK.isString(arguments[0]) ? arguments[0] : 'return ' + LDK.string(arguments[0]))) + '})') }
+                                                catch (error) { return tmp.functions.eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? LDK.getFunctionBody(arguments[0]) : (LDK.isString(arguments[0]) ? arguments[0] : 'return ' + LDK.string(arguments[0]))) + '\n})') }
+                                                break;
 
-                                        // 2
-                                        case 2:
-                                            try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + ') {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '})') }
-                                            catch (error) {
-                                                try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + ') {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '\n})') }
+                                            // 2
+                                            case 2:
+                                                try { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + ') {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '})') }
                                                 catch (error) {
-                                                    try { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + '\n) {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '})') }
-                                                    catch (error) { return eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : LDK.string(arguments[0])) + '\n) {' + (LDK.isFunction(arguments[1]) ? arguments[1].getBody() : LDK.string(arguments[1])) + '\n})') }
+                                                    try { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + ') {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '\n})') }
+                                                    catch (error) {
+                                                        try { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + '\n) {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '})') }
+                                                        catch (error) { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + '\n) {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '\n})') }
+                                                    }
                                                 }
-                                            }
-                                            break;
+                                                break;
 
-                                        // 3
-                                        case 3:
-                                            try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + ') {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '})') }
-                                            catch (error) {
-                                                try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + ') {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '\n})') }
+                                            // 3
+                                            case 3:
+                                                try { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + ') {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '})') }
                                                 catch (error) {
-                                                    try { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + '\n) {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '})') }
-                                                    catch (error) { return eval.call(LDK.null, '(function' + (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '') + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : LDK.string(arguments[1])) + '\n) {' + (LDK.isFunction(arguments[2]) ? arguments[2].getBody() : LDK.string(arguments[2])) + '\n})') }
+                                                    try { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + ') {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '\n})') }
+                                                    catch (error) {
+                                                        try { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + '\n) {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '})') }
+                                                        catch (error) { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + '\n) {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '\n})') }
+                                                    }
                                                 }
-                                            }
-                                            break;
+                                                break;
 
-                                        // [Default]
-                                        default:
-                                            LapysJS.error(["'func'", "'" + this.constructor.name + "'"], 'argument', 'Invalid number of arguments given')
+                                            // [Default]
+                                            default:
+                                                LapysJS.error(["'func'", "'" + this.constructor.name + "'"], 'argument', 'Invalid number of arguments given')
+                                        }
+                                    } catch (error) {
+                                        // LapyJS > Error
+                                        let data = tmp.functions.eval("new (class LapysJSError extends Error{constructor(){super([" + (a=>{let $a=a.length,b='';for(let i=0;i<$a;i+=1)b+="'"+(a[i]=LDK.string(a[i]))+"',";return b.slice(0,-','.length)})([...arguments]) + "]);LDK.err.captureStackTrace(this,LapysJSError)}})");
+
+                                        // Modification > Data > (Message, Stack)
+                                        data.message = '[LapysJS v' + LDK.constants.VERSION + '] => ' + error.message + '\n';
+                                        data.stack = error.stack;
+
+                                        // Error
+                                        throw data
                                     }
                                 };
 
@@ -1666,13 +1679,13 @@
                                             */
                                             switch (LDK.true) {
                                                 // X
-                                                case i == 0 || LDK.toLowerCaseString(i) == 'x':
-                                                    return 'clientX' in metadata ? metadata.clientX : (isArrayLike(metadata.changedTouches) ? metadata.changedTouches[0].clientX : alpha);
+                                                case (i === 0) || LDK.toLowerCaseString(i) == 'x':
+                                                    return 'clientX' in metadata ? metadata.clientX : (LDK.isArrayLike(metadata.changedTouches) ? metadata.changedTouches[0].clientX : alpha);
                                                     break;
 
                                                 // Y
                                                 case i == 1 || LDK.toLowerCaseString(i) == 'y':
-                                                    return 'clientY' in metadata ? metadata.clientY : (isArrayLike(metadata.changedTouches) ? metadata.changedTouches[0].clientY : alpha);
+                                                    return 'clientY' in metadata ? metadata.clientY : (LDK.isArrayLike(metadata.changedTouches) ? metadata.changedTouches[0].clientY : alpha);
                                                     break;
 
                                                 // Z
@@ -1689,6 +1702,18 @@
                                 LDK.getEventTarget = function getEventTarget() {
                                     // Return
                                     return event.target || event.srcElement || event.originalTarget
+                                };
+
+                                // Get Function Body
+                                LDK.getFunctionBody = function getFunctionBody() {
+                                    // Return
+                                    return LDK.$funcProto.getBody.call(arguments[0])
+                                };
+
+                                // Get Function Head
+                                LDK.getFunctionHead = function getFunctionHead() {
+                                    // Return
+                                    return LDK.$funcProto.getHead.call(arguments[0])
                                 };
 
                                 // Get Function Parameters
@@ -1729,7 +1754,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(
+                                        LDK.pushArray(data,
                                             LDK.isConstructible(i) ? (
                                                 (
                                                     i.constructor == LDK.array ||
@@ -1756,7 +1781,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(LDK.isConstructible(i) ? ((i.constructor == LDK.doc || i.constructor == LDK.htmlDoc) && typeof i == 'object') : LDK.false);
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? ((i.constructor == LDK.doc || i.constructor == LDK.htmlDoc) && typeof i == 'object') : LDK.false);
 
                                     // Return
                                     return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
@@ -1774,7 +1799,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(LDK.isConstructible(i) ? (
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? (
                                             (
                                                 i.constructor == LDK.doc ||
                                                 i.constructor == LDK.docFrag ||
@@ -1798,7 +1823,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(LDK.isConstructible(i) ? (
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? (
                                             (function(){let a=i.__proto__,b=[];while(a!=LDK.null){b.push(a);a=a.__proto__}return b.indexOf(LDK.eleProto)>-1})() &&
                                             typeof i == 'object'
                                         ) : LDK.false);
@@ -1819,7 +1844,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(LDK.isConstructible(i) ? (
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? (
                                             (function(){let a=i.__proto__,b=[];while(a!=LDK.null){b.push(a);a=a.__proto__}return b.indexOf(LDK.eventTargetProto)>-1})() &&
                                             typeof i == 'object'
                                         ) : LDK.false);
@@ -1849,11 +1874,29 @@
                                             eval('(function(){' + i + '})');
 
                                             // Update > Data
-                                            data.push(LDK.true)
+                                            LDK.pushArray(data, LDK.true)
                                         } catch (error) {
                                             // Update > Data
-                                            data.push(LDK.false)
+                                            LDK.pushArray(data, LDK.false)
                                         }
+
+                                    // Return
+                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                };
+
+                                // Is Iterable
+                                LDK.isIterable = function isIterable() {
+                                    // Initialization > (Arguments, Data)
+                                    let args = [...arguments],
+                                        data = [];
+
+                                    /* Loop
+                                            Index Arguments.
+
+                                        > Update > Data
+                                    */
+                                    for (let i of args)
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? (LDK.isNull(i) ? LDK.false : LDK.isNativeFunction(i[LDK.symbol.iterator])) : LDK.false);
 
                                     // Return
                                     return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
@@ -1871,7 +1914,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(LDK.isConstructible(i) ? (
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? (
                                             (function() {
                                                 // Error Handling > Return
                                                 try { tmp.functions.eval(LDK.string(i)); return LDK.false }
@@ -1899,7 +1942,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(i === LDK.null);
+                                        LDK.pushArray(data, i === LDK.null);
 
                                     // Return
                                     return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
@@ -1917,7 +1960,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(LDK.isConstructible(i) ? (
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? (
                                             (
                                                 i.constructor == LDK.docFrag
                                             ) && typeof i == 'object'
@@ -1939,7 +1982,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(i === LDK.undefined);
+                                        LDK.pushArray(data, i === LDK.undefined);
 
                                     // Return
                                     return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
@@ -1957,7 +2000,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        data.push(LDK.isConstructible(i) ? (i.constructor == LDK.window && typeof i == 'object') : LDK.false);
+                                        LDK.pushArray(data, LDK.isConstructible(i) ? (i.constructor == LDK.window && typeof i == 'object') : LDK.false);
 
                                     // Return
                                     return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
@@ -1967,6 +2010,18 @@
                                 LDK.joinArray = function joinArray() {
                                     // Return
                                     return LDK.$arrayProto.join.call(arguments[0], arguments[1])
+                                };
+
+                                // Pop Array
+                                LDK.popArray = function popArray() {
+                                    // Return
+                                    return LDK.$arrayProto.pop.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
+                                // Push Array
+                                LDK.pushArray = function pushArray() {
+                                    // Return
+                                    return LDK.$arrayProto.push.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
                                 };
 
                                 // Randomize String
@@ -2095,6 +2150,12 @@
                                 LDK.toUpperCaseString = function toUpperCaseString() {
                                     // Return
                                     return LDK.$stringProto.toUpperCase.call(LDK.string(arguments[0]))
+                                };
+
+                                // Trim String
+                                LDK.trimString = function trimString() {
+                                    // Return
+                                    return LDK.$stringProto.trim.call(arguments[0])
                                 };
 
                         /* Global Data */
@@ -7316,23 +7377,165 @@
                                 }
                             });
 
-                            // Stringify --- CHECKPOINT ---
+                            // Stringify
                             LDK.objectDefProp(tmp.value, 'stringify', {
                                 // Configurable
                                 configurable: LDK.true,
 
                                 // Value
                                 value: function stringify() {
-                                    /* Initialization > (Data, Depth, Target)
+                                    /* Initialization > (Arguments, Data, Depth, Target)
                                             --- NOTE ---
                                                 #lapys: How deep should the stringification go?
                                     */
-                                    let data = arguments[0],
-                                        depth = arguments.length > 1 ? LDK.numberParseInt(LDK.numberParseNumber(arguments[1])) : 1,
+                                    let args = [...arguments],
+                                        data = args[0],
+                                        depth = args.length > 1 ? LDK.numberParseInt(LDK.numberParseNumber(args[1])) : 1,
                                         that = this;
 
-                                    (depth < 1) && (depth = 1);
+                                    // Update > Depth
+                                    (depth < 0) && (depth = 1);
                                     LDK.numberIsSafeInteger(depth) || (depth = 1);
+
+                                    // Initialization > Depth
+                                    let $depth = depth - 1;
+
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (!depth)
+                                        // Return
+                                        return LDK.string(data);
+
+                                    else if (depth)
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (LDK.isConstructible(data)) {
+                                            /* Function > Stringify Object
+                                                    --- NOTE ---
+                                                        #lapys: We are only stringifying
+                                                            writable values.
+                                            */
+                                            function stringifyObject() {
+                                                // Initialization > Data
+                                                let data = arguments[0],
+                                                    $data = LDK.objectGetOwnPropDescs(data);
+
+                                                /* Loop
+                                                        Index Data.
+
+                                                    > Error Handling
+                                                */
+                                                for (let i in $data)
+                                                    try {
+                                                        // Modification > Data > [Loop Iterator]
+                                                        ('value' in $data[i]) && (data[i] = LDK.string($data[i].value))
+                                                    } catch (error) {
+                                                        // Warn
+                                                        tmp.functions.warn("[LapysJS v" + LDK.constants.VERSION + "]Could not stringify property '" + i + "' of object ", data)
+                                                    }
+
+                                                // Return
+                                                return data
+                                            }
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDK.isWindow(data))
+                                                // LapysJS > Error
+                                                LapysJS.error(["'stringify'", "'" + args[0].constructor.name + "'"], 'argument', 'Invalid object given to stringify');
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (depth == 1)
+                                                // Return
+                                                return stringifyObject(data);
+
+                                            else {
+                                                // Initialization > (Code, Iterators)
+                                                let code = '',
+                                                    iterators = (function(depth) {
+                                                        // Initialization > (Element, Index, Iterators (Counted))
+                                                        let element = tmp.element,
+                                                            index = 0,
+                                                            iterators = '',
+                                                            iteratorsCounted = 0;
+
+                                                        /* Loop
+                                                                [while statement]
+                                                        */
+                                                        while (iteratorsCounted < depth && index < maximumCallStackSize) {
+                                                            // Error Handling
+                                                            try {
+                                                                // Modification > Element > Inner HTML
+                                                                element.innerHTML = '';
+                                                                element.innerHTML = '&#' + index + ';';
+
+                                                                // Initialization > Possible Iterator
+                                                                let possibleIterator = element.innerHTML;
+
+                                                                /* Logic
+                                                                        If
+                                                                            the parsed possible iterator is `i`,
+                                                                            do not add it to our list of iterators because
+                                                                            we have reserved `i` for other functions.
+
+                                                                    > Error
+                                                                */
+                                                                if (possibleIterator == 'i')
+                                                                    throw new LDK.err;
+
+                                                                // Execution
+                                                                tmp.functions.eval('(function(){var ' + possibleIterator + '})');
+
+                                                                // Update > Iterators (Counted)
+                                                                iterators += possibleIterator;
+                                                                iteratorsCounted += 1
+                                                            } catch (error) {}
+
+                                                            // Update > Index
+                                                            index += 1
+                                                        }
+
+                                                        // Return
+                                                        return iterators
+                                                    })(depth + 1);
+
+                                                // Update > Code
+                                                code += 'var $ = data;';
+
+                                                /* Loop
+                                                        Iterate over Depth.
+
+                                                    > Update > Code
+                                                */
+                                                for (let i = 0; i < depth; i += 1)
+                                                    code += (i ? 'if(LDK.isIterable(' + iterators[0] + iterators.slice(1, i + 1).replace(/./g, '[$&]') + '))' : '') +
+                                                        (i == $depth ? 'stringifyObject(' + iterators[0] + iterators.slice(1, i + 1).replace(/./g, '[$&]') + ')' : 'for(let ' + iterators[i + 1] + ' in ' + iterators[0] + iterators.slice(1, i + 1).replace(/./g, '[$&]') + ')');
+
+                                                // Modification > Temporary Data > Temporary Data
+                                                tmp.tmp = [data, stringifyObject];
+
+                                                // Error Handling
+                                                try {
+                                                    // Execution
+                                                    tmp.functions.eval('var data=tmp.tmp[0],stringifyObject=tmp.tmp[1];' + code)
+                                                } catch (error) {
+                                                    // LapysJS > Error
+                                                    LapysJS.error(["'stringify'", "'" + args[0].constructor.name + "'"], 'argument', 'Invalid object given to stringify')
+                                                }
+
+                                                // Return
+                                                return data
+                                            }
+                                        }
+
+                                        else
+                                            // Return
+                                            return data
                                 },
 
                                 // Writable
@@ -16259,10 +16462,10 @@
                                             LDK.objectDefProp(metadata, 'address', {value: $data[0].trim()});
 
                                             // [Primitive Value]
-                                            LDK.objectDefProp(metadata, '[[PrimitiveValue]]', {value: data});
+                                            LDK.objectDefProp(metadata, '[[PrimitiveValue]]', {value: LDK.trimString(data)});
 
                                             // To String
-                                            LDK.objectDefProp($metadata, 'toString', {value: function toString() { return data }});
+                                            LDK.objectDefProp($metadata, 'toString', {value: function toString() { return LDK.trimString(data) }});
 
                                             // Value
                                             LDK.objectDefProp(metadata, 'value', {value: $data[1]});
@@ -19944,7 +20147,6 @@
 
                     /* Assets */
                         /* Components Manager
-                                --- CHECKPOINT ---
                                 --- NOTE ---
                                     #lapys: If a DOM element ceases to be a registered component,
                                         then it will be updated via the Components Manager.
@@ -19989,14 +20191,6 @@
                                         // Update > (Permanent Data > Modified Components List)
                                         LDK.$arrayProto.removeElement.call(perm.modifiedComponentsList, i)
                                     }
-
-                                    /* {Dropdown} Logic
-                                            [if statement]
-                                    */
-                                    if (
-                                        LDK.$stringProto.indexOf.call(data.getAttribute('class') || '', 'dropdown') < 0 &&
-                                        LDK.$arrayProto.indexOf.call(metadata, 'dropdown') > -1
-                                    ) {}
                                 }
 
                                 // Request Animation Frame > Components Manager
@@ -20010,192 +20204,150 @@
                                 tmp.functions.eval("throw new (class LapysJSComponentsManagementError extends (class LapysJSError extends Error { constructor() { super('" + LDK.$stringProto.replace.call(error.message, /'/g, "\\'") + "') } }) { constructor() { super() } })")
                             }
                         })();
+                            /* Accordion */
+                            (function Accordion() {
+                                // Error Handling
+                                try {
+                                    // Initialization > Data
+                                    let data = LDK.docQueSel('.accordion');
 
-                        /* Accordion */
-                        (function Accordion() {
-                            // Error Handling
-                            try {
-                                // Initialization > Data
-                                let data = LDK.docQueSel('.accordion');
-
-                                /* Logic
-                                        [if statement]
-                                */
-                                if (data) {
-                                    // Initialization > (Data, Metadata)
-                                    let data = LDK.arrayFrom(LDK.docGetEleByClass('accordion')),
-                                        metadata = perm.modifiedComponentsList;
-
-                                    /* Loop
-                                            Index Data.
+                                    /* Logic
+                                            [if statement]
                                     */
-                                    for (let i of data)
-                                        /* Logic
-                                                If the Accordion is registered.
+                                    if (data) {
+                                        // Initialization > (Data, Metadata)
+                                        let data = LDK.arrayFrom(LDK.docGetEleByClass('accordion')),
+                                            metadata = perm.modifiedComponentsList;
+
+                                        /* Loop
+                                                Index Data.
                                         */
-                                        if (LDK.$arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=a[i].element;return a})([...metadata]), i) > -1) {
-                                            // Initialization > Data
-                                            let data = LDK.arrayFrom(i.children);
-
-                                            /* Loop
-                                                    Index Data.
-                                            */
-                                            for (let i of data) {
-                                                // Initialization > Metadata
-                                                let metadata = LDK.$eleProto.getAttribute.call(i, 'data-id');
-
-                                                // Deletion
-                                                (metadata != 'content' && metadata != 'title') && i.remove()
-                                            }
-
+                                        for (let i of data)
                                             /* Logic
-                                                    If
-                                                        the Accordion is missing a title.
+                                                    If the Accordion is registered.
                                             */
-                                            if (!LDK.$eleProto.querySelector.call(i, '[data-id=title')) {
+                                            if (LDK.$arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=a[i].element;return a})([...metadata]), i) > -1) {
                                                 // Initialization > Data
-                                                let data = LDK.docCreateEle('accordion-title');
+                                                let data = LDK.arrayFrom(i.children);
 
-                                                // Modification > Data > Data ID
-                                                LDK.$eleProto.setAttribute.call(data, 'data-id', 'title');
+                                                /* Loop
+                                                        Index Data.
+                                                */
+                                                for (let i of data) {
+                                                    // Initialization > Metadata
+                                                    let metadata = LDK.$eleProto.getAttribute.call(i, 'data-id');
 
-                                                // Insertion
-                                                LDK.$eleProto.appendChild.call(i, data);
-                                                LDK.$nodeProto.insertBefore.call(i, data, i.firstChild);
+                                                    // Deletion
+                                                    (metadata != 'content' && metadata != 'title') && i.remove()
+                                                }
 
-                                                // Warn
-                                                tmp.functions.warn('[LapysJS v' + LDK.constants.VERSION + '] => Found Accordion with missing title.\n', i)
-                                            }
+                                                /* Logic
+                                                        If
+                                                            the Accordion is missing a title.
+                                                */
+                                                if (!LDK.$eleProto.querySelector.call(i, '[data-id=title')) {
+                                                    // Initialization > Data
+                                                    let data = LDK.docCreateEle('accordion-title');
 
-                                            // Update > Data
-                                            data = LDK.$eleProto.querySelector.call(i, '[data-id=title');
-                                                // Modification > Data > Accordion
-                                                ((data.accordion || tmp.object) == data.parentElement) || LDK.objectDefProp(data, 'accordion', {
-                                                    // Configurable
-                                                    configurable: LDK.true,
+                                                    // Modification > Data > Data ID
+                                                    LDK.$eleProto.setAttribute.call(data, 'data-id', 'title');
 
-                                                    // Get
-                                                    get: function accordion() { return i }
-                                                });
+                                                    // Insertion
+                                                    LDK.$eleProto.appendChild.call(i, data);
+                                                    LDK.$nodeProto.insertBefore.call(i, data, i.firstChild);
 
-                                                // Function > Toggle Accordion
-                                                function toggleAccordion() { this.accordion.toggleState() }
+                                                    // Warn
+                                                    tmp.functions.warn('[LapysJS v' + LDK.constants.VERSION + '] => Found Accordion with missing title.\n', i)
+                                                }
 
-                                                // Event > Data > Click
-                                                (LDK.getSourceCode(data.onclick) == LDK.getSourceCode(toggleAccordion)) || (data.onclick = toggleAccordion);
+                                                // Update > Data
+                                                data = LDK.$eleProto.querySelector.call(i, '[data-id=title');
+                                                    // Modification > Data > Accordion
+                                                    ((data.accordion || tmp.object) == data.parentElement) || LDK.objectDefProp(data, 'accordion', {
+                                                        // Configurable
+                                                        configurable: LDK.true,
 
-                                            // Modification > [Loop Iterator]
-                                                // Close
-                                                (typeof i.close == 'function') || LDK.objectDefProp(i, 'close', {
-                                                    // Configurable
-                                                    configurable: LDK.true,
+                                                        // Get
+                                                        get: function accordion() { return i }
+                                                    });
 
-                                                    // Value
-                                                    value: function close() { return this.state = LDK.false }
-                                                });
+                                                    // Function > Toggle Accordion
+                                                    function toggleAccordion() { this.accordion.toggleState() }
 
-                                                // Open
-                                                (typeof i.open == 'function') || LDK.objectDefProp(i, 'open', {
-                                                    // Configurable
-                                                    configurable: LDK.true,
+                                                    // Event > Data > Click
+                                                    (LDK.getSourceCode(data.onclick) == LDK.getSourceCode(toggleAccordion)) || (data.onclick = toggleAccordion);
 
-                                                    // Value
-                                                    value: function open() { return this.state = LDK.true }
-                                                });
-
-                                                // State
-                                                ('state' in i) || LDK.objectDefProp(i, 'state', new (function Object() {
-                                                    // Initialization > Target
-                                                    let that = this;
-
-                                                    // Modification > (Configurable, Get, Set)
-                                                    that.configurable = LDK.true;
-                                                    that.get = function getState() { return this.getAttribute('state') };
-                                                    that.set = function setState() { return this.setAttribute('state', arguments[0] ? 'open' : 'close') };
-
-                                                    // Set Timeout > Modification > [Loop Iterator] > State
-                                                    tmp.functions.setTimeout(function() { LDK.$eleProto.setAttribute.call(i, 'state', LDK.$eleProto.getAttribute.call(i, 'state') == 'open' ? 'open' : 'close') });
-
-                                                    // Return
-                                                    return that
-                                                }));
-
-                                                // Title
-                                                ((i.title || tmp.object) == i.firstElementChild) || LDK.objectDefProp(i, 'title', {
-                                                    // Configurable
-                                                    configurable: LDK.true,
-
-                                                    // Get
-                                                    get: function title() { return data }
-                                                });
-
-                                                // Toggle State
-                                                    // Function
-                                                    function toggleState() { this.state = this.state == 'open' ? LDK.false : LDK.true }
-
-                                                    // Definition
-                                                    (LDK.getSourceCode(i.toggleState) == LDK.getSourceCode(toggleState)) || LDK.objectDefProp(i, 'toggleState', {
+                                                // Modification > [Loop Iterator]
+                                                    // Close
+                                                    (typeof i.close == 'function') || LDK.objectDefProp(i, 'close', {
                                                         // Configurable
                                                         configurable: LDK.true,
 
                                                         // Value
-                                                        value: toggleState
-                                                    })
-                                        }
+                                                        value: function close() { return this.state = LDK.false }
+                                                    });
 
-                                        else
-                                            // Update > Metadata
-                                            LDK.$arrayProto.push.call(metadata, {element: i, type: ['accordion']})
+                                                    // Open
+                                                    (typeof i.open == 'function') || LDK.objectDefProp(i, 'open', {
+                                                        // Configurable
+                                                        configurable: LDK.true,
+
+                                                        // Value
+                                                        value: function open() { return this.state = LDK.true }
+                                                    });
+
+                                                    // State
+                                                    ('state' in i) || LDK.objectDefProp(i, 'state', new (function Object() {
+                                                        // Initialization > Target
+                                                        let that = this;
+
+                                                        // Modification > (Configurable, Get, Set)
+                                                        that.configurable = LDK.true;
+                                                        that.get = function getState() { return this.getAttribute('state') };
+                                                        that.set = function setState() { return this.setAttribute('state', arguments[0] ? 'open' : 'close') };
+
+                                                        // Set Timeout > Modification > [Loop Iterator] > State
+                                                        tmp.functions.setTimeout(function() { LDK.$eleProto.setAttribute.call(i, 'state', LDK.$eleProto.getAttribute.call(i, 'state') == 'open' ? 'open' : 'close') });
+
+                                                        // Return
+                                                        return that
+                                                    }));
+
+                                                    // Title
+                                                    ((i.title || tmp.object) == i.firstElementChild) || LDK.objectDefProp(i, 'title', {
+                                                        // Configurable
+                                                        configurable: LDK.true,
+
+                                                        // Get
+                                                        get: function title() { return data }
+                                                    });
+
+                                                    // Toggle State
+                                                        // Function
+                                                        function toggleState() { this.state = this.state == 'open' ? LDK.false : LDK.true }
+
+                                                        // Definition
+                                                        (LDK.getSourceCode(i.toggleState) == LDK.getSourceCode(toggleState)) || LDK.objectDefProp(i, 'toggleState', {
+                                                            // Configurable
+                                                            configurable: LDK.true,
+
+                                                            // Value
+                                                            value: toggleState
+                                                        })
+                                            }
+
+                                            else
+                                                // Update > Metadata
+                                                LDK.$arrayProto.push.call(metadata, {element: i, type: ['accordion']})
+                                    }
+
+                                    // Request Animation Frame > Accordion
+                                    tmp.functions.requestAnimationFrame(Accordion)
+                                } catch (error) {
+                                    // LapysJS > Error
+                                    LapysJS.error('Accordion Components Manager is broken.\n\t' + error.message)
                                 }
-
-                                // Request Animation Frame > Accordion
-                                tmp.functions.requestAnimationFrame(Accordion)
-                            } catch (error) {
-                                // LapysJS > Error
-                                LapysJS.error('Accordion Components Manager is broken.\n\t' + error.message)
-                            }
-                        })();
-
-                        /* Dropdown
-                                --- CHECKPOINT ---
-                        */
-                        (function Dropdown() {
-                            // Error Handling
-                            try {
-                                // Initialization > Data
-                                let data = LDK.docQueSel('.dropdown');
-
-                                /* Logic
-                                        [if statement]
-                                */
-                                if (data) {
-                                    // Initialization > (Data, Metadata)
-                                    let data = LDK.arrayFrom(LDK.docGetEleByClass('accordion')),
-                                        metadata = perm.modifiedComponentsList;
-
-                                    /* Loop
-                                            Index Data.
-                                    */
-                                    for (let i of data)
-                                        /* Logic
-                                                If the Dropdown is registered.
-                                        */
-                                        if (LDK.$arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=a[i].element;return a})([...metadata]), i) > -1) {
-
-                                        }
-
-                                        else
-                                            // Update > Metadata
-                                            LDK.$arrayProto.push.call(metadata, {element: i, type: ['dropdown']})
-                                }
-
-                                // Request Animation Frame > Dropdown
-                                tmp.functions.requestAnimationFrame(Dropdown)
-                            } catch (error) {
-                                // LapysJS > Error
-                                LapysJS.error('Dropdown Components Manager is broken.\n\t' + error.message)
-                            }
-                        })();
+                            })();
 
                     /* Return
                             --- NOTE ---
