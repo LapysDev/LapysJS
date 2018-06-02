@@ -1199,10 +1199,7 @@
                                                 break
                                             }
 
-                                        /* Update > Arguments
-                                                --- CHECKPOINT ---
-                                                    #lapys: Continue updating all vulnerable method calls from here.
-                                        */
+                                        // Update > Arguments
                                         args = LDK.sliceArray((function(a){for(let i in a)a[i]=LDK.string(a[i]);return a})(LDK.filterArray(args,a=>{return!LDK.isObject(a)})), 1);
 
                                         /* Logic
@@ -1639,10 +1636,46 @@
                                     }
                                 };
 
+                                // Get After String
+                                LDK.getAfterString = function getAfterString() {
+                                    // Return
+                                    return LDK.$stringProto.getAfterChar.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
+                                // Get Before String
+                                LDK.getBeforeString = function getBeforeString() {
+                                    // Return
+                                    return LDK.$stringProto.getBeforeChar.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
                                 // Get Constructor
                                 LDK.getConstructor = function getConstructor() {
                                     // Return
                                     return LDK.isNonConstructible(arguments[0]) ? tmp.object : arguments[0].constructor
+                                };
+
+                                // Get Document Body
+                                LDK.getDocumentBody = function getDocumentBody() {
+                                    // Return
+                                    return tmpFunctions.getDocumentBody.call(LDK.$doc)
+                                };
+
+                                // Get Document Document Element
+                                LDK.getDocumentDocumentElement = function getDocumentDocumentElement() {
+                                    // Return
+                                    return tmpFunctions.getDocumentDocumentElement.call(LDK.$doc)
+                                };
+
+                                // Get Document Head
+                                LDK.getDocumentHead = function getDocumentHead() {
+                                    // Return
+                                    return tmpFunctions.getDocumentHead.call(LDK.$doc)
+                                };
+
+                                // Get Element ID
+                                LDK.getElementID = function getElementID() {
+                                    // Return
+                                    return tmpFunctions.getElementID.call(arguments[0])
                                 };
 
                                 // Get Empty HTML Collection
@@ -1684,12 +1717,12 @@
                                                     break;
 
                                                 // Y
-                                                case i == 1 || LDK.toLowerCaseString(i) == 'y':
+                                                case i === 1 || LDK.toLowerCaseString(i) == 'y':
                                                     return 'clientY' in metadata ? metadata.clientY : (LDK.isArrayLike(metadata.changedTouches) ? metadata.changedTouches[0].clientY : alpha);
                                                     break;
 
                                                 // Z
-                                                case i == 2 || LDK.toLowerCaseString(i) == 'z':
+                                                case i === 2 || LDK.toLowerCaseString(i) == 'z':
                                                     return alpha
                                             }
                                         })());
@@ -1725,7 +1758,7 @@
                                 // Get Safe Random String
                                 LDK.getSafeRandomString = function getSafeRandomString() {
                                     // Return
-                                    return LDK.constants.REGEX_SET.randomize()
+                                    return LDK.$stringProto.randomize.call(LDK.constants.REGEX_SET)
                                 };
 
                                 // Get Source Code
@@ -1766,7 +1799,7 @@
                                         );
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Document
@@ -1784,7 +1817,7 @@
                                         LDK.pushArray(data, LDK.isConstructible(i) ? ((i.constructor == LDK.doc || i.constructor == LDK.htmlDoc) && typeof i == 'object') : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Document-Like
@@ -1808,7 +1841,7 @@
                                         ) : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Element
@@ -1829,7 +1862,7 @@
                                         ) : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Event Target
@@ -1850,7 +1883,7 @@
                                         ) : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // is Executable String
@@ -1881,7 +1914,7 @@
                                         }
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Iterable
@@ -1899,7 +1932,7 @@
                                         LDK.pushArray(data, LDK.isConstructible(i) ? (LDK.isNull(i) ? LDK.false : LDK.isNativeFunction(i[LDK.symbol.iterator])) : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Native Function
@@ -1917,7 +1950,7 @@
                                         LDK.pushArray(data, LDK.isConstructible(i) ? (
                                             (function() {
                                                 // Error Handling > Return
-                                                try { tmp.functions.eval(LDK.string(i)); return LDK.false }
+                                                try { tmpFunctions.eval(LDK.string(i)); return LDK.false }
                                                 catch (error) {}
 
                                                 // Return
@@ -1927,7 +1960,7 @@
                                         ) : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Null
@@ -1945,7 +1978,7 @@
                                         LDK.pushArray(data, i === LDK.null);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Strictly Document-Like
@@ -1967,7 +2000,7 @@
                                         ) : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Undefined
@@ -1985,7 +2018,7 @@
                                         LDK.pushArray(data, i === LDK.undefined);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Is Window
@@ -2003,13 +2036,19 @@
                                         LDK.pushArray(data, LDK.isConstructible(i) ? (i.constructor == LDK.window && typeof i == 'object') : LDK.false);
 
                                     // Return
-                                    return args.length > 0 ? tmp.functions.indexOf.call(data, LDK.false) < 0 : LDK.false
+                                    return args.length > 0 ? tmpFunctions.indexOf.call(data, LDK.false) < 0 : LDK.false
                                 };
 
                                 // Join Array
                                 LDK.joinArray = function joinArray() {
                                     // Return
                                     return LDK.$arrayProto.join.call(arguments[0], arguments[1])
+                                };
+
+                                // Match String
+                                LDK.matchString = function matchString() {
+                                    // Return
+                                    return LDK.$stringProto.match.call(arguments[0], arguments[1])
                                 };
 
                                 // Pop Array
@@ -2021,7 +2060,21 @@
                                 // Push Array
                                 LDK.pushArray = function pushArray() {
                                     // Return
-                                    return LDK.$arrayProto.push.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                    return tmp.functions.push.apply(arguments[0], tmp.functions.slice.call([...arguments], 1))
+                                };
+
+                                // Query Document Element
+                                LDK.queryDocumentElement = function queryDocumentElement() {
+                                    // Initialization > Data
+                                    let data = arguments[0];
+
+                                    /* Logic
+                                            [if statement]
+
+                                        > Return
+                                    */
+                                    if (!arguments.length || !data)
+                                        return LDK.getDocumentHead() || LDK.getDocumentBody() || LDK.getDocumentDocumentElement()
                                 };
 
                                 // Randomize String
@@ -2030,10 +2083,22 @@
                                     return LDK.$stringProto.randomize.call(arguments[0])
                                 };
 
+                                // Repeat String
+                                LDK.repeatString = function repeatString() {
+                                    // Return
+                                    return LDK.$stringProto.repeat.call(arguments[0], arguments[1])
+                                };
+
                                 // Replace String
                                 LDK.replaceString = function replaceString() {
                                     // Return
                                     return LDK.$stringProto.replace.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
+                                // Set Element ID
+                                LDK.setElementID = function setElementID() {
+                                    // Return
+                                    return tmpFunctions.setElementID.call(arguments[0], arguments[1])
                                 };
 
                                 // Slice Array
@@ -2046,6 +2111,18 @@
                                 LDK.sliceString = function sliceString() {
                                     // Return
                                     return LDK.$stringProto.slice.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
+                                // Split String
+                                LDK.splitString = function splitString() {
+                                    // Return
+                                    return LDK.$stringProto.split.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
+                                // Sort Array
+                                LDK.sortArray = function sortArray() {
+                                    // Return
+                                    return LDK.$arrayProto.sort.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
                                 };
 
                                 // String
@@ -2076,7 +2153,7 @@
                                                     let metadata = data[i];
 
                                                     // Update > Data
-                                                    data[i] = LDK.isString(metadata) ? '"' + metadata.replace(/"/g, '\\"') + '"' : LDK.string(metadata);
+                                                    data[i] = LDK.isString(metadata) ? '"' + LDK.replaceString(metadata, /"/g, '\\"') + '"' : LDK.string(metadata);
                                                 }
 
                                                 // Return
@@ -2088,7 +2165,7 @@
                                                 let data = LDK.string(i);
 
                                                 // Return
-                                                return data.length > 300 ? (data.getBeforeChar('(') + '(' + i.getHead() + ') { … }') : data
+                                                return data.length > 300 ? (LDK.getBeforeString(data, '(') + '(' + LDK.getFunctionHead(i) + ') { … }') : data
                                             }
 
                                             else if (LDK.isObject(i)) {
@@ -2103,11 +2180,11 @@
                                                     let metadata = i[j];
 
                                                     // Update > Data
-                                                    data += j + ': ' + (LDK.isString(metadata) ? '"' + metadata.replace(/"/g, '\\"') + '"' : LDK.string(metadata)) + ', ';
+                                                    data += j + ': ' + (LDK.isString(metadata) ? '"' + LDK.replaceString(metadata, /"/g, '\\"') + '"' : LDK.string(metadata)) + ', ';
                                                 }
 
                                                 // Return
-                                                return '{' + data.trimRightChar(', ') + '}'
+                                                return '{' + LDK.trimRightStringChar(data, ', ') + '}'
                                             }
 
                                             else if (LDK.getConstructor(i) == LDK.attr)
@@ -2134,7 +2211,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        LDK.isArrayLike(i) ? data = data.concat(LDK.arrayFrom(i)) : data.push(i);
+                                        LDK.isArrayLike(i) ? data = data.concat(LDK.arrayFrom(i)) : LDK.pushArray(data, i);
 
                                     // Return
                                     return data
@@ -2152,10 +2229,40 @@
                                     return LDK.$stringProto.toUpperCase.call(LDK.string(arguments[0]))
                                 };
 
+                                // Trim Left String
+                                LDK.trimLeftString = function trimLeftString() {
+                                    // Return
+                                    return LDK.$stringProto.trimLeft.call(arguments[0])
+                                };
+
+                                // Trim Left String Character
+                                LDK.trimLeftStringChar = function trimLeftStringChar() {
+                                    // Return
+                                    return LDK.$stringProto.trimLeftChar.call(arguments[0], arguments[1])
+                                };
+
+                                // Trim Right String
+                                LDK.trimRightString = function trimRightString() {
+                                    // Return
+                                    return LDK.$stringProto.trimRight.call(arguments[0])
+                                };
+
+                                // Trim Right String Character
+                                LDK.trimRightStringChar = function trimRightStringChar() {
+                                    // Return
+                                    return LDK.$stringProto.trimRightChar.call(arguments[0], arguments[1])
+                                };
+
                                 // Trim String
                                 LDK.trimString = function trimString() {
                                     // Return
                                     return LDK.$stringProto.trim.call(arguments[0])
+                                };
+
+                                // Trim String Character
+                                LDK.trimStringChar = function trimStringChar() {
+                                    // Return
+                                    return LDK.$stringProto.trimChar.call(arguments[0], arguments[1])
                                 };
 
                         /* Global Data */
@@ -2214,7 +2321,7 @@
                                                 if (LDK.isConstructible(arguments[0]))
                                                     // Error Handling > Return
                                                     try { return arguments[0].constructor.prototype.valueOf.call(new arguments[0].constructor) }
-                                                    catch (error) { return tmp.functions.eval('new (function ' + arguments[0].constructor.name + '(){})') }
+                                                    catch (error) { return tmpFunctions.eval('new (function ' + arguments[0].constructor.name + '(){})') }
 
                                                 else
                                                     // Return
@@ -2226,8 +2333,13 @@
                                     LDK.randomElementList = ['a', 'audio', 'br', 'button', 'canvas', 'caption', 'div', 'dl', 'element', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'hr', 'img', 'input', 'li', 'ol', 'p', 'q', 'script', 'style', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'tr', 'ul', 'video', 'lapysjs-element'];
 
                                 // Temporary Data
-                                    // Functions
-                                    tmp.functions = {
+                                    /* Functions
+                                            --- NOTE ---
+                                                #lapys:
+                                                    - Cached as `tmpObjectsStorage` to increase runtime speed when accessing this object.
+                                                    - A sort of backup for most vulnerable JavaScript methods.
+                                    */
+                                    const tmpFunctions = tmp.functions = {
                                         // Absolute
                                         abs: Math.abs,
 
@@ -2275,8 +2387,17 @@
                                             // Initialization > Data
                                             let data = eval;
 
+                                            /* Error Handling > Return
+                                                    --- NOTE ---
+                                                        #lapys:
+                                                            - We try to keep the naming of the backups consistent with their originals.
+                                                            - Some JavaScript interpreters detect `eval` as a keyword.
+                                            */
+                                            try { return (function eval() { return data.apply(this, [...arguments]) }) }
+                                            catch (error) {}
+
                                             // Return
-                                            return (function Eval() { return data.apply(this, [...arguments]) })
+                                            return (function LapysJSEval() { return data.apply(this, [...arguments]) })
                                         })(),
 
                                         // Get Computed Style
@@ -2287,6 +2408,18 @@
                                             // Return
                                             return (function getComputedStyle() { return data.apply(window, [...arguments]) })
                                         })(),
+
+                                        // Get Document Body
+                                        getDocumentBody: LDK.objectGetOwnPropDesc(LDK.docProto, 'body').get,
+
+                                        // Get Document Document Element
+                                        getDocumentDocumentElement: LDK.objectGetOwnPropDesc(LDK.docProto, 'documentElement').get,
+
+                                        // Get Document Head
+                                        getDocumentHead: LDK.objectGetOwnPropDesc(LDK.docProto, 'head').get,
+
+                                        // Get Element ID
+                                        getElementID: LDK.objectGetOwnPropDesc(LDK.eleProto, 'id').get,
 
                                         // Get Event Listeners
                                         getEventListeners: (function() {
@@ -2338,7 +2471,11 @@
                                         // Power
                                         pow: Math.pow,
 
-                                        // Push
+                                        /* Push
+                                                --- NOTE ---
+                                                    #lapys: Sadly, due to human errors
+                                                        multiple unnecessary backups are made i.e.: `LDK.pushArray`
+                                        */
                                         push: Array.prototype.push,
 
                                         // Random
@@ -2365,6 +2502,9 @@
                                             return (function requestAnimationFrame() { return data.apply(window, [...arguments]) })
                                         })(),
 
+                                        // Set Element ID
+                                        setElementID: LDK.objectGetOwnPropDesc(LDK.eleProto, 'id').set,
+
                                         // Set Interval
                                         setInterval: (function() {
                                             // Initialization > Data
@@ -2382,6 +2522,9 @@
                                             // Return
                                             return (function setTimeout() { return data.apply(window, [...arguments]) })
                                         })(),
+
+                                        // Slice
+                                        slice: Array.prototype.slice,
 
                                         // Square Root
                                         sqrt: Math.sqrt,
@@ -2439,8 +2582,12 @@
                                             }
                                         }));
 
-                                        // Storage
-                                        const perm = tmp.objects.storage = {
+                                        /* Storage
+                                                --- NOTE ---
+                                                    #lapys: Cached as `tmpObjectsStorage` to increase runtime speed
+                                                        when accessing this object.
+                                        */
+                                        const tmpObjectsStorage = tmp.objects.storage = {
                                             // Cooler
                                             cooler: LDK.namedArray('LapysJSCooler'),
 
@@ -2509,7 +2656,7 @@
                                                     - Prevent the name of the Error from being redacted or truncated by compressors/ minifiers.
                                                     - Evaluation strings will be used for this purpose most through the script to keep original debug-class object names.
                                     */
-                                    return tmp.functions.eval("new (class LapysJSError extends Error{constructor(){super([" + (a=>{let $a=a.length,b='';for(let i=0;i<$a;i+=1)b+="'"+(a[i]=LDK.string(a[i]))+"',";return b.slice(0,-','.length)})([...arguments]) + "]);LDK.err.captureStackTrace(this,LapysJSError)}})('" + LDK.string(arguments[0]) + "' + '\\r')")
+                                    return tmpFunctions.eval("new (class LapysJSError extends Error{constructor(){super([" + (a=>{let $a=a.length,b='';for(let i=0;i<$a;i+=1)b+="'"+(a[i]=LDK.string(a[i]))+"',";return (LDK.$arrayProto||LDK.arrayProto).slice.call(b,0,-','.length)})([...arguments]) + "]);LDK.err.captureStackTrace(this,LapysJSError)}})('" + LDK.string(arguments[0]) + "' + '\\r')")
                                 },
 
                                 // Writable
@@ -2538,7 +2685,7 @@
 
                                     // Update > (Data, Lapys)
                                     data = LDK.numberParseInt(data);
-                                    lapys = tmp.functions.eval('new' + LDK.stringProto.repeat.call('(class LapysJS extends ', data) + '(class LapysJS {})' + LDK.stringProto.repeat.call('{})', data));
+                                    lapys = tmpFunctions.eval('new' + LDK.stringProto.repeat.call('(class LapysJS extends ', data) + '(class LapysJS {})' + LDK.stringProto.repeat.call('{})', data));
                                     $lapys = lapys.constructor.prototype;
 
                                     // Function
@@ -2552,7 +2699,7 @@
                                                         #lapys: Initialized the Item List, Grammar Syntax and Message respectively.
                                             */
                                             let data = arguments[0],
-                                                metadata = [...arguments].slice(1),
+                                                metadata = LDK.sliceArray([...arguments], 1),
                                                 alpha = '';
 
                                             /* Logic
@@ -2571,7 +2718,7 @@
                                                     data[i] = metadata[2] + data[i] + metadata[2];
 
                                             // Return
-                                            return alpha = data.length > 2 ? data.slice(0, -1).join(metadata[0]) + metadata[1] + data[data.length - 1] : (data.length > 1 ? data[0] + metadata[1] + data[1] : data[0]);
+                                            return alpha = data.length > 2 ? LDK.joinArray(LDK.sliceArray(data, 0, -1), metadata[0]) + metadata[1] + data[data.length - 1] : (data.length > 1 ? data[0] + metadata[1] + data[1] : data[0]);
                                         }
 
                                         /* Message
@@ -2600,10 +2747,10 @@
                                                 if (LDK.isNonConstructible(data))
                                                     args[i] = LDK.string(data);
 
-                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){LDK.$arrayProto.push.call(c,b);b=b.__proto__}return LDK.$arrayProto.indexOf.call(c,LDK.errProto)>-1})() && that == $lapys.error)
+                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.errProto)>-1})() && that == $lapys.error)
                                                     args[i] = LDK.string(data.message);
 
-                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){LDK.$arrayProto.push.call(c,b);b=b.__proto__}return LDK.$arrayProto.indexOf.call(c,LDK.eleProto)>-1})() && that == $lapys.error)
+                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.eleProto)>-1})() && that == $lapys.error)
                                                     args[i] = LDK.string(data) || data.selector;
 
                                                 else
@@ -2658,10 +2805,10 @@
                                                         case 'must':
                                                             data = parseMessage(argSet, ' must be' + (argSet[0].length == 1 || !LDK.isArray(argSet[0]) ? (function() {
                                                                 // Return
-                                                                return (LDK.isArray(argSet[1]) ?
-                                                                    (function(){let a=[...argSet[1]];for(let i in a)a[i]=(function(){try{let b=a[i].trim();while(b&&!b[0].match(/\w/))b=b.slice(1);while(b&&!b[b.length-1].match(/\w/))b=b.slice(0,-1);return b.trim()}catch(e){}return a[i]})();return a})()[0] :
-                                                                    (function(){let a=(' '+argSet[1]).slice(1).trim();while(a&&!a[0].match(/\w/))a=a.slice(1);while(a&&!a[a.length-1])a=a.slice(0,-1);return a.trim()})()
-                                                                )[0].match(/[aeiou]/) ? ' an ' : ' a '
+                                                                return LDK.matchString((LDK.isArray(argSet[1]) ?
+                                                                    (function(){let a=[...argSet[1]];for(let i in a)a[i]=(function(){try{let b=LDK.trimString(a[i]);while(b&&LDK.matchString(!b[0],/\w/))b=LDK.sliceString(b,1);while(b&&!LDK.matchString(b[b.length-1],/\w/))b=LDK.sliceString(b,0,-1);return LDK.trim(b)}catch(e){}return a[i]})();return a})()[0] :
+                                                                    (function(){let a=LDK.trimString(LDK.sliceString((' '+argSet[1]),1));while(a&&!LDK.matchString(a[0],/\w/))a=LDK.sliceString(a,1);while(a&&!a[a.length-1])a=LDK.sliceString(a,0,-1);return LDK.trimString(a)})()
+                                                                )[0], /[aeiou]/) ? ' an ' : ' a '
                                                             })() : ' '));
                                                             break;
 
@@ -2669,27 +2816,30 @@
                                                         case 'must not':
                                                             data = parseMessage(argSet, ' must not be' + (argSet[0].length == 1 || !LDK.isArray(argSet[0]) ? (function() {
                                                                 // Return
-                                                                return (LDK.isArray(argSet[1]) ?
-                                                                    (function(){let a=[...argSet[1]];for(let i in a)a[i]=(function(){try{let b=a[i].trim();while(b&&!b[0].match(/\w/))b=b.slice(1);while(b&&!b[b.length-1].match(/\w/))b=b.slice(0,-1);return b.trim()}catch(e){}return a[i]})();return a})()[0] :
-                                                                    (function(){let a=(' '+argSet[1]).slice(1).trim();while(a&&!a[0].match(/\w/))a=a.slice(1);while(a&&!a[a.length-1])a=a.slice(0,-1);return a.trim()})()
-                                                                )[0].match(/[aeiou]/) ? ' an ' : ' a '
+                                                                return LDK.matchString((LDK.isArray(argSet[1]) ?
+                                                                    (function(){let a=[...argSet[1]];for(let i in a)a[i]=(function(){try{let b=LDK.trimString(a[i]);while(b&&LDK.matchString(!b[0],/\w/))b=LDK.sliceString(b,1);while(b&&!LDK.matchString(b[b.length-1],/\w/))b=LDK.sliceString(b,0,-1);return LDK.trim(b)}catch(e){}return a[i]})();return a})()[0] :
+                                                                    (function(){let a=LDK.trimString(LDK.sliceString((' '+argSet[1]),1));while(a&&!LDK.matchString(a[0],/\w/))a=LDK.sliceString(a,1);while(a&&!a[a.length-1])a=LDK.sliceString(a,0,-1);return LDK.trimString(a)})()
+                                                                )[0], /[aeiou]/) ? ' an ' : ' a '
                                                             })() : ' '));
                                                             break;
 
+                                                        // Not
                                                         case 'not':
                                                             data = parseMessage(argSet, (LDK.isArray(args[0]) ? (args[0].length > 1 ? ' are' : ' is') : ' is') + ' not' + (argSet[0].length == 1 || !LDK.isArray(argSet[0]) ? (function() {
                                                                 // Return
-                                                                return (LDK.isArray(argSet[1]) ?
-                                                                    (function(){let a=[...argSet[1]];for(let i in a)a[i]=(function(){let b=a[i].trim();while(b&&!b[0].match(/\w/))b=b.slice(1);while(b&&!b[b.length-1].match(/\w/))b=b.slice(0,-1);return b.trim()})();return a})()[0] :
-                                                                    (function(){let a=(' '+argSet[1]).slice(1).trim();while(a&&!a[0].match(/\w/))a=a.slice(1);while(a&&!a[a.length-1])a=a.slice(0,-1);return a.trim()})()
-                                                                )[0].match(/[aeiou]/) ? ' an ' : ' a '
+                                                                return LDK.matchString((LDK.isArray(argSet[1]) ?
+                                                                    (function(){let a=[...argSet[1]];for(let i in a)a[i]=(function(){try{let b=LDK.trimString(a[i]);while(b&&LDK.matchString(!b[0],/\w/))b=LDK.sliceString(b,1);while(b&&!LDK.matchString(b[b.length-1],/\w/))b=LDK.sliceString(b,0,-1);return LDK.trim(b)}catch(e){}return a[i]})();return a})()[0] :
+                                                                    (function(){let a=LDK.trimString(LDK.sliceString((' '+argSet[1]),1));while(a&&!LDK.matchString(a[0],/\w/))a=LDK.sliceString(a,1);while(a&&!a[a.length-1])a=LDK.sliceString(a,0,-1);return LDK.trimString(a)})()
+                                                                )[0], /[aeiou]/) ? ' an ' : ' a '
                                                             })() : ' '));
                                                             break;
 
+                                                        // Only
                                                         case 'only':
                                                             data = parseMessage(argSet, ' can only be of value' + (LDK.isArray(argSet[1]) && argSet[1].length > 1 ? 's ' : ' '));
                                                             break;
 
+                                                        // [Default]
                                                         default:
                                                             throw new LDK.refError('Expected valid command for lexical error message manipulation.')
                                                     }
@@ -2699,7 +2849,7 @@
                                                     */
                                                     if (args.length > 3) {
                                                         // Update > Arguments
-                                                        args = args.slice(3);
+                                                        args = LDK.sliceArray(args, 3);
 
                                                         /* Loop
                                                                 Index Arguments.
@@ -2715,7 +2865,7 @@
                                                 }
 
                                             // Return
-                                            return '[LapysJS v' + LDK.constants.VERSION + '] => ' + LDK.$stringProto.replace.call(data, /'/g, "\\'") + '\\r'
+                                            return '[LapysJS v' + LDK.constants.VERSION + '] => ' + (LDK.$stringProto || LDK.stringProto).replace.call(data, /'/g, "\\'") + '\\r'
                                         }
 
                                     // Modification > Lapys
@@ -2727,7 +2877,7 @@
                                                 let source = function LapysJSDebugger() {
                                                     // Initialization > (Arguments, Argument Set, Data, Target)
                                                     let args = [...arguments],
-                                                        argSet = args.slice(1),
+                                                        argSet = LDK.sliceArray(args, 1),
                                                         data = args[0],
                                                         that = LapysJSDebugger;
 
@@ -2753,12 +2903,17 @@
 
                                                             // Hello
                                                             case 'hello':
-                                                                return that.hello.apply(that, argSet);
+                                                                return that.hello;
                                                                 break;
 
                                                             // Outline All
                                                             case 'outline-all':
                                                                 return that.outlineAll.apply(that, argSet);
+                                                                break;
+
+                                                            // Outline All CSS
+                                                            case 'outline-all-css':
+                                                                return that.outlineAllCSS.apply(that, argSet);
                                                                 break;
 
                                                             // Unidentify All
@@ -2792,11 +2947,17 @@
                                                             */
                                                             if (args.length) {
                                                                 /* Logic
-                                                                        [if statement]
+                                                                        [if:else statement]
                                                                 */
-                                                                if (data == 0 || data == 'list' || args.length == 1) {
+                                                                if (
+                                                                    (data === 0) ||
+                                                                    (data == 'list' || data == 'ordered-list' || data == 'sorted-list')
+                                                                ) {
+                                                                    // Initialization > Data
+                                                                    let $data = data;
+
                                                                     // Update > (Arguments, Data)
-                                                                    args = args.slice(0, -1);
+                                                                    args = LDK.sliceArray(args, 0, -1);
                                                                     data = '';
 
                                                                     /* Loop
@@ -2805,7 +2966,7 @@
                                                                         > Update > Data
                                                                     */
                                                                     for (let i of args)
-                                                                        data += ' ' + (LDK.isArray(i) ? i.join(' ').trim() : LDK.string(i).trim()) + ' ';
+                                                                        data += ' ' + LDK.trimString(LDK.isArray(i) ? LDK.joinArray(i, ' ') : LDK.string(i)) + ' ';
 
                                                                     // Update > Data
                                                                     data = (function() {
@@ -2817,13 +2978,18 @@
 
                                                                             > Update > Metadata
                                                                         */
-                                                                        while (metadata.match(/  /))
-                                                                            metadata = metadata.replace(/  /g, ' ');
+                                                                        while (LDK.matchString(metadata, /  /))
+                                                                            metadata = LDK.replaceString(metadata, /  /g, ' ');
 
                                                                         // Return
-                                                                        return metadata.trim().split(' ')
-                                                                    })()
+                                                                        return LDK.splitString(LDK.trimString(metadata), ' ')
+                                                                    })();
+                                                                    ($data == 'sorted-list') && (data = LDK.sortArray(data))
                                                                 }
+
+                                                                else
+                                                                    // LapysJS > Error
+                                                                    LapysJS.error(data, 'only', ["'list'", "'ordered-list'", "'sorted-list'"])
                                                             }
 
                                                             else
@@ -2837,20 +3003,22 @@
 
                                                     // Hello
                                                     hello: {
-                                                        // Value
-                                                        value: function hello() {
-                                                            // Initialization > Data
-                                                            let data = 'Hello, World!';
+                                                        // Configurable
+                                                        configurable: LDK.true,
 
-                                                            // [Function]
-                                                            (tmp.objects.console.log || tmp.functions.log).call($lapys, data);
+                                                        // Get
+                                                        get: function hello() {
+                                                            // Initialization > Message
+                                                            let data = (function hello() { return tmpFunctions.log.call($lapys, message) }),
+                                                                message = 'Hello, World!';
+
+                                                            // Modification > Data > (To String, Value Of)
+                                                            LDK.objectDefProp(data, 'toString', {configurable: LDK.true, value: function toString() { return message }});
+                                                            LDK.objectDefProp(data, 'valueOf', {configurable: LDK.true, value: function valueOf() { return message }});
 
                                                             // Return
                                                             return data
-                                                        },
-
-                                                        // Writable
-                                                        writable: LDK.true
+                                                        }
                                                     },
 
                                                     // Identify All
@@ -2872,14 +3040,14 @@
                                                                 */
                                                                 for (let j of metadata) {
                                                                     // Initialization > Alpha
-                                                                    let alpha = j.id;
+                                                                    let alpha = LDK.getElementID(j);
 
                                                                     /* Logic
                                                                             [if statement]
                                                                     */
                                                                     if (!(alpha in i)) {
-                                                                        // Update > (Permanent Data > Identified Elements)
-                                                                        perm.identifiedElements.push({element: i, property: alpha});
+                                                                        // Update > (Temporary Objects Storage > Identified Elements)
+                                                                        LDK.pushArray(tmpObjectsStorage.identifiedElements, {element: i, property: alpha});
 
                                                                         // Modification > [Loop Iterator] > [Alpha]
                                                                         i[alpha] = j
@@ -2889,12 +3057,34 @@
                                                         }
                                                     },
 
-                                                    // Outline All
+                                                    /* Outline All
+                                                            --- NOTE ---
+                                                                #lapys:
+                                                                    - Glaze over the DOM with an HTMLCanvasElement object.
+                                                                    - Draw colored lines on the object to represent each DOM element`s bounding box (excluding the object).
+                                                                    - Remove object when called again.
+
+                                                            --- UPDATE REQUIRED ---
+                                                                #lapys: Build to be functional.
+                                                    */
                                                     outlineAll: {
                                                         // Value
                                                         value: function outlineAll() {
+                                                            // Return
+                                                            return $lapys.warn(tmp)
+                                                        }
+                                                    },
+
+                                                    /* Outline All CSS
+                                                            --- CHECKPOINT ---
+
+                                                            #lapys: Fix all vulnerable methods from here.
+                                                    */
+                                                    outlineAllCSS: {
+                                                        // Value
+                                                        value: function outlineAllCSS() {
                                                             // Initialization > (Data, Metadata, Alpha)
-                                                            let data = document.head || document.body || document.documentElement,
+                                                            let data = LDK.queryDocumentElement(),
                                                                 metadata = LDK.docCreateEle('style'),
                                                                 alpha = LDK.arrayFrom(LDK.docGetEleByTag('style'));
 
@@ -2932,7 +3122,7 @@
 
                                                                 > Deletion
                                                             */
-                                                            for (let i of perm.identifiedElements)
+                                                            for (let i of tmpObjectsStorage.identifiedElements)
                                                                 delete i.element[i.property]
                                                         }
                                                     }
@@ -2956,8 +3146,9 @@
                                         LDK.objectDefProp($lapys, 'error', {
                                             // Value
                                             value: function error() {
-                                                // Initialization > Data
-                                                let data = (function(){let a=this,b=a.__proto__,c=[];while(b){LDK.$arrayProto.push.call(c,b);b=b.__proto__}return LDK.$arrayProto.indexOf.call(c,LDK.errProto)>-1}).call(this) ? this.constructor : $LapysJSError;
+                                                // Initialization > (Arguments, Data)
+                                                let args = (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=(LDK.$stringProto||LDK.stringProto).replace.call((LDK.$stringProto||LDK.stringProto).replace.call(LDK.string(a[i]),/\n/g,'\\n'),/\t/g,'\\t');return a})([...arguments]),
+                                                    data = (function(){let a=this,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.errProto)>-1}).call(this) ? this.constructor : $LapysJSError;
 
                                                 // Error
                                                 throw new data(message.apply(error, [...arguments]))
@@ -3701,7 +3892,7 @@
                                                         // Get
                                                         get: function cooler() {
                                                             // Return
-                                                            return LDK.namedArray.apply(LDK, ['LapysJSCooler'].concat([...perm.cooler]))
+                                                            return LDK.namedArray.apply(LDK, ['LapysJSCooler'].concat([...tmpObjectsStorage.cooler]))
                                                         }
                                                     },
 
@@ -3737,7 +3928,7 @@
                                                         // Get
                                                         get: function eventNodesList() {
                                                             // Return
-                                                            return LDK.namedArray.apply(LDK, ['LapysJSEventNodesList'].concat([...perm.eventNodesList]))
+                                                            return LDK.namedArray.apply(LDK, ['LapysJSEventNodesList'].concat([...tmpObjectsStorage.eventNodesList]))
                                                         }
                                                     },
 
@@ -3746,7 +3937,7 @@
                                                         // Get
                                                         get: function fullscreenElement() {
                                                             // Return
-                                                            return perm.fullscreenElement
+                                                            return tmpObjectsStorage.fullscreenElement
                                                         }
                                                     },
 
@@ -3755,7 +3946,7 @@
                                                         // Get
                                                         get: function modifiedComponentsList() {
                                                             // Return
-                                                            return perm.modifiedComponentsList
+                                                            return tmpObjectsStorage.modifiedComponentsList
                                                         }
                                                     },
 
@@ -3764,7 +3955,7 @@
                                                         // Get
                                                         get: function modifiedNodesList() {
                                                             // Return
-                                                            return perm.modifiedNodesList
+                                                            return tmpObjectsStorage.modifiedNodesList
                                                         }
                                                     },
 
@@ -3821,7 +4012,7 @@
                                                         // Get
                                                         get: function screenTipNodesList() {
                                                             // Return
-                                                            return perm.screenTipNodesList
+                                                            return tmpObjectsStorage.screenTipNodesList
                                                         }
                                                     },
 
@@ -3830,7 +4021,7 @@
                                                         // Get
                                                         get: function strictlyWatchedElements() {
                                                             // Return
-                                                            return perm.strictlyWatchedElements
+                                                            return tmpObjectsStorage.strictlyWatchedElements
                                                         }
                                                     },
 
@@ -3839,7 +4030,7 @@
                                                         // Get
                                                         get: function writtenNodesList() {
                                                             // Return
-                                                            return perm.writtenNodesList
+                                                            return tmpObjectsStorage.writtenNodesList
                                                         }
                                                     }
                                                 });
@@ -3972,7 +4163,7 @@
                                                 // Watch
                                                 (function watch() {
                                                     // Set Timeout
-                                                    tmp.functions.setTimeout(function() {
+                                                    tmpFunctions.setTimeout(function() {
                                                         // Lapys > Script > Enable LapysJS Feature
                                                         $lapys.script.getAttribute('lapys-features') && $lapys.script.enableLapysJSFeature.apply($lapys.script, $lapys.debug.formatChar($lapys.script.getAttribute('lapys-features'), 'list'));
                                                     })
@@ -4001,7 +4192,7 @@
                                             // Get
                                             get: function vendors() {
                                                 // Return
-                                                return perm.vendors
+                                                return tmpObjectsStorage.vendors
                                             }
                                         });
 
@@ -4035,14 +4226,14 @@
                                                 */
                                                 if (args[0] == tmp) {
                                                     // Warn
-                                                    tmp.functions.warn.call($lapys, parseMessage.apply(warn, ['This feature is still in development.']));
+                                                    tmpFunctions.warn.call($lapys, parseMessage.apply(warn, ['This feature is still in development.']));
 
                                                     // Return
                                                     return LapysJS
                                                 }
 
                                                 // Return
-                                                return tmp.functions.warn.call($lapys, parseMessage.apply(warn, args))
+                                                return tmpFunctions.warn.call($lapys, parseMessage.apply(warn, args))
                                             }
                                         });
 
@@ -4894,7 +5085,7 @@
                                 // Get
                                 get: function clear() {
                                     // [Function]
-                                    (tmp.objects.console.clear || tmp.functions.clear)();
+                                    (tmp.objects.console.clear || tmpFunctions.clear)();
 
                                     // Return
                                     return clear
@@ -4906,7 +5097,7 @@
                                 // Value
                                 value: function cbrt() {
                                     // Return
-                                    return tmp.functions.cbrt.apply(tmp.objects.Math, [...arguments])
+                                    return tmpFunctions.cbrt.apply(tmp.objects.Math, [...arguments])
                                 },
 
                                 // Writable
@@ -5049,7 +5240,7 @@
                                         metadata || beta.onfail.call(beta);
 
                                         // (Beta > On Success) | (Request Animation Frame > Main)
-                                        metadata ? beta.onsuccess.call(beta) : tmp.functions.requestAnimationFrame(main)
+                                        metadata ? beta.onsuccess.call(beta) : tmpFunctions.requestAnimationFrame(main)
                                     })();
 
                                     // Return
@@ -5353,7 +5544,7 @@
                                         > Update > Alpha
                                     */
                                     for (let i = 0; i < metadata; i += 1)
-                                        alpha += data[LDK.numberParseInt(tmp.functions.random() * data.length)];
+                                        alpha += data[LDK.numberParseInt(tmpFunctions.random() * data.length)];
 
                                     // Return
                                     return alpha
@@ -5413,16 +5604,16 @@
                                                 beta += 1;
 
                                                 // Set Timeout
-                                                (beta > alpha - 1) || tmp.functions.setTimeout(interval, +metadata)
+                                                (beta > alpha - 1) || tmpFunctions.setTimeout(interval, +metadata)
                                             })();
 
                                             // Return
-                                            return tmp.functions.setInterval(function() {}, LDK.infinity)
+                                            return tmpFunctions.setInterval(function() {}, LDK.infinity)
                                         }
 
                                         else
                                             // Return
-                                            return tmp.functions.setInterval.apply(that, args)
+                                            return tmpFunctions.setInterval.apply(that, args)
                                     }
 
                                     // Return
@@ -5438,7 +5629,7 @@
                                     let args = [...arguments];
 
                                     // [Function]
-                                    (tmp.objects.console.log || tmp.functions.log).apply(tmp.objects.console || window.console, args);
+                                    (tmp.objects.console.log || tmpFunctions.log).apply(tmp.objects.console || window.console, args);
 
                                     // Return
                                     return args.length > 1 ? args : args[0]
@@ -5524,7 +5715,7 @@
                                                 let args = [...arguments];
 
                                                 // Return
-                                                return (LDK.isFunction(window.max) ? (function(){let a=window.max.apply(window,args);return LDK.isNumber(a)?a:tmp.functions.max.apply(tmp.objects.Math,args)}) : (function() {let a=tmp.functions.max.apply(tmp.objects.Math,args);return LDK.isNumber(a)?a:window.max.apply(window,args)}))()
+                                                return (LDK.isFunction(window.max) ? (function(){let a=window.max.apply(window,args);return LDK.isNumber(a)?a:tmpFunctions.max.apply(tmp.objects.Math,args)}) : (function() {let a=tmpFunctions.max.apply(tmp.objects.Math,args);return LDK.isNumber(a)?a:window.max.apply(window,args)}))()
                                             }
 
                                             /* Minimum
@@ -5536,7 +5727,7 @@
                                                 let args = [...arguments];
 
                                                 // Return
-                                                return (LDK.isFunction(window.min) ? (function(){let a=window.min.apply(window,args);return LDK.isNumber(a)?a:tmp.functions.min.apply(tmp.objects.Math,args)}) : (function() {let a=tmp.functions.min.apply(tmp.objects.Math,args);return LDK.isNumber(a)?a:window.min.apply(window,args)}))()
+                                                return (LDK.isFunction(window.min) ? (function(){let a=window.min.apply(window,args);return LDK.isNumber(a)?a:tmpFunctions.min.apply(tmp.objects.Math,args)}) : (function() {let a=tmpFunctions.min.apply(tmp.objects.Math,args);return LDK.isNumber(a)?a:window.min.apply(window,args)}))()
                                             }
 
                                         /* Logic
@@ -5558,7 +5749,7 @@
                                     writable: LDK.true
                                 });
                                     // Definition
-                                    LDK.objectDefProp(tmp.functions.random, 'range', Math.random.range);
+                                    LDK.objectDefProp(tmpFunctions.random, 'range', Math.random.range);
 
                                 // Range
                                 LDK.isFunction(Math.range) || LDK.objectDefProp(Math, 'range', {
@@ -5568,7 +5759,7 @@
                                         let args = [...arguments];
 
                                         // Return
-                                        return tmp.functions.max.apply(tmp.functions, args) - tmp.functions.min.apply(tmp.functions, args)
+                                        return tmpFunctions.max.apply(tmpFunctions, args) - tmpFunctions.min.apply(tmpFunctions, args)
                                     },
 
                                     // Writable
@@ -5583,7 +5774,7 @@
                                         let args = [...arguments];
 
                                         // Return
-                                        return tmp.functions.pow(LDK.numberParseNumber(args[0]), (1 / LDK.numberParseNumber(args[1])))
+                                        return tmpFunctions.pow(LDK.numberParseNumber(args[0]), (1 / LDK.numberParseNumber(args[1])))
                                     },
 
                                     // Writable
@@ -5628,7 +5819,7 @@
                                                 data *= i;
 
                                             // Return
-                                            return tmp.functions.pow(data, 1 / metadata)
+                                            return tmpFunctions.pow(data, 1 / metadata)
                                         },
 
                                         // Harmonic Mean
@@ -5695,7 +5886,7 @@
                                                     mean = (function() {let a=[...arguments],b=0;for(let i of a)b+=i;return b/a.length}),
                                                     median = (function() {let a=[...arguments].sort();return((a.length / 2) in a ? a[a.length / 2] : [a[LDK.numberParseInt(a.length / 2)], a[LDK.numberParseInt(a.length / 2) + 1]]).removeDuplicatedElements()}),
                                                     mode = (function() {let a=[...arguments].getCommonElements();return a.length>1?median.apply(this,a):a[0]}),
-                                                    sDev = (function() {let a=this,$b=(function(){let a=[...arguments],b=0,c=(function() {let a=[...arguments],b=0;for(let i of a)b+=i;return b/a.length}),d=c.apply(this, a);for(let i of a)b+=tmp.functions.pow(i-d,2);return b/a.length-1});return tmp.functions.sqrt($b.apply(a, [...arguments]))});
+                                                    sDev = (function() {let a=this,$b=(function(){let a=[...arguments],b=0,c=(function() {let a=[...arguments],b=0;for(let i of a)b+=i;return b/a.length}),d=c.apply(this, a);for(let i of a)b+=tmpFunctions.pow(i-d,2);return b/a.length-1});return tmpFunctions.sqrt($b.apply(a, [...arguments]))});
 
                                                 // Mean, Median, Mode, Standard Deviation
                                                 let $mean = mean.apply(that, args),
@@ -5714,10 +5905,10 @@
                                         sDev: function standardDeviation() {
                                             // Initialization > (Target, Variation Coefficient)
                                             let that = this,
-                                                $var = (function() {let a=[...arguments],b=0,c=(function() {let a=[...arguments],b=0;for(let i of a)b+=i;return b/a.length}),d=c.apply(this, a);for(let i of a)b+=tmp.functions.pow(i-d,2);return b/a.length-1});
+                                                $var = (function() {let a=[...arguments],b=0,c=(function() {let a=[...arguments],b=0;for(let i of a)b+=i;return b/a.length}),d=c.apply(this, a);for(let i of a)b+=tmpFunctions.pow(i-d,2);return b/a.length-1});
 
                                             // Return
-                                            return tmp.functions.sqrt($var.apply(that, [...arguments]))
+                                            return tmpFunctions.sqrt($var.apply(that, [...arguments]))
                                         },
 
                                         // Variance
@@ -5734,7 +5925,7 @@
                                                 > Update > Data
                                             */
                                             for (let i of args)
-                                                data += tmp.functions.pow(i - metadata, 2);
+                                                data += tmpFunctions.pow(i - metadata, 2);
 
                                             // Return
                                             return data / args.length - 1
@@ -6222,7 +6413,7 @@
                                     // Function > Watch
                                     (function watch() {
                                         // Parse | (Request Animation Frame > Watch)
-                                        test() ? parse() : tmp.functions.requestAnimationFrame(watch)
+                                        test() ? parse() : tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -6310,7 +6501,7 @@
                                 // Value
                                 value: function pow() {
                                     // Return
-                                    return tmp.functions.pow.apply(tmp.objects.Math, [...arguments])
+                                    return tmpFunctions.pow.apply(tmp.objects.Math, [...arguments])
                                 }
                             });
 
@@ -6322,12 +6513,12 @@
                                     let args = [...arguments].sort(),
                                         data = LDK.isString(args[args.length - 1]) ? args.slice(0, -1) : args,
                                         metadata = args.length > 1 ? args[args.length - 1] : LDK.null,
-                                        alpha = tmp.functions.random();
+                                        alpha = tmpFunctions.random();
 
                                     // Function > Test
                                     function test() {
                                         // Return
-                                        return data.length > 1 ? tmp.functions.random.range(maxg.apply(min, data), ming.apply(min, data)) : data[0]
+                                        return data.length > 1 ? tmpFunctions.random.range(maxg.apply(min, data), ming.apply(min, data)) : data[0]
                                     };
 
                                     /* Logic
@@ -6448,7 +6639,7 @@
                                         if (!LDK.isArray(args[0]) && !LDK.isArray(args[1]))
                                             register.apply(window, LDK.$arrayProto.addElementToFront.apply([
                                                 LDK.string(args[0]),
-                                                args.length > 1 ? args[1] : tmp.functions.eval('(function(){return class HTMLCustomElement extends HTMLElement{}})()'),
+                                                args.length > 1 ? args[1] : tmpFunctions.eval('(function(){return class HTMLCustomElement extends HTMLElement{}})()'),
                                                 args.length > 2 ? args[2] : LDK.null
                                             ], args.slice(3)));
 
@@ -6456,7 +6647,7 @@
                                             for (let i of args[0])
                                                 register.apply(window, LDK.$arrayProto.addElementToFront.apply([
                                                     LDK.string(i),
-                                                    args.length > 1 ? args[1] : tmp.functions.eval('(function(){return class HTMLCustomElement extends HTMLElement{}})()'),
+                                                    args.length > 1 ? args[1] : tmpFunctions.eval('(function(){return class HTMLCustomElement extends HTMLElement{}})()'),
                                                     args.length > 2 ? args[2] : LDK.null
                                                 ], args.slice(3)));
 
@@ -6526,7 +6717,7 @@
                                     */
                                     if (args.length) {
                                         // Initialization > Beta
-                                        let beta = [...perm.strictlyWatchedElements];
+                                        let beta = [...tmpObjectsStorage.strictlyWatchedElements];
 
                                         // LapysJS > Error
                                         LDK.isElement(data) || LapysJS.error(data, 'must', 'element');
@@ -6543,8 +6734,8 @@
                                                         [if statement]
                                                 */
                                                 if (i.element == data) {
-                                                    // Update > (Permanent Data > Strictly Watched Elements)
-                                                    perm.strictlyWatchedElements.removeElement(i);
+                                                    // Update > (Temporary Objects Storage > Strictly Watched Elements)
+                                                    tmpObjectsStorage.strictlyWatchedElements.removeElement(i);
 
                                                     // Break
                                                     break
@@ -6563,8 +6754,8 @@
                                                         [if statement]
                                                 */
                                                 if (i.element == data && (i.match == metadata || (i.match.flags == metadata.flags && i.match.source == metadata.source && LDK.isRegex(metadata)))) {
-                                                    // Update > (Permanent Data > Strictly Watched Elements)
-                                                    perm.strictlyWatchedElements.removeElement(i);
+                                                    // Update > (Temporary Objects Storage > Strictly Watched Elements)
+                                                    tmpObjectsStorage.strictlyWatchedElements.removeElement(i);
 
                                                     // Break
                                                     break
@@ -6586,8 +6777,8 @@
                                                         [if statement]
                                                 */
                                                 if (i.element == data && (i.match == metadata || (i.match.flags == metadata.flags && i.match.source == metadata.source && LDK.isRegex(metadata))) && LDK.getSourceCode(i) == LDK.getSourceCode(alpha)) {
-                                                    // Update > (Permanent Data > Strictly Watched Elements)
-                                                    perm.strictlyWatchedElements.removeElement(i);
+                                                    // Update > (Temporary Objects Storage > Strictly Watched Elements)
+                                                    tmpObjectsStorage.strictlyWatchedElements.removeElement(i);
 
                                                     // Break
                                                     break
@@ -6607,7 +6798,7 @@
                                     --- NOTE ---
                                         #lapys: This function focuses on depth.
 
-                                    --- UPDATE REQUIRED ---
+                                    --- WARN ---
                                         #lapys: Might have some very minor bugs.
                             */
                             LDK.objectDefProp(tmp.value, 'recur', {
@@ -6716,7 +6907,7 @@
                                                                 throw new LDK.err;
 
                                                             // Execution
-                                                            tmp.functions.eval('(function(){var ' + possibleIterator + '})');
+                                                            tmpFunctions.eval('(function(){var ' + possibleIterator + '})');
 
                                                             // Update > Iterators (Counted)
                                                             iterators += possibleIterator;
@@ -6876,7 +7067,7 @@
                                                     --- NOTE ---
                                                         #lapys: This really should not return an error.
                                             */
-                                            tmp.functions.eval('var metadata = tmp.tmp[0], hasSameConstructorAndPrototypeWithObject = tmp.tmp[1], searchIndex = tmp.tmp[2];' + code);
+                                            tmpFunctions.eval('var metadata = tmp.tmp[0], hasSameConstructorAndPrototypeWithObject = tmp.tmp[1], searchIndex = tmp.tmp[2];' + code);
 
                                             // Initialization > Search Index
                                             let $searchIndex = searchIndex.length;
@@ -6920,7 +7111,7 @@
                                                         metadata += 1;
 
                                                         // Request Animation Frame > Watch
-                                                        tmp.functions.requestAnimationFrame(watch)
+                                                        tmpFunctions.requestAnimationFrame(watch)
                                                     }
                                                 })()
                                             }
@@ -7011,7 +7202,7 @@
                                                         $beta ? parse() : $beta = LDK.true;
 
                                                         // Request Animation Frame > Watch
-                                                        tmp.functions.requestAnimationFrame(watch)
+                                                        tmpFunctions.requestAnimationFrame(watch)
                                                     }
                                                 })();
 
@@ -7109,7 +7300,7 @@
 
                                         else {
                                             // Set Timeout | Parse
-                                            alpha == 'async' ? tmp.functions.setTimeout(parse) : parse();
+                                            alpha == 'async' ? tmpFunctions.setTimeout(parse) : parse();
 
                                             // Return
                                             return 1
@@ -7132,7 +7323,7 @@
                                     let args = [...arguments];
 
                                     // Return
-                                    return tmp.functions.pow(LDK.numberParseNumber(args[0]), (1 / LDK.numberParseNumber(args[1])))
+                                    return tmpFunctions.pow(LDK.numberParseNumber(args[0]), (1 / LDK.numberParseNumber(args[1])))
                                 },
 
                                 // Writable
@@ -7190,27 +7381,27 @@
                                     switch (metadata) {
                                         // Decode URI
                                         case 'decodeURI':
-                                            data = LDK.isNativeFunction(tmp.functions.decodeURI) ? tmp.functions.decodeURI(data) : data;
+                                            data = LDK.isNativeFunction(tmpFunctions.decodeURI) ? tmpFunctions.decodeURI(data) : data;
                                             break;
 
                                         // Decode URI Component
                                         case 'decodeURIComponent':
-                                            data = LDK.isNativeFunction(tmp.functions.decodeURIComponent) ? tmp.functions.decodeURIComponent(data) : data;
+                                            data = LDK.isNativeFunction(tmpFunctions.decodeURIComponent) ? tmpFunctions.decodeURIComponent(data) : data;
                                             break;
 
                                         // Encode
                                         case 'encode':
-                                            data = tmp.functions.escape(data);
+                                            data = tmpFunctions.escape(data);
                                             break;
 
                                         // Encode URI
                                         case 'encodeURI':
-                                            data = LDK.isNativeFunction(tmp.functions.encodeURI) ? tmp.functions.encodeURI(data) : data;
+                                            data = LDK.isNativeFunction(tmpFunctions.encodeURI) ? tmpFunctions.encodeURI(data) : data;
                                             break;
 
                                         // Encode URI Component
                                         case 'encodeURIComponent':
-                                            data = LDK.isNativeFunction(tmp.functions.encodeURIComponent) ? tmp.functions.encodeURIComponent(data) : data;
+                                            data = LDK.isNativeFunction(tmpFunctions.encodeURIComponent) ? tmpFunctions.encodeURIComponent(data) : data;
                                             break;
 
                                         // HTML
@@ -7262,7 +7453,7 @@
                                 // Value
                                 value: function sqrt() {
                                     // Return
-                                    return tmp.functions.sqrt.apply(tmp.objects.Math, [...arguments])
+                                    return tmpFunctions.sqrt.apply(tmp.objects.Math, [...arguments])
                                 },
 
                                 // Writable
@@ -7293,7 +7484,7 @@
                                         /* Logic
                                                 [if:else statement]
                                         */
-                                        if ((a=>{for(let i in a)a[i]=a[i].element;return a})(perm.strictlyWatchedElements).indexOf(data) > -1)
+                                        if ((a=>{for(let i in a)a[i]=a[i].element;return a})(tmpObjectsStorage.strictlyWatchedElements).indexOf(data) > -1)
                                             // LapysJS > Error
                                             LapysJS.error('Can only watch an element with a single input match, not more.');
 
@@ -7311,8 +7502,8 @@
                                                 return data.replace('\\', '')
                                             }), 'g'), upsilon = '';
 
-                                            // Update > (Permanent Data > Strictly Watched Elements)
-                                            perm.strictlyWatchedElements.push({element: data, function: alpha, match: metadata});
+                                            // Update > (Temporary Objects Storage > Strictly Watched Elements)
+                                            tmpObjectsStorage.strictlyWatchedElements.push({element: data, function: alpha, match: metadata});
 
                                             // (Data > Event > (Change, Input, Key Down)) | Watch
                                             alpha ? (function watch() {
@@ -7336,7 +7527,7 @@
                                                     }
 
                                                 // Request Animation Frame > Watch
-                                                data && tmp.functions.requestAnimationFrame(watch)
+                                                data && tmpFunctions.requestAnimationFrame(watch)
                                             })() : (function watch() {
                                                 // Initialization > (Gamma, Epsilon)
                                                 let gamma = data.value,
@@ -7352,7 +7543,7 @@
                                                 }
 
                                                 // Request Animation Frame > Watch
-                                                data && tmp.functions.requestAnimationFrame(watch)
+                                                data && tmpFunctions.requestAnimationFrame(watch)
                                             })()
                                         }
 
@@ -7433,7 +7624,7 @@
                                                         ('value' in $data[i]) && (data[i] = LDK.string($data[i].value))
                                                     } catch (error) {
                                                         // Warn
-                                                        tmp.functions.warn("[LapysJS v" + LDK.constants.VERSION + "]Could not stringify property '" + i + "' of object ", data)
+                                                        tmpFunctions.warn("[LapysJS v" + LDK.constants.VERSION + "]Could not stringify property '" + i + "' of object ", data)
                                                     }
 
                                                 // Return
@@ -7489,7 +7680,7 @@
                                                                     throw new LDK.err;
 
                                                                 // Execution
-                                                                tmp.functions.eval('(function(){var ' + possibleIterator + '})');
+                                                                tmpFunctions.eval('(function(){var ' + possibleIterator + '})');
 
                                                                 // Update > Iterators (Counted)
                                                                 iterators += possibleIterator;
@@ -7522,7 +7713,7 @@
                                                 // Error Handling
                                                 try {
                                                     // Execution
-                                                    tmp.functions.eval('var data=tmp.tmp[0],stringifyObject=tmp.tmp[1];' + code)
+                                                    tmpFunctions.eval('var data=tmp.tmp[0],stringifyObject=tmp.tmp[1];' + code)
                                                 } catch (error) {
                                                     // LapysJS > Error
                                                     LapysJS.error(["'stringify'", "'" + args[0].constructor.name + "'"], 'argument', 'Invalid object given to stringify')
@@ -7593,7 +7784,7 @@
                                             LDK.numberIsSafeInteger(+metadata) || LapysJS.warn(metadata, 'must', 'safe numeral');
 
                                         // Return
-                                        return tmp.functions.setTimeout.apply(that, args)
+                                        return tmpFunctions.setTimeout.apply(that, args)
                                     }
 
                                     // Return
@@ -7834,7 +8025,7 @@
                                 // Value
                                 value: function crush() {
                                     // Initialization > Data
-                                    let data = tmp.functions.abs(LDK.numberParseInt(arguments[0]));
+                                    let data = tmpFunctions.abs(LDK.numberParseInt(arguments[0]));
 
                                     // Return
                                     return this.squash(-data).squash(data)
@@ -7859,7 +8050,7 @@
                             // Fill
                             LDK.objectDefProp(tmp.value, 'fill', {
                                 // Value
-                                value: function fill() {let a=arguments[0];if(LDK.null==this)throw new TypeError('this is null or not defined');for(var b=LDK.object(this),c=b.length>>>0,d=arguments[1],e=d>>0,f=0>e?tmp.functions.max(c+e,0):tmp.functions.min(e,c),g=arguments[2],h=void 0===g?c:g>>0,i=0>h?tmp.functions.max(c+h,0):tmp.functions.min(h,c);f<i;)b[f]=a,f+=1;return b},
+                                value: function fill() {let a=arguments[0];if(LDK.null==this)throw new TypeError('this is null or not defined');for(var b=LDK.object(this),c=b.length>>>0,d=arguments[1],e=d>>0,f=0>e?tmpFunctions.max(c+e,0):tmpFunctions.min(e,c),g=arguments[2],h=void 0===g?c:g>>0,i=0>h?tmpFunctions.max(c+h,0):tmpFunctions.min(h,c);f<i;)b[f]=a,f+=1;return b},
 
                                 // Writable
                                 writable: LDK.true
@@ -7976,7 +8167,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8032,7 +8223,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8279,7 +8470,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8335,7 +8526,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8467,7 +8658,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8495,8 +8686,8 @@
                                     // Initialization > (Arguments, Target, Data)
                                     let args = [...arguments],
                                         that = this,
-                                        data = LDK.$arrayProto.stretch.apply(that, [tmp.functions.abs(LDK.numberParseInt(args[0]))].concat(args.slice(1))).slice(that.length).concat(
-                                            LDK.$arrayProto.stretch.apply(that, [-tmp.functions.abs(LDK.numberParseInt(args[0]))].concat(args.slice(1)))
+                                        data = LDK.$arrayProto.stretch.apply(that, [tmpFunctions.abs(LDK.numberParseInt(args[0]))].concat(args.slice(1))).slice(that.length).concat(
+                                            LDK.$arrayProto.stretch.apply(that, [-tmpFunctions.abs(LDK.numberParseInt(args[0]))].concat(args.slice(1)))
                                         );
 
                                     // Modification > Target > Length
@@ -8518,7 +8709,7 @@
                                 // Get
                                 get: function randomElement() {
                                     // Return
-                                    return this[LDK.numberParseInt(tmp.functions.random() * this.length)]
+                                    return this[LDK.numberParseInt(tmpFunctions.random() * this.length)]
                                 }
                             });
 
@@ -8538,7 +8729,7 @@
                                         > Update > Data
                                     */
                                     for (let i = 0; i < $that; i += 1)
-                                        data.push((function() {let a=that[LDK.numberParseInt(tmp.functions.random()*that.length)];that[that.indexOf(a)]=tmp;that=that.filter(a=>{return a!==tmp});return a})());
+                                        data.push((function() {let a=that[LDK.numberParseInt(tmpFunctions.random()*that.length)];that[that.indexOf(a)]=tmp;that=that.filter(a=>{return a!==tmp});return a})());
 
                                     // Return
                                     return arguments.length ? (metadata in data ? data[metadata] : data) : data
@@ -8586,7 +8777,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8650,7 +8841,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8714,7 +8905,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -8778,7 +8969,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9241,7 +9432,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9305,7 +9496,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9369,7 +9560,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9433,7 +9624,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9534,7 +9725,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9602,7 +9793,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9670,7 +9861,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -9738,7 +9929,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.max(metadata, i.count);
+                                        metadata = tmpFunctions.max(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -10245,7 +10436,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -10313,7 +10504,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -10381,7 +10572,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -10449,7 +10640,7 @@
                                         > Update > Metadata
                                     */
                                     for (let i of data)
-                                        metadata = tmp.functions.min(metadata, i.count);
+                                        metadata = tmpFunctions.min(metadata, i.count);
 
                                     /* Loop
                                             Index Target.
@@ -11350,7 +11541,7 @@
                                 // Get
                                 get: function inFullscreen() {
                                     // Return
-                                    return screen.height !== innerHeight ? this === perm.fullscreenElement : LDK.false
+                                    return screen.height !== innerHeight ? this === tmpObjectsStorage.fullscreenElement : LDK.false
                                 }
                             });
 
@@ -11678,7 +11869,7 @@
                                     // Error Handling
                                     try {
                                         // Initialization > (Data, Metadata)
-                                        let data = this.hasAttribute('script') ? tmp.functions.eval('(function() {' + this.getAttribute('script') + '})') : LDK.null,
+                                        let data = this.hasAttribute('script') ? tmpFunctions.eval('(function() {' + this.getAttribute('script') + '})') : LDK.null,
                                             metadata = data.getBody();
 
                                         // Modification > Data > To String
@@ -11719,8 +11910,8 @@
                                         }
                                     }
 
-                                    // Update > (Permanent Data > Scripted Nodes List)
-                                    ((a=>{for(let i in a)a[i]=a[i].element;return a})(perm.scriptedNodesList).indexOf(that) > -1) || perm.scriptedNodesList.push({element: that, script: metadata});
+                                    // Update > (Temporary Objects Storage > Scripted Nodes List)
+                                    ((a=>{for(let i in a)a[i]=a[i].element;return a})(tmpObjectsStorage.scriptedNodesList).indexOf(that) > -1) || tmpObjectsStorage.scriptedNodesList.push({element: that, script: metadata});
 
                                     // Modification > Target > Script
                                     that.setAttribute('script', metadata);
@@ -12087,8 +12278,8 @@
                                             // Initialization > Alpha
                                             let alpha = LDK.docProto;
 
-                                            // Update > Permanent Data > Fullscreen Element
-                                            (screen.height == innerHeight) || (perm.fullscreenElement = LDK.null);
+                                            // Update > Temporary Objects Storage > Fullscreen Element
+                                            (screen.height == innerHeight) || (tmpObjectsStorage.fullscreenElement = LDK.null);
 
                                             /* Logic
                                                     [if:else if:else statement]
@@ -12116,10 +12307,10 @@
                                             let alpha = LDK.eleProto;
 
                                             // Alert
-                                            metadata && tmp.functions.alert('[LapysJS ' + LDK.constants.VERSION + "] => Press the 'Esc' key to exit fullscreen.");
+                                            metadata && tmpFunctions.alert('[LapysJS ' + LDK.constants.VERSION + "] => Press the 'Esc' key to exit fullscreen.");
 
-                                            // Update > Permanent Data > Fullscreen Element
-                                            (screen.height == innerHeight) && (perm.fullscreenElement = that);
+                                            // Update > Temporary Objects Storage > Fullscreen Element
+                                            (screen.height == innerHeight) && (tmpObjectsStorage.fullscreenElement = that);
 
                                             /* Logic
                                                     [if:else if:else statement]
@@ -12183,13 +12374,13 @@
                                     /* Logic
                                             [if:else statement]
                                     */
-                                    if (perm.writtenNodesList.indexOf(that) > -1)
+                                    if (tmpObjectsStorage.writtenNodesList.indexOf(that) > -1)
                                         // Modification > Target > Inner HTML
                                         that.innerHTML += data;
 
                                     else {
-                                        // Update > Permanent Data > Written Nodes List
-                                        perm.writtenNodesList.push(that);
+                                        // Update > Temporary Objects Storage > Written Nodes List
+                                        tmpObjectsStorage.writtenNodesList.push(that);
 
                                         // Modification > Target > Inner HTML
                                         that.innerHTML = data
@@ -12349,8 +12540,8 @@
                                             return LDK.$eventTargetProto.detachEvent.apply(that, args)
                                         }), quasiEvent = LDK.namedObject('QuasiEvent', {target: that});
 
-                                    // Modification > Permanent Data > Event Nodes List
-                                    perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
+                                    // Modification > Temporary Objects Storage > Event Nodes List
+                                    tmpObjectsStorage.eventNodesList = tmpObjectsStorage.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
 
                                     /* Logic
                                             [if:else statement]
@@ -12379,10 +12570,10 @@
                                         args.length == 1
                                     ) {
                                         // Initialization > Query Events
-                                        let queryEvents = LDK.isNativeFunction(tmp.functions.getEventListeners) ? (function() {
+                                        let queryEvents = LDK.isNativeFunction(tmpFunctions.getEventListeners) ? (function() {
                                             // Initialization > (Data, Metadata)
                                             let data = arguments[0],
-                                                metadata = tmp.functions.getEventListeners(data);
+                                                metadata = tmpFunctions.getEventListeners(data);
 
                                             // Return
                                             return metadata
@@ -12394,7 +12585,7 @@
                                             /* Loop
                                                     [for:of statement]
                                             */
-                                            for (let i of perm.eventNodesList)
+                                            for (let i of tmpObjectsStorage.eventNodesList)
                                                 /* Logic
                                                         [if statement]
                                                 */
@@ -12498,26 +12689,26 @@
 
                                                 > Error Handling
                                             */
-                                            for (let j of perm.eventNodesList)
+                                            for (let j of tmpObjectsStorage.eventNodesList)
                                                 try { j.type }
                                                 catch (error) {
-                                                    // Modification > Permanent Data > Event Nodes List
-                                                    perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)})
+                                                    // Modification > Temporary Objects Storage > Event Nodes List
+                                                    tmpObjectsStorage.eventNodesList = tmpObjectsStorage.eventNodesList.filter(a=>{return !LDK.isUndefined(a)})
                                                 }
 
                                             /* Loop
                                                     [for statement]
                                             */
-                                            for (let j = 0; j < perm.eventNodesList.length; j += 1) {
+                                            for (let j = 0; j < tmpObjectsStorage.eventNodesList.length; j += 1) {
                                                 // Initialization > Metadata
-                                                let metadata = perm.eventNodesList[j];
+                                                let metadata = tmpObjectsStorage.eventNodesList[j];
 
                                                 /* Logic
                                                         [if:else if statement]
                                                 */
                                                 if (metadata.type == i)
-                                                    // Update > Permanent Data > Event Nodes List
-                                                    perm.eventNodesList[j] = LDK.undefined;
+                                                    // Update > Temporary Objects Storage > Event Nodes List
+                                                    tmpObjectsStorage.eventNodesList[j] = LDK.undefined;
 
                                                 else if ((metadata.types || []).indexOf(i) > -1)
                                                     /* Loop
@@ -12571,8 +12762,8 @@
                                                                 // Deletion
                                                                 delete metadata.type;
 
-                                                                // Modification > Permanent Data > Event Nodes List > [Loop Iterator]
-                                                                perm.eventNodesList[j] = LDK.undefined
+                                                                // Modification > Temporary Objects Storage > Event Nodes List > [Loop Iterator]
+                                                                tmpObjectsStorage.eventNodesList[j] = LDK.undefined
                                                             }
                                                         }
                                                     }
@@ -12581,10 +12772,10 @@
                                             /* Loop
                                                     [for statement]
 
-                                                > Update > Permanent Data > Event Nodes List
+                                                > Update > Temporary Objects Storage > Event Nodes List
                                             */
-                                            for (let j = 0; j < perm.eventNodesList.length; j += 1)
-                                                LDK.isUndefined(perm.eventNodesList[j]) && perm.eventNodesList.removeElement(perm.eventNodesList[j])
+                                            for (let j = 0; j < tmpObjectsStorage.eventNodesList.length; j += 1)
+                                                LDK.isUndefined(tmpObjectsStorage.eventNodesList[j]) && tmpObjectsStorage.eventNodesList.removeElement(tmpObjectsStorage.eventNodesList[j])
                                         }
                                     }
 
@@ -12696,7 +12887,7 @@
                                                     LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
 
                                                 // Initialization > (Alpha, Beta, Delta)
-                                                let alpha = (data.modifier.length = tmp.functions.max(data.listener.length, data.modifier.length, data.type.length)),
+                                                let alpha = (data.modifier.length = tmpFunctions.max(data.listener.length, data.modifier.length, data.type.length)),
                                                     beta = [...data.listener],
                                                     delta = [...data.type];
 
@@ -12738,7 +12929,7 @@
                                                 */
                                                 if (LDK.isObject(data.modifier[0])) {
                                                     // Initialization > (Gamma, Epsilon, Upsilon, Pi)
-                                                    let $gamma = gamma.length = tmp.functions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
+                                                    let $gamma = gamma.length = tmpFunctions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
                                                         epsilon = [...data.modifier[0].capture],
                                                         upsilon = [...data.modifier[0].once],
                                                         pi = [...data.modifier[0].passive];
@@ -12886,7 +13077,7 @@
                                                             (j != 'capture' && j != 'once' && j != 'passive') && (delete i[j]);
 
                                                 // Initialization > (Data, Metadata, Alpha, Beta)
-                                                let data = tmp.functions.max(args[0].length, args[1].length, args[2].length),
+                                                let data = tmpFunctions.max(args[0].length, args[1].length, args[2].length),
                                                     metadata = [...args[0]],
                                                     alpha = [...args[1]],
                                                     beta = [...args[2]];
@@ -12954,7 +13145,7 @@
                                         /* Loop
                                                 [for:of statement]
                                         */
-                                        for (let i of perm.eventNodesList)
+                                        for (let i of tmpObjectsStorage.eventNodesList)
                                             /* Logic
                                                     [if statement]
                                             */
@@ -12964,11 +13155,11 @@
                                                 */
                                                 if (
                                                     (LDK.getSourceCode(i.listener) == quasiEvent.listener && LDK.isConstructible(quasiEvent.listener)) &&
-                                                    (tmp.functions.stringify(i.modifier) == tmp.functions.stringify(quasiEvent.modifier) && LDK.isConstructible(quasiEvent.modifier)) &&
+                                                    (tmpFunctions.stringify(i.modifier) == tmpFunctions.stringify(quasiEvent.modifier) && LDK.isConstructible(quasiEvent.modifier)) &&
                                                     (i.type == quasiEvent.type && LDK.isConstructible(quasiEvent.type))
                                                 ) {
-                                                    // Update > Permanent Data > Event Nodes List
-                                                    perm.eventNodesList.removeElement(i);
+                                                    // Update > Temporary Objects Storage > Event Nodes List
+                                                    tmpObjectsStorage.eventNodesList.removeElement(i);
 
                                                     // Parse Event
                                                     parseEvent(i.type, i.listener, i.modifier);
@@ -12987,7 +13178,7 @@
                                                                         C = Types
                                                         */
                                                         let a = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return data[0]=a})(i.listeners || []).indexOf(LDK.getSourceCode(quasiEvent.listener)),
-                                                            b = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return data[1]=a})(i.modifiers || []).indexOf(tmp.functions.stringify(quasiEvent.modifier)),
+                                                            b = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmpFunctions.stringify(a[i]);return data[1]=a})(i.modifiers || []).indexOf(tmpFunctions.stringify(quasiEvent.modifier)),
                                                             c = (a=>{a=[...a];return data[2]=a})(i.types || []).indexOf(quasiEvent.type);
 
                                                         // Return
@@ -13000,7 +13191,7 @@
                                                     if (data[0].length == data[1].length && data[0].length == data[2].length && data[1].length == data[2].length) {
                                                         // Update > Data
                                                         data[0] = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return a})(i.listeners || []).indexOf(LDK.getSourceCode(quasiEvent.listener));
-                                                        data[1] = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})(i.modifiers || []).indexOf(tmp.functions.stringify(quasiEvent.modifier));
+                                                        data[1] = (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmpFunctions.stringify(a[i]);return a})(i.modifiers || []).indexOf(tmpFunctions.stringify(quasiEvent.modifier));
                                                         data[2] = (a=>{a=[...a];return a})(i.types || []).indexOf(quasiEvent.type);
 
                                                         /* Logic
@@ -13012,7 +13203,7 @@
                                                             */
                                                             if (
                                                                 LDK.getSourceCode(i.listeners[data[2]]) == LDK.getSourceCode(quasiEvent.listener) &&
-                                                                tmp.functions.stringify(i.modifiers[data[2]]) == tmp.functions.stringify(quasiEvent.modifier) &&
+                                                                tmpFunctions.stringify(i.modifiers[data[2]]) == tmpFunctions.stringify(quasiEvent.modifier) &&
                                                                 i.types[data[2]] == quasiEvent.type
                                                             ) {
                                                                 // Parse Event
@@ -13073,8 +13264,8 @@
                                                         (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.getSourceCode(a[i]);return data[0]=a})(quasiEvent.listeners || [])
                                                     ).length < i.listeners.length &&
                                                     LDK.$arrayProto.removeElement.apply(
-                                                        (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return data[1]=a})(i.modifiers || []),
-                                                        (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return data[1]=a})(quasiEvent.modifiers || [])
+                                                        (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmpFunctions.stringify(a[i]);return data[1]=a})(i.modifiers || []),
+                                                        (a=>{a=[...a];let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmpFunctions.stringify(a[i]);return data[1]=a})(quasiEvent.modifiers || [])
                                                     ).length < i.modifiers.length &&
                                                     LDK.$arrayProto.removeElement.apply(
                                                         (a=>{a=[...a];return data[2]=a})(i.types || []),
@@ -13094,7 +13285,7 @@
                                                             */
                                                             if (
                                                                 LDK.getSourceCode(i.listeners[j]) == LDK.getSourceCode(quasiEvent.listeners[j]) &&
-                                                                tmp.functions.stringify(i.modifiers[j]) == tmp.functions.stringify(quasiEvent.modifiers[j]) &&
+                                                                tmpFunctions.stringify(i.modifiers[j]) == tmpFunctions.stringify(quasiEvent.modifiers[j]) &&
                                                                 i.types[j] == quasiEvent.types[j]
                                                             ) {
                                                                 // Parse Event
@@ -13393,7 +13584,7 @@
                                             let metadata = args[i];
 
                                             // Update > Data
-                                            data.push($that[metadata[1]] || tmp.functions.getComputedStyle(that).getPropertyValue(metadata[0]) || LDK.null);
+                                            data.push($that[metadata[1]] || tmpFunctions.getComputedStyle(that).getPropertyValue(metadata[0]) || LDK.null);
                                         }
                                     }
 
@@ -13468,12 +13659,12 @@
                                         data,
                                         that = this;
 
-                                    // Modification > Permanent Data > Event Nodes List
-                                    perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
+                                    // Modification > Temporary Objects Storage > Event Nodes List
+                                    tmpObjectsStorage.eventNodesList = tmpObjectsStorage.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
 
                                     // Update > Data
-                                    data = LDK.isNativeFunction(tmp.functions.getEventListeners) ?
-                                        LDK.objectAssign({}, tmp.functions.getEventListeners(that)) :
+                                    data = LDK.isNativeFunction(tmpFunctions.getEventListeners) ?
+                                        LDK.objectAssign({}, tmpFunctions.getEventListeners(that)) :
                                         (function() {
                                             // Initialization > Data
                                             let data = {};
@@ -13481,7 +13672,7 @@
                                             /* Loop
                                                     [for:of statement]
                                             */
-                                            for (let i of perm.eventNodesList)
+                                            for (let i of tmpObjectsStorage.eventNodesList)
                                                 /* Logic
                                                         [if statement]
                                                 */
@@ -13710,8 +13901,8 @@
                                         defaultModifier = {capture: LDK.false, once: LDK.false, passive: LDK.false},
                                         that = this;
 
-                                    // Modification > Permanent Data > Event Nodes List
-                                    perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
+                                    // Modification > Temporary Objects Storage > Event Nodes List
+                                    tmpObjectsStorage.eventNodesList = tmpObjectsStorage.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
 
                                     /* Logic
                                             [if:else statement]
@@ -13843,7 +14034,7 @@
                                                         LDK.isArray(data.passive)  || (data.passive = [data.passive]);
 
                                                     // Modification > Data > (Capture, Once, Passive) > Length
-                                                    data.capture.length = data.once.length = (data.passive.length = tmp.functions.max(data.capture.length, data.once.length, data.passive.length));
+                                                    data.capture.length = data.once.length = (data.passive.length = tmpFunctions.max(data.capture.length, data.once.length, data.passive.length));
 
                                                     // Initialization > Length
                                                     let length = data.capture.length;
@@ -13975,9 +14166,9 @@
                                     /* Logic
                                             [if:else statement]
                                     */
-                                    if (LDK.isNativeFunction(tmp.functions.getEventListeners)) {
+                                    if (LDK.isNativeFunction(tmpFunctions.getEventListeners)) {
                                         // Initialization > Metadata
-                                        let metadata = tmp.functions.getEventListeners(that);
+                                        let metadata = tmpFunctions.getEventListeners(that);
 
                                         /* Loop
                                                 Index Metadata
@@ -14029,7 +14220,7 @@
                                         /* Loop
                                                 [for:of statement]
                                         */
-                                        for (let i of perm.eventNodesList)
+                                        for (let i of tmpObjectsStorage.eventNodesList)
                                             /* Logic
                                                     [if statement]
 
@@ -14045,11 +14236,11 @@
                                                     ).length < (i.modifiers || []).length
                                                 ) &&
                                                 (
-                                                    tmp.functions.stringify(i.modifier) == tmp.functions.stringify(args[2]) ||
-                                                    LDK.$arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})([...i.modifiers || []]), tmp.functions.stringify(args[2])) > -1 ||
+                                                    tmpFunctions.stringify(i.modifier) == tmpFunctions.stringify(args[2]) ||
+                                                    LDK.$arrayProto.indexOf.call((a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmpFunctions.stringify(a[i]);return a})([...i.modifiers || []]), tmpFunctions.stringify(args[2])) > -1 ||
                                                     LDK.$arrayProto.removeElement.apply(
-                                                        (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})([...i.modifiers || []]),
-                                                        (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmp.functions.stringify(a[i]);return a})(LDK.toArray(args[2]))
+                                                        (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmpFunctions.stringify(a[i]);return a})([...i.modifiers || []]),
+                                                        (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=tmpFunctions.stringify(a[i]);return a})(LDK.toArray(args[2]))
                                                     ).length < (i.modifiers || []).length
                                                 ) &&
                                                 (
@@ -14227,7 +14418,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14300,7 +14491,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14400,7 +14591,7 @@
                                         (info == $info) || (info = $info);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14473,7 +14664,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14546,7 +14737,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14674,7 +14865,7 @@
                                         (info == $info) || (info = $info);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14774,7 +14965,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14874,7 +15065,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -14974,7 +15165,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -15074,7 +15265,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -15147,7 +15338,7 @@
                                         (info == $info) || (info = $info);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -15270,7 +15461,7 @@
                                         (info == $info) || (info = $info);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -15370,7 +15561,7 @@
                                         (count == $count) || (count = $count);
 
                                         // Request Animation Frame > Watch
-                                        tmp.functions.requestAnimationFrame(watch)
+                                        tmpFunctions.requestAnimationFrame(watch)
                                     })()
                                 }
                             });
@@ -15791,8 +15982,8 @@
                                             return LDK.eventTargetProto.addEventListener.apply(that, args)
                                         }), quasiEvent = LDK.namedObject('QuasiEvent', {target: that});
 
-                                    // Modification > Permanent Data > Event Nodes List
-                                    perm.eventNodesList = perm.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
+                                    // Modification > Temporary Objects Storage > Event Nodes List
+                                    tmpObjectsStorage.eventNodesList = tmpObjectsStorage.eventNodesList.filter(a=>{return !LDK.isUndefined(a)});
 
                                     /* Logic
                                             [if:else statement]
@@ -15905,7 +16096,7 @@
                                                     LDK.isFunction(i) || LapysJS.error(i, 'must', ['evaluation string', 'function']);
 
                                                 // Initialization > (Alpha, Beta, Delta)
-                                                let alpha = (data.modifier.length = tmp.functions.max(data.listener.length, data.modifier.length, data.type.length)),
+                                                let alpha = (data.modifier.length = tmpFunctions.max(data.listener.length, data.modifier.length, data.type.length)),
                                                     beta = [...data.listener],
                                                     delta = [...data.type];
 
@@ -15947,7 +16138,7 @@
                                                 */
                                                 if (LDK.isObject(data.modifier[0])) {
                                                     // Initialization > (Gamma, Epsilon, Upsilon, Pi)
-                                                    let $gamma = gamma.length = tmp.functions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
+                                                    let $gamma = gamma.length = tmpFunctions.max(data.modifier[0].capture.length, data.modifier[0].once.length, data.modifier[0].passive.length),
                                                         epsilon = [...data.modifier[0].capture],
                                                         upsilon = [...data.modifier[0].once],
                                                         pi = [...data.modifier[0].passive];
@@ -16095,7 +16286,7 @@
                                                             (j != 'capture' && j != 'once' && j != 'passive') && (delete i[j]);
 
                                                 // Initialization > (Data, Metadata, Alpha, Beta)
-                                                let data = tmp.functions.max(args[0].length, args[1].length, args[2].length),
+                                                let data = tmpFunctions.max(args[0].length, args[1].length, args[2].length),
                                                     metadata = [...args[0]],
                                                     alpha = [...args[1]],
                                                     beta = [...args[2]];
@@ -16165,8 +16356,8 @@
                                         eventList.modifier.length > 1 ? quasiEvent.modifiers = eventList.modifier : quasiEvent.modifier = eventList.modifier[0];
                                         eventList.type.length > 1 ? quasiEvent.types = eventList.type : quasiEvent.type = eventList.type[0];
 
-                                        // Update > Permanent Data > Event Nodes List
-                                        perm.eventNodesList.push(quasiEvent);
+                                        // Update > Temporary Objects Storage > Event Nodes List
+                                        tmpObjectsStorage.eventNodesList.push(quasiEvent);
                                     }
 
                                     else
@@ -16448,13 +16639,13 @@
                                                     let data = arguments[0];
 
                                                     // Error Handling > Return
-                                                    try { return data ? tmp.functions.eval('(' + data + ')') : LDK.null }
+                                                    try { return data ? tmpFunctions.eval('(' + data + ')') : LDK.null }
                                                     catch (error) {}
 
                                                     // Return
                                                     return data
                                                 })(data.getAfterChar('='))
-                                            ], metadata = LDK.namedObject('FunctionParameter', {}, tmp.functions.eval('(function Parameter() {})').prototype),
+                                            ], metadata = LDK.namedObject('FunctionParameter', {}, tmpFunctions.eval('(function Parameter() {})').prototype),
                                             $metadata = metadata.constructor.prototype;
 
                                         // Modification > Metadata
@@ -16774,8 +16965,8 @@
                                             function getCSS() {
                                                 // Return
                                                 return LDK.isElement(arguments[1]) ?
-                                                    tmp.functions.getComputedStyle(arguments[1]).getPropertyValue(LDK.string(arguments[0])) :
-                                                    tmp.functions.getComputedStyle(that).getPropertyValue(LDK.string(arguments[0]))
+                                                    tmpFunctions.getComputedStyle(arguments[1]).getPropertyValue(LDK.string(arguments[0])) :
+                                                    tmpFunctions.getComputedStyle(that).getPropertyValue(LDK.string(arguments[0]))
                                             }
 
                                             // Is Name-Value Array
@@ -16839,7 +17030,7 @@
                                                 */
                                                 if (LDK.isArray(data))
                                                     // Update > Data
-                                                    data = data[LDK.numberParseInt(tmp.functions.random() * data.length)];
+                                                    data = data[LDK.numberParseInt(tmpFunctions.random() * data.length)];
 
                                                 else if (LDK.isObject(data)) {
                                                     // Update > Data
@@ -16986,7 +17177,7 @@
                                                 */
                                                 if (LDK.isArray(data))
                                                     // Update > Data
-                                                    data = data[tmp.functions.numberParseInt(tmp.functions.random() * data.length)];
+                                                    data = data[tmpFunctions.numberParseInt(tmpFunctions.random() * data.length)];
 
                                                 else if (LDK.isObject(data)) {
                                                     // Update > Data
@@ -17070,7 +17261,7 @@
                                                                             throw new LDK.err;
 
                                                                         // Execution
-                                                                        tmp.functions.eval('(function(){var ' + possibleIterator + '})');
+                                                                        tmpFunctions.eval('(function(){var ' + possibleIterator + '})');
 
                                                                         // Update > Iterators (Counted)
                                                                         iterators += possibleIterator;
@@ -17184,7 +17375,7 @@
                                                                 --- NOTE ---
                                                                     #lapys: This really should not return an error.
                                                         */
-                                                        tmp.functions.eval('var i = tmp.tmp[0], names = tmp.tmp[1], values = tmp.tmp[2], updateName = tmp.tmp[3];' + code)
+                                                        tmpFunctions.eval('var i = tmp.tmp[0], names = tmp.tmp[1], values = tmp.tmp[2], updateName = tmp.tmp[3];' + code)
                                                     }
                                                 }
                                             }
@@ -17612,7 +17803,7 @@
                                     // Return
                                     return (function() {
                                         // Update > Target
-                                        that = LDK.numberParseInt(tmp.functions.abs(that));
+                                        that = LDK.numberParseInt(tmpFunctions.abs(that));
 
                                         // Initialization > (...)
                                         let zero = ['zero'],
@@ -18485,7 +18676,7 @@
 
                                                                 - We find the maximum of all these which should be our result.
                                                 */
-                                                depth = tmp.functions.max.apply(tmp.functions, depth);
+                                                depth = tmpFunctions.max.apply(tmpFunctions, depth);
 
                                                 /* Return
                                                         --- NOTE ---
@@ -18545,8 +18736,8 @@
                                         // Initialization > Metadata
                                         let metadata = that[i];
 
-                                        // Update > (Permanent Data > Cooler)
-                                        perm.cooler.push({object: that, property: {description: LDK.objectGetOwnPropDesc(that, i), key: i, value: metadata}});
+                                        // Update > (Temporary Objects Storage > Cooler)
+                                        tmpObjectsStorage.cooler.push({object: that, property: {description: LDK.objectGetOwnPropDesc(that, i), key: i, value: metadata}});
 
                                         // Error Handling
                                         try {
@@ -18702,7 +18893,7 @@
                                                 /* Loop
                                                         [for:of statement]
                                                 */
-                                                for (let j of perm.cooler)
+                                                for (let j of tmpObjectsStorage.cooler)
                                                     /* Logic
                                                             [if statement]
 
@@ -18713,7 +18904,7 @@
                                             })();
 
                                             // Error
-                                            LDK.isObject(data) || tmp.functions.eval('error 001');
+                                            LDK.isObject(data) || tmpFunctions.eval('error 001');
 
                                             // Modification > Target > [Loop Iterator]
                                             LDK.objectDefProp(that, i, data)
@@ -18725,20 +18916,20 @@
                                         /* Loop
                                                 [for:of statement]
                                         */
-                                        for (let j of perm.cooler)
+                                        for (let j of tmpObjectsStorage.cooler)
                                             /* Logic
                                                     [if statement]
                                             */
                                             if (j.object == that && j.property.key == i) {
-                                                // Update > (Permanent Data > Cooler)
-                                                perm.cooler[perm.cooler.indexOf(j)] = tmp.object;
+                                                // Update > (Temporary Objects Storage > Cooler)
+                                                tmpObjectsStorage.cooler[tmpObjectsStorage.cooler.indexOf(j)] = tmp.object;
 
                                                 // Break
                                                 break
                                             }
 
-                                        // Update > (Permanent Data > Cooler)
-                                        perm.cooler = LDK.namedArray.apply(LDK, ['LapysJSCooler'].concat(LDK.$arrayProto.filter.call(perm.cooler, data => { return data !== tmp.object })))
+                                        // Update > (Temporary Objects Storage > Cooler)
+                                        tmpObjectsStorage.cooler = LDK.namedArray.apply(LDK, ['LapysJSCooler'].concat(LDK.$arrayProto.filter.call(tmpObjectsStorage.cooler, data => { return data !== tmp.object })))
                                     }
 
                                     // Return
@@ -19230,7 +19421,7 @@
                                                 }
 
                                                 // Request Animation Frame > Watch
-                                                tmp.functions.requestAnimationFrame(watch)
+                                                tmpFunctions.requestAnimationFrame(watch)
                                             })()
                                         }
 
@@ -19314,7 +19505,7 @@
                                                     }
 
                                                     // Request Animation Frame > Watch
-                                                    tmp.functions.requestAnimationFrame(watch)
+                                                    tmpFunctions.requestAnimationFrame(watch)
                                                 })()
                                             }
                                         }
@@ -19685,7 +19876,7 @@
                                 // Get
                                 get: function randomChar() {
                                     // Return
-                                    return this[LDK.numberParseInt(tmp.functions.random()*this.length)]
+                                    return this[LDK.numberParseInt(tmpFunctions.random()*this.length)]
                                 }
                             });
 
@@ -19704,7 +19895,7 @@
                                         > Update > Data
                                     */
                                     for (let i = 0; i < $that; i += 1)
-                                        data += (function() {let a=that[LDK.numberParseInt(tmp.functions.random()*that.length)];that=that.replace(a,'');return a})();
+                                        data += (function() {let a=that[LDK.numberParseInt(tmpFunctions.random()*that.length)];that=that.replace(a,'');return a})();
 
                                     // Return
                                     return data
@@ -19941,8 +20132,8 @@
 
                         // --- CHECKPOINT ---
                         window.LDK = LDK;
-                        window.perm = perm;
-                        window.tmp = tmp
+                        window.tmp = tmp;
+                        window.tmpObjectsStorage = tmpObjectsStorage
                     }
 
                     else
@@ -20142,7 +20333,7 @@
                         */
                         (function HTMLJavaScript() {
                             // (...)
-                            tmp.functions.addEventListener(window,'load',function(){let j=LDK.arrayFrom(LDK.docQueSelAll('[script'));for(let k of j)k.script.call(k)}),function a(){if(-1<LDK.constants.FEATURES.active.indexOf('html-javascript')){let j=LDK.arrayFrom(LDK.docQueSelAll('[script')),k=perm.scriptedNodesList;for(let l of k)l.element.hasAttribute('script')||k.removeElement(l);for(let l of j){let m=0,n=l.getAttribute('script');-1<(m=(o=>{o=[...o];for(let p=0;p<o.length;p+=1)o[p]=o[p].element;return o})(k).indexOf(l))?n!=k[m].script&&(k[m].script=n,(l.script||LDK.func()).call(l)):k.push({element:l,script:n})}}tmp.functions.requestAnimationFrame(a)}();
+                            tmp.functions.addEventListener(window,'load',function(){let j=LDK.arrayFrom(LDK.docQueSelAll('[script'));for(let k of j)k.script.call(k)}),function a(){if(-1<LDK.constants.FEATURES.active.indexOf('html-javascript')){let j=LDK.arrayFrom(LDK.docQueSelAll('[script')),k=tmpObjectsStorage.scriptedNodesList;for(let l of k)l.element.hasAttribute('script')||k.removeElement(l);for(let l of j){let m=0,n=l.getAttribute('script');-1<(m=(o=>{o=[...o];for(let p=0;p<o.length;p+=1)o[p]=o[p].element;return o})(k).indexOf(l))?n!=k[m].script&&(k[m].script=n,(l.script||LDK.func()).call(l)):k.push({element:l,script:n})}}tmp.functions.requestAnimationFrame(a)}();
                         })();
 
                     /* Assets */
@@ -20157,7 +20348,7 @@
                                 /* Loop
                                         [for:of statement]
                                 */
-                                for (let i of perm.modifiedComponentsList) {
+                                for (let i of tmpObjectsStorage.modifiedComponentsList) {
                                     /* Initialization > (Data, Metadata)
                                             --- NOTE ---
                                                 #lapys: Caching...
@@ -20188,8 +20379,8 @@
                                         */
                                         LDK.objectDefProp(data, 'title', LDK.objectGetOwnPropDesc(LDK.htmlEleProto, 'title'));
 
-                                        // Update > (Permanent Data > Modified Components List)
-                                        LDK.$arrayProto.removeElement.call(perm.modifiedComponentsList, i)
+                                        // Update > (Temporary Objects Storage > Modified Components List)
+                                        LDK.$arrayProto.removeElement.call(tmpObjectsStorage.modifiedComponentsList, i)
                                     }
                                 }
 
@@ -20204,8 +20395,16 @@
                                 tmp.functions.eval("throw new (class LapysJSComponentsManagementError extends (class LapysJSError extends Error { constructor() { super('" + LDK.$stringProto.replace.call(error.message, /'/g, "\\'") + "') } }) { constructor() { super() } })")
                             }
                         })();
-                            /* Accordion */
-                            (function Accordion() {
+
+                        // Set Timeout
+                            /* Accordion
+                                    --- UPDATE REQUIRED ---
+                                        #lapys:
+                                            - More than just the click event is required.
+                                            - Inverted content needed.
+                                            - CSS state to show toggled Accordion.
+                            */
+                            tmp.functions.setTimeout(function Accordion() {
                                 // Error Handling
                                 try {
                                     // Initialization > Data
@@ -20217,7 +20416,7 @@
                                     if (data) {
                                         // Initialization > (Data, Metadata)
                                         let data = LDK.arrayFrom(LDK.docGetEleByClass('accordion')),
-                                            metadata = perm.modifiedComponentsList;
+                                            metadata = tmpObjectsStorage.modifiedComponentsList;
 
                                         /* Loop
                                                 Index Data.
@@ -20344,10 +20543,11 @@
                                     // Request Animation Frame > Accordion
                                     tmp.functions.requestAnimationFrame(Accordion)
                                 } catch (error) {
+                                    throw error;
                                     // LapysJS > Error
                                     LapysJS.error('Accordion Components Manager is broken.\n\t' + error.message)
                                 }
-                            })();
+                            });
 
                     /* Return
                             --- NOTE ---
