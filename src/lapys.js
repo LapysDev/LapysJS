@@ -1392,6 +1392,13 @@
                                     // Prototype
                                     LDK.namedNodeMapProto = LDK.namedNodeMap.prototype;
 
+                                // Navigator
+                                LDK.nav = Navigator;
+                                LDK.objectDefProp(LDK, '$nav', {get: function navigator(){return LDK.objectGetOwnPropDesc(window,'navigator').get.call(window)}});
+                                    // Prototype
+                                    LDK.navProto = LDK.nav.prototype;
+                                    LDK.$navProto = LDK.clone.call(LDK.navProto);
+
                                 // Number
                                 LDK.number = Number;
                                     // Is Finite
@@ -1895,10 +1902,16 @@
                                     return LDK.$arrayProto.indexOf.call(arguments[0], arguments[1])
                                 };
 
+                                // Insert Adjacent HTML
+                                LDK.insertAdjacentHTMLElement = function insertAdjacentHTMLElement() {
+                                    // Return
+                                    return LDK.$eleProto.insertAdjacentHTML.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
                                 // Insert Before Node
                                 LDK.insertBeforeNode = function insertBeforeNode() {
                                     // Return
-                                    return LDK.$nodeProto.insertBefore.call(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                    return LDK.$nodeProto.insertBefore.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
                                 };
 
                                 // Is Array-Like
@@ -4473,7 +4486,7 @@
                                 writable: LDK.true
                             });
 
-                            // Application --- CHECKPOINT ---
+                            // Application
                             LDK.objectDefProp(tmp.value, 'app', {
                                 // Configurable
                                 configurable: LDK.true,
@@ -4539,8 +4552,8 @@
                                                         metadata[i] = LDK.string(beta[i]);
 
                                                     // Insertion
-                                                    LDK.$nodeProto.appendChild.call(document.head, metadata);
-                                                    metadata.insertAdjacentHTML('beforebegin', alpha)
+                                                    LDK.appendChildNode(LDK.getDocumentHead(), metadata);
+                                                    LDK.insertAdjacentHTMLElement(metadata, 'beforebegin', alpha)
                                                 }).apply(this, [...arguments])
                                             }
                                         };
@@ -4598,7 +4611,7 @@
                                         !('connection' in navigator) || 'connection' in $data || LDK.objectDefProp($data, 'connection', {get: function connection() {return $data.nav.connection}});
 
                                         // Cookies
-                                        'cookies' in $data || LDK.objectDefProp($data, 'cookies', {get: function cookies() {return document.cookie}});
+                                        'cookies' in $data || LDK.objectDefProp($data, 'cookies', {get: function cookies() {return LDK.objectGetOwnPropDesc(LDK.$docProto, 'cookie').get.call(LDK.$doc)}});
 
                                         // Copyright
                                         'copyright' in $data || LDK.objectDefProp($data, 'copyright', {
@@ -4631,10 +4644,10 @@
                                         });
 
                                         // Device Pixel Ratio
-                                        !('devicePixelRatio' in window) || 'dpRatio' in $data || LDK.objectDefProp($data, 'dpRatio', {get: function devicePixelRatio() {return window.devicePixelRatio}});
+                                        !('devicePixelRatio' in window) || 'dpRatio' in $data || LDK.objectDefProp($data, 'dpRatio', {get: function devicePixelRatio() {return LDK.objectGetOwnPropDesc(window, 'devicePixelRatio').get.call(window)}});
 
                                         // Do Not Track
-                                        !('doNotTrack' in navigator) || 'doNotTrack' in $data || LDK.objectDefProp($data, 'doNotTrack', {get: function doNotTrack() {return $data.nav.doNotTrack}});
+                                        !('doNotTrack' in LDK.$nav) || 'doNotTrack' in $data || LDK.objectDefProp($data, 'doNotTrack', {get: function doNotTrack() {return LDK.objectGetOwnPropDesc(LDK.$navProto, 'doNotTrack').get.call(LDK.$nav)}});
 
                                         // Height
                                         'height' in $data || LDK.objectDefProp($data, 'height', {
@@ -4672,17 +4685,17 @@
                                         // Name
                                         'name' in $data || LDK.objectDefProp($data, 'name', {
                                             // Get
-                                            get: function getName() {return window.short_name||window.name||document.title},
+                                            get: function getName() {return window.name||LDK.$doc.title},
 
                                             // Set
-                                            set: function setName() {let a=arguments[0];document.title=window.name=window.short_name=data}
+                                            set: function setName() {let a=arguments[0];LDK.$doc.title=(window.name=a)}
                                         });
 
                                         // Navigator
-                                        'nav' in $data || LDK.objectDefProp($data, 'nav', {get: function navigator() {return window.navigator}});
+                                        'nav' in $data || LDK.objectDefProp($data, 'nav', {get: function navigator() {return LDK.$nav}});
 
-                                        // Languages
-                                        'lang' in $data || LDK.objectDefProp($data, 'lang', {get: function language() {return LDK.namedArray.apply(LDK, ['Languages'].concat($data.nav.languages||[]))}});
+                                        // Languages --- CHECKPOINT ---
+                                        'lang' in $data || LDK.objectDefProp($data, 'lang', {get: function language() {return LDK.namedArray.apply(LDK, LDK.concatArray(['Languages'],LDK.objectGetOwnPropDesc(LDK.$navProto,'languages').get.call(LDK.$nav)||[]))}});
 
                                         // Online
                                         !('onLine' in navigator) || 'online' in $data || LDK.objectDefProp($data, 'online', {get: function online() {return $data.nav.onLine}});
