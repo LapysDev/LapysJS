@@ -1544,6 +1544,12 @@
 
                         /* Function */
                             // Modification > LapysJS Development Kit
+                                // Concatenate Array
+                                LDK.concatArray = function concatArray() {
+                                    // Return
+                                    return LDK.$arrayProto.concat.apply(arguments[0], tmp.functions.slice.call([...arguments], 1))
+                                };
+
                                 // Custom Event
                                 LDK.customEvent = function customEvent() {
                                     // Initialization > (Arguments, Data, Metadata)
@@ -1626,30 +1632,30 @@
 
                                             // 1
                                             case 1:
-                                                try { return tmp.functions.eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? LDK.getFunctionBody(arguments[0]) : (LDK.isString(arguments[0]) ? arguments[0] : 'return ' + LDK.string(arguments[0]))) + '})') }
-                                                catch (error) { return tmp.functions.eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? LDK.getFunctionBody(arguments[0]) : (LDK.isString(arguments[0]) ? arguments[0] : 'return ' + LDK.string(arguments[0]))) + '\n})') }
+                                                try { return tmpFunctions.eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? LDK.getFunctionBody(arguments[0]) : (LDK.isString(arguments[0]) ? arguments[0] : 'return ' + LDK.string(arguments[0]))) + '})') }
+                                                catch (error) { return tmpFunctions.eval.call(LDK.null, '(function() {' + (LDK.isFunction(arguments[0]) ? LDK.getFunctionBody(arguments[0]) : (LDK.isString(arguments[0]) ? arguments[0] : 'return ' + LDK.string(arguments[0]))) + '\n})') }
                                                 break;
 
                                             // 2
                                             case 2:
-                                                try { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + ') {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '})') }
+                                                try { return tmpFunctions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + ') {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '})') }
                                                 catch (error) {
-                                                    try { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + ') {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '\n})') }
+                                                    try { return tmpFunctions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + ') {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '\n})') }
                                                     catch (error) {
-                                                        try { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + '\n) {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '})') }
-                                                        catch (error) { return tmp.functions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + '\n) {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '\n})') }
+                                                        try { return tmpFunctions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + '\n) {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '})') }
+                                                        catch (error) { return tmpFunctions.eval.call(LDK.null, '(function(' + (LDK.isArray(arguments[0]) ? arguments[0].join(', ') : (LDK.isFunction(arguments[0]) ? LDK.getFunctionHead(arguments[0]) : LDK.string(arguments[0]))) + '\n) {' + (LDK.isFunction(arguments[1]) ? LDK.getFunctionBody(arguments[1]) : (LDK.isString(arguments[1]) ? arguments[1] : 'return ' + LDK.string(arguments[1]))) + '\n})') }
                                                     }
                                                 }
                                                 break;
 
                                             // 3
                                             case 3:
-                                                try { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + ') {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '})') }
+                                                try { return tmpFunctions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + ') {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '})') }
                                                 catch (error) {
-                                                    try { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + ') {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '\n})') }
+                                                    try { return tmpFunctions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + ') {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '\n})') }
                                                     catch (error) {
-                                                        try { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + '\n) {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '})') }
-                                                        catch (error) { return tmp.functions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + '\n) {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '\n})') }
+                                                        try { return tmpFunctions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + '\n) {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '})') }
+                                                        catch (error) { return tmpFunctions.eval.call(LDK.null, '(function' + (LDK.isFunction(arguments[0]) ? ' ' + arguments[0].name : (LDK.string(arguments[0]) ? ' ' + LDK.string(arguments[0]) : '')) + '(' + (LDK.isArray(arguments[1]) ? arguments[1].join(', ') : (LDK.isFunction(arguments[1]) ? LDK.getFunctionHead(arguments[1]) : LDK.string(arguments[1]))) + '\n) {' + (LDK.isFunction(arguments[2]) ? LDK.getFunctionBody(arguments[2]) : (LDK.isString(arguments[2]) ? arguments[2] : 'return ' + LDK.string(arguments[2]))) + '\n})') }
                                                     }
                                                 }
                                                 break;
@@ -1660,7 +1666,7 @@
                                         }
                                     } catch (error) {
                                         // LapyJS > Error
-                                        let data = tmp.functions.eval("new (class LapysJSError extends Error{constructor(){super([" + (a=>{let $a=a.length,b='';for(let i=0;i<$a;i+=1)b+="'"+(a[i]=LDK.string(a[i]))+"',";return b.slice(0,-','.length)})([...arguments]) + "]);LDK.err.captureStackTrace(this,LapysJSError)}})");
+                                        let data = tmpFunctions.eval("new (class LapysJSError extends Error{constructor(){super([" + (a=>{let $a=a.length,b='';for(let i=0;i<$a;i+=1)b+="'"+(a[i]=LDK.string(a[i]))+"',";return b.slice(0,-','.length)})([...arguments]) + "]);LDK.err.captureStackTrace(this,LapysJSError)}})");
 
                                         // Modification > Data > (Message, Stack)
                                         data.message = '[LapysJS v' + LDK.constants.VERSION + '] => ' + error.message + '\n';
@@ -1808,6 +1814,12 @@
 
                                     // Return
                                     return metadata ? LDK.$funcProto.toString.call(data) : LDK.null
+                                };
+
+                                // Index Of Array
+                                LDK.indexOfArray = function indexOfArray() {
+                                    // Return
+                                    return LDK.$arrayProto.indexOf.call(arguments[0], arguments[1])
                                 };
 
                                 // Is Array-Like
@@ -2080,6 +2092,12 @@
                                     return LDK.$arrayProto.join.call(arguments[0], arguments[1])
                                 };
 
+                                // Last Index Of Array
+                                LDK.lastIndexOfArray = function lastIndexOfArray() {
+                                    // Return
+                                    return LDK.$arrayProto.lastIndexOf.call(arguments[0], arguments[1])
+                                };
+
                                 // Match String
                                 LDK.matchString = function matchString() {
                                     // Return
@@ -2107,7 +2125,7 @@
                                 // Push Array
                                 LDK.pushArray = function pushArray() {
                                     // Return
-                                    return tmp.functions.push.apply(arguments[0], tmp.functions.slice.call([...arguments], 1))
+                                    return tmpFunctions.push.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Query Document Element
@@ -2258,7 +2276,7 @@
                                         > Update > Data
                                     */
                                     for (let i of args)
-                                        LDK.isArrayLike(i) ? data = data.concat(LDK.arrayFrom(i)) : LDK.pushArray(data, i);
+                                        LDK.isArrayLike(i) ? data = LDK.concatArray(data, LDK.arrayFrom(i)) : LDK.pushArray(data, i);
 
                                     // Return
                                     return data
@@ -3307,7 +3325,7 @@
                                                                         // Indent
                                                                         indent: (function() {
                                                                             // Initialization > (Data, Metadata)
-                                                                            let data = document.head || document.body || document.documentElement,
+                                                                            let data = LDK.queryDocumentElement(),
                                                                                 metadata = data.getElementsByTagName('style')[data.getElementsByTagName('style').length - 1] ||
                                                                                     data.getElementsByTagName('link')[data.getElementsByTagName('link').length - 1] ||
                                                                                     data.getElementsByTagName('script')[data.getElementsByTagName('script').length - 1] ||
@@ -3491,7 +3509,7 @@
                                                                             data.element.href = object.src;
 
                                                                             // Insertion
-                                                                            LDK.$nodeProto.appendChild.call(document.head || document.body || document.documentElement, data.element);
+                                                                            LDK.$nodeProto.appendChild.call(LDK.queryDocumentElement(), data.element);
                                                                             data.element.insertAdjacentHTML('beforebegin', data.indent)
                                                                         }
 
@@ -3503,7 +3521,7 @@
                                                                         data.element.innerHTML = object.src;
 
                                                                         // Insertion
-                                                                        LDK.$nodeProto.appendChild.call(document.head || document.body || document.documentElement, data.element);
+                                                                        LDK.$nodeProto.appendChild.call(LDK.queryDocumentElement(), data.element);
                                                                         data.element.insertAdjacentHTML('beforebegin', data.indent)
                                                                     })()
                                                                 }
@@ -3543,7 +3561,7 @@
                                                                         // Indent
                                                                         indent: (function() {
                                                                             // Initialization > (Data, Metadata)
-                                                                            let data = document.head || document.body || document.documentElement,
+                                                                            let data = LDK.queryDocumentElement(),
                                                                                 metadata = data.getElementsByTagName('script')[data.getElementsByTagName('script').length - 1] ||
                                                                                     data.getElementsByTagName('style')[data.getElementsByTagName('style').length - 1] ||
                                                                                     data.getElementsByTagName('link')[data.getElementsByTagName('link').length - 1] ||
@@ -3571,7 +3589,7 @@
                                                                                 '} ';
 
                                                                                 // Insertion
-                                                                                LDK.$nodeProto.appendChild.call(document.head || document.body || document.documentElement, data.element);
+                                                                                LDK.$nodeProto.appendChild.call(LDK.queryDocumentElement(), data.element);
                                                                                 data.element.insertAdjacentHTML('beforebegin', data.indent)
                                                                             }
 
@@ -3663,7 +3681,7 @@
                                                                         // Indent
                                                                         indent: (function() {
                                                                             // Initialization > (Data, Metadata)
-                                                                            let data = document.head || document.body || document.documentElement,
+                                                                            let data = LDK.queryDocumentElement(),
                                                                                 metadata = data.getElementsByTagName('script')[data.getElementsByTagName('script').length - 1] ||
                                                                                     data.getElementsByTagName('style')[data.getElementsByTagName('style').length - 1] ||
                                                                                     data.getElementsByTagName('link')[data.getElementsByTagName('link').length - 1] ||
@@ -3847,7 +3865,7 @@
                                                                             data.element.src = object.src;
 
                                                                             // Insertion
-                                                                            LDK.$nodeProto.appendChild.call(document.head || document.body || document.documentElement, data.element);
+                                                                            LDK.$nodeProto.appendChild.call(LDK.queryDocumentElement(), data.element);
                                                                             data.element.insertAdjacentHTML('beforebegin', data.indent)
                                                                         }
 
@@ -3859,7 +3877,7 @@
                                                                         data.element.innerHTML = object.src;
 
                                                                         // Insertion
-                                                                        LDK.$nodeProto.appendChild.call(document.head || document.body || document.documentElement, data.element);
+                                                                        LDK.$nodeProto.appendChild.call(LDK.queryDocumentElement(), data.element);
                                                                         data.element.insertAdjacentHTML('beforebegin', data.indent)
                                                                     })()
                                                                 }
@@ -3957,7 +3975,7 @@
                                                         // Get
                                                         get: function cooler() {
                                                             // Return
-                                                            return LDK.namedArray.apply(LDK, ['LapysJSCooler'].concat([...tmpObjectsStorage.cooler]))
+                                                            return LDK.namedArray.apply(LDK, LDK.concatArray(['LapysJSCooler'], [...tmpObjectsStorage.cooler]))
                                                         }
                                                     },
 
@@ -3993,7 +4011,7 @@
                                                         // Get
                                                         get: function eventNodesList() {
                                                             // Return
-                                                            return LDK.namedArray.apply(LDK, ['LapysJSEventNodesList'].concat([...tmpObjectsStorage.eventNodesList]))
+                                                            return LDK.namedArray.apply(LDK, LDK.concatArray(['LapysJSEventNodesList'], [...tmpObjectsStorage.eventNodesList]))
                                                         }
                                                     },
 
@@ -4033,33 +4051,32 @@
 
                                                             // Modification > Data
                                                             LDK.objectDefProps(data, {
-                                                                // Carousel
-                                                                Carousel: {
+                                                                // Accordion
+                                                                Accordion: {
                                                                     // Enumerable
                                                                     enumerable: LDK.true,
 
                                                                     // Value
-                                                                    value: (function() {
-                                                                        // Initialization > (Data, Metadata)
-                                                                        let data = function Carousel() {
+                                                                    value: class Accordion {
+                                                                        // Constructor
+                                                                        constructor() {
                                                                             // Return
                                                                             return LDK.docCreateEle('div')
-                                                                        }, metadata;
-
-                                                                        /* Execution
-                                                                                --- NOTE ---
-                                                                                    #lapys: Prevent the class name from being modified.
-                                                                        */
-                                                                        eval("metadata=class Carousel{constructor(){return data()}}");
-
-                                                                        // Return
-                                                                        return metadata
-                                                                    })()
+                                                                        }
+                                                                    }
                                                                 }
                                                             });
 
-                                                            for (let i of data)
-                                                                data.push(i);
+                                                            // Initialization > Data
+                                                            let $data = LDK.objectGetOwnPropDescs(data);
+
+                                                            /* Loop
+                                                                    Index Data.
+
+                                                                > Update > Data
+                                                            */
+                                                            for (let i in $data)
+                                                                (i == 'length') || LDK.pushArray(data, $data[i].value);
 
                                                             // Return
                                                             return data
@@ -4067,10 +4084,7 @@
                                                     },
 
                                                     // Regular Expression Set
-                                                    regexSet: {
-                                                        // Value
-                                                        value: LDK.constants.REGEX_SET
-                                                    },
+                                                    regexSet: {value: LDK.constants.REGEX_SET},
 
                                                     // Screen Tip Nodes List
                                                     screenTipNodesList: {
@@ -4145,8 +4159,8 @@
                                                                     Index Data.
                                                             */
                                                             for (let i of data) {
-                                                                // Lapys > Warn
-                                                                (metadata.value.indexOf(i) > -1) || $lapys.warn(i, 'not', 'feature of LapysJS');
+                                                                // Lapys > Warn --- CHECKPOINT ---
+                                                                (LDK.indexOfArray(metadata.value, i) > -1) || $lapys.warn(i, 'not', 'feature of LapysJS');
 
                                                                 // Update > Alpha
                                                                 alpha.removeElement(i)
@@ -4618,7 +4632,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -4673,7 +4687,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -4728,7 +4742,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -4776,7 +4790,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -4831,7 +4845,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -4878,7 +4892,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -4933,7 +4947,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -4985,7 +4999,7 @@
 
                                                             else {
                                                                 // Initialization > (Alpha, Beta, Delta)
-                                                                let alpha = document.head || document.body || document.documentElement,
+                                                                let alpha = LDK.queryDocumentElement(),
                                                                     beta = alpha.getElementsByTagName('meta')[alpha.getElementsByTagName('meta').length - 1] ||
                                                                         alpha.getElementsByTagName('link')[alpha.getElementsByTagName('link').length - 1] ||
                                                                         alpha.getElementsByTagName('style')[alpha.getElementsByTagName('style').length - 1] ||
@@ -6874,7 +6888,7 @@
                                         data = args[0],
                                         metadata = args[1],
                                         alpha = args.length > 2 ? args[2] : 'defer',
-                                        beta = 0,
+                                        beta = 0, $beta = 0,
                                         delta = [
                                             LDK.randomizeString(LDK.replaceString(LDK.constants.CHAR_ARRAY[0], /[0-9]/g, '')),
                                             LDK.namedObject(LDK.randomizeString(LDK.replaceString(LDK.constants.CHAR_ARRAY[0], /[0-9]/g, '')))
@@ -7022,11 +7036,14 @@
                                                         parentPath = arguments[3];
 
                                                     // Data
-                                                    data.call(args[1], key, value, parent, parentPath)
+                                                    data.call(args[1], key, value, parent, parentPath, $beta);
+
+                                                    // Update > Beta
+                                                    $beta += 1
                                                 }
 
                                             // Update > Data
-                                            LDK.isString(data) && (data = func(data));
+                                            LDK.isString(data) && (data = func('var iterator=arguments[4],key=arguments[0],parent=arguments[2],parentPath=arguments[3],value=arguments[1];' + data));
 
                                             // LapysJS > Error
                                             LDK.isFunction(data) || LapysJS.error(data, 'must', ['evaluation string', 'function']);
@@ -7270,7 +7287,7 @@
                                         data = args[0],
                                         metadata = args[1],
                                         alpha = args.length > 2 ? args[2] : 'defer',
-                                        beta = 0;
+                                        beta = 0, $beta = 0;
 
                                     /* Logic
                                             [if statement]
@@ -7321,14 +7338,15 @@
                                                     delta = $metadata[1][beta];
 
                                                 // Data
-                                                data.call(metadata, !LDK.isNull(alpha) && LDK.numberIsSafeInteger(+alpha) ? +alpha : alpha, LDK.isNull(alpha) ? LDK.null : delta);
+                                                data.call(metadata, !LDK.isNull(alpha) && LDK.numberIsSafeInteger(+alpha) ? +alpha : alpha, LDK.isNull(alpha) ? LDK.null : delta, $beta);
 
                                                 // Update > Beta
-                                                beta += 1
+                                                beta += 1;
+                                                $beta += 1
                                             }
 
                                         // Update > Data
-                                        LDK.isString(data) && (data = func(data));
+                                        LDK.isString(data) && (data = func('var iterator=arguments[2],key=arguments[0],value=arguments[1];' + data));
 
                                         // LapysJS > Error
                                         LDK.isFunction(data) || LapysJS.error(data, 'must', ['evaluation string', 'function']);
@@ -11027,25 +11045,25 @@
                                 // Value
                                 value: {
                                     // AND
-                                    and: function and() {return arguments[0]&&arguments[1]},
+                                    and: function and() {let a=[...arguments];for(let b of a)if(!b)return LDK.false;return LDK.true},
 
                                     // NAND
-                                    nand: function nand() {return!(arguments[0]&&arguments[1])},
+                                    nand: function nand() {return arguments.length!=LDK.filterArray([...arguments],LDK.bool).length},
 
                                     // NOR
-                                    nor: function nor() {return!(arguments[0]||arguments[1])},
+                                    nor: function nor() {return !LDK.filterArray([...arguments],LDK.bool).length},
 
                                     // NOT
                                     not: function not() {return!arguments[0]},
 
                                     // OR
-                                    or: function or() {return arguments[0]||arguments[1]},
+                                    or: function or() {let a=[...arguments];for(let b of a)if(b)return LDK.true;return LDK.false},
 
                                     // XNOR
-                                    xnor: function xnor() {return!([...arguments].filter(LDK.bool).length%2)},
+                                    xnor: function xnor() {return!(LDK.filterArray([...arguments],LDK.bool).length%2)},
 
                                     // XOR
-                                    xor: function xor() {return!!([...arguments].filter(LDK.bool).length%2)}
+                                    xor: function xor() {return!!(LDK.filterArray([...arguments],LDK.bool).length%2)}
                                 },
 
                                 // Writable
@@ -11154,7 +11172,7 @@
                                     !(!arguments.length || arguments.length > 1) || LapysJS.error.call(new LDK.typeError, ["'isFalse'", "'Boolean'"], 'argument', [1, arguments.length]);
 
                                     // Return
-                                    return data
+                                    return !!data
                                 },
 
                                 // Writable
@@ -16099,7 +16117,7 @@
                                                     > Update > Listeners
                                                 */
                                                 for (let i = 0; i < listeners.length; i += 1)
-                                                    LDK.isString(listeners[i]) && (listeners[i] = func(listeners[i]));
+                                                    LDK.isString(listeners[i]) && (listeners[i] = func('var event=arguments[0];' + listeners[i]));
 
                                                 /* Loop
                                                         Index Listeners.
@@ -16178,7 +16196,7 @@
                                                     > Update > Data > Listener
                                                 */
                                                 for (let i = 0; i < data.listener.length; i += 1)
-                                                    LDK.isString(data.listener[i]) && (data.listener[i] = func(data.listener[i]));
+                                                    LDK.isString(data.listener[i]) && (data.listener[i] = func('var event=arguments[0];' + data.listener[i]));
 
                                                 /* Loop
                                                         [for:of statement]
@@ -16344,7 +16362,7 @@
                                                     > Update > Argument 1
                                                 */
                                                 for (let i = 0; i < args[1].length; i += 1)
-                                                    LDK.isString(args[1][i]) && (args[1][i] = func(args[1][i]));
+                                                    LDK.isString(args[1][i]) && (args[1][i] = func('var event=arguments[0];' + args[1][i]));
 
                                                 /* Loop
                                                         Index Argument 1.
