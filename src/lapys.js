@@ -71,41 +71,62 @@
             if (typeof eval != 'function') throw new Error;
 
             // Execution
-                // {Arrow Functions}
-                eval('a=>b');
+                /* {Generic Syntax}
+                        --- NOTE ---
+                            #lapys: ECMAScript 2015 with a lot of throwback to ES5.
+                */
+                    // {Arrow Functions}
+                    eval('a=>b');
 
-                // {Alternative for Statement}
-                eval('(()=>{for(;1;)continue})');
+                    // {Alternative for Statement}
+                    eval('(()=>{for(;1;)continue})');
 
-                // {Implied Object Reference}
-                eval('typeof a');
+                    // {Implied Object Reference}
+                    eval('typeof a');
 
-                // {Default Function Parameters}
-                eval('((a=0)=>{})');
+                    // {Default Function Parameters}
+                    eval('((a=0)=>{})');
 
-                // {delete Keyword}
-                eval('0||delete({a:0}).a');
+                    // {delete Keyword}
+                    eval('0||delete({a:0}).a');
 
-                // {in Keyword}
-                eval("'a'in window");
+                    // {in Keyword}
+                    eval("'a'in window");
 
-                // {Memory Allocation}
-                eval("if(typeof(({}).a=0,()=>{const b=1;let c=2})!='function')throw new Error");
+                    // {Memory Allocation}
+                    eval("if(typeof(({}).a=0,()=>{const b=1;let c=2})!='function')throw new Error");
 
-                // {`Self`-Executing Functions}
-                eval('(a=>{return})()');
+                    // {`Self`-Executing Functions}
+                    eval('(a=>{return})()');
 
-                // {Spread Operator}
-                eval('[...[]]')
+                    // {Spread Operator}
+                    eval('[...[]]');
+
+                /* {Methods & Properties}
+                        --- WARN ---
+                            #lapys: These methods and properties must be available for
+                                they are the core of the LapysJS script.
+                */
+                eval("Object.getOwnPropertyDescriptor({},'')")
         }
 
         catch (error) {
-            /* Execution > Error
+            /* Initialization > Data
                     --- NOTE ---
-                        #lapys: Prevent compressors and minifiers
-                            from truncating the error type.
+                        #lapys: LapysJS Errors are made using evaluation strings because
+                            compressors and minifiers tend to retract their names.
+
+                            It`s clarity/ quality over speed here.
+                            Speed can always be improved with alternative means anyways...
             */
-            eval('throw new (class LapysJSError extends Error { constructor() { super("LapysJS is not compatible with this browser.\\n\\t" + error.message + "\\r") } })')
+            let data = eval('new (class LapysJSBrowserIncompatibilityError extends (class LapysJSError extends Error { constructor() { super() } }) { constructor() { super() } })');
+
+            // Modification > Data > (Message, Stack)
+            data.message = '[LapysJS v' + VERSION + '] => LapysJS is not compatible with this browser.\n\t' + error.message + '\n';
+            data.stack = error.stack;
+
+            // Error
+            throw data
         }
 
         /* Global Data */
@@ -308,8 +329,12 @@
                     // Element
                     that.element = document.createElement('lapysjs-element');
 
-                    // Object
-                    that.object = new (function() {});
+                    /* Object
+                            --- NOTE ---
+                                #lapys: I wonder if this is going to cause any errors?
+                                    Lol, nope.
+                    */
+                    that.object = new (function() {this.prototype=this});
 
                     // Objects
                     that.objects = {
@@ -595,7 +620,7 @@
                                         // Error Handling
                                         try {
                                             // Update > Data
-                                            data = func(that.name, (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=a[i].address;return a})([...that.getParameters()]), that.getBody())
+                                            data = func(that.name, (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=a[i].address;return a})([...LDK.getFunctionParameters(that)]), LDK.getFunctionBody(that))
                                         } catch (error) {
                                             // Error Handling
                                             try {
@@ -1499,6 +1524,16 @@
                                     // Prototype
                                     LDK.windowProto = LDK.window.prototype;
 
+                                // X Domain Request
+                                LDK.XDomainRequest = window.XDomainRequest;
+                                    // Prototype
+                                    LDK.XDomainRequestProto = (LDK.XDomainRequest || tmp.object).prototype;
+
+                                // XML HTTP Request
+                                LDK.XMLHTTPRequest = XMLHttpRequest;
+                                    // Prototype
+                                    LDK.XMLHTTPRequestProto = LDK.XMLHTTPRequest.prototype;
+
                                 /* [Prototype]
                                         --- NOTE ---
                                             #lapys: The other prototypes needed for the cloning function.
@@ -1740,19 +1775,19 @@
                                 // Get Function Body
                                 LDK.getFunctionBody = function getFunctionBody() {
                                     // Return
-                                    return LDK.$funcProto.getBody.call(arguments[0])
+                                    return tmpFunctions.getFunctionBody.call(arguments[0])
                                 };
 
                                 // Get Function Head
                                 LDK.getFunctionHead = function getFunctionHead() {
                                     // Return
-                                    return LDK.$funcProto.getHead.call(arguments[0])
+                                    return tmpFunctions.getFunctionHead.call(arguments[0])
                                 };
 
                                 // Get Function Parameters
                                 LDK.getFunctionParameters = function getFunctionParameters() {
                                     // Return
-                                    return LDK.$funcProto.getParameters.call(arguments[0])
+                                    return tmpFunctions.getFunctionParameters.call(arguments[0])
                                 };
 
                                 // Get Safe Random String
@@ -2049,6 +2084,18 @@
                                 LDK.matchString = function matchString() {
                                     // Return
                                     return LDK.$stringProto.match.call(arguments[0], arguments[1])
+                                };
+
+                                // Open X Domain Request
+                                LDK.openXDomainRequest = function openXDomainRequest() {
+                                    // Return
+                                    return tmpFunctions.openXDomain.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
+                                };
+
+                                // Open XML HTTP Request
+                                LDK.openXMLHTTPRequest = function openXMLHTTPRequest() {
+                                    // Return
+                                    return tmpFunctions.openXML.apply(arguments[0], LDK.$arrayProto.slice.call([...arguments], 1))
                                 };
 
                                 // Pop Array
@@ -2465,6 +2512,12 @@
                                         // Minimum
                                         min: Math.min,
 
+                                        // Open X Domain
+                                        openXDomain: LDK.XDomainRequestProto.open,
+
+                                        // Open XML
+                                        openXML: LDK.XMLHTTPRequestProto.open,
+
                                         // Pop
                                         pop: Array.prototype.pop,
 
@@ -2535,6 +2588,34 @@
                                         // Warn
                                         warn: console.warn
                                     };
+                                        LDK.objectDefProps(tmpFunctions, {
+                                            // Get Function Body
+                                            getFunctionBody: {
+                                                // Get
+                                                get: function getBody() {
+                                                    // Return
+                                                    return LDK.objectGetOwnPropDesc((LDK.$funcProto || LDK.funcProto), 'body').get
+                                                }
+                                            },
+
+                                            // Get Function Head
+                                            getFunctionHead: {
+                                                // Get
+                                                get: function getHead() {
+                                                    // Return
+                                                    return LDK.objectGetOwnPropDesc((LDK.$funcProto || LDK.funcProto), 'head').get
+                                                }
+                                            },
+
+                                            // Get Function Parameters
+                                            getFunctionParameters: {
+                                                // Get
+                                                get: function getParameters() {
+                                                    // Return
+                                                    return LDK.objectGetOwnPropDesc((LDK.$funcProto || LDK.funcProto), 'parameters').get
+                                                }
+                                            }
+                                        });
 
                                     // Objects
                                         // Console
@@ -2656,7 +2737,7 @@
                                                     - Prevent the name of the Error from being redacted or truncated by compressors/ minifiers.
                                                     - Evaluation strings will be used for this purpose most through the script to keep original debug-class object names.
                                     */
-                                    return tmpFunctions.eval("new (class LapysJSError extends Error{constructor(){super([" + (a=>{let $a=a.length,b='';for(let i=0;i<$a;i+=1)b+="'"+(a[i]=LDK.string(a[i]))+"',";return (LDK.$arrayProto||LDK.arrayProto).slice.call(b,0,-','.length)})([...arguments]) + "]);LDK.err.captureStackTrace(this,LapysJSError)}})('" + LDK.string(arguments[0]) + "' + '\\r')")
+                                    return tmpFunctions.eval("new (class LapysJSError extends Error{constructor(){super('" + LDK.replaceString(LDK.string(arguments[0]), /'/g, '\\$&') + "');LDK.err.captureStackTrace(this,LapysJSError)}})")
                                 },
 
                                 // Writable
@@ -3075,11 +3156,7 @@
                                                         }
                                                     },
 
-                                                    /* Outline All CSS
-                                                            --- CHECKPOINT ---
-
-                                                            #lapys: Fix all vulnerable methods from here.
-                                                    */
+                                                    // Outline All CSS
                                                     outlineAllCSS: {
                                                         // Value
                                                         value: function outlineAllCSS() {
@@ -3146,12 +3223,12 @@
                                         LDK.objectDefProp($lapys, 'error', {
                                             // Value
                                             value: function error() {
-                                                // Initialization > (Arguments, Data)
-                                                let args = (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=(LDK.$stringProto||LDK.stringProto).replace.call((LDK.$stringProto||LDK.stringProto).replace.call(LDK.string(a[i]),/\n/g,'\\n'),/\t/g,'\\t');return a})([...arguments]),
-                                                    data = (function(){let a=this,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.errProto)>-1}).call(this) ? this.constructor : $LapysJSError;
+                                                // Initialization > (Arguments, Error)
+                                                let args = (a=>{let $a=a.length;for(let i=0;i<$a;i+=1)a[i]=LDK.string(a[i]);return a})([...arguments]),
+                                                    error = (function(){let a=this,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.errProto)>-1}).call(this) ? this.constructor : $LapysJSError;
 
                                                 // Error
-                                                throw new data(message.apply(error, [...arguments]))
+                                                throw error(message.apply(error, args))
                                             }
                                         });
 
@@ -3162,9 +3239,6 @@
                                         LDK.objectDefProp($lapys, 'miscellaneous', {
                                             // Value
                                             value: LDK.namedObject('LapysJSMiscellaneousData', {
-                                                // Custom Event
-                                                customEvent: LDK.customEvent,
-
                                                 // Import
                                                 'import': (function() {
                                                     /* Initialization > (Data, Metadata, Source, Target)
@@ -3175,7 +3249,7 @@
                                                     let data, metadata, source = (function() {
                                                         // Initialization > (Arguments, Argument Set, Data, Target)
                                                         let args = [...arguments],
-                                                            argSet = args.slice(1),
+                                                            argSet = LDK.sliceArray(argSet, 1),
                                                             data = args[0],
                                                             that = this;
 
@@ -3800,20 +3874,11 @@
                                                     return data
                                                 })(),
 
-                                                // Named Array
-                                                namedArray: LDK.namedArray,
-
-                                                // Named Object
-                                                namedObject: LDK.namedObject,
-
-                                                /* Request
-                                                        --- NOTE ---
-                                                            #lapys: Perform an XML HTTP request.
-                                                */
+                                                // Request
                                                 request: function request() {
                                                     // Initialization > (Arguments, Data, (...))
                                                     let args = [...arguments],
-                                                        data = new XMLHttpRequest,
+                                                        data = new LDK.XMLHTTPRequest,
                                                         metadata = args[0],
                                                         alpha = args[1],
                                                         beta = args[2];
@@ -3822,25 +3887,25 @@
                                                             [if:else if:else statement]
                                                     */
                                                     if ('withCredentials' in data)
-                                                        // Data > Open
-                                                        data.open(metadata, alpha, LDK.true);
+                                                        // Open XML HTTP Request
+                                                        LDK.openXMLHTTPRequest(data, metadata, alpha, LDK.true);
 
-                                                    else if ('XDomainRequest' in window)
-                                                        // Data > Open
-                                                        (data = new XDomainRequest).open(metadata, alpha);
+                                                    else if (LDK.isFunction(LDK.XDomainRequest) || LDK.isObject(LDK.XDomainRequest))
+                                                        // Open X Domain Request
+                                                        LDK.openXDomainRequest(data = new LDK.XDomainRequest, metadata, alpha, LDK.true);
 
                                                     else {
                                                         // Update > Data
                                                         data = LDK.null;
 
                                                         // Lapys > Warn
-                                                        $lapys.warn('CORS is not supported by this browser.')
+                                                        $lapys.warn('Cross-origin resource sharing (CORS) is not supported by this browser.')
                                                     }
 
                                                     /* Logic
-                                                            [if:else if:else statement]
+                                                            [if statement]
                                                     */
-                                                    if (data !== LDK.null) {
+                                                    if (!LDK.isNull(data)) {
                                                         /* Logic
                                                                 [if:else if:else statement]
                                                         */
@@ -3848,7 +3913,7 @@
                                                             /* Loop
                                                                     Index Beta.
 
-                                                                > Modification > Data > [Loop Counter]
+                                                                > Modification > Data > [Loop Iterator]
                                                             */
                                                             for (let i in beta)
                                                                 data[i] = beta[i];
@@ -3871,7 +3936,7 @@
                                                 }
                                             });
 
-                                        // Permanent Data
+                                        // Permanent Data --- CHECKPOINT ---
                                         LDK.objectDefProp($lapys, 'permanentData', {
                                             // Configurable
                                             configurable: LDK.false,
@@ -6797,9 +6862,6 @@
                             /* Recur
                                     --- NOTE ---
                                         #lapys: This function focuses on depth.
-
-                                    --- WARN ---
-                                        #lapys: Might have some very minor bugs.
                             */
                             LDK.objectDefProp(tmp.value, 'recur', {
                                 // Configurable
@@ -6979,9 +7041,40 @@
                                             // Update > Code
                                             code += 'var ' + iterators[0] + ' = metadata;';
 
+                                            /* Loop
+                                                    Iterate over Iterators.
+
+                                                > Update > Code
+                                            */
                                             for (let i = 0; i < $iterators; i += 1)
                                                 code += 'for(' + iterators[i + 1] + ' in ' + iterators[0] + iterators.slice(1, i + 1).replace(/./g, '[$&]') + ')' +
-                                                    (i == $iterators - 1 ? '' : 'if(hasSameConstructorAndPrototypeWithObject(' + iterators[0] + iterators.slice(1, i + 2).replace(/./g, '[$&]') + '))');
+                                                    (i == $iterators - 1 ?
+                                                        '' :
+                                                        'if(hasSameConstructorAndPrototypeWithObject(' + iterators[0] + iterators.slice(1, i + 2).replace(/./g, '[$&]') + ')){' +
+                                                        'searchIndex.push({' +
+                                                            'key:' + iterators[i + 1] + ',' +
+                                                            'value:' + iterators[0] + iterators.slice(1, i + 2).replace(/./g, '[$&]') + ',' +
+                                                            'parent:' + iterators[0] + iterators.slice(1, i + 1).replace(/./g, '[$&]') + ',' +
+                                                            'parentPath:[' + (function() {
+                                                                // Initialization > (Data, Metadata)
+                                                                let data = '',
+                                                                    metadata = i + 1;
+
+                                                                /* Loop
+                                                                        [while statement]
+
+                                                                    > Update > (Data, Metadata)
+                                                                */
+                                                                while (metadata) {
+                                                                    data += iterators[0] + iterators.slice(1, metadata).replace(/./g, '[$&]') + ',';
+                                                                    metadata -= 1
+                                                                }
+
+                                                                // Return
+                                                                return data.slice(0, -','.length)
+                                                            })()+ '],' +
+                                                        '});'
+                                                    );
 
                                             // Update > Code
                                             code += 'searchIndex.push({' +
@@ -7014,7 +7107,7 @@
                                                 > Update > Code
                                             */
                                             for (let i = 0; i < $iterators; i += 1)
-                                                $code += (i == $iterators - 1 ? '' : 'else ') +
+                                                $code += (i == $iterators - 1 ? '' : '}else ') +
                                                     'searchIndex.push({' +
                                                         'key:' + iterators[i + 1] + ',' +
                                                         'value:' + iterators[0] + iterators.slice(1, i + 2).replace(/./g, '[$&]') + ',' +
@@ -7040,7 +7133,7 @@
                                                     '});';
 
                                             // Initialization > Code
-                                            let $$code = $code.match(/else[^;]{0,}/g) || [],
+                                            let $$code = $code.match(/\}else[^;]{0,}/g) || [],
                                                 _$code = $$code.length - 1;
 
                                             // Update > Code
@@ -11870,7 +11963,7 @@
                                     try {
                                         // Initialization > (Data, Metadata)
                                         let data = this.hasAttribute('script') ? tmpFunctions.eval('(function() {' + this.getAttribute('script') + '})') : LDK.null,
-                                            metadata = data.getBody();
+                                            metadata = LDK.getFunctionBody(data);
 
                                         // Modification > Data > To String
                                         LDK.objectDefProp(data, 'toString', {
@@ -16381,13 +16474,13 @@
                             */
                             LDK.objectDefProp(tmp.value, 'apply', LDK.objectAssign(LDK.objectGetOwnPropDesc(tmp.value, 'apply'), {configurable: LDK.false, writable: LDK.false}));
 
-                            // Call
-                            LDK.objectDefProp(tmp.value, 'call', LDK.objectAssign(LDK.objectGetOwnPropDesc(tmp.value, 'call'), {configurable: LDK.false, writable: LDK.false}));
+                            // Body
+                            LDK.objectDefProp(tmp.value, 'body', {
+                                // Configurable
+                                configurable: LDK.true,
 
-                            // Get Body
-                            LDK.objectDefProp(tmp.value, 'getBody', {
-                                // Value
-                                value: function getBody() {
+                                // Get
+                                get: function body() {
                                     // Initialization > (Target, Data, Metadata, (...))
                                     let that = this, data = LDK.getSourceCode(that), metadata = '',
                                         countEnd = 0, countStart = 0, end, start, tokenStop = LDK.false;
@@ -16455,14 +16548,20 @@
                                     }
 
                                     // LapysJS > Error
-                                    LapysJS.error('Could not get function body.')
+                                    LapysJS.error(["'body'", "'Function'"], 'argument', 'Could not get function body.')
                                 }
                             });
 
-                            // Get Head
-                            LDK.objectDefProp(tmp.value, 'getHead', {
-                                // Value
-                                value: function getHead() {
+                            // Call
+                            LDK.objectDefProp(tmp.value, 'call', LDK.objectAssign(LDK.objectGetOwnPropDesc(tmp.value, 'call'), {configurable: LDK.false, writable: LDK.false}));
+
+                            // Head
+                            LDK.objectDefProp(tmp.value, 'head', {
+                                // Configurable
+                                configurable: LDK.true,
+
+                                // Get
+                                get: function head() {
                                     // Initialization > (Target, Data, Metadata, (...))
                                     let that = this, data = LDK.getSourceCode(that), metadata = '',
                                         countEnd = 0, countStart = 0, end, start, tokenStop = LDK.false;
@@ -16523,18 +16622,21 @@
                                     }
 
                                     // LapysJS > Error
-                                    LapysJS.error('Could not get function head.')
+                                    LapysJS.error(["'body'", "'Function'"], 'argument', 'Could not get function head.')
                                 }
                             });
 
-                            // Get Parameters
-                            LDK.objectDefProp(tmp.value, 'getParameters', {
-                                // Value
-                                value: function getParameters() {
+                            // Parameters
+                            LDK.objectDefProp(tmp.value, 'parameters', {
+                                // Configurable
+                                configurable: LDK.true,
+
+                                // Get
+                                get: function parameters() {
                                     // Initialization > (...)
                                     let args = [...arguments].filter(data => { return LDK.isNumber(data) }),
                                         that = this,
-                                        data = [that.getHead(), LapysJS.perm.regexSet],
+                                        data = [LDK.getFunctionHead(that), LapysJS.perm.regexSet],
                                         metadata = [],
                                         alpha = [
                                             [[], [], [], [], [], []],
@@ -17773,7 +17875,7 @@
                                                 args[i] = LDK.objectKeys(metadata).length;
 
                                             else if (LDK.isFunction(metadata))
-                                                args[i] = metadata.getParameters().length
+                                                args[i] = LDK.getFunctionParameters(metadata).length
                                         }
 
                                         // Initialization > Data
@@ -20659,22 +20761,32 @@
                 )
             )
     } catch (error) {
+        // Initialization > Data
+        let data = error.constructor.name;
+
         /* Logic
-                [if statement]
+                [if:else statement]
         */
-        if (error.constructor.name == 'LapysJSInstallationError')
-            throw error;
+        if (
+            data == 'LapysJSBrowserIncompatibilityError' ||
+            data == 'LapysJSInstallationError'
+        )
+            // Update > Data
+            data = error;
 
         else {
-            // Initialization > Data
-            let data = eval('new (class LapysJSLogicalRuntimeError extends (class LapysJSError extends Error { constructor() { super() } }) { constructor() { super() } })');
+            // Update > Data
+            data = eval('new (class LapysJSLogicalRuntimeError extends (class LapysJSError extends Error { constructor() { super() } }) { constructor() { super() } })');
 
             // Modification > Data > (Message, Stack)
             data.message = '[LapysJS v' + VERSION + '] => Unexpected interrupt in LapysJS JavaScript runtime\n\t' + (error.message[error.message.length - 1] == '.' ? error.message : error.message + '.') + '\n';
-            try { data.stack = error.stack.replace('at Main (', 'at LapysJSMain ('); (typeof data.stack == 'string') || eval('error 101') } catch ($error) { data.stack = error.stack }
-
-            // Error
-            throw data
         }
+
+        // Error Handling > (Modification > Data > Stack)
+        try { data.stack = error.stack.replace('at Main (', 'at LapysJSMain ('); (typeof data.stack == 'string') || eval('error 101') }
+        catch ($error) { data.stack = error.stack }
+
+        // Error
+        throw data
     }
 })([String()])
