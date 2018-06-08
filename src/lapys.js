@@ -1296,7 +1296,7 @@
 
                                 // Document
                                 LDK.doc = Document;
-                                LDK.objectDefProp(LDK, '$doc', {get: function document(){return LDK.objectGetOwnPropDesc(window,'document').get.call(window)}});
+                                LDK.objectDefProp(LDK, '$doc', {get: function document(){return (tmp.objects.descriptors || {windowDocument: LDK.objectGetOwnPropDesc(window, 'document')}).windowDocument.get.call(window)}});
                                     // Create Attribute
                                     LDK.docCreateAttr = (function() {let a=LDK.$doc.createAttribute;return(function createAttribute(){return a.apply(LDK.$doc, [...arguments])})})();
 
@@ -1427,7 +1427,7 @@
 
                                 // Navigator
                                 LDK.nav = Navigator;
-                                LDK.objectDefProp(LDK, '$nav', {get: function navigator(){return LDK.objectGetOwnPropDesc(window,'navigator').get.call(window)}});
+                                LDK.objectDefProp(LDK, '$nav', {get: function navigator(){return tmpObjectsDescriptors.windowNavigator.get.call(window)}});
                                     // Prototype
                                     LDK.navProto = LDK.nav.prototype;
                                     LDK.$navProto = LDK.clone.call(LDK.navProto);
@@ -1554,7 +1554,7 @@
 
                                 // Performance
                                 LDK.perf = Performance;
-                                LDK.objectDefProp(LDK, '$perf', {get: function performance(){return LDK.objectGetOwnPropDesc(window,'performance').get.call(window)}});
+                                LDK.objectDefProp(LDK, '$perf', {get: function performance(){return tmpObjectsDescriptors.windowPerformance.get.call(window)}});
                                     // Prototype
                                     LDK.perfProto = LDK.perf.prototype;
                                     LDK.$perfProto = LDK.clone.call(LDK.perfProto);
@@ -3107,6 +3107,19 @@
 
                                         // Console
                                         tmpObjects.console = console;
+
+                                        // Descriptors
+                                        const tmpObjectsDescriptors = tmpObjects.descriptors = {
+                                            // Window
+                                                // Document
+                                                windowDocument: LDK.objectGetOwnPropDesc(window, 'document'),
+
+                                                // Navigator
+                                                windowNavigator: LDK.objectGetOwnPropDesc(window, 'navigator'),
+
+                                                // Performance
+                                                windowPerformance: LDK.objectGetOwnPropDesc(window, 'performance')
+                                        };
 
                                         // Inner Height
                                         LDK.objectDefProp(tmpObjects, 'innerHeight', new (function Object() {
