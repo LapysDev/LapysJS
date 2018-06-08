@@ -5,7 +5,8 @@
     @url: https://github.com/LapysDev/LapysJS
 
     --- CHECKPOINT ---
-        #lapys: Cache all `objectGetOwnPropDesc` methods if possible.
+        #lapys:
+            - Cache all `objectGetOwnPropDesc` methods if possible.
 
     --- NOTE ---
         #lapys:
@@ -904,7 +905,7 @@
                                     */
                                     for (let i of args)
                                         (tmp.functions || data).push.call(data, LDK.isConstructible(i) ? (
-                                            (function(){let a=i.__proto__,b=[];while(a!=LDK.null){b.push(a);a=a.__proto__}return b.indexOf(LDK.nodeProto)>-1})() &&
+                                            (function(){let a=i.__proto__,b=[];while(a!=LDK.null){LDK.pushArray(b,a);a=a.__proto__}return LDK.indexOfArray(b,LDK.nodeProto)>-1})() &&
                                             typeof i == 'object'
                                         ) : LDK.false);
 
@@ -1071,15 +1072,15 @@
                                         // Return
                                         return (function() {
                                             // Initialization > Alpha
-                                            let alpha = eval('function ' + data + '(){this.constructor.prototype.splice=(LDK.arrayProto||LDK.$arrayProto).splice;this.length=0}let metadata=new ' + data + ';metadata.__proto__=LDK.objectCreate(LDK.arrayProto);metadata');
+                                            let alpha = eval('function ' + data + '(){this.constructor.prototype.splice=LDK.$arrayProto.splice;this.length=0}let metadata=new ' + data + ';metadata.__proto__=LDK.objectCreate(LDK.arrayProto);metadata');
 
                                             /* Update > (Alpha, Arguments)
                                                     --- NOTE ---
                                                         #lapys: Test the named array.
                                             */
-                                            (LDK.$arrayProto || LDK.arrayProto).push.call(alpha, tmp.object);
-                                            (LDK.$arrayProto || LDK.arrayProto).pop.call(alpha, 1);
-                                            args = (LDK.$arrayProto || LDK.arrayProto).slice.call(args, 1);
+                                            LDK.$arrayProto.push.call(alpha, tmp.object);
+                                            LDK.$arrayProto.pop.call(alpha, 1);
+                                            args = LDK.$arrayProto.slice.call(args, 1);
 
                                             /* Loop
                                                     Index Arguments.
@@ -1087,7 +1088,7 @@
                                                 > Update > Alpha
                                             */
                                             for (let i of args)
-                                                (LDK.$arrayProto || LDK.arrayProto).push.call(alpha, i);
+                                                LDK.$arrayProto.push.call(alpha, i);
 
                                             // Return
                                             return alpha
@@ -1136,6 +1137,7 @@
                                 LDK.node = Node;
                                     // Prototype
                                     LDK.nodeProto = LDK.node.prototype;
+                                    LDK.$nodeProto = LDK.nodeProto;
 
                                 // Object
                                 LDK.object = Object;
@@ -1159,6 +1161,7 @@
 
                                     // Prototype
                                     LDK.objectProto = LDK.object.prototype;
+                                    LDK.$objectProto = LDK.objectProto;
 
                                     // Assign
                                     (typeof LDK.object.assign=='function')||LDK.objectDefProp(LDK.object,'assign',{configurable:LDK.true,value:function assign(){'use strict';if(arguments[0]==null)throw LDK.typeError('Cannot convert undefined or null to object');var to=LDK.object(arguments[0]);for(var index=1;index<arguments.length;index+=1){var nextSource=arguments[index];if(nextSource!=null)for(var nextKey in nextSource){if(LDK.objectProto.hasOwnProperty.call(nextSource,nextKey))to[nextKey]=nextSource[nextKey]}return to}},writable:LDK.true});
@@ -1176,6 +1179,7 @@
                                 LDK.string = String;
                                     // Prototype
                                     LDK.stringProto = LDK.string.prototype;
+                                    LDK.$stringProto = LDK.stringProto;
 
                                 /* Attribute
                                         --- NOTE ---
@@ -1220,7 +1224,7 @@
                                         // Error Handling
                                         try {
                                             // Update > Data
-                                            data = document.createElement(args[0])
+                                            data = LDK.$doc.createElement(args[0])
                                         } catch (error) {
                                             // LapysJS > Warn
                                             LapysJS.warn(args[0], 'must', 'valid element tag name');
@@ -1287,6 +1291,9 @@
                                     return LDK.null
                                 };
 
+                                // Date
+                                LDK.date = Date;
+
                                 // Document
                                 LDK.doc = Document;
                                 LDK.objectDefProp(LDK, '$doc', {get: function document(){return LDK.objectGetOwnPropDesc(window,'document').get.call(window)}});
@@ -1348,6 +1355,7 @@
                                                     are collated.
                                     */
                                     LDK.docFragProto = LDK.docFrag.prototype;
+                                    LDK.$docFragProto = LDK.docFragProto;
                                     setTimeout(function() { LDK.$docFragProto = LDK.clone.call(LDK.docFragProto) });
 
                                 // Documents
@@ -1387,6 +1395,7 @@
                                 LDK.htmlEle = HTMLElement;
                                     // Prototype
                                     LDK.htmlEleProto = LDK.htmlEle.prototype;
+                                    LDK.$htmlEleProto = LDK.htmlEleProto;
                                     setTimeout(function() { LDK.$htmlEleProto = LDK.clone.call(LDK.htmlEleProto) });
 
                                 // HTML Input Element
@@ -1463,6 +1472,7 @@
 
                                     // Prototype
                                     LDK.numberProto = LDK.number.prototype;
+                                    LDK.$numberProto = LDK.numberProto;
                                     setTimeout(function() { LDK.$numberProto = LDK.clone.call(LDK.numberProto) });
 
                                 // Infinity
@@ -1487,6 +1497,7 @@
 
                                     // Prototype
                                     LDK.arrayProto = LDK.array.prototype;
+                                    LDK.$arrayProto = LDK.arrayProto;
                                     setTimeout(function() { LDK.$arrayProto = LDK.clone.call(LDK.arrayProto) });
                                         // Index Of
                                         (typeof LDK.arrayProto.indexOf=='function')||LDK.objectDefProp(LDK.arrayProto,'indexOf',{value:function indexOf(){if(this===LDK.null)throw LDK.typeError("'this' is null or not defined");var a,c=LDK.object(this),b=c.length>>>0;if(0===b)return -1;a=LDK.numberParseFloat(arguments[1])||0;LDK.infinity===Math.abs(a)&&(a=0);if(a>=b)return -1;for(a=Math.max(0<=a?a:b-Math.abs(a),0);a<b;){if(a in c&&c[a]===arguments[0])return a;a += 1}return -1},writable:LDK.true});
@@ -1498,6 +1509,7 @@
                                 LDK.ele = Element;
                                     // Prototype
                                     LDK.eleProto = LDK.ele.prototype;
+                                    LDK.$eleProto = LDK.eleProto;
                                     setTimeout(function() { LDK.$eleProto = LDK.clone.call(LDK.eleProto) });
 
                                     // Text Content
@@ -1513,12 +1525,14 @@
                                 LDK.eventTarget = EventTarget;
                                     // Prototype
                                     LDK.eventTargetProto = LDK.eventTarget.prototype;
+                                    LDK.$eventTargetProto = LDK.eventTargetProto;
                                     setTimeout(function() { LDK.$eventTargetProto = LDK.clone.call(LDK.eventTargetProto) });
 
                                 // Function
                                 LDK.func = Function;
                                     // Prototype
                                     LDK.funcProto = LDK.func.prototype;
+                                    LDK.$funcProto = LDK.funcProto;
                                     setTimeout(function() { LDK.$funcProto = LDK.clone.call(LDK.funcProto) });
                                         // Bind
                                         (typeof LDK.funcProto=='function')||LDK.objectDefProp(LDK.funcProto,'bind',{value:function bind(){var a;try{a=eval('(function(){return('+this+')})()')}catch(e){a=this}return a},writable:LDK.true});
@@ -1582,6 +1596,7 @@
                                 LDK.text = Text;
                                     // Prototype
                                     LDK.textProto = LDK.text.prototype;
+                                    LDK.$textProto = LDK.textProto;
                                     setTimeout(function() { LDK.$textProto = LDK.clone.call(LDK.textProto) });
 
                                 // True
@@ -1596,12 +1611,14 @@
                                 LDK.XDomainRequest = window.XDomainRequest;
                                     // Prototype
                                     LDK.XDomainRequestProto = (LDK.XDomainRequest || tmp.object).prototype;
+                                    LDK.$XDomainRequestProto = LDK.XDomainRequestProto;
                                     setTimeout(function() { LDK.$XDomainRequestProto = LDK.clone.call(LDK.XDomainRequestProto) });
 
                                 // XML HTTP Request
                                 LDK.XMLHTTPRequest = XMLHttpRequest;
                                     // Prototype
                                     LDK.XMLHTTPRequestProto = LDK.XMLHTTPRequest.prototype;
+                                    LDK.$XMLHTTPRequestProto = LDK.XMLHTTPRequestProto;
                                     setTimeout(function() { LDK.$XMLHTTPRequestProto = LDK.clone.call(LDK.XMLHTTPRequestProto) });
 
                                 /* [Prototype]
@@ -1617,25 +1634,25 @@
                                 // Add Array Element
                                 LDK.addArrayElement = function addArrayElement() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).addElement.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$arrayProto.addElement.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Append Child Node
                                 LDK.appendChildNode = function appendChildNode() {
                                     // Return
-                                    return (LDK.$nodeProto || LDK.nodeProto).appendChild.call(arguments[0], arguments[1])
+                                    return (LDK.$nodeProto).appendChild.call(arguments[0], arguments[1])
                                 };
 
                                 // Blur Element
                                 LDK.blurElement = function blurElement() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto || LDK.htmlEleProto, 'blur').value.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto, 'blur').value.call(arguments[0])
                                 };
 
                                 // Concatenate Array
                                 LDK.concatArray = function concatArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).concat.apply(arguments[0], tmp.functions.slice.call([...arguments], 1))
+                                    return LDK.$arrayProto.concat.apply(arguments[0], tmp.functions.slice.call([...arguments], 1))
                                 };
 
                                 // Custom Event
@@ -1696,13 +1713,13 @@
                                 // Filter Array
                                 LDK.filterArray = function filterArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).filter.call(arguments[0], arguments[1])
+                                    return LDK.$arrayProto.filter.call(arguments[0], arguments[1])
                                 };
 
                                 // Focus Element
                                 LDK.focusElement = function focusElement() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto || LDK.htmlEleProto, 'focus').value.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto, 'focus').value.call(arguments[0])
                                 };
 
                                 /* Function
@@ -1774,13 +1791,13 @@
                                 // Get After String
                                 LDK.getAfterString = function getAfterString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).getAfterChar.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$stringProto.getAfterChar.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Get Before String
                                 LDK.getBeforeString = function getBeforeString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).getBeforeChar.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$stringProto.getBeforeChar.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Get Constructor
@@ -1798,7 +1815,7 @@
                                 // Get Document Design Mode
                                 LDK.getDocumentDesignMode = function getDocumentDesignMode() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$docProto, 'designMode').get.call(document)
+                                    return LDK.objectGetOwnPropDesc(LDK.$docProto, 'designMode').get.call(LDK.$doc)
                                 };
 
                                 // Get Document Document Element
@@ -1813,28 +1830,34 @@
                                     return tmpFunctions.getDocumentHead.call(LDK.$doc)
                                 };
 
+                                // Get Document Title
+                                LDK.getDocumentTitle = function getDocumentTitle() {
+                                    // Return
+                                    return LDK.objectGetOwnPropDesc(LDK.$docProto, 'title').get.call(LDK.$doc)
+                                };
+
                                 // Get Element Attribute
                                 LDK.getElementAttribute = function getElementAttribute() {
                                     // Return
-                                    return (LDK.$eleProto || LDK.eleProto).getAttribute.call(arguments[0], arguments[1])
+                                    return LDK.$eleProto.getAttribute.call(arguments[0], arguments[1])
                                 };
 
                                 // Get Element Attribute Node
                                 LDK.getElementAttributeNode = function getElementAttributeNode() {
                                     // Return
-                                    return (LDK.$eleProto || LDK.eleProto).getAttributeNode.call(arguments[0], arguments[1])
+                                    return LDK.$eleProto.getAttributeNode.call(arguments[0], arguments[1])
                                 };
 
                                 // Get Element Children By Tag Name
                                 LDK.getElementChildrenByTagName = function getElementChildrenByTagName() {
                                     // Return
-                                    return (LDK.$eleProto || LDK.eleProto).getElementsByTagName.call(arguments[0], arguments[1])
+                                    return LDK.$eleProto.getElementsByTagName.call(arguments[0], arguments[1])
                                 };
 
                                 // Get Element Content Editable
                                 LDK.getElementContentEditable = function getElementContentEditable() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto || LDK.htmlEleProto, 'contentEditable').get.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto, 'contentEditable').get.call(arguments[0])
                                 };
 
                                 // Get Element ID
@@ -1846,13 +1869,13 @@
                                 // Get Element Inner HTML
                                 LDK.getElementInnerHTML = function getElementInnerHTML() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$eleProto || LDK.eleProto, 'innerHTML').get.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$eleProto, 'innerHTML').get.call(arguments[0])
                                 };
 
                                 // Get Element Tag Name
                                 LDK.getElementTagName = function getElementTagName() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$eleProto || LDK.eleProto, 'tagName').get.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$eleProto, 'tagName').get.call(arguments[0])
                                 };
 
                                 // Get Element Value
@@ -1866,10 +1889,10 @@
                                         > Return
                                     */
                                     if (LDK.getConstructor(data) == LDK.htmlInputEle && LDK.getElementTagName(data) == 'INPUT')
-                                        return LDK.objectGetOwnPropDesc(LDK.$htmlInputEleProto || LDK.htmlInputEleProto, 'value').get.call(data);
+                                        return LDK.objectGetOwnPropDesc(LDK.$htmlInputEleProto, 'value').get.call(data);
 
                                     else if (LDK.getConstructor(data) == LDK.htmlTextAreaEle && LDK.getElementTagName(data) == 'TEXTAREA')
-                                        return LDK.objectGetOwnPropDesc(LDK.$htmlTextAreaEleProto || LDK.htmlTextAreaEleProto, 'value').get.call(data);
+                                        return LDK.objectGetOwnPropDesc(LDK.$htmlTextAreaEleProto, 'value').get.call(data);
 
                                     // Return
                                     return LDK.null
@@ -1967,13 +1990,13 @@
                                 // Get Next Sibling Node
                                 LDK.getNextSiblingNode = function getNextSiblingNode() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$nodeProto || LDK.nodeProto, 'nextSibling').get.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$nodeProto, 'nextSibling').get.call(arguments[0])
                                 };
 
                                 // Get Previous Sibling Node
                                 LDK.getPreviousSiblingNode = function getPreviousSiblingNode() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$nodeProto || LDK.nodeProto, 'previousSibling').get.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$nodeProto, 'previousSibling').get.call(arguments[0])
                                 };
 
                                 // Get Regular Expression Flags
@@ -1982,7 +2005,7 @@
                                     let data = arguments[0];
 
                                     // Return
-                                    return LDK.isRegex(data) ? LDK.objectGetOwnPropDesc(LDK.$regexProto || LDK.regexProto, 'flags').get.call(data) : LDK.null
+                                    return LDK.isRegex(data) ? LDK.objectGetOwnPropDesc(LDK.$regexProto, 'flags').get.call(data) : LDK.null
                                 };
 
                                 // Get Regular Expression Source
@@ -1991,13 +2014,13 @@
                                     let data = arguments[0];
 
                                     // Return
-                                    return LDK.isRegex(data) ? LDK.objectGetOwnPropDesc(LDK.$regexProto || LDK.regexProto, 'source').get.call(data) : LDK.null
+                                    return LDK.isRegex(data) ? LDK.objectGetOwnPropDesc(LDK.$regexProto, 'source').get.call(data) : LDK.null
                                 };
 
                                 // Get Safe Random String
                                 LDK.getSafeRandomString = function getSafeRandomString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).randomize.call(LDK.constants.REGEX_SET)
+                                    return LDK.$stringProto.randomize.call(LDK.constants.REGEX_SET)
                                 };
 
                                 // Get Source Code
@@ -2011,37 +2034,43 @@
                                     catch (error) {}
 
                                     // Return
-                                    return metadata ? (LDK.$funcProto || LDK.funcProto).toString.call(data) : LDK.null
+                                    return metadata ? LDK.$funcProto.toString.call(data) : LDK.null
                                 };
 
                                 // Get Whole Text
                                 LDK.getWholeText = function getWholeText() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$textProto || LDK.textProto, 'wholeText').get.call(arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$textProto, 'wholeText').get.call(arguments[0])
+                                };
+
+                                // Get Window Name
+                                LDK.getWindowName = function getWindowName() {
+                                    // Return
+                                    return LDK.objectGetOwnPropDesc(window, 'name').get.call(window)
                                 };
 
                                 // Index Of Array
                                 LDK.indexOfArray = function indexOfArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).indexOf.call(arguments[0], arguments[1])
+                                    return LDK.$arrayProto.indexOf.call(arguments[0], arguments[1])
                                 };
 
                                 // Index Of String
                                 LDK.indexOfString = function indexOfString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).indexOf.call(arguments[0], arguments[1])
+                                    return LDK.$stringProto.indexOf.call(arguments[0], arguments[1])
                                 };
 
                                 // Insert Adjacent HTML
                                 LDK.insertAdjacentHTMLElement = function insertAdjacentHTMLElement() {
                                     // Return
-                                    return (LDK.$eleProto || LDK.eleProto).insertAdjacentHTML.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$eleProto.insertAdjacentHTML.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Insert Before Node
                                 LDK.insertBeforeNode = function insertBeforeNode() {
                                     // Return
-                                    return (LDK.$nodeProto || LDK.nodeProto).insertBefore.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return (LDK.$nodeProto).insertBefore.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Is Array-Like
@@ -2311,25 +2340,25 @@
                                 // Join Array
                                 LDK.joinArray = function joinArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).join.call(arguments[0], arguments[1])
+                                    return LDK.$arrayProto.join.call(arguments[0], arguments[1])
                                 };
 
                                 // Last Index Of Array
                                 LDK.lastIndexOfArray = function lastIndexOfArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).lastIndexOf.call(arguments[0], arguments[1])
+                                    return LDK.$arrayProto.lastIndexOf.call(arguments[0], arguments[1])
                                 };
 
                                 // Last Index Of String
                                 LDK.lastIndexOfString = function lastIndexOfString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).lastIndexOf.call(arguments[0], arguments[1])
+                                    return LDK.$stringProto.lastIndexOf.call(arguments[0], arguments[1])
                                 };
 
                                 // Match String
                                 LDK.matchString = function matchString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).match.call(arguments[0], arguments[1])
+                                    return LDK.$stringProto.match.call(arguments[0], arguments[1])
                                 };
 
                                 // Open X Domain Request
@@ -2347,7 +2376,7 @@
                                 // Pop Array
                                 LDK.popArray = function popArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).pop.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$arrayProto.pop.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Push Array
@@ -2413,31 +2442,31 @@
                                 // Remove Array Element
                                 LDK.removeArrayElement = function removeArrayElement() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).removeElement.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$arrayProto.removeElement.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Remove Duplicated Array Elements
                                 LDK.removeDuplicatedArrayElements = function removeDuplicatedArrayElements() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).removeDuplicatedElements.call(arguments[0])
+                                    return LDK.$arrayProto.removeDuplicatedElements.call(arguments[0])
                                 };
 
                                 // Remove Element
                                 LDK.removeElement = function removeElement() {
                                     // Return
-                                    return (LDK.$eleProto || LDK.eleProto).remove.call(arguments[0])
+                                    return LDK.$eleProto.remove.call(arguments[0])
                                 };
 
                                 // Remove Element Attribute
                                 LDK.removeElementAttribute = function removeElementAttribute() {
                                     // Return
-                                    return (LDK.$eleProto || LDK.eleProto).removeAttribute.call(arguments[0], arguments[1])
+                                    return LDK.$eleProto.removeAttribute.call(arguments[0], arguments[1])
                                 };
 
                                 // Repeat String
                                 LDK.repeatString = function repeatString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).repeat.call(arguments[0], arguments[1])
+                                    return LDK.$stringProto.repeat.call(arguments[0], arguments[1])
                                 };
 
                                 // Replace String
@@ -2484,19 +2513,25 @@
                                 // Set Document Design Mode
                                 LDK.setDocumentDesignMode = function setDocumentDesignMode() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$docProto, 'designMode').set.call(document, arguments[0])
+                                    return LDK.objectGetOwnPropDesc(LDK.$docProto, 'designMode').set.call(LDK.$doc, arguments[0])
+                                };
+
+                                // Set Document Title
+                                LDK.setDocumentTitle = function setDocumentTitle() {
+                                    // Return
+                                    return LDK.objectGetOwnPropDesc(LDK.$docProto, 'title').set.call(LDK.$doc, arguments[0])
                                 };
 
                                 // Set Element Attribute
                                 LDK.setElementAttribute = function setElementAttribute() {
                                     // Return
-                                    return (LDK.$eleProto || LDK.eleProto).setAttribute.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$eleProto.setAttribute.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Set Element Content Editable
                                 LDK.setElementContentEditable = function setElementContentEditable() {
                                     // Return
-                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto || LDK.htmlEleProto, 'contentEditable').set.call(arguments[0], arguments[1])
+                                    return LDK.objectGetOwnPropDesc(LDK.$htmlEleProto, 'contentEditable').set.call(arguments[0], arguments[1])
                                 };
 
                                 // Set Element ID
@@ -2511,7 +2546,7 @@
                                     let data = arguments[1];
 
                                     // (...)
-                                    LDK.objectGetOwnPropDesc(LDK.$eleProto || LDK.eleProto, 'innerHTML').set.call(arguments[0], data);
+                                    LDK.objectGetOwnPropDesc(LDK.$eleProto, 'innerHTML').set.call(arguments[0], data);
 
                                     // Return
                                     return data
@@ -2529,10 +2564,10 @@
                                         > (...)
                                     */
                                     if (LDK.getConstructor(data) == LDK.htmlInputEle && LDK.getElementTagName(data) == 'INPUT')
-                                        LDK.objectGetOwnPropDesc(LDK.$htmlInputEleProto || LDK.htmlInputEleProto, 'value').set.call(data, metadata);
+                                        LDK.objectGetOwnPropDesc(LDK.$htmlInputEleProto, 'value').set.call(data, metadata);
 
                                     else if (LDK.getConstructor(data) == LDK.htmlTextAreaEle && LDK.getElementTagName(data) == 'TEXTAREA')
-                                        LDK.objectGetOwnPropDesc(LDK.$htmlTextAreaEleProto || LDK.htmlTextAreaEleProto, 'value').set.call(data, metadata);
+                                        LDK.objectGetOwnPropDesc(LDK.$htmlTextAreaEleProto, 'value').set.call(data, metadata);
 
                                     // Return
                                     return metadata
@@ -2550,28 +2585,34 @@
                                     return tmpFunctions.setMetaName.call(arguments[0], arguments[1])
                                 };
 
+                                // Set Window Name
+                                LDK.setWindowName = function setWindowName() {
+                                    // Return
+                                    return LDK.objectGetOwnPropDesc(window, 'name').set.call(window, arguments[0])
+                                };
+
                                 // Slice Array
                                 LDK.sliceArray = function sliceArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).slice.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$arrayProto.slice.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Slice String
                                 LDK.sliceString = function sliceString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).slice.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$stringProto.slice.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Split String
                                 LDK.splitString = function splitString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).split.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$stringProto.split.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // Sort Array
                                 LDK.sortArray = function sortArray() {
                                     // Return
-                                    return (LDK.$arrayProto || LDK.arrayProto).sort.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$arrayProto.sort.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // String
@@ -2583,7 +2624,7 @@
                                 // Test Regular Expression
                                 LDK.testRegex = function testRegex() {
                                     // Return
-                                    return (LDK.$regexProto || LDK.regexProto).test.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
+                                    return LDK.$regexProto.test.apply(arguments[0], tmpFunctions.slice.call([...arguments], 1))
                                 };
 
                                 // To Array
@@ -2607,49 +2648,49 @@
                                 // To Lower Case String
                                 LDK.toLowerCaseString = function toLowerCaseString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).toLowerCase.call(LDK.string(arguments[0]))
+                                    return LDK.$stringProto.toLowerCase.call(LDK.string(arguments[0]))
                                 };
 
                                 // To Upper Case String
                                 LDK.toUpperCaseString = function toUpperCaseString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).toUpperCase.call(LDK.string(arguments[0]))
+                                    return LDK.$stringProto.toUpperCase.call(LDK.string(arguments[0]))
                                 };
 
                                 // Trim Left String
                                 LDK.trimLeftString = function trimLeftString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).trimLeft.call(arguments[0])
+                                    return LDK.$stringProto.trimLeft.call(arguments[0])
                                 };
 
                                 // Trim Left String Character
                                 LDK.trimLeftStringChar = function trimLeftStringChar() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).trimLeftChar.call(arguments[0], arguments[1])
+                                    return LDK.$stringProto.trimLeftChar.call(arguments[0], arguments[1])
                                 };
 
                                 // Trim Right String
                                 LDK.trimRightString = function trimRightString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).trimRight.call(arguments[0])
+                                    return LDK.$stringProto.trimRight.call(arguments[0])
                                 };
 
                                 // Trim Right String Character
                                 LDK.trimRightStringChar = function trimRightStringChar() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).trimRightChar.call(arguments[0], arguments[1])
+                                    return LDK.$stringProto.trimRightChar.call(arguments[0], arguments[1])
                                 };
 
                                 // Trim String
                                 LDK.trimString = function trimString() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).trim.call(arguments[0])
+                                    return LDK.$stringProto.trim.call(arguments[0])
                                 };
 
                                 // Trim String Character
                                 LDK.trimStringChar = function trimStringChar() {
                                     // Return
-                                    return (LDK.$stringProto || LDK.stringProto).trimChar.call(arguments[0], arguments[1])
+                                    return LDK.$stringProto.trimChar.call(arguments[0], arguments[1])
                                 };
 
                         /* Global Data */
@@ -2671,7 +2712,7 @@
                                             that.Function = (function() {});
 
                                             // HTML All Collection
-                                            LDK.objectDefProp(that, 'HTMLAllCollection', {get: function() { return document.all }});
+                                            LDK.objectDefProp(that, 'HTMLAllCollection', {get: function() { return LDK.objectGetOwnPropDesc(LDK.$docProto, 'all').get.call(LDK.$doc) }});
 
                                             // HTML Collection
                                             that.HTMLCollection = LDK.getEmptyHTMLCollection();
@@ -3037,7 +3078,7 @@
                                                 // Get
                                                 get: function getBody() {
                                                     // Return
-                                                    return LDK.objectGetOwnPropDesc((LDK.$funcProto || LDK.funcProto), 'body').get
+                                                    return LDK.objectGetOwnPropDesc(LDK.$funcProto, 'body').get
                                                 }
                                             },
 
@@ -3046,7 +3087,7 @@
                                                 // Get
                                                 get: function getHead() {
                                                     // Return
-                                                    return LDK.objectGetOwnPropDesc((LDK.$funcProto || LDK.funcProto), 'head').get
+                                                    return LDK.objectGetOwnPropDesc(LDK.$funcProto, 'head').get
                                                 }
                                             },
 
@@ -3055,7 +3096,7 @@
                                                 // Get
                                                 get: function getParameters() {
                                                     // Return
-                                                    return LDK.objectGetOwnPropDesc((LDK.$funcProto || LDK.funcProto), 'parameters').get
+                                                    return LDK.objectGetOwnPropDesc(LDK.$funcProto, 'parameters').get
                                                 }
                                             }
                                         });
@@ -3280,10 +3321,10 @@
                                                 if (LDK.isNonConstructible(data))
                                                     args[i] = LDK.string(data);
 
-                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.errProto)>-1})() && that == $lapys.error)
+                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){LDK.$arrayProto.push.call(c,b);b=b.__proto__}return LDK.$arrayProto.indexOf.call(c,LDK.errProto)>-1})() && that == $lapys.error)
                                                     args[i] = LDK.string(data.message);
 
-                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.eleProto)>-1})() && that == $lapys.error)
+                                                else if ((function(){let a=data,b=a.__proto__,c=[];while(b){LDK.$arrayProto.push.call(c,b);b=b.__proto__}return LDK.$arrayProto.indexOf.call(c,LDK.eleProto)>-1})() && that == $lapys.error)
                                                     args[i] = LDK.string(data) || data.selector;
 
                                                 else
@@ -3677,7 +3718,7 @@
                                             value: function error() {
                                                 // Initialization > (Arguments, Error)
                                                 let args = [...arguments],
-                                                    error = (function(){let a=this,b=a.__proto__,c=[];while(b){(LDK.$arrayProto||LDK.arrayProto).push.call(c,b);b=b.__proto__}return (LDK.$arrayProto||LDK.arrayProto).indexOf.call(c,LDK.errProto)>-1}).call(this) ? this.constructor : $LapysJSError;
+                                                    error = (function(){let a=this,b=a.__proto__,c=[];while(b){LDK.$arrayProto.push.call(c,b);b=b.__proto__}return LDK.$arrayProto.indexOf.call(c,LDK.errProto)>-1}).call(this) ? this.constructor : $LapysJSError;
 
                                                 // Error
                                                 throw error(message.apply(error, [...arguments]))
@@ -4579,7 +4620,7 @@
                                         // Script
                                         LDK.objectDefProp($lapys, 'script', {
                                             // Value
-                                            value: document.currentScript
+                                            value: LDK.$doc.currentScript
                                         });
                                             // Function
                                                 // Script
@@ -4722,7 +4763,7 @@
                                                 // Function > Parse Message
                                                 function parseMessage() {
                                                     // Initialization > Data
-                                                    let data = LDK.$stringProto || LDK.stringProto;
+                                                    let data = LDK.$stringProto;
 
                                                     /* Return
                                                             --- NOTE ---
@@ -4803,9 +4844,9 @@
                                                     metadata = LDK.docQueSel(arguments[0]);
 
                                                 // [Function]
-                                                document.head || (function() {
+                                                LDK.getDocumentHead() || (function() {
                                                     // Initialization > (Data, Metadata)
-                                                    let data = document.children[0],
+                                                    let data = LDK.$doc.children[0],
                                                         metadata = LDK.docCreateEle('head');
 
                                                     // Insertion
@@ -4975,10 +5016,10 @@
                                         // Name
                                         'name' in $data || LDK.objectDefProp($data, 'name', {
                                             // Get
-                                            get: function getName() {return window.name||LDK.$doc.title},
+                                            get: function getName() {return LDK.getWindowName()},
 
                                             // Set
-                                            set: function setName() {let a=arguments[0];LDK.$doc.title=(window.name=a)}
+                                            set: function setName() {let a=arguments[0];LDK.setDocumentTitle(a);LDK.setWindowName(a)}
                                         });
 
                                         // Navigator
@@ -6150,7 +6191,7 @@
                                         // Value
                                         value: function read() {
                                             // Return
-                                            return LapysJS.miscellaneous.request.apply(LapysJS.miscellaneous, (LDK.$arrayProto || LDK.arrayProto).addElementToFront.apply(['GET', LDK.string(arguments[0])], LDK.sliceArray([...arguments], 1)))
+                                            return LapysJS.miscellaneous.request.apply(LapysJS.miscellaneous, LDK.$arrayProto.addElementToFront.apply(['GET', LDK.string(arguments[0])], LDK.sliceArray([...arguments], 1)))
                                         },
 
                                         // Writable
@@ -6920,7 +6961,7 @@
                                 // Value
                                 value: function onDOMElementAdded() {
                                     // Error Handling > (...)
-                                    try { (LDK.$eventTargetProto || LDK.eventTargetProto).onNodeElementAdded.call(LDK.$doc, [...arguments]) }
+                                    try { LDK.$eventTargetProto.onNodeElementAdded.call(LDK.$doc, [...arguments]) }
                                     catch (error) { LapysJS.error(["'onDOMElementAdded'", "'DOM'"], 'argument', error.message) }
                                 }
                             });
@@ -6930,7 +6971,7 @@
                                 // Value
                                 value: function onDOMElementCountChange() {
                                     // Error Handling > (...)
-                                    try { (LDK.$eventTargetProto || LDK.eventTargetProto).onNodeElementCountChange.call(LDK.$doc, [...arguments]) }
+                                    try { LDK.$eventTargetProto.onNodeElementCountChange.call(LDK.$doc, [...arguments]) }
                                     catch (error) { LapysJS.error(["'onDOMElementCountChange'", "'DOM'"], 'argument', error.message) }
                                 }
                             });
@@ -6940,7 +6981,7 @@
                                 // Value
                                 value: function onDOMElementRemoved() {
                                     // Error Handling > (...)
-                                    try { (LDK.$eventTargetProto || LDK.eventTargetProto).onNodeElementRemoved.call(LDK.$doc, [...arguments]) }
+                                    try { LDK.$eventTargetProto.onNodeElementRemoved.call(LDK.$doc, [...arguments]) }
                                     catch (error) { LapysJS.error(["'onDOMElementRemoved'", "'DOM'"], 'argument', error.message) }
                                 }
                             });
@@ -6950,7 +6991,7 @@
                                 // Value
                                 value: function onDOMHTMLChange() {
                                     // Error Handling > (...)
-                                    try { (LDK.$eventTargetProto || LDK.eventTargetProto).onNodeHTMLChange.call(LDK.getDocumentDocumentElement() || LDK.$doc, [...arguments]) }
+                                    try { LDK.$eventTargetProto.onNodeHTMLChange.call(LDK.getDocumentDocumentElement() || LDK.$doc, [...arguments]) }
                                     catch (error) { LapysJS.error(["'onDOMHTMLChange'", "'DOM'"], 'argument', error.message) }
                                 }
                             });
@@ -6960,7 +7001,7 @@
                                 // Value
                                 value: function onDOMNodeAdded() {
                                     // Error Handling > (...)
-                                    try { (LDK.$eventTargetProto || LDK.eventTargetProto).onNodeAdded.call(LDK.$doc, [...arguments]) }
+                                    try { LDK.$eventTargetProto.onNodeAdded.call(LDK.$doc, [...arguments]) }
                                     catch (error) { LapysJS.error(["'onDOMNodeAdded'", "'DOM'"], 'argument', error.message) }
                                 }
                             });
@@ -6970,7 +7011,7 @@
                                 // Value
                                 value: function onDOMNodeCountChange() {
                                     // Error Handling > (...)
-                                    try { (LDK.$eventTargetProto || LDK.eventTargetProto).onNodeCountChange.call(LDK.$doc, [...arguments]) }
+                                    try { LDK.$eventTargetProto.onNodeCountChange.call(LDK.$doc, [...arguments]) }
                                     catch (error) { LapysJS.error(["'onDOMNodeCountChange'", "'DOM'"], 'argument', error.message) }
                                 }
                             });
@@ -6980,7 +7021,7 @@
                                 // Value
                                 value: function onDOMNodeRemoved() {
                                     // Error Handling > (...)
-                                    try { (LDK.$eventTargetProto || LDK.eventTargetProto).onNodeRemoved.call(LDK.$doc, [...arguments]) }
+                                    try { LDK.$eventTargetProto.onNodeRemoved.call(LDK.$doc, [...arguments]) }
                                     catch (error) { LapysJS.error(["'onDOMNodeRemoved'", "'DOM'"], 'argument', error.message) }
                                 }
                             });
@@ -6996,7 +7037,7 @@
                                     let args = [...arguments],
                                         $args = args.length,
                                         data = LDK.true,
-                                        metadata = LDK.isNativeFunction((LDK.$eventTargetProto || LDK.eventTargetProto).addEventListener);
+                                        metadata = LDK.isNativeFunction(LDK.$eventTargetProto.addEventListener);
 
                                     /* Loop
                                             Index Arguments.
@@ -7031,8 +7072,8 @@
 
                                                 // Event > Document > (DOM Content Loaded | Ready State Change)
                                                 metadata ?
-                                                    (LDK.$eventTargetProto || LDK.eventTargetProto).removeEventListener.call(LDK.$doc, 'DOMContentLoaded', parse) :
-                                                    (LDK.$eventTargetProto || LDK.eventTargetProto).detachEvent.call(LDK.$doc, 'onreadystatechange', parse);
+                                                    LDK.$eventTargetProto.removeEventListener.call(LDK.$doc, 'DOMContentLoaded', parse) :
+                                                    LDK.$eventTargetProto.detachEvent.call(LDK.$doc, 'onreadystatechange', parse);
 
                                                 // Update > Data
                                                 data = LDK.false
@@ -7049,8 +7090,8 @@
                                     test() ?
                                         parse() :
                                         (metadata ?
-                                            (LDK.$eventTargetProto || LDK.eventTargetProto).addEventListener.call(LDK.$doc, 'DOMContentLoaded', parse) :
-                                            (LDK.$eventTargetProto || LDK.eventTargetProto).attachEvent.call(LDK.$doc, 'onreadystatechange', parse)
+                                            LDK.$eventTargetProto.addEventListener.call(LDK.$doc, 'DOMContentLoaded', parse) :
+                                            LDK.$eventTargetProto.attachEvent.call(LDK.$doc, 'onreadystatechange', parse)
                                         );
 
                                     // Function > Watch
@@ -7322,7 +7363,7 @@
                                         */
                                         if (!LDK.isArray(args[0]) && !LDK.isArray(args[1]))
                                             // Register
-                                            register.apply(window, (LDK.$arrayProto || LDK.arrayProto).addElementToFront.apply([
+                                            register.apply(window, LDK.$arrayProto.addElementToFront.apply([
                                                 LDK.string(args[0]),
                                                 args.length > 1 ? args[1] : tmpFunctions.eval('(function(){return class HTMLCustomElement extends HTMLElement{}})()'),
                                                 args.length > 2 ? args[2] : LDK.null
@@ -7335,7 +7376,7 @@
                                                 > Register
                                             */
                                             for (let i of args[0])
-                                                register.apply(window, (LDK.$arrayProto || LDK.arrayProto).addElementToFront.apply([
+                                                register.apply(window, LDK.$arrayProto.addElementToFront.apply([
                                                     LDK.string(i),
                                                     args.length > 1 ? args[1] : tmpFunctions.eval('(function(){return class HTMLCustomElement extends HTMLElement{}})()'),
                                                     args.length > 2 ? args[2] : LDK.null
@@ -8093,6 +8134,9 @@
 
                             // Root
                             LDK.objectDefProp(tmp.value, 'root', {
+                                // Configurable
+                                configurable: LDK.true,
+
                                 // Value
                                 value: function root() {
                                     // Initialization > Arguments
@@ -8110,9 +8154,6 @@
                             LDK.objectDefProp(tmp.value, 'select', {
                                 // Configurable
                                 configurable: LDK.true,
-
-                                // Enumerable
-                                enumerable: LDK.true,
 
                                 // Value
                                 value: function select() {
@@ -8150,7 +8191,7 @@
 
                                         // Encode
                                         case 'encode':
-                                            data = tmpFunctions.escape(data);
+                                            data = LDK.isNativeFunction(tmpFunctions.escape) ? tmpFunctions.escape(data) : data;
                                             break;
 
                                         // Encode URI
@@ -8165,8 +8206,8 @@
 
                                         // HTML
                                         case 'html':
-                                            tmp.element.innerHTML = data;
-                                            data = tmp.element.innerHTML;
+                                            LDK.setElementInnerHTML(tmp.element, data);
+                                            data = LDK.getElementInnerHTML(tmp.element);
                                             break;
 
                                         // [Default]
@@ -8184,14 +8225,17 @@
 
                             /* Sleep
                                     --- NOTE ---
-                                        #lapys: Inspired from PHP syntax.
+                                        #lapys: Inspired from PHP syntax (I honestly do not know how this works).
                             */
                             LDK.objectDefProp(tmp.value, 'sleep', {
+                                // Configurable
+                                configurable: LDK.true,
+
                                 // Value
                                 value: function sleep() {
                                     // Initialization > (Data, Metadata)
                                     let data = arguments[0],
-                                        metadata = (new Date).getTime();
+                                        metadata = (new LDK.date).getTime();
 
                                     /* Loop
                                             [for statement]
@@ -8202,13 +8246,16 @@
 
                                             > Break
                                         */
-                                        if ((new Date().getTime() - metadata) > data)
+                                        if ((new LDK.date().getTime() - metadata) > data)
                                             break
                                 }
                             });
 
                             // Square Root
                             LDK.objectDefProp(tmp.value, 'sqrt', {
+                                // Configurable
+                                configurable: LDK.true,
+
                                 // Value
                                 value: function sqrt() {
                                     // Return
@@ -8219,16 +8266,19 @@
                                 writable: LDK.true
                             });
 
-                            // Strict Input
+                            // Strict Input --- CHECKPOINT ---
                             LDK.objectDefProp(tmp.value, 'strictInput', {
+                                // Configurable
+                                configurable: LDK.true,
+
                                 // Value
                                 value: function strictInput() {
                                     // Initialization > (...)
-                                    let args = [...arguments].slice(0, 3),
+                                    let args = LDK.sliceArray([...arguments], 0, 3),
                                         data = args[0],
                                         metadata = args[1],
                                         alpha = args[2],
-                                        beta = (function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})().join(''),
+                                        beta = LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), ''),
                                         that = this;
 
                                     /* Logic
@@ -8614,7 +8664,7 @@
                                 // Value
                                 value: function write() {
                                     // Element > Prototype > Write
-                                    LDK.$eleProto.write.call(document.documentElement, arguments[0])
+                                    LDK.$eleProto.write.call(LDK.getDocumentDocumentElement(), arguments[0])
                                 },
 
                                 // Writable
@@ -13027,9 +13077,9 @@
                                 // Value
                                 value: function toggleFullscreen() {
                                     // Initialization > (Data, Metadata, Target, Inner (Height, Width), Screen)
-                                    let data = document,
+                                    let data = LDK.$doc,
                                         metadata = arguments[0],
-                                        that = LDK.isWindow(this) ? data.documentElement : (this || data.documentElement),
+                                        that = LDK.isWindow(this) ? LDK.getDocumentDocumentElement() : (this || LDK.getDocumentDocumentElement()),
                                         innerHeight = tmpObjects.innerHeight,
                                         innerWidth = tmpObjects.innerWidth,
                                         screen = tmpObjects.screen;
@@ -13168,10 +13218,10 @@
                                 // Value
                                 value: function ancestorQuerySelector() {
                                     // Initialization > (...)
-                                    let that = LDK.isDocument(this) || LDK.isWindow(this) ? document.children[0] : this,
+                                    let that = LDK.isDocument(this) || LDK.isWindow(this) ? LDK.$doc.children[0] : this,
                                         data = LDK.string(arguments[0]),
-                                        metadata = (function(){let a=this,b=this,c=a=>{return a.parentElement||a.parentNode||a.parent},d=[];try{while(c(a)&&c(a)!=window){d.push(a);a=c(a)}return document.contains(b)?d.concat(document,window):d}catch(e){}return LDK.null}).call(that).slice(1),
-                                        alpha = (metadata.indexOf(document) > -1 ? document : that);
+                                        metadata = (function(){let a=this,b=this,c=a=>{return a.parentElement||a.parentNode||a.parent},d=[];try{while(c(a)&&c(a)!=window){d.push(a);a=c(a)}return LDK.$doc.contains(b)?d.concat(LDK.$doc,window):d}catch(e){}return LDK.null}).call(that).slice(1),
+                                        alpha = (metadata.indexOf(LDK.$doc) > -1 ? LDK.$doc : that);
 
                                     // Update > Alpha
                                     alpha = LDK.toArray(alpha.querySelectorAll(data));
@@ -13201,10 +13251,10 @@
                                 // Value
                                 value: function ancestorQuerySelectorAll() {
                                     // Initialization > (...)
-                                    let that = LDK.isDocument(this) || LDK.isWindow(this) ? document.children[0] : this,
+                                    let that = LDK.isDocument(this) || LDK.isWindow(this) ? LDK.$doc.children[0] : this,
                                         data = LDK.string(arguments[0]),
-                                        metadata = (function(){let a=this,b=this,c=a=>{return a.parentElement||a.parentNode||a.parent},d=[];try{while(c(a)&&c(a)!=window){d.push(a);a=c(a)}return document.contains(b)?d.concat(document,window):d}catch(e){}return LDK.null}).call(that).slice(1),
-                                        alpha = (metadata.indexOf(document) > -1 ? document : that),
+                                        metadata = (function(){let a=this,b=this,c=a=>{return a.parentElement||a.parentNode||a.parent},d=[];try{while(c(a)&&c(a)!=window){d.push(a);a=c(a)}return LDK.$doc.contains(b)?d.concat(LDK.$doc,window):d}catch(e){}return LDK.null}).call(that).slice(1),
+                                        alpha = (metadata.indexOf(LDK.$doc) > -1 ? LDK.$doc : that),
                                         beta = LDK.namedArray('NodeList');
 
                                     // Update > Alpha
@@ -13233,9 +13283,9 @@
                                     // Initialization > (Arguments, Target, Data, Metadata, Alpha)
                                     let args = [...arguments],
                                         that = this,
-                                        data = LDK.$eventTargetProto.$$.apply(document.contains(that) ? document : that, args),
+                                        data = LDK.$eventTargetProto.$$.apply(LDK.$doc.contains(that) ? LDK.$doc : that, args),
                                         metadata = LDK.namedArray('LapysJSNodeList'),
-                                        alpha = (function(){let a=this,b=a=>{return a.parentElement||a.parentNode||a.parent},c=[],d=this;try{while(b(a)&&b(a)!=window){c.push(a);a=b(a)}return LDK.namedArray.apply(LDK,LDK.$arrayProto.addElementToFront.apply(['NodeList'],document.contains(d)?c.concat(document,window):c)).removeDuplicatedElements()}catch(e){}return LDK.null}).call(that).removeElement(that);
+                                        alpha = (function(){let a=this,b=a=>{return a.parentElement||a.parentNode||a.parent},c=[],d=this;try{while(b(a)&&b(a)!=window){c.push(a);a=b(a)}return LDK.namedArray.apply(LDK,LDK.$arrayProto.addElementToFront.apply(['NodeList'],LDK.$doc.contains(d)?c.concat(LDK.$doc,window):c)).removeDuplicatedElements()}catch(e){}return LDK.null}).call(that).removeElement(that);
 
                                     /* Logic
                                             [if statement]
@@ -13263,7 +13313,7 @@
                                 // Value
                                 get: function children() {
                                     // Initialization > Target
-                                    let that = LDK.isWindow(this) ? document : this;
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this;
 
                                     // Return
                                     return LDK.$arrayProto.addElement.apply(LDK.namedArray('HTMLCollection'), LDK.toArray(that.children || []))
@@ -13275,7 +13325,7 @@
                                 // Value
                                 get: function childNodes() {
                                     // Initialization > Target
-                                    let that = LDK.isWindow(this) ? document : this;
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this;
 
                                     // Return
                                     return LDK.$arrayProto.addElement.apply(LDK.namedArray('NodeList'), LDK.toArray(that.childNodes || that.children || []))
@@ -14192,7 +14242,7 @@
                                 // Value
                                 value: function descendantQuerySelector() {
                                     // Initialization > (...)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = LDK.toArray(that.children),
                                         metadata = LDK.toArray(that.querySelectorAll(LDK.string(arguments[0]))),
                                         alpha = LDK.namedArray('NodeList');
@@ -14222,7 +14272,7 @@
                                 // Value
                                 value: function descendantQuerySelectorAll() {
                                     // Initialization > (...)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = LDK.toArray(that.children),
                                         metadata = LDK.toArray(that.querySelectorAll(LDK.string(arguments[0]))),
                                         alpha = LDK.namedArray('NodeList');
@@ -14280,7 +14330,7 @@
                                 // Get
                                 get: function firstChild() {
                                     // Initialization > (Target, Data)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = that.children || [];
 
                                     // Return
@@ -15080,7 +15130,7 @@
                                 // Get
                                 get: function lastChild() {
                                     // Initialization > (Target, Data)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = that.children || [];
 
                                     // Return
@@ -16336,7 +16386,7 @@
                                 // Get
                                 get: function penultChild() {
                                     // Initialization > (Target, Data, Metadata)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = that.children || [],
                                         metadata = that.firstElementChild || that.firstChild || data[data.length - 1] || LDK.null;
 
@@ -16397,7 +16447,7 @@
                                         name = 'LapysJSNodeList',
                                         data = LDK.namedArray(name),
                                         modifier = args[args.length - 1], query = LDK.string(args[0]).trim(),
-                                        that = this, $that = LDK.isWindow(that) ? document : that;
+                                        that = this, $that = LDK.isWindow(that) ? LDK.$doc : that;
 
                                     /* Logic
                                             [if statement]
@@ -16687,7 +16737,7 @@
                                 // Get
                                 get: function secondChild() {
                                     // Initialization > (Target, Data, Metadata)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = that.children || [],
                                         metadata = that.firstElementChild || that.firstChild || data[0] || LDK.null;
 
@@ -16701,7 +16751,7 @@
                                 // Get
                                 get: function thirdChild() {
                                     // Initialization > (Target, Data, Metadata)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = that.children || [],
                                         metadata = that.firstElementChild || that.firstChild || data[0] || LDK.null;
 
@@ -16715,7 +16765,7 @@
                                 // Get
                                 get: function fourthChild() {
                                     // Initialization > (Target, Data, Metadata)
-                                    let that = LDK.isWindow(this) ? document : this,
+                                    let that = LDK.isWindow(this) ? LDK.$doc : this,
                                         data = that.children || [],
                                         metadata = that.firstElementChild || that.firstChild || data[0] || LDK.null;
 
@@ -18329,7 +18379,7 @@
                             // Parent Path
                             LDK.objectDefProp(tmp.value, 'parentPath', {
                                 // Get
-                                get: function parentPath() {let a=this,b=a=>{return a.parentElement||a.parentNode||a.parent},c=[],d=this;try{while(b(a)&&b(a)!=window){c.push(a);a=b(a)}return LDK.namedArray.apply(LDK,LDK.$arrayProto.addElementToFront.apply(['NodeList'],document.contains(d)?c.concat(document,window):c)).removeDuplicatedElements()}catch(e){}return LDK.null}
+                                get: function parentPath() {let a=this,b=a=>{return a.parentElement||a.parentNode||a.parent},c=[],d=this;try{while(b(a)&&b(a)!=window){c.push(a);a=b(a)}return LDK.namedArray.apply(LDK,LDK.$arrayProto.addElementToFront.apply(['NodeList'],LDK.$doc.contains(d)?c.concat(LDK.$doc,window):c)).removeDuplicatedElements()}catch(e){}return LDK.null}
                             });
 
                             // Previous Siblings
@@ -20411,12 +20461,12 @@
                                             data = LDK.regex(data.source, data.flags.replace('g', ''));
 
                                         // Update > Data
-                                        LDK.isRegex(data) || (data = LDK.string(data).replace(LDK.regex('[\\'+(function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})().join('').split('').join('\\')+']', 'g'), '\\$&'));
+                                        LDK.isRegex(data) || (data = LDK.string(data).replace(LDK.regex('[\\'+LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')+']', 'g'), '\\$&'));
 
                                         // Update > Alpha
                                         alpha = LDK.isRegex(data) ?
                                             (function() {let a=LDK.string(that),b=0,c=a.length,d=a,e=a.match(data),f=a.match(LDK.regex(data.source,data.flags.replace('g','')+'g'));return e?(metadata?d.slice(d.lastIndexOf(f[f.length-1])+f[f.length-1].length-1):d.slice(d.indexOf(e[0])+e[0].length-1)).slice(1):''})() :
-                                            that.slice(that[metadata ? 'lastIndexOf' : 'indexOf'](data.replace(/\\/g, '')) + (data.match(LDK.regex('[\\'+(function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})().join('').split('').join('\\')+']')) ? data.replace(/\\/g, '').length : data.length))
+                                            that.slice(that[metadata ? 'lastIndexOf' : 'indexOf'](data.replace(/\\/g, '')) + (data.match(LDK.regex('[\\'+LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')+']')) ? data.replace(/\\/g, '').length : data.length))
                                     }
 
                                     // Return
@@ -20451,7 +20501,7 @@
                                             data = LDK.regex(data.source, data.flags.replace('g', ''));
 
                                         // Update > Data
-                                        LDK.isRegex(data) || (data = LDK.string(data).replace(LDK.regex('[\\'+(function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})().join('').split('').join('\\')+']', 'g'), '\\$&'));
+                                        LDK.isRegex(data) || (data = LDK.string(data).replace(LDK.regex('[\\'+LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')+']', 'g'), '\\$&'));
 
                                         // Update > Alpha
                                         alpha = LDK.isRegex(data) ?
@@ -20774,7 +20824,7 @@
                                 value: function trimLeftChar() {
                                     // Initialization > (Arguments, Data, Target)
                                     let args = [...arguments],
-                                        data = (function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})().join(''),
+                                        data = LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), ''),
                                         that = (' ' + this).slice(' '.length),
                                         $that = that.length;
 
@@ -20788,7 +20838,7 @@
                                             > Update > Arguments
                                         */
                                         for (let i in args)
-                                            args[i] = LDK.isRegex(args[i]) ? LDK.regex(args[i].source, args[i].flags.replace('g', '')) : LDK.string(args[i]).replace(LDK.regex('[\\'+(function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})().join('').split('').join('\\')+']', 'g'), '\\$&');
+                                            args[i] = LDK.isRegex(args[i]) ? LDK.regex(args[i].source, args[i].flags.replace('g', '')) : LDK.string(args[i]).replace(LDK.regex('[\\'+LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')+']', 'g'), '\\$&');
 
                                         /* Loop
                                                 Index Arguments.
@@ -20830,7 +20880,7 @@
                                 value: function trimRightChar() {
                                     // Initialization > (Arguments, Data, Target)
                                     let args = [...arguments],
-                                        data = (function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(b.match(i)||[])[0])||(c+=i)}catch(e){c+=i}return c.split('\n')})().join(''),
+                                        data = LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), ''),
                                         that = (' ' + this).slice(' '.length),
                                         $that = that.length;
 
@@ -20925,7 +20975,7 @@
                                     // Set
                                     set: function setTitleElement() {
                                         // Return
-                                        return LDK.objectGetOwnPropDesc(LDK.docProto, 'title').set.call(document, LDK.string(arguments[0]))
+                                        return LDK.objectGetOwnPropDesc(LDK.docProto, 'title').set.call(LDK.$doc, LDK.string(arguments[0]))
                                     }
                                 });
 
