@@ -8,39 +8,21 @@
     <!-- Stylesheets -->
         <!-- LapysJS Stylesheet -->
         <link href=../src/lapys.css media=all rel=stylesheet type=text/css>
+
+    <!-- Document Title -->
+    <title> LapysJS </title>
 </head>
 
 <body>
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1 class=center script='this.write("Debugging Room")'> </h1>
-
-        <!-- CSS Testing Area -->
-        <section id=cssTestingArea script=this.remove()>
-            <!-- Jumbotron -->
-            <div class=jumbotron>
-                <!-- Header -->
-                <h1 role=header> Header Text </h1>
-
-                <!-- Sub Header -->
-                <h1 role=subheader> Subheader Text </h1>
-            </div>
-        </section>
-
-        <!-- JavaScript Testing Area -->
-        <section id=javascriptTestingArea script=this.remove()>
-            <!-- Dropdown -->
-            <div class=dropdown data-id=lapys id=dropdown>
-                <button data-id=toggle> Dropdown Toggler </button>
-            </div>
-
-            <p data-id=lapys> This is Dropdown content. </p>
-        </section>
+        <h1> Debugging Room </h1>
     </main>
 
     <!-- Scripts -->
         <!-- LapysJS Script -->
-        <script lapys-features=html-javascript src=../src/lapys.js type=text/javascript> </script>
+        <script lapys-features=script-attribute src=../src/lapys.js type=text/javascript> </script>
+        <!-- <script lapys-features=script-attribute src='../src/lapys (2018 - Q2).js' type=text/javascript> </script> -->
 </body>
 </html>
