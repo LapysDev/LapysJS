@@ -5011,7 +5011,10 @@
                                         !('connection' in navigator) || 'connection' in $data || LDK.objectDefProp($data, 'connection', {get: function connection() {return $data.nav.connection}});
 
                                         // Cookies
-                                        'cookies' in $data || LDK.objectDefProp($data, 'cookies', {get: function cookies() {return LDK.objectGetOwnPropDesc(LDK.$docProto, 'cookie').get.call(LDK.$doc)}});
+                                        'cookies' in $data || LDK.objectDefProp($data, 'cookies', {
+                                            // Get
+                                            get: function cookies() {return LDK.objectGetOwnPropDesc(LDK.$docProto, 'cookie').get.call(LDK.$doc)}
+                                        });
 
                                         // Copyright
                                         'copyright' in $data || LDK.objectDefProp($data, 'copyright', {
@@ -5044,7 +5047,11 @@
                                         });
 
                                         // Device Pixel Ratio
-                                        !('devicePixelRatio' in window) || 'dpRatio' in $data || LDK.objectDefProp($data, 'dpRatio', {get: function devicePixelRatio() {return LDK.objectGetOwnPropDesc(window, 'devicePixelRatio').get.call(window)}});
+                                        !('devicePixelRatio' in window) || 'dpRatio' in $data ||
+                                        LDK.objectDefProp($data, 'dpRatio', {
+                                            // Get
+                                            get: function devicePixelRatio() {return LDK.objectGetOwnPropDesc(window, 'devicePixelRatio').get.call(window)}
+                                        });
 
                                         // Do Not Track
                                         !('doNotTrack' in LDK.$nav) || 'doNotTrack' in $data || LDK.objectDefProp($data, 'doNotTrack', {get: function doNotTrack() {return LDK.objectGetOwnPropDesc(LDK.$navProto, 'doNotTrack').get.call(LDK.$nav)}});
@@ -20510,7 +20517,7 @@
                                     // Initialization > (Arguments, Data, Metadata, Alpha, Target)
                                     let args = [...arguments],
                                         data = args[0],
-                                        metadata = args[1],
+                                        order = args[1],
                                         alpha = '',
                                         that = this;
 
@@ -20524,18 +20531,28 @@
                                             > Update > Data
                                         */
                                         if (LDK.isNumber(data))
-                                            data = metadata ? that[that.length - data] : that[data];
+                                            data = order ? that[that.length - data] : that[data];
 
                                         else if (LDK.isRegex(data))
                                             data = LDK.regex(data.source, data.flags.replace('g', ''));
 
                                         // Update > Data
-                                        LDK.isRegex(data) || (data = LDK.string(data).replace(LDK.regex('[\\'+LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')+']', 'g'), '\\$&'));
+                                        LDK.isRegex(data) || (
+                                            data = LDK.string(data)
+                                                .replace(
+                                                    LDK.regex(
+                                                        '[\\'+
+                                                        LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')
+                                                        +']', 'g'
+                                                    ),
+                                                    '\\$&'
+                                                )
+                                        );
 
                                         // Update > Alpha
                                         alpha = LDK.isRegex(data) ?
-                                            (function() {let a=LDK.string(that),b=0,c=a.length,d=a,e=a.match(data),f=a.match(LDK.regex(data.source,data.flags.replace('g','')+'g'));return e?(metadata?d.slice(d.lastIndexOf(f[f.length-1])+f[f.length-1].length-1):d.slice(d.indexOf(e[0])+e[0].length-1)).slice(1):''})() :
-                                            that.slice(that[metadata ? 'lastIndexOf' : 'indexOf'](data.replace(/\\/g, '')) + (data.match(LDK.regex('[\\'+LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')+']')) ? data.replace(/\\/g, '').length : data.length))
+                                            (function() {let a=LDK.string(that),b=0,c=a.length,d=a,e=a.match(data),f=a.match(LDK.regex(data.source,data.flags.replace('g','')+'g'));return e?(order?d.slice(d.lastIndexOf(f[f.length-1])+f[f.length-1].length-1):d.slice(d.indexOf(e[0])+e[0].length-1)).slice(1):''})() :
+                                            that.slice(that[order ? 'lastIndexOf' : 'indexOf'](data.replace(/\\/g, '')) + (data.match(LDK.regex('[\\'+LDK.joinArray((function() {let a=LDK.constants.CHAR_ARRAY[0],b=LDK.constants.CHAR_ARRAY[1],c='';for(let i of a)try{(i==tmpFunctions.eval("'\\"+i+"'"))||(c+=i)}catch(e){c+=i}c+='\n';for(let i of b)try{(i==(LDK.matchString(b,i)||[])[0])||(c+=i)}catch(e){c+=i}return LDK.splitString(c,'\n')})(), '').split('').join('\\')+']')) ? data.replace(/\\/g, '').length : data.length))
                                     }
 
                                     // Return
