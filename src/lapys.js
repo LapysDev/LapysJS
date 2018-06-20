@@ -166,19 +166,19 @@
 
                 // {'Object.getOwnPropertyDescriptors' Method}
                 try { if (typeof Object.getOwnPropertyDescriptors({}) != 'object') throw Error }
-                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'Object.getOwnPropertyDescriptors' must be native method.") }
+                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'Object.getOwnPropertyDescriptors' must be a native method.") }
 
                 // {'console' Object}
                 try { if (typeof console != 'object' || (console + '' != '[object console]' && console + '' != '[object Console]' && console + '' != '[object Object]')) throw Error }
-                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'console' object should not be altered.") }
+                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'console' object should not be altered or must be native to this development environment.") }
 
                 // {'Math' Object}
                 try { if (typeof Math != 'object' || Math + '' != '[object Math]') throw Error }
-                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'Math' object should not be altered.") }
+                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'Math' object should not be altered or must be native to this development environment.") }
 
                 // {'performance' Object}
                 try { if (typeof performance != 'object' || performance + '' != '[object Performance]') throw Error }
-                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'performance' object should not be altered.") }
+                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": 'performance' object should not be altered or must be native to this development environment.") }
 
             /* Global Data */
                 // LapysJS Development Kit
@@ -378,6 +378,38 @@
 
                     // Storage
                         // Functions
+                            // Add Event
+                            LDKF.addEvent = function addEvent() {
+                                // Initialization > (Event Target, Arguments, Iterator, Length, Test)
+                                let eventTarget = arguments[0],
+                                    args = [eventTarget],
+                                    iterator = 1,
+                                    length = arguments.length,
+                                    test = LDKF.isNativeFunction(LDKO.$eventTargetProto.addEventListener);
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (iterator; iterator != length; iterator += 1)
+                                    LDKF.pushArray(args, iterator == 1 ? (test ? '' : 'on') + LDKF.string(arguments[iterator]) : arguments[iterator]);
+
+                                // Return
+                                return test ?
+                                    LDKF.addEventListenerEventTarget.apply(LDKF, args) :
+                                    LDKF.attachEvent(LDKF, args)
+                            };
+
+                            // Cancel Animation Frame
+                            LDKF.cancelAnimationFrame = (function() {
+                                // Initialization > Method
+                                let method = window.cancelAnimationFrame || window.mozCancelAnimationFrame || window.webkitCancelAnimationFrame;
+
+                                // Return
+                                return function cancelAnimationFrame() { return method.call(window, arguments[0]) }
+                            })();
+
                             // Clone Object
                             LDKF.cloneObject = function clone() {
                                 // Initialization > Object
@@ -435,7 +467,7 @@
                                     function cloneNumber() {
                                         // Initialization > (Object, Clone)
                                         let object = arguments[0],
-                                            clone = +(object + '');
+                                            clone = object - 0;
 
                                         // Return
                                         return clone
@@ -778,15 +810,6 @@
                                 // Return
                                 return clone
                             };
-
-                            // Console Group
-                            LDKF.consoleGroup = console.group;
-
-                            // Console Group End
-                            LDKF.consoleGroupEnd = console.groupEnd;
-
-                            // Console Log
-                            LDKF.consoleLog = console.log;
 
                             // Create Element
                             LDKF.createElement = function createElement() {
@@ -1262,6 +1285,29 @@
                                 }
                             };
 
+                            // Delete Event
+                            LDKF.delEvent = function delEvent() {
+                                // Initialization > (Event Target, Arguments, Iterator, Length, Test)
+                                let eventTarget = arguments[0],
+                                    args = [eventTarget],
+                                    iterator = 1,
+                                    length = arguments.length,
+                                    test = LDKF.isNativeFunction(LDKO.$eventTargetProto.removeEventListener);
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > Arguments
+                                */
+                                for (iterator; iterator != length; iterator += 1)
+                                    LDKF.pushArray(args, iterator == 1 ? (test ? '' : 'on') + LDKF.string(arguments[iterator]) : arguments[iterator]);
+
+                                // Return
+                                return test ?
+                                    LDKF.removeEventListenerEventTarget.apply(LDKF, args) :
+                                    LDKF.detachEvent(LDKF, args)
+                            };
+
                             // Error
                             LDKF.error = function error() {
                                 // Error
@@ -1372,13 +1418,60 @@
                                     */
                                     if (LDKF.isNativeFunction(body))
                                         // LapysJS Development Kit Functions > Error
-                                        LDKF.error("'Function'", 'argument', 'Can not query source code of native functions');
+                                        LDKF.error("'Function'", 'argument', 'Can not query the source code of native functions');
 
                                     else {
                                         // Update
                                             // Body
-                                            LDKF.isFunction(body) && (body = LDKF.get.functionBody(body));
-                                            LDKF.isString(body) || (body = 'return ' + LDKF.string(body));
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.isFunction(body)) {
+                                                    // Update > Body
+                                                    body = LDKF.get.functionBody(body);
+
+                                                    // Initialization > (Body, Trimmed (Leading, Trailing))
+                                                    let $body = body,
+                                                        trimmedLeading = !1,
+                                                        trimmedTrailing = !1;
+
+                                                    // (Loop > Update > Body), (Update > Body)
+                                                    while ($body[0] == ' ' || $body[0] == '\n') $body = LDKF.sliceString($body, 1);
+                                                    ($body[0] == '=' && $body[1] == '>') && ($body = LDKF.sliceString($body, '=>'.length));
+                                                    while ($body[0] == ' ' || $body[0] == '\n') $body = LDKF.sliceString($body, 1);
+
+                                                    /* Logic
+                                                            [if:else statement]
+                                                    */
+                                                    if ($body[0] == '{') {
+                                                        /* Loop
+                                                                [while statement]
+
+                                                            > Update > (Body, Trimmed Leading)
+                                                        */
+                                                        while ($body[0] == '{' && !trimmedLeading) {
+                                                            $body = LDKF.sliceString($body, 1);
+                                                            trimmedLeading = !0
+                                                        }
+
+                                                        /* Loop
+                                                                [while statement]
+
+                                                            > Update > (Body, Trimmed Trailing)
+                                                        */
+                                                        while ($body[$body.length - 1] && !trimmedTrailing) {
+                                                            ($body[$body.length - 1] == '}') && (trimmedTrailing = !0);
+                                                            $body = LDKF.sliceString($body, 0, -1)
+                                                        }
+                                                    }
+
+                                                    // (...)
+                                                    body = $body
+                                                }
+
+                                                else
+                                                    // (...)
+                                                    LDKF.isString(body) || (body = 'return ' + LDKF.string(body));
 
                                             // Name
                                             LDKF.isFunction(name) && (name = name.name);
@@ -1453,9 +1546,7 @@
                                         result &&
                                         (
                                             (valueConstructor == LDKO.array && test(value) == '[object Array]') ||
-                                            (valueConstructor == LDKO.htmlAllCollection && test(value) == '[object HTMLAllCollection]') ||
-                                            (valueConstructor == LDKO.htmlCollection && test(value) == '[object HTMLCollection]') ||
-                                            (valueConstructor == LDKO.nodeList && test(value) == '[object NodeList]')
+                                            LDKF.isStrictlyArrayLike(value)
                                         ) &&
                                         (typeof value == 'object' || typeof value == 'undefined')
                                     ) || (result = !1)
@@ -1660,6 +1751,65 @@
                                 return result
                             };
 
+                            // Is Evaluation String
+                            LDKF.isEvaluationString = function isEvaluationString() {
+                                // Initialization > (Arguments, Result)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0;
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (
+                                        result &&
+                                        !(function() {
+                                            // Initialization > Data
+                                            let data = !1;
+
+                                            // Logic > Error Handling
+                                            if (LDKF.isString(value))
+                                                try {
+                                                    // Execution
+                                                    LDKF.eval('(function(){' + value + '})');
+
+                                                    // Update > Data
+                                                    data = !0
+                                                } catch (error) {}
+
+                                            // Return
+                                            return data
+                                        })()
+                                    ) && (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is False Boolean
+                            LDKF.isFalseBoolean = function isFalseBoolean() {
+                                // Initialization > (Arguments, Result)
+                                let args = [...arguments],
+                                    result = !0;
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !value && typeof value == 'boolean') || (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
                             // Is Finite
                             LDKF.isFinite = function isFinite() {
                                 // Initialization > (Arguments, Result, Test)
@@ -1699,6 +1849,106 @@
                                 LDKF.iterateArray((key, value) => {
                                     // Update > Result
                                     (result && typeof value != 'function') && (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is HTML All Collection
+                            LDKF.isHtmlAllCollection = function isHtmlAllCollection() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (!result && value == LDKO.htmlAllCollectionProto) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is HTML Collection
+                            LDKF.isHtmlCollection = function isHtmlCollection() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (!result && value == LDKO.htmlCollectionProto) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
                                 }, args);
 
                                 // Return
@@ -1823,6 +2073,31 @@
                                         result &&
                                         !LDKF.numberIsFinite(value) &&
                                         LDKF.isNumber(value)
+                                    ) || (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is Iterable
+                            LDKF.isIterable = function isIterable() {
+                                // Initialization > (Arguments, Result)
+                                let args = [...arguments],
+                                    result = !0;
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (
+                                        result &&
+                                        (LDKF.isConstructible(value) ?
+                                            LDKF.isNull(value) ? !1 : LDKF.isNativeFunction(value[LDKO.symbol.iterator]) :
+                                            !1)
                                     ) || (result = !1)
                                 }, args);
 
@@ -2020,6 +2295,56 @@
                                         LDKF.iterateArray((key, value) => {
                                             // Update > Result
                                             (!result && value == LDKO.nodeProto) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is Node List
+                            LDKF.isNodeList = function isNodeList() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (!result && value == LDKO.nodeListProto) && (result = !0)
                                         }, results);
 
                                         // Return
@@ -2295,6 +2620,26 @@
                                 return result
                             };
 
+                            // Is True Boolean
+                            LDKF.isTrueBoolean = function isTrueBoolean() {
+                                // Initialization > (Arguments, Result)
+                                let args = [...arguments],
+                                    result = !0;
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && value && typeof value == 'boolean') || (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
                             // Is Undefined
                             LDKF.isUndefined = function isUndefined() {
                                 // Initialization > (Arguments, Result, Test)
@@ -2467,10 +2812,129 @@
                                 }, objects)
                             };
 
+                            // Number
+                            LDKF.$number = function parseNumber() {
+                                // Initialization > Object
+                                let object = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length) {
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (
+                                        LDKF.isFalseBoolean(object) ||
+                                        (LDKF.isInfinite(object) && object < 0) ||
+                                        LDKF.isNaN(object) || LDKF.isNonConstructible(object) || LDKF.isSymbol(object)
+                                    )
+                                        // Return
+                                        return 0;
+
+                                    else if (
+                                        (LDKF.isInfinite(object) && object > 0) ||
+                                        LDKF.isTrueBoolean(object)
+                                    )
+                                        // Return
+                                        return 1;
+
+                                    else if (LDKF.isNumber(object) || LDKF.isString(object)) {
+                                        /* Initialization > (Evaluation (Length), Iterator)
+                                                --- NOTE ---
+                                                    #Lapys: For the `parseFloat` and `parseInt` methods,
+                                                        strings are parsed as numbers.
+                                        */
+                                        let evaluation = LDKF.string(object),
+                                            evaluationLength = evaluation.length,
+                                            iterator = 0;
+
+                                        /* Logic
+                                                Iterate through Evaluation.
+
+                                            > Logic > Return
+                                        */
+                                        for (iterator; iterator < evaluationLength; iterator += 1)
+                                            if (evaluation[iterator] == 'x')
+                                                return LDKF.numberParseInt(object);
+
+                                        // Return
+                                        return LDKF.numberParseFloat(object)
+                                    }
+
+                                    else if (LDKF.isArray(object))
+                                        // Return
+                                        return object.length;
+
+                                    else if (LDKF.isStrictlyArrayLike(object)) {
+                                        /* Logic
+                                                [if:else if statement]
+
+                                            > Return
+                                        */
+                                        if (LDKF.isHtmlAllCollection(object))
+                                            return LDKF.get.htmlAllCollectionLength(object);
+
+                                        else if (LDKF.isHtmlCollection(object))
+                                            return LDKF.get.htmlCollectionLength(object);
+
+                                        else if (LDKF.isNodeList(object))
+                                            return LDKF.get.nodeListLength(object)
+                                    }
+
+                                    else if (LDKF.isObject(object)) {
+                                        // Initialization > Count
+                                        let count = 0;
+
+                                        // LapysJS Development Kit Functions > Iterate Object
+                                        LDKF.iterateObject(function() { count += 1 }, object, !0, !1);
+
+                                        // Return
+                                        return count
+                                    }
+
+                                    else if (LDKF.isFunction(object))
+                                        // Return
+                                        return LDKF.get.functionParameters(object).length
+                                }
+
+                                else
+                                    // Return
+                                    return NaN
+                            };
+
                             // Performance Now
                             LDKF.performanceNow = function performanceNow() {
                                 // Return
                                 return LDKF.performanceProtoNow.call(LDKO.$performance)
+                            };
+
+                            // Request Animation Frame
+                            LDKF.requestAnimationFrame = (function() {
+                                // Initialization > Method
+                                let method = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+                                // Return
+                                return function requestAnimationFrame() { return method.call(window, arguments[0]) }
+                            })();
+
+                            // String
+                            LDKF.$string = function String() {
+                                // Initialization > (Iterator, Length, String)
+                                let iterator = 0,
+                                    length = arguments.length,
+                                    string = '';
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > String
+                                */
+                                for (iterator; iterator < length; iterator += 1)
+                                    string += LDKF.string(arguments[iterator]);
+
+                                // Return
+                                return string
                             };
 
                             // To Array
@@ -3111,6 +3575,18 @@
                                 // Prototype
                                 LDKO.errorProto = LDKO.error.prototype;
 
+                            // Event
+                            LDKO.event = Event;
+                                // Prototype
+                                LDKO.eventProto = LDKO.event.prototype;
+
+                            // Event Target
+                            LDKO.eventTarget = EventTarget;
+                                // Prototype
+                                LDKO.eventTargetProto = LDKO.eventTarget.prototype;
+                                LDKO.$eventTargetProto = LDKO.eventTargetProto;
+                                LDKF.setTimeout(function() { LDKO.$eventTargetProto = LDKF.cloneObject(LDKO.$eventTargetProto) });
+
                             // File
                             LDKO.file = File;
 
@@ -3140,13 +3616,18 @@
                             LDKO.htmlElement = HTMLElement;
                                 // Prototype
                                 LDKO.htmlElementProto = LDKO.htmlElement.prototype;
-                                LDKO.$htmlEleProto = LDKO.htmlElementProto;
-                                LDKF.setTimeout(function() { LDKO.$htmlEleProto = LDKF.cloneObject(LDKO.$htmlEleProto) });
+                                LDKO.$htmlElementProto = LDKO.htmlElementProto;
+                                LDKF.setTimeout(function() { LDKO.$htmlElementProto = LDKF.cloneObject(LDKO.$htmlElementProto) });
 
                             // HTML Head Element
                             LDKO.htmlHeadElement = HTMLHeadElement;
                                 // Prototype
                                 LDKO.htmlHeadElementProto = LDKO.htmlHeadElement.prototype;
+
+                            // HTML Link Element
+                            LDKO.htmlLinkElement = HTMLLinkElement;
+                                // Prototype
+                                LDKO.htmlLinkElementProto = LDKO.htmlLinkElement.prototype;
 
                             // HTML Meta Element
                             LDKO.htmlMetaElement = HTMLMetaElement;
@@ -3198,6 +3679,14 @@
 
                             // Number
                             LDKO.number = Number;
+                                // Prototype
+                                LDKO.numberProto = LDKO.number.prototype;
+
+                                // Maximum Safe Integer
+                                LDKO.numberMaxSafeInteger = LDKO.number.MAX_SAFE_INTEGER;
+
+                                // Minimum Safe Integer
+                                LDKO.numberMinSafeInteger = LDKO.number.MIN_SAFE_INTEGER;
 
                             // Object
                             LDKO.object = Object;
@@ -3235,6 +3724,11 @@
                             // Performance
                                 // Polyfill > Now
                                 'function'!=typeof Performance.prototype.now&&(Object.defineProperty(Performance.prototype,'now',{configurable:!0,enumerable:!0,value:function now(){if(this!=performance)throw TypeError('Illegal invocation');return LDKF.dateNow()-LDKO.dateNow},writable:!0}));
+
+                            // Promise
+                            LDKO.promise = window.Promise || tmp;
+                                // Prototype
+                                LDKO.promiseProto = LDKO.promise.prototype;
 
                             // Regular Expression
                             LDKO.regex = RegExp;
@@ -3350,6 +3844,15 @@
                             // Absolute
                             LDKF.abs = Math.abs;
 
+                            // Add Event Listener Event Target
+                            LDKF.addEventListenerEventTarget = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$eventTargetProto.addEventListener;
+
+                                // Return
+                                return function addEventListenerEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Append Child Node
                             LDKF.appendChildNode = (function() {
                                 // Initialization > Method
@@ -3375,6 +3878,15 @@
                             'function'!=typeof Array.from&&(Array.from=function(a){return LDKF.sliceArray(a)});
                             LDKF.arrayFrom = LDKO.array.from;
 
+                            // Attach Event Event Target
+                            LDKF.attachEventEventTarget = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$eventTargetProto.attachEvent;
+
+                                // Return
+                                return function attachEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Bind Function
                             LDKF.bindFunction = (function() {
                                 // Initialization > (Method, Slice Array)
@@ -3391,6 +3903,15 @@
                                 return function bindFunction() { return method.apply(arguments[0], sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Click HTML Element
+                            LDKF.clickHtmlElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$htmlElementProto.click;
+
+                                // Return
+                                return function clickHtmlElement() { return method.call(arguments[0]) }
+                            })();
+
                             // Clone Node
                             LDKF.cloneNode = (function() {
                                 // Initialization > Method
@@ -3399,6 +3920,18 @@
                                 // Return
                                 return function cloneNode() { return method.call(arguments[0], arguments[1]) }
                             })();
+
+                            // Console Clear
+                            LDKF.consoleClear = console.clear;
+
+                            // Console Group
+                            LDKF.consoleGroup = console.group;
+
+                            // Console Group End
+                            LDKF.consoleGroupEnd = console.groupEnd;
+
+                            // Console Log
+                            LDKF.consoleLog = console.log;
 
                             // Console Warn
                             LDKF.consoleWarn = console.warn;
@@ -3410,6 +3943,27 @@
 
                                 // Return
                                 return function createElementDocument() { return method.call(LDKO.$document, arguments[0]) }
+                            })();
+
+                            // Create Document Fragment Document
+                            LDKF.createDocumentFragmentDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.createDocumentFragment;
+
+                                // Return
+                                return function createDocumentFragmentDocument() { return method.call(LDKO.$document, arguments[0]) }
+                            })();
+
+                            // Cube Root
+                            LDKF.cbrt = Math.cbrt;
+
+                            // Detach Event Event Target
+                            LDKF.detachEventEventTarget = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$eventTargetProto.detachEvent;
+
+                                // Return
+                                return function detachEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Function Prototype To String
@@ -3492,6 +4046,9 @@
 
                             // Number Is Safe Integer
                             LDKF.numberIsSafeInteger = LDKO.number.isSafeInteger;
+
+                            // Number Parse Float
+                            LDKF.numberParseFloat = LDKO.number.parseFloat;
 
                             // Number Parse Int
                             LDKF.numberParseInt = LDKO.number.parseInt;
@@ -3590,6 +4147,15 @@
                                 return function querySelectorDocument() { return method.call(LDKO.$document, arguments[0]) }
                             })();
 
+                            // Query Selector All Document
+                            LDKF.querySelectorAllDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.querySelectorAll;
+
+                                // Return
+                                return function querySelectorAllDocument() { return method.call(LDKO.$document, arguments[0]) }
+                            })();
+
                             // Regular Expression
                             LDKF.regex = LDKF.cloneObject(RegExp);
 
@@ -3633,6 +4199,15 @@
                                     else if (LDKF.isElement(data))
                                         method.element.call(data)
                                 }
+                            })();
+
+                            // Remove Event Listener Event Target
+                            LDKF.removeEventListenerEventTarget = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$eventTargetProto.removeEventListener;
+
+                                // Return
+                                return function removeEventListenerEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Replace String
@@ -3702,6 +4277,15 @@
 
                                 // Return
                                 return function testRegex() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Then Promise
+                            LDKF.thenPromise = (function() {
+                                // Initialization > Method
+                                let method = LDKO.promiseProto.then || (function() {});
+
+                                // Return
+                                return function thenPromise() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // To Lower Case String
@@ -3824,6 +4408,16 @@
                                     // Parameters
                                     functionParameters: function functionParameters() { return (tmpObject.functionPrototypeParametersDescription || LDKF.objectGetOwnPropertyDescriptor(LDKO.$funcProto, 'params')).get.call(arguments[0]) },
 
+                                // HTML All Collection
+                                    // Length
+                                    htmlAllCollectionLength: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlAllCollectionProto, 'length').get;
+
+                                        // Return
+                                        return function htmlAllCollectionLength() { return method.call(arguments[0]) }
+                                    })(),
+
                                 // HTML Collection
                                     // Length
                                     htmlCollectionLength: (function() {
@@ -3832,6 +4426,34 @@
 
                                         // Return
                                         return function htmlCollectionLength() { return method.call(arguments[0]) }
+                                    })(),
+
+                                // HTML Link Element
+                                    // Hyperlink Reference
+                                    htmlLinkElementHref: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlLinkElementProto, 'href').get;
+
+                                        // Return
+                                        return function htmlMetaElementContent() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Relationship
+                                    htmlLinkElementRel: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlLinkElementProto, 'rel').get;
+
+                                        // Return
+                                        return function htmlMetaElementContent() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Type
+                                    htmlLinkElementType: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlLinkElementProto, 'type').get;
+
+                                        // Return
+                                        return function htmlMetaElementContent() { return method.call(arguments[0]) }
                                     })(),
 
                                 // HTML Meta Element
@@ -3872,6 +4494,16 @@
 
                                         // Return
                                         return function nodeParentNode() { return method.call(arguments[0]) }
+                                    })(),
+
+                                // Node List
+                                    // Length
+                                    nodeListLength: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.nodeListProto, 'length').get;
+
+                                        // Return
+                                        return function nodeListLength() { return method.call(arguments[0]) }
                                     })(),
 
                                 // Regular Expression
@@ -3956,8 +4588,45 @@
                                     })(),
 
                                 // HTML Element
+                                    // On Click
+                                    htmlElementOnclick: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$htmlElementProto, 'onclick').set;
+
+                                        // Return
+                                        return function htmlElementOnclick() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
                                     // Selector
-                                    htmlElementSelector: function htmlElementSelector() { return (tmpObject.htmlElePrototypeSelectorDescription || LDKF.objectGetOwnPropertyDescriptor(LDKO.$htmlEleProto, 'selector')).set.call(arguments[0], arguments[1]) },
+                                    htmlElementSelector: function htmlElementSelector() { return (tmpObject.htmlElePrototypeSelectorDescription || LDKF.objectGetOwnPropertyDescriptor(LDKO.$htmlElementProto, 'selector')).set.call(arguments[0], arguments[1]) },
+
+                                // HTML Link Element
+                                    // Hyperlink Reference
+                                    htmlLinkElementHref: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlLinkElementProto, 'href').set;
+
+                                        // Return
+                                        return function htmlMetaElementContent() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
+                                    // Relationship
+                                    htmlLinkElementRel: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlLinkElementProto, 'rel').set;
+
+                                        // Return
+                                        return function htmlMetaElementContent() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
+                                    // Type
+                                    htmlLinkElementType: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlLinkElementProto, 'type').set;
+
+                                        // Return
+                                        return function htmlMetaElementContent() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
 
                                 // HTML Meta Element
                                     // Content
@@ -3988,6 +4657,10 @@
                                         return function windowName() { return method.call(window, arguments[0]) }
                                     })()
                             };
+
+                    // Constants
+                        // Element
+                        LDKC.element = LDKF.createElementDocument('lapysjs-element');
 
             /* Phase */
                 // Initialization
@@ -4104,7 +4777,7 @@
                                     LDKF.unshiftArray(args, 'GET');
 
                                     // Return
-                                    return LDKF.requestFile.call(LDKF, args)
+                                    return LDKF.requestFile.apply(LDKF, args)
                                 }
                             });
 
@@ -4199,10 +4872,94 @@
                                                     enumerable: !0,
 
                                                     // Get
-                                                    get: function getHeight() {},
+                                                    get: function getHeight() {
+                                                        // Initialization > (Special Character, Match)
+                                                        let specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}height {0,}=.+', specialCharacter, !1);
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Initialization > ((Allow) Stream, Iterator, Match Length)
+                                                            let allowStream = !1,
+                                                                iterator = 0,
+                                                                matchLength = match.length,
+                                                                stream = '';
+
+                                                            /* Loop
+                                                                    Iterate through Match.
+                                                            */
+                                                            for (iterator; iterator < matchLength; iterator += 1) {
+                                                                // Initialization > Character
+                                                                let character = match[iterator];
+
+                                                                // Logic > Break
+                                                                if (character == ',') break;
+
+                                                                /* Logic
+                                                                        [if:else if statement]
+
+                                                                    > Update > (Allow) Stream
+                                                                */
+                                                                if (allowStream)
+                                                                    stream += character;
+
+                                                                else if (character == '=')
+                                                                    allowStream = !0
+                                                            }
+
+                                                            // Return
+                                                            return !LDKF.isNaN(+stream) ? +stream : stream
+                                                        }
+
+                                                        // Return
+                                                        return null
+                                                    },
 
                                                     // Set
-                                                    set: function setHeight() {}
+                                                    set: function setHeight() {
+                                                        // Initialization > (Content, Data, Key, Special Character, Match, Element)
+                                                        let content = '',
+                                                            data = LDKF.string(arguments[0]),
+                                                            key = 'height',
+                                                            specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}' + key + ' {0,}=.+', specialCharacter),
+                                                            element = LDKF.querySelectorDocument('meta[name=viewport');
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Update > Content
+                                                            content = LDKF.replaceString(LDKF.get.htmlMetaElementContent(element), match, key + '=' + data)
+                                                        }
+
+                                                        else {
+                                                            // Update > (Match, Content)
+                                                            match = LDKF.get.htmlMetaElementContent(element);
+                                                            content = match ? match + ', ' + key + '=' + data : key + '=' + data
+                                                        }
+
+                                                        // Return
+                                                        return LDKF.set.htmlMetaElementContent(element, content)
+                                                    }
                                                 });
 
                                                 // Initial Scale
@@ -4214,10 +4971,97 @@
                                                     enumerable: !0,
 
                                                     // Get
-                                                    get: function getInitialScale() {},
+                                                    get: function getInitialScale() {
+                                                        // Initialization > (Special Character, Match)
+                                                        let specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}initial-scale {0,}=.+', specialCharacter, !1);
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Initialization > ((Allow) Stream, Iterator, Match Length)
+                                                            let allowStream = !1,
+                                                                iterator = 0,
+                                                                matchLength = match.length,
+                                                                stream = '';
+
+                                                            /* Loop
+                                                                    Iterate through Match.
+                                                            */
+                                                            for (iterator; iterator < matchLength; iterator += 1) {
+                                                                // Initialization > Character
+                                                                let character = match[iterator];
+
+                                                                // Logic > Break
+                                                                if (character == ',') break;
+
+                                                                /* Logic
+                                                                        [if:else if statement]
+
+                                                                    > Update > (Allow) Stream
+                                                                */
+                                                                if (allowStream)
+                                                                    stream += character;
+
+                                                                else if (character == '=')
+                                                                    allowStream = !0
+                                                            }
+
+                                                            // Return
+                                                            return !LDKF.isNaN(+stream) ? +stream : stream
+                                                        }
+
+                                                        // Return
+                                                        return null
+                                                    },
 
                                                     // Set
-                                                    set: function setInitialScale() {}
+                                                    set: function setInitialScale() {
+                                                        // Initialization > (Content, Data, Key, Special Character, Match, Element)
+                                                        let content = '',
+                                                            data = LDKF.string(arguments[0]),
+                                                            key = 'initial-scale',
+                                                            specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}' + key + ' {0,}=.+', specialCharacter),
+                                                            element = LDKF.querySelectorDocument('meta[name=viewport');
+
+                                                        // Update > Data
+                                                        LDKF.isNaN(+data) || (LDKF.indexOfString(data, '.') != -1) || (data = data += '.0');
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Update > Content
+                                                            content = LDKF.replaceString(LDKF.get.htmlMetaElementContent(element), match, key + '=' + data)
+                                                        }
+
+                                                        else {
+                                                            // Update > (Match, Content)
+                                                            match = LDKF.get.htmlMetaElementContent(element);
+                                                            content = match ? match + ', ' + key + '=' + data : key + '=' + data
+                                                        }
+
+                                                        // Return
+                                                        return LDKF.set.htmlMetaElementContent(element, content)
+                                                    }
                                                 });
 
                                                 // Maximum Scale
@@ -4229,10 +5073,97 @@
                                                     enumerable: !0,
 
                                                     // Get
-                                                    get: function getMaximumScale() {},
+                                                    get: function getMaximumScale() {
+                                                        // Initialization > (Special Character, Match)
+                                                        let specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}maximum-scale {0,}=.+', specialCharacter, !1);
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Initialization > ((Allow) Stream, Iterator, Match Length)
+                                                            let allowStream = !1,
+                                                                iterator = 0,
+                                                                matchLength = match.length,
+                                                                stream = '';
+
+                                                            /* Loop
+                                                                    Iterate through Match.
+                                                            */
+                                                            for (iterator; iterator < matchLength; iterator += 1) {
+                                                                // Initialization > Character
+                                                                let character = match[iterator];
+
+                                                                // Logic > Break
+                                                                if (character == ',') break;
+
+                                                                /* Logic
+                                                                        [if:else if statement]
+
+                                                                    > Update > (Allow) Stream
+                                                                */
+                                                                if (allowStream)
+                                                                    stream += character;
+
+                                                                else if (character == '=')
+                                                                    allowStream = !0
+                                                            }
+
+                                                            // Return
+                                                            return !LDKF.isNaN(+stream) ? +stream : stream
+                                                        }
+
+                                                        // Return
+                                                        return null
+                                                    },
 
                                                     // Set
-                                                    set: function setMaximumScale() {}
+                                                    set: function setMaximumScale() {
+                                                        // Initialization > (Content, Data, Key, Special Character, Match, Element)
+                                                        let content = '',
+                                                            data = LDKF.string(arguments[0]),
+                                                            key = 'maximum-scale',
+                                                            specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}' + key + ' {0,}=.+', specialCharacter),
+                                                            element = LDKF.querySelectorDocument('meta[name=viewport');
+
+                                                        // Update > Data
+                                                        LDKF.isNaN(+data) || (LDKF.indexOfString(data, '.') != -1) || (data = data += '.0');
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Update > Content
+                                                            content = LDKF.replaceString(LDKF.get.htmlMetaElementContent(element), match, key + '=' + data)
+                                                        }
+
+                                                        else {
+                                                            // Update > (Match, Content)
+                                                            match = LDKF.get.htmlMetaElementContent(element);
+                                                            content = match ? match + ', ' + key + '=' + data : key + '=' + data
+                                                        }
+
+                                                        // Return
+                                                        return LDKF.set.htmlMetaElementContent(element, content)
+                                                    }
                                                 });
 
                                                 // Minimal User Interface
@@ -4244,10 +5175,46 @@
                                                     enumerable: !0,
 
                                                     // Get
-                                                    get: function getMinimalUI() {},
+                                                    get: function getMinimalUI() {
+                                                        /* Viewport Content Match
+                                                                --- NOTE ---
+                                                                    #Lapys: Create the Viewport meta element
+                                                                        if there`s none.
+                                                        */
+                                                        viewportContentMatch('', '');
+
+                                                        // Initialization > (Element, Content)
+                                                        let element = LDKF.querySelectorDocument('meta[name=viewport'),
+                                                            content = LDKF.get.htmlMetaElementContent(element);
+
+                                                        // Return
+                                                        return content ? LDKF.indexOfString(content, 'minimal-ui') == -1 ? !1 : !0 : !1
+                                                    },
 
                                                     // Set
-                                                    set: function setMinimalUI() {}
+                                                    set: function setMinimalUI() {
+                                                        // Viewport Content Match
+                                                        viewportContentMatch('', '');
+
+                                                        // Initialization > (Element, Content)
+                                                        let data = !!arguments[0],
+                                                            element = LDKF.querySelectorDocument('meta[name=viewport'),
+                                                            content = LDKF.get.htmlMetaElementContent(element);
+
+                                                        /* Logic
+                                                                [if:else statement]
+
+                                                            > Update > Content
+                                                        */
+                                                        if (content)
+                                                            (LDKF.indexOfString(content, 'minimal-ui') == -1) && (content += ', minimal-ui');
+
+                                                        else
+                                                            content = 'minimal-ui';
+
+                                                        // Return
+                                                        return LDKF.set.htmlMetaElementContent(element, content)
+                                                    }
                                                 });
 
                                                 // Minimum Scale
@@ -4259,10 +5226,97 @@
                                                     enumerable: !0,
 
                                                     // Get
-                                                    get: function getMinimumScale() {},
+                                                    get: function getMinimumScale() {
+                                                        // Initialization > (Special Character, Match)
+                                                        let specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}minimum-scale {0,}=.+', specialCharacter, !1);
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Initialization > ((Allow) Stream, Iterator, Match Length)
+                                                            let allowStream = !1,
+                                                                iterator = 0,
+                                                                matchLength = match.length,
+                                                                stream = '';
+
+                                                            /* Loop
+                                                                    Iterate through Match.
+                                                            */
+                                                            for (iterator; iterator < matchLength; iterator += 1) {
+                                                                // Initialization > Character
+                                                                let character = match[iterator];
+
+                                                                // Logic > Break
+                                                                if (character == ',') break;
+
+                                                                /* Logic
+                                                                        [if:else if statement]
+
+                                                                    > Update > (Allow) Stream
+                                                                */
+                                                                if (allowStream)
+                                                                    stream += character;
+
+                                                                else if (character == '=')
+                                                                    allowStream = !0
+                                                            }
+
+                                                            // Return
+                                                            return !LDKF.isNaN(+stream) ? +stream : stream
+                                                        }
+
+                                                        // Return
+                                                        return null
+                                                    },
 
                                                     // Set
-                                                    set: function setMinimumScale() {}
+                                                    set: function setMinimumScale() {
+                                                        // Initialization > (Content, Data, Key, Special Character, Match, Element)
+                                                        let content = '',
+                                                            data = LDKF.string(arguments[0]),
+                                                            key = 'minimum-scale',
+                                                            specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}' + key + ' {0,}=.+', specialCharacter),
+                                                            element = LDKF.querySelectorDocument('meta[name=viewport');
+
+                                                        // Update > Data
+                                                        LDKF.isNaN(+data) || (LDKF.indexOfString(data, '.') != -1) || (data = data += '.0');
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Update > Content
+                                                            content = LDKF.replaceString(LDKF.get.htmlMetaElementContent(element), match, key + '=' + data)
+                                                        }
+
+                                                        else {
+                                                            // Update > (Match, Content)
+                                                            match = LDKF.get.htmlMetaElementContent(element);
+                                                            content = match ? match + ', ' + key + '=' + data : key + '=' + data
+                                                        }
+
+                                                        // Return
+                                                        return LDKF.set.htmlMetaElementContent(element, content)
+                                                    }
                                                 });
 
                                                 // Target Density Pixels
@@ -4299,10 +5353,97 @@
                                                     enumerable: !0,
 
                                                     // Get
-                                                    get: function getUserScalable() {},
+                                                    get: function getUserScalable() {
+                                                        // Initialization > (Special Character, Match)
+                                                        let specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}user-scalable {0,}=.+', specialCharacter, !1);
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Initialization > ((Allow) Stream, Iterator, Match Length)
+                                                            let allowStream = !1,
+                                                                iterator = 0,
+                                                                matchLength = match.length,
+                                                                stream = '';
+
+                                                            /* Loop
+                                                                    Iterate through Match.
+                                                            */
+                                                            for (iterator; iterator < matchLength; iterator += 1) {
+                                                                // Initialization > Character
+                                                                let character = match[iterator];
+
+                                                                // Logic > Break
+                                                                if (character == ',') break;
+
+                                                                /* Logic
+                                                                        [if:else if statement]
+
+                                                                    > Update > (Allow) Stream
+                                                                */
+                                                                if (allowStream)
+                                                                    stream += character;
+
+                                                                else if (character == '=')
+                                                                    allowStream = !0
+                                                            }
+
+                                                            // Return
+                                                            return stream == 'yes' ? !0 : (stream == 'no' ? !1 : stream)
+                                                        }
+
+                                                        // Return
+                                                        return null
+                                                    },
 
                                                     // Set
-                                                    set: function setUserScalable() {}
+                                                    set: function setUserScalable() {
+                                                        // Initialization > (Content, Data, Key, Special Character, Match, Element)
+                                                        let content = '',
+                                                            data = LDKF.string(arguments[0]),
+                                                            key = 'user-scalable',
+                                                            specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}' + key + ' {0,}=.+', specialCharacter),
+                                                            element = LDKF.querySelectorDocument('meta[name=viewport');
+
+                                                        // Update > Data
+                                                        data = data == 'no' || data == 'yes' ? data : data ? 'yes' : 'no';
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Update > Content
+                                                            content = LDKF.replaceString(LDKF.get.htmlMetaElementContent(element), match, key + '=' + data)
+                                                        }
+
+                                                        else {
+                                                            // Update > (Match, Content)
+                                                            match = LDKF.get.htmlMetaElementContent(element);
+                                                            content = match ? match + ', ' + key + '=' + data : key + '=' + data
+                                                        }
+
+                                                        // Return
+                                                        return LDKF.set.htmlMetaElementContent(element, content)
+                                                    }
                                                 });
 
                                                 // Width
@@ -4314,10 +5455,94 @@
                                                     enumerable: !0,
 
                                                     // Get
-                                                    get: function getWidth() {},
+                                                    get: function getWidth() {
+                                                        // Initialization > (Special Character, Match)
+                                                        let specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}width {0,}=.+', specialCharacter, !1);
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Initialization > ((Allow) Stream, Iterator, Match Length)
+                                                            let allowStream = !1,
+                                                                iterator = 0,
+                                                                matchLength = match.length,
+                                                                stream = '';
+
+                                                            /* Loop
+                                                                    Iterate through Match.
+                                                            */
+                                                            for (iterator; iterator < matchLength; iterator += 1) {
+                                                                // Initialization > Character
+                                                                let character = match[iterator];
+
+                                                                // Logic > Break
+                                                                if (character == ',') break;
+
+                                                                /* Logic
+                                                                        [if:else if statement]
+
+                                                                    > Update > (Allow) Stream
+                                                                */
+                                                                if (allowStream)
+                                                                    stream += character;
+
+                                                                else if (character == '=')
+                                                                    allowStream = !0
+                                                            }
+
+                                                            // Return
+                                                            return !LDKF.isNaN(+stream) ? +stream : stream
+                                                        }
+
+                                                        // Return
+                                                        return null
+                                                    },
 
                                                     // Set
-                                                    set: function setWidth() {}
+                                                    set: function setWidth() {
+                                                        // Initialization > (Content, Data, Key, Special Character, Match, Element)
+                                                        let content = '',
+                                                            data = LDKF.string(arguments[0]),
+                                                            key = 'width',
+                                                            specialCharacter = LDKC.specialCharacters,
+                                                            match = viewportContentMatch(' {0,}(,|) {0,}' + key + ' {0,}=.+', specialCharacter),
+                                                            element = LDKF.querySelectorDocument('meta[name=viewport');
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (match) {
+                                                            // Update > Match
+                                                            match = match[0];
+                                                            match = LDKF.sliceString(match, 0, -specialCharacter.length);
+
+                                                            // Loop > Update > Match
+                                                            while (match[0] == ',' || match[0] == ' ') match = LDKF.sliceString(match, 1);
+                                                            while (match[match.length - 1] == ',' || match[match.length - 1] == ' ') match = LDKF.sliceString(match, 0, -1);
+
+                                                            // Update > Content
+                                                            content = LDKF.replaceString(LDKF.get.htmlMetaElementContent(element), match, key + '=' + data)
+                                                        }
+
+                                                        else {
+                                                            // Update > (Match, Content)
+                                                            match = LDKF.get.htmlMetaElementContent(element);
+                                                            content = match ? match + ', ' + key + '=' + data : key + '=' + data
+                                                        }
+
+                                                        // Return
+                                                        return LDKF.set.htmlMetaElementContent(element, content)
+                                                    }
                                                 });
 
                                             // Return
@@ -4427,6 +5652,79 @@
 
                                             // Return
                                             return LDKF.get.htmlMetaElementContent(element)
+                                        }
+
+                                        // Viewport Content Match
+                                        function viewportContentMatch() {
+                                            // Initialization > (Create New Meta Element, Element, Search Selector, Special Character)
+                                            let createNewMetaElement = arguments.length > 2 ? !!arguments[2] : !0,
+                                                element = LDKF.querySelectorDocument('meta[name=viewport'),
+                                                searchSelector = arguments[0],
+                                                specialCharacter = arguments[1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (createNewMetaElement && !element) {
+                                                // Update > Element
+                                                element = LDKF.createElementDocument('meta');
+
+                                                // Modification > Element > (Content, Name)
+                                                LDKF.set.htmlMetaElementContent(element, '');
+                                                LDKF.set.htmlMetaElementName(element, 'viewport');
+
+                                                // Initialization > Parent
+                                                let parent = LDKF.get.documentHead();
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (parent)
+                                                    // Insertion
+                                                    LDKF.appendChildNode(parent, element);
+
+                                                else
+                                                    // Error Handling
+                                                    try {
+                                                        // Insertion
+                                                        LDKF.appendChildDocument(element)
+                                                    } catch (error) {
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (error.constructor == LDKO.domException) {
+                                                            // Initialization > Children
+                                                            let children = LDKF.get.documentChildren(LDKO.$document);
+
+                                                            /* Logic
+                                                                    [if statement]
+
+                                                                > Insertion
+                                                            */
+                                                            if (LDKF.get.htmlCollectionLength(children))
+                                                                LDKF.appendChildNode(children[0], element)
+                                                        }
+
+                                                        else
+                                                            // Error
+                                                            throw error
+                                                    }
+                                            }
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (element) {
+                                                // Initialization > (Content, Match)
+                                                let content = LDKF.get.htmlMetaElementContent(element),
+                                                    match = LDKF.matchString(content + specialCharacter, LDKF.regex(searchSelector + specialCharacter));
+
+                                                // Return
+                                                return match
+                                            }
+
+                                            // Return
+                                            return null
                                         }
 
                                     // Modification > Application
@@ -6283,6 +7581,51 @@
                                 writable: !0
                             });
 
+                            // Array
+                            LDKF.objectDefineProperty(window, 'array', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function Array() {
+                                    // Return
+                                    return LDKF.toArray.apply(LDKF, LDKF.toArray(arguments))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Boolean
+                            LDKF.objectDefineProperty(window, 'bool', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function Boolean() {
+                                    // Initialization > (Arguments, Length, Iterator, (False, Truth)  Count)
+                                    let args = LDKF.toArray(arguments),
+                                        length = args.length,
+                                        iterator = 0,
+                                        falseCount = iterator,
+                                        truthCount = falseCount;
+
+                                    /* Loop
+                                            Index Arguments.
+
+                                        > Update > (False | Truth) Count
+                                    */
+                                    for (iterator; iterator < length; iterator += 1)
+                                        args[iterator] ? truthCount += 1 : falseCount += 1;
+
+                                    // Return
+                                    return truthCount > falseCount
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Browser
                             LDKF.objectDefineProperty(window, 'browser', {
                                 // Configurable
@@ -6297,7 +7640,590 @@
                                     // Return
                                     return browser
                                 })()
-                            })
+                            });
+
+                            /* Chain
+                                    --- NOTE ---
+                                        #Lapys: Run functions in sequence.
+                            */
+                            LDKF.objectDefineProperty(window, 'chain', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function chain() {
+                                    // Initialization > (Arguments, Iterator, Length)
+                                    let args = LDKF.toArray(arguments),
+                                        iterator = 0,
+                                        length = args.length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (length) {
+                                        /* Loop
+                                                Index Arguments.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Argument
+                                            let arg = args[iterator];
+
+                                            // Update > Arguments
+                                            LDKF.isEvaluationString(arg) && (args[iterator] = LDKF.$func(arg));
+
+                                            // Error
+                                            LDKF.isFunction(arg) || LDKF.error("'chain'", 'argument', LDKF.debugMessage(value, ['must', 'a'], ['evaluation string', 'function']))
+                                        }
+
+                                        // Update > Length
+                                        (length % 2) && (length = LDKF.pushArray(args, function() {}));
+                                        length -= 1;
+
+                                        // Initialization > (Click Event Attacher, Current Return Value, Element, Execution Iteration Count, Initial Lapse, Previous Lapse, Promises)
+                                        let clickEventAttacher = LDKF.set.htmlElementOnclick,
+                                            currentReturnValue,
+                                            element = LDKC.element,
+                                            executionIterationCount = 0,
+                                            initialLapse = now(),
+                                            previousLapse = 0,
+                                            promises = LDKF.isNativeFunction(window.Promise);
+
+                                        // Function
+                                            // Now
+                                            function now() {
+                                                return LDKF.performanceNow()
+                                            }
+
+                                            // Set Click Event
+                                            function setClickEvent() {
+                                                // Return
+                                                return clickEventAttacher(arguments[0], arguments[1])
+                                            }
+
+                                            // Update Lapse
+                                            function updateLapse() {
+                                                // Return
+                                                return now() - initialLapse
+                                            }
+
+                                            // Execute
+                                            (promises ?
+                                                function execute() {
+                                                    // Initialization > Callback (A, B)
+                                                    let callbackA = arguments[0],
+                                                        callbackB = arguments[1];
+
+                                                    // Update > Previous Lapse
+                                                    previousLapse = updateLapse() - previousLapse;
+
+                                                    // Callback A
+                                                    callbackA(executionIterationCount ? previousLapse : 0);
+
+                                                    // Promise
+                                                    LDKF.thenPromise(new LDKO.promise((resolve, reject) => {
+                                                        // Resolve
+                                                        resolve(null);
+
+                                                        // Reject
+                                                        reject(null)
+                                                    }), function() {
+                                                        // Update > Current Return Value
+                                                        currentReturnValue = callbackB(updateLapse() - previousLapse);
+
+                                                        // Promise
+                                                        LDKF.thenPromise(new LDKO.promise((resolve, reject) => {
+                                                            // Resolve
+                                                            resolve(null);
+
+                                                            // Reject
+                                                            reject(null)
+                                                        }), function() {
+                                                            // Update > Execution Iteration Count
+                                                            executionIterationCount += 1;
+
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length) {
+                                                                // Update > Iterator
+                                                                iterator += 1;
+
+                                                                // Execute
+                                                                execute(args[iterator], args[iterator += 1])
+                                                            }
+                                                        })
+                                                    })
+                                                } :
+                                                function execute() {
+                                                    // Initialization > Callback (A, B)
+                                                    let callbackA = arguments[0],
+                                                        callbackB = arguments[1];
+
+                                                    // Initialization > (Called, Repeated, Request)
+                                                    let called = !1,
+                                                        repeated = !1,
+                                                        request;
+
+                                                    // Update > Previous Lapse
+                                                    previousLapse = updateLapse() - previousLapse;
+
+                                                    // Callback A
+                                                    callbackA(executionIterationCount ? previousLapse : 0);
+
+                                                    // Function
+                                                        // Call
+                                                        function call() {
+                                                            // Update > (Called, Current Return Value)
+                                                            called = !0;
+                                                            currentReturnValue = callbackB(updateLapse() - previousLapse);
+
+                                                            // Set Click Event
+                                                            setClickEvent(element, repeat);
+
+                                                            // Function > Repeat Click
+                                                            function repeatClick() {
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (repeated)
+                                                                    // Cancel Animation Frame > Request
+                                                                    LDKF.cancelAnimationFrame(request);
+
+                                                                else {
+                                                                    // LapysJS Development Kit Functions > Click > Element
+                                                                    LDKF.clickHtmlElement(element);
+
+                                                                    // Update > Request
+                                                                    request = LDKF.requestAnimationFrame(repeatClick)
+                                                                }
+                                                            }
+
+                                                            // Repeat Click
+                                                            repeatClick()
+                                                        }
+
+                                                        // Click
+                                                        function callClick() {
+                                                            /* Logic
+                                                                    [if:else statement]
+                                                            */
+                                                            if (called)
+                                                                // Cancel Animation Frame > Request
+                                                                LDKF.cancelAnimationFrame(request);
+
+                                                            else {
+                                                                // LapysJS Development Kit Functions > Click > Element
+                                                                LDKF.clickHtmlElement(element);
+
+                                                                // Update > Request
+                                                                request = LDKF.requestAnimationFrame(callClick)
+                                                            }
+                                                        }
+
+                                                        // Function > Repeat
+                                                        function repeat() {
+                                                            // Update > (Repeated, Execution Iteration Count)
+                                                            repeated = !0;
+                                                            executionIterationCount += 1;
+
+                                                            /* Logic
+                                                                    [if:else statement]
+                                                            */
+                                                            if (iterator == length)
+                                                                // Set Click Event
+                                                                setClickEvent(element, null);
+
+                                                            else {
+                                                                // Update > Iterator
+                                                                iterator += 1;
+
+                                                                // Execute
+                                                                execute(args[iterator], args[iterator += 1])
+                                                            }
+                                                        }
+
+                                                    // (Set Click Event, Call Click)
+                                                    setClickEvent(element, call);
+                                                    callClick()
+                                                }
+                                            )(args[iterator = 0], args[iterator += 1]);
+
+                                        // Return
+                                        return currentReturnValue
+                                    }
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Clear
+                            LDKF.objectDefineProperty(window, 'clear', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function clear() { LDKF.consoleClear(); return clear },
+
+                                // Set
+                                set: function setClear() { return LDKF.objectDefineProperty(window, 'clear', {configurable: !0, enumerable: !0, value: arguments[0], writable: !0}) }
+                            });
+
+                            // Cube Root
+                            LDKF.objectDefineProperty(window, 'cbrt', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.cbrt,
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Function
+                            LDKF.objectDefineProperty(window, 'func', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function Function() {
+                                    // Return
+                                    return LDKF.$func.apply(LDKF, LDKF.toArray(arguments))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Number
+                            LDKF.objectDefineProperty(window, 'num', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function Number() {
+                                    // Return
+                                    return LDKF.$number.apply(LDKF, LDKF.toArray(arguments))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Object
+                            LDKF.objectDefineProperty(window, 'object', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function Object() {
+                                    // Initialization > (Length, Object)
+                                    let length = arguments.length,
+                                        object = {};
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (length) {
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (length == 1)
+                                            // Return
+                                            return LDKF.object(LDKF.cloneObject(arguments[0]));
+
+                                        else {
+                                            // Initialization > Iterator
+                                            let iterator = 0;
+
+                                            /* Loop
+                                                    Index Arguments.
+                                            */
+                                            for (iterator; iterator < length; iterator += 1) {
+                                                // Initialization > Argument
+                                                let argument = arguments[iterator];
+
+                                                // LapyJS Development Kit Functions > Iterate Object
+                                                LDKF.iterateObject((key, value, description) => {
+                                                    // Error Handling
+                                                    try {
+                                                        // Modification > Object > ([Key], (Constructor > Prototype))
+                                                        LDKF.objectDefineProperty(object, key, description);
+                                                        object.__proto__ = LDKF.objectCreate(argument.constructor.prototype)
+                                                    } catch (error) {}
+                                                }, argument, !0, !1)
+                                            }
+                                        }
+                                    }
+
+                                    // Return
+                                    return object
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Regular Expression
+                            LDKF.objectDefineProperty(window, 'regex', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function RegExp() {
+                                    // Initialization > (Iterator, Length, Regular Expression)
+                                    let iterator = 0,
+                                        length = arguments.length,
+                                        regex = {
+                                            // Source
+                                            source: '',
+
+                                            // Flags
+                                            flags: ''
+                                        };
+
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    for (iterator; iterator < length; iterator += 1) {
+                                        // Initialization > Argument
+                                        let argument = arguments[iterator];
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (LDKF.isRegex(argument)) {
+                                            // Modification > Regular Expression > (Flags, Source)
+                                            regex.flags += LDKF.get.regexFlags(argument);
+                                            regex.source += LDKF.get.regexSource(argument)
+                                        }
+
+                                        else
+                                            // Modification > Regular Expression > Source
+                                            regex.source += LDKF.string(argument)
+                                    }
+
+                                    // Initialization > Flags
+                                    let flags = '';
+
+                                    // Update > Length
+                                    length = regex.flags.length;
+
+                                    /* Loop
+                                            [for statement]
+                                    */
+                                    for (iterator = 0; iterator < length; iterator += 1) {
+                                        // Initialization > Flag
+                                        let flag = regex.flags[iterator];
+
+                                        // Update > Flags
+                                        (function() {
+                                            // Initialization > Flags (Iterator, Length)
+                                            let flagsIterator = 0,
+                                                flagsLength = flags.length;
+
+                                            // Loop > Logic > Return
+                                            for (flagsIterator; flagsIterator < flagsLength; flagsIterator += 1)
+                                                if (flags[flagsIterator] == flag)
+                                                    return !1;
+
+                                            // Return
+                                            return !0
+                                        })() && (flags += regex.flags[iterator])
+                                    }
+
+                                    // Return
+                                    return LDKF.regex(regex.source, flags)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // String
+                            LDKF.objectDefineProperty(window, 'str', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function String() {
+                                    // Return
+                                    return LDKF.$string.apply(LDKF, LDKF.toArray(arguments))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Symbol
+                            LDKF.objectDefineProperty(window, 'sym', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function Symbol() {
+                                    // Return
+                                    return LDKF.symbol(LDKF.$string.apply(LDKF, LDKF.toArray(arguments)))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                    /* Document Data */
+                        // Favorite Icon
+                        LDKF.objectDefineProperty(LDKO.documentProto, 'favicon', new (function Object() {
+                            // Initialization > (Relationships, Target)
+                            let relationships = ['apple-touch-icon', 'icon', 'shortcut icon'],
+                                that = this;
+
+                            // Modification > Target
+                                // Configurable
+                                that.configurable = !0;
+
+                                // Enumerable
+                                that.enumerable = !0;
+
+                                // Get
+                                that.get = function getFavoriteIcon() {
+                                    // Initialization > (Iterator, (Decremented) Length, Query)
+                                    let iterator = 0,
+                                        length = relationships.length,
+                                        decrementedLength = length - 1,
+                                        query = '';
+
+                                    /* Loop
+                                            Index Relationship.s
+
+                                        > Update > Query
+                                    */
+                                    for (iterator; iterator < length; iterator += 1)
+                                        query += "link[rel='" + relationships[iterator] + "']" + (iterator == decrementedLength ? '' : ', ');
+
+                                    // Initialization > Elements
+                                    let elements = LDKF.querySelectorAllDocument(query);
+
+                                    // Update > Length
+                                    length = elements.length;
+
+                                    /* Loop
+                                            Index Elements.
+
+                                        > Update > Elements
+                                    */
+                                    for (iterator = 0; iterator < length; iterator += 1)
+                                        elements[LDKF.replaceString(LDKF.replaceString(relationships[iterator], / {1,}[a-z]/g, a => { return LDKF.toUpperCaseString(a[a.length - 1]) }), /-[a-z]/g, a => { return LDKF.toUpperCaseString(a[1]) })] = LDKF.get.htmlLinkElementHref(elements[iterator]);
+
+                                    // Modification > Elements > To String
+                                    LDKF.objectDefineProperty(elements, 'toString', {
+                                        // Value
+                                        value: function toString() {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if ('shortcutIcon' in elements)
+                                                // Return
+                                                return elements.shortcutIcon;
+
+                                            else {
+                                                // Initialization > (Keys (Length), Selection)
+                                                let keys = LDKF.objectKeys(elements),
+                                                    keysLength = keys.length,
+                                                    selection = [];
+
+                                                /* Loop
+                                                        Iterate Keys.
+                                                */
+                                                for (iterator = 0; iterator < keysLength; iterator += 1) {
+                                                    // Initialization > Key
+                                                    let key = keys[iterator];
+
+                                                    // Update > Selection
+                                                    LDKF.isNaN(+key) && LDKF.pushArray(selection, key)
+                                                }
+
+                                                // Return
+                                                return elements[selection[LDKF.numberParseInt(LDKF.mathRandom() * selection.length)]]
+                                            }
+                                        }
+                                    });
+
+                                    // Return
+                                    return elements
+                                };
+
+                                // Set
+                                that.set = function setFavoriteIcon() {
+                                    // Initialization > (Attributes, Source, Parent, Type(s), Length, Iterator, Document Fragment)
+                                    let attributes = LDKF.object(arguments[2]),
+                                        source = LDKF.string(arguments[0]),
+                                        parent = LDKF.get.documentHead(),
+                                        type = arguments.length > 1 ? LDKF.string(arguments[1]) : 'ico',
+                                        types = [],
+                                        length = relationships.length,
+                                        iterator = 0,
+                                        documentFragment = LDKF.createDocumentFragmentDocument();
+
+                                    /* Loop
+                                            Iterate over Length.
+
+                                        > Update > Types
+                                    */
+                                    for (iterator; iterator < length; iterator += 1)
+                                        types[iterator] = 'img/' + type;
+
+                                    /* Loop
+                                            Index Relationships.
+                                    */
+                                    for (iterator = 0; iterator < length; iterator += 1) {
+                                        // Initialization > (Relationship, Type, Element)
+                                        let relationship = relationships[iterator],
+                                            type = types[iterator],
+                                            element = LDKF.createElementDocument('link');
+
+                                        // Modification > Element > (Hyperlink Reference, Relationship, Type)
+                                        LDKF.set.htmlLinkElementHref(element, source);
+                                        LDKF.set.htmlLinkElementRel(element, relationship);
+                                        LDKF.set.htmlLinkElementType(element, type);
+
+                                        // Insertion
+                                        LDKF.appendChildNode(documentFragment, element)
+                                    }
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (parent)
+                                        // Insertion
+                                        LDKF.appendChildNode(parent, documentFragment);
+
+                                    else
+                                        // Error Handling
+                                        try {
+                                            // Insertion
+                                            LDKF.appendChildDocument(documentFragment)
+                                        } catch (error) {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (error.constructor == LDKO.domException) {
+                                                // Initialization > Children
+                                                let children = LDKF.get.documentChildren(LDKO.$document);
+
+                                                // Insertion
+                                                LDKF.get.htmlCollectionLength(children) && LDKF.appendChildNode(children[0], documentFragment)
+                                            }
+
+                                            else
+                                                // Error
+                                                throw error
+                                        }
+                                };
+
+                            // Return
+                            return that
+                        }));
 
                     /* Function Data */
                         // Apply
@@ -7466,6 +9392,592 @@
 
                                 // Return
                                 return arguments[0]
+                            }
+                        });
+
+                    /* Number Data */
+                        /* Convert Unit
+                                --- UPDATE REQUIRED ---
+                                    #Lapys: Must be able to convert from
+                                        unit measurement to unit measurement.
+
+                                        P.S.: Use the `LDKC.metricsTable` property.
+                        */
+                        LDKF.objectDefineProperty(LDKO.number, 'convertUnit', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function convertUnit() {},
+
+                            // Writable
+                            writable: !0
+                        });
+                            // Definition
+                            LDKF.objectDefineProperty(window, 'convertUnit', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.number.convertUnit,
+
+                                // Writable
+                                writable: !0
+                            });
+
+                        // Ordinal
+                        LDKF.objectDefineProperty(LDKO.numberProto, 'ordinal', {
+                            // Configurable
+                            configurable: !1,
+
+                            // Enumerable
+                            enumerable: !1,
+
+                            // Get
+                            get: function ordinal() {
+                                // Initialization > (Target, Iterator, String (Length))
+                                let that = LDKF.number(this),
+                                    iterator = 0,
+                                    string = '',
+                                    $string = LDKF.string(that),
+                                    $stringLength = $string.length;
+
+                                /* Loop
+                                        Iterate through String.
+
+                                        --- NOTE ---
+                                            #Lapys: Convert the number to integer.
+                                */
+                                for (iterator; iterator < $stringLength; iterator += 1) {
+                                    // Initialization > Character
+                                    let character = $string[iterator];
+
+                                    // Logic > Break
+                                    if ($string[iterator] == '.')
+                                        break;
+
+                                    // Update > String
+                                    string += character
+                                }
+
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (LDKF.isFinite(that)) {
+                                    // Initialization > Last String Character
+                                    let lastStringCharacter = string[string.length - 1];
+
+                                    /* Logic
+                                            [if:else if:else statement]
+
+                                        > Update > String
+                                    */
+                                    if (lastStringCharacter == '1')
+                                        string += 'st';
+
+                                    else if (lastStringCharacter == '2')
+                                        string += 'nd';
+
+                                    else if (lastStringCharacter == '3')
+                                        string += 'rd';
+
+                                    else
+                                        string += 'th'
+                                }
+
+                                else if (LDKF.isNaN(that))
+                                    // Update > String
+                                    string = 'not a number';
+
+                                else if (LDKF.isInfinite(that))
+                                    // Update > String
+                                    string = 'infinity';
+
+                                else
+                                    // Update > String
+                                    string = '';
+
+                                // Update > String
+                                ($string[0] == '-') && (string = 'negative ' + string);
+
+                                // Return
+                                return string
+                            }
+                        });
+
+                        // Parse Number
+                        LDKF.objectDefineProperty(LDKO.number, 'parseNumber', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: LDKF.$number,
+
+                            // Writable
+                            writable: !0
+                        });
+                            // Definition
+                            LDKF.objectDefineProperty(window, 'parseNumber', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.number.parseNumber,
+
+                                // Writable
+                                writable: !0
+                            });
+
+                        // Spell
+                        LDKF.objectDefineProperty(LDKO.numberProto, 'spell', {
+                            // Configurable
+                            configurable: !1,
+
+                            // Enumerable
+                            enumerable: !1,
+
+                            /* Get
+                                    --- NOTE ---
+                                        #Lapys: This was from a previous version
+                                            of LapysJS modified for this version.
+
+                                            It still works but it may not be clear.
+                            */
+                            get: function spell() {
+                                // Initialization > (...)
+                                let data = LDKC.specialCharacters,
+                                    metadata = '',
+                                    that = +this,
+                                    $that = that - 0,
+                                    alpha = that > -1 && !LDKF.objectIs(that, -0),
+                                    beta = LDKF.string(that),
+                                    $beta = '',
+                                    iterator = 0;
+
+                                // Initialization > (Allow Beta, Length)
+                                let allowBeta = !1,
+                                    length = beta.length;
+
+                                /* Loop
+                                        Iterate through Beta.
+                                */
+                                for (iterator; iterator < length; iterator += 1) {
+                                    // Initialization > Character
+                                    let character = beta[iterator];
+
+                                    /* Logic
+                                            [if:else if statement]
+
+                                        > Update > (Allow) Beta
+                                    */
+                                    if (allowBeta)
+                                        $beta += character;
+
+                                    else if (character == '.')
+                                        allowBeta = !0
+                                }
+
+                                // (Update > Beta), (Loop > Update > Beta)
+                                beta = $beta;
+                                while (beta[0] == ' ' || beta[0] == '\n') beta = LDKF.sliceString(beta, 1);
+                                while (beta[beta.length - 1] == ' ' || beta[beta.length - 1] == '\n') beta = LDKF.sliceString(beta, 0, -1);
+
+                                // Return
+                                return (function() {
+                                    // Update > Target
+                                    that = LDKF.numberParseInt(LDKF.abs(that));
+
+                                    // Initialization > (...)
+                                    let zero = ['zero'],
+                                        ones = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'],
+                                        tens = ['twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'],
+                                        hundreds = ['hundred'],
+                                        thousands = ['thousand'],
+                                        millions = ['million', 'billion', 'trillion', 'quadrillion', 'quintillion'];
+
+                                    // Function
+                                        // Parse Hundreds
+                                        function parseHundreds() {
+                                            // Initialization > Data
+                                            let data = LDKF.string(arguments[0]),
+                                                metadata = data[0],
+                                                alpha = LDKF.sliceString(data, 1),
+                                                beta = (parseOnes(+metadata) + ' ' + hundreds[0] + ' and ' + (function() {
+                                                    // Initialization > Data
+                                                    let data = +alpha;
+
+                                                    // Update > Data
+                                                    data = data == 0 ? '' : (data < 20 ? parseOnes(data) : parseTens(data));
+
+                                                    // Return
+                                                    return data
+                                                })());
+
+                                            // Loop > Update > Beta
+                                            while (
+                                                (beta[beta.length - 3] == 'a' && beta[beta.length - 2] == 'n' && beta[beta.length - 1] == 'd') ||
+                                                beta[beta.length - 1] == ' '
+                                            )
+                                                beta = beta[beta.length - 3] == 'a' && beta[beta.length - 2] == 'n' && beta[beta.length - 1] == 'd' ?
+                                                    beta = LDKF.sliceString(beta, 0, -3) :
+                                                    beta = LDKF.sliceString(beta, 0, -1);
+
+                                            // Return
+                                            return beta
+                                        }
+
+                                        // Parse Millions
+                                        function parseMillions() {
+                                            // Initialization > Data
+                                            let data = LDKF.string(arguments[0]);
+
+                                            // Function
+                                                // Parse Billion
+                                                function parseBillion() {
+                                                    // Initialization > (Data, Metadata, Alpha)
+                                                    let data = LDKF.string(arguments[0]),
+                                                        metadata = LDKF.sliceString(data, 0, data.length - 9),
+                                                        alpha = LDKF.sliceString(data, metadata.length);
+
+                                                    // Return
+                                                    return (function() {
+                                                        // Initialization > Data
+                                                        let data = +metadata;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? parseOnes(data) : (data < 100 ? parseTens(data) : parseHundreds(data)));
+
+                                                        // Return
+                                                        return data
+                                                    })() + ' ' + millions[1] + (function() {
+                                                        // Initialization > Data
+                                                        let data = +alpha;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? ' and ' + parseOnes(data) : (data < 100 ? ' and ' + parseTens(data) : (data < 1000 ? ' ' + parseHundreds(data) : (data < 1000000 ? ' ' + parseThousands(data) : ' ' + parseMillion(data)))));
+
+                                                        // Return
+                                                        return data
+                                                    })()
+                                                }
+
+                                                // Parse Million
+                                                function parseMillion() {
+                                                    // Initialization > (Data, Metadata, Alpha)
+                                                    let data = LDKF.string(arguments[0]),
+                                                        metadata = LDKF.sliceString(data, 0, data.length - 6),
+                                                        alpha = LDKF.sliceString(data, metadata.length);
+
+                                                    // Return
+                                                    return (function() {
+                                                        // Initialization > Data
+                                                        let data = +metadata;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? parseOnes(data) : (data < 100 ? parseTens(data) : parseHundreds(data)));
+
+                                                        // Return
+                                                        return data
+                                                    })() + ' ' + millions[0] + (function() {
+                                                        // Initialization > Data
+                                                        let data = +alpha;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? ' and ' + parseOnes(data) : (data < 100 ? ' and ' + parseTens(data) : (data < 1000 ? ' ' + parseHundreds(data) : ' ' + parseThousands(data))));
+
+                                                        // Return
+                                                        return data
+                                                    })()
+                                                }
+
+                                                // Parse Quadrillion
+                                                function parseQuadrillion() {
+                                                    // Initialization > (Data, Metadata, Alpha)
+                                                    let data = LDKF.string(arguments[0]),
+                                                        metadata = LDKF.sliceString(data, 0, data.length - 15),
+                                                        alpha = LDKF.sliceString(data, metadata.length);
+
+                                                    // Return
+                                                    return (function() {
+                                                        // Initialization > Data
+                                                        let data = +metadata;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? parseOnes(data) : parseTens(data));
+
+                                                        // Return
+                                                        return data
+                                                    })() + ' ' + millions[3] + (function() {
+                                                        // Initialization > Data
+                                                        let data = +alpha;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? ' and ' + parseOnes(data) : (data < 100 ? ' and ' + parseTens(data) : (data < 1e3 ? ' ' + parseHundreds(data) : (data < 1e6 ? ' ' + parseThousands(data) : (data < 1e9 ? ' ' + parseMillion(data) : (data < 1e12 ? ' ' + parseBillion(data) : ' ' + parseTrillion(data)))))));
+
+                                                        // Return
+                                                        return data
+                                                    })()
+                                                }
+
+                                                // Parse Trillion
+                                                function parseTrillion() {
+                                                    // Initialization > (Data, Metadata, Alpha)
+                                                    let data = LDKF.string(arguments[0]),
+                                                        metadata = LDKF.sliceString(data, 0, data.length - 12),
+                                                        alpha = LDKF.sliceString(data, metadata.length);
+
+                                                    // Return
+                                                    return (function() {
+                                                        // Initialization > Data
+                                                        let data = +metadata;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? parseOnes(data) : (data < 100 ? parseTens(data) : parseHundreds(data)));
+
+                                                        // Return
+                                                        return data
+                                                    })() + ' ' + millions[2] + (function() {
+                                                        // Initialization > Data
+                                                        let data = +alpha;
+
+                                                        // Update > Data
+                                                        data = data == 0 ? '' : (data < 20 ? ' and ' + parseOnes(data) : (data < 100 ? ' and ' + parseTens(data) : (data < 1000 ? ' ' + parseHundreds(data) : (data < 1000000 ? ' ' + parseThousands(data) : (data < 1000000000 ? ' ' + parseMillion(data) : ' ' + parseBillion(data))))));
+
+                                                        // Return
+                                                        return data
+                                                    })()
+                                                }
+
+                                            /* Logic
+                                                    [if:else if statement]
+
+                                                > Update > Data
+                                            */
+                                            if (data.length > 6 && data.length < 10)
+                                                data = parseMillion(data);
+
+                                            else if (data.length > 9 && data.length < 13)
+                                                data = parseBillion(data);
+
+                                            else if (data.length > 12 && data.length < 16)
+                                                data = parseTrillion(data);
+
+                                            else if (data.length > 15 && data.length < 19)
+                                                data = parseQuadrillion(data);
+
+                                            // Loop > Update > Data
+                                            while (
+                                                (data[data.length - 3] == 'a' && data[data.length - 2] == 'n' && data[data.length - 1] == 'd') ||
+                                                data[data.length - 1] == ' '
+                                            )
+                                                data = data[data.length - 3] == 'a' && data[data.length - 2] == 'n' && data[data.length - 1] == 'd' ?
+                                                    LDKF.sliceString(data, 0, -3) :
+                                                    LDKF.sliceString(data, 0, -1);
+
+                                            // Return
+                                            return data
+                                        }
+
+                                        // Parse Ones
+                                        function parseOnes() {
+                                            // Return
+                                            return ones[arguments[0] - 1]
+                                        }
+
+                                        // Parse Tens
+                                        function parseTens() {
+                                            // Initialization > Data
+                                            let data = arguments[0];
+
+                                            // Return
+                                            return tens[+(LDKF.string(data)[0]) - 2] + (data - +(LDKF.string(data)[0] + '0') ? ' ' + parseOnes(data - +(LDKF.string(data)[0] + '0')) : '')
+                                        }
+
+                                        // Parse Thousands
+                                        function parseThousands() {
+                                            // Initialization > Data
+                                            let data = LDKF.string(arguments[0]);
+
+                                            /* Logic
+                                                    [if:else if statement]
+                                            */
+                                            if (data.length == 4) {
+                                                // Initialization > (Metadata, Alpha)
+                                                let metadata = data[0],
+                                                    alpha = LDKF.sliceString(data, 1);
+
+                                                // Update > Data
+                                                data = parseOnes(+metadata) + ' ' + thousands[0] + (function() {
+                                                    // Initialization > Data
+                                                    let data = +alpha;
+
+                                                    // Update > Data
+                                                    data = data == 0 ? '' : (data < 20 ? ' and ' + parseOnes(data) : (data < 100 ? ' and ' + parseTens(data) : ' ' + parseHundreds(data)));
+
+                                                    // Return
+                                                    return data
+                                                })()
+                                            }
+
+                                            else if (data.length == 5) {
+                                                // Initialization > (Metadata, Alpha)
+                                                let metadata = LDKF.sliceString(data, 0, 2),
+                                                    alpha = LDKF.sliceString(data, 2);
+
+                                                // Update > Data
+                                                data = (function() {
+                                                    // Initialization > Data
+                                                    let data = +metadata;
+
+                                                    // Update > Data
+                                                    data = data == 0 ? '' : (data < 20 ? parseOnes(data) : parseTens(data));
+
+                                                    // Return
+                                                    return data
+                                                })() + ' ' + thousands[0] + (function() {
+                                                    // Initialization > Data
+                                                    let data = +alpha;
+
+                                                    // Update > Data
+                                                    data = data == 0 ? '' : (data < 20 ? ' and ' + parseOnes(data) : (data < 100 ? ' and ' + parseTens(data) : ' ' + parseHundreds(data)));
+
+                                                    // Return
+                                                    return data
+                                                })()
+                                            }
+
+                                            else if (data.length == 6) {
+                                                // Initialization > (Metadata, Alpha)
+                                                let metadata = LDKF.sliceString(data, 0, 3),
+                                                    alpha = LDKF.sliceString(data, 3);
+
+                                                // Update > Data
+                                                data = (function() {
+                                                    // Initialization > Data
+                                                    let data = +metadata;
+
+                                                    // Update > Data
+                                                    data = data == 0 ? '' : (data < 20 ? parseOnes(data) : (data < 100 ? parseTens(data) : parseHundreds(data)));
+
+                                                    // Return
+                                                    return data
+                                                })() + ' ' + thousands[0] + (function() {
+                                                    // Initialization > Data
+                                                    let data = +alpha;
+
+                                                    // Update > Data
+                                                    data = data == 0 ? '' : (data < 20 ? ' and ' + parseOnes(data) : (data < 100 ? ' and ' + parseTens(data) : ' ' + parseHundreds(data)));
+
+                                                    // Return
+                                                    return data
+                                                })()
+                                            }
+
+                                            // Loop > Update > Data
+                                            while (
+                                                (data[data.length - 4] == ' ' && data[data.length - 3] == 'a' && data[data.length - 2] == 'n' && data[data.length - 1] == 'd') ||
+                                                data[data.length - 1] == ' '
+                                            )
+                                                data = data[data.length - 4] == ' ' && data[data.length - 3] == 'a' && data[data.length - 2] == 'n' && data[data.length - 1] == 'd' ?
+                                                    LDKF.sliceString(data, 0, -4) :
+                                                    LDKF.sliceString(data, 0, -1);
+
+                                            // Return
+                                            return data
+                                        }
+
+                                        // Parse Zero
+                                        function parseZero() {
+                                            // Return
+                                            return zero[0]
+                                        }
+
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (LDKF.numberIsSafeInteger(that)) {
+                                        /* Logic
+                                                [if:else if statement]
+
+                                            > Update > Metadata
+                                        */
+                                        if (that == 0)
+                                            metadata += parseZero();
+
+                                        else if (that > 0 && that < 20)
+                                            metadata += parseOnes(that);
+
+                                        else if (that > 19 && that < 100)
+                                            metadata += parseTens(that);
+
+                                        else if (that > 99 && that < 1e3)
+                                            metadata += parseHundreds(that);
+
+                                        else if (that > 999 && that < 1e6)
+                                            metadata += parseThousands(that);
+
+                                        else if (that > 999999 && that < 1e20)
+                                            metadata += parseMillions(that);
+
+                                        /* Logic
+                                                [if statement]
+
+                                                --- NOTE ---
+                                                    #lapys: Parse for decimal units.
+                                        */
+                                        if (beta) {
+                                            // Update > Metadata
+                                            metadata += ' point';
+
+                                            let betaLength = beta.length;
+                                            /* Loop
+                                                    Index Beta.
+
+                                                > Update > Metadata
+                                            */
+                                            for (iterator = 0; iterator < betaLength; iterator += 1)
+                                                metadata += ' ' + parseOnes(beta[iterator])
+                                        }
+
+                                        // Update > Metadata
+                                        alpha || (metadata = 'negative ' + metadata);
+                                        (
+                                            metadata[metadata.length - 11] == ' ' && metadata[metadata.length - 10] == 'p' && metadata[metadata.length - 9] == 'o' && metadata[metadata.length - 8] == 'i' && metadata[metadata.length - 7] == 'n' && metadata[metadata.length - 6] == 't' &&
+                                            metadata[metadata.length - 5] == ' ' &&
+                                            metadata[metadata.length - 4] == 'z' && metadata[metadata.length - 3] == 'e' && metadata[metadata.length - 2] == 'r' && metadata[metadata.length - 1] == 'o'
+                                        ) && (metadata = LDKF.sliceString(metadata, 0, -' point zero'.length))
+                                    }
+
+                                    else if (LDKF.isNaN($that))
+                                        // Update > Metadata
+                                        metadata = 'not a number';
+
+                                    else if (LDKF.isInfinite($that)) {
+                                        // Update > Metadata
+                                        metadata = 'infinity';
+                                        alpha || (metadata = 'negative ' + metadata)
+                                    }
+
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (metadata) {
+                                        // (Update > Metadata), (Loop > Update > Metadata)
+                                        metadata = LDKF.replaceString(LDKF.replaceString(LDKF.replaceString(metadata, /\b\w/g, a => { return LDKF.toUpperCaseString(a) }), /And/g, 'and'), /Undefined/g, 'Zero');
+                                        while (metadata[0] == ' ' || metadata[0] == '\n') metadata = LDKF.sliceString(metadata, 1);
+                                        while (metadata[metadata.length - 1] == ' ' || metadata[metadata.length - 1] == '\n') metadata = LDKF.sliceString(metadata, 0, -1);
+
+                                        // Return
+                                        return metadata
+                                    }
+
+                                    else
+                                        // Warn
+                                        LDKF.warn(["'spell'", "'Number'"], 'argument', 'Expected safe number from range ' + LDKO.numberMinSafeInteger + ' to ' + LDKO.numberMaxSafeInteger + ', or infinity.');
+
+                                    // Return
+                                    return 'non-safe number'
+                                })()
                             }
                         });
 
