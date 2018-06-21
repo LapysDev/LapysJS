@@ -5,7 +5,7 @@
     @url: https://www.github.com/LapysDev/LapysJS
 
     --- NOTE ---
-        #lapys:
+        #Lapys:
             - Returns 1 if there`s an error, returns 0 otherwise.
             - Its only parameters are string arguments and other miscellaneous variables.
 */
@@ -831,11 +831,11 @@
 
                                         > Update > (Content, Properties, Selector, Tag Name) | (Content, Properties, Selector)
                                     */
-                                    if (tagName[0] == ':') {
+                                    if (tagName[tagName.length - 1] == ':') {
                                         content = length > 1 ? LDKF.string(arguments[1]) : '';
                                         properties = length > 2 ? LDKF.object(arguments[2]) : {};
                                         selector = '';
-                                        tagName = LDKF.sliceString(tagName, 1)
+                                        tagName = LDKF.sliceString(tagName, 0, -1)
                                     }
 
                                     else {
@@ -1330,6 +1330,94 @@
                                 // Return
                                 return function Eval() { return method.call(this, arguments[0]) }
                             })();
+
+                            // Execute --- CHECKPOINT ---
+                            LDKF.exec = function exec() {
+                                let data = arguments[0],
+                                    extreme = !!arguments[1];
+
+                                function evaluation() {
+                                    // Error Handling
+                                    try {
+                                        // Execution
+                                        LDKF.$eval('(function(){' + LDKF.string(data) + '})');
+
+                                        // Return
+                                        return !0
+                                    } catch (error) {}
+
+                                    // Return
+                                    return !1
+                                }
+
+                                /* Logic
+                                        [if:else statement]
+
+                                        --- WARN ---
+                                            #Lapys: Only set the Extreme variable to
+                                                `true` for development tests.
+                                */
+                                if (extreme) {
+                                    let newWindow = LDKF.openWindow(window, 'about:blank');
+
+                                    LDKF.blurWindow(newWindow);
+                                    LDKF.focusWindow(window);
+                                    LDKF.stopWindow(newWindow);
+
+                                    LDKF.writeDocument(
+                                        LDKF.get.windowDocument(newWindow),
+                                        '<script language=javascript type=text/javascript>' +
+                                            'function evaluationComplete(value) {' +
+                                                "window.evaluated = typeof value == 'object' ?" +
+                                                    '{error: value[1], value: !!value[0]} :' +
+                                                    '{error: null, value: !!value}' +
+                                            '};' +
+
+                                            'evaluationComplete(!1)' +
+                                        '</script>' +
+
+                                        '<script language=javascript type=text/javascript>' +
+                                            'var evaluationValue = [!0];' +
+
+                                            'try {' + LDKF.string(data) + '}' +
+                                            'catch (error) { evaluationValue = [!1, error] }' +
+
+                                            'evaluationValue.length == 1 ?' +
+                                                'evaluationComplete(evaluationValue[0]) :' +
+                                                'evaluationComplete(evaluationValue)' +
+                                        '</script>'
+                                    );
+
+                                    // Initialization > (Potent Error, Evaluated Value)
+                                    let potentError = newWindow.evaluated.error,
+                                        evaluatedValue = newWindow.evaluated.value;
+
+                                    // Modification > (...) > Value Of
+                                    LDKF.objectDefineProperty(tmpObject.execValue = LDKF.object(newWindow.evaluated.value), 'valueOf', {
+                                        // Configurable
+                                        configurable: !1,
+
+                                        // Value
+                                        value: function valueOf() {
+                                            // Return
+                                            return potentError
+                                        },
+
+                                        // Writable
+                                        writable: !1
+                                    });
+
+                                    // LapysJS Development Kit Functions > Close > New Window
+                                    LDKF.closeWindow(newWindow);
+
+                                    // Return
+                                    return evaluatedValue
+                                }
+
+                                else
+                                    // Return
+                                    return evaluation()
+                            };
 
                             // Function
                             LDKF.$func = function Function() {
@@ -2005,6 +2093,56 @@
                                 return result
                             };
 
+                            // Is HTML Body Element
+                            LDKF.isHtmlBodyElement = function isHtmlBodyElement() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (!result && value == LDKO.htmlBodyElementProto) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
                             // Is HTML Head Element
                             LDKF.isHtmlHeadElement = function isHtmlHeadElement() {
                                 // Initialization > (Arguments, Result, Test)
@@ -2074,6 +2212,62 @@
                                         !LDKF.numberIsFinite(value) &&
                                         LDKF.isNumber(value)
                                     ) || (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is Input Element
+                            LDKF.isInputElement = function isInputElement() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (
+                                                !result &&
+                                                (
+                                                    value == LDKO.htmlInputElementProto ||
+                                                    value == LDKO.htmlTextareaElementProto
+                                                )
+                                            ) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
                                 }, args);
 
                                 // Return
@@ -3602,6 +3796,11 @@
                                 // Prototype
                                 LDKO.htmlAllCollectionProto = LDKO.htmlAllCollection.prototype;
 
+                            // HTML Body Element
+                            LDKO.htmlBodyElement = HTMLBodyElement;
+                                // Prototype
+                                LDKO.htmlBodyElementProto = LDKO.htmlBodyElement.prototype;
+
                             // HTML Collection
                             LDKO.htmlCollection = HTMLCollection;
                                 // Prototype
@@ -3624,6 +3823,11 @@
                                 // Prototype
                                 LDKO.htmlHeadElementProto = LDKO.htmlHeadElement.prototype;
 
+                            // HTML Input Element
+                            LDKO.htmlInputElement = HTMLInputElement;
+                                // Prototype
+                                LDKO.htmlInputElementProto = LDKO.htmlInputElement.prototype;
+
                             // HTML Link Element
                             LDKO.htmlLinkElement = HTMLLinkElement;
                                 // Prototype
@@ -3639,6 +3843,11 @@
                                 // Prototype
                                 LDKO.htmlScriptElementProto = LDKO.htmlScriptElement.prototype;
 
+                            // HTML Textarea Element
+                            LDKO.htmlTextareaElement = HTMLTextAreaElement;
+                                // Prototype
+                                LDKO.htmlTextareaElementProto = LDKO.htmlTextareaElement.prototype;
+
                             // Location
                             Object.defineProperty(LDKO, '$location', {get: function location() { let data = tmpObject.locationDescription; return 'value' in data ? data.value : data.get.call(window) }});
                                 // Host
@@ -3649,6 +3858,11 @@
 
                                 // Protocol
                                 LDKO.locationProtocol = LDKO.$location.protocol;
+
+                            // Message Event
+                            LDKO.messageEvent = window.MessageEvent || tmp;
+                                // Prototype
+                                LDKO.messageEventProto = LDKO.messageEvent.prototype;
 
                             // Named Node Map
                             LDKO.namedNodeMap = NamedNodeMap;
@@ -3730,12 +3944,22 @@
                                 // Prototype
                                 LDKO.promiseProto = LDKO.promise.prototype;
 
+                            // Range
+                            LDKO.range = Range;
+                                // Prototype
+                                LDKO.rangeProto = LDKO.range.prototype;
+
                             // Regular Expression
                             LDKO.regex = RegExp;
                                 // Prototype
                                 LDKO.regexProto = LDKO.regex.prototype;
                                 LDKO.$regexProto = LDKO.regexProto;
                                 LDKF.setTimeout(function() { LDKO.$regexProto = LDKF.cloneObject(LDKO.$regexProto) });
+
+                            // Selection
+                            LDKO.selection = Selection;
+                                // Prototype
+                                LDKO.selectionProto = LDKO.selection.prototype;
 
                             // String
                             LDKO.string = String;
@@ -3853,6 +4077,15 @@
                                 return function addEventListenerEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Add Range Selection
+                            LDKF.addRangeSelection = (function() {
+                                // Initialization > Method
+                                let method = LDKO.selectionProto.addRange;
+
+                                // Return
+                                return function addRangeSelection() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Append Child Node
                             LDKF.appendChildNode = (function() {
                                 // Initialization > Method
@@ -3903,6 +4136,24 @@
                                 return function bindFunction() { return method.apply(arguments[0], sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Blur HTML Element
+                            LDKF.blurHtmlElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$htmlElementProto.blur;
+
+                                // Return
+                                return function blurHtmlElement() { return method.call(arguments[0]) }
+                            })();
+
+                            // Blur Window
+                            LDKF.blurWindow = (function() {
+                                // Initialization > Method
+                                let method = window.blur;
+
+                                // Return
+                                return function blurWindow() { return method.call(arguments[0]) }
+                            })();
+
                             // Click HTML Element
                             LDKF.clickHtmlElement = (function() {
                                 // Initialization > Method
@@ -3912,6 +4163,15 @@
                                 return function clickHtmlElement() { return method.call(arguments[0]) }
                             })();
 
+                            // Clone Contents Range
+                            LDKF.cloneContentsRange = (function() {
+                                // Initialization > Method
+                                let method = LDKO.rangeProto.cloneContents;
+
+                                // Return
+                                return function cloneContentsRange() { return method.call(arguments[0]) }
+                            })();
+
                             // Clone Node
                             LDKF.cloneNode = (function() {
                                 // Initialization > Method
@@ -3919,6 +4179,15 @@
 
                                 // Return
                                 return function cloneNode() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
+                            // Close Window
+                            LDKF.closeWindow = (function() {
+                                // Initialization > Method
+                                let method = window.close;
+
+                                // Return
+                                return function closeWindow() { return method.call(arguments[0]) }
                             })();
 
                             // Console Clear
@@ -3954,6 +4223,15 @@
                                 return function createDocumentFragmentDocument() { return method.call(LDKO.$document, arguments[0]) }
                             })();
 
+                            // Create Range Document
+                            LDKF.createRangeDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.createRange;
+
+                                // Return
+                                return function createRangeDocument() { return method.call(LDKO.$document) }
+                            })();
+
                             // Cube Root
                             LDKF.cbrt = Math.cbrt;
 
@@ -3966,6 +4244,33 @@
                                 return function detachEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Execute Command Document
+                            LDKF.execCommandDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.execCommand;
+
+                                // Return
+                                return function execCommandDocument() { return method.call(LDKO.$document, LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Focus HTML Element
+                            LDKF.focusHtmlElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$htmlElementProto.focus;
+
+                                // Return
+                                return function focusHtmlElement() { return method.call(arguments[0]) }
+                            })();
+
+                            // Focus Window
+                            LDKF.focusWindow = (function() {
+                                // Initialization > Method
+                                let method = window.focus;
+
+                                // Return
+                                return function focusWindow() { return method.call(arguments[0]) }
+                            })();
+
                             // Function Prototype To String
                             LDKF.funcProtoToString = LDKO.$funcProto.toString;
 
@@ -3976,6 +4281,24 @@
 
                                 // Return
                                 return function getAttributeElement() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
+                            // Get Range At
+                            LDKF.getRangeAtSelection = (function() {
+                                // Initialization > Method
+                                let method = LDKO.selectionProto.getRangeAt;
+
+                                // Return
+                                return function getRangeAtSelection() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
+                            // Get Selection Document
+                            LDKF.getSelectionDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.getSelection;
+
+                                // Return
+                                return function getSelectionDocument() { return method.call(LDKO.$document) }
                             })();
 
                             // Has Attribute Element
@@ -4062,7 +4385,7 @@
                             // Object Create
                             LDKF.objectCreate = LDKO.object.create;
 
-                            // Define Property
+                            // Object Define Property
                             LDKF.objectDefineProperty = LDKO.object.defineProperty;
 
                             // Object Get Own Property Descriptor
@@ -4082,6 +4405,15 @@
 
                             // Object Values
                             LDKF.objectValues = LDKO.object.values;
+
+                            // Open Window
+                            LDKF.openWindow = (function() {
+                                // Initialization > Method
+                                let method = window.open;
+
+                                // Return
+                                return function openWindow() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
 
                            // Open X Domain Request
                             LDKF.openXDomainRequest = (function() {
@@ -4113,6 +4445,15 @@
                                 return function popArray() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Post Message Window
+                            LDKF.postMessageWindow = (function() {
+                                // Initialization > Method
+                                let method = window.postMessage;
+
+                                // Return
+                                return function postMessageWindow() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Push Array
                             LDKF.pushArray = (function() {
                                 // Initialization > (Method, Slice Array)
@@ -4138,6 +4479,24 @@
                                 return function $pushArray() { return method.apply(arguments[0], arguments[1]) }
                             })();
 
+                            // Query Command Enabled Document
+                            LDKF.queryCommandEnabledDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.queryCommandEnabled;
+
+                                // Return
+                                return function queryCommandEnabledDocument() { return method.call(LDKO.$document, arguments[0]) }
+                            })();
+
+                            // Query Command Supported Document
+                            LDKF.queryCommandSupportedDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.queryCommandSupported;
+
+                                // Return
+                                return function queryCommandSupportedDocument() { return method.call(LDKO.$document, arguments[0]) }
+                            })();
+
                             // Query Selector Document
                             LDKF.querySelectorDocument = (function() {
                                 // Initialization > Method
@@ -4158,6 +4517,15 @@
 
                             // Regular Expression
                             LDKF.regex = LDKF.cloneObject(RegExp);
+
+                            // Remove All Ranges Selection
+                            LDKF.removeAllRangesSelection = (function() {
+                                // Initialization > Method
+                                let method = LDKO.selectionProto.removeAllRanges;
+
+                                // Return
+                                return function removeAllRangesSelection() { return method.call(arguments[0]) }
+                            })();
 
                             // Remove Child Node
                             LDKF.removeChildNode = (function() {
@@ -4219,6 +4587,42 @@
                                 return function replaceString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Select HTML Input Element
+                            LDKF.selectHtmlInputElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.htmlInputElementProto.select;
+
+                                // Return
+                                return function selectHtmlInputElement() { return method.call(arguments[0]) }
+                            })();
+
+                            // Select HTML Textarea Element
+                            LDKF.selectHtmlTextareaElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.htmlTextareaElementProto.select;
+
+                                // Return
+                                return function selectHtmlTextareaElement() { return method.call(arguments[0]) }
+                            })();
+
+                            // Select Node Range
+                            LDKF.selectNodeRange = (function() {
+                                // Initialization > Method
+                                let method = LDKO.rangeProto.selectNode;
+
+                                // Return
+                                return function selectNodeRange() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Select Node Contents Range
+                            LDKF.selectNodeContentsRange = (function() {
+                                // Initialization > Method
+                                let method = LDKO.rangeProto.selectNodeContents;
+
+                                // Return
+                                return function selectNodeContentsRange() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Send X Domain Request
                             LDKF.sendXDomainRequest = (function() {
                                 // Initialization > Method
@@ -4264,6 +4668,15 @@
                                 return function sliceString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Stop Window
+                            LDKF.stopWindow = (function() {
+                                // Initialization > Method
+                                let method = window.stop;
+
+                                // Return
+                                return function stopWindow() { return method.call(arguments[0]) }
+                            })();
+
                             // String
                             LDKF.string = LDKF.cloneObject(String);
 
@@ -4278,6 +4691,9 @@
                                 // Return
                                 return function testRegex() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
+
+                            // Text
+                            LDKF.text = LDKF.cloneObject(Text);
 
                             // Then Promise
                             LDKF.thenPromise = (function() {
@@ -4315,6 +4731,15 @@
                                 return function unshiftArray() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Write Document
+                            LDKF.writeDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.write;
+
+                                // Return
+                                return function writeDocument() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
                             /* Get */
                             LDKF.get = {
                                 // Attribute
@@ -4328,6 +4753,21 @@
                                     })(),
 
                                 // Document
+                                    // Body
+                                    documentBody: (function() {
+                                        // Initialization > Data
+                                        let data = LDKO.$document.body;
+
+                                        // Update > Data
+                                        LDKF.isHtmlBodyElement(data) || (data = null);
+
+                                        // Initialization > Method
+                                        let method = (LDKF.objectGetOwnPropertyDescriptor(LDKO.$documentProto, 'body') || {get: function() { return data }}).get;
+
+                                        // Return
+                                        return function documentBody() { return method.call(LDKO.$document) }
+                                    })(),
+
                                     // Children
                                     documentChildren: (function() {
                                         // Initialization > Method
@@ -4428,6 +4868,25 @@
                                         return function htmlCollectionLength() { return method.call(arguments[0]) }
                                     })(),
 
+                                // HTML Element
+                                    // Inner Text
+                                    htmlElementInnerText: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$htmlElementProto, 'innerText').get;
+
+                                        // Return
+                                        return function htmlElementInnerText() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Style
+                                    htmlElementStyle: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$htmlElementProto, 'style').get;
+
+                                        // Return
+                                        return function htmlElementStyle() { return method.call(arguments[0]) }
+                                    })(),
+
                                 // HTML Link Element
                                     // Hyperlink Reference
                                     htmlLinkElementHref: (function() {
@@ -4476,6 +4935,33 @@
                                         return function htmlScriptElementSrc() { return method.call(arguments[0]) }
                                     })(),
 
+                                // HTML Textarea Element
+                                    // Value
+                                    htmlTextareaElementValue: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlTextareaElementProto, 'value').get;
+
+                                        // Return
+                                        return function htmlTextareaElementValue() { return method.call(arguments[0]) }
+                                    })(),
+
+                                // Message Event
+                                    // Data
+                                    messageEventData: (function() {
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.messageEventProto, 'data').get;
+
+                                        // Return
+                                        return function messageEventData() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Source
+                                    messageEventSource: (function() {
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.messageEventProto, 'source').get;
+
+                                        // Return
+                                        return function messageEventSource() { return method.call(arguments[0]) }
+                                    })(),
+
                                 // Named Node Map
                                     // Length
                                     namedNodeMapLength: (function() {
@@ -4494,6 +4980,15 @@
 
                                         // Return
                                         return function nodeParentNode() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Text Content
+                                    nodeTextContent: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$nodeProto, 'textContent').get;
+
+                                        // Return
+                                        return function nodeTextContent() { return method.call(arguments[0]) }
                                     })(),
 
                                 // Node List
@@ -4546,6 +5041,15 @@
                                     })(),
 
                                 // Window
+                                    // Document
+                                    windowDocument: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(window, 'document').get;
+
+                                        // Return
+                                        return function windowDocument() { return method.call(arguments[0]) }
+                                    })(),
+
                                     // Name
                                     windowName: (function() {
                                         // Initialization > Method
@@ -4588,6 +5092,15 @@
                                     })(),
 
                                 // HTML Element
+                                    // Inner Text
+                                    htmlElementInnerText: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$htmlElementProto, 'innerText').set;
+
+                                        // Return
+                                        return function htmlElementInnerText() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
                                     // On Click
                                     htmlElementOnclick: (function() {
                                         // Initialization > Method
@@ -4645,6 +5158,26 @@
 
                                         // Return
                                         return function htmlMetaElementName() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
+                                // HTML Textarea Element
+                                    // Value
+                                    htmlTextareaElementValue: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlTextareaElementProto, 'value').set;
+
+                                        // Return
+                                        return function htmlTextareaElementValue() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
+                                // Node
+                                    // Text Content
+                                    nodeTextContent: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$nodeProto, 'textContent').set;
+
+                                        // Return
+                                        return function nodeTextContent() { return method.call(arguments[0], arguments[1]) }
                                     })(),
 
                                 // Window
@@ -4794,6 +5327,9 @@
                             });
 
                         // Temporary Object
+                            // Execution Value
+                            tmpObject.execValue = !1;
+
                             // Script Source
                             tmpObject.scriptSource = LDKF.get.htmlScriptElementSrc(LapysJS.script);
 
@@ -7650,6 +8186,9 @@
                                 // Configurable
                                 configurable: !0,
 
+                                // Enumerable
+                                enumerable: !0,
+
                                 // Value
                                 value: function chain() {
                                     // Initialization > (Arguments, Iterator, Length)
@@ -7716,22 +8255,22 @@
                                                     // Update > Previous Lapse
                                                     previousLapse = updateLapse() - previousLapse;
 
-                                                    // Callback A
-                                                    callbackA(executionIterationCount ? previousLapse : 0);
-
                                                     // Promise
                                                     LDKF.thenPromise(new LDKO.promise((resolve, reject) => {
+                                                        // Callback A
+                                                        callbackA(executionIterationCount ? previousLapse : 0);
+
                                                         // Resolve
                                                         resolve(null);
 
                                                         // Reject
                                                         reject(null)
                                                     }), function() {
-                                                        // Update > Current Return Value
-                                                        currentReturnValue = callbackB(updateLapse() - previousLapse);
-
                                                         // Promise
                                                         LDKF.thenPromise(new LDKO.promise((resolve, reject) => {
+                                                            // Update > Current Return Value
+                                                            currentReturnValue = callbackB(updateLapse() - previousLapse);
+
                                                             // Resolve
                                                             resolve(null);
 
@@ -7857,6 +8396,76 @@
                                 writable: !0
                             });
 
+                            // Check
+                            LDKF.objectDefineProperty(window, 'check', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function check() {
+                                    // Initialization > (Condition, Fail, Success, Length, Request)
+                                    let condition = arguments[0],
+                                        fail = arguments[2] || null, failIsFunction,
+                                        success = arguments[1] || null, successIsFunction,
+                                        length = arguments.length,
+                                        request;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (length) {
+                                        // Update > (Condition, Fail, Success)
+                                        LDKF.isEvaluationString(condition) && (condition = LDKF.$func(condition));
+                                        LDKF.isEvaluationString(fail) && (fail = LDKF.$func(fail));
+                                        LDKF.isEvaluationString(success) && (success = LDKF.$func(success));
+
+                                        // Error
+                                        (failIsFunction = LDKF.isFunction(fail)) || LDKF.isNull(fail) || LDKF.error("'check'", 'argument', LDKF.debugMessage("The 'fail' parameter", ['must', 'a'], ['function', 'null']));
+                                        (successIsFunction = LDKF.isFunction(success)) || LDKF.isNull(success) || LDKF.error("'check'", 'argument', LDKF.debugMessage("The 'success' parameter", ['must', 'a'], ['function', 'null']));
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (failIsFunction) {
+                                            // Function
+                                                // Test
+                                                function test() {
+                                                    // Return
+                                                    return !!(LDKF.isFunction(condition) ? condition() : condition)
+                                                }
+
+                                                // Check
+                                                (function check() {
+                                                    /* Logic
+                                                            [if:else statement]
+                                                    */
+                                                    if (test()) {
+                                                        // Success
+                                                        successIsFunction && success();
+
+                                                        // Cancel Animation Frame > Request
+                                                        LDKF.cancelAnimationFrame(request)
+                                                    }
+
+                                                    else {
+                                                        // Fail
+                                                        failIsFunction && fail();
+
+                                                        // Update > Request
+                                                        request = LDKF.requestAnimationFrame(check)
+                                                    }
+                                                })()
+                                        }
+                                    }
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Clear
                             LDKF.objectDefineProperty(window, 'clear', {
                                 // Configurable
@@ -7869,6 +8478,182 @@
                                 set: function setClear() { return LDKF.objectDefineProperty(window, 'clear', {configurable: !0, enumerable: !0, value: arguments[0], writable: !0}) }
                             });
 
+                            /* Copy
+                                    --- CHECKPOINT ---
+                                        #Lapys: Must work.
+                            */
+                            LDKF.objectDefineProperty(window, 'copy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function copy() {
+                                    // Initialization > (Data, Input, Text)
+                                    let data = arguments[0],
+                                        input = LDKF.createElementDocument('textarea'),
+                                        text = '';
+
+                                    /* Logic
+                                            [if:else if:else statement]
+
+                                        > Update > Text
+                                    */
+                                    if (LDKF.isInputElement(data))
+                                        text = LDKF.get.htmlTextareaElementValue(data);
+
+                                    else if (LDKF.isHtmlElement(data))
+                                        text = LDKF.get.htmlElementInnerText(data);
+
+                                    else
+                                        text = LDKF.string(data);
+
+                                    // Initialization > Input Style
+                                    let inputStyle = LDKF.get.htmlElementStyle(input);
+
+                                    // Modification
+                                        // Input Style
+                                            // Pointer Events
+                                            inputStyle.pointerEvents = 'none';
+
+                                            // Position
+                                            inputStyle.position = 'fixed';
+
+                                            // Opacity
+                                            inputStyle.opacity = 0;
+
+                                            // Visibility
+                                            inputStyle.visibility = 'hidden';
+
+                                        // Input
+                                            // Text Content
+                                            LDKF.set.nodeTextContent(input, text);
+
+                                            // Value
+                                            LDKF.set.htmlTextareaElementValue(input, text);
+
+                                    // Initialization > Parent
+                                    let parent = LDKF.get.documentBody();
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (parent)
+                                        LDKF.appendChildNode(parent, input);
+
+                                    else {
+                                        // Update > Parent
+                                        parent = LDKF.get.documentHead();
+
+                                        /* Loop
+                                                [if:else statement]
+                                        */
+                                        if (parent)
+                                            // Insertion
+                                            LDKF.appendChildNode(parent, input);
+
+                                        else {
+                                            // Initialization > Children
+                                            let children = LDKF.get.documentChildren(LDKO.$document);
+
+                                            // Insertion
+                                            LDKF.get.htmlCollectionLength(children) && LDKF.appendChildNode(children[0], input)
+                                        }
+                                    }
+
+                                    // LapysJS Development Kit Functions
+                                        // (Focus, Select) > Input
+                                        LDKF.focusHtmlElement(input);
+                                        LDKF.selectHtmlTextareaElement(input);
+
+                                    // Initialization > (Selection, Range)
+                                    let selection = LDKF.getSelectionDocument(),
+                                        range = LDKF.createRangeDocument();
+
+                                    // Range > Select Node > Input
+                                    LDKF.selectNodeRange(range, input);
+                                    LDKF.selectNodeContentsRange(range, input);
+
+                                    // Selection
+                                        // Remove All Ranges
+                                        LDKF.removeAllRangesSelection(selection);
+
+                                        // Add Range > Range
+                                        LDKF.addRangeSelection(selection, range);
+
+                                    // LapysJS Development Kit Functions
+                                        // (...)
+                                        LDKF.cloneContentsRange(LDKF.getRangeAtSelection(selection, 0));
+
+                                        // Execute Command > Copy
+                                        LDKF.execCommandDocument('copy', !1, !0);
+
+                                        // Blur > Input
+                                        LDKF.blurHtmlElement(input);
+
+                                    // Set Timeout
+                                    LDKF.setTimeout(function() {
+                                        // Selection > Remove All Ranges
+                                        LDKF.removeAllRangesSelection(selection);
+
+                                        // Deletion
+                                        LDKF.remove$ChildNode(input)
+                                    });
+
+                                    // Return
+                                    return LDKF.get.htmlTextareaElementValue(input)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Create Document Fragment
+                            LDKF.objectDefineProperty(window, 'createDocumentFragment', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function createDocumentFragment() {
+                                    // Initialization > Fragment
+                                    let fragment = LDKF.createDocumentFragmentDocument();
+
+                                    // LapysJS Development Kit Functions > Iterate Array
+                                    LDKF.iterateArray((key, value) => {
+                                        // Insertion
+                                        LDKF.isNode(value) ?
+                                            LDKF.appendChildNode(fragment, value) :
+                                            LDKF.appendChildNode(fragment, new LDKF.text(LDKF.string(value)))
+                                    }, LDKF.toArray(arguments));
+
+                                    // Return
+                                    return fragment
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Create Element
+                            LDKF.objectDefineProperty(window, 'createElement', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: LDKF.createElement,
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Cube Root
                             LDKF.objectDefineProperty(window, 'cbrt', {
                                 // Configurable
@@ -7876,6 +8661,33 @@
 
                                 // Value
                                 value: LDKF.cbrt,
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Cut --- CHECKPOJNT ---
+                            LDKF.objectDefineProperty(window, 'cut', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function cut() {},
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Execute
+                            LDKF.objectDefineProperty(window, 'exec', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.exec,
 
                                 // Writable
                                 writable: !0
@@ -7960,6 +8772,21 @@
                                     // Return
                                     return object
                                 },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Paste --- CHECKPOINT ---
+                            LDKF.objectDefineProperty(window, 'paste', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function paste() {},
 
                                 // Writable
                                 writable: !0
@@ -9095,6 +9922,13 @@
                                         [if statement]
                                 */
                                 if (selector && LDKF.isString(selector)) {
+                                    // Error Handling
+                                    try { LDKF.querySelectorDocument(selector) }
+                                    catch (error) {
+                                        // Error
+                                        LDKF.error("'setSelector'", 'argument', "Invalid selector value '" + LDKF.string(selector) + "'")
+                                    }
+
                                     // Initialization > (Attributes (Length), Class (Length), ID)
                                     let attributes = [],
                                         attributesLength = -1,
