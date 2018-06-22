@@ -410,6 +410,15 @@
                                 return function cancelAnimationFrame() { return method.call(window, arguments[0]) }
                             })();
 
+                            // Clear Interval
+                            LDKF.clearInterval = (function() {
+                                // Initialization > Method
+                                let method = window.clearInterval;
+
+                                // Return
+                                return function clearInterval() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
+
                             // Clone Object
                             LDKF.cloneObject = function clone() {
                                 // Initialization > Object
@@ -1818,7 +1827,7 @@
                                                 --- NOTE ---
                                                     #Lapys: Try to hide the new window.
                                         */
-                                        let sandbox = LDKF.openWindow(window, 'about:blank', '', 'alwaysLowered=yes,alwaysRaised=no,chrome=yes,close=no,diafeedback=yes,fullscreen=no,left=0,height=100,menubar=no,outerWidth=0,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=0,width=100');
+                                        let sandbox = LDKF.openWindow(window, 'about:blank', '', 'alwaysLowered=yes,alwaysRaised=no,chrome=yes,close=no,dialog=yes,fullscreen=no,left=0,height=1,menubar=no,outerWidth=0,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=0,width=1');
 
                                         // LapysJS Development Kit Functions
                                             /* (Blur, Focus, Stop) > (Sandbox | Window)
@@ -3390,6 +3399,15 @@
                                 return function requestAnimationFrame() { return method.call(window, arguments[0]) }
                             })();
 
+                            // Set Interval
+                            LDKF.setInterval = (function() {
+                                // Initialization > Method
+                                let method = window.setInterval;
+
+                                // Return
+                                return function setInterval() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
+
                             // String
                             LDKF.$string = function String() {
                                 // Initialization > (Iterator, Length, String)
@@ -4074,6 +4092,11 @@
                                 // Prototype
                                 LDKO.htmlAllCollectionProto = LDKO.htmlAllCollection.prototype;
 
+                            // HTML Anchor Element
+                            LDKO.htmlAnchorElement = HTMLAnchorElement;
+                                // Prototype
+                                LDKO.htmlAnchorElementProto = LDKO.htmlAnchorElement.prototype;
+
                             // HTML Body Element
                             LDKO.htmlBodyElement = HTMLBodyElement;
                                 // Prototype
@@ -4530,6 +4553,9 @@
                                 return function detachEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Encode URI Component
+                            LDKF.encodeURIComponent = encodeURIComponent;
+
                             // Execute Command Document
                             LDKF.execCommandDocument = (function() {
                                 // Initialization > Method
@@ -4952,6 +4978,15 @@
 
                                 // Return
                                 return function sliceString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Splice Array
+                            LDKF.spliceArray = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$arrayProto.splice;
+
+                                // Return
+                                return function spliceArray() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Stop Window
@@ -5385,6 +5420,25 @@
 
                                         // Return
                                         return function elementInnerHTML() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
+                                // HTML Anchor Element
+                                    // Download
+                                    htmlAnchorElementDownload: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlAnchorElementProto, 'download').set;
+
+                                        // Return
+                                        return function htmlAnchorElementDownload() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
+                                    // Hyperlink Reference
+                                    htmlAnchorElementHref: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlAnchorElementProto, 'href').set;
+
+                                        // Return
+                                        return function htmlAnchorElementHref() { return method.call(arguments[0], arguments[1]) }
                                     })(),
 
                                 // HTML Element
@@ -9107,75 +9161,172 @@
                                 configurable: !0,
 
                                 // Get
-                                get: function() { return LDKO.file }
+                                get: function File() {
+                                    // Initialization > File
+                                    let file = LDKF.cloneObject(LDKO.file);
+
+                                    // Modification > File
+                                        // Create
+                                        LDKF.objectDefineProperty(file, 'create', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Value
+                                            value: function create() {}
+                                        });
+
+                                        // Download
+                                        LDKF.objectDefineProperty(file, 'download', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Value
+                                            value: function download() {
+                                                // Initialization > (Character Set, Data, Length, Name, Type)
+                                                let charset = 'utf-8',
+                                                    data = '',
+                                                    length = arguments.length,
+                                                    name = '',
+                                                    type = 'text/plain';
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (length) {
+                                                    // Update > (Data, Name)
+                                                    data = length > 1 ? LDKF.string(arguments[1]) : '';
+                                                    name = LDKF.string(arguments[0]);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (length > 2)
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (LDKF.isObject(arguments[2])) {
+                                                            // Initialization > Properties
+                                                            let properties = arguments[2];
+
+                                                            // Update > (Character Set, Type)
+                                                            ('charset' in properties) && (charset = LDKF.string(properties.charset));
+                                                            ('type' in properties) && (type = LDKF.string(properties.type))
+                                                        }
+
+                                                        else
+                                                            // Error
+                                                            LDKF.error("'download'", 'argument', 'Third argument given must be an object');
+
+                                                    // Initialization > Element
+                                                    let element = LDKF.createElementDocument('a');
+
+                                                    // Modification > Element > (Hyperlink Reference, Download)
+                                                    LDKF.set.htmlAnchorElementHref(element, 'data:' + type + ';charset=' + charset + ',' + LDKF.encodeURIComponent(data));
+                                                    LDKF.set.htmlAnchorElementDownload(element, name);
+
+                                                    // LapysJS Development Kit Functions > Click > Element
+                                                    LDKF.clickHtmlElement(element);
+
+                                                    // Return
+                                                    return null
+                                                }
+
+                                                // Error
+                                                LDKF.error("'download'", 'argument', [1, 0])
+                                            }
+                                        });
+
+                                        // Open
+                                        LDKF.objectDefineProperty(file, 'open', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Value
+                                            value: function open() {}
+                                        });
+
+                                        // Read
+                                        LDKF.objectDefineProperty(file, 'read', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Value
+                                            value: function read() {
+                                                // Initialization > Arguments
+                                                let args = LDKF.toArray(arguments);
+
+                                                // Update > Arguments
+                                                LDKF.unshiftArray(args, 'GET');
+
+                                                // Return
+                                                return LDKF.requestFile.apply(LDKF, args)
+                                            }
+                                        });
+
+                                        // Remove
+                                        LDKF.objectDefineProperty(file, 'remove', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Value
+                                            value: function remove() {}
+                                        });
+
+                                        // Value Of
+                                        LDKF.objectDefineProperty(file, 'valueOf', {
+                                            // Value
+                                            value: function valueOf() {
+                                                // Return
+                                                return constructor
+                                            }
+                                        });
+
+                                        // Write
+                                        LDKF.objectDefineProperty(file, 'write', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !0,
+
+                                            // Value
+                                            value: function write() {}
+                                        });
+
+                                    // Return
+                                    return file
+                                }
                             });
-                                // Create --- CHECKPOINT ---
-                                LDKF.objectDefineProperty(file, 'create', {
-                                    // Configurable
-                                    configurable: !0,
 
-                                    // Enumerable
-                                    enumerable: !0,
+                            // Float
+                            LDKF.objectDefineProperty(window, 'float', {
+                                // Configurable
+                                configurable: !0,
 
-                                    // Value
-                                    value: function create() {
-                                        function download() {
-                                        var fileContents='Hello, World!';
-                                        var fileName= "My File";
+                                // Value
+                                value: function float() {
+                                    // Return
+                                    return LDKF.numberParseFloat.apply(LDKF, LDKF.toArray(arguments))
+                                },
 
-                                        var pp = document.createElement('a');
-                                        pp.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fileContents));
-                                        pp.setAttribute('download', fileName);
-                                        pp.click();
-                                        }
-                                        setTimeout(function() {download()}, 500);
-                                    }
-                                });
-
-                                // Open --- CHECKPOINT ---
-                                LDKF.objectDefineProperty(file, 'open', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Value
-                                    value: function open() {}
-                                });
-
-                                // Read
-                                LDKF.objectDefineProperty(file, 'read', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Value
-                                    value: function read() {
-                                        // Initialization > Arguments
-                                        let args = LDKF.toArray(arguments);
-
-                                        // Update > Arguments
-                                        LDKF.unshiftArray(args, 'GET');
-
-                                        // Return
-                                        return LDKF.requestFile.apply(LDKF, args)
-                                    }
-                                });
-
-                                // Write --- CHECKPOINT ---
-                                LDKF.objectDefineProperty(file, 'write', {
-                                    // Configurable
-                                    configurable: !0,
-
-                                    // Enumerable
-                                    enumerable: !0,
-
-                                    // Value
-                                    value: function write() {}
-                                });
+                                // Writable
+                                writable: !0
+                            });
 
                             // Function
                             LDKF.objectDefineProperty(window, 'func', {
@@ -9187,6 +9338,218 @@
                                     // Return
                                     return LDKF.$func.apply(LDKF, LDKF.toArray(arguments))
                                 },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Generate Key
+                            LDKF.objectDefineProperty(window, 'generateKey', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function generateKey() {
+                                    // Initialization > (String (Length), Iterator, Key (Length), Re-Sort)
+                                    let string = LDKF.string(arguments[0]),
+                                        stringLength = string.length,
+                                        iterator = stringLength,
+                                        key = '',
+                                        keyLength = arguments.length > 1 ? LDKF.$number(arguments[1]) : stringLength,
+                                        resort = !!arguments[2];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Update > Iterator
+                                        (keyLength == iterator) || (iterator = keyLength);
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (resort) {
+                                            // Update > String
+                                            string = LDKF.arrayFrom(string);
+
+                                            /* Loop
+                                                    [while statement]
+                                            */
+                                            while (iterator && string.length) {
+                                                // Initialization > Random
+                                                let random = LDKF.numberParseInt(LDKF.mathRandom() * iterator);
+
+                                                // Loop > Update > Random
+                                                while (!string[random])
+                                                    random = LDKF.numberParseInt(LDKF.mathRandom() * iterator);
+
+                                                // Update > (Key, String, Iterator)
+                                                key += string[random];
+                                                LDKF.spliceArray(string, random, 1);
+                                                iterator -= 1
+                                            }
+
+                                            // Update > String Length
+                                            stringLength = LDKF.abs(stringLength - keyLength);
+
+                                            // Loop > Update > Key
+                                            for (iterator = 0; iterator < stringLength; iterator += 1)
+                                                key += ''
+                                        }
+
+                                        else
+                                            // Loop > Update > (Key, Iterator)
+                                            while (iterator) {
+                                                key += string[LDKF.numberParseInt(LDKF.mathRandom() * stringLength)]
+                                                iterator -= 1
+                                            }
+                                    }
+
+                                    // Return
+                                    return key
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Integer
+                            LDKF.objectDefineProperty(window, 'int', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function integer() {
+                                    // Return
+                                    return LDKF.numberParseInt.apply(LDKF, LDKF.toArray(arguments))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Interval
+                            LDKF.objectDefineProperty(window, 'interval', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function interval() {
+                                    // Initialization > Length
+                                    let length = arguments.length;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (length) {
+                                        // Initialization > (Callback, Interval, Iteration Count)
+                                        let callback = arguments[0],
+                                            interval = arguments[1],
+                                            iterationCount = length > 2 ? arguments[2] : 1 / 0;
+
+                                        // Update > Callback
+                                        LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.error("'interval'", 'argument', 'First argument must be a function');
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (length == 2)
+                                            // Return
+                                            return LDKF.setInterval(callback, interval);
+
+                                        else {
+                                            // Initialization > Iterator
+                                            let iterator = 0;
+
+                                            // Function > Repeat
+                                            function repeat() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (iterator < iterationCount) {
+                                                    // Update > Iterator
+                                                    iterator += 1;
+
+                                                    // Return
+                                                    return callback.call(window, iterator);
+                                                }
+
+                                                else
+                                                    // Return
+                                                    return LDKF.clearInterval(repeat, interval)
+                                            }
+
+                                            // Set Interval > Repeat
+                                            LDKF.setInterval(repeat, interval)
+                                        }
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error("'interval'", 'argument', [1, 0])
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Log
+                            LDKF.objectDefineProperty(window, 'log', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function log() {
+                                    // Initialization > (Arguments, Length)
+                                    let args = LDKF.toArray(arguments),
+                                        length = args.length;
+
+                                    // Console > Log
+                                    LDKF.consoleLog.apply(LDKF, args);
+
+                                    // Logic
+                                    if (length)
+                                        // Logic > Return
+                                        if (length == 1)
+                                            return arguments[0];
+
+                                        else
+                                            return args;
+
+                                    // Return
+                                    return null
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Math
+                                // Average
+                                LDKF.objectDefineProperty(Math, 'avg', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function avg() {},
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                            // Notify
+                            LDKF.objectDefineProperty(window, 'notify', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function notify() {},
 
                                 // Writable
                                 writable: !0
