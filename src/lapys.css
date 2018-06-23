@@ -1,3 +1,14 @@
+/*
+document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loaded.")`))
+ @font-face {
+  font-family: 'Tagesschrift';
+  src: url('tagesschrift.eot'); /* IE 5-8
+  src: local('☺'),             /* sneakily trick IE
+        url('tagesschrift.woff') format('woff'),    /* FF 3.6, Chrome 5, IE9
+        url('tagesschrift.ttf') format('truetype'), /* Opera, Safari
+        url('tagesschrift.svg#font') format('svg'); /* iOS
+}
+*/
 /**
     @author: Lapys Dev Team
     @description: LapysJS is a JavaScript library designed to challenge the status quo of the JavaScript language and its other related vendors.

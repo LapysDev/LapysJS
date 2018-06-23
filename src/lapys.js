@@ -373,6 +373,9 @@
                             // Navigator Description
                             tmpObject.navigatorDescription = Object.getOwnPropertyDescriptor(window, 'navigator');
 
+                            // On DOM Element Added Watch List
+                            tmpObject.onDOMElementAddedWatchList = [];
+
                             // Performance Description
                             tmpObject.performanceDescription = Object.getOwnPropertyDescriptor(window, 'performance');
 
@@ -4192,6 +4195,11 @@
                                 // Prototype
                                 LDKO.nodeListProto = LDKO.nodeList.prototype;
 
+                            // Notification
+                            LDKO.notification = window.Notification || function Notification() {};
+                                // Prototype
+                                LDKO.notificationProto = LDKO.notification.prototype;
+
                             // Number
                             LDKO.number = Number;
                                 // Prototype
@@ -4395,6 +4403,15 @@
                                 return function addRangeSelection() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Alert Window
+                            LDKF.alertWindow = (function() {
+                                // Initialization > Method
+                                let method = window.alert;
+
+                                // Return
+                                return function alertWindow() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Append Child Node
                             LDKF.appendChildNode = (function() {
                                 // Initialization > Method
@@ -4497,6 +4514,15 @@
 
                                 // Return
                                 return function closeWindow() { return method.call(arguments[0]) }
+                            })();
+
+                            // Confirm Window
+                            LDKF.confirmWindow = (function() {
+                                // Initialization > Method
+                                let method = window.confirm;
+
+                                // Return
+                                return function confirmWindow() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Console Clear
@@ -4670,6 +4696,12 @@
                             // Math Random
                             LDKF.mathRandom = Math.random;
 
+                            // Maximum
+                            LDKF.max = Math.max;
+
+                            // Minimum
+                            LDKF.min = Math.min;
+
                             // Number
                             LDKF.number = LDKF.cloneObject(Number);
 
@@ -4764,6 +4796,18 @@
 
                                 // Return
                                 return function postMessageWindow() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Power
+                            LDKF.pow = Math.pow;
+
+                            // Prompt Window
+                            LDKF.promptWindow = (function() {
+                                // Initialization > Method
+                                let method = window.prompt;
+
+                                // Return
+                                return function promptWindow() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Push Array
@@ -4897,6 +4941,15 @@
 
                                 // Return
                                 return function replaceString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Request Permission Notification
+                            LDKF.requestPermissionNotification = (function() {
+                                // Initialization > Method
+                                let method = LDKO.notification.requestPermission || function requestPermission() {};
+
+                                // Return
+                                return function requestPermissionNotification() { return method.apply(LDKO.notification, LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Select HTML Input Element
@@ -5074,6 +5127,21 @@
                                     })(),
 
                                 // Document
+                                    // All
+                                    documentAll: (function() {
+                                        // Initialization > Data
+                                        let data = LDKO.$document.all;
+
+                                        // Update > Data
+                                        LDKF.isHtmlAllCollection(data) || (data = null);
+
+                                        // Initialization > Method
+                                        let method = (LDKF.objectGetOwnPropertyDescriptor(LDKO.$documentProto, 'all') || {get: function() { return data }}).get;
+
+                                        // Return
+                                        return function documentAll() { return method.call(LDKO.$document) }
+                                    })(),
+
                                     // Body
                                     documentBody: (function() {
                                         // Initialization > Data
@@ -5332,6 +5400,16 @@
                                         return function nodeListLength() { return method.call(arguments[0]) }
                                     })(),
 
+                                // Notification
+                                    // Permission
+                                    notificationPermission: (function() {
+                                        // Initialization > Method
+                                        let method = (LDKF.objectGetOwnPropertyDescriptor(LDKO.notification, 'permission') || {get: function() { return 'denied' }}).get
+
+                                        // Return
+                                        return function notificationPermission() { return method.call(LDKO.notification) }
+                                    })(),
+
                                 // Regular Expression
                                     // Flags
                                     regexFlags: (function() {
@@ -5554,6 +5632,22 @@
                     // Constants
                         // Element
                         LDKC.element = LDKF.createElementDocument('lapysjs-element');
+
+                        // Smallest Calculable Decimal
+                        LDKC.smallestCalculableDecimal = (function() {
+                            // Initialization > (Iterator, Smallest Random Number)
+                            let iterator = 1,
+                                smallestRandomNumber = 0;
+
+                            // Loop > Update > (Smallest Random Number, Iterator)
+                            while (LDKF.indexOfString(LDKF.string(iterator), 'e') == -1) {
+                                smallestRandomNumber = iterator;
+                                iterator /= 10
+                            }
+
+                            // Return
+                            return smallestRandomNumber
+                        })();
 
             /* Phase */
                 // Initialization
@@ -8473,6 +8567,44 @@
                                 })()
                             });
 
+                            // Cancel On DOM Element Added
+                            LDKF.objectDefineProperty(window, 'cancelOnDOMElementAdded', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function cancelOnDOMElementAdded() {
+                                    // Initialization > (Array, Callback, Iterator)
+                                    let array = tmpObject.onDOMElementAddedWatchList,
+                                        callback = arguments[0],
+                                        iterator = array.length;
+
+                                    // Logic
+                                    if (arguments.length)
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Array Element
+                                            let arrayElement = array[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (
+                                                (arrayElement.isEvaluationString && LDKF.isEvaluationString(callback) && callback === arrayElement.evaluationString) ||
+                                                (arrayElement.isFunction && callback === arrayElement.function)
+                                            ) {
+                                                // Update > Temporary Object > On DOM Element Added Watch List
+                                                LDKF.spliceArray(tmpObject.onDOMElementAddedWatchList, iterator, 1);
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+                                }
+                            });
+
                             // Cube Root
                             LDKF.objectDefineProperty(window, 'cbrt', {
                                 // Configurable
@@ -9528,17 +9660,369 @@
                             });
 
                             // Math
-                                // Average
+                                /* Average
+                                        --- NOTE ---
+                                            #Lapys: Or arithmetic mean...
+                                */
                                 LDKF.objectDefineProperty(Math, 'avg', {
                                     // Configurable
                                     configurable: !0,
 
                                     // Value
-                                    value: function avg() {},
+                                    value: function avg() {
+                                        // Initialization > (Iterator, Length, Result)
+                                        let iterator = arguments.length,
+                                            length = iterator,
+                                            result = 0;
+
+                                        // Loop > Update > Result
+                                        while (iterator)
+                                            result += arguments[iterator -= 1];
+
+                                        // Return
+                                        return result / length
+                                    },
 
                                     // Writable
                                     writable: !0
                                 });
+
+                                /* Invert
+                                        --- NOTE ---
+                                            #Lapys: Either additive or multiplicative inversion.
+                                */
+                                LDKF.objectDefineProperty(Math, 'inv', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function inv() {
+                                        // Return
+                                        return arguments[1] ? -arguments[0] : 1 / arguments[0]
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                                /* Random > Between
+                                        --- WARN ---
+                                            #Lapys: No idea what happens if non-numeral data is
+                                                used with this method.
+                                */
+                                LDKF.objectDefineProperty(Math.random, 'between', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function between() {
+                                        // Initialization > Length
+                                        let length = arguments.length;
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (length) {
+                                            // Initialization > (Arguments, Main Number, Result)
+                                            let args = LDKF.toArray(arguments),
+                                                mainNumber = args[0],
+                                                result = 0;
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (length == 1) {
+                                                /* Initialization > (Number, Exponential Potency)
+                                                        --- NOTE ---
+                                                            #Lapys: Random formula I came up with:
+                                                                f(x) = (x * 2) / 3
+                                                */
+                                                let number = args[0],
+                                                    exponentialPotency = (number * 2) / 3;
+
+                                                // Update > (Arguments, Length)
+                                                args[0] = number - exponentialPotency;
+                                                args[1] = number + exponentialPotency;
+                                                length = 2
+                                            }
+
+                                            // Initialization > (Decremented Length, Iterator, Swapped)
+                                            let decrementedLength = length - 1,
+                                                iterator = 0,
+                                                swapped;
+
+                                            // Function > Between
+                                            function between() {
+                                                // Initialization > (Number (A, B), (Max, Min)imum, Difference, Random, Result)
+                                                let numberA = arguments[0],
+                                                    numberB = arguments[1],
+                                                    max = LDKF.max(arguments[0], arguments[1]),
+                                                    min = LDKF.min(arguments[0], arguments[1]),
+                                                    difference = max - min,
+                                                    random = LDKF.mathRandom(),
+                                                    result = 0;
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (difference > -1 && difference < 2) {
+                                                    // Update > Result
+                                                    result = min + random;
+
+                                                    /* Logic
+                                                            [if:else statement]
+                                                    */
+                                                    if (difference > (random * 2) / 3) {
+                                                        // Loop > Update > Result
+                                                        while (result > max) result -= difference * LDKF.mathRandom();
+                                                        while (result < min) result += difference * LDKF.mathRandom()
+                                                    }
+
+                                                    else {
+                                                        // Initialization > Smallest Random Increment
+                                                        let smallestRandomIncrement = LDKC.smallestCalculableDecimal / LDKF.mathRandom();
+
+                                                        // Update > Result
+                                                        result = min + smallestRandomIncrement
+                                                    }
+                                                }
+
+                                                else
+                                                    // Update > Result
+                                                    result = random * (max - min) + min;
+
+                                                // Return
+                                                return result
+                                            }
+
+                                            /* Loop
+                                                    [do:while statement]
+
+                                                    --- NOTE ---
+                                                        #Lapys: Basically bubble sort...
+                                            */
+                                            do {
+                                                // Update > Swapped
+                                                swapped = !1;
+
+                                                /* Loop
+                                                        Index Arguments.
+                                                */
+                                                for (iterator = 0; iterator < decrementedLength; iterator += 1) {
+                                                    // Initialization > Incremented Iterator
+                                                    let incrementedIterator = iterator + 1;
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (args[iterator] > args[incrementedIterator]) {
+                                                        // Initialization > Number
+                                                        let number = args[iterator];
+
+                                                        // Update > (Arguments, Swapped)
+                                                        args[iterator] = args[incrementedIterator];
+                                                        args[incrementedIterator] = number;
+                                                        swapped = !0
+                                                    }
+                                                }
+                                            } while (swapped);
+
+                                            /* Loop
+                                                    [while statement]
+
+                                                    --- NOTE ---
+                                                        #Lapys: Pick a random number using the Between function
+                                                            between every two elements at the start and the end of the Arguments set.
+                                            */
+                                            while (args.length > 3) {
+                                                // Initialization > (Sibling) Number
+                                                let number = args[0],
+                                                    siblingNumber = args[1];
+
+                                                // Update > (Arguments, (Sibling) Number)
+                                                LDKF.spliceArray(args, 1, 1);
+                                                args[0] = between(number, siblingNumber);
+                                                number = args[args.length - 1];
+                                                siblingNumber = args[args.length - 2];
+                                                LDKF.spliceArray(args, args.length - 2, 1);
+                                                args[args.length - 1] = between(siblingNumber, number)
+                                            }
+
+                                            // Update > (Arguments, Result)
+                                            ((length = args.length) == 3) && (args = [between(args[0], args[1]), args[2]]);
+                                            result = between(args[0], args[1]);
+
+                                            // Return
+                                            return LDKF.objectIs(LDKF.abs(mainNumber), mainNumber) ? LDKF.abs(result) : -LDKF.abs(result)
+                                        }
+
+                                        // Return
+                                        return NaN
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                                // Range
+                                LDKF.objectDefineProperty(Math, 'range', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function range() {
+                                        // Return
+                                        return LDKF.abs(arguments[0] - arguments[1])
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                                // Root
+                                LDKF.objectDefineProperty(Math, 'root', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function root() {
+                                        // Return
+                                        return LDKF.pow(arguments[0], 1 / arguments[1])
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                            // Maximum
+                            LDKF.objectDefineProperty(window, 'max', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function max() {
+                                    // Initialization > (Iterator, Length)
+                                    let iterator = 0,
+                                        length = arguments.length;
+
+                                    // Loop > Update > Arguments
+                                    for (iterator; iterator < length; iterator += 1)
+                                        arguments[iterator] = LDKF.$number(arguments[iterator]);
+
+                                    // Return
+                                    return LDKF.max.apply(LDKF, LDKF.toArray(arguments))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // (Get) Maximum (Object)
+                            LDKF.objectDefineProperty(window, 'maxg', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function maxg() {
+                                    // Initialization > (Arguments, Iterator, Length)
+                                    let args = LDKF.toArray(arguments),
+                                        iterator = 0,
+                                        length = arguments.length;
+
+                                    // Loop > Update > Arguments
+                                    for (iterator; iterator < length; iterator += 1)
+                                        arguments[iterator] = LDKF.$number(arguments[iterator]);
+
+                                    // Initialization > Max
+                                    let max = LDKF.max.apply(LDKF, LDKF.toArray(arguments));
+
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    for (iterator = 0; iterator < length; iterator += 1) {
+                                        // Initialization > Argument
+                                        let arg = args[iterator];
+
+                                        // Logic > Return
+                                        if (LDKF.$number(arg) === max)
+                                            return arg
+                                    }
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Minimum
+                            LDKF.objectDefineProperty(window, 'min', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function min() {
+                                    // Initialization > (Iterator, Length)
+                                    let iterator = 0,
+                                        length = arguments.length;
+
+                                    // Loop > Update > Arguments
+                                    for (iterator; iterator < length; iterator += 1)
+                                        arguments[iterator] = LDKF.$number(arguments[iterator]);
+
+                                    // Return
+                                    return LDKF.min.apply(LDKF, LDKF.toArray(arguments))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // (Get) Minimum (Object)
+                            LDKF.objectDefineProperty(window, 'ming', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function ming() {
+                                    // Initialization > (Arguments, Iterator, Length)
+                                    let args = LDKF.toArray(arguments),
+                                        iterator = 0,
+                                        length = arguments.length;
+
+                                    // Loop > Update > Arguments
+                                    for (iterator; iterator < length; iterator += 1)
+                                        arguments[iterator] = LDKF.$number(arguments[iterator]);
+
+                                    // Initialization > Min
+                                    let min = LDKF.min.apply(LDKF, LDKF.toArray(arguments));
+
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    for (iterator = 0; iterator < length; iterator += 1) {
+                                        // Initialization > Argument
+                                        let arg = args[iterator];
+
+                                        // Logic > Return
+                                        if (LDKF.$number(arg) === min)
+                                            return arg
+                                    }
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
 
                             // Notify
                             LDKF.objectDefineProperty(window, 'notify', {
@@ -9549,11 +10033,119 @@
                                 enumerable: !0,
 
                                 // Value
-                                value: function notify() {},
+                                value: function notify() {
+                                    // Initialization > (Length, Title, Options, Force Request, Notification, Permission)
+                                    let length = arguments.length,
+                                        title = length ? LDKF.string(arguments[0]) : '',
+                                        options = LDKF.object(arguments[1]),
+                                        forceRequest = !!arguments[2],
+                                        notification,
+                                        permission = LDKF.get.notificationPermission();
+
+                                    // Function > Notify
+                                    function notify() {
+                                        // Update > Notification
+                                        notification = new LDKO.notification(title, options)
+                                    }
+
+                                    // Request Permission
+                                    (
+                                        forceRequest || (
+                                            permission !== 'denied' &&
+                                            permission !== 'granted'
+                                        )
+                                    ) ? LDKF.requestPermissionNotification(permission => {
+                                        // Notify
+                                        (permission === 'granted') && notify()
+                                    }) : notify();
+
+                                    // Return
+                                    return notification
+                                },
 
                                 // Writable
                                 writable: !0
                             });
+                                // Alert
+                                LDKF.objectDefineProperty(notify, 'alert', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Value
+                                    value: function alert() {
+                                        // Initialization > Arguments
+                                        let args = LDKF.toArray(arguments);
+
+                                        // Update > Arguments
+                                        LDKF.unshiftArray(args, window);
+
+                                        // Return
+                                        return LDKF.alertWindow.apply(window, args)
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                                // Confirm
+                                LDKF.objectDefineProperty(notify, 'confirm', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Value
+                                    value: function confirm() {
+                                        // Initialization > Arguments
+                                        let args = LDKF.toArray(arguments);
+
+                                        // Update > Arguments
+                                        LDKF.unshiftArray(args, window);
+
+                                        // Return
+                                        return LDKF.confirmWindow.apply(window, args)
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                                // Prompt
+                                LDKF.objectDefineProperty(notify, 'prompt', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Value
+                                    value: function prompt() {
+                                        // Initialization > Arguments
+                                        let args = LDKF.toArray(arguments);
+
+                                        // Update > Arguments
+                                        LDKF.unshiftArray(args, window);
+
+                                        // Return
+                                        return LDKF.promptWindow.apply(window, args)
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                                // Value Of
+                                LDKF.objectDefineProperty(notify, 'valueOf', {
+                                    // Value
+                                    value: function valueOf() {
+                                        // Return
+                                        return LDKO.notification
+                                    }
+                                });
 
                             // Number
                             LDKF.objectDefineProperty(window, 'num', {
@@ -9622,6 +10214,118 @@
 
                                 // Writable
                                 writable: !0
+                            });
+
+                            // On DOM Element Added
+                            LDKF.objectDefineProperty(window, 'onDOMElementAdded', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onDOMElementAdded() {
+                                    // Initialization > Length
+                                    let length = arguments.length;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (length) {
+                                        // Initialization > (Callback, Evaluation String, On DOM Element Added Watch List Element)
+                                        let callback = arguments[0],
+                                            evaluationString,
+                                            onDOMElementAddedWatchListElement = {};
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (LDKF.isEvaluationString(callback)) {
+                                            // Update > Evaluation String
+                                            evaluationString = onDOMElementAddedWatchListElement.evaluationString = callback;
+
+                                            // Modification > On DOM Element Added Watch List Element > Is (Evaluation String, Function)
+                                            onDOMElementAddedWatchListElement.isEvaluationString = !0;
+                                            onDOMElementAddedWatchListElement.isFunction = !1;
+
+                                            // Update > Callback
+                                            callback = LDKF.$func(callback)
+                                        }
+
+                                        else {
+                                            // Update > Evaluation String
+                                            evaluationString = onDOMElementAddedWatchListElement.evaluationString = '';
+
+                                            // Modification > On DOM Element Added Watch List Element > Is (Evaluation String, Function)
+                                            onDOMElementAddedWatchListElement.isEvaluationString = !1;
+                                            onDOMElementAddedWatchListElement.isFunction = !0
+                                        }
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.error("'onDOMElementAdded'", 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], ['evaluation string', 'function']));
+
+                                        // Modification > On DOM Element Added Watch List Element > Function
+                                        onDOMElementAddedWatchListElement.function = callback;
+
+                                        // Error
+                                        tmpObject.onDOMElementAddedWatchList.length && test() && LDKF.error("'onDOMElement'", 'argument', 'Callback has been added to the watch list already');
+
+                                        // Update > Temporary Object > On DOM Element Added Watch List
+                                        LDKF.pushArray(tmpObject.onDOMElementAddedWatchList, onDOMElementAddedWatchListElement);
+
+                                        // Initialization > (Former) Length, Request
+                                        let formerLength = LDKF.get.documentAll().length,
+                                            length = 0,
+                                            request;
+
+                                        // Function
+                                            // Test
+                                            function test() {
+                                                // Initialization > (Array, Iterator)
+                                                let array = tmpObject.onDOMElementAddedWatchList,
+                                                    iterator = array.length;
+
+                                                /* Loop
+                                                        [while statement]
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Array Element
+                                                    let arrayElement = array[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (
+                                                        (evaluationString && evaluationString === arrayElement.evaluationString) ||
+                                                        (arrayElement.isFunction && callback === arrayElement.function)
+                                                    )
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Watch
+                                            (function watch() {
+                                                // Update > Length
+                                                length = LDKF.get.documentAll().length;
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (length > formerLength) {
+                                                    // Callback
+                                                    callback.call(LDKO.$document);
+
+                                                    // Update > Former Length
+                                                    formerLength = length
+                                                }
+
+                                                // (Update > Request) | Cancel Animation Frame > Request
+                                                test() ?
+                                                    request = LDKF.requestAnimationFrame(watch) :
+                                                    LDKF.cancelAnimationFrame(request)
+                                            })()
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error("'onDOMElementAdded'", 'argument', [1, 0])
+                                }
                             });
 
                             // Paste
