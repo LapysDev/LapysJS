@@ -397,6 +397,9 @@
                             // Performance Description
                             tmpObject.performanceDescription = Object.getOwnPropertyDescriptor(window, 'performance');
 
+                            // Written Elements
+                            tmpObject.writtenElements = [];
+
                     // Storage
                         // Functions
                             // Add Event
@@ -1318,6 +1321,24 @@
                                 }
                             };
 
+                            // Decode URI
+                            LDKF.decodeURI = (function() {
+                                // Initialization > Method
+                                let method = window.decodeURI;
+
+                                // Return
+                                return function decodeURI() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
+
+                            // Decode URI Component
+                            LDKF.decodeURIComponent = (function() {
+                                // Initialization > Method
+                                let method = window.decodeURIComponent;
+
+                                // Return
+                                return function decodeURIComponent() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
+
                             // Delete Event
                             LDKF.delEvent = function delEvent() {
                                 // Initialization > (Event Target, Arguments, Iterator, Length, Test)
@@ -1341,11 +1362,38 @@
                                     LDKF.detachEvent(LDKF, args)
                             };
 
+                            // Encode URI
+                            LDKF.encodeURI = (function() {
+                                // Initialization > Method
+                                let method = window.encodeURI;
+
+                                // Return
+                                return function encodeURI() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
+
+                            // Encode URI Component
+                            LDKF.encodeURIComponent = (function() {
+                                // Initialization > Method
+                                let method = window.encodeURIComponent;
+
+                                // Return
+                                return function encodeURIComponent() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
+
                             // Error
                             LDKF.error = function error() {
                                 // Error
                                 throw new LapysJSError(LDK.info.errorMessagePrefix + LDKF.debugMessage.apply(LDKF, LDKF.toArray(arguments)))
                             };
+
+                            // Escape
+                            LDKF.escape = (function() {
+                                // Initialization > Method
+                                let method = window.escape;
+
+                                // Return
+                                return function escape() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
 
                             // Evaluate
                             LDKF.eval = (function() {
@@ -1948,6 +1996,7 @@
                                         (length > 2) && LDKF.iterateObject((key, value, description) => {
                                             // Modification > Sandbox > [Key]
                                             (
+                                                'value' in description &&
                                                 sandboxPropertiesTest.window &&
                                                 key == 'top' || key == 'window'
                                             ) || LDKF.objectDefineProperty(sandbox, key, description)
@@ -4334,6 +4383,9 @@
 
                             // Date
                             LDKO.date = Date;
+                                // Prototype
+                                LDKO.dateProto = LDKO.date.prototype;
+
                                 // Polyfill > Date
                                     /* Now
                                             --- NOTE ---
@@ -4832,6 +4884,15 @@
                                 return function getSelectionDocument() { return method.call(LDKO.$document) }
                             })();
 
+                            // Get Time Date
+                            LDKF.getTimeDate = (function() {
+                                // Initialization > Method
+                                let method = LDKO.dateProto.getTime;
+
+                                // Return
+                                return function getTimeDate() { return method.call(arguments[0]) }
+                            })();
+
                             // Has Attribute Element
                             LDKF.hasAttributeElement = (function() {
                                 // Initialization > Method
@@ -5239,6 +5300,9 @@
                                 return function spliceArray() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Square Root
+                            LDKF.sqrt = Math.sqrt;
+
                             // Stop Window
                             LDKF.stopWindow = (function() {
                                 // Initialization > Method
@@ -5364,6 +5428,9 @@
                                 // Return
                                 return function writeDocument() { return method.call(arguments[0], arguments[1]) }
                             })();
+
+                            // Write HTML Element
+                            LDKF.writeHtmlElement = function writeHtmlElement() { return tmpObject.htmlElePrototypeWriteDescription.value.call(arguments[0]) };
 
                             /* Get */
                             LDKF.get = {
@@ -9512,7 +9579,7 @@
                                                 }
                                             }
 
-                                            // LapysJS Development Kit Functions > (Focus, Select) > Input
+                                            // LapysJS Development Kit Functions > Focus > Input
                                             LDKF.focusHtmlElement(input);
 
                                             // Initialization > (Selection, Range)
@@ -12353,12 +12420,160 @@
                                     */
                                     if (arguments.length) {
                                         // Error
-                                        LDKF.isHtmlElement(element) || LDKF.error("'select'", 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'HTML element'))
+                                        LDKF.isHtmlElement(element) || LDKF.error("'select'", 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'HTML element'));
+
+                                        // LapysJS Development Kit Functions > Focus > Element
+                                        LDKF.focusHtmlElement(element);
+
+                                        // Initialization > (Selection, Range)
+                                        let selection = LDKF.getSelectionDocument(),
+                                            range = LDKF.createRangeDocument();
+
+                                        // Range > Select Node Contents > Element
+                                        LDKF.selectNodeContentsRange(range, element);
+
+                                        // Selection
+                                            // Remove All Ranges
+                                            LDKF.removeAllRangesSelection(selection);
+
+                                            // Add Range > Range
+                                            LDKF.addRangeSelection(selection, range);
+
+                                        /* Logic
+                                                [if:else if statement]
+
+                                            > Select > Element
+                                        */
+                                        if (LDKF.isHtmlInputElement(element))
+                                            LDKF.selectHtmlInputElement(element);
+
+                                        else if (LDKF.isHtmlTextareaElement(element))
+                                            LDKF.selectHtmlTextareaElement(element);
+
+                                        // Return
+                                        return LDKF.isInputElement(element) ?
+                                            (LDKF.isHtmlInputElement(element) ?
+                                                LDKF.get.htmlInputElementValue(element) :
+                                                LDKF.get.htmlTextareaElementValue(element)
+                                            ) :
+                                            LDKF.get.htmlElementInnerText(element)
                                     }
 
                                     // Error
                                     LDKF.error("'select'", 'argument', [1, 0])
                                 },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Sequence
+                            LDKF.objectDefineProperty(window, 'sequence', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function sequence() {
+                                    // Initialization > (String, Format)
+                                    let string = arguments[0],
+                                        format = arguments[1];
+
+                                    // Error
+                                    LDKF.isString(string) || LDKF.error("'sequence'", 'argument', LDKF.debugMessage(string, ['must', 'a'], 'string'));
+
+                                    /* Logic
+                                            [switch:case:default statement]
+                                    */
+                                    switch (format) {
+                                        // Decode URI > (Update > String)
+                                        case 'decode-uri': string = LDKF.decodeURI(string); break;
+
+                                        // Decode URI Component > (Update > String)
+                                        case 'decode-uri-component': string = LDKF.decodeURIComponent(string); break;
+
+                                        // Encode > (Update > String)
+                                        case 'encode': string = LDKF.escape(string); break;
+
+                                        // Encode URI > (Update > String)
+                                        case 'encode-uri': string = LDKF.encodeURI(string); break;
+
+                                        // Encode URI Component > (Update > String)
+                                        case 'encode-uri-component': string = LDKF.encodeURIComponent(string); break;
+
+                                        // HTML
+                                        case 'html':
+                                            // Initialization > Element
+                                            let element = LDKC.element;
+
+                                            // Modification > Element > Inner HTML
+                                            LDKF.set.elementInnerHTML(element, string);
+
+                                            // Update > String
+                                            string = LDKF.get.elementInnerHTML(element);
+
+                                            // Modification > Element > Inner HTML
+                                            LDKF.set.elementInnerHTML(element, '');
+                                            break;
+
+                                        // [Default]
+                                        default:
+                                            // Error
+                                            LDKF.error("'sequence'", 'argument', LDKF.debugMessage('Valid sequences', 'only', ["'decode-uri'", "'decode-uri-component'", "'encode'", "'encode-uri'", "'encode-uri-component'", "'html'"]))
+                                    }
+
+                                    // Return
+                                    return string
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Sleep
+                                    --- NOTE ---
+                                        #Lapys: Inspired from PHP.
+                            */
+                            LDKF.objectDefineProperty(window, 'sleep', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function sleep() {
+                                    // Initialization > (Duration, (Current, Initial) Lapse, Iterators)
+                                    let duration = arguments[0],
+                                        currentLapse = 0,
+                                        initialLapse = LDKF.performanceNow(),
+                                        iterators = 0;
+
+                                    // Error
+                                    arguments.length || LDKF.error("'sleep'", 'argument', [1, 0]);
+                                    LDKF.isNumber(duration) || LDKF.error("'sleep'", 'argument', 'The given duration must be a number');
+
+                                    /* Loop
+                                            [while statement]
+
+                                            --- NOTE ---
+                                                #Lapys: This is what causes JavaScript to `sleep`.
+
+                                        > Update > Current Lapse
+                                    */
+                                    while (currentLapse - initialLapse < duration) currentLapse = LDKF.performanceNow();
+
+                                    // Return
+                                    return duration
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Square Root
+                            LDKF.objectDefineProperty(window, 'sqrt', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.sqrt,
 
                                 // Writable
                                 writable: !0
@@ -12379,6 +12594,147 @@
                                 writable: !0
                             });
 
+                            /* Strict Input
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Prevent input-able HTML elements from
+                                            containing a specified set of text values.
+                            */
+                            LDKF.objectDefineProperty(window, 'strictInput', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value <element, match, callback <element> <match, character set>>
+                                value: function strictInput() {
+                                    let length = arguments.length,
+                                        callback = arguments[2],
+                                        input = arguments[0],
+                                        match = arguments[1];
+
+                                    if (length) {
+                                        LDKF.isRegex(match) || LDKF.isString(match) || LDKF.error();
+                                    }
+
+                                    else
+                                        LDKF.error("'strictInput'", 'argument', [1, 0])
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Stringify
+                                    --- WARN ---
+                                        #Lapys: Be careful not to stringify some objects.
+                            */
+                            LDKF.objectDefineProperty(window, 'stringify', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function stringify() {
+                                    // Initialization > Object
+                                    let object = arguments[0];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (LDKF.isArray(object) || LDKF.isObject(object)) {
+                                            // Initialization > Keys
+                                            let keys = [];
+
+                                            // LapysJS Development Kit Functions > Iterate Object
+                                            LDKF.iterateObject((key, value, description) => {
+                                                // Initialization > Configurable
+                                                let configurable = description.configurable;
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (configurable)
+                                                    try {
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if ('value' in description)
+                                                            // Modification > Object > [Key]
+                                                            (function() {
+                                                                // Initialization > Iterator
+                                                                let iterator = keys.length;
+
+                                                                // Loop > Logic > Return
+                                                                while (iterator)
+                                                                    if (keys[iterator -= 1] == key)
+                                                                        return !1;
+
+                                                                // Return
+                                                                return !0
+                                                            })() && LDKF.objectDefineProperty(object, key, {
+                                                                // Configurable
+                                                                configurable: configurable,
+
+                                                                // Enumerable
+                                                                enumerable: description.enumerable,
+
+                                                                // Value
+                                                                value: LDKF.string(description.value),
+
+                                                                // Writable
+                                                                writable: description.writable
+                                                            });
+
+                                                        else {
+                                                            // Initialization > (Get, Set)
+                                                            let get = description.get,
+                                                                set = description.set;
+
+                                                            // Modification > Object > [Key]
+                                                            (get === LDK.tmp.objects.objectPrototypeLengthDescriptionGetter) || LDKF.objectDefineProperty(object, key, {
+                                                                // Configurable
+                                                                configurable: configurable,
+
+                                                                // Enumerable
+                                                                enumerable: description.enumerable,
+
+                                                                /* Get
+                                                                        --- NOTE ---
+                                                                            #Lapys: Modify the getter to return a stringified version of its return value.
+                                                                */
+                                                                get: LDKF.isFunction(get) ? (LDKF.isNativeFunction(get) ? get : LDKF.$func(get.name, LDKF.get.functionParameters(get), 'return LDKF.string((function() {' + LDKF.get.functionBody(get) + '}).apply(this, [...arguments]))')) : get,
+
+                                                                /* Set
+                                                                        --- NOTE ---
+                                                                            #Lapys: Modify the setter to convert all arguments to string.
+                                                                */
+                                                                set: LDKF.isFunction(set) ? (LDKF.isNativeFunction(set) ? set : LDKF.$func(set.name, LDKF.get.functionParameters(set), 'for (let i = 0; i < arguments.length; i += 1) arguments[i] = LDKF.string(arguments[i]); return (function(){' + LDKF.get.functionBody(set) + '}).apply(this, [...arguments])')) : set
+                                                            })
+                                                        }
+                                                    } catch (error) {
+                                                        // Error
+                                                        LDKF.error("Error in stringifying '" + object.constructor.name + "' object property")
+                                                    }
+
+                                                // Update > Keys
+                                                LDKF.pushArray(keys, key)
+                                            }, object, !0, !1)
+                                        }
+
+                                        // Return
+                                        return object
+                                    }
+
+                                    // Return
+                                    return null
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Symbol
                             LDKF.objectDefineProperty(window, 'sym', {
                                 // Configurable
@@ -12388,6 +12744,64 @@
                                 value: function Symbol() {
                                     // Return
                                     return LDKF.symbol(LDKF.$string.apply(LDKF, LDKF.toArray(arguments)))
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Timeout
+                            LDKF.objectDefineProperty(window, 'timeout', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function timeout() {
+                                    // Initialization > Length
+                                    let length = arguments.length;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (length) {
+                                        // Initialization > (Callback, Timeout)
+                                        let callback = arguments[0],
+                                            timeout = arguments[1];
+
+                                        // Update > Callback
+                                        LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.error("'timeout'", 'argument', 'First argument must be a function');
+
+                                        // Return
+                                        return LDKF.setTimeout(callback, timeout)
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error("'timeout'", 'argument', [1, 0])
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Write
+                            LDKF.objectDefineProperty(window, 'write', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function write() {
+                                    // Initialization > Document Element
+                                    let documentElement = LDKF.get.documentChildren(LDKO.$document)[0];
+
+                                    // Error
+                                    documentElement || LDKF.error("'write'", 'argument', 'Expected document to have at least one child element to write on');
+
+                                    // Return
+                                    return LDKF.writeHtmlElement(documentElement, arguments[0])
                                 },
 
                                 // Writable
@@ -13728,6 +14142,48 @@
                             }
                         });
 
+                        // Write
+                        LDKF.objectDefineProperty(LDKO.htmlElementProto, 'write', tmpObject.htmlElePrototypeWriteDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function write() {
+                                // Initialization > (Data, Element, Written Elements)
+                                let data = LDKF.string(arguments[0]),
+                                    element = this,
+                                    writtenElements = tmpObject.writtenElements;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if ((function() {
+                                    // Initialization > Iterator
+                                    let iterator = writtenElements.length;
+
+                                    // Loop > Logic > Return
+                                    while (iterator)
+                                        if (writtenElements[iterator -= 1] === element)
+                                            return !0
+                                })())
+                                    LDKF.set.elementInnerHTML(element, LDKF.get.elementInnerHTML(element) + data);
+
+                                else {
+                                    // Update > Written Elements
+                                    LDKF.pushArray(writtenElements, element);
+
+                                    // Modification > Element > Inner HTML
+                                    LDKF.set.elementInnerHTML(element, data)
+                                }
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                     /* Number Data */
                         /* Convert Unit
                                 --- UPDATE REQUIRED ---
@@ -14547,8 +15003,11 @@
                             // Configurable
                             configurable: !0,
 
+                            // Enumerable
+                            enumerable: !1,
+
                             // Get
-                            get: function length() {
+                            get: LDK.tmp.objects.objectPrototypeLengthDescriptionGetter = function length() {
                                 // Initialization > Object
                                 let object = this;
 
