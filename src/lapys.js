@@ -397,6 +397,9 @@
                             // Performance Description
                             tmpObject.performanceDescription = Object.getOwnPropertyDescriptor(window, 'performance');
 
+                            // Strictly Watched Elements
+                            tmpObject.strictlyWatchedElements = [];
+
                             // Written Elements
                             tmpObject.writtenElements = [];
 
@@ -3603,6 +3606,33 @@
                                 return array
                             };
 
+                            // Query Input Element Caret Position
+                            LDKF.queryInputElementCaretPosition = function queryInputElementCaretPosition() {
+                                // Initialization > (Initial Caret Position, Input, Selection Start)
+                                let initialCaretPosition = 0,
+                                    input = arguments[0],
+                                    selectionStart = LDKF.get.htmlInputElementSelectionStart(input);
+
+                                /* Logic
+                                        [if:else if statement]
+                                */
+                                if (LDKO.documentSelection) {
+                                    LDKF.focusHtmlElement(input);
+
+                                    let range = LDKF.createRangeDocumentSelection(LDKO.documentSelection);
+
+                                    range.moveStart('character', -(LDKF.isHtmlInputElement(input) ? LDKF.get.htmlInputElementValue(input) : LDKF.get.htmlTextareaElementValue(input)).length)
+                                    initialCaretPosition = range.text.length
+                                }
+
+                                else if (LDKF.isSafeInteger(selectionStart))
+                                    // Update > Initial Caret Position
+                                    initialCaretPosition = selectionStart;
+
+                                // Return
+                                return initialCaretPosition
+                            };
+
                             /* Query Line
                                     --- UPDATE REQUIRED ---
                                         #Lapys: Modify for other browsers as well.
@@ -4203,6 +4233,9 @@
                                 LDKO.$documentProto = LDKO.documentProto;
                                 LDKF.setTimeout(function() { LDKO.$documentProto = LDKF.cloneObject(LDKO.$documentProto) });
 
+                                // Selection
+                                LDKO.documentSelection = LDKO.$document.selection;
+
                             // Document Type
                             LDKO.documentType = DocumentType;
                                 // Prototype
@@ -4801,6 +4834,15 @@
 
                                 // Return
                                 return function createRangeDocument() { return method.call(LDKO.$document) }
+                            })();
+
+                            // Create Range Document Selection
+                            LDKF.createRangeDocumentSelection = (function() {
+                                // Initialization > Method
+                                let method = (LDKO.documentSelection || {createRange: (function() {})}).createRange;
+
+                                // Return
+                                return function createRangeDocumentSelection() { return method.call(arguments[0]) }
                             })();
 
                             // Cube Root
@@ -5595,6 +5637,15 @@
                                     })(),
 
                                 // HTML Input Element
+                                    // Selection Start
+                                    htmlInputElementSelectionStart: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlInputElementProto, 'selectionStart').get;
+
+                                        // Return
+                                        return function htmlInputElementSelectionStart() { return method.call(arguments[0]) }
+                                    })(),
+
                                     // Value
                                     htmlInputElementValue: (function() {
                                         // Initialization > Method
@@ -12606,17 +12657,137 @@
 
                                 // Value <element, match, callback <element> <match, character set>>
                                 value: function strictInput() {
+                                    // Initialization > (Length, Callback, Input, Match, Is (Evaluation String, Regular Expression), Strictly Watched Elements)
                                     let length = arguments.length,
                                         callback = arguments[2],
                                         input = arguments[0],
-                                        match = arguments[1];
+                                        match = arguments[1],
+                                        isEvaluationString = !1,
+                                        isRegex = LDKF.isRegex(match),
+                                        strictlyWatchedElements = tmpObject.strictlyWatchedElements;
 
-                                    if (length) {
-                                        LDKF.isRegex(match) || LDKF.isString(match) || LDKF.error();
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (length > 1) {
+                                        // Error
+                                        LDKF.isInputElement(input) || LDKF.error("'strictInput'", 'argument', LDKF.debugMessage('Argument 0', 'must', ['an HTMLInputElement (<input>)', 'HTMLTextAreaElement (<textarea>)']));
+                                        LDKF.isRegex(match) || LDKF.isString(match) || LDKF.error("'strictInput'", 'argument', "Invalid match: '" + LDKF.string(match) + "'");
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (length > 2) {
+                                            // Update > Callback
+                                            LDKF.isEvaluationString(callback) && (isEvaluationString = !0) && (callback = LDKF.$func(callback));
+
+                                            // Error
+                                            LDKF.isFunction(callback) || LDKF.error("'strictInput'", 'argument', LDKF.debugMessage(callback, ['must', 'a'], ['evaluation string', 'function']))
+                                        }
+
+                                        else
+                                            // Update > Callback
+                                            callback = (function() { return clear.apply(this, LDKF.toArray(arguments)) });
+
+                                        // Error
+                                        (function() {
+                                            let iterator = strictlyWatchedElements.length;
+
+                                            while (iterator) {
+                                                iterator -= 1;
+                                                let strictlyWatchedElement = strictlyWatchedElements[iterator];
+
+                                                if (
+                                                    strictlyWatchedElement.element === input &&
+                                                    (
+                                                        (isEvaluationString && LDKF.get.functionBody(strictlyWatchedElement.callback) == LDKF.get.functionBody(callback)) ||
+                                                        strictlyWatchedElement.callback === callback
+                                                    ) &&
+                                                    (
+                                                        isRegex ?
+                                                            LDKF.get.regexFlags(strictlyWatchedElement.match) == LDKF.get.regexFlags(match) &&
+                                                            LDKF.get.regexSource(strictlyWatchedElement.match) == LDKF.get.regexSource(match) :
+                                                            strictlyWatchedElement.match == match
+                                                    )
+                                                )
+                                                    return !0
+                                            }
+                                        })() && LDKF.error("'strictInput'", 'argument', 'The given element is already being watched');
+
+                                        // Update > Strictly Watched Elements
+                                        LDKF.pushArray(strictlyWatchedElements, {callback: callback, element: input, match: match});
+
+                                        // Initialization > (Clear, Invalid Match, Iterator, Request)
+                                        let clear = function clearInput() {
+                                            let inputCaretPosition = LDKF.queryInputElementCaretPosition(input),
+                                                iterator = 0,
+                                                length = invalidMatches.length,
+                                                value = getValue(input);
+
+                                            if (
+                                                !inputCaretPosition ||
+                                                inputCaretPosition == getValue(input).length
+                                            )
+                                                for (iterator; iterator < length; iterator += 1) {
+                                                    let invalidMatch = invalidMatches[iterator];
+                                                    setValue(input, LDKF.replaceString(getValue(input), invalidMatch, ''))
+                                                }
+
+                                            else {
+                                                let valueAfterCaret = LDKF.sliceString(getValue(input), inputCaretPosition),
+                                                    valueBeforeCaret = LDKF.sliceString(getValue(input), 0, inputCaretPosition);
+
+                                                for (iterator; iterator < length; iterator += 1) {
+                                                    let invalidMatch = invalidMatches[iterator];
+
+                                                    if (LDKF.matchString(valueAfterCaret, invalidMatch))
+                                                        setValue(input, LDKF.replaceString(valueAfterCaret, invalidMatch, ''));
+
+                                                    else
+                                                        break
+                                                }
+
+                                                valueAfterCaret = getValue(input);
+                                                setValue(input, valueBeforeCaret + getValue(input));
+
+                                                for (iterator; iterator < length; iterator += 1) {
+                                                    let invalidMatch = invalidMatches[iterator];
+
+                                                    setValue(input, LDKF.replaceString(valueBeforeCaret, invalidMatch, ''))
+                                                }
+                                            }
+                                        }, invalidMatches = [],
+                                        iterator = 0,
+                                        request;
+
+                                        // Function
+                                        function call() {
+                                            // Return
+                                            return callback.call(input, match, arguments[0])
+                                        }
+
+                                        function getValue() {
+                                            let input = arguments[0];
+                                            return LDKF.isHtmlInputElement(input) ? LDKF.get.htmlInputElementValue(input) : LDKF.get.htmlTextareaElementValue(input)
+                                        }
+
+                                        function setValue() {
+                                            let input = arguments[0],
+                                                value = arguments[1];
+                                            return LDKF.isHtmlInputElement(input) ? LDKF.set.htmlInputElementValue(input, value) : LDKF.set.htmlTextareaElementValue(input, value)
+                                        }
+
+                                        // Update > Callback
+                                        LDKF.isNativeFunction(callback) || (callback = LDKF.$func(callback.name, LDKF.get.functionParameters(callback), 'var clear = ' + LDKF.toFunctionString(clear) + '; (' + LDKF.toFunctionString(callback) + ').apply(this, LDKF.toArray(arguments))'));
+
+                                        (function watch() {
+                                            request = LDKF.requestAnimationFrame(watch)
+                                        })()
                                     }
 
                                     else
-                                        LDKF.error("'strictInput'", 'argument', [1, 0])
+                                        // Error
+                                        LDKF.error("'strictInput'", 'argument', [2, 0])
                                 },
 
                                 // Writable
@@ -12704,13 +12875,13 @@
                                                                         --- NOTE ---
                                                                             #Lapys: Modify the getter to return a stringified version of its return value.
                                                                 */
-                                                                get: LDKF.isFunction(get) ? (LDKF.isNativeFunction(get) ? get : LDKF.$func(get.name, LDKF.get.functionParameters(get), 'return LDKF.string((function() {' + LDKF.get.functionBody(get) + '}).apply(this, [...arguments]))')) : get,
+                                                                get: LDKF.isFunction(get) ? (LDKF.isNativeFunction(get) ? get : LDKF.$func(get.name, LDKF.get.functionParameters(get), 'return LDKF.string((' + LDKF.toFunctionString(get) + ').apply(this, [...arguments]))')) : get,
 
                                                                 /* Set
                                                                         --- NOTE ---
                                                                             #Lapys: Modify the setter to convert all arguments to string.
                                                                 */
-                                                                set: LDKF.isFunction(set) ? (LDKF.isNativeFunction(set) ? set : LDKF.$func(set.name, LDKF.get.functionParameters(set), 'for (let i = 0; i < arguments.length; i += 1) arguments[i] = LDKF.string(arguments[i]); return (function(){' + LDKF.get.functionBody(set) + '}).apply(this, [...arguments])')) : set
+                                                                set: LDKF.isFunction(set) ? (LDKF.isNativeFunction(set) ? set : LDKF.$func(set.name, LDKF.get.functionParameters(set), 'for (let i = 0; i < arguments.length; i += 1) arguments[i] = LDKF.string(arguments[i]); return (' + LDKF.toFunctionString(set) + ').apply(this, [...arguments])')) : set
                                                             })
                                                         }
                                                     } catch (error) {
