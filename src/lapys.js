@@ -463,7 +463,11 @@
                                 // Function
                                     // Clone Array
                                     function cloneArray() {
-                                        // Initialization > (Object, Clone)
+                                        /* Initialization > (Object, Clone)
+                                                --- NOTE ---
+                                                    #Lapys: I resorted to doing this
+                                                        to deep clone arrays. All-in-all, arrays aren`t unlike objects anyways.
+                                        */
                                         let object = arguments[0],
                                             clone = cloneObject(object);
 
@@ -912,9 +916,8 @@
                                     properties = LDKF.object(arguments[2]);
 
                                 // LapysJS Development Kit Functions
-                                    // (Push, Pop) Array
-                                    LDKF.pushArray(array, 1);
-                                    LDKF.popArray(array, 1);
+                                    // Push Array
+                                    LDKF.pushArray(array);
                                     (length > 1) && LDKF.$pushArray(array, items);
 
                                     // Iterate Object
@@ -13444,9 +13447,7 @@
                                             let newArray = (function(array) {
                                                 // Update > Array
                                                 array = LDKF.cloneObject(array);
-
-                                                // Loop > Update > Array
-                                                while (array[0]) LDKF.popArray(array, 1);
+                                                LDKF.spliceArray(array, 0, array.length);
 
                                                 // Return
                                                 return array
@@ -13476,7 +13477,7 @@
                                         }
 
                                         // (Loop > Update > Array), (Update > Array)
-                                        while (array[0]) LDKF.popArray(array, 1);
+                                        LDKF.spliceArray(array, 0, array.length);
                                         LDKF.$pushArray(array, newArray);
 
                                         // Return
@@ -13531,9 +13532,7 @@
                                             let newArray = (function(array) {
                                                 // Update > Array
                                                 array = LDKF.cloneObject(array);
-
-                                                // Loop > Update > Array
-                                                while (array[0]) LDKF.popArray(array, 1);
+                                                LDKF.spliceArray(array, 0, array.length);
 
                                                 // Return
                                                 return array
@@ -13565,7 +13564,7 @@
                                             newArray = LDKF.sliceArray(array, 0, length);
 
                                         // (Loop > Update > Array), (Update > Array)
-                                        while (array[0]) LDKF.popArray(array, 1);
+                                        LDKF.spliceArray(array, 0, array.length);
                                         LDKF.$pushArray(array, newArray);
 
                                         // Return
@@ -13625,7 +13624,7 @@
                                 }
 
                                 // (Loop > Update > Array), (Update > Array)
-                                while (array[0]) LDKF.popArray(array, 1);
+                                LDKF.spliceArray(array, 0, array.length);
                                 LDKF.$pushArray(array, distinct);
 
                                 // Return
@@ -13750,7 +13749,7 @@
                                     }
 
                                 // (Loop > Update > Array), (Update > Array)
-                                while (array[0]) LDKF.popArray(array, 1);
+                                LDKF.spliceArray(array, 0, array.length);
                                 LDKF.$pushArray(array, flattenedArray);
 
                                 // Return
@@ -13777,6 +13776,18 @@
                                 // Return
                                 return array
                             },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Get Highest Occurring Element --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'getHighestOccurringElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function getHighestOccurringElement() {},
 
                             // Writable
                             writable: !0
