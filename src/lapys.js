@@ -465,14 +465,7 @@
                                     function cloneArray() {
                                         // Initialization > (Object, Clone)
                                         let object = arguments[0],
-                                            clone;
-
-                                        // Error Handling > Update > Clone
-                                        try { clone = [...object] }
-                                        catch (error) {
-                                            try { clone = LDKF.arrayFrom(object) }
-                                            catch (error) { clone = LDKF.sliceArray(object) }
-                                        }
+                                            clone = cloneObject(object);
 
                                         // Return
                                         return clone
@@ -4945,13 +4938,22 @@
                                 return function hasAttributeElement() { return method.call(arguments[0], arguments[1]) }
                             })();
 
+                            // Has Own Property Object
+                            LDKF.hasOwnPropertyObject = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$objectProto.hasOwnProperty;
+
+                                // Return
+                                return function hasOwnPropertyObject() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
                             // Index Of Array
                             LDKF.indexOfArray = (function() {
                                 // Initialization > Method
                                 let method = LDKO.$arrayProto.indexOf;
 
                                 // Return
-                                return function indexOf() { return method.call(arguments[0], arguments[1]) }
+                                return function indexOfArray() { return method.call(arguments[0], arguments[1]) }
                             })();
 
                             // Index Of String
@@ -4969,7 +4971,7 @@
                                 let method = LDKO.$arrayProto.lastIndexOf;
 
                                 // Return
-                                return function lastIndexOf() { return method.call(arguments[0], arguments[1]) }
+                                return function lastIndexOfArray() { return method.call(arguments[0], arguments[1]) }
                             })();
 
                             // Last Index Of String
@@ -13436,6 +13438,30 @@
                                         // Initialization > New Array
                                         let newArray = [];
 
+                                        // Update > Array
+                                        array = (function() {
+                                            // Initialization > (New Array, Iterator, Length)
+                                            let newArray = (function(array) {
+                                                // Update > Array
+                                                array = LDKF.cloneObject(array);
+
+                                                // Loop > Update > Array
+                                                while (array[0]) LDKF.popArray(array, 1);
+
+                                                // Return
+                                                return array
+                                            })(array),
+                                                iterator = 0,
+                                                length = array.length;
+
+                                            // Loop > Update > New Array
+                                            for (iterator; iterator < length; iterator += 1)
+                                                LDKF.hasOwnPropertyObject(array, iterator) && LDKF.pushArray(newArray, array[iterator]);
+
+                                            // Return
+                                            return newArray
+                                        })();
+
                                         /* Logic
                                                 [if:else if:else statement]
                                         */
@@ -13498,6 +13524,30 @@
                                     if (LDKF.isSafeInteger(length)) {
                                         // Initialization > New Array
                                         let newArray = [];
+
+                                        // Update > Array
+                                        array = (function() {
+                                            // Initialization > (New Array, Iterator, Length)
+                                            let newArray = (function(array) {
+                                                // Update > Array
+                                                array = LDKF.cloneObject(array);
+
+                                                // Loop > Update > Array
+                                                while (array[0]) LDKF.popArray(array, 1);
+
+                                                // Return
+                                                return array
+                                            })(array),
+                                                iterator = 0,
+                                                length = array.length;
+
+                                            // Loop > Update > New Array
+                                            for (iterator; iterator < length; iterator += 1)
+                                                LDKF.hasOwnPropertyObject(array, iterator) && LDKF.pushArray(newArray, array[iterator]);
+
+                                            // Return
+                                            return newArray
+                                        })();
 
                                         /* Logic
                                                 [if:else if:else statement]
@@ -13585,6 +13635,253 @@
                             // Writable
                             writable: !0
                         });
+
+                        /* Fill
+                                --- NOTE ---
+                                    #Lapys: Change every element of an Array to specified data value.
+                        */
+                        LDKF.objectDefineProperty(currentPrototype, 'fill', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function fill() {
+                                // Initialization > (Array, Data, Iterator, Length)
+                                let array = this,
+                                    data = arguments[0],
+                                    iterator = 0,
+                                    length = array.length;
+
+                                // Loop > Update > Array
+                                for (iterator; iterator != length; iterator += 1)
+                                    array[iterator] = data;
+
+                                // Return
+                                return data
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // First Element
+                        LDKF.objectDefineProperty(currentPrototype, 'firstElement', tmpObject.arrayPrototypeFirstElementDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Get
+                            get: function firstElement() {
+                                // Return
+                                return this[0]
+                            }
+                        });
+                            // Definition
+                            LDKF.objectDefineProperty(LDKO.htmlAllCollectionProto, 'firstElement', tmpObject.arrayPrototypeFirstElementDescription);
+                            LDKF.objectDefineProperty(LDKO.htmlAllCollectionProto, '$1', tmpObject.arrayPrototypeFirstElementDescription);
+                            LDKF.objectDefineProperty(LDKO.htmlCollectionProto, 'firstElement', tmpObject.arrayPrototypeFirstElementDescription);
+                            LDKF.objectDefineProperty(LDKO.htmlCollectionProto, '$1', tmpObject.arrayPrototypeFirstElementDescription);
+                            LDKF.objectDefineProperty(LDKO.nodeListProto, 'firstElement', tmpObject.arrayPrototypeFirstElementDescription);
+                            LDKF.objectDefineProperty(LDKO.nodeListProto, '$1', tmpObject.arrayPrototypeFirstElementDescription);
+
+                        // Flatten
+                        LDKF.objectDefineProperty(currentPrototype, 'flatten', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function flatten() {
+                                // Initialization > (Array, Depth, (Empty, Flattened) Array, Iterator, Length)
+                                let array = this,
+                                    depth = arguments[0],
+                                    emptyArray = [],
+                                    flattenedArray = (function() {
+                                        // Initialization > (New Array, Iterator, Length)
+                                        let newArray = [],
+                                            iterator = 0,
+                                            length = array.length;
+
+                                        // Loop > Update > New Array
+                                        for (iterator; iterator < length; iterator += 1)
+                                            LDKF.hasOwnPropertyObject(array, iterator) && LDKF.pushArray(newArray, array[iterator]);
+
+                                        // Return
+                                        return newArray
+                                    })(array),
+                                    iterator = array.length,
+                                    length = arguments.length;
+
+                                // Error
+                                length && (LDKF.isSafeInteger(depth) || LDKF.error(["'flatten'", "'Array'"], 'argument', LDKF.debugMessage(depth, ['must', 'a'], 'integer')));
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (!length || (depth === 0 || depth > 0))
+                                    /* Loop
+                                            [while statement]
+
+                                        > Update > (Flattened Array, Depth)
+                                    */
+                                    while (
+                                        length ? depth : !0 &&
+                                        (function() {
+                                            // Update > Iterator
+                                            iterator = flattenedArray.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (LDKF.isArray(flattenedArray[iterator -= 1]))
+                                                    return !0
+                                        })()
+                                    ) {
+                                        flattenedArray = LDKF.$concatArray(emptyArray, flattenedArray);
+                                        depth -= 1
+                                    }
+
+                                else
+                                    /* Loop
+                                            [while statement]
+
+                                        > Update > (Flattened Array, Depth)
+                                    */
+                                    while (depth) {
+                                        flattenedArray = [flattenedArray];
+                                        depth += 1
+                                    }
+
+                                // (Loop > Update > Array), (Update > Array)
+                                while (array[0]) LDKF.popArray(array, 1);
+                                LDKF.$pushArray(array, flattenedArray);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Free
+                        LDKF.objectDefineProperty(currentPrototype, 'free', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function free() {
+                                // Initialization > Array
+                                let array = this;
+
+                                // Update > Array
+                                LDKF.spliceArray(array, 0, array.length);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Has Element
+                        LDKF.objectDefineProperty(currentPrototype, 'hasElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function hasElement() {
+                                // Initialization > (Array, Data, Iterator, Length)
+                                let array = this,
+                                    data = arguments[0],
+                                    iterator = array.length,
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (length == 1) {
+                                    // Loop > Logic > Return
+                                    while (iterator)
+                                        if (data === array[iterator -= 1])
+                                            return !0;
+                                }
+
+                                else if (length > 1) {
+                                    // Update > Data
+                                    data = arguments;
+
+                                    // Initialization > Has Element
+                                    let hasElement = [];
+
+                                    // Modification > Has Element > Length
+                                    hasElement.length = length = data.length;
+
+                                    /* Loop
+                                            [while statement]
+                                    */
+                                    while (length) {
+                                        // Initialization > Datum
+                                        let datum = data[length -= 1];
+
+                                        // Update > Iterator
+                                        iterator = array.length;
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (iterator)
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (datum === array[iterator -= 1]) {
+                                                // Update > Has Element
+                                                hasElement[length] = !0;
+
+                                                // Break
+                                                break
+                                            }
+                                    }
+
+                                    // Return
+                                    return (function() {
+                                        // Update > Iterator
+                                        iterator = hasElement.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (!hasElement[iterator -= 1])
+                                                return !1;
+
+                                        // Return
+                                        return !0
+                                    })()
+                                }
+
+                                // Return
+                                return !1
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Last Element
+                        LDKF.objectDefineProperty(currentPrototype, 'lastElement', tmpObject.arrayPrototypeLastElementDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Get
+                            get: function lastElement() {
+                                // Return
+                                return this[LDKF.toArray(this).length - 1]
+                            }
+                        });
+                            // Definition
+                            LDKF.objectDefineProperty(LDKO.htmlAllCollectionProto, 'lastElement', tmpObject.arrayPrototypeLastElementDescription);
+                            LDKF.objectDefineProperty(LDKO.htmlAllCollectionProto, '$n', tmpObject.arrayPrototypeLastElementDescription);
+                            LDKF.objectDefineProperty(LDKO.htmlCollectionProto, 'lastElement', tmpObject.arrayPrototypeLastElementDescription);
+                            LDKF.objectDefineProperty(LDKO.htmlCollectionProto, '$n', tmpObject.arrayPrototypeLastElementDescription);
+                            LDKF.objectDefineProperty(LDKO.nodeListProto, 'lastElement', tmpObject.arrayPrototypeLastElementDescription);
+                            LDKF.objectDefineProperty(LDKO.nodeListProto, '$n', tmpObject.arrayPrototypeLastElementDescription);
 
                     /* Document Data */
                         // Favorite Icon
@@ -14295,6 +14592,10 @@
                                         LDKF.objectDefineProperty(parameters[iterator].__proto__, 'toString', {value: function toString() { return parameter }});
                                         LDKF.objectDefineProperty(parameters[iterator].__proto__, 'valueOf', {value: function valueOf() { return parameter }})
                                     }
+
+                                    // Loop > Update > Parameters
+                                    for (iterator = 0; iterator < parameters.length; iterator += 1)
+                                        parameters[iterator].address || LDKF.spliceArray(parameters, (iterator -= 1) + 1, 1);
 
                                     // Return
                                     return parameters
@@ -15549,7 +15850,11 @@
                         });
 
                     /* Object Data */
-                        // Depth
+                        /* Depth
+                                --- NOTE ---
+                                    #Lapys: This property uses the maximum call stack size available to
+                                        represent infinitely deep objects.
+                        */
                         LDKF.objectDefineProperty(currentPrototype = LDKO.objectProto, 'depth', tmpObject.objectPrototypeDepthDescription = {
                             // Configurable
                             configurable: !0,
@@ -15617,23 +15922,38 @@
                                                 [if:else statement]
                                         */
                                         if (LDKF.isArray(object)) {
-                                            // Initialization > (Flattener, Iterator)
+                                            // Initialization > (Flattener, Iterator, Is Recursive)
                                             let flattener = [],
-                                                iterator = 1;
+                                                iterator = 1,
+                                                isRecursive = !1;
 
-                                            // Loop > Update > (Object, Iterator)
-                                            while ((function() {
-                                                // Initialization > Iterator
-                                                let iterator = object.length;
+                                            // LapysJS Development Kit Functions > Iterate Object
+                                            LDKF.iterateObject((key, value) => {
+                                                // Update > Is Recursive
+                                                isRecursive || ((object === value) && (isRecursive = !0))
+                                            }, object, !0, !1, function() {});
 
-                                                // Loop > Logic > Return
-                                                while (iterator)
-                                                    if (LDKF.isArray(object[iterator -= 1]))
-                                                        return !0
-                                            })()) {
-                                                object = LDKF.$concatArray(flattener, object);
-                                                iterator += 1
-                                            }
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (isRecursive)
+                                                // Update > Depth
+                                                iterator = LDKC.maximumCallStackSize;
+
+                                            else
+                                                // Loop > Update > (Object, Iterator)
+                                                while ((function() {
+                                                    // Initialization > Iterator
+                                                    let iterator = object.length;
+
+                                                    // Loop > Logic > Return
+                                                    while (iterator)
+                                                        if (LDKF.isArray(object[iterator -= 1]))
+                                                            return !0
+                                                })()) {
+                                                    object = LDKF.$concatArray(flattener, object);
+                                                    iterator += 1
+                                                }
 
                                             // Update > Depth
                                             depth = iterator
@@ -15694,7 +16014,7 @@
                                             // LapysJS Development Kit Functions > Iterate Object
                                             LDKF.iterateObject((key, value) => {
                                                 // Update > Is Recursive
-                                                (object === value) && (isRecursive = !0);
+                                                isRecursive || ((object === value) && (isRecursive = !0));
 
                                                 // Modification > Depth Branches > [Key]
                                                 depthBranches[key] = 1
