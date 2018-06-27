@@ -3608,10 +3608,11 @@
 
                             // Query Input Element Caret Position
                             LDKF.queryInputElementCaretPosition = function queryInputElementCaretPosition() {
-                                // Initialization > (Initial Caret Position, Input, Selection Start)
+                                // Initialization > (Initial Caret Position, Input, Is HTML Input Element, Selection Start)
                                 let initialCaretPosition = 0,
                                     input = arguments[0],
-                                    selectionStart = LDKF.get.htmlInputElementSelectionStart(input);
+                                    isHtmlInputElement = LDKF.isHtmlInputElement(input),
+                                    selectionStart = isHtmlInputElement ? LDKF.get.htmlInputElementSelectionStart(input) : LDKF.get.htmlTextareaElementSelectionStart(input);
 
                                 /* Logic
                                         [if:else if statement]
@@ -3621,7 +3622,7 @@
 
                                     let range = LDKF.createRangeDocumentSelection(LDKO.documentSelection);
 
-                                    range.moveStart('character', -(LDKF.isHtmlInputElement(input) ? LDKF.get.htmlInputElementValue(input) : LDKF.get.htmlTextareaElementValue(input)).length)
+                                    range.moveStart('character', -(isHtmlInputElement ? LDKF.get.htmlInputElementValue(input) : LDKF.get.htmlTextareaElementValue(input)).length)
                                     initialCaretPosition = range.text.length
                                 }
 
@@ -5342,6 +5343,14 @@
                                 return function spliceArray() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            LDKF.$spliceArray = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$arrayProto.splice;
+
+                                // Return
+                                return function spliceArray() { return method.apply(arguments[0], arguments[1]) }
+                            })();
+
                             // Square Root
                             LDKF.sqrt = Math.sqrt;
 
@@ -5704,6 +5713,15 @@
                                     })(),
 
                                 // HTML Textarea Element
+                                    // Selection Start
+                                    htmlTextareaElementSelectionStart: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlTextareaElementProto, 'selectionStart').get;
+
+                                        // Return
+                                        return function htmlTextareaElementSelectionStart() { return method.call(arguments[0]) }
+                                    })(),
+
                                     // Value
                                     htmlTextareaElementValue: (function() {
                                         // Initialization > Method
@@ -6035,8 +6053,16 @@
                         })();
 
             /* Phase */
-                // Initialization
+                /* Initialization
+                        --- NOTE ---
+                            - Initialize and publicize the global LapysJS object.
+                            - Add a plethora of methods & properties to the global `window` object.
+                            - Add more methods & properties to constructor prototypes.
+                */
                 function init() {
+                    // Initialization > Current Prototype
+                    var currentPrototype = LDKO.arrayProto;
+
                     /* Global Data */
                         // LapysJS
                         LDKF.objectDefineProperty(window, 'LapysJS', {
@@ -6101,9 +6127,6 @@
                                     });
 
                         // Temporary Object
-                            // Execution Value
-                            tmpObject.execValue = !1;
-
                             // Script Source
                             tmpObject.scriptSource = LDKF.get.htmlScriptElementSrc(LapysJS.script);
 
@@ -12323,6 +12346,84 @@
                                 writable: !0
                             });
 
+                            // Release Input
+                            LDKF.objectDefineProperty(window, 'releaseInput', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function releaseInput() {
+                                    // Initialization > (Input, Match, Callback, Is ((HTML) Input, Regular Expression), Strictly Watched Elements, Iterator, Length)
+                                    let input = arguments[0],
+                                        match = arguments[1],
+                                        callback = arguments[2],
+                                        isInputElement = LDKF.isInputElement(input),
+                                        isHtmlInputElement = LDKF.isHtmlInputElement(input),
+                                        isRegex = LDKF.isRegex(match),
+                                        strictlyWatchedElements = LDK.tmp.objects.strictlyWatchedElements,
+                                        iterator = strictlyWatchedElements.length;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (arguments.length > 1) {
+                                        // Update > Callback
+                                        LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
+
+                                        // Error
+                                        isInputElement || LDKF.error("'releaseInput'", 'argument', LDKF.debugMessage("Input element given ('" + LDKF.string(input) + "')", 'must', ['an HTMLInputElement (<input>)', 'HTMLTextAreaElement (<textarea>)']));
+                                        isRegex || LDKF.isString(match) || LDKF.error("'releaseInput'", 'argument', LDKF.debugMessage("Match given ('" + LDKF.string(match) + "')", ['must', 'a'], ['regular expression', 'string']));
+                                        arguments.length > 2 ? LDKF.isFunction(callback) || LDKF.error("'releaseInput'", 'argument', LDKF.debugMessage("Callback given ('" + LDKF.string(callback) + "')", ['must', 'a'], ['evaluation string', 'function'])) : callback = null;
+
+                                        // Initialization > Object
+                                        let object = {callback: callback, input: input, match: match};
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Strictly Watched Element
+                                            let strictlyWatchedElement = strictlyWatchedElements[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (
+                                                (
+                                                    LDKF.isNull(object.callback) ||
+                                                    LDKF.toFunctionString(strictlyWatchedElement.callback) == LDKF.toFunctionString(object.callback)
+                                                ) &&
+                                                strictlyWatchedElement.input === object.input &&
+                                                (
+                                                    isRegex ?
+                                                        (
+                                                            LDKF.get.regexFlags(strictlyWatchedElement.match) == LDKF.get.regexFlags(object.match) &&
+                                                            LDKF.get.regexSource(strictlyWatchedElement.match) == LDKF.get.regexSource(object.match)
+                                                        ) :
+                                                        strictlyWatchedElement.match == object.match
+                                                )
+                                            ) {
+                                                // Update > Strictly Watched Elements
+                                                LDKF.spliceArray(strictlyWatchedElements, iterator, 1);
+
+                                                // Return
+                                                return !0
+                                            }
+                                        }
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error("'releaseInput'", 'argument', [2, 0]);
+
+                                    // Return
+                                    return !1
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Repeat
                             LDKF.objectDefineProperty(window, 'repeat', {
                                 // Configurable
@@ -12453,7 +12554,7 @@
                                 writable: !0
                             });
 
-                            // Select --- CHECKPOINT ---
+                            // Select
                             LDKF.objectDefineProperty(window, 'select', {
                                 // Configurable
                                 configurable: !0,
@@ -12646,7 +12747,6 @@
                             });
 
                             /* Strict Input
-                                    --- CHECKPOINT ---
                                     --- NOTE ---
                                         #Lapys: Prevent input-able HTML elements from
                                             containing a specified set of text values.
@@ -12655,133 +12755,272 @@
                                 // Configurable
                                 configurable: !0,
 
-                                // Value <element, match, callback <element> <match, character set>>
+                                // Value
                                 value: function strictInput() {
-                                    // Initialization > (Length, Callback, Input, Match, Is (Evaluation String, Regular Expression), Strictly Watched Elements)
-                                    let length = arguments.length,
-                                        callback = arguments[2],
-                                        input = arguments[0],
+                                    // Initialization > (Input, Match, Callback, Is ((HTML) Input, Regular Expression), Strictly Watched Elements, Iterator, Length)
+                                    let input = arguments[0],
                                         match = arguments[1],
-                                        isEvaluationString = !1,
+                                        callback = arguments[2],
+                                        isInputElement = LDKF.isInputElement(input),
+                                        isHtmlInputElement = LDKF.isHtmlInputElement(input),
                                         isRegex = LDKF.isRegex(match),
-                                        strictlyWatchedElements = tmpObject.strictlyWatchedElements;
+                                        strictlyWatchedElements = LDK.tmp.objects.strictlyWatchedElements,
+                                        iterator = 0,
+                                        length = strictlyWatchedElements.length;
 
                                     /* Logic
                                             [if:else statement]
                                     */
-                                    if (length > 1) {
-                                        // Error
-                                        LDKF.isInputElement(input) || LDKF.error("'strictInput'", 'argument', LDKF.debugMessage('Argument 0', 'must', ['an HTMLInputElement (<input>)', 'HTMLTextAreaElement (<textarea>)']));
-                                        LDKF.isRegex(match) || LDKF.isString(match) || LDKF.error("'strictInput'", 'argument', "Invalid match: '" + LDKF.string(match) + "'");
-
-                                        /* Logic
-                                                [if:else statement]
-                                        */
-                                        if (length > 2) {
-                                            // Update > Callback
-                                            LDKF.isEvaluationString(callback) && (isEvaluationString = !0) && (callback = LDKF.$func(callback));
-
-                                            // Error
-                                            LDKF.isFunction(callback) || LDKF.error("'strictInput'", 'argument', LDKF.debugMessage(callback, ['must', 'a'], ['evaluation string', 'function']))
-                                        }
-
-                                        else
-                                            // Update > Callback
-                                            callback = (function() { return clear.apply(this, LDKF.toArray(arguments)) });
+                                    if (arguments.length > 1) {
+                                        // Update > Callback
+                                        (arguments.length > 2) || (callback = updateInputValue);
+                                        LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
 
                                         // Error
-                                        (function() {
-                                            let iterator = strictlyWatchedElements.length;
+                                        isInputElement || LDKF.error("'strictInput'", 'argument', LDKF.debugMessage("Input element given ('" + LDKF.string(input) + "')", 'must', ['an HTMLInputElement (<input>)', 'HTMLTextAreaElement (<textarea>)']));
+                                        isRegex || LDKF.isString(match) || LDKF.error("'strictInput'", 'argument', LDKF.debugMessage("Match given ('" + LDKF.string(match) + "')", ['must', 'a'], ['regular expression', 'string']));
+                                        LDKF.isFunction(callback) || LDKF.error("'strictInput'", 'argument', LDKF.debugMessage("Callback given ('" + LDKF.string(callback) + "')", ['must', 'a'], ['evaluation string', 'function']));
 
-                                            while (iterator) {
-                                                iterator -= 1;
-                                                let strictlyWatchedElement = strictlyWatchedElements[iterator];
-
-                                                if (
-                                                    strictlyWatchedElement.element === input &&
-                                                    (
-                                                        (isEvaluationString && LDKF.get.functionBody(strictlyWatchedElement.callback) == LDKF.get.functionBody(callback)) ||
-                                                        strictlyWatchedElement.callback === callback
-                                                    ) &&
-                                                    (
-                                                        isRegex ?
-                                                            LDKF.get.regexFlags(strictlyWatchedElement.match) == LDKF.get.regexFlags(match) &&
-                                                            LDKF.get.regexSource(strictlyWatchedElement.match) == LDKF.get.regexSource(match) :
-                                                            strictlyWatchedElement.match == match
-                                                    )
-                                                )
-                                                    return !0
-                                            }
-                                        })() && LDKF.error("'strictInput'", 'argument', 'The given element is already being watched');
-
-                                        // Update > Strictly Watched Elements
-                                        LDKF.pushArray(strictlyWatchedElements, {callback: callback, element: input, match: match});
-
-                                        // Initialization > (Clear, Invalid Match, Iterator, Request)
-                                        let clear = function clearInput() {
-                                            let inputCaretPosition = LDKF.queryInputElementCaretPosition(input),
-                                                iterator = 0,
-                                                length = invalidMatches.length,
-                                                value = getValue(input);
-
-                                            if (
-                                                !inputCaretPosition ||
-                                                inputCaretPosition == getValue(input).length
-                                            )
-                                                for (iterator; iterator < length; iterator += 1) {
-                                                    let invalidMatch = invalidMatches[iterator];
-                                                    setValue(input, LDKF.replaceString(getValue(input), invalidMatch, ''))
-                                                }
-
-                                            else {
-                                                let valueAfterCaret = LDKF.sliceString(getValue(input), inputCaretPosition),
-                                                    valueBeforeCaret = LDKF.sliceString(getValue(input), 0, inputCaretPosition);
-
-                                                for (iterator; iterator < length; iterator += 1) {
-                                                    let invalidMatch = invalidMatches[iterator];
-
-                                                    if (LDKF.matchString(valueAfterCaret, invalidMatch))
-                                                        setValue(input, LDKF.replaceString(valueAfterCaret, invalidMatch, ''));
-
-                                                    else
-                                                        break
-                                                }
-
-                                                valueAfterCaret = getValue(input);
-                                                setValue(input, valueBeforeCaret + getValue(input));
-
-                                                for (iterator; iterator < length; iterator += 1) {
-                                                    let invalidMatch = invalidMatches[iterator];
-
-                                                    setValue(input, LDKF.replaceString(valueBeforeCaret, invalidMatch, ''))
-                                                }
-                                            }
-                                        }, invalidMatches = [],
-                                        iterator = 0,
-                                        request;
+                                        // Initialization > (Strictly Watched Element, Has Own Callback, Call, (Get, Set) Value, Request)
+                                        let strictlyWatchedElement = {callback: callback, input: input, match: match},
+                                            hasOwnCallback = callback !== updateInputValue,
+                                            call = hasOwnCallback ?
+                                                function call(match, invalidMatch) { return callback.call(input, match, invalidMatch) } :
+                                                function call(invalidMatch, index) { return updateInputValue.call(input, invalidMatch, index) },
+                                            getValue = isHtmlInputElement ?
+                                                function getValue(input) { return LDKF.get.htmlInputElementValue(input) } :
+                                                function getValue(input) { return LDKF.get.htmlTextareaElementValue(input) },
+                                            setValue = isHtmlInputElement ?
+                                                function setValue(input) { return LDKF.set.htmlInputElementValue(input, arguments[1]) } :
+                                                function setValue(input) { return LDKF.set.htmlTextareaElementValue(input, arguments[1]) },
+                                            request;
 
                                         // Function
-                                        function call() {
-                                            // Return
-                                            return callback.call(input, match, arguments[0])
-                                        }
+                                            /* Is Watched
+                                                    --- NOTE ---
+                                                        #Lapys: Is able to return two kinds of falsy values:
+                                                            - `false` if the object searched for was not in the Strictly Watched Elements list.
+                                                            - `null` if the Strictly Watched Elements list is empty.
+                                            */
+                                            function isWatched(object) {
+                                                // Initialization > (Strictly Watched Elements, Iterator)
+                                                let strictlyWatchedElements = LDK.tmp.objects.strictlyWatchedElements,
+                                                    iterator = strictlyWatchedElements.length;
 
-                                        function getValue() {
-                                            let input = arguments[0];
-                                            return LDKF.isHtmlInputElement(input) ? LDKF.get.htmlInputElementValue(input) : LDKF.get.htmlTextareaElementValue(input)
-                                        }
+                                                // Logic
+                                                if (iterator) {
+                                                    // Loop
+                                                    while (iterator) {
+                                                        // Initialization > Strictly Watched Element
+                                                        let strictlyWatchedElement = strictlyWatchedElements[iterator -= 1];
 
-                                        function setValue() {
-                                            let input = arguments[0],
-                                                value = arguments[1];
-                                            return LDKF.isHtmlInputElement(input) ? LDKF.set.htmlInputElementValue(input, value) : LDKF.set.htmlTextareaElementValue(input, value)
-                                        }
+                                                        // Logic > Return
+                                                        if (
+                                                            LDKF.toFunctionString(strictlyWatchedElement.callback) == LDKF.toFunctionString(object.callback) &&
+                                                            strictlyWatchedElement.input === object.input &&
+                                                            (
+                                                                isRegex ?
+                                                                    (
+                                                                        LDKF.get.regexFlags(strictlyWatchedElement.match) == LDKF.get.regexFlags(object.match) &&
+                                                                        LDKF.get.regexSource(strictlyWatchedElement.match) == LDKF.get.regexSource(object.match)
+                                                                    ) :
+                                                                    strictlyWatchedElement.match == object.match
+                                                            )
+                                                        )
+                                                            return !0
+                                                    }
 
-                                        // Update > Callback
-                                        LDKF.isNativeFunction(callback) || (callback = LDKF.$func(callback.name, LDKF.get.functionParameters(callback), 'var clear = ' + LDKF.toFunctionString(clear) + '; (' + LDKF.toFunctionString(callback) + ').apply(this, LDKF.toArray(arguments))'));
+                                                    // Return
+                                                    return !1
+                                                }
 
+                                                // Return
+                                                return null
+                                            }
+
+                                            // Update Input Value
+                                            function updateInputValue(invalidMatch, index) {
+                                                // Initialization > (Iterator, Length, Value)
+                                                let iterator = 0,
+                                                    length = invalidMatch.length,
+                                                    value = getValue(input);
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (index == value.length || !index) {
+                                                    let formerValue = value;
+
+                                                    /* Loop
+                                                            Index Invalid Match.
+
+                                                        > Update > Value
+                                                    */
+                                                    for (iterator; iterator < length; iterator += 1)
+                                                        value = LDKF.replaceString(value, invalidMatch[iterator], '');
+
+                                                    // Set Value > Input
+                                                    setValue(input, value)
+                                                }
+
+                                                else {
+                                                    // Initialization > Value (After, Before) Index
+                                                    let valueAfterIndex = LDKF.sliceString(value, index),
+                                                        valueBeforeIndex = LDKF.sliceString(value, 0, index);
+
+                                                    /* Loop
+                                                            Index Invalid Match.
+                                                    */
+                                                    for (iterator; iterator < length; iterator += 1) {
+                                                        // Initialization > Invalid
+                                                        let invalid = invalidMatch[iterator];
+
+                                                        /* Logic
+                                                                [if:else for statement]
+
+                                                                --- NOTE ---
+                                                                    #Lapys: `else...for` statements are not a thing, lol.
+
+                                                            > Update > Value (After, Before) Index
+                                                        */
+                                                        if ((LDKF.matchString(valueAfterIndex, invalid) || []).length)
+                                                            valueAfterIndex = LDKF.replaceString(valueAfterIndex, invalid, '');
+
+                                                        else for (iterator; iterator < length; iterator += 1)
+                                                            valueBeforeIndex = LDKF.replaceString(valueBeforeIndex, invalidMatch[iterator], '')
+                                                    }
+
+                                                    // Set Value > Input
+                                                    setValue(input, valueBeforeIndex + valueAfterIndex)
+                                                }
+                                            }
+
+                                        // Error
+                                        isWatched(strictlyWatchedElement) && LDKF.error("'strictInput'", 'argument', 'Given element and match is already being watched');
+
+                                        // Update > Strictly Watched Elements
+                                        LDKF.pushArray(strictlyWatchedElements, strictlyWatchedElement);
+
+                                        // Initialization > Former Value
+                                        let formerValue = getValue(input);
+
+                                        // Function > Watch
                                         (function watch() {
-                                            request = LDKF.requestAnimationFrame(watch)
+                                            // Initialization > Watched
+                                            let watched = isWatched(strictlyWatchedElement);
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.isNull(watched) || !input || !watched)
+                                                // Cancel Animation Frame > Request
+                                                LDKF.cancelAnimationFrame(request);
+
+                                            else {
+                                                // Initialization > (Invalid Match, Value)
+                                                let invalidMatch = [],
+                                                    value = getValue(input);
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (isRegex)
+                                                    /* Loop
+                                                            [while statement]
+                                                    */
+                                                    while ((LDKF.matchString(value, match) || []).length) {
+                                                        // Initialization > (Regular Expression, Iterator, Length)
+                                                        let regexMatch = LDKF.matchString(value, match),
+                                                            iterator = 0,
+                                                            length = regexMatch.length;
+
+                                                        /* Loop
+                                                                Index Regular Expression Match.
+
+                                                            > Update > Invalid Match
+                                                        */
+                                                        for (iterator = 0; iterator < length; iterator += 1)
+                                                            LDKF.pushArray(invalidMatch, regexMatch[iterator]);
+
+                                                        // Update > Value
+                                                        value = LDKF.replaceString(value, match, '')
+                                                    }
+
+                                                else
+                                                    /* Loop
+                                                            [while statement]
+
+                                                        > Update > (Invalid Match, Value)
+                                                    */
+                                                    while ((function() {
+                                                        /* Initialization > (Iterator, Length)
+                                                                --- NOTE ---
+                                                                    #Lapys: Determine if Match is a substring of Value.
+                                                        */
+                                                        let iterator = 0,
+                                                            length = value.length;
+
+                                                        /* Loop
+                                                                Iterate through Value.
+                                                        */
+                                                        for (iterator; iterator < length; iterator += 1) {
+                                                            // Initialization > Character
+                                                            let character = value[iterator];
+
+                                                            // Logic > Return
+                                                            if (
+                                                                character == match ||
+                                                                (function() {
+                                                                    /* Initialization > Match (Iterator, Length)
+                                                                            --- NOTE ---
+                                                                                #Lapys: For multiple-character matches.
+                                                                    */
+                                                                    let matchIterator = 0,
+                                                                        matchLength = match.length;
+
+                                                                    /* Loop
+                                                                            Iterate through Match.
+
+                                                                        > Logic > Return
+                                                                    */
+                                                                    for (matchIterator; matchIterator < matchLength; matchIterator += 1)
+                                                                        if (value[iterator + matchIterator] != match[matchIterator])
+                                                                            return !1;
+
+                                                                    // Return
+                                                                    return !0
+                                                                })()
+                                                            )
+                                                                return !0
+                                                        }
+                                                    })(value, match)) {
+                                                        LDKF.pushArray(invalidMatch, match);
+                                                        value = LDKF.replaceString(value, match, '')
+                                                    }
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (hasOwnCallback) {
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (formerValue != value) {
+                                                        // Call
+                                                        call(match, invalidMatch);
+
+                                                        // Update > Former Value
+                                                        formerValue = value
+                                                    }
+                                                }
+
+                                                else
+                                                    // Call
+                                                    call(invalidMatch, LDKF.queryInputElementCaretPosition(input))
+
+                                                // Update > Request
+                                                request = LDKF.requestAnimationFrame(watch)
+                                            }
                                         })()
                                     }
 
@@ -12796,7 +13035,8 @@
 
                             /* Stringify
                                     --- WARN ---
-                                        #Lapys: Be careful not to stringify some objects.
+                                        #Lapys: Be careful not to stringify some objects,
+                                            like the global object: `window`.
                             */
                             LDKF.objectDefineProperty(window, 'stringify', {
                                 // Configurable
@@ -12979,9 +13219,376 @@
                                 writable: !0
                             });
 
+                    /* Array Data */
+                        // Add Element
+                        LDKF.objectDefineProperty(currentPrototype, 'addElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function addElement() {
+                                // Initialization > (Arguments, Array)
+                                let args = [0, 0],
+                                    array = this;
+
+                                // Update > (Arguments, Array)
+                                LDKF.$pushArray(args, LDKF.toArray(arguments));
+                                LDKF.$spliceArray(array, args);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Add Element To Back
+                        LDKF.objectDefineProperty(currentPrototype, 'addElementToBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function addElementToBack() {
+                                // Initialization > (Arguments, Array)
+                                let args = [0, 0],
+                                    array = this;
+
+                                // Update > (Arguments, Array)
+                                LDKF.$pushArray(args, LDKF.toArray(arguments));
+                                LDKF.$spliceArray(array, args);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Add Element To Front
+                        LDKF.objectDefineProperty(currentPrototype, 'addElementToFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function addElementToFront() {
+                                // Initialization > Array
+                                let array = this;
+
+                                // Update > Array
+                                LDKF.$pushArray(array, LDKF.toArray(arguments));
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        /* Build (Elements)
+                                --- NOTE ---
+                                    #Lapys: Update each element of an array
+                                        using callbacks.
+                        */
+                        LDKF.objectDefineProperty(currentPrototype, 'build', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function build() {
+                                // Initialization > (Array, Callbacks, Iterator, Length)
+                                let array = this,
+                                    callbacks = arguments,
+                                    iterator = 0,
+                                    length = callbacks.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > Callback
+                                    let callback = callbacks[iterator];
+
+                                    // Update > Callback
+                                    LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
+
+                                    // Error
+                                    LDKF.isFunction(callback) || LDKF.error(["'build'", "'Array'"], 'argument', LDKF.debugMessage(callback, ['must', 'a'], ['evaluation string', 'function']))
+                                }
+
+                                // Initialization > Callback (Iterator, Length)
+                                let callbackIterator = 0,
+                                    callbackLength = callbacks.length;
+
+                                // Update > Length
+                                length = array.length;
+
+                                // Loop > Loop > Update > Array
+                                for (iterator = 0; iterator != length; iterator += 1)
+                                    for (callbackIterator = 0; callbackIterator != callbackLength; callbackIterator += 1)
+                                        array[iterator] = callbacks[callbackIterator].call(array, array[iterator]);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        /* Collate
+                                --- NOTE ---
+                                    #Lapys: Update a given value using all
+                                        elements of an array.
+                        */
+                        LDKF.objectDefineProperty(currentPrototype, 'collate', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function collate() {
+                                // Initialization > (Array, Callbacks, Data, Iterator, Length)
+                                let array = this,
+                                    callbacks = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                    data = arguments[0],
+                                    iterator = 0,
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (length) {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (length != 1) {
+                                        // Update > Length
+                                        length = callbacks.length;
+
+                                        /* Loop
+                                                Index Callbacks.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Callback
+                                            let callback = callbacks[iterator];
+
+                                            // Update > Callback
+                                            LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
+
+                                            // Error
+                                            LDKF.isFunction(callback) || LDKF.error(["'build'", "'Array'"], 'argument', LDKF.debugMessage(callback, ['must', 'a'], ['evaluation string', 'function']))
+                                        }
+
+                                        // Initialization > Callback (Iterator, Length)
+                                        let callbackIterator = 0,
+                                            callbackLength = callbacks.length;
+
+                                        // Update > Length
+                                        length = array.length;
+
+                                        // Loop > Loop > Update > Data
+                                        for (iterator = 0; iterator != length; iterator += 1)
+                                            for (callbackIterator = 0; callbackIterator != callbackLength; callbackIterator += 1)
+                                                data = callbacks[callbackIterator].call(array, data, array[iterator])
+                                    }
+
+                                    // Return
+                                    return data
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'collate'", "'Array'"], 'argument', [1, 0]);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        /* Crush
+                                --- NOTE ---
+                                    #Lapys: Crush both sides of an array
+                                        by a given number of elements.
+                        */
+                        LDKF.objectDefineProperty(currentPrototype, 'crush', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function crush() {
+                                // Initialization > (Array, Length)
+                                let array = this,
+                                    length = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length)
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isSafeInteger(length)) {
+                                        // Initialization > New Array
+                                        let newArray = [];
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (length === 0 || length === -0)
+                                            // Return
+                                            return array;
+
+                                        else {
+                                            // Update > (Length, New Array)
+                                            length = LDKF.abs(length);
+                                            newArray = LDKF.sliceArray(LDKF.sliceArray(array, length), 0, -length)
+                                        }
+
+                                        // (Loop > Update > Array), (Update > Array)
+                                        while (array[0]) LDKF.popArray(array, 1);
+                                        LDKF.$pushArray(array, newArray);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'compact'", "'Array'"], 'argument', LDKF.debugMessage(length, ['must', 'a'], 'safe integer'));
+
+                                else
+                                    // Error
+                                    LDKF.error(["'compact'", "'Array'"], 'argument', [1, 0]);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        /* Compact
+                                --- NOTE ---
+                                    #Lapys: Remove a given number of elements
+                                        from one side of the array.
+                        */
+                        LDKF.objectDefineProperty(currentPrototype, 'compact', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function compact() {
+                                // Initialization > (Array, Length)
+                                let array = this,
+                                    length = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length)
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isSafeInteger(length)) {
+                                        // Initialization > New Array
+                                        let newArray = [];
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (length === 0 || length === -0)
+                                            // Return
+                                            return array;
+
+                                        else if (length > 0)
+                                            // Update > New Array
+                                            newArray = LDKF.sliceArray(array, length);
+
+                                        else
+                                            // Update > New Array
+                                            newArray = LDKF.sliceArray(array, 0, length);
+
+                                        // (Loop > Update > Array), (Update > Array)
+                                        while (array[0]) LDKF.popArray(array, 1);
+                                        LDKF.$pushArray(array, newArray);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'compact'", "'Array'"], 'argument', LDKF.debugMessage(length, ['must', 'a'], 'safe integer'));
+
+                                else
+                                    // Error
+                                    LDKF.error(["'compact'", "'Array'"], 'argument', [1, 0]);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        /* Distinct
+                                --- NOTE ---
+                                    #Lapys: Same as `Array.prototype.removeDuplicatedElements`
+                        */
+                        LDKF.objectDefineProperty(currentPrototype, 'distinct', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function distinct() {
+                                // Initialization > (Array, Distinct, Iterator, Length)
+                                let array = this,
+                                    distinct = [],
+                                    iterator = 0,
+                                    length = array.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > Item
+                                    let item = array[iterator];
+
+                                    // Update > Distinct
+                                    (function() {
+                                        // Initialization > Distinct (Iterator, Length)
+                                        let distinctIterator = 0,
+                                            distinctLength = distinct.length;
+
+                                        // Loop > Logic > Return
+                                        for (distinctIterator; distinctIterator != distinctLength; distinctIterator += 1)
+                                            if (item === distinct[distinctIterator])
+                                                return !0
+                                    })() || LDKF.pushArray(distinct, item)
+                                }
+
+                                // (Loop > Update > Array), (Update > Array)
+                                while (array[0]) LDKF.popArray(array, 1);
+                                LDKF.$pushArray(array, distinct);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                     /* Document Data */
                         // Favorite Icon
-                        LDKF.objectDefineProperty(LDKO.documentProto, 'favicon', new (function Object() {
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.documentProto, 'favicon', new (function Object() {
                             // Initialization > (Relationships, Target)
                             let relationships = ['apple-touch-icon', 'icon', 'shortcut icon'],
                                 that = this;
@@ -13135,7 +13742,7 @@
 
                     /* Function Data */
                         // Apply
-                        LDKF.objectDefineProperty(LDKO.funcProto, 'apply', {
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.funcProto, 'apply', {
                             // Configurable
                             configurable: !1,
 
@@ -13143,14 +13750,14 @@
                             enumerable: !1,
 
                             // Value
-                            value: LDKF.objectGetOwnPropertyDescriptor(LDKO.funcProto, 'apply').value,
+                            value: LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'apply').value,
 
                             // Writable
                             writable: !1
                         });
 
                         // Body
-                        LDKF.objectDefineProperty(LDKO.funcProto, 'body', new (function Object() {
+                        LDKF.objectDefineProperty(currentPrototype, 'body', new (function Object() {
                             // Initialization > Target
                             let $that = this;
 
@@ -13342,7 +13949,7 @@
                         }));
 
                         // Call
-                        LDKF.objectDefineProperty(LDKO.funcProto, 'call', {
+                        LDKF.objectDefineProperty(currentPrototype, 'call', {
                             // Configurable
                             configurable: !1,
 
@@ -13350,14 +13957,14 @@
                             enumerable: !1,
 
                             // Value
-                            value: LDKF.objectGetOwnPropertyDescriptor(LDKO.funcProto, 'call').value,
+                            value: LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'call').value,
 
                             // Writable
                             writable: !1
                         });
 
                         // Head
-                        LDKF.objectDefineProperty(LDKO.funcProto, 'head', new (function Object() {
+                        LDKF.objectDefineProperty(currentPrototype, 'head', new (function Object() {
                             // Initialization > Target
                             let $that = this;
 
@@ -13466,7 +14073,7 @@
                         }));
 
                         // Parameters
-                        LDKF.objectDefineProperty(LDKO.funcProto, 'params', new (function Object() {
+                        LDKF.objectDefineProperty(currentPrototype, 'params', new (function Object() {
                             // Initialization > (Parameter Prototype, Target)
                             let parameterPrototype = LDKF.customObject('Parameter').constructor.prototype,
                                 $that = this;
@@ -13777,7 +14384,7 @@
 
                     /* HTML Element Data */
                         // Selector
-                        LDKF.objectDefineProperty(LDKO.htmlElementProto, 'selector', tmpObject.htmlElePrototypeSelectorDescription = {
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.htmlElementProto, 'selector', tmpObject.htmlElePrototypeSelectorDescription = {
                             // Configurable
                             configurable: !0,
 
@@ -14314,7 +14921,7 @@
                         });
 
                         // Write
-                        LDKF.objectDefineProperty(LDKO.htmlElementProto, 'write', tmpObject.htmlElePrototypeWriteDescription = {
+                        LDKF.objectDefineProperty(currentPrototype, 'write', tmpObject.htmlElePrototypeWriteDescription = {
                             // Configurable
                             configurable: !0,
 
@@ -14943,7 +15550,7 @@
 
                     /* Object Data */
                         // Depth
-                        LDKF.objectDefineProperty(LDKO.objectProto, 'depth', tmpObject.objectPrototypeDepthDescription = {
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.objectProto, 'depth', tmpObject.objectPrototypeDepthDescription = {
                             // Configurable
                             configurable: !0,
 
@@ -15166,11 +15773,14 @@
                                 else
                                     // Return
                                     return depth
-                            }
+                            },
+
+                            // Set
+                            set: function setDepth() { return LDKF.objectDefineProperty(this, 'depth', {configurable: !0, enumerable: !0, value: arguments[0], writable: !0}) }
                         });
 
                         // Length
-                        LDKF.objectDefineProperty(LDKO.objectProto, 'length', {
+                        LDKF.objectDefineProperty(currentPrototype, 'length', {
                             // Configurable
                             configurable: !0,
 
@@ -15284,14 +15894,11 @@
                             },
 
                             // Set
-                            set: function length() {
-                                // Return
-                                return arguments[0]
-                            }
+                            set: function length() { return LDKF.objectDefineProperty(this, 'length', {configurable: !0, enumerable: !0, value: arguments[0], writable: !0}) }
                         });
 
                         // To String
-                        LDKF.objectDefineProperty(LDKO.objectProto, 'toString', {
+                        LDKF.objectDefineProperty(currentPrototype, 'toString', {
                             // Configurable
                             configurable: !1,
 
@@ -15299,14 +15906,14 @@
                             enumerable: !1,
 
                             // Value
-                            value: LDKF.objectGetOwnPropertyDescriptor(LDKO.objectProto, 'toString').value,
+                            value: LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'toString').value,
 
                             // Writable
                             writable: !1
                         });
 
                         // Value Of
-                        LDKF.objectDefineProperty(LDKO.objectProto, 'valueOf', {
+                        LDKF.objectDefineProperty(currentPrototype, 'valueOf', {
                             // Configurable
                             configurable: !1,
 
@@ -15314,7 +15921,7 @@
                             enumerable: !1,
 
                             // Value
-                            value: LDKF.objectGetOwnPropertyDescriptor(LDKO.objectProto, 'valueOf').value,
+                            value: LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'valueOf').value,
 
                             // Writable
                             writable: !1
@@ -15322,7 +15929,7 @@
 
                     /* String Data */
                         // Get After Character
-                        LDKF.objectDefineProperty(LDKO.stringProto, 'getAfterChar', {
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.stringProto, 'getAfterChar', {
                             // Configurable
                             configurable: !0,
 
@@ -15495,7 +16102,7 @@
                         });
 
                         // Get Before Character
-                        LDKF.objectDefineProperty(LDKO.stringProto, 'getBeforeChar', {
+                        LDKF.objectDefineProperty(currentPrototype, 'getBeforeChar', {
                             // Configurable
                             configurable: !0,
 
