@@ -8,9 +8,6 @@
     <!-- Stylesheets -->
         <!-- LapysJS Stylesheet -->
         <link href=src/lapys.css media=all rel=stylesheet type=text/css>
-
-        <!-- AppJS Stylesheet -->
-        <link href=vendors/css/app.css media=all rel=stylesheet type=text/css>
 </head>
 
 <body>
@@ -18,13 +15,42 @@
         <!-- LapysJS Script -->
         <script src=src/lapys.js type=text/javascript> </script>
 
-        <!-- AppJS Script -->
-        <script src=vendors/js/app.js type=text/javascript> </script>
+        <!-- Base Script -->
+        <script src=assets/js/base.js type=text/javascript> </script>
 
     <!-- Main -->
     <main>
-        <!-- Jumbotron -->
-        <jumbotron-element id=jumbotron>
+        <!-- Jumbotron
+                    --- NOTE ---
+                        #Lapys:
+                            - Jumbotrons have Bottom, Middle and Top sub-elements.
+                            - Logos are Divisions and Images combined.
+        -->
+        <jumbotron-element class='cur-default no-overflow no-select' id=jumbotron>
+            <!-- Middle -->
+            <middle class=fill>
+                <!-- Logo -->
+                <logo script=this.src=requestURL(WebManager.global.assets.images.logo)> </logo>
+
+                <!-- Header Group -->
+                <hgroup>
+                    <!-- Header -->
+                    <h1 role=header script=this.write(app.name)> </h1>
+
+                    <!-- Sub Header -->
+                    <h2 class=cur-text role=subheader>
+                        <dynamic-text
+                            format='no-newlines no-tabspaces'
+                            sequences=''
+                            text='
+                                Burst out your inner <strong>creativity</strong>,
+                                <strong>Develop</strong> the kind of apps you want,
+                                Do it all with <strong>innovative</strong> technology.
+                            '
+                        > </dynamic-text>
+                    </h2>
+                </hgroup>
+            </middle>
         </jumbotron-element>
     </main>
 </body>
