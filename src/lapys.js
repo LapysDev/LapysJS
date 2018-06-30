@@ -3814,67 +3814,6 @@
                                 return LDKF.performanceProtoNow.call(LDKO.$performance)
                             };
 
-                            // Request Animation Frame
-                            LDKF.requestAnimationFrame = (function() {
-                                // Initialization > Method
-                                let method = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-
-                                // Return
-                                return function requestAnimationFrame() { return method.call(window, arguments[0]) }
-                            })();
-
-                            // Set Interval
-                            LDKF.setInterval = (function() {
-                                // Initialization > Method
-                                let method = window.setInterval;
-
-                                // Return
-                                return function setInterval() { return method.apply(window, LDKF.toArray(arguments)) }
-                            })();
-
-                            // String
-                            LDKF.$string = function String() {
-                                // Initialization > (Iterator, Length, String)
-                                let iterator = 0,
-                                    length = arguments.length,
-                                    string = '';
-
-                                /* Loop
-                                        Index Arguments.
-
-                                    > Update > String
-                                */
-                                for (iterator; iterator < length; iterator += 1)
-                                    string += LDKF.string(arguments[iterator]);
-
-                                // Return
-                                return string
-                            };
-
-                            // To Array
-                            LDKF.toArray = function toArray() {
-                                // Initialization > (Array, Arguments)
-                                let array = [],
-                                    args = LDKF.arrayFrom(arguments);
-
-                                // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
-                                    // Logic > Error Handling > Update > Value
-                                    if (!LDKF.isArrayLike(value))
-                                        try { value = [...value] }
-                                        catch (error) { value = [value] }
-
-                                    // LapysJS Development Kit Functions > Iterate Array
-                                    LDKF.iterateArray((key, value) => {
-                                        // Modification > Array > (Key, Array > Length)
-                                        array[+key+'' == 'NaN' ? key : array.length] = value
-                                    }, value)
-                                }, args);
-
-                                // Return
-                                return array
-                            };
-
                             // Query Input Element Caret Position
                             LDKF.queryInputElementCaretPosition = function queryInputElementCaretPosition() {
                                 // Initialization > (Initial Caret Position, Input, Is HTML Input Element, Selection Start)
@@ -4227,6 +4166,15 @@
                                 return line
                             };
 
+                            // Request Animation Frame
+                            LDKF.requestAnimationFrame = (function() {
+                                // Initialization > Method
+                                let method = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+
+                                // Return
+                                return function requestAnimationFrame() { return method.call(window, arguments[0]) }
+                            })();
+
                             // Request File
                             LDKF.requestFile = function requestFile() {
                                 // Initialization > (Allow (Request, Warnings), Browser, Length, Host (Name), Properties, Protocol, Protocol Schemes, Match Protocol, Source, Request (Type))
@@ -4310,6 +4258,58 @@
 
                                 // Return
                                 return null
+                            };
+
+                            // Set Interval
+                            LDKF.setInterval = (function() {
+                                // Initialization > Method
+                                let method = window.setInterval;
+
+                                // Return
+                                return function setInterval() { return method.apply(window, LDKF.toArray(arguments)) }
+                            })();
+
+                            // String
+                            LDKF.$string = function String() {
+                                // Initialization > (Iterator, Length, String)
+                                let iterator = 0,
+                                    length = arguments.length,
+                                    string = '';
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > String
+                                */
+                                for (iterator; iterator < length; iterator += 1)
+                                    string += LDKF.string(arguments[iterator]);
+
+                                // Return
+                                return string
+                            };
+
+                            // To Array
+                            LDKF.toArray = function toArray() {
+                                // Initialization > (Array, Arguments)
+                                let array = [],
+                                    args = LDKF.arrayFrom(arguments);
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Logic > Error Handling > Update > Value
+                                    if (!LDKF.isArrayLike(value))
+                                        try { value = [...value] }
+                                        catch (error) { value = [value] }
+
+                                    // LapysJS Development Kit Functions > Iterate Array
+                                    LDKF.iterateArray((key, value) => {
+                                        // Modification > Array > (Key, Array > Length)
+                                        array[+key+'' == 'NaN' ? key : array.length] = value
+                                    }, value)
+                                }, args);
+
+                                // Return
+                                return array
                             };
 
                             // To Function String
@@ -5513,6 +5513,144 @@
                                 return callback
                             })();
 
+                            // Replace Element Array
+                            LDKF.replaceElementArray = function replaceElementArray() {
+                                // Initialization > (Array, Length, Match, Name, Replacement)
+                                let array = arguments[0],
+                                    length = arguments.length,
+                                    match = arguments[1],
+                                    name = LDKF.isString(this.valueOf()) ? this.valueOf() : 'replaceElement',
+                                    replacement = arguments[2];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (length > 1) {
+                                    // Error
+                                    LDKF.isFunction(match) || LDKF.error(["'" + name + "'", "'Array'"], 'argument', LDKF.debugMessage(match, ['not', 'a'], 'function'));
+
+                                    // Update > Replacement
+                                    (length > 2) || (replacement = void 0);
+
+                                    // Initialization > Iterator
+                                    let iterator = 0;
+
+                                    // Update > Length
+                                    length = array.length;
+
+                                    /* Loop
+                                            Index Array.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1)
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (match.call(array, array[iterator])) {
+                                            // Update > Array
+                                            array[iterator] = replacement;
+
+                                            // Break
+                                            break
+                                        }
+
+                                    // Return
+                                    return array
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'" + name + "'", "'Array'"], 'argument', [2, length])
+                            };
+
+                            // Replace Element From Front Array
+                            LDKF.replaceElementFromFrontArray = function replaceElementFromFrontArray() {
+                                // Initialization > (Array, Length, Match, Name, Replacement)
+                                let array = arguments[0],
+                                    length = arguments.length,
+                                    match = arguments[1],
+                                    name = LDKF.isString(this.valueOf()) ? this.valueOf() : 'replaceElementFromFront',
+                                    replacement = arguments[2];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (length > 1) {
+                                    // Error
+                                    LDKF.isFunction(match) || LDKF.error(["'" + name + "'", "'Array'"], 'argument', LDKF.debugMessage(match, ['not', 'a'], 'function'));
+
+                                    // Update > Replacement
+                                    (length > 2) || (replacement = void 0);
+
+                                    // Initialization > Iterator
+                                    let iterator = array.length;
+
+                                    /* Loop
+                                            Index Array.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Item
+                                        let item = array[iterator -= 1];
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (match.call(array, item)) {
+                                            // Update > Array
+                                            array[iterator] = replacement;
+
+                                            // Break
+                                            break
+                                        }
+                                    }
+
+                                    // Return
+                                    return array
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'" + name + "'", "'Array'"], 'argument', [2, length])
+                            };
+
+                            // Replace Elements Array
+                            LDKF.replaceElementsArray = function replaceElementsArray() {
+                                // Initialization > (Array, Length, Match, Name, Replacement)
+                                let array = arguments[0],
+                                    length = arguments.length,
+                                    match = arguments[1],
+                                    name = LDKF.isString(this.valueOf()) ? this.valueOf() : 'replaceElements',
+                                    replacement = arguments[2];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (length > 1) {
+                                    // Error
+                                    LDKF.isFunction(match) || LDKF.error(["'" + name + "'", "'Array'"], 'argument', LDKF.debugMessage(match, ['not', 'a'], 'function'));
+
+                                    // Update > Replacement
+                                    (length > 2) || (replacement = void 0);
+
+                                    // Initialization > Iterator
+                                    let iterator = array.length;
+
+                                    /* Loop
+                                            Index Array.
+
+                                        > Update > Array
+                                    */
+                                    while (iterator)
+                                        match.call(array, array[iterator -= 1]) && (array[iterator] = replacement);
+
+                                    // Return
+                                    return array
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'" + name + "'", "'Array'"], 'argument', [2, length])
+                            };
+
                             // Replace String
                             LDKF.replaceString = (function() {
                                 // Initialization > Method
@@ -5534,7 +5672,30 @@
                             // Reverse Array
                             LDKF.reverseArray = (function() {
                                 // Initialization > Method
-                                let method = LDKO.$arrayProto.reverse;
+                                let method = LDKO.$arrayProto.reverse || function reverse() {
+                                    // Initialization > Array
+                                    let array = this;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isArray(array)) {
+                                        // Initialization > (Iterator, Reverse)
+                                        let iterator = array.length,
+                                            reverse = [];
+
+                                        // Loop > Update > Reverse
+                                        while (iterator)
+                                            LDKF.pushArray(reverse, array[iterator -= 1]);
+
+                                        // Update > Array
+                                        LDKF.spliceArray(array, 0, array.length);
+                                        LDKF.$pushArray(array, reverse);
+
+                                        // Return
+                                        return array
+                                    }
+                                };
 
                                 // Return
                                 return function reverseArray() { return method.call(arguments[0]) }
@@ -5697,6 +5858,71 @@
                                 // Return
                                 return function toUpperCaseString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
+
+                            // Trim Left Array
+                            LDKF.trimLeftArray = function trimLeftArray() {
+                                // Initialization > (Array, Callback, Iterator, Length)
+                                let array = arguments[0],
+                                    callback = arguments[1],
+                                    iterator = 0,
+                                    length = array.length;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length - 1) {
+                                    // Error
+                                    LDKF.isFunction(callback) || LDKF.error(["'trimLeft'", "'Array'"], 'argument', LDKF.debugMessage(callback, ['not', 'a'], 'function'));
+
+                                    // Loop > Update > Array
+                                    while (callback.call(array, array[0]))
+                                        LDKF.spliceArray(array, 0, 1)
+                                }
+
+                                else
+                                    // Loop > Update > Array
+                                    while (!LDKF.hasOwnPropertyObject(array, 0))
+                                        LDKF.spliceArray(array, 0, 1);
+
+                                // Return
+                                return array
+                            };
+
+                            // Trim Right Array
+                            LDKF.trimRightArray = function trimRightArray() {
+                                // Initialization > (Array, Callback, Iterator, Length)
+                                let array = arguments[0],
+                                    callback = arguments[1],
+                                    iterator = 0,
+                                    length = array.length;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length - 1) {
+                                    // Error
+                                    LDKF.isFunction(callback) || LDKF.error(["'trimRight'", "'Array'"], 'argument', LDKF.debugMessage(callback, ['not', 'a'], 'function'));
+
+                                    // Initialization > Cache
+                                    let cache = array.length - 1;
+
+                                    // Loop > Update > Array
+                                    while (callback.call(array, array[cache = array.length - 1]))
+                                        LDKF.spliceArray(array, cache, 1)
+                                }
+
+                                else {
+                                    // Initialization > Cache
+                                    let cache = array.length - 1;
+
+                                    // Loop > Update > Array
+                                    while (!LDKF.hasOwnPropertyObject(array, cache = array.length - 1))
+                                        LDKF.spliceArray(array, cache, 1)
+                                }
+
+                                // Return
+                                return array
+                            };
 
                             // Unshift Array
                             LDKF.unshiftArray = (function() {
@@ -14114,6 +14340,21 @@
                             writable: !0
                         });
 
+                        // Frequencies
+                        LDKF.objectDefineProperty(currentPrototype, 'frequency', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Get
+                            get: function frequency() {
+                                // Return
+                                return LDKF.getFrequenciesFromArray(this)
+                            },
+
+                            // Set
+                            set: function setFrequency() { return LDKF.objectDefineProperty(this, 'frequency', {configurable: !0, enumerable: !0, value: arguments[0], writable: !0}) }
+                        });
+
                         // Get Duplicated Elements
                         LDKF.objectDefineProperty(currentPrototype, 'getDuplicatedElements', {
                             // Configurable
@@ -14301,13 +14542,47 @@
                             writable: !0
                         });
 
-                        // Indistinct --- CHECKPOINT ---
+                        // Indistinct
                         LDKF.objectDefineProperty(currentPrototype, 'indistinct', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function indistinct() {},
+                            value: function indistinct() {
+                                // Initialization > (Array, Iterator, Repeated)
+                                let array = this,
+                                    iterator = array.length,
+                                    repeated = LDKF.getReplicatedElementsFromArray(array);
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                while (iterator) {
+                                    // Initialization > Item
+                                    let item = array[iterator -= 1];
+
+                                    /* Logic
+                                            [if statement]
+
+                                        > Update > (Array, Iterator)
+                                    */
+                                    if (!(function() {
+                                        // Initialization > Iterator
+                                        let iterator = repeated.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === repeated[iterator -= 1])
+                                                return !0
+                                    })()) {
+                                        LDKF.spliceArray(array, iterator, 1);
+                                        iterator += 1
+                                    }
+                                }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
@@ -14812,49 +15087,168 @@
                             writable: !0
                         });
 
-                        // Remove Element of Type --- CHECKPOINT ---
+                        // Remove Element of Type
                         LDKF.objectDefineProperty(currentPrototype, 'removeElementOfType', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeElementOfType() {},
+                            value: function removeElementOfType() {
+                                // Initialization > (Array, Iterator, Length, Types)
+                                let array = this,
+                                    iterator = 0,
+                                    length = array.length,
+                                    types = LDKF.getElementsOfTypeFromArray(array, LDKF.toArray(arguments), 'removeElementOfType');
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > Item
+                                    let item = array[iterator];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if ((function() {
+                                        // Initialization > Iterator
+                                        let iterator = types.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === types[iterator -= 1])
+                                                return !0
+                                    })()) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+                                }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Element of Type From Back --- CHECKPOINT ---
+                        // Remove Element of Type From Back
                         LDKF.objectDefineProperty(currentPrototype, 'removeElementOfTypeFromBack', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeElementOfTypeFromBack() {},
+                            value: function removeElementOfTypeFromBack() {
+                                // Initialization > (Array, Iterator, Length, Types)
+                                let array = this,
+                                    iterator = 0,
+                                    length = array.length,
+                                    types = LDKF.getElementsOfTypeFromArray(array, LDKF.toArray(arguments), 'removeElementOfType');
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > Item
+                                    let item = array[iterator];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if ((function() {
+                                        // Initialization > Iterator
+                                        let iterator = types.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === types[iterator -= 1])
+                                                return !0
+                                    })()) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+                                }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Element of Type From Front --- CHECKPOINT ---
+                        // Remove Element of Type From Front
                         LDKF.objectDefineProperty(currentPrototype, 'removeElementOfTypeFromFront', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeElementOfTypeFromFront() {},
+                            value: function removeElementOfTypeFromFront() {
+                                // Initialization > (Array, Iterator, Types)
+                                let array = this,
+                                    iterator = array.length,
+                                    types = LDKF.getElementsOfTypeFromArray(array, LDKF.toArray(arguments), 'removeElementOfType');
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                while (iterator) {
+                                    // Initialization > Item
+                                    let item = array[iterator -= 1];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if ((function() {
+                                        // Initialization > Iterator
+                                        let iterator = types.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === types[iterator -= 1])
+                                                return !0
+                                    })()) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+                                }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Elements --- CHECKPOINT ---
+                        // Remove Elements
                         LDKF.objectDefineProperty(currentPrototype, 'removeElements', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeElements() {},
+                            value: function removeElements() {
+                                // Initialization > (Array, Arguments, Filtered)
+                                let array = this,
+                                    args = LDKF.toArray(arguments),
+                                    filtered = LDKF.filterArray(array, item => { return LDKF.indexOfArray(args, item) == -1 });
+
+                                // Update > Array
+                                LDKF.spliceArray(array, 0, array.length);
+                                LDKF.$pushArray(array, filtered);
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
@@ -14915,49 +15309,128 @@
                             writable: !0
                         });
 
-                        // Remove Falsy Element --- CHECKPOINT ---
+                        // Remove Falsy Element
                         LDKF.objectDefineProperty(currentPrototype, 'removeFalsyElement', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeFalsyElement() {},
+                            value: function removeFalsyElement() {
+                                // Initialization > (Array, Iterator, Length)
+                                let array = this,
+                                    iterator = 0,
+                                    length = array.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1)
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (!array[iterator]) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Falsy Element From Back --- CHECKPOINT ---
+                        // Remove Falsy Element From Back
                         LDKF.objectDefineProperty(currentPrototype, 'removeFalsyElementFromBack', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeFalsyElementFromBack() {},
+                            value: function removeFalsyElementFromBack() {
+                                // Initialization > (Array, Iterator, Length)
+                                let array = this,
+                                    iterator = 0,
+                                    length = array.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1)
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (!array[iterator]) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Falsy Element From Front --- CHECKPOINT ---
+                        // Remove Falsy Element From Front
                         LDKF.objectDefineProperty(currentPrototype, 'removeFalsyElementFromFront', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeFalsyElementFromFront() {},
+                            value: function removeFalsyElementFromFront() {
+                                // Initialization > (Array, Iterator)
+                                let array = this,
+                                    iterator = array.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                while (iterator)
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (!array[iterator -= 1]) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Falsy Elements --- CHECKPOINT ---
+                        // Remove Falsy Elements
                         LDKF.objectDefineProperty(currentPrototype, 'removeFalsyElements', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeFalsyElements() {},
+                            value: function removeFalsyElements() {
+                                // Initialization > (Array, Filtered)
+                                let array = this,
+                                    filtered = LDKF.filterArray(array, LDKO.boolean);
+
+                                // Update > Array
+                                LDKF.spliceArray(array, 0, array.length);
+                                LDKF.$pushArray(array, filtered);
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
@@ -15146,90 +15619,1125 @@
                             writable: !0
                         });
 
-                        // Remove Truthy Element --- CHECKPOINT ---
+                        // Remove Truthy Element
                         LDKF.objectDefineProperty(currentPrototype, 'removeTruthyElement', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeTruthyElement() {},
+                            value: function removeTruthyElement() {
+                                // Initialization > (Array, Iterator, Length)
+                                let array = this,
+                                    iterator = 0,
+                                    length = array.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1)
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (array[iterator]) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Truthy Element From Back --- CHECKPOINT ---
+                        // Remove Truthy Element From Back
                         LDKF.objectDefineProperty(currentPrototype, 'removeTruthyElementFromBack', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeTruthyElementFromBack() {},
+                            value: function removeTruthyElementFromBack() {
+                                // Initialization > (Array, Iterator, Length)
+                                let array = this,
+                                    iterator = 0,
+                                    length = array.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                for (iterator; iterator != length; iterator += 1)
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (array[iterator]) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Truthy Element From Front --- CHECKPOINT ---
+                        // Remove Truthy Element From Front
                         LDKF.objectDefineProperty(currentPrototype, 'removeTruthyElementFromFront', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeTruthyElementFromFront() {},
+                            value: function removeTruthyElementFromFront() {
+                                // Initialization > (Array, Iterator)
+                                let array = this,
+                                    iterator = array.length;
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                while (iterator)
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (array[iterator -= 1]) {
+                                        // Update > Array
+                                        LDKF.spliceArray(array, iterator, 1);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Remove Truthy Elements --- CHECKPOINT ---
+                        // Remove Truthy Elements
                         LDKF.objectDefineProperty(currentPrototype, 'removeTruthyElements', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function removeTruthyElements() {},
+                            value: function removeTruthyElements() {
+                                // Initialization > (Array, Filtered)
+                                let array = this,
+                                    filtered = LDKF.filterArray(array, item => { return !item });
+
+                                // Update > Array
+                                LDKF.spliceArray(array, 0, array.length);
+                                LDKF.$pushArray(array, filtered);
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Repeat --- CHECKPOINT ---
+                        // Repeat
                         LDKF.objectDefineProperty(currentPrototype, 'repeat', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function repeat() {},
+                            value: function repeat() {
+                                // Initialization > (Array, Length)
+                                let array = this,
+                                    length = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length)
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isSafeInteger(length)) {
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (length === 0 || length === -0)
+                                            // Update > Array
+                                            LDKF.spliceArray(array, 0, array.length);
+
+                                        else if (length > 0) {
+                                            // Initialization > Copy
+                                            let copy = LDKF.arrayFrom(array);
+
+                                            // Update > Length
+                                            length -= 1;
+
+                                            /* Loop
+                                                    Iterate through Length.
+
+                                                > Update > (Array, Length)
+                                            */
+                                            while (length) {
+                                                LDKF.$pushArray(array, copy);
+                                                length -= 1
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'repeat'", "'Array'"], 'argument', LDKF.debugMessage(length, ['must', 'a'], 'safe integer'));
+
+                                else
+                                    // Error
+                                    LDKF.error(["'repeat'", "'Array'"], 'argument', [1, 0]);
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Replace Duplicated Element --- CHECKPOINT ---
+                        // Replace Duplicated Element
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceDuplicatedElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceDuplicatedElement() {
+                                // Initialization > (Array, Duplicates, Iterator, Replacement)
+                                let array = this,
+                                    duplicates = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = duplicates.length,
+                                    replacement = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (iterator) {
+                                    // Initialization > (Index, Data)
+                                    let index = LDKF.indexOfArray(array, duplicates[0]),
+                                        data = array[index];
+
+                                    // Update > Array
+                                    array[index] = tmp;
+
+                                    // Update > Array
+                                    LDKF.replaceElementArray.call('replaceDuplicatedElement', array, item => {
+                                        // Return
+                                        return (function() {
+                                            // Update > Iterator
+                                            iterator = duplicates.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (item === duplicates[iterator -= 1])
+                                                    return !0
+                                        })()
+                                    }, replacement);
+
+                                    // Update > Array
+                                    array[index] = data
+                                }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Duplicated Element From Back
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceDuplicatedElementFromBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceDuplicatedElementFromBack() {
+                                // Initialization > (Array, Duplicates, Iterator, Replacement)
+                                let array = this,
+                                    duplicates = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = duplicates.length,
+                                    replacement = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (iterator) {
+                                    // Initialization > (Index, Data)
+                                    let index = LDKF.indexOfArray(array, duplicates[0]),
+                                        data = array[index];
+
+                                    // Update > Array
+                                    array[index] = tmp;
+
+                                    // Update > Array
+                                    LDKF.replaceElementArray.call('replaceDuplicatedElementFromBack', array, item => {
+                                        // Return
+                                        return (function() {
+                                            // Update > Iterator
+                                            iterator = duplicates.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (item === duplicates[iterator -= 1])
+                                                    return !0
+                                        })()
+                                    }, replacement);
+
+                                    // Update > Array
+                                    array[index] = data
+                                }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Duplicated Element From Front
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceDuplicatedElementFromFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceDuplicatedElementFromFront() {
+                                // Initialization > (Array, Duplicates, Iterator, Replacement)
+                                let array = this,
+                                    duplicates = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = duplicates.length,
+                                    replacement = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (iterator) {
+                                    // Update > Array
+                                    LDKF.reverseArray(array);
+
+                                    // Initialization > (Index, Data)
+                                    let index = LDKF.indexOfArray(array, duplicates[0]),
+                                        data = array[index];
+
+                                    // Update > Array
+                                    array[index] = tmp;
+
+                                    // Update > Array
+                                    LDKF.replaceElementArray.call('replaceDuplicatedElementFromFront', array, item => {
+                                        // Return
+                                        return (function() {
+                                            // Update > Iterator
+                                            iterator = duplicates.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (item === duplicates[iterator -= 1])
+                                                    return !0
+                                        })()
+                                    }, replacement);
+
+                                    // Update > Array
+                                    array[index] = data;
+
+                                    // Update > Array
+                                    LDKF.reverseArray(array)
+                                }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Duplicated Elements
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceDuplicatedElements', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceDuplicatedElements() {
+                                // Initialization > (Array, Duplicates, Iterator, Replacement)
+                                let array = this,
+                                    duplicates = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = duplicates.length,
+                                    replacement = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (iterator) {
+                                    // Initialization > (Index, Data)
+                                    let index = LDKF.indexOfArray(array, duplicates[0]),
+                                        data = array[index];
+
+                                    // Update > Array
+                                    array[index] = tmp;
+
+                                    // Update > Array
+                                    LDKF.replaceElementsArray.call('replaceDuplicatedElements', array, item => {
+                                        // Return
+                                        return (function() {
+                                            // Update > Iterator
+                                            iterator = duplicates.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (item === duplicates[iterator -= 1])
+                                                    return !0
+                                        })()
+                                    }, replacement);
+
+                                    // Update > Array
+                                    array[index] = data
+                                }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Replace Duplicated Elements From Back
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceDuplicatedElementsFromBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceDuplicatedElementsFromBack() {
+                                // Initialization > (Array, Duplicates, Iterator, Replacement)
+                                let array = this,
+                                    duplicates = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = duplicates.length,
+                                    replacement = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (iterator) {
+                                    // Initialization > (Index, Data)
+                                    let index = LDKF.indexOfArray(array, duplicates[0]),
+                                        data = array[index];
+
+                                    // Update > Array
+                                    array[index] = tmp;
+
+                                    // Update > Array
+                                    LDKF.replaceElementsArray.call('replaceDuplicatedElementsFromBack', array, item => {
+                                        // Return
+                                        return (function() {
+                                            // Update > Iterator
+                                            iterator = duplicates.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (item === duplicates[iterator -= 1])
+                                                    return !0
+                                        })()
+                                    }, replacement);
+
+                                    // Update > Array
+                                    array[index] = data
+                                }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Replace Duplicated Elements From Front
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceDuplicatedElementsFromFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceDuplicatedElementsFromFront() {
+                                // Initialization > (Array, Duplicates, Iterator, Replacement)
+                                let array = this,
+                                    duplicates = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = duplicates.length,
+                                    replacement = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (iterator) {
+                                    // Initialization > (Index, Data)
+                                    let index = LDKF.lastIndexOfArray(array, duplicates[0]),
+                                        data = array[index];
+
+                                    // Update > Array
+                                    array[index] = tmp;
+
+                                    // Update > Array
+                                    LDKF.replaceElementsArray.call('replaceDuplicatedElementsFromFront', array, item => {
+                                        // Return
+                                        return (function() {
+                                            // Update > Iterator
+                                            iterator = duplicates.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (item === duplicates[iterator -= 1])
+                                                    return !0
+                                        })()
+                                    }, replacement);
+
+                                    // Update > Array
+                                    array[index] = data
+                                }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Element
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElement() {
+                                // Initialization > Arguments
+                                let args = LDKF.toArray(arguments);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 0, this);
+
+                                // Return
+                                return LDKF.replaceElementArray.apply('replaceElement', args)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Element From Back
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElementFromBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElementFromBack() {
+                                // Initialization > Arguments
+                                let args = LDKF.toArray(arguments);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 0, this);
+
+                                // Return
+                                return LDKF.replaceElementArray.apply('replaceElementFromBack', args)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Element From Front
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElementFromFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElementFromFront() {
+                                // Initialization > Arguments
+                                let args = LDKF.toArray(arguments);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 0, this);
+
+                                // Return
+                                return LDKF.replaceElementFromFrontArray.apply('replaceElementFromFront', args)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Element of Type
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElementOfType', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElementOfType() {
+                                // Initialization > (Array, Match, Type(s), Replacement, Iterator, Length)
+                                let array = this,
+                                    match = !1,
+                                    type = LDKF.sliceArray(LDKF.toArray(arguments), 0, -1),
+                                    types = LDKC.valueTypes,
+                                    replacement = arguments[arguments.length - 1],
+                                    iterator = 0,
+                                    length = type.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length)
+                                    /* Loop
+                                            Index Type.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Type
+                                        let $type = LDKF.string(type[iterator]);
+
+                                        // Error
+                                        (function() {
+                                            // Initialization > Iterator
+                                            let iterator = types.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if ($type === types[iterator -= 1])
+                                                    return !0
+                                        })() || LDKF.error(["'replaceElementOfType'", "'Array'"], 'argument', LDKF.debugMessage("'" + $type + "'", ['must', 'a'], 'valid data type'));
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (match)
+                                            // Return
+                                            return array;
+
+                                        else
+                                            // Update > Array
+                                            LDKF.replaceElementArray.call('replaceElementOfType', array, item => { return match = typeof item == $type }, replacement)
+                                    }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Element of Type From Back
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElementOfTypeFromBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElementOfTypeFromBack() {
+                                // Initialization > (Array, Match, Type(s), Replacement, Iterator, Length)
+                                let array = this,
+                                    match = !1,
+                                    type = LDKF.sliceArray(LDKF.toArray(arguments), 0, -1),
+                                    types = LDKC.valueTypes,
+                                    replacement = arguments[arguments.length - 1],
+                                    iterator = 0,
+                                    length = type.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length)
+                                    /* Loop
+                                            Index Type.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Type
+                                        let $type = LDKF.string(type[iterator]);
+
+                                        // Error
+                                        (function() {
+                                            // Initialization > Iterator
+                                            let iterator = types.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if ($type === types[iterator -= 1])
+                                                    return !0
+                                        })() || LDKF.error(["'replaceElementOfTypeFromBack'", "'Array'"], 'argument', LDKF.debugMessage("'" + $type + "'", ['must', 'a'], 'valid data type'));
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (match)
+                                            // Return
+                                            return array;
+
+                                        else
+                                            // Update > Array
+                                            LDKF.replaceElementArray.call('replaceElementOfTypeFromBack', array, item => { return match = typeof item == $type }, replacement)
+                                    }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Element of Type From Front
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElementOfTypeFromFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElementOfTypeFromFront() {
+                                // Initialization > (Array, Match, Type(s), Replacement, Iterator, Length)
+                                let array = this,
+                                    match = !1,
+                                    type = LDKF.sliceArray(LDKF.toArray(arguments), 0, -1),
+                                    types = LDKC.valueTypes,
+                                    replacement = arguments[arguments.length - 1],
+                                    iterator = 0,
+                                    length = type.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length)
+                                    /* Loop
+                                            Index Type.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Type
+                                        let $type = LDKF.string(type[iterator]);
+
+                                        // Error
+                                        (function() {
+                                            // Initialization > Iterator
+                                            let iterator = types.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if ($type === types[iterator -= 1])
+                                                    return !0
+                                        })() || LDKF.error(["'replaceElementOfTypeFromFront'", "'Array'"], 'argument', LDKF.debugMessage("'" + $type + "'", ['must', 'a'], 'valid data type'));
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (match)
+                                            // Return
+                                            return array;
+
+                                        else
+                                            // Update > Array
+                                            LDKF.replaceElementFromFrontArray.call('replaceElementOfTypeFromFront', array, item => { return match = typeof item == $type }, replacement)
+                                    }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Elements
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElements', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElements() {
+                                // Initialization > Arguments
+                                let args = LDKF.toArray(arguments);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 0, this);
+
+                                // Return
+                                return LDKF.replaceElementsArray.apply('replaceElements', args)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Elements of Type
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceElementsOfType', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceElementsOfType() {
+                                // Initialization > (Array, Type(s), Replacement, Iterator, Length)
+                                let array = this,
+                                    type = LDKF.sliceArray(LDKF.toArray(arguments), 0, -1),
+                                    types = LDKC.valueTypes,
+                                    replacement = arguments[arguments.length - 1],
+                                    iterator = 0,
+                                    length = type.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length)
+                                    /* Loop
+                                            Index Type.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Type
+                                        let $type = LDKF.string(type[iterator]);
+
+                                        // Error
+                                        (function() {
+                                            // Initialization > Iterator
+                                            let iterator = types.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if ($type === types[iterator -= 1])
+                                                    return !0
+                                        })() || LDKF.error(["'replaceElementsOfType'", "'Array'"], 'argument', LDKF.debugMessage("'" + $type + "'", ['must', 'a'], 'valid data type'));
+
+                                        // Update > Array
+                                        LDKF.replaceElementsArray.call('replaceElementsOfType', array, item => { return typeof item == $type }, replacement)
+                                    }
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Falsy Element
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceFalsyElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceFalsyElement() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementArray(array, item => { return !item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Falsy Element From Back
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceFalsyElementFromBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceFalsyElementFromBack() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementArray(array, item => { return !item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Falsy Element From Front
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceFalsyElementFromFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceFalsyElementFromFront() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementFromFrontArray(array, item => { return !item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Falsy Elements
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceFalsyElements', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceFalsyElements() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementsArray(array, item => { return !item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Repeated Element
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceRepeatedElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceRepeatedElement() {
+                                // Initialization > (Array, Repeated, Iterator, Replacement)
+                                let array = this,
+                                    repeated = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = repeated.length,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                iterator && LDKF.replaceElementArray.call('replaceRepeatedElement', array, item => {
+                                    // Return
+                                    return (function() {
+                                        // Update > Iterator
+                                        iterator = repeated.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === repeated[iterator -= 1])
+                                                return !0
+                                    })()
+                                }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Repeated Element From Back
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceRepeatedElementFromBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceRepeatedElementFromBack() {
+                                // Initialization > (Array, Repeated, Iterator, Replacement)
+                                let array = this,
+                                    repeated = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = repeated.length,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                iterator && LDKF.replaceElementArray.call('replaceRepeatedElementFromBack', array, item => {
+                                    // Return
+                                    return (function() {
+                                        // Update > Iterator
+                                        iterator = repeated.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === repeated[iterator -= 1])
+                                                return !0
+                                    })()
+                                }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Repeated Element From Front
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceRepeatedElementFromFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceRepeatedElementFromFront() {
+                                // Initialization > (Array, Repeated, Iterator, Replacement)
+                                let array = this,
+                                    repeated = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = repeated.length,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                iterator && LDKF.replaceElementFromFrontArray.call('replaceRepeatedElementFromFront', array, item => {
+                                    // Return
+                                    return (function() {
+                                        // Update > Iterator
+                                        iterator = repeated.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === repeated[iterator -= 1])
+                                                return !0
+                                    })()
+                                }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Repeated Elements
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceRepeatedElements', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceRepeatedElements() {
+                                // Initialization > (Array, Duplicates, Iterator, Replacement)
+                                let array = this,
+                                    repeated = LDKF.getReplicatedElementsFromArray(array),
+                                    iterator = repeated.length,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                iterator && LDKF.replaceElementsArray.call('replaceRepeatedElements', array, item => {
+                                    // Return
+                                    return (function() {
+                                        // Update > Iterator
+                                        iterator = repeated.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (item === repeated[iterator -= 1])
+                                                return !0
+                                    })()
+                                }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Truthy Element
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceTruthyElement', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceTruthyElement() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementArray(array, item => { return item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Truthy Element From Back
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceTruthyElementFromBack', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceTruthyElementFromBack() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementArray(array, item => { return item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Truthy Element From Front
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceTruthyElementFromFront', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceTruthyElementFromFront() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementFrontArray(array, item => { return item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Replace Truthy Elements
+                        LDKF.objectDefineProperty(currentPrototype, 'replaceTruthyElements', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function replaceTruthyElements() {
+                                // Initialization > (Array, Replacement)
+                                let array = this,
+                                    replacement = arguments[0];
+
+                                // Update > Array
+                                LDKF.replaceElementsArray(array, item => { return item }, replacement);
+
+                                // Return
+                                return array
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
 
                         /* Stretch
                                 --- NOTE ---
@@ -15290,61 +16798,155 @@
                             writable: !0
                         });
 
-                        // Swap --- CHECKPOINT ---
+                        // Swap
                         LDKF.objectDefineProperty(currentPrototype, 'swap', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function swap() {},
+                            value: function swap() {
+                                // Initialization > (Array, Iterator, (Decremented) Length)
+                                let array = this,
+                                    iterator = arguments.length,
+                                    decrementedLength = iterator - 1,
+                                    length = iterator;
+
+                                // Function > Swap
+                                function swap(indexA, indexB) {
+                                    // Initialization > Item
+                                    let item = array[indexB];
+
+                                    // Update > Array
+                                    array[indexB] = array[indexA];
+                                    array[indexA] = item
+                                }
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Error
+                                */
+                                while (iterator)
+                                    LDKF.isSafeInteger(arguments[iterator -= 1]) || LDKF.error(["'swap'", "'Array'"], 'argument', LDKF.debugMessage(arguments[iterator], ['not', 'a'], 'valid array index'));
+
+                                /* Loop
+                                        Index Arguments.
+                                */
+                                for (iterator; iterator < length; iterator += 2) {
+                                    // Initialization > Index (A, B)
+                                    let indexA = arguments[iterator],
+                                        indexB = iterator + 1 > decrementedLength ? arguments[iterator - 1] : arguments[iterator + 1];
+
+                                    // Swap
+                                    swap(indexA, indexB)
+                                }
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Transform --- CHECKPOINT ---
+                        // Transform
                         LDKF.objectDefineProperty(currentPrototype, 'transform', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function transform() {},
+                            value: function transform() {
+                                // Initialization > (Array, Callback)
+                                let array = this,
+                                    callback = arguments[0];
+
+                                // Error
+                                LDKF.isFunction(callback) || LDKF.error(callback, ['not', 'a'], 'function');
+
+                                // Initialization > Filter
+                                let filter = LDKF.filterArray(array, callback);
+
+                                // Update > Array
+                                LDKF.spliceArray(array, 0, array.length);
+                                LDKF.$pushArray(array, filter);
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Trim --- CHECKPOINT ---
+                        // Trim
                         LDKF.objectDefineProperty(currentPrototype, 'trim', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function trim() {},
+                            value: function trim() {
+                                // Initialization > (Array, Arguments)
+                                let array = this,
+                                    args = LDKF.toArray(arguments);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 0, array);
+
+                                // Update > Arguments
+                                LDKF.trimLeftArray.apply(LDKF, args);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 1);
+                                LDKF.spliceArray(args, 0, 0, array);
+
+                                // Update > Arguments
+                                LDKF.trimRightArray.apply(LDKF, args);
+
+                                // Return
+                                return array
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Trim Left --- CHECKPOINT ---
+                        // Trim Left
                         LDKF.objectDefineProperty(currentPrototype, 'trimLeft', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function trimLeft() {},
+                            value: function trimLeft() {
+                                // Initialization > Arguments
+                                let args = LDKF.toArray(arguments);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 0, this);
+
+                                // Return
+                                return LDKF.trimLeftArray.apply(LDKF, args)
+                            },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Trim Right --- CHECKPOINT ---
+                        // Trim Right
                         LDKF.objectDefineProperty(currentPrototype, 'trimRight', {
                             // Configurable
                             configurable: !0,
 
                             // Value
-                            value: function trimRight() {},
+                            value: function trimRight() {
+                                // Initialization > Arguments
+                                let args = LDKF.toArray(arguments);
+
+                                // Update > Arguments
+                                LDKF.spliceArray(args, 0, 0, this);
+
+                                // Return
+                                return LDKF.trimRightArray.apply(LDKF, args)
+                            },
 
                             // Writable
                             writable: !0
