@@ -5364,6 +5364,32 @@
                                 return function indexOfString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Insert Adjacent HTML Element
+                            LDKF.insertAdjacentHTMLElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$elementProto.insertAdjacentHTML;
+
+                                // Return
+                                return function insertAdjacentHTMLElement() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            LDKF.$insertAdjacentHTMLElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$elementProto.insertAdjacentHTML;
+
+                                // Return
+                                return function $insertAdjacentHTMLElement() { return method.apply(arguments[0], arguments[1]) }
+                            })();
+
+                            // Insert Before Node
+                            LDKF.insertBeforeNode = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$nodeProto.insertBefore;
+
+                                // Return
+                                return function insertBeforeNode() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Last Index Of Array
                             LDKF.lastIndexOfArray = (function() {
                                 // Initialization > Method
@@ -6527,6 +6553,15 @@
 
                                         // Return
                                         return function nodeChildNodes() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // First Child
+                                    nodeFirstChild: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$nodeProto, 'firstChild').get;
+
+                                        // Return
+                                        return function nodeFirstChild() { return method.call(arguments[0]) }
                                     })(),
 
                                     // Parent Node
@@ -18131,6 +18166,69 @@
 
                             // Get
                             get: function inFullscreen() { return LDKO.$screen === LDKF.get.windowInnerHeight ? !1 : this === tmpObject.fullscreenElement }
+                        });
+
+                        // Insert Adjacent Comment
+                        LDKF.objectDefineProperty(currentPrototype, 'insertAdjacentComment', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function insertAdjacentComment() {
+                                // Return
+                                return LDKF.insertAdjacentHTMLElement(this, '<!--' + LDKF.string(arguments[0]) + '-->')
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Insert Child
+                        LDKF.objectDefineProperty(currentPrototype, 'insertChild', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function insertChild() {
+                                // Initialization > (Element, Node, Order)
+                                let element = this,
+                                    node = arguments[1],
+                                    order = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+
+                                    > Update > (Node, Order)
+                                */
+                                if (arguments.length < 2) {
+                                    node = arguments[0];
+                                    order = 'end'
+                                }
+
+                                // Update > Order
+                                (order == 'first') && (order = 'begin');
+                                (order == 'last') && (order = 'end');
+
+                                // Error
+                                (order == 'begin' || order == 'end') || LDKF.error(["'insertChild'", "'Element'"], 'argument', LDKF.debugMessage(order, ['only', 'values'], ["'begin' (or 'first')", "'end' (or 'last')"]));
+                                LDKF.isNode(node) || LDKF.error(["'insertChild'", "'Element'"], 'argument', LDKF.debugMessage(node, ['must', 'a'], 'node'));
+
+                                // Insertion
+                                LDKF.appendChildNode(element, node);
+                                (order == 'begin') && LDKF.insertBeforeNode(element, node, LDKF.get.nodeFirstChild(element));
+
+                                // Return
+                                return node
+                            },
+
+                            // Writable
+                            writable: !0
                         });
 
                         // Remove Attribute
