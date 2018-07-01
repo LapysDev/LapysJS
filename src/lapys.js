@@ -1596,6 +1596,15 @@
                                     return (function() {})
                             };
 
+                            // Get Computed Style
+                            LDKF.getComputedStyle = (function() {
+                                // Initialization > Method
+                                let method = window.getComputedStyle;
+
+                                // Return
+                                return function getComputedStyle() { return method.call(window, arguments[0]) }
+                            })();
+
                             // Get Elements Of Type From Array
                             LDKF.getElementsOfTypeFromArray = function getElementsOfTypeFromArray() {
                                 // Initialization > (Array, Type (Iterator, Length), Types, Iterator, Name)
@@ -1982,6 +1991,56 @@
                                         ) &&
                                         (typeof value == 'object' || typeof value == 'undefined')
                                     ) || (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is Attribute
+                            LDKF.isAttr = function isAttr() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (!result && value == LDKO.attrProto) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
                                 }, args);
 
                                 // Return
@@ -4489,6 +4548,11 @@
                                 // Prototype
                                 LDKO.characterDataProto = LDKO.characterData.prototype;
 
+                            // CSS Style Declaration
+                            LDKO.cssStyleDeclaration = CSSStyleDeclaration;
+                                // Prototype
+                                LDKO.cssStyleDeclarationProto = LDKO.cssStyleDeclaration.prototype;
+
                             // Custom Element Registry
                             LDKO.customElementRegistry = window.CustomElementRegistry;
 
@@ -4506,6 +4570,11 @@
                                 // Selection
                                 LDKO.documentSelection = LDKO.$document.selection;
 
+                            // Document Fragment
+                            LDKO.documentFragment = DocumentFragment;
+                                // Prototype
+                                LDKO.documentFragmentProto = LDKO.documentFragment.prototype;
+
                             // Document Type
                             LDKO.documentType = DocumentType;
                                 // Prototype
@@ -4513,6 +4582,16 @@
 
                             // DOM Exception
                             LDKO.domException = DOMException;
+
+                            // DOM Rectangle
+                            LDKO.domRectangle = DOMRect;
+                                // Prototype
+                                LDKO.domRectangleProto = LDKO.domRectangle.prototype;
+
+                            // DOM Rectangle Read-Only
+                            LDKO.domRectangleReadOnly = DOMRectReadOnly;
+                                // Prototype
+                                LDKO.domRectangleReadOnlyProto = LDKO.domRectangleReadOnly.prototype;
 
                             // Element
                             LDKO.element = Element;
@@ -5178,6 +5257,33 @@
                                 return function getAttributeElement() { return method.call(arguments[0], arguments[1]) }
                             })();
 
+                            // Get Attribute Node Element
+                            LDKF.getAttributeNodeElement = (function() {
+                                // Initialization > Method
+                                let method = Object.getOwnPropertyDescriptor(LDKO.$elementProto, 'getAttributeNode').value;
+
+                                // Return
+                                return function getAttributeNodeElement() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
+                            // Get Bounding Client Rectangle
+                            LDKF.getBoundingClientRectElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$elementProto.getBoundingClientRect;
+
+                                // Return
+                                return function getBoundingClientRectElement() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Get Property Value CSS Style Declaration
+                            LDKF.getPropertyValueCSSStyleDeclaration = (function() {
+                                // Initialization > Method
+                                let method = LDKO.cssStyleDeclarationProto.getPropertyValue;
+
+                                // Return
+                                return function getPropertyValueCSSStyleDeclaration() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Get Range At
                             LDKF.getRangeAtSelection = (function() {
                                 // Initialization > Method
@@ -5444,6 +5550,15 @@
 
                                 // Return
                                 return function querySelectorAllDocument() { return method.call(LDKO.$document, arguments[0]) }
+                            })();
+
+                            // Query Selector All Document Fragment
+                            LDKF.querySelectorAllDocumentFragment = (function() {
+                                // Initialization > Method
+                                let method = LDKO.documentFragmentProto.querySelectorAll;
+
+                                // Return
+                                return function querySelectorAllDocumentFragment() { return method.call(arguments[0], arguments[1]) }
                             })();
 
                             // Regular Expression
@@ -6001,7 +6116,16 @@
 
                             /* Get */
                             LDKF.get = {
-                                // Attribute
+                                // Attributes
+                                    // Name
+                                    attributeName: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$attrProto, 'name').get;
+
+                                        // Return
+                                        return function attributeName() { return method.call(arguments[0]) }
+                                    })(),
+
                                     // Value
                                     attributeValue: (function() {
                                         // Initialization > Method
@@ -6075,6 +6199,80 @@
                                         return function documentTitle() { return method.call(arguments[0]) }
                                     })(),
 
+                                // DOM Rectangle
+                                    // Height
+                                    domRectangleHeight: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleProto, 'height').get;
+
+                                        // Return
+                                        return function domRectangleHeight() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Width
+                                    domRectangleWidth: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleProto, 'width').get;
+
+                                        // Return
+                                        return function domRectangleWidth() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // X
+                                    domRectangleX: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleProto, 'x').get;
+
+                                        // Return
+                                        return function domRectangleX() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Y
+                                    domRectangleY: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleProto, 'y').get;
+
+                                        // Return
+                                        return function domRectangleY() { return method.call(arguments[0]) }
+                                    })(),
+
+                                // DOM Rectangle Read-Only
+                                    // Bottom
+                                    domRectangleReadOnlyBottom: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleReadOnlyProto, 'bottom').get;
+
+                                        // Return
+                                        return function domRectangleReadOnlyBottom() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Left
+                                    domRectangleReadOnlyLeft: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleReadOnlyProto, 'left').get;
+
+                                        // Return
+                                        return function domRectangleReadOnlyLeft() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Right
+                                    domRectangleReadOnlyRight: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleReadOnlyProto, 'right').get;
+
+                                        // Return
+                                        return function domRectangleReadOnlyRight() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Top
+                                    domRectangleReadOnlyTop: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.domRectangleReadOnlyProto, 'top').get;
+
+                                        // Return
+                                        return function domRectangleReadOnlyTop() { return method.call(arguments[0]) }
+                                    })(),
+
                                 // Element
                                     // Attributes
                                     elementAttributes: (function() {
@@ -6084,6 +6282,9 @@
                                         // Return
                                         return function elementAttributes() { return method.call(arguments[0]) }
                                     })(),
+
+                                    // Bounding Box
+                                    elementBoundingBox: function elementBoundingBox() { return (tmpObject.elementPrototypeBoundingBoxDescriptionGetter || LDKF.objectGetOwnPropertyDescriptor(LDKO.$elementProto, 'boundingBox')).get.call(arguments[0]) },
 
                                     // ID
                                     elementId: (function() {
@@ -16952,6 +17153,115 @@
                             writable: !0
                         });
 
+                    /* Boolean Data */
+                        // All
+                        LDKF.objectDefineProperty(LDKO.boolean, 'all', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: {
+                                // Falsy
+                                falsy: function falsy() {return!!(!LDKF.filterArray(LDKF.toArray(arguments),LDKO.boolean).length&&arguments.length)},
+
+                                // Truthy
+                                truthy: function truthy() {return!!(!LDKF.filterArray(LDKF.toArray(arguments),item=>{return!item}).length&&arguments.length)}
+                            }
+                        });
+
+                        // Compare
+                        LDKF.objectDefineProperty(LDKO.boolean, 'compare', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: {
+                                // Equals
+                                equals: function equals() {if(!arguments.length)return null;return LDKF.objectIs(arguments[0],arguments[1])},
+
+                                // Similar
+                                similar: function similar() {if(!arguments.length)return null;let data=arguments[0],metadata=arguments[1];try{return data==metadata}catch(error){}return data===metadata}
+                            }
+                        });
+
+                        // Logic
+                        LDKF.objectDefineProperty(LDKO.boolean, 'logic', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: {
+                                // AND
+                                and: function and() {let iterator=arguments.length;if(!iterator)return null;while(iterator)if(!arguments[iterator-=1])return!1;return!0},
+
+                                // NOT AND
+                                nand: function nand() {let iterator=arguments.length;if(!iterator)return null;while(iterator)if(arguments[iterator-=1])return!1;return!0},
+
+                                // NOT OR
+                                nor: function nor() {let iterator=arguments.length;if(!iterator)return null;return!(function(){while(iterator)if(arguments[iterator-=1])return!0;return!1})()},
+
+                                // NOT
+                                not: function not() {if(!arguments.length)return null;return!arguments[0]},
+
+                                // OR
+                                or: function or() {let iterator=arguments.length;if(!iterator)return null;while(iterator)if(arguments[iterator-=1])return!0;return!1},
+
+                                // Exclusive NOR
+                                xnor: function xnor() {if(!arguments.length)return null;return !(LDKF.filterArray(LDKF.toArray(arguments),LDKO.boolean).length%2)},
+
+                                // Exclusive OR
+                                xor: function xor() {if(!arguments.length)return null;return !!(LDKF.filterArray(LDKF.toArray(arguments),LDKO.boolean).length%2)}
+                            }
+                        });
+
+                        // Is False
+                        LDKF.objectDefineProperty(LDKO.boolean, 'isFalse', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function isFalse() {if(!arguments.length)return null;return LDKF.objectIs(arguments[0],!1)},
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Is Falsy
+                        LDKF.objectDefineProperty(LDKO.boolean, 'isFalsy', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function isFalsy() {if(!arguments.length)return null;return!arguments[0]},
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Is True
+                        LDKF.objectDefineProperty(LDKO.boolean, 'isTrue', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function isTrue() {if(!arguments.length)return null;return LDKF.objectIs(arguments[0],!0)},
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Is Truthy
+                        LDKF.objectDefineProperty(LDKO.boolean, 'isTruthy', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function isTruthy() {if(!arguments.length)return null;return!!arguments[0]},
+
+                            // Writable
+                            writable: !0
+                        });
+
                     /* Document Data */
                         // Favorite Icon
                         LDKF.objectDefineProperty(currentPrototype = LDKO.documentProto, 'favicon', new (function Object() {
@@ -17105,6 +17415,371 @@
                             // Return
                             return that
                         }));
+
+                    /* Document Fragment Data */
+                        // Get Elements By Class Name
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.documentFragmentProto, 'getElementsByClassName', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function getElementsByClassName() {
+                                // Initialization > (Fragment, Selector)
+                                let fragment = this,
+                                    selector = LDKF.string(arguments[0]);
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length)
+                                    // Return
+                                    return LDKF.toArray(LDKF.querySelectorAllDocumentFragment(fragment, "[class='" + selector + "']"));
+
+                                else
+                                    // Error
+                                    LDKF.error(["'getElementsByClassName'", "'DocumentFragment'"], 'argument', [1, 0])
+                            },
+
+                            //  Writable
+                            writable: !0
+                        });
+
+                        // Get Elements By Tag Name
+                        LDKF.objectDefineProperty(currentPrototype, 'getElementsByTagName', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function getElementsByTagName() {
+                                // Initialization > (Fragment, Selector)
+                                let fragment = this,
+                                    selector = LDKF.string(arguments[0]);
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length)
+                                    // Return
+                                    return LDKF.toArray(LDKF.querySelectorAllDocumentFragment(fragment, LDKF.replaceString(selector, /[^a-zA-Z\-]/g, '')));
+
+                                else
+                                    // Error
+                                    LDKF.error(["'getElementsByClassName'", "'DocumentFragment'"], 'argument', [1, 0])
+                            },
+
+                            //  Writable
+                            writable: !0
+                        });
+
+                    /* Element Data */
+                        // Add Attribute
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.elementProto, 'addAttr', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function addAttribute() {
+                                // Initialization > (Element, Attribute)
+                                let element = this,
+                                    attribute = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length) {
+                                    // Initialization > Name
+                                    let name = LDKF.isAttr(attribute) ? LDKF.get.attributeName(attribute) : LDKF.string(attribute);
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (!LDKF.hasAttributeElement(element, name)) {
+                                        // Modification > Element > [Name]
+                                        LDKF.setAttributeElement(element, name, '');
+
+                                        // Return
+                                        return LDKF.getAttributeNodeElement(element, name)
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'getElementsByClassName'", "'Element'"], 'argument', [1, 0])
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Attribute --- CHECKPOINT ---
+
+                        // Bounding Box
+                        LDKF.objectDefineProperty(currentPrototype, 'boundingBox', new (function Object() {
+                            // Initialization > Target
+                            let that = this;
+
+                            // Modification > Target
+                                // Configurable
+                                that.configurable = !0;
+
+                                // Enumerable
+                                that.enumerable = !0;
+
+                                // Get
+                                that.get = tmpObject.elementPrototypeBoundingBoxDescriptionGetter = function getBoundingBox() {
+                                    // Initialization > (Element, Bounding (Client Rectangle, Box))
+                                    let element = this,
+                                        boundingClientRect = LDKF.getBoundingClientRectElement(this),
+                                        boundingBox = LDKF.customObject('ElementBoundingBox', new (function Object() {
+                                            // Initialization > Target
+                                            let that = this;
+
+                                            // Modification > Target
+                                                // Bottom
+                                                LDKF.objectDefineProperty(that, 'bottom', {
+                                                    // Get
+                                                    get: function getBottom() { return LDKF.get.domRectangleReadOnlyBottom(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setBottom() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).bottom = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // Height
+                                                LDKF.objectDefineProperty(that, 'height', {
+                                                    // Get
+                                                    get: function getHeight() { return LDKF.get.domRectangleHeight(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setHeight() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).height = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // Left
+                                                LDKF.objectDefineProperty(that, 'left', {
+                                                    // Get
+                                                    get: function getLeft() { return LDKF.get.domRectangleReadOnlyLeft(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setLeft() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).left = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // Right
+                                                LDKF.objectDefineProperty(that, 'right', {
+                                                    // Get
+                                                    get: function getRight() { return LDKF.get.domRectangleReadOnlyRight(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setRight() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).right = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // Top
+                                                LDKF.objectDefineProperty(that, 'top', {
+                                                    // Get
+                                                    get: function getTop() { return LDKF.get.domRectangleReadOnlyTop(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setTop() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).top = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // Width
+                                                LDKF.objectDefineProperty(that, 'width', {
+                                                    // Get
+                                                    get: function getWidth() { return LDKF.get.domRectangleWidth(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setWidth() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).width = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // X
+                                                LDKF.objectDefineProperty(that, 'x', {
+                                                    // Get
+                                                    get: function getX() { return LDKF.get.domRectangleX(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setX() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).left = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // Y
+                                                LDKF.objectDefineProperty(that, 'y', {
+                                                    // Get
+                                                    get: function getY() { return LDKF.get.domRectangleY(boundingClientRect) },
+
+                                                    // Set
+                                                    set: function setY() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).top = LDKF.isSafeNumber(data) ? data + 'px' : LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                                // Z
+                                                LDKF.objectDefineProperty(that, 'z', {
+                                                    // Get
+                                                    get: function getZ() { return LDKF.getPropertyValueCSSStyleDeclaration(LDKF.getComputedStyle(element), 'z-index') || LDKF.get.htmlElementStyle(element).zIndex },
+
+                                                    // Set
+                                                    set: function setZ() {
+                                                        // Initialization > Data
+                                                        let data = arguments[0];
+
+                                                        // Style > Element > Left
+                                                        LDKF.get.htmlElementStyle(element).zIndex = LDKF.string(data);
+
+                                                        // Return
+                                                        return data
+                                                    }
+                                                });
+
+                                            // Return
+                                            return that
+                                        }), LDKO.domRectangleProto);
+
+                                    // Return
+                                    return boundingBox
+                                };
+
+                                // Set
+                                that.set = function setBoundingBox() {
+                                    // Initialization > (Element, Bounding Box, Data)
+                                    let element = this,
+                                        boundingBox = that.get.call(element),
+                                        data = LDKF.$number(arguments[0]);
+
+                                    // Modification > Bounding Box
+                                        // Bottom
+                                        boundingBox.bottom = data;
+
+                                        // Left
+                                        boundingBox.left = data;
+
+                                        // Right
+                                        boundingBox.right = data;
+
+                                        // Top
+                                        boundingBox.top = data;
+
+                                        // X
+                                        boundingBox.x = data;
+
+                                        // Y
+                                        boundingBox.y = data;
+
+                                    // Return
+                                    return data
+                                };
+
+                            // Return
+                            return that
+                        }));
+
+                        // Remove Attribute
+                        LDKF.objectDefineProperty(currentPrototype, 'delAttr', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function removeAttribute() {
+                                // Initialization > (Element, Attribute)
+                                let element = this,
+                                    attribute = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length) {
+
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'getElementsByClassName'", "'Element'"], 'argument', [1, 0])
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
 
                     /* Function Data */
                         // Apply
