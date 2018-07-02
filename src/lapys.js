@@ -12912,7 +12912,7 @@
                                 writable: !0
                             });
 
-                            // Recur
+                            // Recur --- Fix it not indexing non-sub objects
                             LDKF.objectDefineProperty(window, 'recur', {
                                 // Configurable
                                 configurable: !0,
@@ -18231,6 +18231,80 @@
                             writable: !0
                         });
 
+                        // Next Element Siblings
+                        LDKF.objectDefineProperty(currentPrototype, 'nextElementSiblings', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function nextElementSiblings() {
+                                // Initialization > (Element, Parent, Children, Index, Iterator, Next Element Siblings)
+                                let element = this,
+                                    parent = LDKF.get.nodeParentNode(element),
+                                    children = LDKF.toArray(LDKF.isElement(parent) ? LDKF.get.elementChildren(parent) : [element]),
+                                    index = LDKF.indexOfArray(children, element),
+                                    iterator = children.length,
+                                    nextElementSiblings = [];
+
+                                /* Loop
+                                        [while statement]
+                                */
+                                while (iterator) {
+                                    // Update > Iterator
+                                    iterator -= 1;
+
+                                    // Logic > Break
+                                    if (iterator == index)
+                                        break;
+
+                                    // Update > Next Element Siblings
+                                    LDKF.spliceArray(nextElementSiblings, 0, 0, children[iterator])
+                                }
+
+                                // Return
+                                return nextElementSiblings
+                            }
+                        });
+
+                        // Previous Element Siblings
+                        LDKF.objectDefineProperty(currentPrototype, 'previousElementSiblings', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function previousElementSiblings() {
+                                // Initialization > (Element, Parent, Children, Index, Iterator, Previous Element Siblings)
+                                let element = this,
+                                    parent = LDKF.get.nodeParentNode(element),
+                                    children = LDKF.toArray(LDKF.isElement(parent) ? LDKF.get.elementChildren(parent) : [element]),
+                                    index = LDKF.indexOfArray(children, element),
+                                    iterator = 0,
+                                    length = children.length,
+                                    previousElementSiblings = [];
+
+                                /* Loop
+                                        [for statement]
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Logic > Break
+                                    if (iterator == index)
+                                        break;
+
+                                    // Update > Previous Element Siblings
+                                    LDKF.pushArray(previousElementSiblings, children[iterator])
+                                }
+
+                                // Return
+                                return previousElementSiblings
+                            }
+                        });
+
                         // Remove Attribute
                         LDKF.objectDefineProperty(currentPrototype, 'delAttr', {
                             // Configurable
@@ -18271,6 +18345,25 @@
                                 // Return
                                 return !1
                             },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Replace Attribute --- CHECKPOINT ---
+
+                        // Script --- CHECKPOINT ---
+
+                        // Set Attribute --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'setAttr', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function setAttribute() {},
 
                             // Writable
                             writable: !0
