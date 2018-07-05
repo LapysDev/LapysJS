@@ -455,6 +455,176 @@
                                     LDKF.attachEvent(LDKF, args)
                             };
 
+                            // Ancestor Query Selector
+                            LDKF.ancestorQuerySelector = function ancestorQuerySelector() {
+                                // Initialization > (Target, Parent (Nodes), Query)
+                                let target = this,
+                                    parent = LDKF.get.nodeParentNode(target),
+                                    parentNodes = [parent],
+                                    query = LDKF.string(arguments[0]);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Error Handling
+                                    try { LDKF.querySelectorDocument(query) }
+                                    catch (error) {
+                                        // Error
+                                        (error.constructor == LDKO.domException) && LDKF.error(["'ancestorQuerySelector'", "'EventTarget'"], 'argument', "Invalid query: '" + query + "'")
+
+                                        // Error
+                                        throw error
+                                    }
+
+                                    // Loop > Update > Parent Nodes
+                                    while (LDKF.get.nodeParentNode(parent))
+                                        LDKF.pushArray(parentNodes, parent = LDKF.get.nodeParentNode(parent));
+
+                                    // Initialization > (First Ancestor, Selection)
+                                    let firstAncestor = parentNodes[parentNodes.length - 1],
+                                        selection;
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (LDKF.isDocumentFragment(firstAncestor))
+                                        // Update > Selection
+                                        selection = LDKF.querySelectorAllDocumentFragment(firstAncestor, query);
+
+                                    else if (LDKF.isHtmlDocument(firstAncestor))
+                                        // Update > Selection
+                                        selection = LDKF.$querySelectorAllDocument(firstAncestor, query);
+
+                                    else if (LDKF.isElement(firstAncestor))
+                                        // Update > Selection
+                                        selection = LDKF.querySelectorAllElement(firstAncestor, query);
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'ancestorQuerySelector'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+
+                                    // Update > Parent
+                                    parent = parentNodes[0];
+
+                                    // Initialization > Iterator
+                                    let iterator = selection.length;
+
+                                    /* Loop
+                                            Index Selection.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Selection Item
+                                        let selectionItem = selection[iterator -= 1];
+
+                                        // Logic > Return
+                                        if (parent === selectionItem)
+                                            return selectionItem
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'ancestorQuerySelector'", "'EventTarget'"], 'argument', 'No query given')
+                            };
+
+                            // Ancestor Query Selector All
+                            LDKF.ancestorQuerySelectorAll = function ancestorQuerySelectorAll() {
+                                // Initialization > (Target, Parent (Nodes), Query)
+                                let target = this,
+                                    parent = LDKF.get.nodeParentNode(target),
+                                    parentNodes = [parent],
+                                    query = LDKF.string(arguments[0]);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Error Handling
+                                    try { LDKF.querySelectorDocument(query) }
+                                    catch (error) {
+                                        // Error
+                                        (error.constructor == LDKO.domException) && LDKF.error(["'ancestorQuerySelectorAll'", "'EventTarget'"], 'argument', "Invalid query: '" + query + "'")
+
+                                        // Error
+                                        throw error
+                                    }
+
+                                    // Loop > Update > Parent Nodes
+                                    while (LDKF.get.nodeParentNode(parent))
+                                        LDKF.pushArray(parentNodes, parent = LDKF.get.nodeParentNode(parent));
+
+                                    // Initialization > (First Ancestor, Selection)
+                                    let firstAncestor = parentNodes[parentNodes.length - 1],
+                                        selection;
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (LDKF.isDocumentFragment(firstAncestor))
+                                        // Update > Selection
+                                        selection = LDKF.querySelectorAllDocumentFragment(firstAncestor, query);
+
+                                    else if (LDKF.isHtmlDocument(firstAncestor))
+                                        // Update > Selection
+                                        selection = LDKF.$querySelectorAllDocument(firstAncestor, query);
+
+                                    else if (LDKF.isElement(firstAncestor))
+                                        // Update > Selection
+                                        selection = LDKF.querySelectorAllElement(firstAncestor, query);
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'ancestorQuerySelectorAll'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+
+                                    // Initialization > Iterator
+                                    let iterator = (selection = LDKF.arrayFrom(selection)).length;
+
+                                    /* Loop
+                                            Index Selection
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Selection Item
+                                        let selectionItem = selection[iterator -= 1];
+
+                                        /* Logic
+                                                [if statement]
+
+                                            > Update > (Selection, Iterator)
+                                        */
+                                        if (selectionItem && (function() {
+                                            // Initialization > Iterator
+                                            let iterator = parentNodes.length;
+
+                                            /* Loop
+                                                    Index Parent Nodes.
+
+                                                > Logic > Return
+                                            */
+                                            while (iterator)
+                                                if (selectionItem === parentNodes[iterator -= 1])
+                                                    return !1;
+
+                                            // Return
+                                            return !0
+                                        })()) {
+                                            LDKF.spliceArray(selection, iterator, 1);
+                                            iterator += 1
+                                        }
+                                    }
+
+                                    // Return
+                                    return selection
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'ancestorQuerySelectorAll'", "'EventTarget'"], 'argument', 'No query given')
+                            };
+
                             // Cancel Animation Frame
                             LDKF.cancelAnimationFrame = (function() {
                                 // Initialization > Method
@@ -2358,6 +2528,56 @@
                                             return data
                                         })()
                                     ) && (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is Event Target
+                            LDKF.isEventTarget = function isEventTarget() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (!result && value == LDKO.eventTargetProto) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
                                 }, args);
 
                                 // Return
@@ -19725,103 +19945,92 @@
                             enumerable: !0,
 
                             // Value
-                            value: function ancestorQuerySelector() {
-                                // Initialization > (Target, Parent (Nodes), Query)
-                                let target = this,
-                                    parent = LDKF.get.nodeParentNode(target),
-                                    parentNodes = [parent],
-                                    query = LDKF.string(arguments[0]);
+                            value: LDKF.ancestorQuerySelector,
 
-                                /* Logic
-                                        [if statement]
-                                */
-                                if (arguments.length) {
-                                    // Error Handling
-                                    try { LDKF.querySelectorDocument(query) }
-                                    catch (error) {
-                                        // Logic > Error
-                                        if (error.constructor == LDKO.domException)
-                                            LDKF.error(["'ancestorQuerySelector'", "'EventTarget'"], 'argument', "Invalid query: '" + query + "'")
+                            // Writable
+                            writable: !0
+                        });
 
-                                        // Error
-                                        throw error
-                                    }
+                        // Ancestor Query Selector All
+                        LDKF.objectDefineProperty(currentPrototype, 'ancestorQuerySelectorAll', {
+                            // Configurable
+                            configurable: !0,
 
-                                    // Loop > Update > Parent Nodes
-                                    while (LDKF.get.nodeParentNode(parent))
-                                        LDKF.pushArray(parentNodes, parent = LDKF.get.nodeParentNode(parent));
+                            // Enumerable
+                            enumerable: !0,
 
-                                    // Initialization > (First Ancestor, Selection)
-                                    let firstAncestor = parentNodes[parentNodes.length - 1],
-                                        selection;
+                            // Value
+                            value: LDKF.ancestorQuerySelectorAll,
 
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (LDKF.isDocumentFragment(firstAncestor))
-                                        // Update > Selection
-                                        selection = LDKF.querySelectorAllDocumentFragment(firstAncestor, query);
+                            // Writable
+                            writable: !0
+                        });
 
-                                    else if (LDKF.isHtmlDocument(firstAncestor))
-                                        // Update > Selection
-                                        selection = LDKF.$querySelectorAllDocument(firstAncestor, query);
+                        LDKF.objectDefineProperty(currentPrototype, '$a', tmpObject.eventTargetProto$aDescription = {
+                            // Configurable
+                            configurable: !0,
 
-                                    else if (LDKF.isElement(firstAncestor))
-                                        // Update > Selection
-                                        selection = LDKF.querySelectorAllElement(firstAncestor, query);
+                            // Enumerable
+                            enumerable: !0,
 
-                                    else
-                                        // Error
-                                        LDKF.error(["'ancestorQuerySelector'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+                            // Value
+                            value: function $a() {
+                                // Initialization > (Target, Query, Selection)
+                                let target = LDKF.isWindow(this) ? LDKF.get.documentChildren(LDKO.$document)[0] : this,
+                                    query = arguments.length ? LDKF.string(arguments[0]) : '',
+                                    selection = LDKF.customArray('LapysJSNodeList', LDKF.ancestorQuerySelectorAll.call(target, query));
 
-                                    // Initialization > Iterator
-                                    let iterator = (selection = LDKF.arrayFrom(selection)).length;
-
-                                    /* Loop
-                                            Index Selection
-                                    */
-                                    while (iterator) {
-                                        // Initialization > Selection Item
-                                        let selectionItem = selection[iterator -= 1];
-
-                                        /* Logic
-                                                [if statement]
-
-                                            > Update > (Selection, Iterator)
-                                        */
-                                        if (selectionItem && (function() {
-                                            // Initialization > Iterator
-                                            let iterator = parentNodes.length;
-
-                                            /* Loop
-                                                    Index Parent Nodes.
-
-                                                > Logic > Return
-                                            */
-                                            while (iterator)
-                                                if (selectionItem === parentNodes[iterator -= 1])
-                                                    return !1;
-
-                                            // Return
-                                            return !0
-                                        })()) {
-                                            LDKF.spliceArray(selection, iterator, 1);
-                                            iterator += 1
-                                        }
-                                    }
-
-                                    // Return
-                                    return selection
-                                }
-
-                                else
-                                    // Error
-                                    LDKF.error(["'ancestorQuerySelector'", "'EventTarget'"], 'argument', 'No query given')
+                                // Return
+                                return selection.length > 1 ? selection : selection[0]
                             },
 
                             // Writable
                             writable: !0
                         });
+                            // Definition
+                            LDKF.objectDefineProperty(window, '$a', tmpObject.eventTargetProto$aDescription);
+
+                        // Children
+                        LDKF.objectDefineProperty(currentPrototype, '$x', tmpObject.eventTargetProto$xDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function $x() {
+                                // Initialization > (Target, Selection)
+                                let target = LDKF.isWindow(this) ? LDKF.get.documentChildren(LDKO.$document)[0] : this,
+                                    selection = LDKF.customArray('LapysJSNodeList', LDKF.get.elementChildren(target));
+
+                                // Return
+                                return selection
+                            }
+                        });
+                            // Definition
+                            LDKF.objectDefineProperty(window, '$x', tmpObject.eventTargetProto$xDescription);
+
+                        // Child Nodes
+                        LDKF.objectDefineProperty(currentPrototype, '$X', tmpObject.eventTargetProto$XDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function $X() {
+                                // Initialization > (Target, Selection)
+                                let target = LDKF.isWindow(this) ? LDKF.get.documentChildren(LDKO.$document)[0] : this,
+                                    selection = LDKF.customArray('LapysJSNodeList', LDKF.get.nodeChildNodes(target));
+
+                                // Return
+                                return selection
+                            }
+                        });
+                            // Definition
+                            LDKF.objectDefineProperty(window, '$X', tmpObject.eventTargetProto$XDescription);
 
                     /* Function Data */
                         // Apply
