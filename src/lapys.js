@@ -1579,6 +1579,153 @@
                                     LDKF.detachEvent(LDKF, args)
                             };
 
+                            // Descendant Query Selector
+                            LDKF.descendantQuerySelector = function descendantQuerySelector() {
+                                // Initialization > (Target, Child Nodes, Query)
+                                let target = this,
+                                    childNodes = LDKF.get.nodeChildNodes(target),
+                                    query = LDKF.string(arguments[0]);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Error Handling
+                                    try { LDKF.querySelectorDocument(query) }
+                                    catch (error) {
+                                        // Error
+                                        (error.constructor == LDKO.domException) && LDKF.error(["'descendantQuerySelector'", "'EventTarget'"], 'argument', "Invalid query: '" + query + "'")
+
+                                        // Error
+                                        throw error
+                                    }
+
+                                    // Initialization > (Children, Descendants)
+                                    let children = LDKF.toArray(childNodes),
+                                        descendants = [];
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (LDKF.isDocumentFragment(target))
+                                        // Update > Descendants
+                                        descendants = LDKF.querySelectorAllDocumentFragment(target, query);
+
+                                    else if (LDKF.isHtmlDocument(target))
+                                        // Update > Descendants
+                                        descendants = LDKF.$querySelectorAllDocument(target, query);
+
+                                    else if (LDKF.isElement(target))
+                                        // Update > Descendants
+                                        descendants = LDKF.querySelectorAllElement(target, query);
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'descendantQuerySelector'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+
+                                    // Initialization > (Iterator, Length)
+                                    let iterator = 0,
+                                        length = descendants.length;
+
+                                    /* Loop
+                                            Index Descendants.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Descendant
+                                        let descendant = descendants[iterator];
+
+                                        /* Logic
+                                                [if statement]
+
+                                            > Update > Descendants
+                                        */
+                                        if (LDKF.includesArray(children, descendant))
+                                            return descendant
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'descendantQuerySelector'", "'EventTarget'"], 'argument', 'No query given')
+                            };
+
+                            // Descendant Query Selector All
+                            LDKF.descendantQuerySelectorAll = function descendantQuerySelectorAll() {
+                                // Initialization > (Target, Child Nodes, Query)
+                                let target = this,
+                                    childNodes = LDKF.get.nodeChildNodes(target),
+                                    query = LDKF.string(arguments[0]);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Error Handling
+                                    try { LDKF.querySelectorDocument(query) }
+                                    catch (error) {
+                                        // Error
+                                        (error.constructor == LDKO.domException) && LDKF.error(["'descendantQuerySelectorAll'", "'EventTarget'"], 'argument', "Invalid query: '" + query + "'")
+
+                                        // Error
+                                        throw error
+                                    }
+
+                                    // Initialization > (Children, Descendants)
+                                    let children = LDKF.toArray(childNodes),
+                                        descendants = [];
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (LDKF.isDocumentFragment(target))
+                                        // Update > Descendants
+                                        descendants = LDKF.querySelectorAllDocumentFragment(target, query);
+
+                                    else if (LDKF.isHtmlDocument(target))
+                                        // Update > Descendants
+                                        descendants = LDKF.$querySelectorAllDocument(target, query);
+
+                                    else if (LDKF.isElement(target))
+                                        // Update > Descendants
+                                        descendants = LDKF.querySelectorAllElement(target, query);
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'descendantQuerySelectorAll'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+
+                                    // Initialization > Iterator
+                                    let iterator = (descendants = LDKF.arrayFrom(descendants)).length;
+
+                                    /* Loop
+                                            Index Descendants.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Descendant
+                                        let descendant = descendants[iterator -= 1];
+
+                                        /* Logic
+                                                [if statement]
+
+                                            > Update > (Descendants, Iterator)
+                                        */
+                                        if (descendant && !LDKF.includesArray(children, descendant)) {
+                                            LDKF.spliceArray(descendants, iterator, 1);
+                                            iterator += 1
+                                        }
+                                    }
+
+                                    // Return
+                                    return descendants
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'descendantQuerySelectorAll'", "'EventTarget'"], 'argument', 'No query given')
+                            };
+
                             // Encode URI
                             LDKF.encodeURI = (function() {
                                 // Initialization > Method
@@ -1798,7 +1945,7 @@
                             // Get Computed Style
                             LDKF.getComputedStyle = (function() {
                                 // Initialization > Method
-                                let method = window.getComputedStyle;
+                                let method = window.getComputedStyle || (LDKO.$document.defaultView || {getComputedStyle: function() {}}).getComputedStyle;
 
                                 // Return
                                 return function getComputedStyle() { return method.call(window, arguments[0]) }
@@ -2369,6 +2516,29 @@
                                     // Return
                                     return LDKO.numberPositiveInfinity
                                 }
+                            };
+
+                            // Get Regular Expression Characters
+                            LDKF.getRegexChars = function getRegexChars() {
+                                // Initialization > (String, Iterator, Stream)
+                                let string = arguments[0],
+                                    iterator = string.length,
+                                    stream = '';
+
+                                /* Loop
+                                        Index String.
+                                */
+                                while (iterator) {
+                                    // Initialization > Character
+                                    let character = string[iterator -= 1];
+
+                                    // Error Handling > Update > Stream
+                                    try { (LDKF.matchString(character, LDKF.regex(character)) || []).length || (stream += character) }
+                                    catch (error) { stream += character }
+                                }
+
+                                // Return
+                                return stream
                             };
 
                             // Get Replicated Elements From Array
@@ -7191,6 +7361,9 @@
                                 return function toUpperCaseString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Trim Character String
+                            LDKF.trimCharString = function trimCharString() { return tmpObject.stringPrototypeTrimCharDescription.value.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) };
+
                             // Trim Left Array
                             LDKF.trimLeftArray = function trimLeftArray() {
                                 // Initialization > (Array, Callback, Iterator, Length)
@@ -7219,6 +7392,10 @@
                                 // Return
                                 return array
                             };
+
+                            // Trim Left Character String
+                            LDKF.trimLeftCharString = function trimLeftCharString() { return tmpObject.stringPrototypeTrimLeftCharDescription.value.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) };
+                            LDKF.$trimLeftCharString = function $trimLeftCharString() { return tmpObject.stringPrototypeTrimLeftCharDescription.value.apply(arguments[0], arguments[1]) };
 
                             // Trim Right Array
                             LDKF.trimRightArray = function trimRightArray() {
@@ -7255,6 +7432,10 @@
                                 // Return
                                 return array
                             };
+
+                            // Trim Right Character String
+                            LDKF.trimRightCharString = function trimRightCharString() { return tmpObject.stringPrototypeTrimRightCharDescription.value.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) };
+                            LDKF.$trimRightCharString = function $trimRightCharString() { return tmpObject.stringPrototypeTrimRightCharDescription.value.apply(arguments[0], arguments[1]) };
 
                             // Unshift Array
                             LDKF.unshiftArray = (function() {
@@ -7792,6 +7973,48 @@
 
                                     // Length
                                     objectLength: function objectLength() { return ({get: LDK.tmp.objects.objectPrototypeLengthDescriptionGetter} || LDKF.objectGetOwnPropertyDescriptor(LDKO.$objectProto, 'length')).get.call(arguments[0]) },
+
+                                // Parent Node
+                                    // First Element Child
+                                    $parentNodeFirstElementChild: (function() {
+                                        /* Polyfill
+                                                --- NOTE ---
+                                                    #Lapys: https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/firstElementChild
+                                        */
+                                        (function(a){a&&a.prototype&&null==a.prototype.firstElementChild&&Object.defineProperty(a.prototype,'firstElementChild',{get:function(){for(var b,c=this.childNodes,d=0;b=c[d++];)if(1===b.nodeType)return b;return null}})})(window.Node||window.Element);
+
+                                        // Initialization > Method
+                                        let method = {
+                                            // Document
+                                            document: (LDKF.objectGetOwnPropertyDescriptor(LDKO.$documentProto, 'firstElementChild') || {get: function() {}}).get,
+
+                                            // Document Fragment
+                                            documentFragment: (LDKF.objectGetOwnPropertyDescriptor(LDKO.documentFragmentProto, 'firstElementChild') || {get: function() {}}).get,
+
+                                            // Element
+                                            element: (LDKF.objectGetOwnPropertyDescriptor(LDKO.$elementProto, 'firstElementChild') || {get: function() {}}).get
+                                        };
+
+                                        // Return
+                                        return function parentNodeFirstElementChild() {
+                                            // Initialization > Data
+                                            let data = arguments[0];
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+
+                                                > Return
+                                            */
+                                            if (LDKF.isDocument(data))
+                                                return method.document.call(data);
+
+                                            else if (LDKF.isDocumentFragment(data))
+                                                return method.documentFragment.call(data);
+
+                                            else if (LDKF.isElement(data))
+                                                return method.element.call(data)
+                                        }
+                                    })(),
 
                                 // Regular Expression
                                     // Flags
@@ -20697,7 +20920,7 @@
                             value: function ancestorQuerySelector() {
                                 // Initialization > Target
                                 let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
-                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(window.document)[0]) || null) :
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
                                     (LDKF.isDocumentFragment(this) ? null : this);
 
                                 /* Logic
@@ -20712,7 +20935,7 @@
                                 }
 
                                 // Return
-                                return null
+                                return target
                             },
 
                             // Writable
@@ -20731,7 +20954,7 @@
                             value: function ancestorQuerySelectorAll() {
                                 // Initialization > Target
                                 let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
-                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(window.document)[0]) || null) :
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
                                     (LDKF.isDocumentFragment(this) ? null : this);
 
                                 /* Logic
@@ -20746,14 +20969,14 @@
                                 }
 
                                 // Return
-                                return null
+                                return target
                             },
 
                             // Writable
                             writable: !0
                         });
 
-                        LDKF.objectDefineProperty(currentPrototype, '$a', tmpObject.eventTargetProto$aDescription = {
+                        LDKF.objectDefineProperty(currentPrototype, '$a', {
                             // Configurable
                             configurable: !0,
 
@@ -20764,7 +20987,7 @@
                             value: function $a() {
                                 // Initialization > Target
                                 let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
-                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(window.document)[0]) || null) :
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
                                     (LDKF.isDocumentFragment(this) ? null : this);
 
                                 /* Logic
@@ -20780,14 +21003,12 @@
                                 }
 
                                 // Return
-                                return null
+                                return target
                             },
 
                             // Writable
                             writable: !0
                         });
-                            // Definition
-                            LDKF.objectDefineProperty(window, '$a', tmpObject.eventTargetProto$aDescription);
 
                         // Children
                         LDKF.objectDefineProperty(currentPrototype, '$x', tmpObject.eventTargetProto$xDescription = {
@@ -20840,7 +21061,7 @@
                                         - We have `Event` objects, but we do not have `EventDescription` objects
                                             that contain information such as the event listener, type and so on.
 
-                                        - Same naming analogy proffers to `EventTarget.prototype.delStyle`
+                                        - Same naming analogy proffers to `HTMLElement.prototype.delStyle`
                         */
                         LDKF.objectDefineProperty(currentPrototype, 'delEvent', {
                             // Configurable
@@ -20856,8 +21077,8 @@
                             writable: !0
                         });
 
-                        // Delete Style --- CHECKPOINT ---
-                        LDKF.objectDefineProperty(currentPrototype, 'delStyle', {
+                        // Descendant Query Selector
+                        LDKF.objectDefineProperty(currentPrototype, 'descendantQuerySelector', {
                             // Configurable
                             configurable: !0,
 
@@ -20865,13 +21086,117 @@
                             enumerable: !0,
 
                             // Value
-                            value: function deleteStyle() {
+                            value: function descendantQuerySelector() {
                                 // Initialization > Target
-                                let target = this;
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (!LDKF.isNull(target)) {
+                                    // Initialization > Query
+                                    let query = arguments.length ? LDKF.string(arguments[0]) : '';
+
+                                    // Return
+                                    return LDKF.descendantQuerySelector.call(target, query)
+                                }
+
+                                // Return
+                                return target
                             },
 
                             // Writable
                             writable: !0
+                        });
+
+                        // Descendant Query Selector All
+                        LDKF.objectDefineProperty(currentPrototype, 'descendantQuerySelectorAll', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function descendantQuerySelectorAll() {
+                                // Initialization > Target
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (!LDKF.isNull(target)) {
+                                    // Initialization > Query
+                                    let query = arguments.length ? LDKF.string(arguments[0]) : '';
+
+                                    // Return
+                                    return LDKF.customArray('LapysJSNodeList', LDKF.descendantQuerySelectorAll.call(target, query));
+                                }
+
+                                // Return
+                                return target
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        LDKF.objectDefineProperty(currentPrototype, '$d', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function $d() {
+                                // Initialization > Target
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (!LDKF.isNull(target)) {
+                                    // Initialization > (Query, Selection)
+                                    let query = arguments.length ? LDKF.string(arguments[0]) : '',
+                                        selection = LDKF.customArray('LapysJSNodeList', LDKF.descendantQuerySelectorAll.call(target, query));
+
+                                    // Return
+                                    return selection.length > 1 ? selection : selection[0] || null
+                                }
+
+                                // Return
+                                return target
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // First Child
+                        LDKF.objectDefineProperty(currentPrototype, '$1', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function $1() {
+                                // Initialization > Target
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                // Return
+                                return LDKF.isNull(target) ? target : LDKF.get.$parentNodeFirstElementChild(target) || LDKF.get.nodeFirstChild(target) || null
+                            }
                         });
 
                     /* Function Data */
@@ -21521,8 +21846,77 @@
                         }));
 
                     /* HTML Element Data */
+                        // Delete Style
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.htmlElementProto, 'delStyle', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function deleteStyle() {
+                                // Initialization > (Argument, Element, Properties, Style)
+                                let args = LDKF.toArray(arguments),
+                                    element = this,
+                                    properties = [],
+                                    style = LDKF.get.htmlElementStyle(element);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length && style) {
+                                    // Loop > Update > Arguments
+                                    while ((function() {
+                                        // Initialization > Iterator
+                                        let iterator = args.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (LDKF.isArray(args[iterator -= 1]))
+                                                return !0
+                                    })()) args = LDKF.$concatArray([], args);
+
+                                    // Initialization > Iterator
+                                    let iterator = args.length;
+
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Argument
+                                        let arg = args[iterator -= 1];
+
+                                        // Update > Properties
+                                        LDKF.includesArray(properties, arg) || LDKF.pushArray(properties, arg)
+                                    }
+
+                                    // Initialization > Length
+                                    let length = properties.length;
+
+                                    /* Loop
+                                            Index Properties.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Property
+                                        let property = properties[iterator];
+
+                                        // Error Handling > Modification > Style > [Property]
+                                        try { (property in style) && (style[property] = '') } catch (error) {}
+                                    }
+
+                                    // Modification > Element > Style
+                                    LDKF.setAttributeElement(element, 'style', LDKF.trimCharString(LDKF.getAttributeElement(element, 'style'), /;| |\n/));
+                                    LDKF.getAttributeElement(element, 'style') || LDKF.removeAttributeElement(element, 'style')
+                                }
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // In Fullscreen
-                        LDKF.objectDefineProperty(currentPrototype = LDKO.htmlElementProto, 'inFullscreen', {
+                        LDKF.objectDefineProperty(currentPrototype, 'inFullscreen', {
                             // Configurable
                             configurable: !0,
 
@@ -23678,7 +24072,7 @@
                                 }
 
                                 // Return
-                                return string
+                                return LDKF.string(string)
                             },
 
                             // Writable
@@ -23853,12 +24247,124 @@
                                 }
 
                                 // Return
-                                return string
+                                return LDKF.string(string)
                             },
 
                             // Writable
                             writable: !0
                         });
+
+                        // Trim Character
+                        LDKF.objectDefineProperty(currentPrototype, 'trimChar', tmpObject.stringPrototypeTrimCharDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function trimChar() {
+                                // Initialization > (Arguments, String)
+                                let args = LDKF.toArray(arguments),
+                                    string = this;
+
+                                // Return
+                                return LDKF.$trimLeftCharString(LDKF.$trimRightCharString(string, args), args)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Trim Left Character
+                        LDKF.objectDefineProperty(currentPrototype, 'trimLeftChar', tmpObject.stringPrototypeTrimLeftCharDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function trimLeftChar() {
+                                // Initialization > (String, Match, Iterator, Selection)
+                                let string = this,
+                                    match = arguments[0],
+                                    iterator = 0,
+                                    selection;
+
+                                // Update > Match
+                                arguments.length || (match = / |\n/);
+                                match = LDKF.isRegex(match) ?
+                                    LDKF.regex(LDKF.get.regexSource(match), LDKF.replaceString(LDKF.get.regexFlags(match), 'g', '')) :
+                                    LDKF.regex((function(match) {
+                                        // Update >Match
+                                        match = LDKF.string(match);
+
+                                        // Initialization > Regular Expression Characters
+                                        let regexChars = LDKF.getRegexChars(match);
+
+                                        // Return
+                                        return LDKF.replaceString(match, LDKF.regex('[' + regexChars + ']', 'g'), '\\$&')
+                                    })(match));
+
+                                // Update > Selection
+                                selection = LDKF.matchString(string, match);
+
+                                // Loop > Update > Selection
+                                while (
+                                    string && selection &&
+                                    'index' in selection &&
+                                    selection.index === 0
+                                )
+                                    selection = LDKF.matchString(string = LDKF.sliceString(string, selection[0].length), match);
+
+                                // Return
+                                return LDKF.string(string)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Trim Right Character
+                        LDKF.objectDefineProperty(currentPrototype, 'trimRightChar', tmpObject.stringPrototypeTrimRightCharDescription = {
+                            // Configurable
+                            configurable: !0,
+
+                            // Value
+                            value: function trimRightChar() {
+                                // Initialization > (String, Match, Iterator, Selection)
+                                let string = this,
+                                    match = arguments[0],
+                                    iterator = 0,
+                                    selection;
+
+                                // Update > Match
+                                arguments.length || (match = / |\n/);
+                                match = LDKF.isRegex(match) ?
+                                    LDKF.regex(LDKF.get.regexSource(match), LDKF.replaceString(LDKF.get.regexFlags(match), 'g', '') + 'g') :
+                                    LDKF.regex((function(match) {
+                                        // Update >Match
+                                        match = LDKF.string(match);
+
+                                        // Initialization > Regular Expression Characters
+                                        let regexChars = LDKF.getRegexChars(match);
+
+                                        // Return
+                                        return LDKF.replaceString(match, LDKF.regex('[' + regexChars + ']', 'g'), '\\$&')
+                                    })(match), 'g');
+
+                                // Update > Selection
+                                selection = LDKF.matchString(string, match);
+
+                                // Loop > Update > Selection
+                                while (
+                                    string && selection &&
+                                    LDKF.lastIndexOfString(string, selection[selection.length - 1]) + selection[selection.length - 1].length == string.length
+                                )
+                                    selection = LDKF.matchString(string = LDKF.sliceString(string, 0, -selection[selection.length - 1].length), match);
+
+                                // Return
+                                return LDKF.string(string)
+                            },
+
+                            // Writable
+                            writable: !0
+                        })
                 }
 
                 // Update
