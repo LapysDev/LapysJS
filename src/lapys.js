@@ -7,7 +7,7 @@
     --- NOTE ---
         #Lapys:
             - Returns 1 if there`s an error, returns 0 otherwise.
-            - Its only parameters are string arguments and other miscellaneous variables.
+            - Parameters: Argument Characters, Argument Variables
 */
 (function Main(argc, argv) {
     /* Global Data */
@@ -171,10 +171,6 @@
                 // {Number Operator}
                 try { if (typeof eval("+'a'") != 'number') throw Error }
                 catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": Number operator (+<non-numeric object>) must be valid syntax.") }
-
-                // {Spread Operator}
-                try { eval('[...[]]') }
-                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": Spread operator ([...<array-like object>]) must be valid syntax.") }
 
                 // {'Object.getOwnPropertyDescriptors' Method}
                 try { if (typeof Object.getOwnPropertyDescriptors({}) != 'object') throw Error }
@@ -2065,6 +2061,316 @@
                                 return minimumOccurringElements
                             };
 
+                            // Get Object Depth
+                            LDKF.getObjectDepth = function getObjectDepth() {
+                                // Initialization > (Object, Constructor, Prototype, (Constructor > Prototype), Symbol)
+                                let object = arguments[0],
+                                    constructor = object.constructor,
+                                    prototype = constructor.prototype,
+                                    __proto__ = object.__proto__,
+                                    symbol = LDKO.symbol;
+
+                                // Function
+                                    // Match
+                                    function match(match) {
+                                        // Initialization > Result
+                                        let result = !1;
+
+                                        // Logic > Error Handling > Update > Result
+                                        if (LDKF.isConstructible(match))
+                                            try {
+                                                (
+                                                    match.constructor === constructor &&
+                                                    match.constructor.prototype === prototype &&
+                                                    match.__proto__ === __proto__
+                                                ) && (result = !0)
+                                            } catch (error) {}
+
+                                        // Return
+                                        return result
+                                    }
+
+                                    // Iterate Object
+                                    function iterateObject(object, depthLevel, depthTree, index) {
+                                        // Update > Object
+                                        (typeof object == 'object') || (object = LDKF.object(object));
+
+                                        // Initialization > ((Descriptors) Keys, Keys, Symbol Descriptors (Keys), Iteration (Keys, List), Distinct, Iterator, Length)
+                                        let descriptors = LDKF.objectGetOwnPropertyDescriptors(object),
+                                            descriptorsKeys = LDKF.objectKeys(descriptors),
+                                            keys = LDKF.objectKeys(object),
+                                            symbolDescriptors = LDKF.objectGetOwnPropertyDescriptors(symbol),
+                                            symbolDescriptorsKeys = LDKF.objectKeys(symbolDescriptors),
+                                            iterationKeys = [],
+                                            iterationList = [],
+                                            distinct = [],
+                                            iterator = 0,
+                                            length = symbolDescriptorsKeys.length;
+
+                                        /* Loop
+                                                Index Object.
+
+                                            > Update > Iteration Keys
+                                        */
+                                        for (let key in object)
+                                            LDKF.pushArray(iterationKeys, key);
+
+                                        /* Loop
+                                                Index Symbol Descriptors Keys.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Symbol Descriptor
+                                            let symbolDescriptor = symbolDescriptors[symbolDescriptorsKeys[iterator]];
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if ('value' in symbolDescriptor) {
+                                                // Initialization > Symbol Descriptor Value
+                                                let symbolDescriptorValue = symbolDescriptor.value;
+
+                                                // Error Handling > Update > Symbol Descriptor Keys
+                                                try { (symbolDescriptorValue in object) || (symbolDescriptorsKeys[iterator] = void 0) }
+                                                catch (error) { symbolDescriptorsKeys[iterator] = void 0 }
+                                            }
+
+                                            else
+                                                // Update > Symbol Descriptor Keys
+                                                symbolDescriptorsKeys[iterator] = void 0
+                                        }
+
+                                        // Update > (Symbol Descriptor Keys, Distinct)
+                                        symbolDescriptorsKeys = LDKF.filterArray(symbolDescriptorsKeys, item => { return !LDKF.isUndefined(item) });
+                                        LDKF.$pushArray(distinct, descriptorsKeys);
+                                        LDKF.$pushArray(distinct, iterationKeys);
+                                        LDKF.$pushArray(distinct, keys);
+
+                                        // Update > (Iterator, Length)
+                                        iterator = 0;
+                                        length = symbolDescriptorsKeys.length;
+
+                                        /* Loop
+                                                Index Symbol Descriptors Keys.
+
+                                            > Update > Distinct
+                                        */
+                                        for (iterator; iterator != length; iterator += 1)
+                                            LDKF.pushArray(distinct, symbolDescriptors[symbolDescriptorsKeys[iterator]].value);
+
+                                        // Update > (Iterator, Length)
+                                        iterator = 0;
+                                        length = distinct.length;
+
+                                        /* Loop
+                                                Index Distinct.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Distinct Item
+                                            let distinctItem = distinct[iterator];
+
+                                            // Update > Iteration List
+                                            (function() {
+                                                // Initialization > Iterator
+                                                let iterator = iterationList.length;
+
+                                                /* Loop
+                                                        Index Iteration List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Iteration List Item
+                                                    let iterationListItem = iterationList[iterator -= 1];
+
+                                                    // Error Handling > Logic > Return
+                                                    try { if (iterationListItem == distinctItem) return !0 }
+                                                    catch (error) {}
+                                                }
+                                            })() || LDKF.pushArray(iterationList, distinctItem)
+                                        }
+
+                                        // Update > (Iterator, Length)
+                                        iterator = 0;
+                                        length = iterationList.length;
+
+                                        /* Loop
+                                                Index Iteration List.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Iteration List Item
+                                            let iterationListItem = iterationList[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDKF.includesArray(descriptorsKeys, iterationListItem)) {
+                                                // Initialization > Descriptor
+                                                let descriptor = descriptors[iterationListItem];
+
+                                                // Update > Iteration List
+                                                ('value' in descriptor) || (iterationList[iterator] = void 0)
+                                            }
+                                        }
+
+                                        // Update > Iterator
+                                        iterator = length = (iterationList = LDKF.filterArray(iterationList, item => { return !LDKF.isUndefined(item) })).length;
+
+                                        /* Logic
+                                                If the Main Depth Tree has been indexed.
+                                        */
+                                        if (depthTree.length && !LDKF.isNull(index)) {
+                                            // Initialization > Sub Depth Tree
+                                            let subDepthTree = new LDKF.array(length);
+
+                                            // Loop > Update > Sub Depth Tree
+                                            while (iterator)
+                                                subDepthTree[iterator -= 1] = depthLevel;
+
+                                            /* Loop
+                                                    Index Iteration List.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Iteration List Item
+                                                let iterationListItem = object[iterationList[iterator]];
+
+                                                // Update > Sub Depth Tree
+                                                match(iterationListItem) && (subDepthTree[iterator] += 1)
+                                            }
+
+                                            // Update > Iterator
+                                            iterator = 0;
+
+                                            /* Loop
+                                                    Index Sub Depth Tree.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Sub Depth Branch
+                                                let subDepthBranch = subDepthTree[iterator];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (subDepthBranch == depthLevel + 1) {
+                                                    // Initialization > Sub Object
+                                                    let sub_object = object[iterationList[iterator]];
+
+                                                    // Update > Depth Tree
+                                                    depthTree[index] += 1;
+
+                                                    // Iterate Object > Sub Object
+                                                    iterateObject(sub_object, 0, depthTree, index)
+                                                }
+                                            }
+                                        }
+
+                                        else {
+                                            // Update > Depth Tree
+                                            depthTree.length = length;
+
+                                            // Loop > Update > Depth Tree
+                                            while (iterator)
+                                                depthTree[iterator -= 1] = depthLevel;
+
+                                            /* Loop
+                                                    Index Iteration List.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Iteration List Item
+                                                let iterationListItem = object[iterationList[iterator]];
+
+                                                // Update > Depth Tree
+                                                match(iterationListItem) && (depthTree[iterator] += 1)
+                                            }
+
+                                            // Update > Iterator
+                                            iterator = 0;
+
+                                            /* Loop
+                                                    Index Depth Tree.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Depth Branch
+                                                let depthBranch = depthTree[iterator];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (depthBranch == depthLevel + 1) {
+                                                    // Initialization > Sub Object
+                                                    let sub_object = object[iterationList[iterator]];
+
+                                                    /* Iterate Object > Sub Object
+                                                            --- NOTE ---
+                                                                #Lapys: Continue deep-searching.
+                                                    */
+                                                    iterateObject(sub_object, 0, depthTree, iterator)
+                                                }
+                                            }
+
+                                            // Return
+                                            return depthTree
+                                        }
+                                    }
+
+                                /* Logic
+                                        [if:else statement]
+
+                                        --- NOTE ---
+                                            #Lapys: Some objects are recursively infinite as
+                                                they could have properties that point to themselves.
+                                */
+                                if (
+                                    LDKF.isFunction(object) ||
+                                    (LDKF.isString(object) && object.length) ||
+                                    (function isRecursive() {
+                                        // Initialization > Descriptors
+                                        let descriptors = LDKF.objectGetOwnPropertyDescriptors(object);
+
+                                        /* Loop
+                                                Index Descriptors.
+                                        */
+                                        for (let descriptorKey in descriptors) {
+                                            // Initialization > Descriptor
+                                            let descriptor = descriptors[descriptorKey];
+
+                                            // Logic > Error Handling > Logic > Return
+                                            if ('value' in descriptor)
+                                                try {
+                                                    if (descriptor.value === object)
+                                                        return !0
+                                                } catch (error) {}
+                                        }
+                                    })()
+                                )
+                                    // Return
+                                    return LDKO.numberPositiveInfinity;
+
+                                else {
+                                    // Error Handling
+                                    try {
+                                        // Initialization > Depth (Tree), Iterator
+                                        let depth = 0,
+                                            depthTree = iterateObject(object, 0, [], null),
+                                            iterator = depthTree.length;
+
+                                        /* Loop
+                                                Index Depth Tree.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Depth Branch
+                                            let depthBranch = depthTree[iterator -= 1];
+
+                                            // Update > Depth
+                                            (depth < depthBranch) && (depth = depthBranch)
+                                        }
+
+                                        // Return
+                                        return depth + 1
+                                    } catch (error) {}
+
+                                    // Return
+                                    return LDKO.numberPositiveInfinity
+                                }
+                            };
+
                             // Get Replicated Elements From Array
                             LDKF.getReplicatedElementsFromArray = function getReplicatedElementsFromArray() {
                                 // Initialization > (Array, Iterator, Replicates, Originals)
@@ -2339,6 +2645,56 @@
                                         (test(value) == '[object Null]' || test(value) == '[object Undefined]') &&
                                         (typeof value == 'object' || typeof value == 'undefined')
                                     ) && (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is Document
+                            LDKF.isDocument = function isDocument() {
+                                // Initialization > (Arguments, Result, Test)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0,
+                                    test = (function() {
+                                        // Initialization > (Object, Result)
+                                        let object = arguments[0],
+                                            result = !1;
+
+                                        // Logic > Return
+                                        if (LDKF.isNonConstructible(object))
+                                            return result;
+
+                                        // Initialization > Result
+                                        let results = [object.__proto__];
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (!LDKF.isNull(results[results.length - 1])) {
+                                            // Update > (Object, Results)
+                                            object = object.__proto__;
+                                            results[results.length] = object.__proto__
+                                        }
+
+                                        // LapysJS Development Kit Functions > Iterate Array
+                                        LDKF.iterateArray((key, value) => {
+                                            // Update > Result
+                                            (!result && value == LDKO.documentProto) && (result = !0)
+                                        }, results);
+
+                                        // Return
+                                        return result
+                                    });
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (result && !test(value)) && (result = !1)
                                 }, args);
 
                                 // Return
@@ -3345,7 +3701,7 @@
                             // Is Iterable
                             LDKF.isIterable = function isIterable() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.toArray(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -3358,8 +3714,31 @@
                                     (
                                         result &&
                                         (LDKF.isConstructible(value) ?
-                                            LDKF.isNull(value) ? !1 : LDKF.isNativeFunction(value[LDKO.symbol.iterator]) :
+                                            LDKF.isNull(value) ? !1 : LDKF.isNativeFunction(value[LDKO.symbolIterator]) :
                                             !1)
+                                    ) || (result = !1)
+                                }, args);
+
+                                // Return
+                                return result
+                            };
+
+                            // Is JSON-Like Object
+                            LDKF.isJSONLikeObject = function isJSONLikeObject() {
+                                // Initialization > (Arguments, Result)
+                                let args = LDKF.toArray(arguments),
+                                    result = !0;
+
+                                // Logic > Return
+                                if (!args.length)
+                                    return !1;
+
+                                // LapysJS Development Kit Functions > Iterate Array
+                                LDKF.iterateArray((key, value) => {
+                                    // Update > Result
+                                    (
+                                        result &&
+                                        (LDKF.isConstructible(value) ? value.constructor === LDKO.object : !1)
                                     ) || (result = !1)
                                 }, args);
 
@@ -4140,6 +4519,323 @@
                                     // Iterate
                                     iterate(callback, value)
                                 }, objects)
+                            };
+
+                            /* Match Object Property
+                                    --- NOTE ---
+                                        #Lapys:
+                                            - Searching deeper than the first layer of objects takes longer time than
+                                                searching the first layer.
+                                            - Searching properties not within the object are a pain because it
+                                                recursively searches all current existing properties before deciding the result.
+                                            - Searching global objects deeper than the first layer takes forever
+                                                and depending on the machine, may or may not produce a result.
+                            */
+                            LDKF.matchObjectProperty = function matchObjectProperty() {
+                                // Initialization > (Object, Property (Is Regular Expression), Sequence, Symbol, Data)
+                                let object = arguments[0],
+                                    property = arguments[1],
+                                    propertyIsRegex = LDKF.isRegex(property),
+                                    sequence = [],
+                                    symbol = LDKO.symbol,
+                                    data = {key: null, object: null, value: null};
+
+                                // Function
+                                    // Get Prototypes
+                                    function getProtos(object) {
+                                        // Initialization > Proto(s)
+                                        let proto = object.__proto__,
+                                            protos = [];
+
+                                        // Loop > Update > Protos
+                                        while (object.__proto__)
+                                            LDKF.pushArray(protos, object = object.__proto__);
+
+                                        // Return
+                                        return protos
+                                    }
+
+                                    // Get Object Prototypes Keys
+                                    function getObjectProtoKeys(object) {
+                                        // Initialization > (Distinct, Keys, Descriptors, Prototypes, Iterator, Length)
+                                        let distinct = [],
+                                            keys = [],
+                                            descriptors = LDKF.objectGetOwnPropertyDescriptors(object),
+                                            protos = getProtos(object),
+                                            iterator = 0,
+                                            length = protos.length;
+
+                                        /* Loop
+                                                Index Prototypes.
+
+                                            > Update > Keys
+                                        */
+                                        for (iterator; iterator != length; iterator += 1)
+                                            LDKF.$pushArray(keys, getObjectKeys(protos[iterator]));
+
+                                        // Update > (Iterator, Length)
+                                        iterator = 0;
+                                        length = keys.length;
+
+                                        /* Loop
+                                                Index Keys.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Key
+                                            let key = keys[iterator];
+
+                                            // Update > Distinct
+                                            LDKF.includesArray(distinct, key) || LDKF.pushArray(distinct, key)
+                                        }
+
+                                        // Return
+                                        return distinct
+                                    }
+
+                                    // Get Object Keys
+                                    function getObjectKeys(object) {
+                                        // Initialization > (Object, Descriptors (Keys), Keys, Symbol Descriptors (Keys), Iterator, Length)
+                                        let $object = LDKF.object(object),
+                                            descriptors = LDKF.objectGetOwnPropertyDescriptors(object),
+                                            descriptorsKeys = LDKF.objectKeys(descriptors),
+                                            keys = LDKF.objectKeys(object),
+                                            symbolDescriptors = LDKF.objectGetOwnPropertyDescriptors(symbol),
+                                            symbolDescriptorsKeys = LDKF.objectKeys(symbolDescriptors),
+                                            iterator = 0,
+                                            length = keys.length;
+
+                                        /* Loop
+                                                Index Keys.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Key
+                                            let key = keys[iterator];
+
+                                            // Update > Descriptors Keys
+                                            LDKF.includesArray(descriptorsKeys, key) || LDKF.pushArray(descriptorsKeys, key)
+                                        }
+
+                                        // Update > Keys
+                                        keys = [];
+
+                                        // Error Handling
+                                        try {
+                                            // Loop > Update > Keys
+                                            for (let key in object)
+                                                LDKF.pushArray(keys, key)
+                                        } catch (error) {
+                                            // Loop > Update > Keys
+                                            for (let key in $object)
+                                                LDKF.pushArray(keys, key)
+                                        }
+
+                                        // Update > (Iterator, Length)
+                                        iterator = 0;
+                                        length = keys.length;
+
+                                        /* Loop
+                                                Index Keys.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Key
+                                            let key = keys[iterator];
+
+                                            // Update > Descriptors Keys
+                                            LDKF.includesArray(descriptorsKeys, key) || LDKF.pushArray(descriptorsKeys, key)
+                                        }
+
+                                        // Update > (Iterator, Length)
+                                        iterator = 0;
+                                        length = symbolDescriptorsKeys.length;
+
+                                        /* Loop
+                                                Index Symbol Descriptors Keys.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Symbol Descriptor
+                                            let symbolDescriptor = symbolDescriptors[symbolDescriptorsKeys[iterator]];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if ('value' in symbolDescriptor) {
+                                                // Initialization > Symbol Descriptor Value
+                                                let symbolDescriptorValue = symbolDescriptor.value;
+
+                                                // Error Handling
+                                                try {
+                                                    // Error Handling > Update > Descriptors Keys
+                                                    try { (symbolDescriptorValue in object) && LDKF.pushArray(descriptorsKeys, symbolDescriptorValue) }
+                                                    catch (error) { (symbolDescriptorValue in $object) && LDKF.pushArray(descriptorsKeys, symbolDescriptorValue) }
+                                                } catch (error) {}
+                                            }
+                                        }
+
+                                        //  Return
+                                        return descriptorsKeys
+                                    }
+
+                                    // Index Prototypes
+                                    function indexProtos(callback, object) {
+                                        // Initialization > (Prototypes, Iterator, Length)
+                                        let protos = getProtos(object),
+                                            iterator = 0,
+                                            length = protos.length;
+
+                                        /* Loop
+                                                Index Prototypes.
+
+                                            > Callback
+                                        */
+                                        for (iterator; iterator != length; iterator += 1)
+                                            callback.call(object, protos[iterator])
+                                    }
+
+                                    // Match
+                                    function match(key, match) {
+                                        // Return
+                                        return propertyIsRegex ? (LDKF.isSymbol(key) ? !1 : (LDKF.matchString(key, match) || []).length) : key == match
+                                    }
+
+                                    // Set Value
+                                    function setValue() {
+                                        // Error Handling
+                                        try {
+                                            // Error Handling > Modification > Data > Value
+                                            try { data.value = data.key in object ? object[data.key] : data.object[data.key] }
+                                            catch (error) { data.value = LDKF.hasOwnPropertyObject(object, data.key) ? object[data.key] : data.object[data.key] }
+                                        } catch (error) { data.value = error }
+
+                                        // Return
+                                        return data.value
+                                    }
+
+                                    // Search
+                                    function search(object) {
+                                        // Initialization > (Prototypes, Keys, Prototype Keys, Iterator, Length)
+                                        let protos = getProtos(object),
+                                            keys = getObjectKeys(object),
+                                            protoKeys = getObjectProtoKeys(object),
+                                            iterator = 0,
+                                            length = protoKeys.length;
+
+                                        /* Loop
+                                                Index the Object`s prototypes for the property.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Prototype Key
+                                            let protoKey = protoKeys[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (match(protoKey, property)) {
+                                                // Modification > Data > (Key, Object)
+                                                data.key = protoKey;
+                                                data.object = (function() {
+                                                    // Initialization > Prototype Object
+                                                    let protoObject;
+
+                                                    // Index Prototypes
+                                                    indexProtos(proto => {
+                                                        // Update > Prototype Object
+                                                        protoObject || (LDKF.hasOwnPropertyObject(proto, protoKey) && (protoObject = proto))
+                                                    }, object);
+
+                                                    // Return
+                                                    return protoObject
+                                                })();
+
+                                                // Set Value
+                                                setValue();
+
+                                                // Return
+                                                return data
+                                            }
+                                        }
+
+                                        // Update > (Iterator, Length)
+                                        iterator = 0;
+                                        length = keys.length;
+
+                                        /* Loop
+                                                Index the Object itself for the property.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Key
+                                            let key = keys[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (match(key, property)) {
+                                                // Modification > Data > (Key, Object)
+                                                data.key = key;
+                                                data.object = object;
+
+                                                // Set Value
+                                                setValue();
+
+                                                // Return
+                                                return data
+                                            }
+                                        }
+
+                                        // Initialization > (Maximum Call Stack Size, (Object, Source) Prototype)
+                                        let maximumCallStackSize = LDKC.maximumCallStackSize,
+                                            objectProto = LDKO.objectProto,
+                                            sourceProto = protos[protos.length - 1];
+
+                                        // Update > Iterator
+                                        iterator = 0;
+
+                                        /* Loop
+                                                Repeat the search but with the Object`s properties.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > (Key, Value, Result)
+                                            let key = keys[iterator],
+                                                value, result;
+
+                                            // Error Handling
+                                            try {
+                                                // Update > (Value, Result)
+                                                value = object[key]
+                                                result = (function deepSearch(key, sub_object) {
+                                                    /* Logic
+                                                            [if statement]
+
+                                                            --- NOTE ---
+                                                                #Lapys: Protect against edge cases.
+                                                    */
+                                                    if (!(
+                                                        (key == 'constructor' && LDKF.isFunction(sub_object)) ||
+                                                        sub_object === deepSearch ||
+                                                        sub_object === matchObjectProperty ||
+                                                        sub_object === object ||
+                                                        sub_object === objectProto ||
+                                                        sub_object === sourceProto ||
+                                                        LDKF.includesArray(sequence, sub_object) ||
+                                                        LDKF.getObjectDepth(sub_object) == maximumCallStackSize
+                                                    )) {
+                                                        // Update > Sequence
+                                                        LDKF.pushArray(sequence, sub_object);
+                                                        (sequence.length == maximumCallStackSize) && LDKF.spliceArray(sequence, 0, 1);
+
+                                                        // Return
+                                                        return search(sub_object)
+                                                    }
+                                                })(key, value)
+                                            } catch (error) {}
+
+                                            // Logic > Return
+                                            if (result)
+                                                return data = result
+                                        }
+                                    }
+
+                                // Return
+                                return search(object) || null
                             };
 
                             // Number
@@ -5202,11 +5898,17 @@
 
                             // Symbol
                             LDKO.symbol = window.Symbol;
+                                // Iterator
+                                LDKO.symbolIterator = LDKO.symbol.iterator;
+
                                 // Prototype
                                 LDKO.symbolProto = LDKO.symbol.prototype;
 
                             // Syntax Error
                             LDKO.syntaxError = SyntaxError;
+
+                            // Type Error
+                            LDKO.typeError = TypeError;
 
                             // {Cross-Domain Request} X Domain Request
                             LDKO.xDomainRequest = window.XDomainRequest || function XDomainRequest() {};
@@ -7390,9 +8092,10 @@
                                         LapysJS = new (class LapysJS { constructor() { return this } }),
                                         $LapysJS = LapysJS.__proto__ = LDKF.objectCreate(LapysJS.__proto__);
 
-                                    // Modification > LapysJS > (LapysJS > Value Of)
+                                    // Modification > LapysJS > (LapysJS, Value Of, (...))
                                     LDKF.objectDefineProperty($LapysJS, 'LapysJS', {value: LapysJS});
                                     LDKF.objectDefineProperty($LapysJS, 'valueOf', {value: function valueOf() { return LapysJSDevelopmentKit }});
+                                    LDKF.objectDefineProperty($LapysJS, LDKO.symbol.toStringTag, {value: 'LapysJS'});
 
                                     // Return
                                     return LapysJS
@@ -11229,7 +11932,7 @@
                             });
 
                             // Clear
-                            LDKF.objectDefineProperty(window, 'clear', {
+                            LDKF.objectDefineProperty(window, 'clear', tmpObject.windowClearDescription = {
                                 // Configurable
                                 configurable: !0,
 
@@ -13823,7 +14526,7 @@
                                             constructor = object.constructor,
                                             prototype = constructor.prototype,
                                             __proto__ = object.__proto__,
-                                            depth = LDKF.get.objectDepth(object),
+                                            depth = LDKF.getObjectDepth(object),
                                             decrementedDepth = depth - 1,
                                             isArray = LDKF.isArray(object),
                                             iterator = 0,
@@ -14168,9 +14871,10 @@
                                                     [if:else statement]
                                             */
                                             if (isIterableObject) {
-                                                // Initialization > (Allow Call, Iterator, Request)
+                                                // Initialization > (Allow Call, Iterator, Iteration Count, Request)
                                                 let allowCall = !1,
                                                     iterator = LDKF.$number(object) + 1,
+                                                    iterationCount = 0,
                                                     request;
 
                                                 // Function > Asynchronous
@@ -14180,7 +14884,7 @@
                                                     */
                                                     if (iterator) {
                                                         // Callback | (Update > Allow Call)
-                                                        allowCall ? callback.call(object, null, null, null) : allowCall = !0;
+                                                        allowCall ? callback.call(object, iterationCount += 1) : allowCall = !0;
 
                                                         // Update > (Iterator, Request)
                                                         iterator -= 1;
@@ -14194,9 +14898,10 @@
                                             }
 
                                             else {
-                                                // Initialization > (Asynchronous Request, Iterator, Properties (Length))
+                                                // Initialization > (Asynchronous Request, Iterator, Iteration Count, Properties (Length))
                                                 let asyncRequest,
                                                     iterator = -1,
+                                                    iterationCount = 0,
                                                     props = [],
                                                     propsLength = 0;
 
@@ -14232,7 +14937,7 @@
                                                                 value = prop.value;
 
                                                             // Callback
-                                                            callback.call(object, key, value, description)
+                                                            callback.call(object, key, value, description, iterationCount += 1)
                                                         }
 
                                                         // Update > (Iterator, Asynchronous Request)
@@ -14247,7 +14952,10 @@
                                             }
                                         }
 
-                                        else
+                                        else {
+                                            // Initialization > Iteration Count
+                                            let iterationCount = 0;
+
                                             /* Logic
                                                     [if:else statement]
                                             */
@@ -14260,7 +14968,7 @@
                                                 */
                                                 while (iterator) {
                                                     // Callback
-                                                    callback.call(object, null, null, null);
+                                                    callback.call(object, iterationCount += 1);
 
                                                     // Update > Iterator
                                                     iterator -= 1
@@ -14275,12 +14983,13 @@
                                                     */
                                                     if (!(key in prototype)) {
                                                         // Callback
-                                                        callback.call(object, key, value, description);
+                                                        callback.call(object, key, value, description, iterationCount += 1);
 
                                                         // Update > Length
                                                         length += 1
                                                     }
-                                                }, object, !0, !1);
+                                                }, object, !0, !1)
+                                        }
 
                                         // Return
                                         return length
@@ -14303,6 +15012,30 @@
                                 value: function root() {
                                     // Return
                                     return LDKF.pow(arguments[0], 1 / arguments[1])
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Run
+                            LDKF.objectDefineProperty(window, 'run', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function run() {
+                                    // Initialization > (Callback, Return Value)
+                                    let callback = arguments[0],
+                                        returnValue;
+
+                                    // Logic > Error Handling > Update > Return Value
+                                    if (LDKF.isFunction(callback))
+                                        try { returnValue = callback() }
+                                        catch (error) { returnValue = error }
+
+                                    // Return
+                                    return returnValue
                                 },
 
                                 // Writable
@@ -15410,7 +16143,7 @@
                                 let array = this,
                                     depth = arguments[0],
                                     emptyArray = [],
-                                    flattenedArray = LDKF.crushArray(array),
+                                    flattenedArray = LDKF.arrayFrom(LDKF.crushArray(array)),
                                     iterator = array.length,
                                     length = arguments.length;
 
@@ -19935,6 +20668,22 @@
                             }
                         });
 
+                    /* Error Data */
+                        // Message
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.errorProto, 'message', {
+                            // Configurable
+                            configurable: !1,
+
+                            // Enumerable
+                            enumerable: !1,
+
+                            // Value
+                            value: LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'message').value,
+
+                            // Writable
+                            writable: !1
+                        });
+
                     /* Event Target Data */
                         // Ancestor Query Selector
                         LDKF.objectDefineProperty(currentPrototype = LDKO.eventTargetProto, 'ancestorQuerySelector', {
@@ -19945,7 +20694,26 @@
                             enumerable: !0,
 
                             // Value
-                            value: LDKF.ancestorQuerySelector,
+                            value: function ancestorQuerySelector() {
+                                // Initialization > Target
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(window.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (!LDKF.isNull(target)) {
+                                    // Initialization > Query
+                                    let query = arguments.length ? LDKF.string(arguments[0]) : '';
+
+                                    // Return
+                                    return LDKF.ancestorQuerySelector.call(target, query)
+                                }
+
+                                // Return
+                                return null
+                            },
 
                             // Writable
                             writable: !0
@@ -19960,7 +20728,26 @@
                             enumerable: !0,
 
                             // Value
-                            value: LDKF.ancestorQuerySelectorAll,
+                            value: function ancestorQuerySelectorAll() {
+                                // Initialization > Target
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(window.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (!LDKF.isNull(target)) {
+                                    // Initialization > Query
+                                    let query = arguments.length ? LDKF.string(arguments[0]) : '';
+
+                                    // Return
+                                    return LDKF.customArray('LapysJSNodeList', LDKF.ancestorQuerySelectorAll.call(target, query));
+                                }
+
+                                // Return
+                                return null
+                            },
 
                             // Writable
                             writable: !0
@@ -19975,13 +20762,25 @@
 
                             // Value
                             value: function $a() {
-                                // Initialization > (Target, Query, Selection)
-                                let target = LDKF.isWindow(this) ? LDKF.get.documentChildren(LDKO.$document)[0] : this,
-                                    query = arguments.length ? LDKF.string(arguments[0]) : '',
-                                    selection = LDKF.customArray('LapysJSNodeList', LDKF.ancestorQuerySelectorAll.call(target, query));
+                                // Initialization > Target
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(window.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (!LDKF.isNull(target)) {
+                                    // Initialization > (Query, Selection)
+                                    let query = arguments.length ? LDKF.string(arguments[0]) : '',
+                                        selection = LDKF.customArray('LapysJSNodeList', LDKF.ancestorQuerySelectorAll.call(target, query));
+
+                                    // Return
+                                    return selection.length > 1 ? selection : selection[0] || null
+                                }
 
                                 // Return
-                                return selection.length > 1 ? selection : selection[0]
+                                return null
                             },
 
                             // Writable
@@ -20031,6 +20830,49 @@
                         });
                             // Definition
                             LDKF.objectDefineProperty(window, '$X', tmpObject.eventTargetProto$XDescription);
+
+                        /* Delete Event
+                                --- CHECKPOINT ---
+                                --- NOTE ---
+                                    #Lapys: Unlike the `Element.prototype.delAttr` method,
+                                        the objects stored as events in an event target are not constructible.
+
+                                        - We have `Event` objects, but we do not have `EventDescription` objects
+                                            that contain information such as the event listener, type and so on.
+
+                                        - Same naming analogy proffers to `EventTarget.prototype.delStyle`
+                        */
+                        LDKF.objectDefineProperty(currentPrototype, 'delEvent', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function deleteEvent() {},
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Delete Style --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'delStyle', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function deleteStyle() {
+                                // Initialization > Target
+                                let target = this;
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
 
                     /* Function Data */
                         // Apply
@@ -22211,14 +23053,7 @@
                         });
 
                     /* Object Data */
-                        /* Contains
-                                --- NOTE ---
-                                    #Lapys: This method searches for a given property
-                                        within the main object and all its sub-objects.
-
-                                        - Searching large objects e.g.: Like the global object `window`
-                                            will take a lot of time.
-                        */
+                        // Contains
                         LDKF.objectDefineProperty(currentPrototype = LDKO.objectProto, 'contains', {
                             // Configurable
                             configurable: !0,
@@ -22228,115 +23063,164 @@
 
                             // Value
                             value: function contains() {
-                                // Initialization > (Contains, Property, Object)
-                                let $contains = !1,
-                                    property = LDKF.string(arguments[0]),
-                                    object = this;
+                                // Initialization > (Object, Property)
+                                let object = this,
+                                    property = arguments[0];
 
                                 /* Logic
-                                        [if statement]
+                                        [if:else statement]
                                 */
-                                if (arguments.length) {
-                                    /* Logic
-                                            [if:else statement]
-                                    */
-                                    if (property in object)
-                                        // Update > Contains
-                                        $contains = !0;
-
-                                    else {
-                                        // Initialization > Maximum Call Stack Size
-                                        let maximumCallStackSize = LDKC.maximumCallStackSize - 1;
-
-                                        // Error Handling
-                                        try {
-                                            // Functions > Search Object Properties
-                                            (function searchObjectProperties(object) {
-                                                /* LapysJS Development Kit Functions > Iterate Object
-                                                        --- NOTE ---
-                                                            #Lapys: Throwing an error is the only in-built
-                                                                way of stopping this method.
-                                                */
-                                                LDKF.iterateObject((key, value, description) => {
-                                                    /* Logic
-                                                            [if statement]
-                                                    */
-                                                    if ('value' in description) {
-                                                        // Initialization > Depth
-                                                        let depth = LDKF.get.objectDepth(object);
-
-                                                        /* Logic
-                                                                [if statement]
-                                                        */
-                                                        if (key === property) {
-                                                            // Update > Search Object Properties
-                                                            searchObjectProperties = (function() {});
-
-                                                            // Error
-                                                            throw new LDKO.error
-                                                        }
-
-                                                        /* Logic
-                                                                [if:else if statement]
-
-                                                                --- NOTE ---
-                                                                    #Lapys:
-                                                                        Infinite Depth cases:
-                                                                            - Strings are recursive characters.
-                                                                            - Function prototypes have recursive constructors.
-                                                                            - Searching this function itself is recursive.
-                                                                            - Searching the object again would recall this process infinitely.
-                                                        */
-                                                        if (LDKF.isString(value)) {
-                                                            /* Logic
-                                                                    [if statement]
-                                                            */
-                                                            if (+property < value.length) {
-                                                                // Update > Search Object Properties
-                                                                searchObjectProperties = (function() {});
-
-                                                                // Error
-                                                                throw new LDKO.error
-                                                            }
-                                                        }
-
-                                                        else if (!(
-                                                            (key == 'constructor' && LDKF.isFunction(value)) ||
-                                                            (key == 'contains' && object.contains === contains) ||
-                                                            (
-                                                                value === contains ||
-                                                                value === object
-                                                            ) ||
-                                                            depth > maximumCallStackSize
-                                                        ))
-                                                            // Search Object Properties
-                                                            searchObjectProperties(value)
-                                                    }
-                                                }, object, !0, !1)
-                                            })(object)
-                                        } catch (error) {
-                                            // Update > Contains
-                                            $contains = error.constructor == LDKO.rangeError ? null : !0
-                                        }
-                                    }
-
+                                if (arguments.length)
                                     // Return
-                                    return $contains
-                                }
+                                    return !!LDKF.matchObjectProperty(object, property);
 
-                                // Return
-                                return null
+                                else
+                                    // Error
+                                    LDKF.error(["'contains'"], 'argument', [1, 0])
                             },
 
                             // Writable
                             writable: !0
                         });
 
-                        /* Depth
-                                --- NOTE ---
-                                    #Lapys: This property uses the maximum call stack size available to
-                                        represent infinitely deep objects.
-                        */
+                        // Define Property
+                        LDKF.objectDefineProperty(currentPrototype, 'def', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !1,
+
+                            // Value
+                            value: function defineProperty() {
+                                // Initialization > (Object, Description, Names, Length)
+                                let object = this,
+                                    description = arguments[1],
+                                    names = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length) {
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (arguments.length == 1)
+                                        // Update > Description
+                                        description = {configurable: !0, enumerable: !0, value: void 0, writable: !0};
+
+                                    else {
+                                        // Update > Description
+                                        description = LDKF.cloneObject(description);
+                                        LDKF.isJSONLikeObject(description) || (description = {configurable: !0, enumerable: !0, value: description, writable: !0});
+
+                                        // Modification > Description > (Configurable, Enumerable)
+                                        ('configurable' in description) || (description.configurable = !1);
+                                        ('enumerable' in description) || (description.enumerable = !1);
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if ('value' in description) {
+                                            // Deletion
+                                            delete description.get;
+                                            delete description.set;
+
+                                            // Modification > Description > (Value, Writable)
+                                            ('value' in description) || (description.value = void 0);
+                                            ('writable' in description) || (description.writable = !1)
+                                        }
+
+                                        else if ('get' in description || 'set' in description) {
+                                            // Modification > Description > (Get, Set)
+                                            ('get' in description) || (description.get = void 0);
+                                            ('set' in description) || (description.set = void 0);
+
+                                            // Deletion
+                                            delete description.value;
+                                            delete description.writable
+                                        }
+
+                                        else {
+                                            // Modification > Description > (Value, Writable)
+                                            description.value = description;
+                                            ('writable' in description) || (description.writable = !1)
+                                        }
+                                    }
+
+                                    // Update > Names
+                                    LDKF.isArray(names) || (names = [names]);
+
+                                    // Initialization > (Error List, Iterator, Length)
+                                    let errorList = [],
+                                        iterator = 0,
+                                        length = names.length;
+
+                                    /* Loop
+                                            Index Names.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Name
+                                        let name = LDKF.isSymbol(names[iterator]) ? names[iterator] : LDKF.string(names[iterator]);
+
+                                        // Error Handling
+                                        try {
+                                            // Modification > Object > [Name]
+                                            LDKF.objectDefineProperty(object, name, description)
+                                        } catch (error) {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (error.constructor === LDKO.typeError)
+                                                // Update > Error List
+                                                LDKF.pushArray(errorList, "Can not define property '" + LDKF.string(name) + "':\n\t" + error.message + '\r');
+
+                                            else
+                                                // Error
+                                                throw error
+                                        }
+                                    }
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (length = errorList.length)
+                                        /* Loop
+                                                Index Error List.
+                                        */
+                                        for (iterator = 0; iterator != length; iterator += 1) {
+                                            // Initialization > (Error Message, Timeout)
+                                            let errorMessage = errorList[iterator],
+                                                timeout;
+
+                                            // Update > Timeout
+                                            timeout = LDKF.setTimeout(function() {
+                                                // Clear Timeout > Timeout
+                                                LDKF.clearTimeout(timeout);
+
+                                                // Error
+                                                LDKF.error(errorMessage)
+                                            })
+                                        }
+
+                                    // Logic > Return
+                                    if ('value' in description)
+                                        return description.value;
+
+                                    // Return
+                                    return description
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'defineProperty'"], 'argument')
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Depth
                         LDKF.objectDefineProperty(currentPrototype, 'depth', tmpObject.objectPrototypeDepthDescription = {
                             // Configurable
                             configurable: !0,
@@ -22344,19 +23228,14 @@
                             // Enumerable
                             enumerable: !1,
 
-                            /* Get
-                                    --- NOTE ---
-                                        #Lapys: Uses primitive recursion limited to
-                                            the size of JavaScript`s memory stack to 'dig' through an
-                                            object and find it`s 'depth'.
-                            */
+                            // Get
                             get: function depth() {
                                 // Initialization > (Depth, Object)
                                 let depth = 0,
                                     object = this;
 
                                 /* Logic
-                                        [if:else statement]
+                                        [if statement]
                                 */
                                 if (LDKF.isConstructible(object)) {
                                     /* Logic
@@ -22388,203 +23267,46 @@
                                             case LDKO.symbol: object = LDKF.valueOfSymbol(object)
                                         }
 
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (LDKF.isBoolean(object))
-                                        // Return
-                                        return object ? 1 : depth;
-
-                                    else if (
-                                        object === LDKO.numberNegativeInfinity ||
-                                        object === LDKO.numberPositiveInfinity
-                                    )
-                                        return LDKO.numberPositiveInfinity;
-
-                                    else if (LDKF.isNumber(object) || LDKF.isRegex(object) || LDKF.isString(object) || LDKF.isSymbol(object))
-                                        // Return
-                                        return 1;
-
-                                    else {
-                                        /* Logic
-                                                [if:else statement]
-                                        */
-                                        if (LDKF.isArray(object)) {
-                                            // Initialization > (Flattener, Iterator, Is Recursive)
-                                            let flattener = [],
-                                                iterator = 1,
-                                                isRecursive = !1;
-
-                                            // LapysJS Development Kit Functions > Iterate Object
-                                            LDKF.iterateObject((key, value) => {
-                                                // Update > Is Recursive
-                                                isRecursive || ((object === value) && (isRecursive = !0))
-                                            }, object, !0, !1, function() {});
-
-                                            /* Logic
-                                                    [if:else statement]
-                                            */
-                                            if (isRecursive)
-                                                // Update > Depth
-                                                iterator = LDKC.maximumCallStackSize;
-
-                                            else
-                                                // Loop > Update > (Object, Iterator)
-                                                while ((function() {
-                                                    // Initialization > Iterator
-                                                    let iterator = object.length;
-
-                                                    // Loop > Logic > Return
-                                                    while (iterator)
-                                                        if (LDKF.isArray(object[iterator -= 1]))
-                                                            return !0
-                                                })()) {
-                                                    object = LDKF.$concatArray(flattener, object);
-                                                    iterator += 1
-                                                }
-
-                                            // Update > Depth
-                                            depth = iterator
-                                        }
-
-                                        else {
-                                            /* Logic
-                                                    [if statement]
-
-                                                    --- NOTE ---
-                                                        #Lapys: Create a new object based on the
-                                                            default parameters of the function Object.
-                                            */
-                                            if (LDKF.isFunction(object)) {
-                                                // Initialization > New Object
-                                                let newObject = {};
-
-                                                // Function > Index Function Parameters
-                                                (function indexFunctionParams(callback, object) {
-                                                    // Initialization > (Parameters, Iterator, Length)
-                                                    let params = LDKF.get.functionParameters(callback),
-                                                        iterator = 0,
-                                                        length = params.length;
-
-                                                    /* Loop
-                                                            Index Parameters.
-                                                    */
-                                                    for (iterator; iterator < length; iterator += 1) {
-                                                        // Initialization > (Parameter, Address, Value)
-                                                        let param = params[iterator],
-                                                            address = param.address,
-                                                            value = param.value;
-
-                                                        /* Logic
-                                                                [if statement]
-                                                        */
-                                                        if (LDKF.isFunction(value)) {
-                                                            // Modification > Object > [Address]
-                                                            object[address] = {};
-
-                                                            // Index Function Parameters
-                                                            indexFunctionParams(value, object[address])
-                                                        }
-                                                    }
-                                                })(object, newObject);
-
-                                                // Update > Object
-                                                object = newObject
-                                            }
-
-                                            // Initialization > (Depth Branches, Is Recursive, Constructor, Prototype, (Constructor > Prototype))
-                                            let depthBranches = {},
-                                                isRecursive = object === LDKO.objectProto ? !0 : !1,
-                                                constructor = object.constructor,
-                                                prototype = constructor.prototype,
-                                                __proto__ = object.__proto__;
-
-                                            // LapysJS Development Kit Functions > Iterate Object
-                                            isRecursive || LDKF.iterateObject((key, value) => {
-                                                // Update > Is Recursive
-                                                isRecursive || ((object === value) && (isRecursive = !0));
-
-                                                // Modification > Depth Branches > [Key]
-                                                depthBranches[key] = 1
-                                            }, object, !0, !1, function() {});
-
-                                            /* Logic
-                                                    [if:else statement]
-                                            */
-                                            if (isRecursive)
-                                                // Update > Depth
-                                                depth = LDKC.maximumCallStackSize;
-
-                                            else {
-                                                // Function > Is Like Object
-                                                function isLikeObject() {
-                                                    // Initialization > Test Object
-                                                    let testObject = arguments[0];
-
-                                                    // Return
-                                                    return LDKF.isConstructible(testObject) ? testObject.constructor === constructor &&
-                                                        testObject.constructor.prototype === prototype &&
-                                                        testObject.__proto__ === __proto__ : !1
-                                                }
-
-                                                // LapysJS Development Kit Functions > Iterate Object
-                                                    // {Update Depth Branches}
-                                                    LDKF.iterateObject(function updateDepthBranches(key) {
-                                                        // Initialization > (Depth Branch, Sub Object)
-                                                        let depthBranch = depthBranches[key],
-                                                            subObject = object[key];
-
-                                                        // Error Handling
-                                                        try {
-                                                            // Function > Index Sub Object
-                                                            (function indexSubObject(object) {
-                                                                // LapysJS Development Kit Functions > Iterate Object
-                                                                LDKF.iterateObject((key, value) => {
-                                                                    /* Logic
-                                                                            [if statement]
-                                                                    */
-                                                                    if (isLikeObject(value)) {
-                                                                        // Update > Depth Branch
-                                                                        depthBranch += 1;
-
-                                                                        // Index Sub Object
-                                                                        indexSubObject(value)
-                                                                    }
-                                                                }, object, !0, !1, function() {})
-                                                            })(subObject)
-                                                        } catch (error) {
-                                                            // Error
-                                                            LDKF.error("'depth'", 'argument', 'Can not calculate the depth of recursive objects')
-                                                        }
-
-                                                        // Modification > Depth Branches > [Key]
-                                                        depthBranches[key] = depthBranch
-                                                    }, depthBranches);
-
-                                                    /* {Get Depth}
-                                                            --- NOTE ---
-                                                                #Lapys: The actual Depth is the longest
-                                                                    branch in the Depth Branches.
-                                                    */
-                                                    LDKF.iterateObject(function getDepth(key, value) {
-                                                        // Update > Depth
-                                                        (value > depth) && (depth = value)
-                                                    }, depthBranches)
-                                            }
-                                        }
-
-                                        // Return
-                                        return depth
-                                    }
+                                    // Return
+                                    return LDKF.getObjectDepth(object)
                                 }
 
-                                else
-                                    // Return
-                                    return depth
+                                // Return
+                                return depth
                             },
 
                             // Set
                             set: function setDepth() { return LDKF.objectDefineProperty(this, 'depth', {configurable: !0, enumerable: !0, value: arguments[0], writable: !0}) }
+                        });
+
+                        // Get Nested Property
+                        LDKF.objectDefineProperty(currentPrototype, 'getNestedProp', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !1,
+
+                            // Value
+                            value: function getNestedProp() {
+                                // Initialization > (Object, Property)
+                                let object = this,
+                                    property = arguments[0];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length)
+                                    // Return
+                                    return LDKF.matchObjectProperty(object, property);
+
+                                else
+                                    // Error
+                                    LDKF.error(["'getNestedProp'"], 'argument', [1, 0])
+                            },
+
+                            // Writable
+                            writable: !0
                         });
 
                         // Length
@@ -22703,6 +23425,60 @@
 
                             // Set
                             set: function length() { return LDKF.objectDefineProperty(this, 'length', {configurable: !0, enumerable: !0, value: arguments[0], writable: !0}) }
+                        });
+
+                        // Set Nested Property
+                        LDKF.objectDefineProperty(currentPrototype, 'setNestedProp', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !1,
+
+                            // Value
+                            value: function setNestedProp() {
+                                // Initialization > (Object, Property, Value)
+                                let object = this,
+                                    property = arguments[0],
+                                    value = arguments[1];
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length) {
+                                    // Initialization > Match
+                                    let match = LDKF.matchObjectProperty(object, property);
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (match)
+                                        // Error Handling
+                                        try {
+                                            // Modification > (Match > Object) > [Match > Key]
+                                            match.object[match.key] = value
+                                        } catch (error) {
+                                            // Warn
+                                            LDKF.warn(error)
+                                        }
+
+                                    else
+                                        try {
+                                            // Modification > Object > [Property]
+                                            object[LDKF.string(property)] = value
+                                        } catch (error) {
+                                            // Warn
+                                            LDKF.warn(error)
+                                        }
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'setNestedProp'"], 'argument', [1, 0])
+                            },
+
+                            // Writable
+                            writable: !0
                         });
 
                         // To String
