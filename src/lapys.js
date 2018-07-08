@@ -414,6 +414,27 @@
                             // On DOM Node Removed Watch List
                             tmpObject.onDOMNodeRemovedWatchList = [];
 
+                            // On Element Added Watch List
+                            tmpObject.onElementAddedWatchList = [];
+
+                            // On Element Count Change Watch List
+                            tmpObject.onElementCountChangeWatchList = [];
+
+                            // On Element Removed Watch List
+                            tmpObject.onElementRemovedWatchList = [];
+
+                            // On HTML Change Watch List
+                            tmpObject.onHTMLChangeWatchList = [];
+
+                            // On Node Added Watch List
+                            tmpObject.onNodeAddedWatchList = [];
+
+                            // On Node Count Change Watch List
+                            tmpObject.onNodeCountChangeWatchList = [];
+
+                            // On Node Removed Watch List
+                            tmpObject.onNodeRemovedWatchList = [];
+
                             // Performance Description
                             tmpObject.performanceDescription = Object.getOwnPropertyDescriptor(window, 'performance');
 
@@ -7729,6 +7750,15 @@
                                         return function elementInnerHTML() { return method.call(arguments[0]) }
                                     })(),
 
+                                    // Outer HTML
+                                    elementOuterHTML: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$elementProto, 'outerHTML').get;
+
+                                        // Return
+                                        return function elementOuterHTML() { return method.call(arguments[0]) }
+                                    })(),
+
                                     // Tag Name
                                     elementTagName: (function() {
                                         // Initialization > Method
@@ -7929,6 +7959,15 @@
                                         return function nodeFirstChild() { return method.call(arguments[0]) }
                                     })(),
 
+                                    // Last Child
+                                    nodeLastChild: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$nodeProto, 'lastChild').get;
+
+                                        // Return
+                                        return function nodeLastChild() { return method.call(arguments[0]) }
+                                    })(),
+
                                     // Parent Node
                                     nodeParentNode: (function() {
                                         // Initialization > Method
@@ -7979,7 +8018,7 @@
                                     $parentNodeFirstElementChild: (function() {
                                         /* Polyfill
                                                 --- NOTE ---
-                                                    #Lapys: https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/firstElementChild
+                                                    #Lapys: Sourced from `https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/firstElementChild`
                                         */
                                         (function(a){a&&a.prototype&&null==a.prototype.firstElementChild&&Object.defineProperty(a.prototype,'firstElementChild',{get:function(){for(var b,c=this.childNodes,d=0;b=c[d++];)if(1===b.nodeType)return b;return null}})})(window.Node||window.Element);
 
@@ -7997,6 +8036,47 @@
 
                                         // Return
                                         return function parentNodeFirstElementChild() {
+                                            // Initialization > Data
+                                            let data = arguments[0];
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+
+                                                > Return
+                                            */
+                                            if (LDKF.isDocument(data))
+                                                return method.document.call(data);
+
+                                            else if (LDKF.isDocumentFragment(data))
+                                                return method.documentFragment.call(data);
+
+                                            else if (LDKF.isElement(data))
+                                                return method.element.call(data)
+                                        }
+                                    })(),
+
+                                    // Last Element Child
+                                    $parentNodeLastElementChild: (function() {
+                                        /* Polyfill
+                                                --- NOTE ---
+                                                    #Lapys: Sourced from `https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/lastElementChild`
+                                        */
+                                        (function(a){a&&a.prototype&&null==a.prototype.lastElementChild&&Object.defineProperty(a.prototype,'lastElementChild',{get:function(){for(var b,c=this.childNodes,d=c.length-1;b=c[d--];)if(1===b.nodeType)return b;return null}})})(window.Node||window.Element);
+
+                                        // Initialization > Method
+                                        let method = {
+                                            // Document
+                                            document: (LDKF.objectGetOwnPropertyDescriptor(LDKO.$documentProto, 'lastElementChild') || {get: function() {}}).get,
+
+                                            // Document Fragment
+                                            documentFragment: (LDKF.objectGetOwnPropertyDescriptor(LDKO.documentFragmentProto, 'lastElementChild') || {get: function() {}}).get,
+
+                                            // Element
+                                            element: (LDKF.objectGetOwnPropertyDescriptor(LDKO.$elementProto, 'lastElementChild') || {get: function() {}}).get
+                                        };
+
+                                        // Return
+                                        return function parentNodeLastElementChild() {
                                             // Initialization > Data
                                             let data = arguments[0];
 
@@ -8132,6 +8212,15 @@
 
                                         // Return
                                         return function elementInnerHTML() { return method.call(arguments[0], arguments[1]) }
+                                    })(),
+
+                                    // Outer HTML
+                                    elementOuterHTML: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$elementProto, 'outerHTML').set;
+
+                                        // Return
+                                        return function elementOuterHTML() { return method.call(arguments[0], arguments[0]) }
                                     })(),
 
                                 // HTML Anchor Element
@@ -11587,7 +11676,7 @@
                                         iterator = array.length;
 
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length && iterator)
                                         /* Loop
@@ -11611,6 +11700,10 @@
                                                 break
                                             }
                                         }
+
+                                    else
+                                        // Update > Array
+                                        iterator && LDKF.spliceArray(array, 0, iterator)
                                 }
                             });
 
@@ -11627,7 +11720,7 @@
                                         iterator = array.length;
 
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length && iterator)
                                         /* Loop
@@ -11651,6 +11744,10 @@
                                                 break
                                             }
                                         }
+
+                                    else
+                                        // Update > Array
+                                        iterator && LDKF.spliceArray(array, 0, iterator)
                                 }
                             });
 
@@ -11667,7 +11764,7 @@
                                         iterator = array.length;
 
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length && iterator)
                                         /* Loop
@@ -11691,6 +11788,10 @@
                                                 break
                                             }
                                         }
+
+                                    else
+                                        // Update > Array
+                                        iterator && LDKF.spliceArray(array, 0, iterator)
                                 }
                             });
 
@@ -11707,7 +11808,7 @@
                                         iterator = array.length;
 
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length && iterator)
                                         /* Loop
@@ -11731,6 +11832,10 @@
                                                 break
                                             }
                                         }
+
+                                    else
+                                        // Update > Array
+                                        iterator && LDKF.spliceArray(array, 0, iterator)
                                 }
                             });
 
@@ -11747,7 +11852,7 @@
                                         iterator = array.length;
 
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length && iterator)
                                         /* Loop
@@ -11771,6 +11876,10 @@
                                                 break
                                             }
                                         }
+
+                                    else
+                                        // Update > Array
+                                        iterator && LDKF.spliceArray(array, 0, iterator)
                                 }
                             });
 
@@ -11787,7 +11896,7 @@
                                         iterator = array.length;
 
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length && iterator)
                                         /* Loop
@@ -11811,6 +11920,10 @@
                                                 break
                                             }
                                         }
+
+                                    else
+                                        // Update > Array
+                                        iterator && LDKF.spliceArray(array, 0, iterator)
                                 }
                             });
 
@@ -11827,7 +11940,7 @@
                                         iterator = array.length;
 
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length && iterator)
                                         /* Loop
@@ -11851,6 +11964,10 @@
                                                 break
                                             }
                                         }
+
+                                    else
+                                        // Update > Array
+                                        iterator && LDKF.spliceArray(array, 0, iterator)
                                 }
                             });
 
@@ -13564,6 +13681,9 @@
                                                     formerLength = length
                                                 }
 
+                                                // Update > Former Length
+                                                (formerLength == length) || (formerLength = length);
+
                                                 // (Update > Request) | Cancel Animation Frame > Request
                                                 test() ?
                                                     request = LDKF.requestAnimationFrame(watch) :
@@ -13675,6 +13795,9 @@
                                                     // Update > Former Length
                                                     formerLength = length
                                                 }
+
+                                                // Update > Former Length
+                                                (formerLength == length) || (formerLength = length);
 
                                                 // (Update > Request) | Cancel Animation Frame > Request
                                                 test() ?
@@ -13788,6 +13911,9 @@
                                                     formerLength = length
                                                 }
 
+                                                // Update > Former Length
+                                                (formerLength == length) || (formerLength = length);
+
                                                 // (Update > Request) | Cancel Animation Frame > Request
                                                 test() ?
                                                     request = LDKF.requestAnimationFrame(watch) :
@@ -13858,7 +13984,7 @@
 
                                         // Initialization > (Element, (Former) HTML, Request)
                                         let element = LDKF.get.documentChildren(LDKO.$document)[0] || LDKC.element,
-                                            formerHTML = LDKF.get.elementInnerHTML(element),
+                                            formerHTML = LDKF.get.elementOuterHTML(element),
                                             HTML = '',
                                             request;
 
@@ -13888,7 +14014,7 @@
                                             // Watch
                                             (function watch() {
                                                 // Update > HTML
-                                                HTML = LDKF.get.elementInnerHTML(element = LDKF.get.documentChildren(LDKO.$document)[0] || LDKC.element);
+                                                HTML = LDKF.get.elementOuterHTML(element = LDKF.get.documentChildren(LDKO.$document)[0] || LDKC.element);
 
                                                 /* Logic
                                                         [if statement]
@@ -13900,6 +14026,9 @@
                                                     // Update > Former HTML
                                                     formerHTML = HTML
                                                 }
+
+                                                // Update > Former HTML
+                                                (formerHTML == HTML) || (formerHTML = HTML);
 
                                                 // (Update > Request) | Cancel Animation Frame > Request
                                                 test() ?
@@ -14013,6 +14142,9 @@
                                                     formerLength = length
                                                 }
 
+                                                // Update > Former Length
+                                                (formerLength == length) || (formerLength = length);
+
                                                 // (Update > Request) | Cancel Animation Frame > Request
                                                 test() ?
                                                     request = LDKF.requestAnimationFrame(watch) :
@@ -14125,6 +14257,9 @@
                                                     formerLength = length
                                                 }
 
+                                                // Update > Former Length
+                                                (formerLength == length) || (formerLength = length);
+
                                                 // (Update > Request) | Cancel Animation Frame > Request
                                                 test() ?
                                                     request = LDKF.requestAnimationFrame(watch) :
@@ -14236,6 +14371,9 @@
                                                     // Update > Former Length
                                                     formerLength = length
                                                 }
+
+                                                // Update > Former Length
+                                                (formerLength == length) || (formerLength = length);
 
                                                 // (Update > Request) | Cancel Animation Frame > Request
                                                 test() ?
@@ -20446,7 +20584,7 @@
                                             */
                                             if (array.length == 2)
                                                 // Modification > Element > (...)
-                                                LDKF.setAttributeElement(
+                                                LDKF.$setAttributeElement(
                                                     element,
                                                     LDKF.isAttr(argument[0]) ? LDKF.get.attributeName(argument[0]) : LDKF.string(argument[0]),
                                                     LDKF.isAttr(argument[1]) ? LDKF.get.attributeValue(argument[1]) : LDKF.string(argument[1])
@@ -20463,7 +20601,7 @@
                                                     > Error Handling > Modification > Element > (...)
                                                 */
                                                 for (argumentIterator; argumentIterator != argumentLength; argumentIterator += 1)
-                                                    try { LDKF.setAttributeElement(element, LDKF.string(argument[argumentIterator]), '') }
+                                                    try { LDKF.$setAttributeElement(element, LDKF.string(argument[argumentIterator]), '') }
                                                     catch (error) {}
                                             }
 
@@ -20472,7 +20610,7 @@
                                             LDKF.iterateObject((key, value, description) => {
                                                 // Logic > Error Handling > Modification > Element > [Key]
                                                 if ('value' in description)
-                                                    try { LDKF.setAttributeElement(element, key, LDKF.string(value)) }
+                                                    try { LDKF.$setAttributeElement(element, key, LDKF.string(value)) }
                                                     catch (error) {}
                                             }, argument)
                                     }
@@ -20483,7 +20621,7 @@
                                     */
                                     if (length == 2)
                                         // Modification > Element > (...)
-                                        LDKF.setAttributeElement(
+                                        LDKF.$setAttributeElement(
                                             element,
                                             LDKF.isAttr(arguments[0]) ? LDKF.get.attributeName(arguments[0]) : LDKF.string(arguments[0]),
                                             LDKF.isAttr(arguments[1]) ? LDKF.get.attributeValue(arguments[1]) : LDKF.string(arguments[1])
@@ -20498,7 +20636,7 @@
                                             let argument = arguments[iterator];
 
                                             // Modification > Element > (...)
-                                            LDKF.isAttr(argument) ? LDKF.setAttributeNodeElement(element, argument) : LDKF.setAttributeElement(element, LDKF.string(argument), '')
+                                            LDKF.isAttr(argument) ? LDKF.setAttributeNodeElement(element, argument) : LDKF.$setAttributeElement(element, LDKF.string(argument), '')
                                         }
                             },
 
@@ -21197,6 +21335,71 @@
                                 // Return
                                 return LDKF.isNull(target) ? target : LDKF.get.$parentNodeFirstElementChild(target) || LDKF.get.nodeFirstChild(target) || null
                             }
+                        });
+
+                        // Get Event --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'getEvent', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function getEvent() {},
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Has Event --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'hasEvent', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function hasEvent() {},
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Last Child
+                        LDKF.objectDefineProperty(currentPrototype, '$n', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function $n() {
+                                // Initialization > Target
+                                let target = LDKF.isDocument(this) || LDKF.isWindow(this) ?
+                                    ((LDKF.isDocument(this) ? LDKF.get.documentChildren(this)[0] : LDKF.get.documentChildren(this.document)[0]) || null) :
+                                    (LDKF.isDocumentFragment(this) ? null : this);
+
+                                // Return
+                                return LDKF.isNull(target) ? target : LDKF.get.$parentNodeLastElementChild(target) || LDKF.get.nodeLastChild(target) || null
+                            }
+                        });
+
+                        // Set Event --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'setEvent', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function setEvent() {},
+
+                            // Writable
+                            writable: !0
                         });
 
                     /* Function Data */
@@ -21909,6 +22112,200 @@
                                     LDKF.setAttributeElement(element, 'style', LDKF.trimCharString(LDKF.getAttributeElement(element, 'style'), /;| |\n/));
                                     LDKF.getAttributeElement(element, 'style') || LDKF.removeAttributeElement(element, 'style')
                                 }
+
+                                // Return
+                                return LDKF.hasAttributeElement(element, 'style') ? LDKF.getAttributeNodeElement(element, 'style') : null
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Get CSS
+                        LDKF.objectDefineProperty(currentPrototype, 'getCSS', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function getCSS() {
+                                // Initialization > (Arguments, Element, Properties, Values, (Computed) Style)
+                                let args = LDKF.toArray(arguments),
+                                    element = this,
+                                    properties = [],
+                                    values = [],
+                                    computedStyle = LDKF.getComputedStyle(element),
+                                    style = LDKF.get.htmlElementStyle(element);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Loop > Update > Arguments
+                                    while ((function() {
+                                        // Initialization > Iterator
+                                        let iterator = args.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (LDKF.isArray(args[iterator -= 1]))
+                                                return !0
+                                    })()) args = LDKF.$concatArray([], args);
+
+                                    // Initialization > Iterator
+                                    let iterator = args.length;
+
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Argument
+                                        let arg = args[iterator -= 1];
+
+                                        // Update > Properties
+                                        LDKF.includesArray(properties, arg) || LDKF.pushArray(properties, arg)
+                                    }
+
+                                    // Initialization > Length
+                                    let length = properties.length;
+
+                                    /* Loop
+                                            Index Properties.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Property
+                                        let property = properties[iterator];
+
+                                        // Error Handling
+                                        try {
+                                            // Update > Values
+                                            property in computedStyle ?
+                                                LDKF.pushArray(values, computedStyle[property]) :
+                                                ((property in style) && LDKF.pushArray(values, style[property]))
+                                        } catch (error) {
+                                            // Error Handling > Update > Values
+                                            try { (property in style) && LDKF.pushArray(values, style[property]) }
+                                            catch (error) {}
+                                        }
+                                    }
+
+                                    // Update > Values
+                                    LDKF.reverseArray(values)
+                                }
+
+                                // Return
+                                return arguments.length == 1 ? (values.length > 1 ? values : values[0]) : (values.length ? values : null)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Get Style
+                        LDKF.objectDefineProperty(currentPrototype, 'getStyle', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function getStyle() {
+                                // Initialization > (Arguments, Element, Properties, Values, Style)
+                                let args = LDKF.toArray(arguments),
+                                    element = this,
+                                    properties = [],
+                                    values = [],
+                                    style = LDKF.get.htmlElementStyle(element);
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Loop > Update > Arguments
+                                    while ((function() {
+                                        // Initialization > Iterator
+                                        let iterator = args.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (LDKF.isArray(args[iterator -= 1]))
+                                                return !0
+                                    })()) args = LDKF.$concatArray([], args);
+
+                                    // Initialization > Iterator
+                                    let iterator = args.length;
+
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Argument
+                                        let arg = args[iterator -= 1];
+
+                                        // Update > Properties
+                                        LDKF.includesArray(properties, arg) || LDKF.pushArray(properties, arg)
+                                    }
+
+                                    // Initialization > Length
+                                    let length = properties.length;
+
+                                    /* Loop
+                                            Index Properties.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Property
+                                        let property = properties[iterator];
+
+                                        // Error Handling > Update > Values
+                                        try { (property in style) && LDKF.pushArray(values, style[property]) }
+                                        catch (error) {}
+                                    }
+
+                                    // Update > Values
+                                    LDKF.reverseArray(values)
+                                }
+
+                                // Return
+                                return arguments.length == 1 ? (values.length > 1 ? values : values[0]) : (values.length ? values : null)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Has Style
+                        LDKF.objectDefineProperty(currentPrototype, 'hasStyle', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function hasStyle() {
+                                // Initialization > (Element, Property)
+                                let element = this,
+                                    property = arguments[0];
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Initialization > Style
+                                    let style = LDKF.get.htmlElementStyle(element);
+
+                                    // Error Handling > Logic > Return
+                                    try { if (property in style) return !!style[property] } catch (error) {}
+
+                                    // Return
+                                    return !1
+                                }
+
+                                // Return
+                                return null
                             },
 
                             // Writable
@@ -22840,7 +23237,61 @@
                             writable: !0
                         });
 
-                    /* Node */
+                    /* Node Data */
+                        // Cancel On Element Added --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.$nodeProto, 'cancelOnElementAdded', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function cancelOnElementAdded() {
+                                // Initialization > (Array, Callback, Iterator, Node)
+                                let array = tmpObject.onElementAddedWatchList,
+                                    callback = arguments[0],
+                                    iterator = array.length,
+                                    node = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (arguments.length && iterator)
+                                    /* Loop
+                                            [while statement]
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Array Element
+                                        let arrayElement = array[iterator -= 1];
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (
+                                            (node === arrayElement.node) &&
+                                            (
+                                                (arrayElement.isEvaluationString && LDKF.isEvaluationString(callback) && callback === arrayElement.evaluationString) ||
+                                                (arrayElement.isFunction && callback === arrayElement.function)
+                                            )
+                                        ) {
+                                            // Update > Temporary Object > On Element Added Watch List
+                                            LDKF.spliceArray(tmpObject.onElementAddedWatchList, iterator, 1);
+
+                                            // Break
+                                            break
+                                        }
+                                    }
+
+                                else
+                                    // Update > Array
+                                    iterator && LDKF.spliceArray(array, 0, iterator)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Descendant Index
                         LDKF.objectDefineProperty(currentPrototype, 'descendantIndex', {
                             // Configurable
@@ -22858,6 +23309,132 @@
                                 // Return
                                 return parent ? LDKF.indexOfArray(LDKF.toArray(LDKF.isNode(parent) ? LDKF.get.nodeChildNodes(parent) : [element]), element) : -1
                             }
+                        });
+
+                        // On Element Added
+                        LDKF.objectDefineProperty(currentPrototype, 'onElementAdded', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function onElementAdded() {
+                                // Initialization > (Length, Node)
+                                let length = arguments.length,
+                                    node = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (length) {
+                                    // Initialization > (Callback, Evaluation String, On Element Added Watch List Element)
+                                    let callback = arguments[0],
+                                        evaluationString,
+                                        onElementAddedWatchListElement = {};
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isEvaluationString(callback)) {
+                                        // Update > Evaluation String
+                                        evaluationString = onElementAddedWatchListElement.evaluationString = callback;
+
+                                        // Modification > On DOM Element Added Watch List Element > Is (Evaluation String, Function)
+                                        onElementAddedWatchListElement.isEvaluationString = !0;
+                                        onElementAddedWatchListElement.isFunction = !1;
+
+                                        // Update > Callback
+                                        callback = LDKF.$func(callback)
+                                    }
+
+                                    else {
+                                        // Update > Evaluation String
+                                        evaluationString = onElementAddedWatchListElement.evaluationString = '';
+
+                                        // Modification > On DOM Element Added Watch List Element > Is (Evaluation String, Function)
+                                        onElementAddedWatchListElement.isEvaluationString = !1;
+                                        onElementAddedWatchListElement.isFunction = !0
+                                    }
+
+                                    // Error
+                                    LDKF.isFunction(callback) || LDKF.error("'onElementAdded'", 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], ['evaluation string', 'function']));
+
+                                    // Modification > On Element Added Watch List > (Function, Node)
+                                    onElementAddedWatchListElement.function = callback;
+                                    onElementAddedWatchListElement.node = node;
+
+                                    // Error
+                                    tmpObject.onElementAddedWatchList.length && test() && LDKF.error("'onElementAdded'", 'argument', 'Callback and element has been added to the watch list already');
+
+                                    // Update > (Temporary Object > On Element Added Watch List)
+                                    LDKF.pushArray(tmpObject.onElementAddedWatchList, onElementAddedWatchListElement);
+
+                                    // Initialization > ((Former) Length, Request)
+                                    let formerLength = LDKF.isElement(node) ? LDKF.querySelectorAllElement(node, '*').length : 0,
+                                        length = 0,
+                                        request;
+
+                                    // Function
+                                        // Test
+                                        function test() {
+                                            // Initialization > (Array, Iterator)
+                                            let array = tmpObject.onElementAddedWatchList,
+                                                iterator = array.length;
+
+                                            /* Loop
+                                                    [while statement]
+                                            */
+                                            while (iterator) {
+                                                // Initialization > Array Element
+                                                let arrayElement = array[iterator -= 1];
+
+                                                // Logic > Return
+                                                if (
+                                                    (node === arrayElement.node) &&
+                                                    (
+                                                        (evaluationString && evaluationString === arrayElement.evaluationString) ||
+                                                        (arrayElement.isFunction && callback === arrayElement.function)
+                                                    )
+                                                )
+                                                    return !0
+                                            }
+                                        }
+
+                                        // Watch
+                                        (function watch() {
+                                            // Update > Length
+                                            length = LDKF.isElement(node) ? LDKF.querySelectorAllElement(node, '*').length : 0;
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (length > formerLength) {
+                                                // Callback
+                                                callback.call(node);
+
+                                                // Update > Former Length
+                                                formerLength = length
+                                            }
+
+                                            // Update > Former Length
+                                            (formerLength == length) || (formerLength = length);
+
+                                            // (Update > Request) | Cancel Animation Frame > Request
+                                            test() ?
+                                                request = LDKF.requestAnimationFrame(watch) :
+                                                LDKF.cancelAnimationFrame(request)
+                                        })()
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error(["'onElementAdded'", "'Node'"], 'argument', [1, 0])
+                            },
+
+                            // Writable
+                            writable: !0
                         });
 
                     /* Number Data */
@@ -24553,7 +25130,9 @@
 
     /* Return
             --- NOTE ---
-                #Lapys: The script ran perfectly.
+                #Lapys:
+                    - The script ran perfectly.
+                    - 2 years of development... well worth it. Well, onto the next project: Lapys OS or LapysPHP
     */
     return 0
 })([''], [])
