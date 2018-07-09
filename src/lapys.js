@@ -8483,12 +8483,12 @@
                                     // Initialization > LapysJS
                                     let _LapysJS = LapysJS;
                                         LapysJS = new (class LapysJS { constructor() { return this } }),
-                                        $LapysJS = LapysJS.__proto__ = LDKF.objectCreate(LapysJS.__proto__);
+                                        _LapysJS = LapysJS.__proto__ = LDKF.objectCreate(LapysJS.__proto__);
 
                                     // Modification > LapysJS > (LapysJS, Value Of, (...))
-                                    LDKF.objectDefineProperty($LapysJS, 'LapysJS', {value: LapysJS});
-                                    LDKF.objectDefineProperty($LapysJS, 'valueOf', {value: function valueOf() { return LapysJSDevelopmentKit }});
-                                    LDKF.objectDefineProperty($LapysJS, LDKO.symbol.toStringTag, {value: 'LapysJS'});
+                                    LDKF.objectDefineProperty(_LapysJS, 'LapysJS', {value: LapysJS});
+                                    LDKF.objectDefineProperty(_LapysJS, 'valueOf', {value: function valueOf() { return LapysJSDevelopmentKit }});
+                                    LDKF.objectDefineProperty(_LapysJS, LDKO.symbol.toStringTag, {value: 'LapysJS'});
 
                                     // Return
                                     return LapysJS
@@ -21545,7 +21545,7 @@
                                     $1 = tmpObject.eventTargetPrototype$1Description.get.call(target);
 
                                 // Return
-                                return LDKF.isNull($1) ? null : ((LDKF.isElement($1) ? LDKF.get.elementPreviousElementSibling($1) || LDKF.get.nodePreviousSibling($1) : LDKF.get.nodePreviousSibling($1)) || null)
+                                return LDKF.isNull($1) ? null : ((LDKF.isElement($1) ? LDKF.get.elementNextElementSibling($1) || LDKF.get.nodeNextSibling($1) : LDKF.get.nodeNextSibling($1)) || null)
                             }
                         });
 
@@ -21564,7 +21564,7 @@
                                     $2 = tmpObject.eventTargetPrototype$2Description.get.call(target);
 
                                 // Return
-                                return LDKF.isNull($2) ? null : ((LDKF.isElement($2) ? LDKF.get.elementPreviousElementSibling($2) || LDKF.get.nodePreviousSibling($2) : LDKF.get.nodePreviousSibling($2)) || null)
+                                return LDKF.isNull($2) ? null : ((LDKF.isElement($2) ? LDKF.get.elementNextElementSibling($2) || LDKF.get.nodeNextSibling($2) : LDKF.get.nodeNextSibling($2)) || null)
                             }
                         });
 
@@ -21583,7 +21583,7 @@
                                     $3 = tmpObject.eventTargetPrototype$3Description.get.call(target);
 
                                 // Return
-                                return LDKF.isNull($3) ? null : ((LDKF.isElement($3) ? LDKF.get.elementPreviousElementSibling($3) || LDKF.get.nodePreviousSibling($3) : LDKF.get.nodePreviousSibling($3)) || null)
+                                return LDKF.isNull($3) ? null : ((LDKF.isElement($3) ? LDKF.get.elementNextElementSibling($3) || LDKF.get.nodeNextSibling($3) : LDKF.get.nodeNextSibling($3)) || null)
                             }
                         });
 
@@ -21602,7 +21602,7 @@
                                     $4 = tmpObject.eventTargetPrototype$4Description.get.call(target);
 
                                 // Return
-                                return LDKF.isNull($4) ? null : ((LDKF.isElement($4) ? LDKF.get.elementPreviousElementSibling($4) || LDKF.get.nodePreviousSibling($4) : LDKF.get.nodePreviousSibling($4)) || null)
+                                return LDKF.isNull($4) ? null : ((LDKF.isElement($4) ? LDKF.get.elementNextElementSibling($4) || LDKF.get.nodeNextSibling($4) : LDKF.get.nodeNextSibling($4)) || null)
                             }
                         });
 
