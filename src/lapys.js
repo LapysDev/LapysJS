@@ -384,6 +384,9 @@
                             // Document Description
                             tmpObject.documentDescription = Object.getOwnPropertyDescriptor(window, 'document');
 
+                            // Event Reference List
+                            tmpObject.eventReferenceList = [];
+
                             // Fullscreen Element
                             tmpObject.fullscreenElement = null;
 
@@ -5195,6 +5198,175 @@
                                 return LDKF.performanceProtoNow.call(LDKO.$performance)
                             };
 
+                            // Query Event References
+                            LDKF.queryEventReferences = function queryEventReferences() {
+                                // Initialization > (Target, Event References, Iterator, Length)
+                                let target = this,
+                                    eventReferences = [],
+                                    iterator = 0,
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isJSONLikeObject(arguments[0]))
+                                    /* Loop
+                                            Index Arguments.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Argument
+                                        let argument = arguments[iterator];
+
+                                        // Error Handling > Update > Argument
+                                        try { argument = LDKF.cloneObject(argument) }
+                                        catch (error) {}
+
+                                        // Error
+                                        LDKF.isJSONLikeObject(argument) || LDKF.error(LDKF.debugMessage(argument, ['must', 'a'], 'readable EventOptions object'));
+
+                                        // Modification > Argument > Options
+                                        'useCapture' in argument ?
+                                            ('options' in argument ? argument.options = {capture: !!argument.useCapture, once: argument.options.capture, passive: argument.options.passive} : argument.options = {capture: !!argument.useCapture, once: !1, passive: !1}) :
+                                            ('options' in argument ? argument.options = {capture: !!argument.options.capture, once: !!argument.options.once, passive: !!argument.options.passive} : argument.options = {capture: !1, once: !1, passive: !1});
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if ('listeners' in argument || 'types' in argument) {
+                                            // Modification > Argument > (Listeners, Types)
+                                            ('listeners' in argument) || ('listener' in argument ? argument.listeners = [argument.listener] : LDKF.error('No listeners found on EventOptions object'));
+                                            ('types' in argument) || ('type' in argument ? argument.types = [argument.type] : LDKF.error('No types found on EventOptions object'));
+
+                                            // Error
+                                            (!LDKF.isArray(argument.listeners) && !LDKF.isArray(argument.types)) && LDKF.error("Both 'listeners' and 'types' properties found in EventOptions object must be arrays of event listeners or event types");
+
+                                            // Initialization > (Iterator, Length)
+                                            let iterator = 0,
+                                                length = LDKF.isArray(argument.listeners) ? LDKF.max(argument.listeners.length, argument.types.length) : argument.types.length;
+
+                                            // Modification > Argument > (Listeners, Types)
+                                            LDKF.isArray(argument.listeners) || (argument.listeners = [argument.listeners]);
+                                            LDKF.isArray(argument.types) || (argument.types = [argument.types]);
+
+                                            // Initialization > (Listeners (Iterator, Length), Types (Iterator, Length))
+                                            let listenersIterator = 0,
+                                                listenersLength = argument.listeners.length,
+                                                typesIterator = 0,
+                                                typesLength = argument.types.length;
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (length)
+                                                /* Loop
+                                                        [for statement]
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Update > (Listeners, Types) Iterator
+                                                    listenersIterator = typeIterator = iterator;
+                                                    (listenersIterator > listenersLength) && (listenersIterator = 0);
+                                                    (typesIterator > typesLength) && (typesIterator = 0);
+
+                                                    // Initialization > (Listener, Type)
+                                                    let listener = argument.listeners[listenersIterator],
+                                                        type = LDKF.string(argument.types[typesIterator]);
+
+                                                    // Update > Listener
+                                                    LDKF.isEvaluationString(listener) && (listener = LDKF.$func('event', listener));
+
+                                                    // Error
+                                                    LDKF.isFunction(listener) || LDKF.error(LDKF.debugMessage("Object in 'listeners' property in EventOptions object", ['must', 'a'], ['evaluation string', 'listener function']));
+
+                                                    // Update > Event References
+                                                    LDKF.pushArray(eventReferences, {listener: listener, options: argument.options, type: type})
+                                                }
+
+                                            else
+                                                // Error
+                                                LDKF.error('No listeners or types found on EventOptions object')
+                                        }
+
+                                        else {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if ('listener' in argument) {
+                                                // Modification > Argument > Listener
+                                                LDKF.isEvaluationString(argument.listener) && (argument.listener = LDKF.$func('event', argument.listener));
+
+                                                //  Error
+                                                LDKF.isFunction(argument.listener) || LDKF.error(LDKF.debugMessage("'listener' property in EventOptions object", ['must', 'a'], ['evaluation string', 'listener function']))
+                                            }
+
+                                            else
+                                                // Error
+                                                LDKF.error("missing 'listener' property in EventOptions object");
+
+                                            // Modification > Argument > Type
+                                            argument.type = LDKF.string(argument.type);
+
+                                            // Update > Event References
+                                            LDKF.pushArray(eventReferences, {listener: argument.listener, options: argument.options, type: argument.type})
+                                        }
+                                    }
+
+                                else {
+                                    // Initialization
+                                        // (Listeners, Options, Types)
+                                        let listeners = arguments.length > 1 ? (LDKF.isArray(arguments[1]) ? arguments[1] : [arguments[1]]) : [],
+                                            options = arguments.length > 2 ? (LDKF.isArray(arguments[2]) ? arguments[2] : [arguments[2]]) : [{capture: !1, once: !1, passive: !1}],
+                                            types = arguments.length ? (LDKF.isArray(arguments[0]) ? arguments[0] : [arguments[0]]) : [];
+
+                                        // Initialization > (Listeners, Options, Types) (Iterator, Length)
+                                        let listenersIterator = 0,
+                                            listenersLength = listeners.length,
+                                            optionsIterator = 0,
+                                            optionsLength = options.length,
+                                            typesIterator = 0,
+                                            typesLength = types.length;
+
+                                        // Length
+                                        let length = LDKF.max(listenersLength, optionsLength, typesLength);
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (listenersLength || typesLength)
+                                        /* Loop
+                                                [for statement]
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Update > (Listeners, Options, Types) Iterator
+                                            listenersIterator = optionsIterator = typesIterator = iterator;
+                                            (listenersIterator > listenersLength) && (listenersIterator = 0);
+                                            (optionsIterator > optionsLength) && (optionsIterator = 0);
+                                            (typesIterator > typesLength) && (typesIterator = 0);
+
+                                            // Initialization > (Listener, Option, Type)
+                                            let listener = listeners[listenersIterator],
+                                                option = options[optionsIterator],
+                                                type = LDKF.string(types[typesIterator]);
+
+                                            // Update > Listener
+                                            LDKF.isEvaluationString(listener) && (listener = LDKF.$func('event', listener));
+
+                                            // Error
+                                            LDKF.isFunction(listener) || LDKF.error(LDKF.debugMessage(listener, ['must', 'a'], ['evaluation string', 'function']));
+
+                                            // Update > (Option, Event References)
+                                            (LDKF.isBoolean(option) || !LDKF.isJSONLikeObject(option)) && (option = {capture: !!option, once: !1, passive: !1});
+                                            LDKF.pushArray(eventReferences, {listener: listener, options: option, type: type})
+                                        }
+
+                                    else
+                                        // Error
+                                        LDKF.error('No listeners or types found')
+                                }
+
+                                // Return
+                                return eventReferences
+                            };
+
                             // Query Input Element Caret Position
                             LDKF.queryInputElementCaretPosition = function queryInputElementCaretPosition() {
                                 // Initialization > (Initial Caret Position, Input, Is HTML Input Element, Selection Start)
@@ -5229,7 +5401,7 @@
                                             Modification up-to-date already:
                                                 - Google Chrome
                                                 - Internet Explorer (pending... -_-)
-                                                - Microsoft Edge (pending)
+                                                - Microsoft Edge
                                                 - Mozilla Firefox
                                                 - Opera (pending)
                                                 - Safari (pending)
@@ -6590,6 +6762,32 @@
                                 return function getElementsByTagNameDocument() { return method.call(LDKO.$document, arguments[0]) }
                             })();
 
+                            LDKF.$getElementsByTagNameDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.getElementsByTagName;
+
+                                // Return
+                                return function $getElementsByTagNameDocument() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
+                            // Get Elements By Tag Name Document Fragment
+                            LDKF.getElementsByTagNameDocumentFragment = (function() {
+                                // Initialization > Method
+                                let method = LDKO.documentFragmentProto.getElementsByTagName;
+
+                                // Return
+                                return function getElementsByTagNameDocumentFragment() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
+                            // Get Elements By Tag Name Element
+                            LDKF.getElementsByTagNameElement = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$elementProto.getElementsByTagName;
+
+                                // Return
+                                return function getElementsByTagNameElement() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
                             // Get Property Value CSS Style Declaration
                             LDKF.getPropertyValueCSSStyleDeclaration = (function() {
                                 // Initialization > Method
@@ -7625,6 +7823,14 @@
 
                                         // Return
                                         return function documentAll() { return method.call(LDKO.$document) }
+                                    })(),
+
+                                    $documentAll: (function() {
+                                        // Initialization > Method
+                                        let method = (LDKF.objectGetOwnPropertyDescriptor(LDKO.$documentProto, 'all') || LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlDocumentProto, 'all')).get;
+
+                                        // Return
+                                        return function documentAll() { return method.call(arguments[0]) }
                                     })(),
 
                                     // Body
@@ -21606,6 +21812,393 @@
                             }
                         });
 
+                        // Get Elements By Class Name
+                        LDKF.objectDefineProperty(currentPrototype, '$c', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function $c() {
+                                // Initialization > (Target, Options, Query, Selection)
+                                let target = LDKF.isWindow(this) ? ((this === window ? LDKO.$document : this.document) || null) : this,
+                                    options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                    query = LDKF.string(arguments[0]),
+                                    selection = [];
+
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (LDKF.isDocument(target))
+                                    // Update > Selection
+                                    selection = LDKF.$querySelectorAllDocument(target, query == '*' ? '[class]' : "[class='" + query + "']");
+
+                                else if (LDKF.isDocumentFragment(target))
+                                    // Update > Selection
+                                    selection = LDKF.querySelectorAllDocumentFragment(target, query == '*' ? '[class]' : "[class='" + query + "']");
+
+                                else if (LDKF.isElement(target))
+                                    // Update > Selection
+                                    selection = LDKF.querySelectorAllElement(target, query == '*' ? '[class]' : "[class='" + query + "']");
+
+                                else
+                                    // Error
+                                    LDKF.error(["'$c'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+
+                                // Update > Selection
+                                selection = LDKF.customArray('LapysJSNodeList', LDKF.arrayFrom(selection));
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (options.length) {
+                                    // Function > Test
+                                    function test() {
+                                        // Initialization > Option
+                                        let option = arguments[0];
+
+                                        // Return
+                                        return option == 'first' || option == 'last' || option == 'list' || LDKF.isSafeInteger(option) ? !0 : LDKF.warn(option, ['not', 'a'], 'valid query selection option')
+                                    }
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (options.length > 1) {
+                                        // Initialization > (Results, Iterator, Length)
+                                        let results = [],
+                                            iterator = 0,
+                                            length = options.length;
+
+                                        /* Loop
+                                                Index Options.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Option
+                                            let option = options[iterator];
+
+                                            // Logic
+                                            if (test(option))
+                                                /* Logic
+                                                        [switch:case:default statement]
+
+                                                    > Update > Results
+                                                */
+                                                switch (option) {
+                                                    // First
+                                                    case 'first': LDKF.pushArray(results, selection[0] || null); break;
+
+                                                    // Last
+                                                    case 'last': LDKF.pushArray(results, selection[selection.length - 1] || null); break;
+
+                                                    // List
+                                                    case 'list': LDKF.pushArray(results, selection); break;
+
+                                                    // [Default]
+                                                    default: LDKF.pushArray(results, selection[option] || null)
+                                                }
+                                        }
+
+                                        // Return
+                                        return LDKF.customArray('LapysJSNodeList', results)
+                                    }
+
+                                    else {
+                                        // Initialization > Option
+                                        let option = options[0];
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (test(option)) {
+                                            /* Logic
+                                                    [switch:case statement]
+                                            */
+                                            switch (option) {
+                                                // First
+                                                case 'first': return selection[0] || null; break;
+
+                                                // Last
+                                                case 'last': return selection[selection.length - 1] || null; break;
+
+                                                // List
+                                                case 'list': return selection
+                                            }
+
+                                            // Return
+                                            return selection[option] || null
+                                        }
+                                    }
+                                }
+
+                                // Return
+                                return selection.length > 1 ? selection : selection[0] || null
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Get Elements By ID
+                        LDKF.objectDefineProperty(currentPrototype, '$i', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function $i() {
+                                // Initialization > (Target, Options, Query, Selection)
+                                let target = LDKF.isWindow(this) ? ((this === window ? LDKO.$document : this.document) || null) : this,
+                                    options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                    query = LDKF.string(arguments[0]),
+                                    selection = [];
+
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (LDKF.isDocument(target))
+                                    // Update > Selection
+                                    selection = LDKF.$querySelectorAllDocument(target, query == '*' ? '[id]' : "[id='" + query + "']");
+
+                                else if (LDKF.isDocumentFragment(target))
+                                    // Update > Selection
+                                    selection = LDKF.querySelectorAllDocumentFragment(target, query == '*' ? '[id]' : "[id='" + query + "']");
+
+                                else if (LDKF.isElement(target))
+                                    // Update > Selection
+                                    selection = LDKF.querySelectorAllElement(target, query == '*' ? '[id]' : "[id='" + query + "']");
+
+                                else
+                                    // Error
+                                    LDKF.error(["'$i'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+
+                                // Update > Selection
+                                selection = LDKF.customArray('LapysJSNodeList', LDKF.arrayFrom(selection));
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (options.length) {
+                                    // Function > Test
+                                    function test() {
+                                        // Initialization > Option
+                                        let option = arguments[0];
+
+                                        // Return
+                                        return option == 'first' || option == 'last' || option == 'list' || LDKF.isSafeInteger(option) ? !0 : LDKF.warn(option, ['not', 'a'], 'valid query selection option')
+                                    }
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (options.length > 1) {
+                                        // Initialization > (Results, Iterator, Length)
+                                        let results = [],
+                                            iterator = 0,
+                                            length = options.length;
+
+                                        /* Loop
+                                                Index Options.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Option
+                                            let option = options[iterator];
+
+                                            // Logic
+                                            if (test(option))
+                                                /* Logic
+                                                        [switch:case:default statement]
+
+                                                    > Update > Results
+                                                */
+                                                switch (option) {
+                                                    // First
+                                                    case 'first': LDKF.pushArray(results, selection[0] || null); break;
+
+                                                    // Last
+                                                    case 'last': LDKF.pushArray(results, selection[selection.length - 1] || null); break;
+
+                                                    // List
+                                                    case 'list': LDKF.pushArray(results, selection); break;
+
+                                                    // [Default]
+                                                    default: LDKF.pushArray(results, selection[option] || null)
+                                                }
+                                        }
+
+                                        // Return
+                                        return LDKF.customArray('LapysJSNodeList', results)
+                                    }
+
+                                    else {
+                                        // Initialization > Option
+                                        let option = options[0];
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (test(option)) {
+                                            /* Logic
+                                                    [switch:case statement]
+                                            */
+                                            switch (option) {
+                                                // First
+                                                case 'first': return selection[0] || null; break;
+
+                                                // Last
+                                                case 'last': return selection[selection.length - 1] || null; break;
+
+                                                // List
+                                                case 'list': return selection
+                                            }
+
+                                            // Return
+                                            return selection[option] || null
+                                        }
+                                    }
+                                }
+
+                                // Return
+                                return selection.length > 1 ? selection : selection[0] || null
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Get Elements By Tag Name
+                        LDKF.objectDefineProperty(currentPrototype, '$t', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function $t() {
+                                // Initialization > (Target, Options, Query, Selection)
+                                let target = LDKF.isWindow(this) ? ((this === window ? LDKO.$document : this.document) || null) : this,
+                                    options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                    query = LDKF.string(arguments[0]),
+                                    selection = [];
+
+                                /* Logic
+                                        [if:else if:else statement]
+                                */
+                                if (LDKF.isDocument(target))
+                                    // Update > Selection
+                                    selection = LDKF.$getElementsByTagNameDocument(target, query);
+
+                                else if (LDKF.isDocumentFragment(target))
+                                    // Update > Selection
+                                    selection = LDKF.getElementsByTagNameDocumentFragment(target, query);
+
+                                else if (LDKF.isElement(target))
+                                    // Update > Selection
+                                    selection = LDKF.getElementsByTagNameElement(target, query);
+
+                                else
+                                    // Error
+                                    LDKF.error(["'$t'", "'EventTarget'"], 'argument', 'Could not retrieve selection');
+
+                                // Update > Selection
+                                selection = LDKF.customArray('LapysJSNodeList', LDKF.arrayFrom(selection));
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (options.length) {
+                                    // Function > Test
+                                    function test() {
+                                        // Initialization > Option
+                                        let option = arguments[0];
+
+                                        // Return
+                                        return option == 'first' || option == 'last' || option == 'list' || LDKF.isSafeInteger(option) ? !0 : LDKF.warn(option, ['not', 'a'], 'valid query selection option')
+                                    }
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (options.length > 1) {
+                                        // Initialization > (Results, Iterator, Length)
+                                        let results = [],
+                                            iterator = 0,
+                                            length = options.length;
+
+                                        /* Loop
+                                                Index Options.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Option
+                                            let option = options[iterator];
+
+                                            // Logic
+                                            if (test(option))
+                                                /* Logic
+                                                        [switch:case:default statement]
+
+                                                    > Update > Results
+                                                */
+                                                switch (option) {
+                                                    // First
+                                                    case 'first': LDKF.pushArray(results, selection[0] || null); break;
+
+                                                    // Last
+                                                    case 'last': LDKF.pushArray(results, selection[selection.length - 1] || null); break;
+
+                                                    // List
+                                                    case 'list': LDKF.pushArray(results, selection); break;
+
+                                                    // [Default]
+                                                    default: LDKF.pushArray(results, selection[option] || null)
+                                                }
+                                        }
+
+                                        // Return
+                                        return LDKF.customArray('LapysJSNodeList', results)
+                                    }
+
+                                    else {
+                                        // Initialization > Option
+                                        let option = options[0];
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (test(option)) {
+                                            /* Logic
+                                                    [switch:case statement]
+                                            */
+                                            switch (option) {
+                                                // First
+                                                case 'first': return selection[0] || null; break;
+
+                                                // Last
+                                                case 'last': return selection[selection.length - 1] || null; break;
+
+                                                // List
+                                                case 'list': return selection
+                                            }
+
+                                            // Return
+                                            return selection[option] || null
+                                        }
+                                    }
+                                }
+
+                                // Return
+                                return selection.length > 1 ? selection : selection[0] || null
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Get Event --- CHECKPOINT ---
                         LDKF.objectDefineProperty(currentPrototype, 'getEvent', {
                             // Configurable
@@ -21865,7 +22458,42 @@
                             writable: !0
                         });
 
-                        // Set Event --- CHECKPOINT ---
+                        // Random Selector
+                        LDKF.objectDefineProperty(currentPrototype, '$r', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function $r() {
+                                // Initialization > (Target, Elements, Length)
+                                let target = LDKF.isWindow(this) ? ((this === window ? LDKO.$document : this.document) || null) : this,
+                                    elements = target === document ? LDKF.get.documentAll() : LDKF.get.$documentAll(target),
+                                    length = elements.length;
+
+                                // Return
+                                return length ? elements[LDKF.numberParseInt(LDKF.mathRandom() * length)] : null
+                            }
+                        });
+
+                        // Run Event --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'runEvent', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function runEvent() {},
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Set Event
                         LDKF.objectDefineProperty(currentPrototype, 'setEvent', {
                             // Configurable
                             configurable: !0,
@@ -21874,7 +22502,56 @@
                             enumerable: !0,
 
                             // Value
-                            value: function setEvent() {},
+                            value: function setEvent() {
+                                // Initialization > (Target, Event References, Length)
+                                let target = this,
+                                    eventReferences = [],
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length) {
+                                    // Initialization > (Event References, Iterator)
+                                    let eventReferences,
+                                        iterator = 0;
+
+                                    // Error Handling
+                                    try {
+                                        // Update > Event References
+                                        eventReferences = LDKF.queryEventReferences.apply(target, arguments)
+                                    } catch (error) {
+                                        // Error
+                                        LDKF.error(["'setEvent'", "'EventTarget'"], 'argument', error.message)
+                                    }
+
+                                    // Update > Length
+                                    length = eventReferences.length;
+
+                                    /* Loop
+                                            Index Event References.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > (Event Reference, Listener, Options, Type)
+                                        let eventReference = eventReferences[iterator],
+                                            listener = eventReference.listener,
+                                            options = eventReference.options,
+                                            type = eventReference.type;
+
+                                        // Event > Target > [Type]
+                                        LDKF.addEvent(eventReference.target = target, type, listener, options);
+
+                                        // Update > (Temporary Object > Event Reference List)
+                                        LDKF.pushArray(tmpObject.eventReferenceList, eventReference);
+
+                                        // Update > Event References
+                                        eventReferences[iterator] = LDKF.customObject('EventOption', eventReference)
+                                    }
+
+                                    // Return
+                                    return LDKF.customArray('EventReferenceList', eventReferences)
+                                }
+                            },
 
                             // Writable
                             writable: !0
