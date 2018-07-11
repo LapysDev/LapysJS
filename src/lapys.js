@@ -245,8 +245,8 @@
                     (function(a){a.forEach(function(b){b.hasOwnProperty('remove')||Object.defineProperty(b,'remove',{configurable:!0,enumerable:!0,writable:!0,value:function(){null!==this.parentNode&&this.parentNode.removeChild(this)}})})})([Element.prototype,CharacterData.prototype,DocumentType.prototype]);
 
                 // Event Target
-                    // Add Event Listener, Remove Event Listener --- CHECKPOINT --- #Lapys: Compress this polyfill.
-                    (function(){if (!Element.prototype.addEventListener) {var oListeners = {};function runListeners(oEvent) {if (!oEvent) { oEvent = window.event; }for (var iLstId = 0, iElId = 0, oEvtListeners = oListeners[oEvent.type]; iElId < oEvtListeners.aEls.length; iElId++) {if (oEvtListeners.aEls[iElId] === this) {for (iLstId; iLstId < oEvtListeners.aEvts[iElId].length; iLstId++) { oEvtListeners.aEvts[iElId][iLstId].call(this, oEvent); }break;}}}Element.prototype.addEventListener = function (sEventType, fListener) {if (oListeners.hasOwnProperty(sEventType)) {var oEvtListeners = oListeners[sEventType];for (var nElIdx = -1, iElId = 0; iElId < oEvtListeners.aEls.length; iElId++) {if (oEvtListeners.aEls[iElId] === this) { nElIdx = iElId; break; }}if (nElIdx === -1) {oEvtListeners.aEls.push(this);oEvtListeners.aEvts.push([fListener]);this["on" + sEventType] = runListeners;} else {var aElListeners = oEvtListeners.aEvts[nElIdx];if (this["on" + sEventType] !== runListeners) {aElListeners.splice(0);this["on" + sEventType] = runListeners;}for (var iLstId = 0; iLstId < aElListeners.length; iLstId++) {if (aElListeners[iLstId] === fListener) { return; }}aElListeners.push(fListener);}} else {oListeners[sEventType] = { aEls: [this], aEvts: [ [fListener] ] };this["on" + sEventType] = runListeners;}};Element.prototype.removeEventListener = function (sEventType, fListener) {if (!oListeners.hasOwnProperty(sEventType)) { return; }var oEvtListeners = oListeners[sEventType];for (var nElIdx = -1, iElId = 0; iElId < oEvtListeners.aEls.length; iElId++) {if (oEvtListeners.aEls[iElId] === this) { nElIdx = iElId; break; }}if (nElIdx === -1) { return; }for (var iLstId = 0, aElListeners = oEvtListeners.aEvts[nElIdx]; iLstId < aElListeners.length; iLstId++) {if (aElListeners[iLstId] === fListener){aElListeners.splice(iLstId,1)}}}}})();
+                    // Add Event Listener, Remove Event Listener
+                    (function(){if(!Element.prototype.addEventListener){function b(c){c||(c=window.event);for(var d=0,e=0,f=a[c.type];e<f.aEls.length;e++)if(f.aEls[e]===this){for(d;d<f.aEvts[e].length;d++)f.aEvts[e][d].call(this,c);break}}var a={};Element.prototype.addEventListener=function(c,d){if(a.hasOwnProperty(c)){for(var e=a[c],f=-1,g=0;g<e.aEls.length;g++)if(e.aEls[g]===this){f=g;break}if(-1===f)e.aEls.push(this),e.aEvts.push([d]),this["on"+c]=b;else{var h=e.aEvts[f];this["on"+c]!==b&&(h.splice(0),this["on"+c]=b);for(var i=0;i<h.length;i++)if(h[i]===d)return;h.push(d)}}else a[c]={aEls:[this],aEvts:[[d]]},this["on"+c]=b},Element.prototype.removeEventListener=function(c,d){if(a.hasOwnProperty(c)){for(var e=a[c],f=-1,g=0;g<e.aEls.length;g++)if(e.aEls[g]===this){f=g;break}if(-1!==f)for(var h=0,i=e.aEvts[f];h<i.length;h++)i[h]===d&&i.splice(h,1)}}}})();
 
             /* Definition */
                 // LapysJS Development Kit Experimental Features
@@ -2772,7 +2772,7 @@
                             // Is Array-Like
                             LDKF.isArrayLike = function isArrayLike() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -2853,7 +2853,7 @@
                             // Is Boolean
                             LDKF.isBoolean = function isBoolean() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -2923,7 +2923,7 @@
                             // Is Constructible
                             LDKF.isConstructible = function isConstructible() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -3449,7 +3449,7 @@
                             // Is False Boolean
                             LDKF.isFalseBoolean = function isFalseBoolean() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -3469,7 +3469,7 @@
                             // Is Finite
                             LDKF.isFinite = function isFinite() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -3494,7 +3494,7 @@
                             // Is Function
                             LDKF.isFunction = function isFunction() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -3914,7 +3914,7 @@
                             // Is Infinite
                             LDKF.isInfinite = function isInfinite() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4056,7 +4056,7 @@
                             // Is Native Function
                             LDKF.isNativeFunction = function isNativeFunction() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -4191,7 +4191,7 @@
                             // Is Not a Number
                             LDKF.isNaN = function isNaN() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4316,7 +4316,7 @@
                             // Is Non-Constructible
                             LDKF.isNonConstructible = function isNonConstructible() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4341,7 +4341,7 @@
                             // Is Null
                             LDKF.isNull = function isNull() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4366,7 +4366,7 @@
                             // Is Number
                             LDKF.isNumber = function isNumber() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -4386,7 +4386,7 @@
                             // Is Object
                             LDKF.isObject = function isObject() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -4413,7 +4413,7 @@
                             // Is Regular Expression
                             LDKF.isRegex = function isRegex() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4441,7 +4441,7 @@
                             // Is Safe Integer
                             LDKF.isSafeInteger = function isSafeInteger() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4466,7 +4466,7 @@
                             // Is Safe Number
                             LDKF.isSafeNumber = function isSafeNumber() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4491,7 +4491,7 @@
                             // Is Strictly Array-Like
                             LDKF.isStrictlyArrayLike = function isStrictlyArrayLike() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4523,7 +4523,7 @@
                             // Is String
                             LDKF.isString = function isString() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -4543,7 +4543,7 @@
                             // Is Symbol
                             LDKF.isSymbol = function isSymbol() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -4571,7 +4571,7 @@
                             // Is True Boolean
                             LDKF.isTrueBoolean = function isTrueBoolean() {
                                 // Initialization > (Arguments, Result)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0;
 
                                 // Logic > Return
@@ -4591,7 +4591,7 @@
                             // Is Undefined
                             LDKF.isUndefined = function isUndefined() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.arrayFrom(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -5874,6 +5874,116 @@
                                 let list = arguments[0],
                                     sorted = [];
 
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isString(list)) {
+                                    // Initialization > (Index, Iterator, Length)
+                                    let index = 0,
+                                        iterator = 0,
+                                        length = list.length;
+
+                                    /* Loop
+                                            Iterate through List.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Character
+                                        let character = list[iterator];
+
+                                        // Update > (Index, Sorted)
+                                        (character == ' ') && (index += 1);
+                                        index in sorted ? sorted[index] += character : sorted[index] = character
+                                    }
+                                }
+
+                                else {
+                                    // Initialization > Iterator
+                                    let iterator = list.length;
+
+                                    // Update > List
+                                    list = LDKF.arrayFrom(list);
+
+                                    // Loop > Update > List
+                                    while (iterator)
+                                        list[iterator -= 1] = LDKF.string(list[iterator]);
+
+                                    // Update > Sorted
+                                    sorted = list
+                                }
+
+                                // Update > Iterator
+                                iterator = sorted.length;
+
+                                /* Loop
+                                        Index Sorted.
+                                */
+                                while (iterator) {
+                                    // Initialization > (Item, (Allow) Stream, Trailing Space, Item (Iterator, Length))
+                                    let item = sorted[iterator -= 1],
+                                        allowStream = !1,
+                                        stream = '',
+                                        trailingSpace = '',
+                                        itemIterator = 0,
+                                        itemLength = (item || []).length;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (item) {
+                                        /* Loop
+                                                Iterate through Item.
+                                        */
+                                        for (itemIterator; itemIterator != itemLength; itemIterator += 1) {
+                                            // Initialization > Character
+                                            let character = item[itemIterator];
+
+                                            // Update > (Allow) Stream
+                                            allowStream || ((character == ' ') || (allowStream = !0));
+                                            allowStream && (stream += character)
+                                        }
+
+                                        /* Loop
+                                                Iterate through Item.
+                                        */
+                                        while (itemIterator) {
+                                            // Initialization > Character
+                                            let character = item[itemIterator -= 1];
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (character == ' ')
+                                                // Update > Trailing Space
+                                                trailingSpace += character;
+
+                                            else
+                                                // Break
+                                                break
+                                        }
+
+                                        // Initialization > Trailing Space Length
+                                        let trailingSpaceLength = trailingSpace.length;
+
+                                        // Update > (Stream, Sorted)
+                                        trailingSpaceLength && (stream = LDKF.sliceString(stream, 0, -trailingSpaceLength));
+                                        sorted[iterator] = (function isSparse() {
+                                            // Initialization > Iterator
+                                            let iterator = item.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (item[iterator -= 1] != ' ')
+                                                    return !1;
+
+                                            // Return
+                                            return !0
+                                        })() ? void 0 : stream
+                                    }
+                                }
+
+                                // Update > Sorted
+                                sorted = LDKF.filterArray(sorted, item => { return !LDKF.isUndefined(item) });
+
                                 // Return
                                 return sorted
                             };
@@ -5907,7 +6017,7 @@
                                 LDKF.iterateArray((key, value) => {
                                     // Logic > Error Handling > Update > Value
                                     if (!LDKF.isArrayLike(value))
-                                        try { value = [...value] }
+                                        try { value = LDKF.arrayFrom(value) }
                                         catch (error) { value = [value] }
 
                                     // LapysJS Development Kit Functions > Iterate Array
@@ -16391,13 +16501,13 @@
                                                                         --- NOTE ---
                                                                             #Lapys: Modify the getter to return a stringified version of its return value.
                                                                 */
-                                                                get: LDKF.isFunction(get) ? (LDKF.isNativeFunction(get) ? get : LDKF.$func(get.name, LDKF.get.functionParameters(get), 'return LDKF.string((' + LDKF.toFunctionString(get) + ').apply(this, [...arguments]))')) : get,
+                                                                get: LDKF.isFunction(get) ? (LDKF.isNativeFunction(get) ? get : LDKF.$func(get.name, LDKF.get.functionParameters(get), 'return LDKF.string((' + LDKF.toFunctionString(get) + ').apply(this, arguments))')) : get,
 
                                                                 /* Set
                                                                         --- NOTE ---
                                                                             #Lapys: Modify the setter to convert all arguments to string.
                                                                 */
-                                                                set: LDKF.isFunction(set) ? (LDKF.isNativeFunction(set) ? set : LDKF.$func(set.name, LDKF.get.functionParameters(set), 'for (let i = 0; i < arguments.length; i += 1) arguments[i] = LDKF.string(arguments[i]); return (' + LDKF.toFunctionString(set) + ').apply(this, [...arguments])')) : set
+                                                                set: LDKF.isFunction(set) ? (LDKF.isNativeFunction(set) ? set : LDKF.$func(set.name, LDKF.get.functionParameters(set), 'for (let i = 0; i < arguments.length; i += 1) arguments[i] = LDKF.string(arguments[i]); return (' + LDKF.toFunctionString(set) + ').apply(this, arguments)')) : set
                                                             })
                                                         }
                                                     } catch (error) {
