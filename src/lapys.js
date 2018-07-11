@@ -39,6 +39,9 @@
                 // Browser Incompatibility Error Message
                 browserIncompatibilityErrorMessage: 'LapysJS is not compatible with this browser',
 
+                // Current Phase
+                currentPhase: null,
+
                 // Error Message Prefix
                 errorMessagePrefix: '[LapysJS v' + VERSION + '] => ',
 
@@ -241,6 +244,10 @@
                     // Remove
                     (function(a){a.forEach(function(b){b.hasOwnProperty('remove')||Object.defineProperty(b,'remove',{configurable:!0,enumerable:!0,writable:!0,value:function(){null!==this.parentNode&&this.parentNode.removeChild(this)}})})})([Element.prototype,CharacterData.prototype,DocumentType.prototype]);
 
+                // Event Target
+                    // Add Event Listener, Remove Event Listener --- CHECKPOINT --- #Lapys: Compress this polyfill.
+                    (function(){if (!Element.prototype.addEventListener) {var oListeners = {};function runListeners(oEvent) {if (!oEvent) { oEvent = window.event; }for (var iLstId = 0, iElId = 0, oEvtListeners = oListeners[oEvent.type]; iElId < oEvtListeners.aEls.length; iElId++) {if (oEvtListeners.aEls[iElId] === this) {for (iLstId; iLstId < oEvtListeners.aEvts[iElId].length; iLstId++) { oEvtListeners.aEvts[iElId][iLstId].call(this, oEvent); }break;}}}Element.prototype.addEventListener = function (sEventType, fListener) {if (oListeners.hasOwnProperty(sEventType)) {var oEvtListeners = oListeners[sEventType];for (var nElIdx = -1, iElId = 0; iElId < oEvtListeners.aEls.length; iElId++) {if (oEvtListeners.aEls[iElId] === this) { nElIdx = iElId; break; }}if (nElIdx === -1) {oEvtListeners.aEls.push(this);oEvtListeners.aEvts.push([fListener]);this["on" + sEventType] = runListeners;} else {var aElListeners = oEvtListeners.aEvts[nElIdx];if (this["on" + sEventType] !== runListeners) {aElListeners.splice(0);this["on" + sEventType] = runListeners;}for (var iLstId = 0; iLstId < aElListeners.length; iLstId++) {if (aElListeners[iLstId] === fListener) { return; }}aElListeners.push(fListener);}} else {oListeners[sEventType] = { aEls: [this], aEvts: [ [fListener] ] };this["on" + sEventType] = runListeners;}};Element.prototype.removeEventListener = function (sEventType, fListener) {if (!oListeners.hasOwnProperty(sEventType)) { return; }var oEvtListeners = oListeners[sEventType];for (var nElIdx = -1, iElId = 0; iElId < oEvtListeners.aEls.length; iElId++) {if (oEvtListeners.aEls[iElId] === this) { nElIdx = iElId; break; }}if (nElIdx === -1) { return; }for (var iLstId = 0, aElListeners = oEvtListeners.aEvts[nElIdx]; iLstId < aElListeners.length; iLstId++) {if (aElListeners[iLstId] === fListener){aElListeners.splice(iLstId,1)}}}}})();
+
             /* Definition */
                 // LapysJS Development Kit Experimental Features
                 const LDKE = LDK.features,
@@ -384,8 +391,32 @@
                             // Document Description
                             tmpObject.documentDescription = Object.getOwnPropertyDescriptor(window, 'document');
 
-                            // Event Reference List
-                            tmpObject.eventReferenceList = [];
+                            /* Event Reference List
+                                    --- NOTE ---
+                                        #Lapys: Allow for additional dynamic information
+                                            to be added if needed, such as the `getEventListeners` command-line API
+                                            in Google Chrome Developer Tools.
+                            */
+                            Object.defineProperty(tmpObject, 'eventReferenceList', (function() {
+                                // Initialization > (List, Descriptor)
+                                let list = [],
+                                    descriptor = {
+                                        // Configurable
+                                        configurable: !1,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: tmpObject.eventReferenceListGetter = function() {
+                                            // Return
+                                            return list
+                                        }
+                                    };
+
+                                // Return
+                                return descriptor
+                            })());
 
                             // Fullscreen Element
                             tmpObject.fullscreenElement = null;
@@ -2713,7 +2744,7 @@
                             // Is Array
                             LDKF.isArray = function isArray() {
                                 // Initialization > (Arguments, Result, Test)
-                                let args = [...arguments],
+                                let args = LDKF.toArray(arguments),
                                     result = !0,
                                     test = LDKF.toObjectString;
 
@@ -5398,13 +5429,10 @@
                             /* Query Line
                                     --- UPDATE REQUIRED ---
                                         #Lapys: Modify for other browsers as well.
-                                            Modification up-to-date already:
-                                                - Google Chrome
-                                                - Internet Explorer (pending... -_-)
-                                                - Microsoft Edge
-                                                - Mozilla Firefox
-                                                - Opera (pending)
-                                                - Safari (pending)
+                                            Modification still pending:
+                                                - Internet Explorer
+                                                - Opera
+                                                - Safari
                             */
                             LDKF.queryLine = function queryLine() {
                                 // Initialization > (Error (Message, Stack), Iterator, Line, Protocol)
@@ -5813,6 +5841,20 @@
                                 return null
                             };
 
+                            // Reset Array
+                            LDKF.resetArray = function resetArray() {
+                                // Initialization > (New) Array
+                                let array = arguments[0],
+                                    newArray = arguments[1];
+
+                                // Update > Array
+                                LDKF.spliceArray(array, 0, array.length);
+                                LDKF.$pushArray(array, newArray);
+
+                                // Return
+                                return array
+                            };
+
                             // Set Interval
                             LDKF.setInterval = (function() {
                                 // Initialization > Method
@@ -5821,6 +5863,20 @@
                                 // Return
                                 return function setInterval() { return method.apply(window, LDKF.toArray(arguments)) }
                             })();
+
+                            /* Sort List
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Use this method to sort array or string lists.
+                            */
+                            LDKF.sortList = function sortList() {
+                                // Initialization > (List, Sorted)
+                                let list = arguments[0],
+                                    sorted = [];
+
+                                // Return
+                                return sorted
+                            };
 
                             // String
                             LDKF.$string = function String() {
@@ -6056,6 +6112,9 @@
                             // Document
                             LDKO.document = Document;
                             Object.defineProperty(LDKO, '$document', {get: function document() { return tmpObject.documentDescription.get.call(window) }});
+                                // Create Event
+                                LDKO.documentCreateEvent = LDKO.$document.createEvent;
+
                                 // Prototype
                                 LDKO.documentProto = LDKO.document.prototype;
                                 LDKO.$documentProto = LDKO.documentProto;
@@ -6627,6 +6686,15 @@
                             // Console Warn
                             LDKF.consoleWarn = console.warn;
 
+                            // Create Document Fragment Document
+                            LDKF.createDocumentFragmentDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.createDocumentFragment;
+
+                                // Return
+                                return function createDocumentFragmentDocument() { return method.call(LDKO.$document, arguments[0]) }
+                            })();
+
                             // Create Element Document
                             LDKF.createElementDocument = (function() {
                                 // Initialization > Method
@@ -6636,13 +6704,22 @@
                                 return function createElementDocument() { return method.call(LDKO.$document, arguments[0]) }
                             })();
 
-                            // Create Document Fragment Document
-                            LDKF.createDocumentFragmentDocument = (function() {
+                            // Create Event Document
+                            LDKF.createEventDocument = (function() {
                                 // Initialization > Method
-                                let method = LDKO.$documentProto.createDocumentFragment;
+                                let method = LDKO.$documentProto.createEvent;
 
                                 // Return
-                                return function createDocumentFragmentDocument() { return method.call(LDKO.$document, arguments[0]) }
+                                return function createEventDocument() { return method.apply(LDKO.$document, LDKF.toArray(arguments)) }
+                            })();
+
+                            // Create Event Object Document
+                            LDKF.createEventObjectDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.createEventObject;
+
+                                // Return
+                                return function createEventObjectDocument() { return method.apply(LDKO.$document, LDKF.toArray(arguments)) }
                             })();
 
                             // Create Range Document
@@ -6675,6 +6752,15 @@
                                 return function detachEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            // Dispatch Event Event Target
+                            LDKF.dispatchEventEventTarget = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$eventTargetProto.dispatchEvent;
+
+                                // Return
+                                return function dispatchEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
                             // Encode URI Component
                             LDKF.encodeURIComponent = encodeURIComponent;
 
@@ -6703,6 +6789,15 @@
 
                                 // Return
                                 return function filterArray() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Fire Event Event Target
+                            LDKF.fireEventEventTarget = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$eventTargetProto.fireEvent;
+
+                                // Return
+                                return function fireEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Focus HTML Element
@@ -6876,6 +6971,15 @@
 
                                 // Return
                                 return function indexOfString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
+
+                            // Initialize Event Event
+                            LDKF.initEventEvent = (function() {
+                                // Initialization > Method
+                                let method = LDKO.eventProto.initEvent;
+
+                                // Return
+                                return function initEventEvent() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Insert Adjacent HTML Element
@@ -21590,7 +21694,19 @@
                             LDKF.objectDefineProperty(window, '$X', tmpObject.eventTargetProto$XDescription);
 
                         /* Delete Event
-                                --- CHECKPOINT ---
+                                --- CODE ---
+                                    #Lapys:
+                                        - listener = <evaluation string> | <function>
+                                        - option = <object>
+                                        - type = <string>
+
+                                        - delEvent(<type> | <type-array>[, <... type> | <... type-array>])
+                                        - delEvent(<type> | <type-array>, <listener> | <listener-array>)
+                                        - delEvent(<type> | <type-array>, <listener> | <listener-array>, <option> | <option-array>)
+
+                                        - When using functions as listeners, make sure the same function is used,
+                                            not unique functions with the same source code.
+
                                 --- NOTE ---
                                     #Lapys: Unlike the `Element.prototype.delAttr` method,
                                         the objects stored as events in an event target are not constructible.
@@ -21608,7 +21724,256 @@
                             enumerable: !0,
 
                             // Value
-                            value: function deleteEvent() {},
+                            value: function deleteEvent() {
+                                // Initialization > (Target, Length)
+                                let target = this,
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (length) {
+                                    /* Initialization > (...)
+                                            --- NOTE ---
+                                                #Lapys: Cache the arguments.
+                                    */
+                                    let $0 = arguments[0],
+                                        $1 = arguments[1],
+                                        $2 = arguments[2];
+
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (
+                                        tmpObject.eventReferenceList.length &&
+                                        (
+                                            (length == 1 && !LDKF.isJSONLikeObject($0)) ||
+                                            (length == 2 &&
+                                                (
+                                                    !LDKF.isJSONLikeObject($0) &&
+                                                    (!LDKF.isFunction($1) && !LDKF.isJSONLikeObject($1))
+                                                )
+                                            ) ||
+                                            (length > 3 &&
+                                                (
+                                                    !LDKF.isJSONLikeObject($0) &&
+                                                    (!LDKF.isFunction($1) && !LDKF.isJSONLikeObject($1)) &&
+                                                    !LDKF.isJSONLikeObject($2)
+                                                )
+                                            )
+                                        )
+                                    ) {
+                                        // Initialization > (Arguments, Event Reference List)
+                                        let args = LDKF.toArray(arguments),
+                                            eventReferenceList = tmpObject.eventReferenceList;
+
+                                        // Loop > Update > Arguments
+                                        while ((function() {
+                                            // Initialization > Iterator
+                                            let iterator = args.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (LDKF.isArray(args[iterator -= 1]))
+                                                    return !0
+                                        })()) args = LDKF.$concatArray([], args);
+
+                                        // Initialization > Iterator
+                                        let iterator = arguments.length;
+
+                                        /* Loop
+                                                Index Arguments.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > (Argument, Event Reference List Iterator)
+                                            let arg = LDKF.string(args[iterator -= 1]),
+                                                eventReferenceListIterator = eventReferenceList.length;
+
+                                            /* Loop
+                                                    Index Event Reference List
+                                            */
+                                            while (eventReferenceListIterator) {
+                                                // Initialization > Event Reference
+                                                let eventReference = eventReferenceList[eventReferenceListIterator -= 1];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (
+                                                    arg == eventReference.type &&
+                                                    target === eventReference.target
+                                                ) {
+                                                    // Event > Target > [Event Reference > Type]
+                                                    LDKF.delEvent(target, eventReference.type, eventReference.listener);
+
+                                                    /* Modification > Event Reference > Pending
+                                                            --- NOTE ---
+                                                                #Lapys: — Pending to be deleted...
+                                                    */
+                                                    eventReference.pending = !0
+                                                }
+                                            }
+                                        }
+
+                                        // Initialization > Event Reference List Iterator
+                                        let eventReferenceListIterator = eventReferenceList.length;
+
+                                        /* Loop
+                                                Index Event Reference List.
+                                        */
+                                        while (eventReferenceListIterator) {
+                                            // Initialization > Event Reference
+                                            let eventReference = eventReferenceList[eventReferenceListIterator -= 1];
+
+                                            // Update > Event Reference List
+                                            eventReference.pending && (eventReferenceList[eventReferenceListIterator] = void 0)
+                                        }
+
+                                        // Update > Temporary Object > Event Reference List
+                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, item => { return !LDKF.isUndefined(item) }));
+
+                                        // Return
+                                        return !0
+                                    }
+
+                                    else if (
+                                        !tmpObject.eventReferenceList.length ||
+                                        (
+                                            (length == 2 &&
+                                                LDKF.isString($0) && LDKF.isFunction($1)
+                                            ) ||
+                                            (length > 3 &&
+                                                LDKF.isString($0) && LDKF.isFunction($1) &&
+                                                LDKF.isJSONLikeObject($2)
+                                            )
+                                        )
+                                    ) {
+                                        // Initialization > (Event Reference List, Iterator)
+                                        let eventReferenceList = tmpObject.eventReferenceList,
+                                            iterator = eventReferenceList.length;
+
+                                        /* Loop
+                                                Index Event Reference List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Event Reference
+                                            let eventReference = eventReferenceList[iterator -= 1];
+
+                                            // Update > Event Reference List
+                                            (
+                                                target === eventReference.target &&
+                                                $1 === eventReference.listener &&
+                                                (length > 3 ?
+                                                    (
+                                                        (LDKF.isBoolean($2) ? ($2 == eventReference.options.capture) : !1) ||
+                                                        (
+                                                            !!$2.capture === eventReference.options.capture &&
+                                                            !!$2.once === eventReference.options.once &&
+                                                            !!$2.passive === eventReference.options.passive
+                                                        )
+                                                    ) :
+                                                    !0
+                                                ) &&
+                                                $0 == eventReference.type
+                                            ) && (eventReferenceList[iterator] = void 0)
+                                        }
+
+                                        // Update > Temporary Object > Event Reference List
+                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, item => { return !LDKF.isUndefined(item) }));
+
+                                        // Event > Target > (...)
+                                        length > 3 ? LDKF.delEvent(target, $0, $1, $2) : LDKF.delEvent(target, $0, $1);
+
+                                        // Return
+                                        return !0
+                                    }
+
+                                    else if (tmpObject.eventReferenceList.length) {
+                                        // Initialization > (Event References, Event Reference List (Length, Iterator), Iterator)
+                                        let eventReferences,
+                                            eventReferenceList = tmpObject.eventReferenceList,
+                                            eventReferenceListLength = eventReferenceList.length,
+                                            eventReferenceListIterator = eventReferenceListLength,
+                                            iterator = 0;
+
+                                        // Error Handling
+                                        try {
+                                            // Update > Event References
+                                            eventReferences = LDKF.queryEventReferences.apply(target, arguments)
+                                        } catch (error) {
+                                            // Error
+                                            LDKF.error(["'delEvent'", "'EventTarget'"], 'argument', LDKF.sliceString(error.message, LDKI.errorMessagePrefix.length))
+                                        }
+
+                                        // Update > Length
+                                        length = eventReferences.length;
+
+                                        /* Loop
+                                                Index Event References.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > (Event Reference, Listener, Options, Type)
+                                            let eventReference = eventReferences[iterator],
+                                                listener = eventReference.listener,
+                                                options = eventReference.options,
+                                                type = eventReference.type;
+
+                                            /* Loop
+                                                    Index Event Reference List.
+                                            */
+                                            while (eventReferenceListIterator) {
+                                                // Initialization > Event Reference List Event Reference
+                                                let eventReferenceListEventReference = eventReferenceList[eventReferenceListIterator -= 1];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventReferenceListEventReference) {
+                                                    // Initialization > Event Reference List Event Reference (Listener, Options, Type)
+                                                    let eventReferenceListEventReferenceListener = eventReferenceListEventReference.listener,
+                                                        eventReferenceListEventReferenceOptions = eventReferenceListEventReference.options,
+                                                        eventReferenceListEventReferenceType = eventReferenceListEventReference.type;
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (
+                                                        target === eventReferenceListEventReferenceListener.target &&
+                                                        (
+                                                            LDKF.get.functionBody(listener) == LDKF.get.functionBody(eventReferenceListEventReferenceListener) &&
+                                                            LDKF.get.functionHead(listener) == LDKF.get.functionHead(eventReferenceListEventReferenceListener)
+                                                        ) &&
+                                                        (
+                                                            options.capture == eventReferenceListEventReferenceOptions.capture &&
+                                                            options.once == eventReferenceListEventReferenceOptions.once &&
+                                                            options.passive == eventReferenceListEventReferenceOptions.passive
+                                                        ) &&
+                                                        type == eventReferenceListEventReferenceType
+                                                    ) {
+                                                        // Update > Event Reference List
+                                                        eventReferenceList[eventReferenceListIterator] = void 0;
+
+                                                        // Event > Target > (...)
+                                                        LDKF.delEvent(target, eventReferenceListEventReferenceType, eventReferenceListEventReferenceListener)
+                                                    }
+                                                }
+                                            }
+
+                                            // Update > Event Reference List Iterator
+                                            eventReferenceListIterator = eventReferenceListLength
+                                        }
+
+                                        // Update > Temporary Object > Event Reference List
+                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, item => { return !LDKF.isUndefined(item) }));
+
+                                        // Return
+                                        return !0
+                                    }
+                                }
+
+                                // Return
+                                return !1
+                            },
 
                             // Writable
                             writable: !0
@@ -22199,7 +22564,7 @@
                             writable: !0
                         });
 
-                        // Get Event --- CHECKPOINT ---
+                        // Get Event
                         LDKF.objectDefineProperty(currentPrototype, 'getEvent', {
                             // Configurable
                             configurable: !0,
@@ -22208,22 +22573,62 @@
                             enumerable: !0,
 
                             // Value
-                            value: function getEvent() {},
+                            value: function getEvent() {
+                                // Initialization > (Target, Arguments, All, Event References List, Iterator, Length, Result)
+                                let target = this,
+                                    args = LDKF.toArray(arguments),
+                                    all = !args.length,
+                                    eventReferencesList = tmpObject.eventReferenceList,
+                                    iterator = 0,
+                                    length = eventReferencesList.length,
+                                    result = LDKF.customArray('EventReference');
 
-                            // Writable
-                            writable: !0
-                        });
+                                // Loop > Update > Arguments
+                                while ((function() {
+                                    // Initialization > Iterator
+                                    let iterator = args.length;
 
-                        // Has Event --- CHECKPOINT ---
-                        LDKF.objectDefineProperty(currentPrototype, 'hasEvent', {
-                            // Configurable
-                            configurable: !0,
+                                    // Loop > Logic > Return
+                                    while (iterator)
+                                        if (LDKF.isArray(args[iterator -= 1]))
+                                            return !0
+                                })()) args = LDKF.$concatArray([], args);
 
-                            // Enumerable
-                            enumerable: !0,
+                                /* Loop
+                                        Index Event References List.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > (Event Reference, Type)
+                                    let eventReference = eventReferencesList[iterator],
+                                        type = eventReference.type;
 
-                            // Value
-                            value: function hasEvent() {},
+                                    // Update > Result
+                                    (all || (
+                                        target === eventReference.target &&
+                                        (function() {
+                                            // Initialization > Iterator
+                                            let iterator = args.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (LDKF.string(args[iterator -= 1]) == type)
+                                                    return !0
+                                        })()
+                                    )) && LDKF.pushArray(result, LDKF.customObject('EventOption', {
+                                        // Listener
+                                        listener: eventReference.listener,
+
+                                        // Options
+                                        options: eventReference.options,
+
+                                        // Type
+                                        type: type
+                                    }))
+                                }
+
+                                // Return
+                                return result
+                            },
 
                             // Writable
                             writable: !0
@@ -22478,7 +22883,7 @@
                             }
                         });
 
-                        // Run Event --- CHECKPOINT ---
+                        // Run Event
                         LDKF.objectDefineProperty(currentPrototype, 'runEvent', {
                             // Configurable
                             configurable: !0,
@@ -22487,7 +22892,54 @@
                             enumerable: !0,
 
                             // Value
-                            value: function runEvent() {},
+                            value: function runEvent() {
+                                // Initialization > (Target, Type, Length)
+                                let target = this,
+                                    type = LDKF.string(arguments[0]),
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (length) {
+                                    // Initialization > (Event, Test)
+                                    let event,
+                                        test = LDKF.isNativeFunction(LDKO.documentCreateEvent);
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (test) {
+                                        // Update > Event
+                                        event = LDKF.createEventDocument('HTMLEvents');
+
+                                        // Initialize Event > Event
+                                        LDKF.initEventEvent(event, type, !0, !0);
+                                    }
+
+                                    else {
+                                        // Update > Event
+                                        event = LDKO.documentCreateEventObject.call(LDKO.$document)
+
+                                        // Modification > Event > Event Type
+                                        event.eventType = type;
+                                    }
+
+                                    // Modification > Event > Event Name
+                                    event.eventName = type;
+
+                                    // (...)
+                                    test ?
+                                        LDKF.dispatchEventEventTarget(target, event) :
+                                        LDKF.fireEventEventTarget(target, 'on' + event.eventType, event);
+
+                                    // Return
+                                    return !0
+                                }
+
+                                // Return
+                                return !1
+                            },
 
                             // Writable
                             writable: !0
@@ -22522,7 +22974,7 @@
                                         eventReferences = LDKF.queryEventReferences.apply(target, arguments)
                                     } catch (error) {
                                         // Error
-                                        LDKF.error(["'setEvent'", "'EventTarget'"], 'argument', error.message)
+                                        LDKF.error(["'setEvent'", "'EventTarget'"], 'argument', LDKF.sliceString(error.message, LDKI.errorMessagePrefix.length))
                                     }
 
                                     // Update > Length
@@ -23204,8 +23656,25 @@
                         }));
 
                     /* HTML Element Data */
+                        // Add Class --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.htmlElementProto, 'addClass', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function addClass() {
+
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
                         // Delete Style
-                        LDKF.objectDefineProperty(currentPrototype = LDKO.htmlElementProto, 'delStyle', {
+                        LDKF.objectDefineProperty(currentPrototype, 'delStyle', {
                             // Configurable
                             configurable: !0,
 
@@ -27492,6 +27961,9 @@
 
             // Error Handling
             try {
+                // Modification > (LapysJS Development Kit > Information) > Current Phase
+                LapysJSDevelopmentKit.info.currentPhase = 'initializing';
+
                 // Initialization
                 init();
 
@@ -27514,6 +27986,9 @@
                             Initialization ran properly.
                 */
                 if (!init) {
+                    // Modification > (LapysJS Development Kit > Information) > Current Phase
+                    LapysJSDevelopmentKit.info.currentPhase = 'updating';
+
                     // Update
                     update.call(init);
 
@@ -27537,6 +28012,9 @@
                             Update ran properly.
                 */
                 if (!update) {
+                    // Modification > (LapysJS Development Kit > Information) > Current Phase
+                    LapysJSDevelopmentKit.info.currentPhase = 'terminated';
+
                     // Terminate
                     terminate.call(update);
 
@@ -27561,6 +28039,25 @@
             var allowError = !1;
 
             // Error Handling
+            try {
+                // Logic > Console (Group (End), Log)
+                if (LapysJSDevelopmentKit.info.currentPhase != 'terminated') {
+                    console.group('LapysJS | ' + document.currentScript.src + ' (by ' + AUTHOR + ')');
+                        console.log('    LapysJS.processingDuration =', 0);
+                        console.log('    LapysJS.ready =', !1);
+                    console.groupEnd()
+                }
+            } catch (error) {}
+
+            try {
+                // Console > Warn
+                console.warn(
+                    LapysJSDevelopmentKit.info.errorMessagePrefix,
+                    'An error occurred in installing the framework:\n\r', error
+                )
+            } catch (error) {}
+
+
             try {
                 // Logic > Error
                 if (typeof error == 'string') throw error;
