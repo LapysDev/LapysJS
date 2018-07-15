@@ -7,9 +7,17 @@
     --- NOTE ---
         #Lapys:
             - Returns 1 if there`s an error, returns 0 otherwise.
-            - Parameters: Argument Characters, Argument Variables
+            - The rules of building the library also get to me too.
+
+    --- WARN ---
+        #Lapys:
+            - No arrow functions... :'(
+            - No spread syntax.
 */
 (function Main(argc, argv) {
+    // Update > Argument Count
+    argc += argv.length;
+
     /* Global Data */
         // Author
         var AUTHOR = 'Lapys Dev Team',
@@ -151,10 +159,6 @@
                 if ((function(){try{arguments}catch(error){return 1}})())
                     throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": Function objects must have the locally-defined 'arguments' object.");
 
-                // {Arrow Functions}
-                try { if (typeof eval('(()=>{})') != 'function') throw Error }
-                catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": Function objects must have the locally-defined 'arguments' object.") }
-
                 // {'delete' Keyword}
                 try { eval('delete ({}).a') }
                 catch (error) { throw new LapysJSError(LapysJSDevelopmentKit.info.errorMessagePrefix + LapysJSDevelopmentKit.info.browserIncompatibilityErrorMessage + ": Keyword 'delete' must be valid syntax.") }
@@ -243,6 +247,10 @@
                 // {Child Node} (...)
                     // Remove
                     (function(a){a.forEach(function(b){b.hasOwnProperty('remove')||Object.defineProperty(b,'remove',{configurable:!0,enumerable:!0,writable:!0,value:function(){null!==this.parentNode&&this.parentNode.removeChild(this)}})})})([Element.prototype,CharacterData.prototype,DocumentType.prototype]);
+
+                // Document
+                    // Current Script
+                    (function(){function a(m){if("string"==typeof m&&m)for(var n=0,o=l.length;n<o;n++)if(l[n].src===m)return l[n]}function b(){for(var m,n=0,o=l.length;n<o;n++)if(!l[n].src){if(m)return;m=l[n]}return m}function c(m,n){var o,p,q,r="number"==typeof n;return n=r?n:"number"==typeof d.skipStackDepth?d.skipStackDepth:0,"string"==typeof m&&m&&(r?p=m.match(/((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/):(p=m.match(/^(?:|[^:@]*@|.+\)@(?=http[s]?|file)|.+?\s+(?: at |@)(?:[^:\(]+ )*[\(]?)((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/),!(p&&p[1])&&(p=m.match(/\)@((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/),p&&p[1]&&(o=p[1]))),p&&p[1]&&(0<n?(q=m.slice(m.indexOf(p[0])+p[0].length),o=c(q,n-1)):o=p[1])),o}function d(){if(0!==l.length){if(1===l.length)return l[0];if("readyState"in l[0])for(var m=l.length;m--;)if("interactive"===l[m].readyState)return l[m];if("loading"===document.readyState)return l[l.length-1];if(j)try{throw new Error}catch(p){var n=c(p.stack),o=a(n);return o||n!==k||(o=b()),o}}}var f=!("currentScript"in document),g=document.__defineGetter__,h="function"==typeof Object.defineProperty&&function(){var m;try{Object.defineProperty(document,"_xyz",{value:"blah",enumerable:!0,writable:!1,configurable:!1}),m="blah"===document._xyz,delete document._xyz}catch(n){m=!1}return m}(),j=function(){var m=!1;try{throw new Error}catch(n){m="string"==typeof n.stack&&!!n.stack}return m}(),k=window.location.href,l=document.getElementsByTagName("script");d.skipStackDepth=1,document._currentScript=d,f&&(h?Object.defineProperty(document,"currentScript",{get:d,enumerable:!0,configurable:!1}):g&&document.__defineGetter__("currentScript",d))})();
 
                 // Event Target
                     // Add Event Listener, Remove Event Listener
@@ -773,7 +781,7 @@
                             })();
 
                             // Clone Object
-                            LDKF.cloneObject = function clone() {
+                            LDKF.cloneObject = function cloneObject() {
                                 // Initialization > Object
                                 let object = arguments[0];
 
@@ -1223,7 +1231,7 @@
                                     LDKF.set.htmlElementSelector(element, selector);
 
                                     // LapysJS Development Kit Function > Iterate Object
-                                    LDKF.iterateObject((key, value) => {
+                                    LDKF.iterateObject(function(key, value) {
                                         // Modification > Element > Key
                                         element[key] = value
                                     }, properties)
@@ -1297,7 +1305,7 @@
                                     properties = LDKF.object(properties);
 
                                     // LapysJS Development Kit Functions > Iterate Object
-                                    LDKF.iterateObject((key, value, description) => {
+                                    LDKF.iterateObject(function(key, value, description) {
                                         // Modification > Object > [Key]
                                         LDKF.objectDefineProperty(object, key, description)
                                     }, properties)
@@ -2048,12 +2056,12 @@
 
                                             // Parameters
                                             LDKF.isFunction(parameters) && (parameters = LDKF.get.functionParameters(parameters));
-                                            LDKF.isArray(parameters) && (parameters = (a=>{let $a=a.length,_a=$a-1,b='';for(let c=0;c<$a;c+=1){let d=a[c],e='';b+=(e=LDKF.isObject(d)?('address'in d?LDKF.string(d.address):'')+('value'in d?'='+LDKF.string(d.value):''):LDKF.string(d));e&&(b+=c==_a?'':', ')};return b})(parameters));
+                                            LDKF.isArray(parameters) && (parameters = (function(a){let $a=a.length,_a=$a-1,b='';for(let c=0;c<$a;c+=1){let d=a[c],e='';b+=(e=LDKF.isObject(d)?('address'in d?LDKF.string(d.address):'')+('value'in d?'='+LDKF.string(d.value):''):LDKF.string(d));e&&(b+=c==_a?'':', ')};return b})(parameters));
                                             parameters = LDKF.string(parameters);
 
                                             // Code
                                             code = type ? '(' + parameters + ') ' + code : code + (name ? ' ' + name : '') + '(' + parameters + ') ';
-                                            code += type ? ((a=>{let $a=a.length,d=!0;for(let b=0;b<$a;b+=1){let e=a[b];(d&&e!=' ')&&(d=!1);if(!d&&e==' ')return!0}return!1})(body) ? ' {' + body + '}' : body) : '{' + body + '}';
+                                            code += type ? ((function(a){let $a=a.length,d=!0;for(let b=0;b<$a;b+=1){let e=a[b];(d&&e!=' ')&&(d=!1);if(!d&&e==' ')return!0}return!1})(body) ? ' {' + body + '}' : body) : '{' + body + '}';
                                             code = type ? '(' + code + ')' : code + ')';
 
                                         // Return
@@ -2411,7 +2419,7 @@
                                         }
 
                                         // Update > (Symbol Descriptor Keys, Distinct)
-                                        symbolDescriptorsKeys = LDKF.filterArray(symbolDescriptorsKeys, item => { return !LDKF.isUndefined(item) });
+                                        symbolDescriptorsKeys = LDKF.filterArray(symbolDescriptorsKeys, function(item) { return !LDKF.isUndefined(item) });
                                         LDKF.$pushArray(distinct, descriptorsKeys);
                                         LDKF.$pushArray(distinct, iterationKeys);
                                         LDKF.$pushArray(distinct, keys);
@@ -2482,7 +2490,7 @@
                                         }
 
                                         // Update > Iterator
-                                        iterator = length = (iterationList = LDKF.filterArray(iterationList, item => { return !LDKF.isUndefined(item) })).length;
+                                        iterator = length = (iterationList = LDKF.filterArray(iterationList, function(item) { return !LDKF.isUndefined(item) })).length;
 
                                         /* Logic
                                                 If the Main Depth Tree has been indexed.
@@ -2753,7 +2761,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Initialization > Value Constructor
                                     let valueConstructor = LDKF.isConstructible(value) ? value.constructor : null;
 
@@ -2781,7 +2789,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Initialization > Value Constructor
                                     let valueConstructor = LDKF.isConstructible(value) ? value.constructor : null;
 
@@ -2827,7 +2835,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.attrProto) && (result = !0)
                                         }, results);
@@ -2841,7 +2849,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -2861,7 +2869,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && typeof value != 'boolean') && (result = !1)
                                 }, args);
@@ -2897,7 +2905,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.characterDataProto) && (result = !0)
                                         }, results);
@@ -2911,7 +2919,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -2932,7 +2940,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -2972,7 +2980,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.documentProto) && (result = !0)
                                         }, results);
@@ -2986,7 +2994,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3022,7 +3030,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.documentFragmentProto) && (result = !0)
                                         }, results);
@@ -3036,7 +3044,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3072,7 +3080,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.documentTypeProto) && (result = !0)
                                         }, results);
@@ -3086,7 +3094,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3122,7 +3130,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.elementProto) && (result = !0)
                                         }, results);
@@ -3136,7 +3144,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3156,7 +3164,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -3211,7 +3219,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.eventTargetProto) && (result = !0)
                                         }, results);
@@ -3225,7 +3233,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3277,14 +3285,14 @@
                                         sandbox.evaluation = {completed: !1, feedback: null, value: !1};
 
                                         // LapysJS Development Kit Functions > Iterate Object
-                                        (length > 2) && LDKF.iterateObject((key, value, description) => {
+                                        (length > 2) && LDKF.iterateObject(function(key, value, description) {
                                             // Modification > Sandbox > [Key]
                                             (
                                                 'value' in description &&
                                                 sandboxPropertiesTest.window &&
                                                 key == 'top' || key == 'window'
                                             ) || LDKF.objectDefineProperty(sandbox, key, description)
-                                        }, sandboxProperties, !0, !1, (key, description) => {
+                                        }, sandboxProperties, !0, !1, function(key, description) {
                                             // Modification > Sandbox > [Key]
                                             LDKF.objectDefineProperty(sandbox, key, description)
                                         });
@@ -3457,7 +3465,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !value && typeof value == 'boolean') || (result = !1)
                                 }, args);
@@ -3478,7 +3486,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -3502,7 +3510,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && typeof value != 'function') && (result = !1)
                                 }, args);
@@ -3538,7 +3546,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlAllCollectionProto) && (result = !0)
                                         }, results);
@@ -3552,7 +3560,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3588,7 +3596,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlCollectionProto) && (result = !0)
                                         }, results);
@@ -3602,7 +3610,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3638,7 +3646,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlElementProto) && (result = !0)
                                         }, results);
@@ -3652,7 +3660,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3688,7 +3696,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlBodyElementProto) && (result = !0)
                                         }, results);
@@ -3702,7 +3710,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3738,7 +3746,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlDocumentProto) && (result = !0)
                                         }, results);
@@ -3752,7 +3760,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3788,7 +3796,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlHeadElementProto) && (result = !0)
                                         }, results);
@@ -3802,7 +3810,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3838,7 +3846,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlInputElementProto) && (result = !0)
                                         }, results);
@@ -3852,7 +3860,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3888,7 +3896,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.htmlTextareaElementProto) && (result = !0)
                                         }, results);
@@ -3902,7 +3910,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -3923,7 +3931,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -3963,7 +3971,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (
                                                 !result &&
@@ -3983,7 +3991,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -4003,7 +4011,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4028,7 +4036,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4064,7 +4072,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4200,7 +4208,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4240,7 +4248,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.nodeProto) && (result = !0)
                                         }, results);
@@ -4254,7 +4262,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -4290,7 +4298,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.nodeListProto) && (result = !0)
                                         }, results);
@@ -4304,7 +4312,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -4325,7 +4333,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4350,7 +4358,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4374,7 +4382,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && typeof value != 'number') && (result = !1)
                                 }, args);
@@ -4394,7 +4402,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4422,7 +4430,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Initialization > Value Constructor
                                     let valueConstructor = LDKF.isConstructible(value) ? value.constructor : null;
 
@@ -4450,7 +4458,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4475,7 +4483,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4500,7 +4508,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Initialization > Value Constructor
                                     let valueConstructor = LDKF.isConstructible(value) ? value.constructor : null;
 
@@ -4531,7 +4539,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && typeof value != 'string') && (result = !1)
                                 }, args);
@@ -4552,7 +4560,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Initialization > Value Constructor
                                     let valueConstructor = LDKF.isConstructible(value) ? value.constructor : null;
 
@@ -4579,7 +4587,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && value && typeof value == 'boolean') || (result = !1)
                                 }, args);
@@ -4600,7 +4608,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (
                                         result &&
@@ -4640,7 +4648,7 @@
                                         }
 
                                         // LapysJS Development Kit Functions > Iterate Array
-                                        LDKF.iterateArray((key, value) => {
+                                        LDKF.iterateArray(function(key, value) {
                                             // Update > Result
                                             (!result && value == LDKO.windowProto) && (result = !0)
                                         }, results);
@@ -4654,7 +4662,7 @@
                                     return !1;
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Update > Result
                                     (result && !test(value)) && (result = !1)
                                 }, args);
@@ -5031,7 +5039,7 @@
                                                     let protoObject;
 
                                                     // Index Prototypes
-                                                    indexProtos(proto => {
+                                                    indexProtos(function(proto) {
                                                         // Update > Prototype Object
                                                         protoObject || (LDKF.hasOwnPropertyObject(proto, protoKey) && (protoObject = proto))
                                                     }, object);
@@ -5470,7 +5478,7 @@
                                     switch (browser) {
                                         // Firefox
                                         case 'firefox':
-                                            line = errorMessage + '\n' + LDKF.sliceString(LDKF.replaceString('\n' + line, /\n[^@]{0,}@/g, match => {
+                                            line = errorMessage + '\n' + LDKF.sliceString(LDKF.replaceString('\n' + line, /\n[^@]{0,}@/g, function(match) {
                                                 return '\n    at ' + LDKF.replaceString(LDKF.sliceString(match, '\n'.length), '@', '') + ' '
                                             }), '\n'.length)
                                     }
@@ -5675,7 +5683,7 @@
                                             enumerable: !0,
 
                                             // Get
-                                            get: function code() {
+                                            get: function Code() {
                                                 // Initialization > (Allow Parsing, Code (Length), Iterator, Newline (Index, Quantity), Stream)
                                                 let allowParsing = !1,
                                                     code = LDKF.isNull(sourceCode) ? '' : (sourceCode.constructor == LDKO.xmlHttpRequest ? LDKF.get.xmlHttpRequestResponseText(sourceCode) : LDKF.get.xDomainRequestResponseText(sourceCode)),
@@ -5728,7 +5736,7 @@
                                         that.src = stream;
 
                                         // Stack
-                                        that.stack = (a=>{while(a[0]=='\n')a=LDKF.sliceString(a,1);while(a[a.length-1]=='\n')a=LDKF.sliceString(a,0,-1);return a})(LDKF.replaceString(errorStack,errorMessage,''));
+                                        that.stack = (function(a){while(a[0]=='\n')a=LDKF.sliceString(a,1);while(a[a.length-1]=='\n')a=LDKF.sliceString(a,0,-1);return a})(LDKF.replaceString(errorStack,errorMessage,''));
 
                                     // Return
                                     return that
@@ -5819,7 +5827,7 @@
                                         if (allowRequest) {
                                             // LapysJS Development Kit Functions
                                                 // Iterate Object
-                                                LDKF.iterateObject((key, value, description) => {
+                                                LDKF.iterateObject(function(key, value, description) {
                                                     // Modification > Request > [Key]
                                                     'value' in description && (request[key] = value)
                                                 }, properties);
@@ -5835,7 +5843,7 @@
 
                                 else
                                     // Warn
-                                    allowWarnings || LDKF.warn("'requestFile'", 'argument', "The current protocol must match the following ones: " + (a=>{a=LDKF.cloneObject(a);let $a=a.length,_a=$a-1,__a=_a-1,b=0,c='';for(b;b<$a;b+=1)c+="'"+a[b]+"'"+(b==_a?'':(b==__a?' and ':', '));return c})(protocolSchemes) + '; Or the server may understand the request and not support it');
+                                    allowWarnings || LDKF.warn("'requestFile'", 'argument', "The current protocol must match the following ones: " + (function(a){a=LDKF.cloneObject(a);let $a=a.length,_a=$a-1,__a=_a-1,b=0,c='';for(b;b<$a;b+=1)c+="'"+a[b]+"'"+(b==_a?'':(b==__a?' and ':', '));return c})(protocolSchemes) + '; Or the server may understand the request and not support it');
 
                                 // Return
                                 return null
@@ -5865,7 +5873,6 @@
                             })();
 
                             /* Sort List
-                                    --- CHECKPOINT ---
                                     --- NOTE ---
                                         #Lapys: Use this method to sort array or string lists.
                             */
@@ -5982,7 +5989,7 @@
                                 }
 
                                 // Update > Sorted
-                                sorted = LDKF.filterArray(sorted, item => { return !LDKF.isUndefined(item) });
+                                sorted = LDKF.filterArray(sorted, function(item) { return !LDKF.isUndefined(item) });
 
                                 // Return
                                 return sorted
@@ -6014,14 +6021,14 @@
                                     args = LDKF.arrayFrom(arguments);
 
                                 // LapysJS Development Kit Functions > Iterate Array
-                                LDKF.iterateArray((key, value) => {
+                                LDKF.iterateArray(function(key, value) {
                                     // Logic > Error Handling > Update > Value
                                     if (!LDKF.isArrayLike(value))
                                         try { value = LDKF.arrayFrom(value) }
                                         catch (error) { value = [value] }
 
                                     // LapysJS Development Kit Functions > Iterate Array
-                                    LDKF.iterateArray((key, value) => {
+                                    LDKF.iterateArray(function(key, value) {
                                         // Modification > Array > (Key, Array > Length)
                                         array[+key+'' == 'NaN' ? key : array.length] = value
                                     }, value)
@@ -6255,6 +6262,11 @@
                             LDKO.domRectangleReadOnly = window.DOMRectReadOnly || LDKO.domRectangle;
                                 // Prototype
                                 LDKO.domRectangleReadOnlyProto = LDKO.domRectangleReadOnly.prototype;
+
+                            // DOM Token List
+                            LDKO.domTokenList = window.DOMTokenList || (function() {});
+                                // Prototype
+                                LDKO.domTokenListProto = LDKO.domTokenList.prototype;
 
                             // Element
                             LDKO.element = Element;
@@ -6598,7 +6610,7 @@
                                                 let currentBrowser = null;
 
                                                 // LapysJS Development Kit Functions > Iterate Object
-                                                LDKF.iterateObject((key, value) => {
+                                                LDKF.iterateObject(function(key, value) {
                                                     // Update > Current Browser
                                                     (!currentBrowser && value) && (currentBrowser = key)
                                                 }, that);
@@ -8902,7 +8914,7 @@
                                 function LapysJS() {
                                     // Initialization > LapysJS
                                     let _LapysJS = LapysJS;
-                                        LapysJS = new (class LapysJS { constructor() { return this } }),
+                                        LapysJS = new (function LapysJS() { return this }),
                                         _LapysJS = LapysJS.__proto__ = LDKF.objectCreate(LapysJS.__proto__);
 
                                     // Modification > LapysJS > (LapysJS, Value Of, (...))
@@ -9289,6 +9301,9 @@
                                             let that = this;
 
                                             // Modification > Target
+                                                // Methods
+                                                that.methods = [];
+
                                                 // Processing Duration
                                                 that.processingDuration = LDKF.performanceNow();
 
@@ -10084,7 +10099,7 @@
                                             // Function > Iterate Properties
                                             function iterateProperties() {
                                                 // LapysJS Development Kit Functions > Iterate Object
-                                                LDKF.iterateObject((key, value) => {
+                                                LDKF.iterateObject(function(key, value) {
                                                     /* Logic
                                                             [switch:case:default statement]
 
@@ -10098,7 +10113,7 @@
 
                                                         // [Default]
                                                         default:
-                                                            LDKF.setAttributeElement(element, LDKF.replaceString(key, /[A-Z]/g, a=>{return'-'+LDKF.toLowerCaseString(a)}), value)
+                                                            LDKF.setAttributeElement(element, LDKF.replaceString(key, /[A-Z]/g, function(a){return'-'+LDKF.toLowerCaseString(a)}), value)
                                                     }
                                                 }, properties)
                                             }
@@ -10670,7 +10685,7 @@
                                                             #Lapys: Indexing the `Navigator.prototype` object returns error,
                                                                 but we are shorting it off to access its properties.
                                                 */
-                                                LDKF.iterateObject((key, value, description) => {
+                                                LDKF.iterateObject(function(key, value, description) {
                                                     /* Logic
                                                             [if:else statement]
 
@@ -12562,7 +12577,7 @@
                                                     previousLapse = updateLapse() - previousLapse;
 
                                                     // Promise
-                                                    LDKF.thenPromise(new LDKO.promise((resolve, reject) => {
+                                                    LDKF.thenPromise(new LDKO.promise(function(resolve, reject) {
                                                         // Callback A
                                                         callbackA(executionIterationCount ? previousLapse : 0);
 
@@ -12573,7 +12588,7 @@
                                                         reject(null)
                                                     }), function() {
                                                         // Promise
-                                                        LDKF.thenPromise(new LDKO.promise((resolve, reject) => {
+                                                        LDKF.thenPromise(new LDKO.promise(function(resolve, reject) {
                                                             // Update > Current Return Value
                                                             currentReturnValue = callbackB(updateLapse() - previousLapse);
 
@@ -12936,7 +12951,7 @@
                                     let fragment = LDKF.createDocumentFragmentDocument();
 
                                     // LapysJS Development Kit Functions > Iterate Array
-                                    LDKF.iterateArray((key, value) => {
+                                    LDKF.iterateArray(function(key, value) {
                                         // Insertion
                                         LDKF.isNode(value) ?
                                             LDKF.appendChildNode(fragment, value) :
@@ -13945,7 +13960,7 @@
                                             permission !== 'denied' &&
                                             permission !== 'granted'
                                         )
-                                    ) ? LDKF.requestPermissionNotification(permission => {
+                                    ) ? LDKF.requestPermissionNotification(function(permission) {
                                         // Notify
                                         (permission === 'granted') && notify()
                                     }) : notify();
@@ -14087,7 +14102,7 @@
                                                 let argument = arguments[iterator];
 
                                                 // LapyJS Development Kit Functions > Iterate Object
-                                                LDKF.iterateObject((key, value, description) => {
+                                                LDKF.iterateObject(function(key, value, description) {
                                                     // Error Handling
                                                     try {
                                                         // Modification > Object > ([Key], (Constructor > Prototype))
@@ -15335,7 +15350,7 @@
                                         }
 
                                         // Update > Arguments
-                                        (length > 1) || (args[1] = LDKF.eval('(class HTML' + LDKF.toUpperCaseString(args[0][0]) + LDKF.replaceString(LDKF.sliceString(args[0], 1), /-./g, a => { return LDKF.toUpperCaseString(a[1]) }) + 'Element extends LDKO.htmlElement {})'));
+                                        (length > 1) || (args[1] = LDKF.eval('(class HTML' + LDKF.toUpperCaseString(args[0][0]) + LDKF.replaceString(LDKF.sliceString(args[0], 1), /-./g, function(a) { return LDKF.toUpperCaseString(a[1]) }) + 'Element extends LDKO.htmlElement {})'));
                                         (length > 2) || (args[2] = null);
 
                                         /* Logic
@@ -15529,7 +15544,7 @@
                                                     value = argumentSet.value;
 
                                                 // (Modification > Argument Set > Parent Path), (Loop > Modification > Argument Set > Parent Path)
-                                                argumentSet.parentPath = LDKF.filterArray(argumentSet.parentPath, a => { return !LDKF.objectIs(a, value) })
+                                                argumentSet.parentPath = LDKF.filterArray(argumentSet.parentPath, function(a) { return !LDKF.objectIs(a, value) })
                                                 while (parent !== argumentSet.parentPath[0]) argumentSet.parentPath = LDKF.sliceArray(argumentSet.parentPath, 1);
 
                                                 // Update > Key
@@ -15804,7 +15819,7 @@
                                                     propsLength = 0;
 
                                                 // LapysJS Development Kit Functions > Iterate Object
-                                                LDKF.iterateObject((key, value, description) => {
+                                                LDKF.iterateObject(function(key, value, description) {
                                                     /* Logic
                                                             [if statement]
                                                     */
@@ -16445,7 +16460,7 @@
                                             let keys = [];
 
                                             // LapysJS Development Kit Functions > Iterate Object
-                                            LDKF.iterateObject((key, value, description) => {
+                                            LDKF.iterateObject(function(key, value, description) {
                                                 // Initialization > Configurable
                                                 let configurable = description.configurable;
 
@@ -18095,7 +18110,7 @@
                                 // Initialization > (Array, Arguments, Filtered)
                                 let array = this,
                                     args = LDKF.toArray(arguments),
-                                    filtered = LDKF.filterArray(array, item => { return LDKF.indexOfArray(args, item) == -1 });
+                                    filtered = LDKF.filterArray(array, function(item) { return LDKF.indexOfArray(args, item) == -1 });
 
                                 // Update > Array
                                 LDKF.spliceArray(array, 0, array.length);
@@ -18587,7 +18602,7 @@
                             value: function removeTruthyElements() {
                                 // Initialization > (Array, Filtered)
                                 let array = this,
-                                    filtered = LDKF.filterArray(array, item => { return !item });
+                                    filtered = LDKF.filterArray(array, function(item) { return !item });
 
                                 // Update > Array
                                 LDKF.spliceArray(array, 0, array.length);
@@ -18690,7 +18705,7 @@
                                     array[index] = tmp;
 
                                     // Update > Array
-                                    LDKF.replaceElementArray.call('replaceDuplicatedElement', array, item => {
+                                    LDKF.replaceElementArray.call('replaceDuplicatedElement', array, function(item) {
                                         // Return
                                         return (function() {
                                             // Update > Iterator
@@ -18740,7 +18755,7 @@
                                     array[index] = tmp;
 
                                     // Update > Array
-                                    LDKF.replaceElementArray.call('replaceDuplicatedElementFromBack', array, item => {
+                                    LDKF.replaceElementArray.call('replaceDuplicatedElementFromBack', array, function(item) {
                                         // Return
                                         return (function() {
                                             // Update > Iterator
@@ -18793,7 +18808,7 @@
                                     array[index] = tmp;
 
                                     // Update > Array
-                                    LDKF.replaceElementArray.call('replaceDuplicatedElementFromFront', array, item => {
+                                    LDKF.replaceElementArray.call('replaceDuplicatedElementFromFront', array, function(item) {
                                         // Return
                                         return (function() {
                                             // Update > Iterator
@@ -18846,7 +18861,7 @@
                                     array[index] = tmp;
 
                                     // Update > Array
-                                    LDKF.replaceElementsArray.call('replaceDuplicatedElements', array, item => {
+                                    LDKF.replaceElementsArray.call('replaceDuplicatedElements', array, function(item) {
                                         // Return
                                         return (function() {
                                             // Update > Iterator
@@ -18896,7 +18911,7 @@
                                     array[index] = tmp;
 
                                     // Update > Array
-                                    LDKF.replaceElementsArray.call('replaceDuplicatedElementsFromBack', array, item => {
+                                    LDKF.replaceElementsArray.call('replaceDuplicatedElementsFromBack', array, function(item) {
                                         // Return
                                         return (function() {
                                             // Update > Iterator
@@ -18946,7 +18961,7 @@
                                     array[index] = tmp;
 
                                     // Update > Array
-                                    LDKF.replaceElementsArray.call('replaceDuplicatedElementsFromFront', array, item => {
+                                    LDKF.replaceElementsArray.call('replaceDuplicatedElementsFromFront', array, function(item) {
                                         // Return
                                         return (function() {
                                             // Update > Iterator
@@ -19081,7 +19096,7 @@
 
                                         else
                                             // Update > Array
-                                            LDKF.replaceElementArray.call('replaceElementOfType', array, item => { return match = typeof item == $type }, replacement)
+                                            LDKF.replaceElementArray.call('replaceElementOfType', array, function(item) { return match = typeof item == $type }, replacement)
                                     }
 
                                 // Return
@@ -19139,7 +19154,7 @@
 
                                         else
                                             // Update > Array
-                                            LDKF.replaceElementArray.call('replaceElementOfTypeFromBack', array, item => { return match = typeof item == $type }, replacement)
+                                            LDKF.replaceElementArray.call('replaceElementOfTypeFromBack', array, function(item) { return match = typeof item == $type }, replacement)
                                     }
 
                                 // Return
@@ -19197,7 +19212,7 @@
 
                                         else
                                             // Update > Array
-                                            LDKF.replaceElementFromFrontArray.call('replaceElementOfTypeFromFront', array, item => { return match = typeof item == $type }, replacement)
+                                            LDKF.replaceElementFromFrontArray.call('replaceElementOfTypeFromFront', array, function(item) { return match = typeof item == $type }, replacement)
                                     }
 
                                 // Return
@@ -19267,7 +19282,7 @@
                                         })() || LDKF.error(["'replaceElementsOfType'", "'Array'"], 'argument', LDKF.debugMessage("'" + $type + "'", ['must', 'a'], 'valid data type'));
 
                                         // Update > Array
-                                        LDKF.replaceElementsArray.call('replaceElementsOfType', array, item => { return typeof item == $type }, replacement)
+                                        LDKF.replaceElementsArray.call('replaceElementsOfType', array, function(item) { return typeof item == $type }, replacement)
                                     }
 
                                 // Return
@@ -19290,7 +19305,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementArray(array, item => { return !item }, replacement);
+                                LDKF.replaceElementArray(array, function(item) { return !item }, replacement);
 
                                 // Return
                                 return array
@@ -19312,7 +19327,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementArray(array, item => { return !item }, replacement);
+                                LDKF.replaceElementArray(array, function(item) { return !item }, replacement);
 
                                 // Return
                                 return array
@@ -19334,7 +19349,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementFromFrontArray(array, item => { return !item }, replacement);
+                                LDKF.replaceElementFromFrontArray(array, function(item) { return !item }, replacement);
 
                                 // Return
                                 return array
@@ -19356,7 +19371,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementsArray(array, item => { return !item }, replacement);
+                                LDKF.replaceElementsArray(array, function(item) { return !item }, replacement);
 
                                 // Return
                                 return array
@@ -19380,7 +19395,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                iterator && LDKF.replaceElementArray.call('replaceRepeatedElement', array, item => {
+                                iterator && LDKF.replaceElementArray.call('replaceRepeatedElement', array, function(item) {
                                     // Return
                                     return (function() {
                                         // Update > Iterator
@@ -19415,7 +19430,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                iterator && LDKF.replaceElementArray.call('replaceRepeatedElementFromBack', array, item => {
+                                iterator && LDKF.replaceElementArray.call('replaceRepeatedElementFromBack', array, function(item) {
                                     // Return
                                     return (function() {
                                         // Update > Iterator
@@ -19450,7 +19465,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                iterator && LDKF.replaceElementFromFrontArray.call('replaceRepeatedElementFromFront', array, item => {
+                                iterator && LDKF.replaceElementFromFrontArray.call('replaceRepeatedElementFromFront', array, function(item) {
                                     // Return
                                     return (function() {
                                         // Update > Iterator
@@ -19485,7 +19500,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                iterator && LDKF.replaceElementsArray.call('replaceRepeatedElements', array, item => {
+                                iterator && LDKF.replaceElementsArray.call('replaceRepeatedElements', array, function(item) {
                                     // Return
                                     return (function() {
                                         // Update > Iterator
@@ -19518,7 +19533,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementArray(array, item => { return item }, replacement);
+                                LDKF.replaceElementArray(array, function(item) { return item }, replacement);
 
                                 // Return
                                 return array
@@ -19540,7 +19555,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementArray(array, item => { return item }, replacement);
+                                LDKF.replaceElementArray(array, function(item) { return item }, replacement);
 
                                 // Return
                                 return array
@@ -19562,7 +19577,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementFrontArray(array, item => { return item }, replacement);
+                                LDKF.replaceElementFrontArray(array, function(item) { return item }, replacement);
 
                                 // Return
                                 return array
@@ -19584,7 +19599,7 @@
                                     replacement = arguments[0];
 
                                 // Update > Array
-                                LDKF.replaceElementsArray(array, item => { return item }, replacement);
+                                LDKF.replaceElementsArray(array, function(item) { return item }, replacement);
 
                                 // Return
                                 return array
@@ -19819,7 +19834,7 @@
                                 falsy: function falsy() {return!!(!LDKF.filterArray(LDKF.toArray(arguments),LDKO.boolean).length&&arguments.length)},
 
                                 // Truthy
-                                truthy: function truthy() {return!!(!LDKF.filterArray(LDKF.toArray(arguments),item=>{return!item}).length&&arguments.length)}
+                                truthy: function truthy() {return!!(!LDKF.filterArray(LDKF.toArray(arguments),function(item) {return!item}).length&&arguments.length)}
                             }
                         });
 
@@ -19958,7 +19973,7 @@
                                         > Update > Elements
                                     */
                                     for (iterator = 0; iterator < length; iterator += 1)
-                                        elements[LDKF.replaceString(LDKF.replaceString(relationships[iterator], / {1,}[a-z]/g, a => { return LDKF.toUpperCaseString(a[a.length - 1]) }), /-[a-z]/g, a => { return LDKF.toUpperCaseString(a[1]) })] = LDKF.get.htmlLinkElementHref(elements[iterator]);
+                                        elements[LDKF.replaceString(LDKF.replaceString(relationships[iterator], / {1,}[a-z]/g, function(a) { return LDKF.toUpperCaseString(a[a.length - 1]) }), /-[a-z]/g, function(a) { return LDKF.toUpperCaseString(a[1]) })] = LDKF.get.htmlLinkElementHref(elements[iterator]);
 
                                     // Modification > Elements > To String
                                     LDKF.objectDefineProperty(elements, 'toString', {
@@ -20838,7 +20853,7 @@
                             enumerable: !0,
 
                             // Get
-                            get: function nextElementSiblings() {
+                            get: function _nextElementSiblings() {
                                 // Initialization > (Element, Parent, Children, Index, Iterator, Next Element Siblings)
                                 let element = this,
                                     parent = LDKF.get.nodeParentNode(element),
@@ -20876,7 +20891,7 @@
                             enumerable: !0,
 
                             // Get
-                            get: function previousElementSiblings() {
+                            get: function _previousElementSiblings() {
                                 // Initialization > (Element, Parent, Children, Index, Iterator, Previous Element Siblings)
                                 let element = this,
                                     parent = LDKF.get.nodeParentNode(element),
@@ -21220,7 +21235,7 @@
 
                                         else
                                             // LapysJS Development Kit Functions > Iterate Object
-                                            LDKF.iterateObject((key, value, description) => {
+                                            LDKF.iterateObject(function(key, value, description) {
                                                 // Logic > Error Handling > Modification > Element > [Key]
                                                 if ('value' in description)
                                                     try { LDKF.$setAttributeElement(element, key, LDKF.string(value)) }
@@ -21659,8 +21674,44 @@
                         });
 
                     /* Event Target Data */
+                        // Add Event Listener --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.eventTargetProto, 'addEventListener', (function() {
+                            // Initialization > (Description, Method Name)
+                            let description = {configurable: !1, enumerable: !1, writable: !0},
+                                methodName;
+
+                            // Modification > (LapysJS > Temporary Data > Methods) > Add Event
+                            tmpObject.eventTargetPrototypeAddEventDescriptorValue = (LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'addEventListener') || LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'attachEvent')).value;
+
+                            // Modification
+                                // Description > Value
+                                description.value = LDKF.$func(methodName = tmpObject.eventTargetPrototypeAddEventDescriptorValue.name || 'addEventListener', [],
+                                    // Initialization > (Method, Target, Length)
+                                    'let method = LDK.tmp.objects.eventTargetPrototypeAddEventDescriptorValue,' +
+                                        'target = this,' +
+                                        'length = arguments.length,' +
+                                        'returnValue;' +
+
+                                    // Initialization > (Type, Listener, Options)
+                                    'let type = arguments[0],' +
+                                        'listener = arguments[1],' +
+                                        'options = length > 2 ? (LDKF.isBoolean(arguments[2]) ? {capture: !!arguments[2], once: !1, passive: !1} : (LDKF.isJSONLikeObject(arguments[2]) ? arguments[2] : {capture: !1, once: !1, passive: !1})) : {capture: !1, once: !1, passive: !1};' +
+
+                                    'LDKF.pushArray(LDK.tmp.objects.eventReferenceList, {listener: listener, options: options, target: target, type: type});' +
+
+                                    'try {' +
+                                        'returnValue method.call(target, type, listener, options)' +
+                                    '} catch (error) {' +
+                                        'throw error' +
+                                    '}'
+                                );
+
+                            // Return
+                            return description
+                        })());
+
                         // Ancestor Query Selector
-                        LDKF.objectDefineProperty(currentPrototype = LDKO.eventTargetProto, 'ancestorQuerySelector', {
+                        LDKF.objectDefineProperty(currentPrototype, 'ancestorQuerySelector', {
                             // Configurable
                             configurable: !0,
 
@@ -21940,7 +21991,7 @@
                                         }
 
                                         // Update > Temporary Object > Event Reference List
-                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, item => { return !LDKF.isUndefined(item) }));
+                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, function(item) { return !LDKF.isUndefined(item) }));
 
                                         // Return
                                         return !0
@@ -21989,7 +22040,7 @@
                                         }
 
                                         // Update > Temporary Object > Event Reference List
-                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, item => { return !LDKF.isUndefined(item) }));
+                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, function(item) { return !LDKF.isUndefined(item) }));
 
                                         // Event > Target > (...)
                                         length > 3 ? LDKF.delEvent(target, $0, $1, $2) : LDKF.delEvent(target, $0, $1);
@@ -22074,7 +22125,7 @@
                                         }
 
                                         // Update > Temporary Object > Event Reference List
-                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, item => { return !LDKF.isUndefined(item) }));
+                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, function(item) { return !LDKF.isUndefined(item) }));
 
                                         // Return
                                         return !0
@@ -23253,7 +23304,7 @@
                                             If
                                                 the function body is delimited.
                                     */
-                                    if ((code => {
+                                    if ((function(code) {
                                         for (iterator = 0; iterator < codeLength; iterator += 1) {
                                             let character = code[iterator];
 
@@ -23303,7 +23354,7 @@
                                         body = code;
 
                                     // Return
-                                    return LDKF.$func(that.name, LDKF.get.functionParameters(that), arguments[0], (code => {
+                                    return LDKF.$func(that.name, LDKF.get.functionParameters(that), arguments[0], (function(code) {
                                         /* Loop
                                                 Iterate through Code.
 
@@ -23602,7 +23653,7 @@
                                         // Update > Parameters
                                         parameters[iterator] = LDKF.customObject('FunctionParameter', {
                                             // Address
-                                            address: (parameter => {
+                                            address: (function(parameter) {
                                                 // Initialization > (Allow (Stream), Parameter (Iterator, Length))
                                                 let allowStream = !0,
                                                     parameterIterator = 0,
@@ -23636,7 +23687,7 @@
                                             })(parameter),
 
                                             // Value
-                                            value: (parameter => {
+                                            value: (function(parameter) {
                                                 // Initialization > (Allow (Stream), Parameter (Iterator, Length))
                                                 let allowStream = !1,
                                                     parameterIterator = 0,
@@ -23711,7 +23762,7 @@
                                         while (head[head.length - 1] == ' ') head = LDKF.sliceString(head, 0, -1);
 
                                         // Initialization > Code
-                                        let code = LDKF.replaceString(LDKF.toFunctionString(that), head, (parameters => {
+                                        let code = LDKF.replaceString(LDKF.toFunctionString(that), head, (function(parameters) {
                                             /* Logic
                                                     [if:else if statement]
                                             */
@@ -23766,7 +23817,7 @@
                         }));
 
                     /* HTML Element Data */
-                        // Add Class --- CHECKPOINT ---
+                        // Add Class
                         LDKF.objectDefineProperty(currentPrototype = LDKO.htmlElementProto, 'addClass', {
                             // Configurable
                             configurable: !0,
@@ -23776,8 +23827,46 @@
 
                             // Value
                             value: function addClass() {
+                                // Initialization > (Element, (Old, New) Classes)
+                                let element = this,
+                                    oldClasses = LDKF.sortList(LDKF.getAttributeElement(element, 'class') || ''),
+                                    newClasses = LDKF.toArray(arguments);
 
+                                // Loop > Update > New Classes
+                                while ((function() {
+                                    // Initialization > Iterator
+                                    let iterator = newClasses.length;
+
+                                    // Loop > Logic > Return
+                                    while (iterator)
+                                        if (LDKF.isArray(newClasses[iterator -= 1]))
+                                            return !0
+                                })()) newClasses = LDKF.$concatArray([], newClasses);
+
+                                // Update > New Classes
+                                oldClasses.length && LDKF.$pushArray(newClasses, oldClasses);
+
+                                // Modification > Element > Class
+                                LDKF.setAttributeElement(element, 'class', LDKF.joinArray(newClasses, ' '));
+
+                                // Return
+                                return LDKF.customObject('DOMTokenList', newClasses, LDKO.domTokenListProto)
                             },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Delete Class --- CHECKPOINT ---
+                        LDKF.objectDefineProperty(currentPrototype, 'delClass', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function delClass() {},
 
                             // Writable
                             writable: !0
@@ -24249,7 +24338,7 @@
                                     }
 
                                     // LapysJS Development Kit Functions > Iterate Object
-                                    LDKF.iterateObject((key, value) => {
+                                    LDKF.iterateObject(function(key, value) {
                                         /* Logic
                                                 [if statement]
                                         */
@@ -26819,7 +26908,7 @@
                                     */
                                     if (metadata) {
                                         // (Update > Metadata), (Loop > Update > Metadata)
-                                        metadata = LDKF.replaceString(LDKF.replaceString(LDKF.replaceString(metadata, /\b\w/g, a => { return LDKF.toUpperCaseString(a) }), /And/g, 'and'), /Undefined/g, 'Zero');
+                                        metadata = LDKF.replaceString(LDKF.replaceString(LDKF.replaceString(metadata, /\b\w/g, function(a) { return LDKF.toUpperCaseString(a) }), /And/g, 'and'), /Undefined/g, 'Zero');
                                         while (metadata[0] == ' ' || metadata[0] == '\n') metadata = LDKF.sliceString(metadata, 1);
                                         while (metadata[metadata.length - 1] == ' ' || metadata[metadata.length - 1] == '\n') metadata = LDKF.sliceString(metadata, 0, -1);
 
@@ -27014,7 +27103,7 @@
                             enumerable: !1,
 
                             // Get
-                            get: function depth() {
+                            get: function _depth() {
                                 // Initialization > (Depth, Object)
                                 let depth = 0,
                                     object = this;
@@ -27189,7 +27278,7 @@
                                                 length = 0;
 
                                             // LapysJS Development Kit Functions > Iterate Object
-                                            LDKF.iterateObject((key) => {
+                                            LDKF.iterateObject(function(key) {
                                                 // Update > Length
                                                 (LDKF.indexOfArray(keys, key) == -1) && (length += 1)
                                             }, descriptors);
@@ -28159,14 +28248,6 @@
                 }
             } catch (error) {}
 
-            try {
-                // Console > Warn
-                console.warn(
-                    LapysJSDevelopmentKit.info.errorMessagePrefix,
-                    'An error occurred in installing the framework:\n\r', error
-                )
-            } catch (error) {}
-
 
             try {
                 // Logic > Error
@@ -28232,4 +28313,13 @@
                     - 2 years of development... well worth it. Well, onto the next project: Lapys OS or LapysPHP
     */
     return 0
-})([''], [])
+})(0, [
+    /* {Location}
+            --- NOTE ---
+                #Lapys: Location is a default argument value.
+    */
+    (function location(){try{return document.currentScript.src}catch(error){}return'*'})(),
+
+    // {Parent Window}
+    (function parentWindow(){try{return window.parent}catch(error){}return null})()
+])

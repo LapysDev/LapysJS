@@ -112,6 +112,7 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
         isolation: auto;
         letter-spacing: normal;
         lighting-color: #FFF;
+        line-height: 1.42857;
         list-style-image: none;
         list-style-position: outside;
         list-style-type: circle;
