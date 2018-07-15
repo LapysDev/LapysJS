@@ -7130,13 +7130,36 @@
                                 return function insertBeforeNode() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
+                            LDKF.$insertBeforeNode = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$nodeProto.insertBefore;
+
+                                // Return
+                                return function $insertBeforeNode() { return method.apply(arguments[0], arguments[1]) }
+                            })();
+
                             // Join Array
                             LDKF.joinArray = (function() {
                                 // Initialization > Method
                                 let method = LDKO.$arrayProto.join;
 
                                 // Return
-                                return function joinArray() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                                return function joinArray() {
+                                    // Error Handling > Return
+                                    try { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                                    catch (error) {}
+
+                                    // Initialization > (Array, Iterator)
+                                    let array = LDKF.cloneObject(arguments[0]),
+                                        iterator = array.length;
+
+                                    // Loop > Update > Array
+                                    while (iterator)
+                                        array[iterator -= 1] = LDKF.string(array[iterator]);
+
+                                    // Return
+                                    return method.apply(array, LDKF.sliceArray(LDKF.toArray(arguments), 1))
+                                }
                             })();
 
                             // Last Index Of Array
@@ -7927,6 +7950,15 @@
                             LDKF.trimRightCharString = function trimRightCharString() { return tmpObject.stringPrototypeTrimRightCharDescription.value.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) };
                             LDKF.$trimRightCharString = function $trimRightCharString() { return tmpObject.stringPrototypeTrimRightCharDescription.value.apply(arguments[0], arguments[1]) };
 
+                            // Trim String
+                            LDKF.trimString = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$stringProto.trim;
+
+                                // Return
+                                return function trimString() { return method.call(arguments[0]) }
+                            })();
+
                             // Unshift Array
                             LDKF.unshiftArray = (function() {
                                 // Initialization > Method
@@ -8018,7 +8050,7 @@
                             })();
 
                             // Write HTML Element
-                            LDKF.writeHtmlElement = function writeHtmlElement() { return tmpObject.htmlElementPrototypeWriteDescription.value.call(arguments[0]) };
+                            LDKF.writeHtmlElement = function writeHtmlElement() { return tmpObject.htmlElementPrototypeWriteDescription.value.call(arguments[0], arguments[1]) };
 
                             /* Get */
                             LDKF.get = {
@@ -15384,18 +15416,16 @@
                                 writable: !0
                             });
 
-                            // Recur --- Fix it not indexing non-sub objects
+                            // Recur
                             LDKF.objectDefineProperty(window, 'recur', {
                                 // Configurable
                                 configurable: !0,
 
                                 // Value
                                 value: function recur() {
-                                    // Initialization > (Length, Special Character)
-                                    let length = arguments.length;
-
-                                    // Initialization > (Callback, Object, State, Is Iterable Object)
-                                    let callback = arguments[0];
+                                    // Initialization > (Length, Callback, Object, State, Is Iterable Object)
+                                    let length = arguments.length,
+                                        callback = arguments[0];
                                         object = length > 1 ? arguments[1] : tmp;
                                         state = length > 2 ? arguments[2] : 'defer',
                                         isIterableObject = LDKF.isBoolean(object) || LDKF.isFunction(object) || LDKF.isNumber(object) || LDKF.isRegex(object) || LDKF.isSymbol(object);
@@ -15403,7 +15433,7 @@
                                     /* Logic
                                             [if statement]
                                     */
-                                    if (length) {
+                                    if (length > 1) {
                                         // Update > Callback
                                         LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
 
@@ -15759,7 +15789,7 @@
                                     /* Logic
                                             [if statement]
                                     */
-                                    if (length) {
+                                    if (length > 1) {
                                         // Update > Callback
                                         LDKF.isEvaluationString(callback) && (callback = LDKF.$func(callback));
 
@@ -21674,37 +21704,54 @@
                         });
 
                     /* Event Target Data */
-                        // Add Event Listener --- CHECKPOINT ---
+                        // Add Event Listener
                         LDKF.objectDefineProperty(currentPrototype = LDKO.eventTargetProto, 'addEventListener', (function() {
-                            // Initialization > (Description, Method Name)
+                            // Initialization > (Description, Method (Name))
                             let description = {configurable: !1, enumerable: !1, writable: !0},
-                                methodName;
-
-                            // Modification > (LapysJS > Temporary Data > Methods) > Add Event
-                            tmpObject.eventTargetPrototypeAddEventDescriptorValue = (LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'addEventListener') || LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'attachEvent')).value;
+                                method = (LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'addEventListener') || LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'attachEvent')).value,
+                                methodName = method.name;
 
                             // Modification
                                 // Description > Value
-                                description.value = LDKF.$func(methodName = tmpObject.eventTargetPrototypeAddEventDescriptorValue.name || 'addEventListener', [],
-                                    // Initialization > (Method, Target, Length)
-                                    'let method = LDK.tmp.objects.eventTargetPrototypeAddEventDescriptorValue,' +
-                                        'target = this,' +
-                                        'length = arguments.length,' +
-                                        'returnValue;' +
+                                description.value = function addEvent() {
+                                    // Initialization > (Target, Length, Listener, Options, Type, Return Value)
+                                    let target = this,
+                                        length = arguments.length,
+                                        listener = arguments[1],
+                                        options = arguments[2],
+                                        type = arguments[0],
+                                        returnValue;
 
-                                    // Initialization > (Type, Listener, Options)
-                                    'let type = arguments[0],' +
-                                        'listener = arguments[1],' +
-                                        'options = length > 2 ? (LDKF.isBoolean(arguments[2]) ? {capture: !!arguments[2], once: !1, passive: !1} : (LDKF.isJSONLikeObject(arguments[2]) ? arguments[2] : {capture: !1, once: !1, passive: !1})) : {capture: !1, once: !1, passive: !1};' +
+                                    // Error Handling
+                                    try {
+                                        // Update
+                                            // Return Value
+                                            returnValue = method.apply(target, arguments);
 
-                                    'LDKF.pushArray(LDK.tmp.objects.eventReferenceList, {listener: listener, options: options, target: target, type: type});' +
+                                            // Temporary Object > Event Reference List
+                                            LDKF.pushArray(tmpObject.eventReferenceList, (function() {
+                                                // Initialization > (Listener, Options, Type)
+                                                let listener = arguments[1],
+                                                    options = arguments[2],
+                                                    type = arguments[0];
 
-                                    'try {' +
-                                        'returnValue method.call(target, type, listener, options)' +
-                                    '} catch (error) {' +
-                                        'throw error' +
-                                    '}'
-                                );
+                                                // Update > (Options, Type)
+                                                length > 2 ?
+                                                    (typeof options == 'boolean') && (options = {capture: !!options, once: !1, passive: !1}) :
+                                                    options = {capture: !1, once: !1, passive: !1};
+                                                (methodName == 'attachEvent' && (type[0] == 'o' && type[1] == 'n')) && (type = LDKF.sliceString(type, 2));
+
+                                                // Return
+                                                return {listener: listener, options: options, target: target, type: type}
+                                            })(type, listener, options))
+                                    } catch (error) {
+                                        // Error
+                                        throw error
+                                    }
+
+                                    // Return
+                                    return returnValue
+                                };
 
                             // Return
                             return description
@@ -22764,18 +22811,21 @@
                                         type = eventReference.type;
 
                                     // Update > Result
-                                    (all || (
+                                    (
                                         target === eventReference.target &&
-                                        (function() {
-                                            // Initialization > Iterator
-                                            let iterator = args.length;
+                                        (
+                                            all ||
+                                            (function() {
+                                                // Initialization > Iterator
+                                                let iterator = args.length;
 
-                                            // Loop > Logic > Return
-                                            while (iterator)
-                                                if (LDKF.string(args[iterator -= 1]) == type)
-                                                    return !0
-                                        })()
-                                    )) && LDKF.pushArray(result, LDKF.customObject('EventOption', {
+                                                // Loop > Logic > Return
+                                                while (iterator)
+                                                    if (LDKF.string(args[iterator -= 1]) == type)
+                                                        return !0
+                                            })()
+                                        )
+                                    ) && LDKF.pushArray(result, LDKF.customObject('EventOption', {
                                         // Listener
                                         listener: eventReference.listener,
 
@@ -23043,6 +23093,81 @@
                                 return length ? elements[LDKF.numberParseInt(LDKF.mathRandom() * length)] : null
                             }
                         });
+
+                        // Remove Event Listener
+                        LDKF.objectDefineProperty(currentPrototype = LDKO.eventTargetProto, 'removeEventListener', (function() {
+                            // Initialization > (Description, Method (Name))
+                            let description = {configurable: !1, enumerable: !1, writable: !0},
+                                method = (LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'removeEventListener') || LDKF.objectGetOwnPropertyDescriptor(currentPrototype, 'detachEvent')).value,
+                                methodName = method.name;
+
+                            // Modification
+                                // Description > Value
+                                description.value = function removeEvent() {
+                                    // Initialization > (Target, Length, Listener, Options, Type, Return Value)
+                                    let target = this,
+                                        length = arguments.length,
+                                        listener = arguments[1],
+                                        options = arguments[2],
+                                        type = arguments[0],
+                                        returnValue;
+
+                                    // Error Handling
+                                    try {
+                                        // Update
+                                            // Return Value
+                                            returnValue = method.apply(target, arguments);
+
+                                            // (...)
+                                            (function() {
+                                                // Initialization > (Listener, Options, Type)
+                                                let listener = arguments[1],
+                                                    options = arguments[2],
+                                                    type = arguments[0];
+
+                                                // Update > (Options, Type)
+                                                length > 2 ?
+                                                    (typeof options == 'boolean') && (options = {capture: !!options, once: !1, passive: !1}) :
+                                                    options = {capture: !1, once: !1, passive: !1};
+                                                (methodName == 'detachEvent' && (type[0] == 'o' && type[1] == 'n')) && (type = LDKF.sliceString(type, 2));
+
+                                                // Initialization > Iterator
+                                                let iterator = tmpObject.eventReferenceList.length;
+
+                                                /* Loop
+                                                        Index Temporary Object > Event Reference List
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Event Reference
+                                                    let eventReference = tmpObject.eventReferenceList[iterator -= 1];
+
+                                                    // Logic
+                                                    if (
+                                                        eventReference.listener === listener &&
+                                                        eventReference.options === options &&
+                                                        eventReference.target === target &&
+                                                        eventReference.type === type
+                                                    ) {
+                                                        // Update > Temporary Object > Event Reference List
+                                                        LDKF.spliceArray(tmpObject.eventReferenceList, iterator, 1);
+
+                                                        // Break
+                                                        break
+                                                    }
+                                                }
+                                            })(type, listener, options)
+                                    } catch (error) {
+                                        // Error
+                                        throw error
+                                    }
+
+                                    // Return
+                                    return returnValue
+                                };
+
+                            // Return
+                            return description
+                        })());
 
                         // Run Event
                         LDKF.objectDefineProperty(currentPrototype, 'runEvent', {
@@ -23827,37 +23952,37 @@
 
                             // Value
                             value: function addClass() {
-                                // Initialization > (Element, (Old, New) Classes)
+                                // Initialization > (Element, Classes, Matches)
                                 let element = this,
-                                    oldClasses = LDKF.sortList(LDKF.getAttributeElement(element, 'class') || ''),
-                                    newClasses = LDKF.toArray(arguments);
+                                    classes = LDKF.sortList(LDKF.getAttributeElement(element, 'class') || ''),
+                                    matches = LDKF.toArray(arguments);
 
-                                // Loop > Update > New Classes
+                                // Loop > Update > Matches
                                 while ((function() {
                                     // Initialization > Iterator
-                                    let iterator = newClasses.length;
+                                    let iterator = matches.length;
 
                                     // Loop > Logic > Return
                                     while (iterator)
-                                        if (LDKF.isArray(newClasses[iterator -= 1]))
+                                        if (LDKF.isArray(matches[iterator -= 1]))
                                             return !0
-                                })()) newClasses = LDKF.$concatArray([], newClasses);
+                                })()) matches = LDKF.$concatArray([], matches);
 
-                                // Update > New Classes
-                                oldClasses.length && LDKF.$pushArray(newClasses, oldClasses);
+                                // Update > Matches
+                                classes.length && LDKF.$pushArray(matches, classes);
 
                                 // Modification > Element > Class
-                                LDKF.setAttributeElement(element, 'class', LDKF.joinArray(newClasses, ' '));
+                                LDKF.setAttributeElement(element, 'class', LDKF.joinArray(matches, ' '));
 
                                 // Return
-                                return LDKF.customObject('DOMTokenList', newClasses, LDKO.domTokenListProto)
+                                return LDKF.customObject('DOMTokenList', matches, LDKO.domTokenListProto)
                             },
 
                             // Writable
                             writable: !0
                         });
 
-                        // Delete Class --- CHECKPOINT ---
+                        // Delete Class
                         LDKF.objectDefineProperty(currentPrototype, 'delClass', {
                             // Configurable
                             configurable: !0,
@@ -23866,7 +23991,44 @@
                             enumerable: !0,
 
                             // Value
-                            value: function delClass() {},
+                            value: function delClass() {
+                                // Initialization > (Element, Classes, Matches)
+                                let element = this,
+                                    classes = LDKF.sortList(LDKF.getAttributeElement(element, 'class') || ''),
+                                    matches = LDKF.toArray(arguments);
+
+                                // Loop > Update > Match
+                                while ((function() {
+                                    // Initialization > Iterator
+                                    let iterator = matches.length;
+
+                                    // Loop > Logic > Return
+                                    while (iterator)
+                                        if (LDKF.isArray(matches[iterator -= 1]))
+                                            return !0
+                                })()) matches = LDKF.$concatArray([], matches);
+
+                                // Initialization > Iterator
+                                let iterator = matches.length;
+
+                                /* Loop
+                                        Index Match.
+                                */
+                                while (iterator) {
+                                    // Initialization > Match
+                                    let match = matches[iterator -= 1];
+
+                                    // Update > Classes
+                                    LDKF.includesArray(classes, match) && LDKF.spliceArray(classes, LDKF.indexOfArray(classes, match), 1)
+                                }
+
+                                // Modification > Element > Class
+                                LDKF.setAttributeElement(element, 'class', LDKF.joinArray(classes, ' '));
+                                LDKF.getAttributeElement(element, 'class') || LDKF.removeAttributeElement(element, 'class');
+
+                                // Return
+                                return LDKF.customObject('DOMTokenList', classes, LDKO.domTokenListProto)
+                            },
 
                             // Writable
                             writable: !0
@@ -24036,12 +24198,13 @@
 
                             // Value
                             value: function getStyle() {
-                                // Initialization > (Arguments, Element, Properties, Values, Style)
+                                // Initialization > (Arguments, Element, Properties, Values, Style (Attribute))
                                 let args = LDKF.toArray(arguments),
                                     element = this,
                                     properties = [],
                                     values = [],
-                                    style = LDKF.get.htmlElementStyle(element);
+                                    style = LDKF.get.htmlElementStyle(element),
+                                    styleAttribute = LDKF.getAttributeElement(element, 'style') || '';
 
                                 /* Logic
                                         [if statement]
@@ -24075,6 +24238,19 @@
                                     // Initialization > Length
                                     let length = properties.length;
 
+                                    // Function > Hyphenate
+                                    function hyphenate(string) {
+                                        // Return
+                                        return LDKF.toLowerCaseString(string[0]) + LDKF.replaceString(LDKF.sliceString(string, 1), /[A-Z]/g, function(data) {
+                                            // Return
+                                            return '-' + LDKF.toLowerCaseString(data)
+                                        })
+                                    }
+
+                                    // Update > Style Attribute
+                                    styleAttribute = LDKF.trimString(styleAttribute);
+                                    (styleAttribute[styleAttribute.length - 1] == ';') || (styleAttribute += ';');
+
                                     /* Loop
                                             Index Properties.
                                     */
@@ -24082,9 +24258,159 @@
                                         // Initialization > Property
                                         let property = properties[iterator];
 
-                                        // Error Handling > Update > Values
-                                        try { (property in style) && LDKF.pushArray(values, style[property]) }
-                                        catch (error) {}
+                                        // Error Handling
+                                        try {
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (property in style) {
+                                                // Update > Property
+                                                property = hyphenate(property);
+
+                                                // Initialization > Match
+                                                let match;
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if ((match = (LDKF.matchString((function(string) {
+                                                    // Initialization > (Allow Stream, Iterator, Length, Stream (Lock-Character))
+                                                    let allowStream = !0,
+                                                        iterator = 0,
+                                                        length = string.length,
+                                                        stream = '',
+                                                        streamLockCharacter = '';
+
+                                                    /* Loop
+                                                            Iterate through String.
+                                                    */
+                                                    for (iterator; iterator != length; iterator += 1) {
+                                                        // Initialization > Character
+                                                        let character = string[iterator];
+
+                                                        /* Logic
+                                                                [if:else if statement]
+
+                                                            > Update > (Allow Stream, Stream-Lock Character)
+                                                        */
+                                                        if (
+                                                            allowStream &&
+                                                            (
+                                                                character == '(' ||
+                                                                character == '"' || character == "'"
+                                                            )
+                                                        ) {
+                                                            allowStream = !1;
+                                                            streamLockCharacter = character
+                                                        }
+
+                                                        else if (
+                                                            !allowStream &&
+                                                            (
+                                                                (character == ')' && streamLockCharacter == '(') ||
+                                                                (
+                                                                    (character == '"' || character == "'") &&
+                                                                    (character == streamLockCharacter)
+                                                                )
+                                                            )
+                                                        ) {
+                                                            allowStream = !0;
+                                                            streamLockCharacter = ''
+                                                        }
+
+                                                        // Update > Stream
+                                                        allowStream && (stream += character)
+                                                    }
+
+                                                    // Return
+                                                    return stream
+                                                })(styleAttribute), LDKF.regex(property + ' {0,}: {0,}')) || [])).length) {
+                                                    // Update > Match
+                                                    match = match[0];
+                                                    match = LDKF.replaceString(match, LDKF.regex('[' + LDKF.getRegexChars(match) + ']', 'g'), '\\$&');
+
+                                                    // Initialization > (Style Attribute Iterator, Allow Stream, Stream(-Lock Character))
+                                                    let styleAttributeIterator = LDKF.indexOfString(styleAttribute, match),
+                                                        allowStream = !0,
+                                                        stream = '',
+                                                        streamLockCharacter = '';
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (styleAttributeIterator != -1) {
+                                                        // Initialization > Style Attribute Length
+                                                        let styleAttributeLength = styleAttribute.length;
+
+                                                        /* Loop
+                                                                Iterate through Style Attribute.
+                                                        */
+                                                        for (styleAttributeIterator; styleAttributeIterator != styleAttributeLength; styleAttributeIterator += 1) {
+                                                            // Initialization > Character
+                                                            let character = styleAttribute[styleAttributeIterator];
+
+                                                            /* Logic
+                                                                    [if statement]
+
+                                                                > Update > (Allow Stream, Stream-Lock Character)
+                                                            */
+                                                            if (
+                                                                allowStream &&
+                                                                (
+                                                                    character == '(' ||
+                                                                    character == '"' || character == "'"
+                                                                )
+                                                            ) {
+                                                                allowStream = !1;
+                                                                streamLockCharacter = character
+                                                            }
+
+                                                            else if (
+                                                                !allowStream &&
+                                                                (
+                                                                    (character == ')' && streamLockCharacter == '(') ||
+                                                                    (
+                                                                        (character == '"' || character == "'") &&
+                                                                        (character == streamLockCharacter)
+                                                                    )
+                                                                )
+                                                            ) {
+                                                                allowStream = !0;
+                                                                streamLockCharacter = ''
+                                                            }
+
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (allowStream) {
+                                                                // Update > Stream
+                                                                stream += character;
+
+                                                                // Logic > Break
+                                                                if (character == ';')
+                                                                    break
+                                                            }
+                                                        }
+                                                    }
+
+                                                    // Update > (Stream, Values)
+                                                    stream = LDKF.trimString(LDKF.replaceString(stream, match, ''));
+                                                    (stream[stream.length - 1] == ';') && (stream = LDKF.sliceString(stream, 0, -';'.length));
+                                                    LDKF.pushArray(values, stream)
+                                                }
+
+                                                else
+                                                    // Update > Values
+                                                    LDKF.pushArray(values, style[property])
+                                            }
+
+                                            else
+                                                // Update > Values
+                                                LDKF.pushArray(values, null)
+                                        } catch (error) {
+                                            // Update > Values
+                                            LDKF.pushArray(values, null)
+                                        }
                                     }
 
                                     // Update > Values
@@ -24093,6 +24419,27 @@
 
                                 // Return
                                 return arguments.length == 1 ? (values.length > 1 ? values : values[0]) : (values.length ? values : null)
+                            },
+
+                            // Writable
+                            writable: !0
+                        });
+
+                        // Has Class
+                        LDKF.objectDefineProperty(currentPrototype, 'hasClass', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function hasClass() {
+                                // Initialization > Element
+                                let element = this;
+
+                                // Return
+                                return arguments.length ? LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(element, 'class') || ''), arguments[0]) : null
                             },
 
                             // Writable
@@ -24142,6 +24489,56 @@
 
                             // Get
                             get: function inFullscreen() { return LDKO.$screen === LDKF.get.windowInnerHeight ? !1 : this === tmpObject.fullscreenElement }
+                        });
+
+                        // Replace Class
+                        LDKF.objectDefineProperty(currentPrototype, 'replClass', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function replaceClass() {
+                                // Initialization > (Element, Length)
+                                let element = this,
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (length) {
+                                    // Initialization > (Class, Match, Classes)
+                                    let $class = arguments[1],
+                                        match = arguments[0],
+                                        classes = LDKF.sortList(LDKF.getAttributeElement(element, 'class') || '');
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.includesArray(classes, match)) {
+                                        // Initialization > Index
+                                        let index = LDKF.indexOfArray(classes, match);
+
+                                        // Update > Classes
+                                        length > 1 ? classes[index] = $class : LDKF.spliceArray(classes, index, 1);
+
+                                        // Modification > Element > Class
+                                        LDKF.setAttributeElement(element, 'class', LDKF.joinArray(classes, ' '));
+                                        LDKF.getAttributeElement(element, 'class') || LDKF.removeAttributeElement(element, 'class')
+                                    }
+
+                                    // Return
+                                    return LDKF.customObject('DOMTokenList', classes, LDKO.domTokenListProto)
+                                }
+
+                                // Return
+                                return null
+                            },
+
+                            // Writable
+                            writable: !0
                         });
 
                         // Selector
@@ -24697,6 +25094,703 @@
                                 // Return
                                 return arguments[0]
                             }
+                        });
+
+                        // Set CSS
+                        LDKF.objectDefineProperty(currentPrototype, 'setCSS', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function setCSS() {
+                                // Initialization > (Dummy Element, Element, Length)
+                                let element = this,
+                                    dummyElement = LDKC.element,
+                                    length = arguments.length;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (length) {
+                                    // Initialization > (...)
+                                    let $0 = arguments[0],
+                                        $1 = arguments[1],
+                                        defaultMeasurement = 'px',
+                                        defaultValue = 'initial',
+                                        iterator = 0,
+                                        propertyValueList = [],
+                                        computedStyle = LDKF.getComputedStyle(element),
+                                        style = LDKF.get.htmlElementStyle(element),
+                                        styleAttribute = LDKF.trimString(LDKF.getAttributeElement(element, 'style') || ''),
+                                        dummyElementComputedStyle = LDKF.getComputedStyle(dummyElement),
+                                        dummyElementStyle = LDKF.get.htmlElementStyle(dummyElement);
+
+                                    // Function
+                                        // Camel
+                                        function camel(string) {
+                                            // Return
+                                            return LDKF.replaceString(string, /-./g, function(data) {
+                                                // Return
+                                                return LDKF.toUpperCaseString(data[1])
+                                            })
+                                        }
+
+                                        // Ends With
+                                        function endsWith(string, match) {
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (string && match) {
+                                                // Initialization > (Iterator, (Decremented) Length)
+                                                let iterator = match.length,
+                                                    length = iterator,
+                                                    decrementedLength = string.length - 1;
+
+                                                // Loop > Logic > Return
+                                                while (iterator)
+                                                    if (match[iterator -= 1] !== string[decrementedLength - (length - iterator - 1)])
+                                                        return !1;
+
+                                                // Return
+                                                return !0
+                                            }
+                                        }
+
+                                        // Hyphenate
+                                        function hyphenate(string) {
+                                            // Return
+                                            return LDKF.toLowerCaseString(string[0]) + LDKF.replaceString(LDKF.sliceString(string, 1), /[A-Z]/g, function(data) {
+                                                // Return
+                                                return '-' + LDKF.toLowerCaseString(data)
+                                            })
+                                        }
+
+                                        // Is Special Argument
+                                        function isSpecialArgument(object) {
+                                            // Return
+                                            return LDKF.isArray(object) || LDKF.isFunction(object) || LDKF.isJSONLikeObject(object)
+                                        }
+
+                                        // Is Valid CSS Property
+                                        function isValidCSSProperty(property) {
+                                            // Error Handling > Return
+                                            try { return property in style }
+                                            catch (error) {}
+                                        }
+
+                                        // Is Vendor Property
+                                        function isVendorProperty(property) {
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (property) {
+                                                // Initialization > (Vendors, Iterator, Match)
+                                                let vendors = ['moz', 'ms', 'webkit'],
+                                                    iterator = vendors.length,
+                                                    match = !0;
+
+                                                // Update > Property
+                                                property = LDKF.replaceString(LDKF.toLowerCaseString(property[0]) + camel(LDKF.sliceString(property, 1)), /-/g, '');
+
+                                                /* Loop
+                                                        Index Vendors.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > (Vendor, Decremented Vendor Length, Property (Iterator, Length))
+                                                    let vendor = vendors[iterator -= 1],
+                                                        decrementedVendorLength = vendor.length - 1,
+                                                        propertyIterator = 0,
+                                                        propertyLength = property.length;
+
+                                                    // Update > Match
+                                                    match = !0;
+
+                                                    /* Loop
+                                                            Iterate through Property.
+                                                    */
+                                                    for (propertyIterator; propertyIterator != propertyLength; propertyIterator += 1) {
+                                                        let character = property[propertyIterator];
+
+                                                        // Logic > Return
+                                                        if (match && propertyIterator > decrementedVendorLength)
+                                                            return !0;
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (character != vendor[propertyIterator]) {
+                                                            // Update > Match
+                                                            match = !1;
+
+                                                            // Break
+                                                            break
+                                                        }
+                                                    }
+
+                                                    // Logic > Return
+                                                    if (match)
+                                                        return !0
+                                                }
+                                            }
+                                        }
+
+                                        // Update Value
+                                        function updateValue(value, property) {
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (LDKF.isArray(value))
+                                                // Update > Value
+                                                value = LDKF.joinArray(value, ', ');
+
+                                            else if (LDKF.isSafeNumber(value))
+                                                // Update > Value
+                                                value += defaultMeasurement;
+
+                                            else if (LDKF.isBoolean(value)) {
+                                                // Update > Property
+                                                property = hyphenate(property);
+
+                                                /* Logic
+                                                        [if:else if statement]
+                                                */
+                                                if (
+                                                    property == 'backface-visibility' ||
+                                                    property == 'overflow' || property == 'overflow-x' || property == 'overflow-y' ||
+                                                    property == 'visibility' ||
+                                                    (endsWith(property, 'visibility') && isVendorProperty(property))
+                                                )
+                                                    // Update > Value
+                                                    value = value ? 'visible' : 'hidden';
+
+                                                else if (
+                                                    property == 'background-color' || property == 'border-bottom-color' || property == 'border-color' || property == 'border-left-color' || property == 'border-right-color' || property == 'border-top-color' ||
+                                                    property == 'caret-color' || property == 'color' || property == 'column-rule-color' ||
+                                                    property == 'fill' || property == 'flood-color' ||
+                                                    property == 'lighting-color' ||
+                                                    property == 'outline-color' ||
+                                                    property == 'stop-color' ||
+                                                    property == 'text-decoration-color' ||
+                                                    (endsWith(property, 'color') && isVendorProperty(property))
+                                                )
+                                                    // Update > Value
+                                                    value = value ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)';
+
+                                                else if (
+                                                    property == 'fill-opacity' ||
+                                                    property == 'opacity'
+                                                )
+                                                    // Update > Value
+                                                    value = value ? '1' : '0';
+
+                                                else if (!value) {
+                                                    /* Logic
+                                                            [if:else if statement]
+                                                    */
+                                                    if (
+                                                        property == 'align-content' || property == 'align-items' || property == 'animation-fill-mode' ||
+                                                        property == 'background-blend-mode'
+                                                    )
+                                                        // Update > Value
+                                                        value = 'normal';
+
+                                                    else if (
+                                                        property == 'animation' || property == 'animation-fill-mode' || property == 'animation-name' ||
+                                                        property == 'background-image' || property == 'border' || property == 'border-bottom' || property == 'border-bottom-style' || property == 'border-image' || property == 'border-image-source' || property == 'border-left' || property == 'border-left-style' || property == 'border-right' || property == 'border-right-style' || property == 'border-top' || property == 'border-top-style' || property == 'box-shadow' ||
+                                                        property == 'clear' || property == 'clip-path' || property == 'column-rule-style' || property == 'column-span' || property == 'contain' || property == 'content' || property == 'counterIncrement' || property == 'counterReset' ||
+                                                        property == 'd' ||
+                                                        property == 'filter' || property == 'float' ||
+                                                        property == 'grid' ||
+                                                        property == 'list-style' || property == 'list-style-image' ||
+                                                        property == 'marker' || property == 'marker-end' || property == 'marker-mid' || property == 'marker-start' || property == 'mask' || property == 'max-block-size' || property == 'max-height' || property == 'max-inline-size' || property == 'max-width' ||
+                                                        property == 'offset' || property == 'offset-path' || property == 'outline' || property == 'outline-style' ||
+                                                        property == 'perspective' || property == 'pointer-events' ||
+                                                        property == 'resize' ||
+                                                        property == 'shape-outside' || property == 'speak' || property == 'stroke' || property == 'stroke-dasharray' || property == 'stroke-dashoffset' ||
+                                                        property == 'text-combine-upright' || property == 'text-decoration' || property == 'text-decoration-line' || property == 'text-shadow' || property == 'text-transform' || property == 'transform' || property == 'transition' ||
+                                                        property == 'vector-effect'
+                                                    )
+                                                        // Update > Value
+                                                        value = 'none';
+
+                                                    else if (
+                                                        property == 'animation-delay' || property == 'animation-duration' ||
+                                                        property == 'transition-delay' || property == 'transition-duration'
+                                                    )
+                                                        // Update > Value
+                                                        value = '0s';
+
+                                                    else if (
+                                                        property == 'animation-iteration-count' ||
+                                                        property == 'flex-grow' || property == 'flex-shrink' || property == 'font-kerning' ||
+                                                        property == 'order' || property == 'orphans' ||
+                                                        property == 'shape-image-threshold' || property == 'stroke-miter-limit' ||
+                                                        property == 'tab-size' ||
+                                                        property == 'widows' ||
+                                                        property == 'z-index'
+                                                    )
+                                                        // Update > Value
+                                                        value = '0';
+
+                                                    else if (property == 'animation-play-state')
+                                                        // Update > Value
+                                                        value = 'paused';
+
+                                                    else if (
+                                                        property == 'animation-timing-function' ||
+                                                        property == 'transition-timing-function'
+                                                    )
+                                                        // Update > Value
+                                                        value = 'linear';
+
+                                                    else if (property == 'background-attachment')
+                                                        // Update > Value
+                                                        value = 'scroll';
+
+                                                    else if (
+                                                        property == 'background-position' || property == 'border-spacing' ||
+                                                        property == 'object-position' ||
+                                                        property == 'perspective-origin' ||
+                                                        property == 'transform-origin'
+                                                    )
+                                                        // Update > Value
+                                                        value = '0px 0px';
+
+                                                    else if (
+                                                        property == 'border-bottom-style' || property == 'border-left-style' || property == 'border-right-style' || property == 'border-style' || property == 'border-top-style' ||
+                                                        property == 'text-decoration-style'
+                                                    )
+                                                        // Update > Value
+                                                        value = 'hidden';
+
+                                                    else if (
+                                                        property == 'background-position-x' || property == 'background-position-y' || property == 'baseline-shift' || property == 'block-size' || property == 'border-bottom-left-radius' || property == 'border-bottom-right-radius' || property == 'border-bottom-width' || property == 'border-image-outset' || property == 'border-image-width' || property == 'border-left-width' || property == 'border-radius' || property == 'border-right-width' || property == 'border-top-left-radius' || property == 'border-top-right-radius' || property == 'border-top-width' || property == 'border-width' || property == 'bottom' ||
+                                                        property == 'column-width' || property == 'cx' || property == 'cy' ||
+                                                        property == 'flex-basis' || property == 'font-size' ||
+                                                        property == 'height' ||
+                                                        property == 'inline-size' ||
+                                                        property == 'left' || property == 'letter-spacing' || property == 'line-height' ||
+                                                        property == 'margin' || property == 'margin-bottom' || property == 'margin-left' || property == 'margin-right' || property == 'margin-top' || property == 'max-block-size' || property == 'max-height' || property == 'max-width' || property == 'min-block-size' || property == 'min-height' || property == 'min-width' ||
+                                                        property == 'offset-distance' || property == 'outline-offset' || property == 'outline-width' ||
+                                                        property == 'padding' || property == 'padding-bottom' || property == 'padding-left' || property == 'padding-right' || property == 'padding-top' ||
+                                                        property == 'r' || property == 'right' || property == 'rx' || property == 'ry' ||
+                                                        property == 'shape-margin' || property == 'stroke-width' ||
+                                                        property == 'text-indent' || property == 'top' ||
+                                                        property == 'width' || property == 'word-spacing' ||
+                                                        property == 'x' ||
+                                                        property == 'y'
+                                                    )
+                                                        // Update > Value
+                                                        value = '0px';
+
+                                                    else if (property == 'background-repeat')
+                                                        // Update > Value
+                                                        value = 'no-repeat';
+
+                                                    else if (
+                                                        property == 'border-image-slice' ||
+                                                        property == 'font-stretch'
+                                                    )
+                                                        // Update > Value
+                                                        value = '0%';
+
+                                                    else if (property == 'direction')
+                                                        // Update > Value
+                                                        value = 'ltr';
+
+                                                    else if (property == 'display')
+                                                        // Update > Value
+                                                        value = 'none';
+
+                                                    else if (property == 'flex-wrap')
+                                                        // Update > Value
+                                                        value = 'nowrap';
+
+                                                    else if (property == 'font-family')
+                                                        // Update > Value
+                                                        value = 'sans-serif';
+
+                                                    else if (property == 'font-weight')
+                                                        // Update > Value
+                                                        value = '100';
+
+                                                    else if (property == 'offset-rotate')
+                                                        // Update > Value
+                                                        value = '0deg';
+
+                                                    else if (property == 'position')
+                                                        // Update > Value
+                                                        value = 'static';
+
+                                                    else if (property == 'quotes')
+                                                        // Update > Value
+                                                        value = '"“" "”" "‘" "’"';
+
+                                                    else if (!computedStyle[property])
+                                                        // Update > Value
+                                                        value = ''
+                                                }
+
+                                                else
+                                                    // Update > Value
+                                                    value = defaultValue
+                                            }
+
+                                            else if (LDKF.isRegex(value))
+                                                // Update > Value
+                                                value = LDKF.get.regexSource(value);
+
+                                            else
+                                                // Update > Value
+                                                value = LDKF.string(value);
+
+                                            // Return
+                                            return value
+                                        }
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (
+                                        LDKF.isJSONLikeObject($0) ||
+                                        (
+                                            (LDKF.isArray($0) && length == 1) ||
+                                            (LDKF.isArray($0) && LDKF.isArray($1) && length > 1)
+                                        )
+                                    ) {
+                                        // Initialization > (Iterator, Length)
+                                        let iterator = 0,
+                                            length = arguments.length;
+
+                                        /* Loop
+                                                Index Arguments.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Argument
+                                            let argument = arguments[iterator];
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.isJSONLikeObject(argument)) {
+                                                // Initialization > (Constructor, Prototype, (Constructor > Prototype))
+                                                let constructor = argument.constructor,
+                                                    prototype = constructor.prototype,
+                                                    __proto__ = argument.__proto__;
+
+                                                // Modification > (LapysJS > Temporary Data)
+                                                    // Array
+                                                    LapysJS.tmp.array = propertyValueList;
+
+                                                    // Is Like Object
+                                                    LapysJS.tmp.isLikeObject = function isLikeObject(object) {
+                                                        // Return
+                                                        return LDKF.isConstructible(object) ?
+                                                            object.constructor === constructor &&
+                                                            object.constructor.prototype === prototype &&
+                                                            object.__proto__ === __proto__
+                                                            : !1
+                                                    };
+
+                                                    // Iterate
+                                                    LapysJS.tmp.iterate = LDKF.iterateObject;
+
+                                                    // Object
+                                                    LapysJS.tmp.object = LDKF.cloneObject(argument),
+
+                                                    // Push
+                                                    LapysJS.tmp.push = LDKF.pushArray;
+
+                                                    // Symbol
+                                                    LapysJS.tmp.symbol = LDKO.symbol;
+
+                                                // Initialization > (Depth, Code, Iterator, (Decremented) Length)
+                                                let depth = LDKF.get.objectDepth(argument),
+                                                    code = 'const LAPYSJS_TMP=LapysJS.tmp;' +
+                                                        'let GLOBAL=LAPYSJS_TMP.array,'+
+                                                            'iterateObject=LAPYSJS_TMP.iterate,' +
+                                                            'isLikeObject=LAPYSJS_TMP.isLikeObject,' +
+                                                            'object=LAPYSJS_TMP.object,' +
+                                                            "parentKey=''," +
+                                                            'push=LAPYSJS_TMP.push,' +
+                                                            'sym=LAPYSJS_TMP.symbol,' +
+                                                            'symToStringTag=sym.toStringTag,' +
+                                                            'value=object;',
+                                                    iterator = 0,
+                                                    length = depth,
+                                                    decrementedLength = length - 1;
+
+                                                /* Loop
+                                                        Index Length.
+
+                                                    > Update > Code
+                                                */
+                                                for (iterator; iterator != length; iterator += 1)
+                                                    code += "object[symToStringTag]=parentKey;iterateObject(function(key,value){let parentKey=this[symToStringTag]?this[symToStringTag]+'-'+key:key;if(isLikeObject(value)&&key!==symToStringTag){let object=value;" + (iterator == decrementedLength ? 'push(GLOBAL,{property:parentKey,value:value})' : '');
+
+                                                // Update > Iterator
+                                                iterator = 0;
+
+                                                /* Loop
+                                                        Index Length.
+
+                                                    > Update > Code
+                                                */
+                                                for (iterator; iterator != length; iterator += 1)
+                                                    code += '}else if(key!==symToStringTag)push(GLOBAL,{property:parentKey,value:value})},value)';
+
+                                                // Execution
+                                                LDKF.eval(code);
+
+                                                // Modification > (LapysJS > Temporary Data) > Array
+                                                LapysJS.tmp.array = []
+                                            }
+
+                                            else {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (argument.length == 2) {
+                                                    // Initialization > (Property, Value)
+                                                    let property = argument[0],
+                                                        value = argument[1];
+
+                                                    // Update > Property-Value List
+                                                    isValidCSSProperty(property) && LDKF.pushArray(propertyValueList, {property: property, value: value})
+                                                }
+
+                                                else
+                                                    // Error
+                                                    LDKF.error(["'setCSS'", "'HTMLElement'"], 'argument', 'Invalid argument set')
+                                            }
+                                        }
+                                    }
+
+                                    else if (LDKF.isArray($0) && !isSpecialArgument($1)) {
+                                        // Initialization > (Iterator, Length, Value)
+                                        let iterator = 0,
+                                            length = $0.length,
+                                            value = $1;
+
+                                        /* Loop
+                                                Index Argument 0.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Property
+                                            let property = $0[iterator];
+
+                                            // Update > Property-Value List
+                                            isValidCSSProperty(property) && LDKF.pushArray(propertyValueList, {property: property, value: value})
+                                        }
+                                    }
+
+                                    else if (
+                                        (!isSpecialArgument($0) && length == 1) ||
+                                        ((!isSpecialArgument($0) && !isSpecialArgument($1)) && length == 2)
+                                    ) {
+                                        // Initialization > (Property, Value)
+                                        let property = $0,
+                                            value = length == 1 ? defaultValue : $1;
+
+                                        // Update > Property-Value List
+                                        isValidCSSProperty(property) && LDKF.pushArray(propertyValueList, {property: property, value: value})
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.error(["'setCSS'", "'HTMLElement'"], 'argument', 'Invalid argument set');
+
+                                    // Update > (Iterator, Length, Style Attribute)
+                                    iterator = length = propertyValueList.length;
+                                    (styleAttribute[styleAttribute.length - 1] == ';') || (styleAttribute += ';');
+
+                                    /* Loop
+                                            Index Property-Value List.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > (Property-Value, Property, Value)
+                                        let propertyValue = propertyValueList[iterator -= 1],
+                                            property = hyphenate(propertyValue.property),
+                                            value = updateValue(propertyValue.value, property);
+
+                                        // Modification > Property-Value > (Property, Value)
+                                        propertyValue.property = property;
+                                        propertyValue.value = value;
+
+                                        // Update > Value
+                                        value = LDKF.trimRightCharString(value, /!\w{1,}| |\n/);
+
+                                        // Modification > Dummy Element Style > [Property]
+                                        dummyElementStyle[property] = value;
+
+                                        // Update > Property-Value List
+                                        (property in dummyElementComputedStyle) || (propertyValueList[iterator] = void 0)
+                                    }
+
+                                    /* Loop
+                                            Index Property-Value List.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Property-Value
+                                        let propertyValue = propertyValueList[iterator];
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (propertyValue) {
+                                            // Initialization > (Property, Value, CSS, Match)
+                                            let property = propertyValue.property,
+                                                value = propertyValue.value,
+                                                css = property + ': ' + value + '; ',
+                                                match;
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if ((match = (LDKF.matchString((function(string) {
+                                                // Initialization > (Allow Stream, Iterator, Length, Stream(-Lock Character))
+                                                let allowStream = !0,
+                                                    iterator = 0,
+                                                    length = string.length,
+                                                    stream = '',
+                                                    streamLockCharacter = '';
+
+                                                /* Loop
+                                                        Iterate through String.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Character
+                                                    let character = string[iterator];
+
+                                                    /* Logic
+                                                            Update > (Allow Stream, Stream-Lock Character)
+                                                    */
+                                                    if (
+                                                        allowStream &&
+                                                        (
+                                                            character == '(' ||
+                                                            character == '"' || character == "'"
+                                                        )
+                                                    ) {
+                                                        allowStream = !1;
+                                                        streamLockCharacter = character
+                                                    }
+
+                                                    else if (
+                                                        !allowStream &&
+                                                        (
+                                                            (character == ')' && streamLockCharacter == '(') ||
+                                                            (
+                                                                (character == '"' || character == "'") &&
+                                                                (character == streamLockCharacter)
+                                                            )
+                                                        )
+                                                    ) {
+                                                        allowStream = !0;
+                                                        streamLockCharacter = ''
+                                                    }
+
+                                                    // Update > Stream
+                                                    allowStream && (stream += character)
+                                                }
+
+                                                // Return
+                                                return stream
+                                            })(styleAttribute), LDKF.regex(property + ' {0,}: {0,}')) || [])).length) {
+                                                // Update > Match
+                                                match = match[0];
+                                                match = LDKF.replaceString(match, LDKF.regex('[' + LDKF.getRegexChars(match) + ']', 'g'), '\\$&');
+
+                                                // Initialization > (Style Attribute Iterator, Allow Stream, Stream(-Lock Character))
+                                                let styleAttributeIterator = LDKF.indexOfString(styleAttribute, match),
+                                                    allowStream = !0,
+                                                    stream = '',
+                                                    streamLockCharacter = '';
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (styleAttributeIterator != -1) {
+                                                    // Initialization > (Style Attribute Length)
+                                                    let styleAttributeLength = styleAttribute.length;
+
+                                                    /* Loop
+                                                            Iterate through Style Attribute.
+                                                    */
+                                                    for (styleAttributeIterator; styleAttributeIterator != styleAttributeLength; styleAttributeIterator += 1) {
+                                                        let character = styleAttribute[styleAttributeIterator];
+
+                                                        /* Logic
+                                                                [if:else if statement]
+
+                                                            > Update > (Allow Stream, Stream-Lock Character)
+                                                        */
+                                                        if (
+                                                            allowStream &&
+                                                            (
+                                                                character == '(' ||
+                                                                character == '"' || character == "'"
+                                                            )
+                                                        ) {
+                                                            allowStream = !1;
+                                                            streamLockCharacter = character
+                                                        }
+
+                                                        else if (
+                                                            !allowStream &&
+                                                            (
+                                                                (character == ')' && streamLockCharacter == '(') ||
+                                                                (
+                                                                    (character == '"' || character == "'") &&
+                                                                    (character == streamLockCharacter)
+                                                                )
+                                                            )
+                                                        ) {
+                                                            allowStream = !0;
+                                                            streamLockCharacter = ''
+                                                        }
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (allowStream) {
+                                                            // Update > Stream
+                                                            stream += character;
+
+                                                            // Logic > Break
+                                                            if (character == ';')
+                                                                break
+                                                        }
+                                                    }
+                                                }
+
+                                                // Update > Style Attribute
+                                                stream && (styleAttribute = LDKF.replaceString(styleAttribute, stream, css))
+                                            }
+
+                                            else
+                                                // Update > Style Attribute
+                                                styleAttribute += css
+                                        }
+                                    }
+
+                                    // Update > Style Attribute
+                                    styleAttribute = LDKF.trimCharString(styleAttribute, /;| |\n/);
+
+                                    // Modification > (Dummy) Element > Style
+                                    LDKF.removeAttributeElement(dummyElement, 'style');
+                                    LDKF.setAttributeElement(element, 'style', styleAttribute)
+                                }
+
+                                // Return
+                                return LDKF.getAttributeNodeElement(element, 'style') || null
+                            },
+
+                            // Writable
+                            writable: !0
                         });
 
                         // Toggle Fullscreen
@@ -25449,13 +26543,46 @@
 
                             // Get
                             get: function descendantIndex() {
-                                // Initialization > (Element, Parent)
-                                let element = this,
-                                    parent = LDKF.get.nodeParentNode(element);
+                                // Initialization > (Node, Parent)
+                                let node = this,
+                                    parent = LDKF.get.nodeParentNode(node);
 
                                 // Return
-                                return parent ? LDKF.indexOfArray(LDKF.toArray(LDKF.isNode(parent) ? LDKF.get.nodeChildNodes(parent) : [element]), element) : -1
+                                return parent ? LDKF.indexOfArray(LDKF.toArray(LDKF.isNode(parent) ? LDKF.get.nodeChildNodes(parent) : [node]), node) : -1
                             }
+                        });
+
+                        // Insert After
+                        LDKF.objectDefineProperty(currentPrototype, 'insertAfter', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Value
+                            value: function insertAfter() {
+                                // Initialization > Node
+                                let node = this;
+
+                                // Error Handling
+                                try {
+                                    // Insertion
+                                    LDKF.$insertBeforeNode(node, arguments);
+
+                                    // Return
+                                    return LDKF.$insertBeforeNode(node, LDKF.reverseArray(LDKF.toArray(arguments)))
+                                } catch (error) {
+                                    // Modification > Error > Message
+                                    error.message = LDKF.replaceString(error.message, /insertBefore/g, 'insertAfter');
+
+                                    // Error
+                                    throw error
+                                }
+                            },
+
+                            // Writable
+                            writable: !0
                         });
 
                         // On Element Added
