@@ -17,7 +17,20 @@
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1 script="this.write(' Debugging Room ')"></h1>
+        <h1 script="this.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))"></h1>
+
+        <!-- Accordion -->
+        <div class=accordion>
+            <!-- Header -->
+            <h2 role=header> Accordion Header </h2>
+
+            <!-- Content -->
+            <p role=content state=open> This is the first content. </p>
+            <p role=content state=closed> This is the second content. </p>
+
+            <!-- Header -->
+            <h2 role=header> You won't see this header because it's not meant to be here </h2>
+        </div>
     </main>
 
     <!-- Scripts -->

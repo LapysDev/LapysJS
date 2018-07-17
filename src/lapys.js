@@ -33,6 +33,9 @@
 
         // LapysJS Development Kit
         LapysJSDevelopmentKit = {
+            // Allow Public Access
+            allowPublicAccess: !0,
+
             // Features
             features: {
                 // Active
@@ -102,6 +105,9 @@
     if (typeof LapysJS == 'undefined') {
         // Error Handling
         try {
+            // Initialization > Debug Mode
+            var debugMode = LapysJSDevelopmentKit.allowPublicAccess;
+
             /* {Requirements} Error Handling */
                 // {Error Constructor}
                 if (typeof Error != 'function')
@@ -391,6 +397,21 @@
 
                 // Temporary Object
                 tmpObject = LDK.tmp.objects;
+
+            /* {Debug Mode} Logic
+                    [if statement]
+            */
+            if (debugMode) {
+                window.LDK = LapysJSDevelopmentKit;
+                window.LDKC = LDK.constants;
+                window.LDKG = LDK.global;
+                window.LDKE = LDK.features;
+                window.LDKF = LDK.storage.functions;
+                window.LDKI = LDK.info;
+                window.LDKO = LDK.storage.objects;
+                window.LDKT = tmp;
+                window.LDKTO = tmpObject
+            }
 
             /* Modification */
                 // LapysJS Development Kit
@@ -12951,7 +12972,7 @@
                                         /* Logic
                                                 [if statement]
                                         */
-                                        if (failIsFunction) {
+                                        if (failIsFunction || length == 2) {
                                             // Function
                                                 // Test
                                                 function test() {
@@ -14053,7 +14074,7 @@
                                         }
 
                                         // Return
-                                        return NaN
+                                        return LDKF.mathRandom()
                                     },
 
                                     // Writable
@@ -22179,6 +22200,34 @@
 
                             // Writable
                             writable: !0
+                        });
+
+                        // All
+                        LDKF.objectDefineProperty(currentPrototype, '$all', {
+                            // Configurable
+                            configurable: !0,
+
+                            // Enumerable
+                            enumerable: !0,
+
+                            // Get
+                            get: function $all() {
+                                // Initialization > Target
+                                let target = LDKF.isWindow(this) ?
+                                    (LDKF.get.documentChildren(this === window ? LDKO.$document : this.document)[0] || null) :
+                                    this;
+
+                                /* Logic
+                                        [if:else if statement]
+                                */
+                                if (LDKF.isXmlHttpRequestEventTarget(target))
+                                    // Return
+                                    return null;
+
+                                else if (!LDKF.isNull(target))
+                                    // Return
+                                    return LDKF.isNode(target) ? LDKF.concatArray([target], LDKF.allNodeNodes(target)) : null
+                            }
                         });
 
                         // Children
@@ -30804,14 +30853,16 @@
                                     marquee: [],
 
                                     // Table
-                                    table: [],
+                                    table: [{element: $n, type: ['table']}],
 
                                     // Toast
-                                    toast: [],
+                                    toast: [{element: $n, type: ['toast']}],
 
                                     // Tooltip
-                                    tooltip: []
+                                    tooltip: [{element: $n, type: ['tooltip']}]
                                 }, secondaryStorage = [];
+
+                            timeout(function() {log(secondaryStorage.valueOf())});
 
                             /* Function */
                                 // Asynchronous Index
@@ -30841,6 +30892,44 @@
                                     })()
                                 };
 
+                                // Get Elements
+                                function getElements(array) {
+                                    // Initialization > (List, Iterator, Length)
+                                    let list = [],
+                                        iterator = 0,
+                                        length = array.length;
+
+                                    /* Loop
+                                            Index Array.
+
+                                        > Update > List
+                                    */
+                                    for (iterator; iterator != length; iterator += 1)
+                                        LDKF.pushArray(list, array[iterator].element);
+
+                                    // Return
+                                    return list
+                                }
+
+                                // Get Types
+                                function getTypes(array) {
+                                    // Initialization > (List, Iterator, Length)
+                                    let list = [],
+                                        iterator = 0,
+                                        length = array.length;
+
+                                    /* Loop
+                                            Index Array.
+
+                                        > Update > List
+                                    */
+                                    for (iterator; iterator != length; iterator += 1)
+                                        LDKF.pushArray(list, array[iterator].type);
+
+                                    // Return
+                                    return list
+                                }
+
                             // Modification > Secondary Storage > Value Of
                             LDKF.objectDefineProperty(secondaryStorage, 'valueOf', {
                                 // Value
@@ -30858,6 +30947,28 @@
                                             LDKF.pushArray(array, value[iterator -= 1])
                                     }, primaryStorage);
 
+                                    let index,
+                                        iterator = 0,
+                                        length = array.length,
+                                        elementsWatch = [],
+                                        typesWatch = [];
+
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        let item = array[iterator];
+
+                                        if (item) {
+                                            if ((index = LDKF.lastIndexOfArray(elementsWatch, item.element)) != -1) {
+                                                item.type = LDKF.concatArray(item.type, typesWatch[index]);
+
+                                                LDKF.spliceArray(array, index, 1);
+                                                iterator -= 1
+                                            }
+
+                                            LDKF.pushArray(elementsWatch, item.element);
+                                            LDKF.pushArray(typesWatch, item.type)
+                                        }
+                                    }
+
                                     // Return
                                     return array
                                 }
@@ -30866,6 +30977,8 @@
                             /* Components */
                                 // Accordion --- CHECKPOINT ---
                                     // Correct Accordions
+                                    function correctAccordions() {}
+
                                     // Set Accordions
                                     function setAccordions() {
                                         // Initialization > (Accordion, Length, Properties)
@@ -30883,7 +30996,7 @@
                                                     // Get
                                                     get: function content() {
                                                         // Initialization > (List, Iterator, Selection)
-                                                        let list = LDKF.querySelectorAllElement(this, '[role'),
+                                                        let list = LDKF.querySelectorAllElement(this, '[role*=content'),
                                                             iterator = LDKF.get.nodeListLength(list),
                                                             selection = [];
 
@@ -30921,7 +31034,7 @@
                                                         */
                                                         if (!element) {
                                                             // Initialization > (List, Iterator)
-                                                            let list = LDKF.querySelectorAllElement(this, '[role'),
+                                                            let list = LDKF.querySelectorAllElement(this, '[role*=header'),
                                                                 iterator = LDKF.get.nodeListLength(list);
 
                                                             /* Loop
@@ -30996,7 +31109,7 @@
                                                             let element = content[iterator -= 1];
 
                                                             // Update > Selection
-                                                            (LDKF.getAttributeElement(element, 'state') === 'closed') || LDKF.pushArray(selection)
+                                                            (LDKF.getAttributeElement(element, 'state') === 'open') && LDKF.pushArray(selection)
                                                         }
 
                                                         // Return
@@ -31010,18 +31123,40 @@
                                             // Initialization > Accordion
                                             let accordion = accordions[iterator];
 
-                                            // Modification > Accordion
-                                                // Content
-                                                ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'content') || {}).get === properties.content.get) || LDKF.objectDefineProperty(accordion, 'content', properties.content);
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (!LDKF.includesArray(getElements(primaryStorage.accordion), accordion)) {
+                                                // Update > Primary Storage > Accordion
+                                                LDKF.pushArray(primaryStorage.accordion, {element: accordion, type: ['accordion']});
 
-                                                // Closed Content
-                                                ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'closedContent') || {}).get === properties.closedContent.get) || LDKF.objectDefineProperty(accordion, 'closedContent', properties.closedContent);
+                                                // Initialization > (Headers, Length)
+                                                let headers = LDKF.querySelectorElement(accordion, '[role*=header'),
+                                                    length = LDKF.get.nodeListLength(headers);
 
-                                                // Header
-                                                ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'header') || {}).get === properties.header.get) || LDKF.objectDefineProperty(accordion, 'header', properties.header);
+                                                // Loop > Deletion
+                                                while (length > 1) {
+                                                    let header = headers[length -= 1];
 
-                                                // Open Content
-                                                ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'openContent') || {}).get === properties.openContent.get) || LDKF.objectDefineProperty(accordion, 'openContent', properties.openContent)
+                                                    LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(header, 'role') || ''), 'header') && LDKF.removeChildNode(accordion, header)
+                                                }
+
+                                                // Insertion
+                                                (LDKF.get.nodeFirstChild(accordion) === headers[0]) || LDKF.insertBeforeNode(accordion, headers[0], LDKF.get.nodeFirstChild(accordion));
+
+                                                // Modification > Accordion
+                                                    // Content
+                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'content') || {}).get === properties.content.get) || LDKF.objectDefineProperty(accordion, 'content', properties.content);
+
+                                                    // Closed Content
+                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'closedContent') || {}).get === properties.closedContent.get) || LDKF.objectDefineProperty(accordion, 'closedContent', properties.closedContent);
+
+                                                    // Header
+                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'header') || {}).get === properties.header.get) || LDKF.objectDefineProperty(accordion, 'header', properties.header);
+
+                                                    // Open Content
+                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'openContent') || {}).get === properties.openContent.get) || LDKF.objectDefineProperty(accordion, 'openContent', properties.openContent)
+                                            }
                                         }, length)
                                     }
 
