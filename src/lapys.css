@@ -1,14 +1,3 @@
-/*
-document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loaded.")`))
- @font-face {
-  font-family: 'Tagesschrift';
-  src: url('tagesschrift.eot'); /* IE 5-8
-  src: local('☺'),             /* sneakily trick IE
-        url('tagesschrift.woff') format('woff'),    /* FF 3.6, Chrome 5, IE9
-        url('tagesschrift.ttf') format('truetype'), /* Opera, Safari
-        url('tagesschrift.svg#font') format('svg'); /* iOS
-}
-*/
 /**
     @author: Lapys Dev Team
     @description: LapysJS is a JavaScript library designed to challenge the status quo of the JavaScript language and its other related vendors.
@@ -17,7 +6,7 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
 
     --- RULES ---
         #lapys:
-            - Do not repeat CSS style declarations. You can use 'prettify.js' to optimize the CSS code here.
+            - Do not repeat CSS style declarations. You can use 'prettify.js' (or anything similar) to optimize the CSS code here.
             - Maximum of 6 digits with each numeral only.
 */
 /* CSS At-Rules */
@@ -42,7 +31,6 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
     /* <a> */
     a {
         color: #0099FF;
-        cursor: default;
         fill: #0099FF;
         line-height: inherit;
         stroke: #0099FF;
@@ -333,19 +321,13 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
     /* Casing */
         /* Capital */
         .capital,
-        .title {
-            text-transform: capitalize
-        }
+        .title { text-transform: capitalize }
 
         /* Lower */
-        .lower {
-            text-transform: lowercase
-        }
+        .lower { text-transform: lowercase }
 
         /* Upper */
-        .upper {
-            text-transform: uppercase
-        }
+        .upper { text-transform: uppercase }
 
     /* Components */
         /* Accordion */
@@ -358,6 +340,23 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
                 font-size: 110%;
                 font-weight: 500
             }
+
+        /* Card */
+        .card { border-radius: 2.5px }
+
+        .card,
+        .dialog {
+            border: none;
+            box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .3);
+            display: inline-block;
+            padding: 5px 10px
+        }
+
+        /* Dialog */
+        .dialog {
+            box-shadow: 0 0 0 1000px rgba(0, 0, 0, .9);
+            position: fixed
+        }
 
         /* Jumbotron */
         .jumbotron {
@@ -400,13 +399,30 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
 
     /* Features */
         /* Background */
+            /* Color */
+                /* Blue */
+                .bg-c-b { background-color: #0000FF }
+
+                /* Green */
+                .bg-c-g { background-color: #00FF00 }
+
+                /* Red */
+                .bg-c-r { background-color: #FF0000 }
+
             /* Position */
             .background,
             .bg,
             .bg-pos-center,
             .jumbotron { background-position: center }
 
-        /* Depth Layer */
+        /* Cursor */
+            /* Default */
+            a,
+            .card,
+            .cur-default,
+            .dialog { cursor: default }
+
+        /* Depth */
             /* Level 0 */
             .z-0 { z-index: 0 }
 
@@ -425,7 +441,83 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
             .z-4 { z-index: 8 }
 
             /* Level 5 */
+            .dialog,
             .z-5 { z-index: 16 }
+
+        /* Display */
+            /* Block */
+            .block { display: block !important }
+
+            /* Contents */
+            .contents { display: contents !important }
+
+            /* Flex */
+            .col-group,
+            .col-grp,
+            .column-group,
+            .flex,
+            .row-group,
+            .row-grp { display: flex !important }
+
+            /* Flow Root */
+            .flow-root { display: flow-root !important }
+
+            /* Grid */
+            .grid { display: grid !important }
+
+            /* Hidden */
+            .hidden { display: none !important }
+
+            /* Inline */
+            .inline { display: inline !important }
+
+            /* Inline Block */
+            .inline-block { display: inline-block !important }
+
+            /* Inline Flex */
+            .inline-flex { display: inline-flex !important }
+
+            /* Inline Grid */
+            .inline-grid { display: inline-grid !important }
+
+            /* Inline Table */
+            .inline-table { display: inline-table !important }
+
+            /* List Item */
+            .list-item { display: list-item !important }
+
+            /* Table */
+            .table { display: table !important }
+
+            /* Table Caption */
+            .table-caption { display: table-caption !important }
+
+            /* Table Cell */
+            .table-cell { display: table-cell !important }
+
+            /* Table Column */
+            .table-column { display: table-column !important }
+
+            /* Table Column Group */
+            .table-column-group { display: table-column-group !important }
+
+            /* Table Header Group */
+            .table-header-group { display: table-header-group !important }
+
+            /* Table Footer Group */
+            .table-footer-group { display: table-footer-group !important }
+
+            /* Table Row */
+            .table-row { display: table-row !important }
+
+            /* Table Row Group */
+            .table-row-group { display: table-row-group !important }
+
+            /* Webkit Box */
+            .-webkit-box { display: -webkit-box !important }
+
+            /* Webkit Inline Box */
+            .-webkit-inline-box { display: -webkit-inline-box !important }
 
         /* Filter */
             /* Hidden */
@@ -473,17 +565,9 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
                     align-content: inherit;
                     align-items: inherit;
                     align-self: inherit;
-                    display: flex;
                     justify-content: inherit;
                     width: 100%
                 }
-                    /* All */
-                    .col-group > *,
-                    .col-grp > *,
-                    .column-group > *,
-                    .row-group > *,
-                    .row-grp > * { flex-grow: 1 }
-
                     /* Column Levels */
                         /* 0 */
                         .col-group > .col-0,
@@ -494,10 +578,15 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
 
                         /* 1 */
                         .col-group > .col-1,
+                        .col-group > *,
                         .col-grp > .col-1,
+                        .col-grp > *,
                         .column-group > .col-1,
+                        .column-group > *,
                         .row-group > .col-1,
-                        .row-grp > .col-1 { flex-grow: 1 }
+                        .row-group > *,
+                        .row-grp > .col-1,
+                        .row-grp > * { flex-grow: 1 }
 
                         /* 2 */
                         .col-group > .col-2,
@@ -575,6 +664,197 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
                         .column-group > .col-12,
                         .row-group > .col-12,
                         .row-grp > .col-12 { flex-grow: 12 }
+
+                    /* @media */
+                        /* Mobile (Small) */
+                        @media only all and (min-width: 0px) {
+                            /* Column Levels */
+                                /* 0 */
+                                .m-col-group > .m-col-0,
+                                .m-col-grp > .m-col-0,
+                                .m-column-group > .m-col-0,
+                                .m-row-group > .m-col-0,
+                                .m-row-grp > .m-col-0,
+                                .ms-col-group > .ms-col-0,
+                                .ms-col-grp > .ms-col-0,
+                                .ms-column-group > .ms-col-0,
+                                .ms-row-group > .ms-col-0,
+                                .ms-row-grp > .ms-col-0 { flex-grow: 0 }
+
+                                /* 1 */
+                                .m-col-group > .m-col-1,
+                                .m-col-grp > .m-col-1,
+                                .m-column-group > .m-col-1,
+                                .m-row-group > .m-col-1,
+                                .m-row-grp > .m-col-1,
+                                .ms-col-group > .ms-col-1,
+                                .ms-col-grp > .ms-col-1,
+                                .ms-column-group > .ms-col-1,
+                                .ms-row-group > .ms-col-1,
+                                .ms-row-grp > .ms-col-1 { flex-grow: 1 }
+
+                                /* 2 */
+                                .m-col-group > .m-col-2,
+                                .m-col-grp > .m-col-2,
+                                .m-column-group > .m-col-2,
+                                .m-row-group > .m-col-2,
+                                .m-row-grp > .m-col-2,
+                                .ms-col-group > .ms-col-2,
+                                .ms-col-grp > .ms-col-2,
+                                .ms-column-group > .ms-col-2,
+                                .ms-row-group > .ms-col-2,
+                                .ms-row-grp > .ms-col-2 { flex-grow: 2 }
+
+                                /* 3 */
+                                .m-col-group > .m-col-3,
+                                .m-col-grp > .m-col-3,
+                                .m-column-group > .m-col-3,
+                                .m-row-group > .m-col-3,
+                                .m-row-grp > .m-col-3,
+                                .ms-col-group > .ms-col-3,
+                                .ms-col-grp > .ms-col-3,
+                                .ms-column-group > .ms-col-3,
+                                .ms-row-group > .ms-col-3,
+                                .ms-row-grp > .ms-col-3 { flex-grow: 3 }
+
+                                /* 4 */
+                                .m-col-group > .m-col-4,
+                                .m-col-grp > .m-col-4,
+                                .m-column-group > .m-col-4,
+                                .m-row-group > .m-col-4,
+                                .m-row-grp > .m-col-4,
+                                .ms-col-group > .ms-col-4,
+                                .ms-col-grp > .ms-col-4,
+                                .ms-column-group > .ms-col-4,
+                                .ms-row-group > .ms-col-4,
+                                .ms-row-grp > .ms-col-4 { flex-grow: 4 }
+
+                                /* 5 */
+                                .m-col-group > .m-col-5,
+                                .m-col-grp > .m-col-5,
+                                .m-column-group > .m-col-5,
+                                .m-row-group > .m-col-5,
+                                .m-row-grp > .m-col-5,
+                                .ms-col-group > .ms-col-5,
+                                .ms-col-grp > .ms-col-5,
+                                .ms-column-group > .ms-col-5,
+                                .ms-row-group > .ms-col-5,
+                                .ms-row-grp > .ms-col-5 { flex-grow: 5 }
+
+                                /* 6 */
+                                .m-col-group > .m-col-6,
+                                .m-col-grp > .m-col-6,
+                                .m-column-group > .m-col-6,
+                                .m-row-group > .m-col-6,
+                                .m-row-grp > .m-col-6,
+                                .ms-col-group > .ms-col-6,
+                                .ms-col-grp > .ms-col-6,
+                                .ms-column-group > .ms-col-6,
+                                .ms-row-group > .ms-col-6,
+                                .ms-row-grp > .ms-col-6 { flex-grow: 6 }
+
+                                /* 7 */
+                                .m-col-group > .m-col-7,
+                                .m-col-grp > .m-col-7,
+                                .m-column-group > .m-col-7,
+                                .m-row-group > .m-col-7,
+                                .m-row-grp > .m-col-7,
+                                .ms-col-group > .ms-col-7,
+                                .ms-col-grp > .ms-col-7,
+                                .ms-column-group > .ms-col-7,
+                                .ms-row-group > .ms-col-7,
+                                .ms-row-grp > .ms-col-7 { flex-grow: 7 }
+
+                                /* 8 */
+                                .m-col-group > .m-col-8,
+                                .m-col-grp > .m-col-8,
+                                .m-column-group > .m-col-8,
+                                .m-row-group > .m-col-8,
+                                .m-row-grp > .m-col-8,
+                                .ms-col-group > .ms-col-8,
+                                .ms-col-grp > .ms-col-8,
+                                .ms-column-group > .ms-col-8,
+                                .ms-row-group > .ms-col-8,
+                                .ms-row-grp > .ms-col-8 { flex-grow: 8 }
+
+                                /* 9 */
+                                .m-col-group > .m-col-9,
+                                .m-col-grp > .m-col-9,
+                                .m-column-group > .m-col-9,
+                                .m-row-group > .m-col-9,
+                                .m-row-grp > .m-col-9,
+                                .ms-col-group > .ms-col-9,
+                                .ms-col-grp > .ms-col-9,
+                                .ms-column-group > .ms-col-9,
+                                .ms-row-group > .ms-col-9,
+                                .ms-row-grp > .ms-col-9 { flex-grow: 9 }
+
+                                /* 10 */
+                                .m-col-group > .m-col-10,
+                                .m-col-grp > .m-col-10,
+                                .m-column-group > .m-col-10,
+                                .m-row-group > .m-col-10,
+                                .m-row-grp > .m-col-10,
+                                .ms-col-group > .ms-col-10,
+                                .ms-col-grp > .ms-col-10,
+                                .ms-column-group > .ms-col-10,
+                                .ms-row-group > .ms-col-10,
+                                .ms-row-grp > .ms-col-10 { flex-grow: 10 }
+
+                                /* 11 */
+                                .m-col-group > .m-col-11,
+                                .m-col-grp > .m-col-11,
+                                .m-column-group > .m-col-11,
+                                .m-row-group > .m-col-11,
+                                .m-row-grp > .m-col-11,
+                                .ms-col-group > .ms-col-11,
+                                .ms-col-grp > .ms-col-11,
+                                .ms-column-group > .ms-col-11,
+                                .ms-row-group > .ms-col-11,
+                                .ms-row-grp > .ms-col-11 { flex-grow: 11 }
+
+                                /* 12 */
+                                .m-col-group > .m-col-12,
+                                .m-col-grp > .m-col-12,
+                                .m-column-group > .m-col-12,
+                                .m-row-group > .m-col-12,
+                                .m-row-grp > .m-col-12,
+                                .ms-col-group > .ms-col-12,
+                                .ms-col-grp > .ms-col-12,
+                                .ms-column-group > .ms-col-12,
+                                .ms-row-group > .ms-col-12,
+                                .ms-row-grp > .ms-col-12 { opacity: 0 !important; flex-grow: 12 }
+                        }
+
+                        /* Mobile (Medium) */
+                        @media only all
+                            and (max-width: 375px)
+                            and (min-width: 321px) {}
+
+                        /* Mobile (Large) */
+                        @media only all
+                            and (max-width: 425px)
+                            and (min-width: 376px) {}
+
+                        /* Tablet */
+                        @media only all
+                            and (max-width: 768px)
+                            and (min-width: 426px) {}
+
+                        /* Laptop */
+                        @media only all
+                            and (max-width: 1024px)
+                            and (min-width: 769px) {}
+
+                        /* Laptop (Large) */
+                        @media only all
+                            and (max-width: 1440px)
+                            and (min-width: 1025px) {}
+
+                        /* 4K */
+                        @media only all
+                            and (max-width: 2560px)
+                            and (min-width: 1441px) {}
 
                     /* Grid Levels */
                         /* 0 */
@@ -811,6 +1091,40 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
                                 min-width: 8.33334%
                             }
 
+                    /* @media */
+                        /* Mobile (Small) */
+                        @media only all and (max-width: 320px) {}
+
+                        /* Mobile (Medium) */
+                        @media only all
+                            and (max-width: 375px)
+                            and (min-width: 321px) {}
+
+                        /* Mobile (Large) */
+                        @media only all
+                            and (max-width: 425px)
+                            and (min-width: 376px) {}
+
+                        /* Tablet */
+                        @media only all
+                            and (max-width: 768px)
+                            and (min-width: 426px) {}
+
+                        /* Laptop */
+                        @media only all
+                            and (max-width: 1024px)
+                            and (min-width: 769px) {}
+
+                        /* Laptop (Large) */
+                        @media only all
+                            and (max-width: 1440px)
+                            and (min-width: 1025px) {}
+
+                        /* 4K */
+                        @media only all
+                            and (max-width: 2560px)
+                            and (min-width: 1441px) {}
+
                 /* Row */
                 .row-group,
                 .row-grp {
@@ -966,8 +1280,9 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
 
         /* Offset */
             /* Center */
-            .center {
-                bottom: auto;
+            .center,
+            .dialog {
+                bottom: 0;
                 left: 0;
                 margin-bottom: auto;
                 margin-left: auto;
@@ -975,12 +1290,28 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
                 margin-top: auto;
                 right: 0;
                 ruby-align: center;
-                top: auto;
+                top: 0;
                 vertical-align: middle
             }
 
             .center,
             .jumbotron { align-items: center }
+
+        /* Position */
+            /* Absolute */
+            .absolute { position: absolute !important }
+
+            /* Fixed */
+            .fixed { position: fixed !important }
+
+            /* Relative */
+            .relative { position: relative !important }
+
+            /* Static */
+            .static { position: static !important }
+
+            /* Sticky */
+            .sticky { position: sticky !important }
 
         /* Restrictions */
             /* Animation */
@@ -1217,6 +1548,7 @@ document.fonts.load('17px Comic Sans').then(func(`log("'Comic Sans' has been loa
                 /* Transparent */
                     /* States > Selection */
                     .accordion > [data-id=title]::selection,
+                    .card::selection,
                     .no-select::selection,
                     .transp-select::selection,
                     .transparent-select::selection {
