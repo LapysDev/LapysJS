@@ -213,6 +213,67 @@
         -webkit-writing-mode: horizontal-tb
     }
 
+    /* <button>, <input> */
+    button,
+    input[type=button],
+    input[type=reset],
+    input[type=submit] {
+        background-color: #FFFFFF;
+        border: 1px solid;
+        border-color: rgba(0, 0, 0, .25);
+        border-radius: 1.5px;
+        box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05),
+            inset 0 -10px 0 0 rgba(0, 0, 0, .5);
+        color: #666666;
+        font-weight: 400;
+        margin: 3px;
+        padding-bottom: 5%;
+        padding-left: 2.5%;
+        padding-right: 2.5%;
+        padding-top: 2.5%;
+        transition: box-shadow .3s ease-in-out 0s,
+            outline .3s ease-in-out 0s,
+            padding-bottom .15s ease-in-out 0s,
+            padding-top .15s ease-in-out 0s;
+        user-select: none;
+        vertical-align: text-top
+    }
+
+    button,
+    h1, h2, h3, h4, h5, h6,
+    input[type=button],
+    input[type=reset],
+    input[type=submit] { font-family: Raleway, 'PT Sans', 'Calibri Light', Calibri, Arial, sans-serif }
+        /* States */
+            /* Focus */
+            button:focus,
+            input[type=button]:focus,
+            input[type=reset]:focus,
+            input[type=submit]:focus {
+                border-color: rgba(0, 153, 255, .5);
+                box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05),
+                    inset 0 10px 0 0 rgba(0, 0, 0, .5);
+                padding-bottom: 2.5%;
+                padding-top: 5%
+            }
+
+            /* Active */
+            button:active,
+            input[type=button]:active,
+            input[type=reset]:active,
+            input[type=submit]:active { border-color: rgba(0, 0, 0, .5) }
+
+            /* Hover */
+            button:hover,
+            input[type=button]:hover,
+            input[type=reset]:hover,
+            input[type=submit]:hover {
+                box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1),
+                    inset 0 10px 0 0 rgba(0, 0, 0, .5);
+                padding-bottom: 2.5%;
+                padding-top: 5%
+            }
+
     /* <h1> */
     h1 {
         font-size: 3.25em;
@@ -221,7 +282,6 @@
 
     /* <h1>, <h2>, <h3>, <h4>, <h5>, <h6> */
     h1, h2, h3, h4, h5, h6 {
-        font-family: Raleway, 'PT Sans', 'Calibri Light', Calibri, Arial, sans-serif;
         font-weight: 300;
         margin-block-end: .67em;
         margin-block-start: .67em
@@ -346,11 +406,19 @@
 
         .card,
         .dialog {
-            border: none;
-            box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .3);
-            display: inline-block;
-            padding: 5px 10px
+            display: inline-block
         }
+            /* Not */
+                /* <button>, <input> */
+                .card:not(button)
+                    :not(input[type=button]),
+                    :not(input[type=reset]),
+                    :not(input[type=submit]),
+                .dialog {
+                    border: none;
+                    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .3);
+                    padding: 5px 10px
+                }
 
         /* Dialog */
         .dialog {
@@ -418,9 +486,19 @@
         /* Cursor */
             /* Default */
             a,
-            .card,
+            .card:not(button)
+                :not(input[type=button]),
+                :not(input[type=reset]),
+                :not(input[type=submit]),
             .cur-default,
             .dialog { cursor: default }
+
+            /* Pointer */
+            button,
+            input[type=button],
+            input[type=reset],
+            input[type=submit],
+            .cur-pointer { cursor: pointer }
 
         /* Depth */
             /* Level 0 */
@@ -670,191 +748,873 @@
                         @media only all and (min-width: 0px) {
                             /* Column Levels */
                                 /* 0 */
-                                .m-col-group > .m-col-0,
-                                .m-col-grp > .m-col-0,
-                                .m-column-group > .m-col-0,
-                                .m-row-group > .m-col-0,
-                                .m-row-grp > .m-col-0,
-                                .ms-col-group > .ms-col-0,
-                                .ms-col-grp > .ms-col-0,
-                                .ms-column-group > .ms-col-0,
-                                .ms-row-group > .ms-col-0,
-                                .ms-row-grp > .ms-col-0 { flex-grow: 0 }
+                                .col-group > .m-col-0,
+                                .col-grp > .m-col-0,
+                                .column-group > .m-col-0,
+                                .row-group > .m-col-0,
+                                .row-grp > .m-col-0,
+                                .col-group > .ms-col-0,
+                                .col-grp > .ms-col-0,
+                                .column-group > .ms-col-0,
+                                .row-group > .ms-col-0,
+                                .row-grp > .ms-col-0 { flex-grow: 0 }
 
                                 /* 1 */
-                                .m-col-group > .m-col-1,
-                                .m-col-grp > .m-col-1,
-                                .m-column-group > .m-col-1,
-                                .m-row-group > .m-col-1,
-                                .m-row-grp > .m-col-1,
-                                .ms-col-group > .ms-col-1,
-                                .ms-col-grp > .ms-col-1,
-                                .ms-column-group > .ms-col-1,
-                                .ms-row-group > .ms-col-1,
-                                .ms-row-grp > .ms-col-1 { flex-grow: 1 }
+                                .col-group > .m-col-1,
+                                .col-grp > .m-col-1,
+                                .column-group > .m-col-1,
+                                .row-group > .m-col-1,
+                                .row-grp > .m-col-1,
+                                .col-group > .ms-col-1,
+                                .col-grp > .ms-col-1,
+                                .column-group > .ms-col-1,
+                                .row-group > .ms-col-1,
+                                .row-grp > .ms-col-1 { flex-grow: 1 }
 
                                 /* 2 */
-                                .m-col-group > .m-col-2,
-                                .m-col-grp > .m-col-2,
-                                .m-column-group > .m-col-2,
-                                .m-row-group > .m-col-2,
-                                .m-row-grp > .m-col-2,
-                                .ms-col-group > .ms-col-2,
-                                .ms-col-grp > .ms-col-2,
-                                .ms-column-group > .ms-col-2,
-                                .ms-row-group > .ms-col-2,
-                                .ms-row-grp > .ms-col-2 { flex-grow: 2 }
+                                .col-group > .m-col-2,
+                                .col-grp > .m-col-2,
+                                .column-group > .m-col-2,
+                                .row-group > .m-col-2,
+                                .row-grp > .m-col-2,
+                                .col-group > .ms-col-2,
+                                .col-grp > .ms-col-2,
+                                .column-group > .ms-col-2,
+                                .row-group > .ms-col-2,
+                                .row-grp > .ms-col-2 { flex-grow: 2 }
 
                                 /* 3 */
-                                .m-col-group > .m-col-3,
-                                .m-col-grp > .m-col-3,
-                                .m-column-group > .m-col-3,
-                                .m-row-group > .m-col-3,
-                                .m-row-grp > .m-col-3,
-                                .ms-col-group > .ms-col-3,
-                                .ms-col-grp > .ms-col-3,
-                                .ms-column-group > .ms-col-3,
-                                .ms-row-group > .ms-col-3,
-                                .ms-row-grp > .ms-col-3 { flex-grow: 3 }
+                                .col-group > .m-col-3,
+                                .col-grp > .m-col-3,
+                                .column-group > .m-col-3,
+                                .row-group > .m-col-3,
+                                .row-grp > .m-col-3,
+                                .col-group > .ms-col-3,
+                                .col-grp > .ms-col-3,
+                                .column-group > .ms-col-3,
+                                .row-group > .ms-col-3,
+                                .row-grp > .ms-col-3 { flex-grow: 3 }
 
                                 /* 4 */
-                                .m-col-group > .m-col-4,
-                                .m-col-grp > .m-col-4,
-                                .m-column-group > .m-col-4,
-                                .m-row-group > .m-col-4,
-                                .m-row-grp > .m-col-4,
-                                .ms-col-group > .ms-col-4,
-                                .ms-col-grp > .ms-col-4,
-                                .ms-column-group > .ms-col-4,
-                                .ms-row-group > .ms-col-4,
-                                .ms-row-grp > .ms-col-4 { flex-grow: 4 }
+                                .col-group > .m-col-4,
+                                .col-grp > .m-col-4,
+                                .column-group > .m-col-4,
+                                .row-group > .m-col-4,
+                                .row-grp > .m-col-4,
+                                .col-group > .ms-col-4,
+                                .col-grp > .ms-col-4,
+                                .column-group > .ms-col-4,
+                                .row-group > .ms-col-4,
+                                .row-grp > .ms-col-4 { flex-grow: 4 }
 
                                 /* 5 */
-                                .m-col-group > .m-col-5,
-                                .m-col-grp > .m-col-5,
-                                .m-column-group > .m-col-5,
-                                .m-row-group > .m-col-5,
-                                .m-row-grp > .m-col-5,
-                                .ms-col-group > .ms-col-5,
-                                .ms-col-grp > .ms-col-5,
-                                .ms-column-group > .ms-col-5,
-                                .ms-row-group > .ms-col-5,
-                                .ms-row-grp > .ms-col-5 { flex-grow: 5 }
+                                .col-group > .m-col-5,
+                                .col-grp > .m-col-5,
+                                .column-group > .m-col-5,
+                                .row-group > .m-col-5,
+                                .row-grp > .m-col-5,
+                                .col-group > .ms-col-5,
+                                .col-grp > .ms-col-5,
+                                .column-group > .ms-col-5,
+                                .row-group > .ms-col-5,
+                                .row-grp > .ms-col-5 { flex-grow: 5 }
 
                                 /* 6 */
-                                .m-col-group > .m-col-6,
-                                .m-col-grp > .m-col-6,
-                                .m-column-group > .m-col-6,
-                                .m-row-group > .m-col-6,
-                                .m-row-grp > .m-col-6,
-                                .ms-col-group > .ms-col-6,
-                                .ms-col-grp > .ms-col-6,
-                                .ms-column-group > .ms-col-6,
-                                .ms-row-group > .ms-col-6,
-                                .ms-row-grp > .ms-col-6 { flex-grow: 6 }
+                                .col-group > .m-col-6,
+                                .col-grp > .m-col-6,
+                                .column-group > .m-col-6,
+                                .row-group > .m-col-6,
+                                .row-grp > .m-col-6,
+                                .col-group > .ms-col-6,
+                                .col-grp > .ms-col-6,
+                                .column-group > .ms-col-6,
+                                .row-group > .ms-col-6,
+                                .row-grp > .ms-col-6 { flex-grow: 6 }
 
                                 /* 7 */
-                                .m-col-group > .m-col-7,
-                                .m-col-grp > .m-col-7,
-                                .m-column-group > .m-col-7,
-                                .m-row-group > .m-col-7,
-                                .m-row-grp > .m-col-7,
-                                .ms-col-group > .ms-col-7,
-                                .ms-col-grp > .ms-col-7,
-                                .ms-column-group > .ms-col-7,
-                                .ms-row-group > .ms-col-7,
-                                .ms-row-grp > .ms-col-7 { flex-grow: 7 }
+                                .col-group > .m-col-7,
+                                .col-grp > .m-col-7,
+                                .column-group > .m-col-7,
+                                .row-group > .m-col-7,
+                                .row-grp > .m-col-7,
+                                .col-group > .ms-col-7,
+                                .col-grp > .ms-col-7,
+                                .column-group > .ms-col-7,
+                                .row-group > .ms-col-7,
+                                .row-grp > .ms-col-7 { flex-grow: 7 }
 
                                 /* 8 */
-                                .m-col-group > .m-col-8,
-                                .m-col-grp > .m-col-8,
-                                .m-column-group > .m-col-8,
-                                .m-row-group > .m-col-8,
-                                .m-row-grp > .m-col-8,
-                                .ms-col-group > .ms-col-8,
-                                .ms-col-grp > .ms-col-8,
-                                .ms-column-group > .ms-col-8,
-                                .ms-row-group > .ms-col-8,
-                                .ms-row-grp > .ms-col-8 { flex-grow: 8 }
+                                .col-group > .m-col-8,
+                                .col-grp > .m-col-8,
+                                .column-group > .m-col-8,
+                                .row-group > .m-col-8,
+                                .row-grp > .m-col-8,
+                                .col-group > .ms-col-8,
+                                .col-grp > .ms-col-8,
+                                .column-group > .ms-col-8,
+                                .row-group > .ms-col-8,
+                                .row-grp > .ms-col-8 { flex-grow: 8 }
 
                                 /* 9 */
-                                .m-col-group > .m-col-9,
-                                .m-col-grp > .m-col-9,
-                                .m-column-group > .m-col-9,
-                                .m-row-group > .m-col-9,
-                                .m-row-grp > .m-col-9,
-                                .ms-col-group > .ms-col-9,
-                                .ms-col-grp > .ms-col-9,
-                                .ms-column-group > .ms-col-9,
-                                .ms-row-group > .ms-col-9,
-                                .ms-row-grp > .ms-col-9 { flex-grow: 9 }
+                                .col-group > .m-col-9,
+                                .col-grp > .m-col-9,
+                                .column-group > .m-col-9,
+                                .row-group > .m-col-9,
+                                .row-grp > .m-col-9,
+                                .col-group > .ms-col-9,
+                                .col-grp > .ms-col-9,
+                                .column-group > .ms-col-9,
+                                .row-group > .ms-col-9,
+                                .row-grp > .ms-col-9 { flex-grow: 9 }
 
                                 /* 10 */
-                                .m-col-group > .m-col-10,
-                                .m-col-grp > .m-col-10,
-                                .m-column-group > .m-col-10,
-                                .m-row-group > .m-col-10,
-                                .m-row-grp > .m-col-10,
-                                .ms-col-group > .ms-col-10,
-                                .ms-col-grp > .ms-col-10,
-                                .ms-column-group > .ms-col-10,
-                                .ms-row-group > .ms-col-10,
-                                .ms-row-grp > .ms-col-10 { flex-grow: 10 }
+                                .col-group > .m-col-10,
+                                .col-grp > .m-col-10,
+                                .column-group > .m-col-10,
+                                .row-group > .m-col-10,
+                                .row-grp > .m-col-10,
+                                .col-group > .ms-col-10,
+                                .col-grp > .ms-col-10,
+                                .column-group > .ms-col-10,
+                                .row-group > .ms-col-10,
+                                .row-grp > .ms-col-10 { flex-grow: 10 }
 
                                 /* 11 */
-                                .m-col-group > .m-col-11,
-                                .m-col-grp > .m-col-11,
-                                .m-column-group > .m-col-11,
-                                .m-row-group > .m-col-11,
-                                .m-row-grp > .m-col-11,
-                                .ms-col-group > .ms-col-11,
-                                .ms-col-grp > .ms-col-11,
-                                .ms-column-group > .ms-col-11,
-                                .ms-row-group > .ms-col-11,
-                                .ms-row-grp > .ms-col-11 { flex-grow: 11 }
+                                .col-group > .m-col-11,
+                                .col-grp > .m-col-11,
+                                .column-group > .m-col-11,
+                                .row-group > .m-col-11,
+                                .row-grp > .m-col-11,
+                                .col-group > .ms-col-11,
+                                .col-grp > .ms-col-11,
+                                .column-group > .ms-col-11,
+                                .row-group > .ms-col-11,
+                                .row-grp > .ms-col-11 { flex-grow: 11 }
 
                                 /* 12 */
-                                .m-col-group > .m-col-12,
-                                .m-col-grp > .m-col-12,
-                                .m-column-group > .m-col-12,
-                                .m-row-group > .m-col-12,
-                                .m-row-grp > .m-col-12,
-                                .ms-col-group > .ms-col-12,
-                                .ms-col-grp > .ms-col-12,
-                                .ms-column-group > .ms-col-12,
-                                .ms-row-group > .ms-col-12,
-                                .ms-row-grp > .ms-col-12 { opacity: 0 !important; flex-grow: 12 }
+                                .col-group > .m-col-12,
+                                .col-grp > .m-col-12,
+                                .column-group > .m-col-12,
+                                .row-group > .m-col-12,
+                                .row-grp > .m-col-12,
+                                .col-group > .ms-col-12,
+                                .col-grp > .ms-col-12,
+                                .column-group > .ms-col-12,
+                                .row-group > .ms-col-12,
+                                .row-grp > .ms-col-12 { flex-grow: 12 }
                         }
 
                         /* Mobile (Medium) */
                         @media only all
                             and (max-width: 375px)
-                            and (min-width: 321px) {}
+                            and (min-width: 321px) {
+                                /* Column Levels */
+                                    /* 0 */
+                                    .col-group > .m-col-0,
+                                    .col-grp > .m-col-0,
+                                    .column-group > .m-col-0,
+                                    .row-group > .m-col-0,
+                                    .row-grp > .m-col-0,
+                                    .col-group > .mm-col-0,
+                                    .col-grp > .mm-col-0,
+                                    .column-group > .mm-col-0,
+                                    .row-group > .mm-col-0,
+                                    .row-grp > .mm-col-0 { flex-grow: 0 }
+
+                                    /* 1 */
+                                    .col-group > .m-col-1,
+                                    .col-grp > .m-col-1,
+                                    .column-group > .m-col-1,
+                                    .row-group > .m-col-1,
+                                    .row-grp > .m-col-1,
+                                    .col-group > .mm-col-1,
+                                    .col-grp > .mm-col-1,
+                                    .column-group > .mm-col-1,
+                                    .row-group > .mm-col-1,
+                                    .row-grp > .mm-col-1 { flex-grow: 1 }
+
+                                    /* 2 */
+                                    .col-group > .m-col-2,
+                                    .col-grp > .m-col-2,
+                                    .column-group > .m-col-2,
+                                    .row-group > .m-col-2,
+                                    .row-grp > .m-col-2,
+                                    .col-group > .mm-col-2,
+                                    .col-grp > .mm-col-2,
+                                    .column-group > .mm-col-2,
+                                    .row-group > .mm-col-2,
+                                    .row-grp > .mm-col-2 { flex-grow: 2 }
+
+                                    /* 3 */
+                                    .col-group > .m-col-3,
+                                    .col-grp > .m-col-3,
+                                    .column-group > .m-col-3,
+                                    .row-group > .m-col-3,
+                                    .row-grp > .m-col-3,
+                                    .col-group > .mm-col-3,
+                                    .col-grp > .mm-col-3,
+                                    .column-group > .mm-col-3,
+                                    .row-group > .mm-col-3,
+                                    .row-grp > .mm-col-3 { flex-grow: 3 }
+
+                                    /* 4 */
+                                    .col-group > .m-col-4,
+                                    .col-grp > .m-col-4,
+                                    .column-group > .m-col-4,
+                                    .row-group > .m-col-4,
+                                    .row-grp > .m-col-4,
+                                    .col-group > .mm-col-4,
+                                    .col-grp > .mm-col-4,
+                                    .column-group > .mm-col-4,
+                                    .row-group > .mm-col-4,
+                                    .row-grp > .mm-col-4 { flex-grow: 4 }
+
+                                    /* 5 */
+                                    .col-group > .m-col-5,
+                                    .col-grp > .m-col-5,
+                                    .column-group > .m-col-5,
+                                    .row-group > .m-col-5,
+                                    .row-grp > .m-col-5,
+                                    .col-group > .mm-col-5,
+                                    .col-grp > .mm-col-5,
+                                    .column-group > .mm-col-5,
+                                    .row-group > .mm-col-5,
+                                    .row-grp > .mm-col-5 { flex-grow: 5 }
+
+                                    /* 6 */
+                                    .col-group > .m-col-6,
+                                    .col-grp > .m-col-6,
+                                    .column-group > .m-col-6,
+                                    .row-group > .m-col-6,
+                                    .row-grp > .m-col-6,
+                                    .col-group > .mm-col-6,
+                                    .col-grp > .mm-col-6,
+                                    .column-group > .mm-col-6,
+                                    .row-group > .mm-col-6,
+                                    .row-grp > .mm-col-6 { flex-grow: 6 }
+
+                                    /* 7 */
+                                    .col-group > .m-col-7,
+                                    .col-grp > .m-col-7,
+                                    .column-group > .m-col-7,
+                                    .row-group > .m-col-7,
+                                    .row-grp > .m-col-7,
+                                    .col-group > .mm-col-7,
+                                    .col-grp > .mm-col-7,
+                                    .column-group > .mm-col-7,
+                                    .row-group > .mm-col-7,
+                                    .row-grp > .mm-col-7 { flex-grow: 7 }
+
+                                    /* 8 */
+                                    .col-group > .m-col-8,
+                                    .col-grp > .m-col-8,
+                                    .column-group > .m-col-8,
+                                    .row-group > .m-col-8,
+                                    .row-grp > .m-col-8,
+                                    .col-group > .mm-col-8,
+                                    .col-grp > .mm-col-8,
+                                    .column-group > .mm-col-8,
+                                    .row-group > .mm-col-8,
+                                    .row-grp > .mm-col-8 { flex-grow: 8 }
+
+                                    /* 9 */
+                                    .col-group > .m-col-9,
+                                    .col-grp > .m-col-9,
+                                    .column-group > .m-col-9,
+                                    .row-group > .m-col-9,
+                                    .row-grp > .m-col-9,
+                                    .col-group > .mm-col-9,
+                                    .col-grp > .mm-col-9,
+                                    .column-group > .mm-col-9,
+                                    .row-group > .mm-col-9,
+                                    .row-grp > .mm-col-9 { flex-grow: 9 }
+
+                                    /* 10 */
+                                    .col-group > .m-col-10,
+                                    .col-grp > .m-col-10,
+                                    .column-group > .m-col-10,
+                                    .row-group > .m-col-10,
+                                    .row-grp > .m-col-10,
+                                    .col-group > .mm-col-10,
+                                    .col-grp > .mm-col-10,
+                                    .column-group > .mm-col-10,
+                                    .row-group > .mm-col-10,
+                                    .row-grp > .mm-col-10 { flex-grow: 10 }
+
+                                    /* 11 */
+                                    .col-group > .m-col-11,
+                                    .col-grp > .m-col-11,
+                                    .column-group > .m-col-11,
+                                    .row-group > .m-col-11,
+                                    .row-grp > .m-col-11,
+                                    .col-group > .mm-col-11,
+                                    .col-grp > .mm-col-11,
+                                    .column-group > .mm-col-11,
+                                    .row-group > .mm-col-11,
+                                    .row-grp > .mm-col-11 { flex-grow: 11 }
+
+                                    /* 12 */
+                                    .col-group > .m-col-12,
+                                    .col-grp > .m-col-12,
+                                    .column-group > .m-col-12,
+                                    .row-group > .m-col-12,
+                                    .row-grp > .m-col-12,
+                                    .col-group > .mm-col-12,
+                                    .col-grp > .mm-col-12,
+                                    .column-group > .mm-col-12,
+                                    .row-group > .mm-col-12,
+                                    .row-grp > .mm-col-12 { flex-grow: 12 }
+                        }
 
                         /* Mobile (Large) */
                         @media only all
                             and (max-width: 425px)
-                            and (min-width: 376px) {}
+                            and (min-width: 376px) {
+                                /* Column Levels */
+                                    /* 0 */
+                                    .col-group > .m-col-0,
+                                    .col-grp > .m-col-0,
+                                    .column-group > .m-col-0,
+                                    .row-group > .m-col-0,
+                                    .row-grp > .m-col-0,
+                                    .col-group > .ml-col-0,
+                                    .col-grp > .ml-col-0,
+                                    .column-group > .ml-col-0,
+                                    .row-group > .ml-col-0,
+                                    .row-grp > .ml-col-0 { flex-grow: 0 }
+
+                                    /* 1 */
+                                    .col-group > .m-col-1,
+                                    .col-grp > .m-col-1,
+                                    .column-group > .m-col-1,
+                                    .row-group > .m-col-1,
+                                    .row-grp > .m-col-1,
+                                    .col-group > .ml-col-1,
+                                    .col-grp > .ml-col-1,
+                                    .column-group > .ml-col-1,
+                                    .row-group > .ml-col-1,
+                                    .row-grp > .ml-col-1 { flex-grow: 1 }
+
+                                    /* 2 */
+                                    .col-group > .m-col-2,
+                                    .col-grp > .m-col-2,
+                                    .column-group > .m-col-2,
+                                    .row-group > .m-col-2,
+                                    .row-grp > .m-col-2,
+                                    .col-group > .ml-col-2,
+                                    .col-grp > .ml-col-2,
+                                    .column-group > .ml-col-2,
+                                    .row-group > .ml-col-2,
+                                    .row-grp > .ml-col-2 { flex-grow: 2 }
+
+                                    /* 3 */
+                                    .col-group > .m-col-3,
+                                    .col-grp > .m-col-3,
+                                    .column-group > .m-col-3,
+                                    .row-group > .m-col-3,
+                                    .row-grp > .m-col-3,
+                                    .col-group > .ml-col-3,
+                                    .col-grp > .ml-col-3,
+                                    .column-group > .ml-col-3,
+                                    .row-group > .ml-col-3,
+                                    .row-grp > .ml-col-3 { flex-grow: 3 }
+
+                                    /* 4 */
+                                    .col-group > .m-col-4,
+                                    .col-grp > .m-col-4,
+                                    .column-group > .m-col-4,
+                                    .row-group > .m-col-4,
+                                    .row-grp > .m-col-4,
+                                    .col-group > .ml-col-4,
+                                    .col-grp > .ml-col-4,
+                                    .column-group > .ml-col-4,
+                                    .row-group > .ml-col-4,
+                                    .row-grp > .ml-col-4 { flex-grow: 4 }
+
+                                    /* 5 */
+                                    .col-group > .m-col-5,
+                                    .col-grp > .m-col-5,
+                                    .column-group > .m-col-5,
+                                    .row-group > .m-col-5,
+                                    .row-grp > .m-col-5,
+                                    .col-group > .ml-col-5,
+                                    .col-grp > .ml-col-5,
+                                    .column-group > .ml-col-5,
+                                    .row-group > .ml-col-5,
+                                    .row-grp > .ml-col-5 { flex-grow: 5 }
+
+                                    /* 6 */
+                                    .col-group > .m-col-6,
+                                    .col-grp > .m-col-6,
+                                    .column-group > .m-col-6,
+                                    .row-group > .m-col-6,
+                                    .row-grp > .m-col-6,
+                                    .col-group > .ml-col-6,
+                                    .col-grp > .ml-col-6,
+                                    .column-group > .ml-col-6,
+                                    .row-group > .ml-col-6,
+                                    .row-grp > .ml-col-6 { flex-grow: 6 }
+
+                                    /* 7 */
+                                    .col-group > .m-col-7,
+                                    .col-grp > .m-col-7,
+                                    .column-group > .m-col-7,
+                                    .row-group > .m-col-7,
+                                    .row-grp > .m-col-7,
+                                    .col-group > .ml-col-7,
+                                    .col-grp > .ml-col-7,
+                                    .column-group > .ml-col-7,
+                                    .row-group > .ml-col-7,
+                                    .row-grp > .ml-col-7 { flex-grow: 7 }
+
+                                    /* 8 */
+                                    .col-group > .m-col-8,
+                                    .col-grp > .m-col-8,
+                                    .column-group > .m-col-8,
+                                    .row-group > .m-col-8,
+                                    .row-grp > .m-col-8,
+                                    .col-group > .ml-col-8,
+                                    .col-grp > .ml-col-8,
+                                    .column-group > .ml-col-8,
+                                    .row-group > .ml-col-8,
+                                    .row-grp > .ml-col-8 { flex-grow: 8 }
+
+                                    /* 9 */
+                                    .col-group > .m-col-9,
+                                    .col-grp > .m-col-9,
+                                    .column-group > .m-col-9,
+                                    .row-group > .m-col-9,
+                                    .row-grp > .m-col-9,
+                                    .col-group > .ml-col-9,
+                                    .col-grp > .ml-col-9,
+                                    .column-group > .ml-col-9,
+                                    .row-group > .ml-col-9,
+                                    .row-grp > .ml-col-9 { flex-grow: 9 }
+
+                                    /* 10 */
+                                    .col-group > .m-col-10,
+                                    .col-grp > .m-col-10,
+                                    .column-group > .m-col-10,
+                                    .row-group > .m-col-10,
+                                    .row-grp > .m-col-10,
+                                    .col-group > .ml-col-10,
+                                    .col-grp > .ml-col-10,
+                                    .column-group > .ml-col-10,
+                                    .row-group > .ml-col-10,
+                                    .row-grp > .ml-col-10 { flex-grow: 10 }
+
+                                    /* 11 */
+                                    .col-group > .m-col-11,
+                                    .col-grp > .m-col-11,
+                                    .column-group > .m-col-11,
+                                    .row-group > .m-col-11,
+                                    .row-grp > .m-col-11,
+                                    .col-group > .ml-col-11,
+                                    .col-grp > .ml-col-11,
+                                    .column-group > .ml-col-11,
+                                    .row-group > .ml-col-11,
+                                    .row-grp > .ml-col-11 { flex-grow: 11 }
+
+                                    /* 12 */
+                                    .col-group > .m-col-12,
+                                    .col-grp > .m-col-12,
+                                    .column-group > .m-col-12,
+                                    .row-group > .m-col-12,
+                                    .row-grp > .m-col-12,
+                                    .col-group > .ml-col-12,
+                                    .col-grp > .ml-col-12,
+                                    .column-group > .ml-col-12,
+                                    .row-group > .ml-col-12,
+                                    .row-grp > .ml-col-12 { flex-grow: 12 }
+                        }
 
                         /* Tablet */
                         @media only all
                             and (max-width: 768px)
-                            and (min-width: 426px) {}
+                            and (min-width: 426px) {
+                                /* Column Levels */
+                                    /* 0 */
+                                    .col-group > .t-col-0,
+                                    .col-grp > .t-col-0,
+                                    .column-group > .t-col-0,
+                                    .row-group > .t-col-0,
+                                    .row-grp > .t-col-0 { flex-grow: 0 }
+
+                                    /* 1 */
+                                    .col-group > .t-col-1,
+                                    .col-grp > .t-col-1,
+                                    .column-group > .t-col-1,
+                                    .row-group > .t-col-1,
+                                    .row-grp > .t-col-1 { flex-grow: 1 }
+
+                                    /* 2 */
+                                    .col-group > .t-col-2,
+                                    .col-grp > .t-col-2,
+                                    .column-group > .t-col-2,
+                                    .row-group > .t-col-2,
+                                    .row-grp > .t-col-2 { flex-grow: 2 }
+
+                                    /* 3 */
+                                    .col-group > .t-col-3,
+                                    .col-grp > .t-col-3,
+                                    .column-group > .t-col-3,
+                                    .row-group > .t-col-3,
+                                    .row-grp > .t-col-3 { flex-grow: 3 }
+
+                                    /* 4 */
+                                    .col-group > .t-col-4,
+                                    .col-grp > .t-col-4,
+                                    .column-group > .t-col-4,
+                                    .row-group > .t-col-4,
+                                    .row-grp > .t-col-4 { flex-grow: 4 }
+
+                                    /* 5 */
+                                    .col-group > .t-col-5,
+                                    .col-grp > .t-col-5,
+                                    .column-group > .t-col-5,
+                                    .row-group > .t-col-5,
+                                    .row-grp > .t-col-5 { flex-grow: 5 }
+
+                                    /* 6 */
+                                    .col-group > .t-col-6,
+                                    .col-grp > .t-col-6,
+                                    .column-group > .t-col-6,
+                                    .row-group > .t-col-6,
+                                    .row-grp > .t-col-6 { flex-grow: 6 }
+
+                                    /* 7 */
+                                    .col-group > .t-col-7,
+                                    .col-grp > .t-col-7,
+                                    .column-group > .t-col-7,
+                                    .row-group > .t-col-7,
+                                    .row-grp > .t-col-7 { flex-grow: 7 }
+
+                                    /* 8 */
+                                    .col-group > .t-col-8,
+                                    .col-grp > .t-col-8,
+                                    .column-group > .t-col-8,
+                                    .row-group > .t-col-8,
+                                    .row-grp > .t-col-8 { flex-grow: 8 }
+
+                                    /* 9 */
+                                    .col-group > .t-col-9,
+                                    .col-grp > .t-col-9,
+                                    .column-group > .t-col-9,
+                                    .row-group > .t-col-9,
+                                    .row-grp > .t-col-9 { flex-grow: 9 }
+
+                                    /* 10 */
+                                    .col-group > .t-col-10,
+                                    .col-grp > .t-col-10,
+                                    .column-group > .t-col-10,
+                                    .row-group > .t-col-10,
+                                    .row-grp > .t-col-10 { flex-grow: 10 }
+
+                                    /* 11 */
+                                    .col-group > .t-col-11,
+                                    .col-grp > .t-col-11,
+                                    .column-group > .t-col-11,
+                                    .row-group > .t-col-11,
+                                    .row-grp > .t-col-11 { flex-grow: 11 }
+
+                                    /* 12 */
+                                    .col-group > .t-col-12,
+                                    .col-grp > .t-col-12,
+                                    .column-group > .t-col-12,
+                                    .row-group > .t-col-12,
+                                    .row-grp > .t-col-12 { flex-grow: 12 }
+                        }
 
                         /* Laptop */
                         @media only all
                             and (max-width: 1024px)
-                            and (min-width: 769px) {}
+                            and (min-width: 769px) {
+                                /* Column Levels */
+                                    /* 0 */
+                                    .col-group > .l-col-0,
+                                    .col-grp > .l-col-0,
+                                    .column-group > .l-col-0,
+                                    .row-group > .l-col-0,
+                                    .row-grp > .l-col-0 { flex-grow: 0 }
+
+                                    /* 1 */
+                                    .col-group > .l-col-1,
+                                    .col-grp > .l-col-1,
+                                    .column-group > .l-col-1,
+                                    .row-group > .l-col-1,
+                                    .row-grp > .l-col-1 { flex-grow: 1 }
+
+                                    /* 2 */
+                                    .col-group > .l-col-2,
+                                    .col-grp > .l-col-2,
+                                    .column-group > .l-col-2,
+                                    .row-group > .l-col-2,
+                                    .row-grp > .l-col-2 { flex-grow: 2 }
+
+                                    /* 3 */
+                                    .col-group > .l-col-3,
+                                    .col-grp > .l-col-3,
+                                    .column-group > .l-col-3,
+                                    .row-group > .l-col-3,
+                                    .row-grp > .l-col-3 { flex-grow: 3 }
+
+                                    /* 4 */
+                                    .col-group > .l-col-4,
+                                    .col-grp > .l-col-4,
+                                    .column-group > .l-col-4,
+                                    .row-group > .l-col-4,
+                                    .row-grp > .l-col-4 { flex-grow: 4 }
+
+                                    /* 5 */
+                                    .col-group > .l-col-5,
+                                    .col-grp > .l-col-5,
+                                    .column-group > .l-col-5,
+                                    .row-group > .l-col-5,
+                                    .row-grp > .l-col-5 { flex-grow: 5 }
+
+                                    /* 6 */
+                                    .col-group > .l-col-6,
+                                    .col-grp > .l-col-6,
+                                    .column-group > .l-col-6,
+                                    .row-group > .l-col-6,
+                                    .row-grp > .l-col-6 { flex-grow: 6 }
+
+                                    /* 7 */
+                                    .col-group > .l-col-7,
+                                    .col-grp > .l-col-7,
+                                    .column-group > .l-col-7,
+                                    .row-group > .l-col-7,
+                                    .row-grp > .l-col-7 { flex-grow: 7 }
+
+                                    /* 8 */
+                                    .col-group > .l-col-8,
+                                    .col-grp > .l-col-8,
+                                    .column-group > .l-col-8,
+                                    .row-group > .l-col-8,
+                                    .row-grp > .l-col-8 { flex-grow: 8 }
+
+                                    /* 9 */
+                                    .col-group > .l-col-9,
+                                    .col-grp > .l-col-9,
+                                    .column-group > .l-col-9,
+                                    .row-group > .l-col-9,
+                                    .row-grp > .l-col-9 { flex-grow: 9 }
+
+                                    /* 10 */
+                                    .col-group > .l-col-10,
+                                    .col-grp > .l-col-10,
+                                    .column-group > .l-col-10,
+                                    .row-group > .l-col-10,
+                                    .row-grp > .l-col-10 { flex-grow: 10 }
+
+                                    /* 11 */
+                                    .col-group > .l-col-11,
+                                    .col-grp > .l-col-11,
+                                    .column-group > .l-col-11,
+                                    .row-group > .l-col-11,
+                                    .row-grp > .l-col-11 { flex-grow: 11 }
+
+                                    /* 12 */
+                                    .col-group > .l-col-12,
+                                    .col-grp > .l-col-12,
+                                    .column-group > .l-col-12,
+                                    .row-group > .l-col-12,
+                                    .row-grp > .l-col-12 { flex-grow: 12 }
+                        }
 
                         /* Laptop (Large) */
                         @media only all
                             and (max-width: 1440px)
-                            and (min-width: 1025px) {}
+                            and (min-width: 1025px) {
+                                /* Column Levels */
+                                    /* 0 */
+                                    .col-group > .ll-col-0,
+                                    .col-grp > .ll-col-0,
+                                    .column-group > .ll-col-0,
+                                    .row-group > .ll-col-0,
+                                    .row-grp > .ll-col-0 { flex-grow: 0 }
+
+                                    /* 1 */
+                                    .col-group > .ll-col-1,
+                                    .col-grp > .ll-col-1,
+                                    .column-group > .ll-col-1,
+                                    .row-group > .ll-col-1,
+                                    .row-grp > .ll-col-1 { flex-grow: 1 }
+
+                                    /* 2 */
+                                    .col-group > .ll-col-2,
+                                    .col-grp > .ll-col-2,
+                                    .column-group > .ll-col-2,
+                                    .row-group > .ll-col-2,
+                                    .row-grp > .ll-col-2 { flex-grow: 2 }
+
+                                    /* 3 */
+                                    .col-group > .ll-col-3,
+                                    .col-grp > .ll-col-3,
+                                    .column-group > .ll-col-3,
+                                    .row-group > .ll-col-3,
+                                    .row-grp > .ll-col-3 { flex-grow: 3 }
+
+                                    /* 4 */
+                                    .col-group > .ll-col-4,
+                                    .col-grp > .ll-col-4,
+                                    .column-group > .ll-col-4,
+                                    .row-group > .ll-col-4,
+                                    .row-grp > .ll-col-4 { flex-grow: 4 }
+
+                                    /* 5 */
+                                    .col-group > .ll-col-5,
+                                    .col-grp > .ll-col-5,
+                                    .column-group > .ll-col-5,
+                                    .row-group > .ll-col-5,
+                                    .row-grp > .ll-col-5 { flex-grow: 5 }
+
+                                    /* 6 */
+                                    .col-group > .ll-col-6,
+                                    .col-grp > .ll-col-6,
+                                    .column-group > .ll-col-6,
+                                    .row-group > .ll-col-6,
+                                    .row-grp > .ll-col-6 { flex-grow: 6 }
+
+                                    /* 7 */
+                                    .col-group > .ll-col-7,
+                                    .col-grp > .ll-col-7,
+                                    .column-group > .ll-col-7,
+                                    .row-group > .ll-col-7,
+                                    .row-grp > .ll-col-7 { flex-grow: 7 }
+
+                                    /* 8 */
+                                    .col-group > .ll-col-8,
+                                    .col-grp > .ll-col-8,
+                                    .column-group > .ll-col-8,
+                                    .row-group > .ll-col-8,
+                                    .row-grp > .ll-col-8 { flex-grow: 8 }
+
+                                    /* 9 */
+                                    .col-group > .ll-col-9,
+                                    .col-grp > .ll-col-9,
+                                    .column-group > .ll-col-9,
+                                    .row-group > .ll-col-9,
+                                    .row-grp > .ll-col-9 { flex-grow: 9 }
+
+                                    /* 10 */
+                                    .col-group > .ll-col-10,
+                                    .col-grp > .ll-col-10,
+                                    .column-group > .ll-col-10,
+                                    .row-group > .ll-col-10,
+                                    .row-grp > .ll-col-10 { flex-grow: 10 }
+
+                                    /* 11 */
+                                    .col-group > .ll-col-11,
+                                    .col-grp > .ll-col-11,
+                                    .column-group > .ll-col-11,
+                                    .row-group > .ll-col-11,
+                                    .row-grp > .ll-col-11 { flex-grow: 11 }
+
+                                    /* 12 */
+                                    .col-group > .ll-col-12,
+                                    .col-grp > .ll-col-12,
+                                    .column-group > .ll-col-12,
+                                    .row-group > .ll-col-12,
+                                    .row-grp > .ll-col-12 { flex-grow: 12 }
+                        }
 
                         /* 4K */
                         @media only all
                             and (max-width: 2560px)
-                            and (min-width: 1441px) {}
+                            and (min-width: 1441px) {
+                                /* Column Levels */
+                                    /* 0 */
+                                    .col-group > .fourk-col-0,
+                                    .col-grp > .fourk-col-0,
+                                    .column-group > .fourk-col-0,
+                                    .row-group > .fourk-col-0,
+                                    .row-grp > .fourk-col-0 { flex-grow: 0 }
+
+                                    /* 1 */
+                                    .col-group > .fourk-col-1,
+                                    .col-grp > .fourk-col-1,
+                                    .column-group > .fourk-col-1,
+                                    .row-group > .fourk-col-1,
+                                    .row-grp > .fourk-col-1 { flex-grow: 1 }
+
+                                    /* 2 */
+                                    .col-group > .fourk-col-2,
+                                    .col-grp > .fourk-col-2,
+                                    .column-group > .fourk-col-2,
+                                    .row-group > .fourk-col-2,
+                                    .row-grp > .fourk-col-2 { flex-grow: 2 }
+
+                                    /* 3 */
+                                    .col-group > .fourk-col-3,
+                                    .col-grp > .fourk-col-3,
+                                    .column-group > .fourk-col-3,
+                                    .row-group > .fourk-col-3,
+                                    .row-grp > .fourk-col-3 { flex-grow: 3 }
+
+                                    /* 4 */
+                                    .col-group > .fourk-col-4,
+                                    .col-grp > .fourk-col-4,
+                                    .column-group > .fourk-col-4,
+                                    .row-group > .fourk-col-4,
+                                    .row-grp > .fourk-col-4 { flex-grow: 4 }
+
+                                    /* 5 */
+                                    .col-group > .fourk-col-5,
+                                    .col-grp > .fourk-col-5,
+                                    .column-group > .fourk-col-5,
+                                    .row-group > .fourk-col-5,
+                                    .row-grp > .fourk-col-5 { flex-grow: 5 }
+
+                                    /* 6 */
+                                    .col-group > .fourk-col-6,
+                                    .col-grp > .fourk-col-6,
+                                    .column-group > .fourk-col-6,
+                                    .row-group > .fourk-col-6,
+                                    .row-grp > .fourk-col-6 { flex-grow: 6 }
+
+                                    /* 7 */
+                                    .col-group > .fourk-col-7,
+                                    .col-grp > .fourk-col-7,
+                                    .column-group > .fourk-col-7,
+                                    .row-group > .fourk-col-7,
+                                    .row-grp > .fourk-col-7 { flex-grow: 7 }
+
+                                    /* 8 */
+                                    .col-group > .fourk-col-8,
+                                    .col-grp > .fourk-col-8,
+                                    .column-group > .fourk-col-8,
+                                    .row-group > .fourk-col-8,
+                                    .row-grp > .fourk-col-8 { flex-grow: 8 }
+
+                                    /* 9 */
+                                    .col-group > .fourk-col-9,
+                                    .col-grp > .fourk-col-9,
+                                    .column-group > .fourk-col-9,
+                                    .row-group > .fourk-col-9,
+                                    .row-grp > .fourk-col-9 { flex-grow: 9 }
+
+                                    /* 10 */
+                                    .col-group > .fourk-col-10,
+                                    .col-grp > .fourk-col-10,
+                                    .column-group > .fourk-col-10,
+                                    .row-group > .fourk-col-10,
+                                    .row-grp > .fourk-col-10 { flex-grow: 10 }
+
+                                    /* 11 */
+                                    .col-group > .fourk-col-11,
+                                    .col-grp > .fourk-col-11,
+                                    .column-group > .fourk-col-11,
+                                    .row-group > .fourk-col-11,
+                                    .row-grp > .fourk-col-11 { flex-grow: 11 }
+
+                                    /* 12 */
+                                    .col-group > .fourk-col-12,
+                                    .col-grp > .fourk-col-12,
+                                    .column-group > .fourk-col-12,
+                                    .row-group > .fourk-col-12,
+                                    .row-grp > .fourk-col-12 { flex-grow: 12 }
+                        }
 
                     /* Grid Levels */
                         /* 0 */
@@ -1093,37 +1853,2042 @@
 
                     /* @media */
                         /* Mobile (Small) */
-                        @media only all and (max-width: 320px) {}
+                        @media only all and (max-width: 320px) {
+                            /* Grid Levels */
+                                /* 0 */
+                                .col-group > .ms-grid-0,
+                                .col-grp > .ms-grid-0,
+                                .column-group > .ms-grid-0,
+                                .row-group > .ms-grid-0,
+                                .row-grp > .ms-grid-0,
+                                .col-group > .m-grid-0,
+                                .col-grp > .m-grid-0,
+                                .column-group > .m-grid-0,
+                                .row-group > .m-grid-0,
+                                .row-grp > .m-grid-0 { flex-basis: 0 }
+
+                                /* 1 */
+                                .col-group > .ms-grid-1,
+                                .col-grp > .ms-grid-1,
+                                .column-group > .ms-grid-1,
+                                .row-group > .ms-grid-1,
+                                .row-grp > .ms-grid-1,
+                                .col-group > .m-grid-1,
+                                .col-grp > .m-grid-1,
+                                .column-group > .m-grid-1,
+                                .row-group > .m-grid-1,
+                                .row-grp > .m-grid-1 { flex-basis: 100% }
+
+                                /* 2 */
+                                .col-group > .ms-grid-2,
+                                .col-grp > .ms-grid-2,
+                                .column-group > .ms-grid-2,
+                                .row-group > .ms-grid-2,
+                                .row-grp > .ms-grid-2,
+                                .col-group > .m-grid-2,
+                                .col-grp > .m-grid-2,
+                                .column-group > .m-grid-2,
+                                .row-group > .m-grid-2,
+                                .row-grp > .m-grid-2 {
+                                    height: 50%;
+                                    flex-basis: 50%;
+                                    width: 50%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-2:not(.strict-grid),
+                                    .col-grp > .ms-grid-2:not(.strict-grid),
+                                    .column-group > .ms-grid-2:not(.strict-grid),
+                                    .row-group > .ms-grid-2:not(.strict-grid),
+                                    .row-grp > .ms-grid-2:not(.strict-grid),
+                                    .col-group > .m-grid-2:not(.strict-grid),
+                                    .col-grp > .m-grid-2:not(.strict-grid),
+                                    .column-group > .m-grid-2:not(.strict-grid),
+                                    .row-group > .m-grid-2:not(.strict-grid),
+                                    .row-grp > .m-grid-2:not(.strict-grid) {
+                                        min-height: 50%;
+                                        min-width: 50%
+                                    }
+
+                                /* 3 */
+                                .col-group > .ms-grid-3,
+                                .col-grp > .ms-grid-3,
+                                .column-group > .ms-grid-3,
+                                .row-group > .ms-grid-3,
+                                .row-grp > .ms-grid-3,
+                                .col-group > .m-grid-3,
+                                .col-grp > .m-grid-3,
+                                .column-group > .m-grid-3,
+                                .row-group > .m-grid-3,
+                                .row-grp > .m-grid-3 {
+                                    height: 33.3333%;
+                                    flex-basis: 33.3333%;
+                                    width: 33.3333%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-3:not(.strict-grid),
+                                    .col-grp > .ms-grid-3:not(.strict-grid),
+                                    .column-group > .ms-grid-3:not(.strict-grid),
+                                    .row-group > .ms-grid-3:not(.strict-grid),
+                                    .row-grp > .ms-grid-3:not(.strict-grid),
+                                    .col-group > .m-grid-3:not(.strict-grid),
+                                    .col-grp > .m-grid-3:not(.strict-grid),
+                                    .column-group > .m-grid-3:not(.strict-grid),
+                                    .row-group > .m-grid-3:not(.strict-grid),
+                                    .row-grp > .m-grid-3:not(.strict-grid) {
+                                        min-height: 33.3333%;
+                                        min-width: 33.3333%
+                                    }
+
+                                /* 4 */
+                                .col-group > .ms-grid-4,
+                                .col-grp > .ms-grid-4,
+                                .column-group > .ms-grid-4,
+                                .row-group > .ms-grid-4,
+                                .row-grp > .ms-grid-4,
+                                .col-group > .m-grid-4,
+                                .col-grp > .m-grid-4,
+                                .column-group > .m-grid-4,
+                                .row-group > .m-grid-4,
+                                .row-grp > .m-grid-4 {
+                                    height: 25%;
+                                    flex-basis: 25%;
+                                    width: 25%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-4:not(.strict-grid),
+                                    .col-grp > .ms-grid-4:not(.strict-grid),
+                                    .column-group > .ms-grid-4:not(.strict-grid),
+                                    .row-group > .ms-grid-4:not(.strict-grid),
+                                    .row-grp > .ms-grid-4:not(.strict-grid),
+                                    .col-group > .m-grid-4:not(.strict-grid),
+                                    .col-grp > .m-grid-4:not(.strict-grid),
+                                    .column-group > .m-grid-4:not(.strict-grid),
+                                    .row-group > .m-grid-4:not(.strict-grid),
+                                    .row-grp > .m-grid-4:not(.strict-grid) {
+                                        min-height: 25%;
+                                        min-width: 25%
+                                    }
+
+                                /* 5 */
+                                .col-group > .ms-grid-5,
+                                .col-grp > .ms-grid-5,
+                                .column-group > .ms-grid-5,
+                                .row-group > .ms-grid-5,
+                                .row-grp > .ms-grid-5,
+                                .col-group > .m-grid-5,
+                                .col-grp > .m-grid-5,
+                                .column-group > .m-grid-5,
+                                .row-group > .m-grid-5,
+                                .row-grp > .m-grid-5 {
+                                    height: 20%;
+                                    flex-basis: 20%;
+                                    width: 20%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-5:not(.strict-grid),
+                                    .col-grp > .ms-grid-5:not(.strict-grid),
+                                    .column-group > .ms-grid-5:not(.strict-grid),
+                                    .row-group > .ms-grid-5:not(.strict-grid),
+                                    .row-grp > .ms-grid-5:not(.strict-grid),
+                                    .col-group > .m-grid-5:not(.strict-grid),
+                                    .col-grp > .m-grid-5:not(.strict-grid),
+                                    .column-group > .m-grid-5:not(.strict-grid),
+                                    .row-group > .m-grid-5:not(.strict-grid),
+                                    .row-grp > .m-grid-5:not(.strict-grid) {
+                                        min-height: 20%;
+                                        min-width: 20%
+                                    }
+
+                                /* 6 */
+                                .col-group > .ms-grid-6,
+                                .col-grp > .ms-grid-6,
+                                .column-group > .ms-grid-6,
+                                .row-group > .ms-grid-6,
+                                .row-grp > .ms-grid-6,
+                                .col-group > .m-grid-6,
+                                .col-grp > .m-grid-6,
+                                .column-group > .m-grid-6,
+                                .row-group > .m-grid-6,
+                                .row-grp > .m-grid-6 {
+                                    height: 16.6666%;
+                                    flex-basis: 16.6666%;
+                                    width: 16.6666%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-6:not(.strict-grid),
+                                    .col-grp > .ms-grid-6:not(.strict-grid),
+                                    .column-group > .ms-grid-6:not(.strict-grid),
+                                    .row-group > .ms-grid-6:not(.strict-grid),
+                                    .row-grp > .ms-grid-6:not(.strict-grid),
+                                    .col-group > .m-grid-6:not(.strict-grid),
+                                    .col-grp > .m-grid-6:not(.strict-grid),
+                                    .column-group > .m-grid-6:not(.strict-grid),
+                                    .row-group > .m-grid-6:not(.strict-grid),
+                                    .row-grp > .m-grid-6:not(.strict-grid) {
+                                        min-height: 16.6666%;
+                                        min-width: 16.6666%
+                                    }
+
+                                /* 7 */
+                                .col-group > .ms-grid-7,
+                                .col-grp > .ms-grid-7,
+                                .column-group > .ms-grid-7,
+                                .row-group > .ms-grid-7,
+                                .row-grp > .ms-grid-7,
+                                .col-group > .m-grid-7,
+                                .col-grp > .m-grid-7,
+                                .column-group > .m-grid-7,
+                                .row-group > .m-grid-7,
+                                .row-grp > .m-grid-7 {
+                                    height: 14.2857%;
+                                    flex-basis: 14.2857%;
+                                    width: 14.2857%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-7:not(.strict-grid),
+                                    .col-grp > .ms-grid-7:not(.strict-grid),
+                                    .column-group > .ms-grid-7:not(.strict-grid),
+                                    .row-group > .ms-grid-7:not(.strict-grid),
+                                    .row-grp > .ms-grid-7:not(.strict-grid),
+                                    .col-group > .m-grid-7:not(.strict-grid),
+                                    .col-grp > .m-grid-7:not(.strict-grid),
+                                    .column-group > .m-grid-7:not(.strict-grid),
+                                    .row-group > .m-grid-7:not(.strict-grid),
+                                    .row-grp > .m-grid-7:not(.strict-grid) {
+                                        min-height: 14.2857%;
+                                        min-width: 14.2857%
+                                    }
+
+                                /* 8 */
+                                .col-group > .ms-grid-8,
+                                .col-grp > .ms-grid-8,
+                                .column-group > .ms-grid-8,
+                                .row-group > .ms-grid-8,
+                                .row-grp > .ms-grid-8,
+                                .col-group > .m-grid-8,
+                                .col-grp > .m-grid-8,
+                                .column-group > .m-grid-8,
+                                .row-group > .m-grid-8,
+                                .row-grp > .m-grid-8 {
+                                    height: 12.5%;
+                                    flex-basis: 12.5%;
+                                    width: 12.5%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-8:not(.strict-grid),
+                                    .col-grp > .ms-grid-8:not(.strict-grid),
+                                    .column-group > .ms-grid-8:not(.strict-grid),
+                                    .row-group > .ms-grid-8:not(.strict-grid),
+                                    .row-grp > .ms-grid-8:not(.strict-grid),
+                                    .col-group > .m-grid-8:not(.strict-grid),
+                                    .col-grp > .m-grid-8:not(.strict-grid),
+                                    .column-group > .m-grid-8:not(.strict-grid),
+                                    .row-group > .m-grid-8:not(.strict-grid),
+                                    .row-grp > .m-grid-8:not(.strict-grid) {
+                                        min-height: 12.5%;
+                                        min-width: 12.5%
+                                    }
+
+                                /* 9 */
+                                .col-group > .ms-grid-9,
+                                .col-grp > .ms-grid-9,
+                                .column-group > .ms-grid-9,
+                                .row-group > .ms-grid-9,
+                                .row-grp > .ms-grid-9,
+                                .col-group > .m-grid-9,
+                                .col-grp > .m-grid-9,
+                                .column-group > .m-grid-9,
+                                .row-group > .m-grid-9,
+                                .row-grp > .m-grid-9 {
+                                    height: 11.1111%;
+                                    flex-basis: 11.1111%;
+                                    width: 11.1111%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-9:not(.strict-grid),
+                                    .col-grp > .ms-grid-9:not(.strict-grid),
+                                    .column-group > .ms-grid-9:not(.strict-grid),
+                                    .row-group > .ms-grid-9:not(.strict-grid),
+                                    .row-grp > .ms-grid-9:not(.strict-grid),
+                                    .col-group > .m-grid-9:not(.strict-grid),
+                                    .col-grp > .m-grid-9:not(.strict-grid),
+                                    .column-group > .m-grid-9:not(.strict-grid),
+                                    .row-group > .m-grid-9:not(.strict-grid),
+                                    .row-grp > .m-grid-9:not(.strict-grid) {
+                                        min-height: 11.1111%;
+                                        min-width: 11.1111%
+                                    }
+
+                                /* 10 */
+                                .col-group > .ms-grid-10,
+                                .col-grp > .ms-grid-10,
+                                .column-group > .ms-grid-10,
+                                .row-group > .ms-grid-10,
+                                .row-grp > .ms-grid-10,
+                                .col-group > .m-grid-10,
+                                .col-grp > .m-grid-10,
+                                .column-group > .m-grid-10,
+                                .row-group > .m-grid-10,
+                                .row-grp > .m-grid-10 {
+                                    height: 10%;
+                                    flex-basis: 10%;
+                                    width: 10%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-10:not(.strict-grid),
+                                    .col-grp > .ms-grid-10:not(.strict-grid),
+                                    .column-group > .ms-grid-10:not(.strict-grid),
+                                    .row-group > .ms-grid-10:not(.strict-grid),
+                                    .row-grp > .ms-grid-10:not(.strict-grid),
+                                    .col-group > .m-grid-10:not(.strict-grid),
+                                    .col-grp > .m-grid-10:not(.strict-grid),
+                                    .column-group > .m-grid-10:not(.strict-grid),
+                                    .row-group > .m-grid-10:not(.strict-grid),
+                                    .row-grp > .m-grid-10:not(.strict-grid) {
+                                        min-height: 10%;
+                                        min-width: 10%
+                                    }
+
+                                /* 11 */
+                                .col-group > .ms-grid-11,
+                                .col-grp > .ms-grid-11,
+                                .column-group > .ms-grid-11,
+                                .row-group > .ms-grid-11,
+                                .row-grp > .ms-grid-11,
+                                .col-group > .m-grid-11,
+                                .col-grp > .m-grid-11,
+                                .column-group > .m-grid-11,
+                                .row-group > .m-grid-11,
+                                .row-grp > .m-grid-11 {
+                                    height: 9.09091%;
+                                    flex-basis: 9.09091%;
+                                    width: 9.09091%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-11:not(.strict-grid),
+                                    .col-grp > .ms-grid-11:not(.strict-grid),
+                                    .column-group > .ms-grid-11:not(.strict-grid),
+                                    .row-group > .ms-grid-11:not(.strict-grid),
+                                    .row-grp > .ms-grid-11:not(.strict-grid),
+                                    .col-group > .m-grid-11:not(.strict-grid),
+                                    .col-grp > .m-grid-11:not(.strict-grid),
+                                    .column-group > .m-grid-11:not(.strict-grid),
+                                    .row-group > .m-grid-11:not(.strict-grid),
+                                    .row-grp > .m-grid-11:not(.strict-grid) {
+                                        min-height: 9.09091%;
+                                        min-width: 9.09091%
+                                    }
+
+                                /* 12 */
+                                .col-group > .ms-grid-12,
+                                .col-grp > .ms-grid-12,
+                                .column-group > .ms-grid-12,
+                                .row-group > .ms-grid-12,
+                                .row-grp > .ms-grid-12,
+                                .col-group > .m-grid-12,
+                                .col-grp > .m-grid-12,
+                                .column-group > .m-grid-12,
+                                .row-group > .m-grid-12,
+                                .row-grp > .m-grid-12 {
+                                    height: 8.33334%;
+                                    flex-basis: 8.33334%;
+                                    width: 8.33334%
+                                }
+                                    /* Not > Strict Grid */
+                                    .col-group > .ms-grid-12:not(.strict-grid),
+                                    .col-grp > .ms-grid-12:not(.strict-grid),
+                                    .column-group > .ms-grid-12:not(.strict-grid),
+                                    .row-group > .ms-grid-12:not(.strict-grid),
+                                    .row-grp > .ms-grid-12:not(.strict-grid),
+                                    .col-group > .m-grid-12:not(.strict-grid),
+                                    .col-grp > .m-grid-12:not(.strict-grid),
+                                    .column-group > .m-grid-12:not(.strict-grid),
+                                    .row-group > .m-grid-12:not(.strict-grid),
+                                    .row-grp > .m-grid-12:not(.strict-grid) {
+                                        min-height: 8.33334%;
+                                        min-width: 8.33334%
+                                    }
+                        }
 
                         /* Mobile (Medium) */
                         @media only all
                             and (max-width: 375px)
-                            and (min-width: 321px) {}
+                            and (min-width: 321px) {
+                                /* Grid Levels */
+                                    /* 0 */
+                                    .col-group > .mm-grid-0,
+                                    .col-grp > .mm-grid-0,
+                                    .column-group > .mm-grid-0,
+                                    .row-group > .mm-grid-0,
+                                    .row-grp > .mm-grid-0,
+                                    .col-group > .m-grid-0,
+                                    .col-grp > .m-grid-0,
+                                    .column-group > .m-grid-0,
+                                    .row-group > .m-grid-0,
+                                    .row-grp > .m-grid-0 { flex-basis: 0 }
+
+                                    /* 1 */
+                                    .col-group > .mm-grid-1,
+                                    .col-grp > .mm-grid-1,
+                                    .column-group > .mm-grid-1,
+                                    .row-group > .mm-grid-1,
+                                    .row-grp > .mm-grid-1,
+                                    .col-group > .m-grid-1,
+                                    .col-grp > .m-grid-1,
+                                    .column-group > .m-grid-1,
+                                    .row-group > .m-grid-1,
+                                    .row-grp > .m-grid-1 { flex-basis: 100% }
+
+                                    /* 2 */
+                                    .col-group > .mm-grid-2,
+                                    .col-grp > .mm-grid-2,
+                                    .column-group > .mm-grid-2,
+                                    .row-group > .mm-grid-2,
+                                    .row-grp > .mm-grid-2,
+                                    .col-group > .m-grid-2,
+                                    .col-grp > .m-grid-2,
+                                    .column-group > .m-grid-2,
+                                    .row-group > .m-grid-2,
+                                    .row-grp > .m-grid-2 {
+                                        height: 50%;
+                                        flex-basis: 50%;
+                                        width: 50%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-2:not(.strict-grid),
+                                        .col-grp > .mm-grid-2:not(.strict-grid),
+                                        .column-group > .mm-grid-2:not(.strict-grid),
+                                        .row-group > .mm-grid-2:not(.strict-grid),
+                                        .row-grp > .mm-grid-2:not(.strict-grid),
+                                        .col-group > .m-grid-2:not(.strict-grid),
+                                        .col-grp > .m-grid-2:not(.strict-grid),
+                                        .column-group > .m-grid-2:not(.strict-grid),
+                                        .row-group > .m-grid-2:not(.strict-grid),
+                                        .row-grp > .m-grid-2:not(.strict-grid) {
+                                            min-height: 50%;
+                                            min-width: 50%
+                                        }
+
+                                    /* 3 */
+                                    .col-group > .mm-grid-3,
+                                    .col-grp > .mm-grid-3,
+                                    .column-group > .mm-grid-3,
+                                    .row-group > .mm-grid-3,
+                                    .row-grp > .mm-grid-3,
+                                    .col-group > .m-grid-3,
+                                    .col-grp > .m-grid-3,
+                                    .column-group > .m-grid-3,
+                                    .row-group > .m-grid-3,
+                                    .row-grp > .m-grid-3 {
+                                        height: 33.3333%;
+                                        flex-basis: 33.3333%;
+                                        width: 33.3333%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-3:not(.strict-grid),
+                                        .col-grp > .mm-grid-3:not(.strict-grid),
+                                        .column-group > .mm-grid-3:not(.strict-grid),
+                                        .row-group > .mm-grid-3:not(.strict-grid),
+                                        .row-grp > .mm-grid-3:not(.strict-grid),
+                                        .col-group > .m-grid-3:not(.strict-grid),
+                                        .col-grp > .m-grid-3:not(.strict-grid),
+                                        .column-group > .m-grid-3:not(.strict-grid),
+                                        .row-group > .m-grid-3:not(.strict-grid),
+                                        .row-grp > .m-grid-3:not(.strict-grid) {
+                                            min-height: 33.3333%;
+                                            min-width: 33.3333%
+                                        }
+
+                                    /* 4 */
+                                    .col-group > .mm-grid-4,
+                                    .col-grp > .mm-grid-4,
+                                    .column-group > .mm-grid-4,
+                                    .row-group > .mm-grid-4,
+                                    .row-grp > .mm-grid-4,
+                                    .col-group > .m-grid-4,
+                                    .col-grp > .m-grid-4,
+                                    .column-group > .m-grid-4,
+                                    .row-group > .m-grid-4,
+                                    .row-grp > .m-grid-4 {
+                                        height: 25%;
+                                        flex-basis: 25%;
+                                        width: 25%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-4:not(.strict-grid),
+                                        .col-grp > .mm-grid-4:not(.strict-grid),
+                                        .column-group > .mm-grid-4:not(.strict-grid),
+                                        .row-group > .mm-grid-4:not(.strict-grid),
+                                        .row-grp > .mm-grid-4:not(.strict-grid),
+                                        .col-group > .m-grid-4:not(.strict-grid),
+                                        .col-grp > .m-grid-4:not(.strict-grid),
+                                        .column-group > .m-grid-4:not(.strict-grid),
+                                        .row-group > .m-grid-4:not(.strict-grid),
+                                        .row-grp > .m-grid-4:not(.strict-grid) {
+                                            min-height: 25%;
+                                            min-width: 25%
+                                        }
+
+                                    /* 5 */
+                                    .col-group > .mm-grid-5,
+                                    .col-grp > .mm-grid-5,
+                                    .column-group > .mm-grid-5,
+                                    .row-group > .mm-grid-5,
+                                    .row-grp > .mm-grid-5,
+                                    .col-group > .m-grid-5,
+                                    .col-grp > .m-grid-5,
+                                    .column-group > .m-grid-5,
+                                    .row-group > .m-grid-5,
+                                    .row-grp > .m-grid-5 {
+                                        height: 20%;
+                                        flex-basis: 20%;
+                                        width: 20%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-5:not(.strict-grid),
+                                        .col-grp > .mm-grid-5:not(.strict-grid),
+                                        .column-group > .mm-grid-5:not(.strict-grid),
+                                        .row-group > .mm-grid-5:not(.strict-grid),
+                                        .row-grp > .mm-grid-5:not(.strict-grid),
+                                        .col-group > .m-grid-5:not(.strict-grid),
+                                        .col-grp > .m-grid-5:not(.strict-grid),
+                                        .column-group > .m-grid-5:not(.strict-grid),
+                                        .row-group > .m-grid-5:not(.strict-grid),
+                                        .row-grp > .m-grid-5:not(.strict-grid) {
+                                            min-height: 20%;
+                                            min-width: 20%
+                                        }
+
+                                    /* 6 */
+                                    .col-group > .mm-grid-6,
+                                    .col-grp > .mm-grid-6,
+                                    .column-group > .mm-grid-6,
+                                    .row-group > .mm-grid-6,
+                                    .row-grp > .mm-grid-6,
+                                    .col-group > .m-grid-6,
+                                    .col-grp > .m-grid-6,
+                                    .column-group > .m-grid-6,
+                                    .row-group > .m-grid-6,
+                                    .row-grp > .m-grid-6 {
+                                        height: 16.6666%;
+                                        flex-basis: 16.6666%;
+                                        width: 16.6666%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-6:not(.strict-grid),
+                                        .col-grp > .mm-grid-6:not(.strict-grid),
+                                        .column-group > .mm-grid-6:not(.strict-grid),
+                                        .row-group > .mm-grid-6:not(.strict-grid),
+                                        .row-grp > .mm-grid-6:not(.strict-grid),
+                                        .col-group > .m-grid-6:not(.strict-grid),
+                                        .col-grp > .m-grid-6:not(.strict-grid),
+                                        .column-group > .m-grid-6:not(.strict-grid),
+                                        .row-group > .m-grid-6:not(.strict-grid),
+                                        .row-grp > .m-grid-6:not(.strict-grid) {
+                                            min-height: 16.6666%;
+                                            min-width: 16.6666%
+                                        }
+
+                                    /* 7 */
+                                    .col-group > .mm-grid-7,
+                                    .col-grp > .mm-grid-7,
+                                    .column-group > .mm-grid-7,
+                                    .row-group > .mm-grid-7,
+                                    .row-grp > .mm-grid-7,
+                                    .col-group > .m-grid-7,
+                                    .col-grp > .m-grid-7,
+                                    .column-group > .m-grid-7,
+                                    .row-group > .m-grid-7,
+                                    .row-grp > .m-grid-7 {
+                                        height: 14.2857%;
+                                        flex-basis: 14.2857%;
+                                        width: 14.2857%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-7:not(.strict-grid),
+                                        .col-grp > .mm-grid-7:not(.strict-grid),
+                                        .column-group > .mm-grid-7:not(.strict-grid),
+                                        .row-group > .mm-grid-7:not(.strict-grid),
+                                        .row-grp > .mm-grid-7:not(.strict-grid),
+                                        .col-group > .m-grid-7:not(.strict-grid),
+                                        .col-grp > .m-grid-7:not(.strict-grid),
+                                        .column-group > .m-grid-7:not(.strict-grid),
+                                        .row-group > .m-grid-7:not(.strict-grid),
+                                        .row-grp > .m-grid-7:not(.strict-grid) {
+                                            min-height: 14.2857%;
+                                            min-width: 14.2857%
+                                        }
+
+                                    /* 8 */
+                                    .col-group > .mm-grid-8,
+                                    .col-grp > .mm-grid-8,
+                                    .column-group > .mm-grid-8,
+                                    .row-group > .mm-grid-8,
+                                    .row-grp > .mm-grid-8,
+                                    .col-group > .m-grid-8,
+                                    .col-grp > .m-grid-8,
+                                    .column-group > .m-grid-8,
+                                    .row-group > .m-grid-8,
+                                    .row-grp > .m-grid-8 {
+                                        height: 12.5%;
+                                        flex-basis: 12.5%;
+                                        width: 12.5%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-8:not(.strict-grid),
+                                        .col-grp > .mm-grid-8:not(.strict-grid),
+                                        .column-group > .mm-grid-8:not(.strict-grid),
+                                        .row-group > .mm-grid-8:not(.strict-grid),
+                                        .row-grp > .mm-grid-8:not(.strict-grid),
+                                        .col-group > .m-grid-8:not(.strict-grid),
+                                        .col-grp > .m-grid-8:not(.strict-grid),
+                                        .column-group > .m-grid-8:not(.strict-grid),
+                                        .row-group > .m-grid-8:not(.strict-grid),
+                                        .row-grp > .m-grid-8:not(.strict-grid) {
+                                            min-height: 12.5%;
+                                            min-width: 12.5%
+                                        }
+
+                                    /* 9 */
+                                    .col-group > .mm-grid-9,
+                                    .col-grp > .mm-grid-9,
+                                    .column-group > .mm-grid-9,
+                                    .row-group > .mm-grid-9,
+                                    .row-grp > .mm-grid-9,
+                                    .col-group > .m-grid-9,
+                                    .col-grp > .m-grid-9,
+                                    .column-group > .m-grid-9,
+                                    .row-group > .m-grid-9,
+                                    .row-grp > .m-grid-9 {
+                                        height: 11.1111%;
+                                        flex-basis: 11.1111%;
+                                        width: 11.1111%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-9:not(.strict-grid),
+                                        .col-grp > .mm-grid-9:not(.strict-grid),
+                                        .column-group > .mm-grid-9:not(.strict-grid),
+                                        .row-group > .mm-grid-9:not(.strict-grid),
+                                        .row-grp > .mm-grid-9:not(.strict-grid),
+                                        .col-group > .m-grid-9:not(.strict-grid),
+                                        .col-grp > .m-grid-9:not(.strict-grid),
+                                        .column-group > .m-grid-9:not(.strict-grid),
+                                        .row-group > .m-grid-9:not(.strict-grid),
+                                        .row-grp > .m-grid-9:not(.strict-grid) {
+                                            min-height: 11.1111%;
+                                            min-width: 11.1111%
+                                        }
+
+                                    /* 10 */
+                                    .col-group > .mm-grid-10,
+                                    .col-grp > .mm-grid-10,
+                                    .column-group > .mm-grid-10,
+                                    .row-group > .mm-grid-10,
+                                    .row-grp > .mm-grid-10,
+                                    .col-group > .m-grid-10,
+                                    .col-grp > .m-grid-10,
+                                    .column-group > .m-grid-10,
+                                    .row-group > .m-grid-10,
+                                    .row-grp > .m-grid-10 {
+                                        height: 10%;
+                                        flex-basis: 10%;
+                                        width: 10%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-10:not(.strict-grid),
+                                        .col-grp > .mm-grid-10:not(.strict-grid),
+                                        .column-group > .mm-grid-10:not(.strict-grid),
+                                        .row-group > .mm-grid-10:not(.strict-grid),
+                                        .row-grp > .mm-grid-10:not(.strict-grid),
+                                        .col-group > .m-grid-10:not(.strict-grid),
+                                        .col-grp > .m-grid-10:not(.strict-grid),
+                                        .column-group > .m-grid-10:not(.strict-grid),
+                                        .row-group > .m-grid-10:not(.strict-grid),
+                                        .row-grp > .m-grid-10:not(.strict-grid) {
+                                            min-height: 10%;
+                                            min-width: 10%
+                                        }
+
+                                    /* 11 */
+                                    .col-group > .mm-grid-11,
+                                    .col-grp > .mm-grid-11,
+                                    .column-group > .mm-grid-11,
+                                    .row-group > .mm-grid-11,
+                                    .row-grp > .mm-grid-11,
+                                    .col-group > .m-grid-11,
+                                    .col-grp > .m-grid-11,
+                                    .column-group > .m-grid-11,
+                                    .row-group > .m-grid-11,
+                                    .row-grp > .m-grid-11 {
+                                        height: 9.09091%;
+                                        flex-basis: 9.09091%;
+                                        width: 9.09091%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-11:not(.strict-grid),
+                                        .col-grp > .mm-grid-11:not(.strict-grid),
+                                        .column-group > .mm-grid-11:not(.strict-grid),
+                                        .row-group > .mm-grid-11:not(.strict-grid),
+                                        .row-grp > .mm-grid-11:not(.strict-grid),
+                                        .col-group > .m-grid-11:not(.strict-grid),
+                                        .col-grp > .m-grid-11:not(.strict-grid),
+                                        .column-group > .m-grid-11:not(.strict-grid),
+                                        .row-group > .m-grid-11:not(.strict-grid),
+                                        .row-grp > .m-grid-11:not(.strict-grid) {
+                                            min-height: 9.09091%;
+                                            min-width: 9.09091%
+                                        }
+
+                                    /* 12 */
+                                    .col-group > .mm-grid-12,
+                                    .col-grp > .mm-grid-12,
+                                    .column-group > .mm-grid-12,
+                                    .row-group > .mm-grid-12,
+                                    .row-grp > .mm-grid-12,
+                                    .col-group > .m-grid-12,
+                                    .col-grp > .m-grid-12,
+                                    .column-group > .m-grid-12,
+                                    .row-group > .m-grid-12,
+                                    .row-grp > .m-grid-12 {
+                                        height: 8.33334%;
+                                        flex-basis: 8.33334%;
+                                        width: 8.33334%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .mm-grid-12:not(.strict-grid),
+                                        .col-grp > .mm-grid-12:not(.strict-grid),
+                                        .column-group > .mm-grid-12:not(.strict-grid),
+                                        .row-group > .mm-grid-12:not(.strict-grid),
+                                        .row-grp > .mm-grid-12:not(.strict-grid),
+                                        .col-group > .m-grid-12:not(.strict-grid),
+                                        .col-grp > .m-grid-12:not(.strict-grid),
+                                        .column-group > .m-grid-12:not(.strict-grid),
+                                        .row-group > .m-grid-12:not(.strict-grid),
+                                        .row-grp > .m-grid-12:not(.strict-grid) {
+                                            min-height: 8.33334%;
+                                            min-width: 8.33334%
+                                        }
+                        }
 
                         /* Mobile (Large) */
                         @media only all
                             and (max-width: 425px)
-                            and (min-width: 376px) {}
+                            and (min-width: 376px) {
+                                /* Grid Levels */
+                                    /* 0 */
+                                    .col-group > .ml-grid-0,
+                                    .col-grp > .ml-grid-0,
+                                    .column-group > .ml-grid-0,
+                                    .row-group > .ml-grid-0,
+                                    .row-grp > .ml-grid-0,
+                                    .col-group > .m-grid-0,
+                                    .col-grp > .m-grid-0,
+                                    .column-group > .m-grid-0,
+                                    .row-group > .m-grid-0,
+                                    .row-grp > .m-grid-0 { flex-basis: 0 }
+
+                                    /* 1 */
+                                    .col-group > .ml-grid-1,
+                                    .col-grp > .ml-grid-1,
+                                    .column-group > .ml-grid-1,
+                                    .row-group > .ml-grid-1,
+                                    .row-grp > .ml-grid-1,
+                                    .col-group > .m-grid-1,
+                                    .col-grp > .m-grid-1,
+                                    .column-group > .m-grid-1,
+                                    .row-group > .m-grid-1,
+                                    .row-grp > .m-grid-1 { flex-basis: 100% }
+
+                                    /* 2 */
+                                    .col-group > .ml-grid-2,
+                                    .col-grp > .ml-grid-2,
+                                    .column-group > .ml-grid-2,
+                                    .row-group > .ml-grid-2,
+                                    .row-grp > .ml-grid-2,
+                                    .col-group > .m-grid-2,
+                                    .col-grp > .m-grid-2,
+                                    .column-group > .m-grid-2,
+                                    .row-group > .m-grid-2,
+                                    .row-grp > .m-grid-2 {
+                                        height: 50%;
+                                        flex-basis: 50%;
+                                        width: 50%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-2:not(.strict-grid),
+                                        .col-grp > .ml-grid-2:not(.strict-grid),
+                                        .column-group > .ml-grid-2:not(.strict-grid),
+                                        .row-group > .ml-grid-2:not(.strict-grid),
+                                        .row-grp > .ml-grid-2:not(.strict-grid),
+                                        .col-group > .m-grid-2:not(.strict-grid),
+                                        .col-grp > .m-grid-2:not(.strict-grid),
+                                        .column-group > .m-grid-2:not(.strict-grid),
+                                        .row-group > .m-grid-2:not(.strict-grid),
+                                        .row-grp > .m-grid-2:not(.strict-grid) {
+                                            min-height: 50%;
+                                            min-width: 50%
+                                        }
+
+                                    /* 3 */
+                                    .col-group > .ml-grid-3,
+                                    .col-grp > .ml-grid-3,
+                                    .column-group > .ml-grid-3,
+                                    .row-group > .ml-grid-3,
+                                    .row-grp > .ml-grid-3,
+                                    .col-group > .m-grid-3,
+                                    .col-grp > .m-grid-3,
+                                    .column-group > .m-grid-3,
+                                    .row-group > .m-grid-3,
+                                    .row-grp > .m-grid-3 {
+                                        height: 33.3333%;
+                                        flex-basis: 33.3333%;
+                                        width: 33.3333%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-3:not(.strict-grid),
+                                        .col-grp > .ml-grid-3:not(.strict-grid),
+                                        .column-group > .ml-grid-3:not(.strict-grid),
+                                        .row-group > .ml-grid-3:not(.strict-grid),
+                                        .row-grp > .ml-grid-3:not(.strict-grid),
+                                        .col-group > .m-grid-3:not(.strict-grid),
+                                        .col-grp > .m-grid-3:not(.strict-grid),
+                                        .column-group > .m-grid-3:not(.strict-grid),
+                                        .row-group > .m-grid-3:not(.strict-grid),
+                                        .row-grp > .m-grid-3:not(.strict-grid) {
+                                            min-height: 33.3333%;
+                                            min-width: 33.3333%
+                                        }
+
+                                    /* 4 */
+                                    .col-group > .ml-grid-4,
+                                    .col-grp > .ml-grid-4,
+                                    .column-group > .ml-grid-4,
+                                    .row-group > .ml-grid-4,
+                                    .row-grp > .ml-grid-4,
+                                    .col-group > .m-grid-4,
+                                    .col-grp > .m-grid-4,
+                                    .column-group > .m-grid-4,
+                                    .row-group > .m-grid-4,
+                                    .row-grp > .m-grid-4 {
+                                        height: 25%;
+                                        flex-basis: 25%;
+                                        width: 25%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-4:not(.strict-grid),
+                                        .col-grp > .ml-grid-4:not(.strict-grid),
+                                        .column-group > .ml-grid-4:not(.strict-grid),
+                                        .row-group > .ml-grid-4:not(.strict-grid),
+                                        .row-grp > .ml-grid-4:not(.strict-grid),
+                                        .col-group > .m-grid-4:not(.strict-grid),
+                                        .col-grp > .m-grid-4:not(.strict-grid),
+                                        .column-group > .m-grid-4:not(.strict-grid),
+                                        .row-group > .m-grid-4:not(.strict-grid),
+                                        .row-grp > .m-grid-4:not(.strict-grid) {
+                                            min-height: 25%;
+                                            min-width: 25%
+                                        }
+
+                                    /* 5 */
+                                    .col-group > .ml-grid-5,
+                                    .col-grp > .ml-grid-5,
+                                    .column-group > .ml-grid-5,
+                                    .row-group > .ml-grid-5,
+                                    .row-grp > .ml-grid-5,
+                                    .col-group > .m-grid-5,
+                                    .col-grp > .m-grid-5,
+                                    .column-group > .m-grid-5,
+                                    .row-group > .m-grid-5,
+                                    .row-grp > .m-grid-5 {
+                                        height: 20%;
+                                        flex-basis: 20%;
+                                        width: 20%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-5:not(.strict-grid),
+                                        .col-grp > .ml-grid-5:not(.strict-grid),
+                                        .column-group > .ml-grid-5:not(.strict-grid),
+                                        .row-group > .ml-grid-5:not(.strict-grid),
+                                        .row-grp > .ml-grid-5:not(.strict-grid),
+                                        .col-group > .m-grid-5:not(.strict-grid),
+                                        .col-grp > .m-grid-5:not(.strict-grid),
+                                        .column-group > .m-grid-5:not(.strict-grid),
+                                        .row-group > .m-grid-5:not(.strict-grid),
+                                        .row-grp > .m-grid-5:not(.strict-grid) {
+                                            min-height: 20%;
+                                            min-width: 20%
+                                        }
+
+                                    /* 6 */
+                                    .col-group > .ml-grid-6,
+                                    .col-grp > .ml-grid-6,
+                                    .column-group > .ml-grid-6,
+                                    .row-group > .ml-grid-6,
+                                    .row-grp > .ml-grid-6,
+                                    .col-group > .m-grid-6,
+                                    .col-grp > .m-grid-6,
+                                    .column-group > .m-grid-6,
+                                    .row-group > .m-grid-6,
+                                    .row-grp > .m-grid-6 {
+                                        height: 16.6666%;
+                                        flex-basis: 16.6666%;
+                                        width: 16.6666%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-6:not(.strict-grid),
+                                        .col-grp > .ml-grid-6:not(.strict-grid),
+                                        .column-group > .ml-grid-6:not(.strict-grid),
+                                        .row-group > .ml-grid-6:not(.strict-grid),
+                                        .row-grp > .ml-grid-6:not(.strict-grid),
+                                        .col-group > .m-grid-6:not(.strict-grid),
+                                        .col-grp > .m-grid-6:not(.strict-grid),
+                                        .column-group > .m-grid-6:not(.strict-grid),
+                                        .row-group > .m-grid-6:not(.strict-grid),
+                                        .row-grp > .m-grid-6:not(.strict-grid) {
+                                            min-height: 16.6666%;
+                                            min-width: 16.6666%
+                                        }
+
+                                    /* 7 */
+                                    .col-group > .ml-grid-7,
+                                    .col-grp > .ml-grid-7,
+                                    .column-group > .ml-grid-7,
+                                    .row-group > .ml-grid-7,
+                                    .row-grp > .ml-grid-7,
+                                    .col-group > .m-grid-7,
+                                    .col-grp > .m-grid-7,
+                                    .column-group > .m-grid-7,
+                                    .row-group > .m-grid-7,
+                                    .row-grp > .m-grid-7 {
+                                        height: 14.2857%;
+                                        flex-basis: 14.2857%;
+                                        width: 14.2857%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-7:not(.strict-grid),
+                                        .col-grp > .ml-grid-7:not(.strict-grid),
+                                        .column-group > .ml-grid-7:not(.strict-grid),
+                                        .row-group > .ml-grid-7:not(.strict-grid),
+                                        .row-grp > .ml-grid-7:not(.strict-grid),
+                                        .col-group > .m-grid-7:not(.strict-grid),
+                                        .col-grp > .m-grid-7:not(.strict-grid),
+                                        .column-group > .m-grid-7:not(.strict-grid),
+                                        .row-group > .m-grid-7:not(.strict-grid),
+                                        .row-grp > .m-grid-7:not(.strict-grid) {
+                                            min-height: 14.2857%;
+                                            min-width: 14.2857%
+                                        }
+
+                                    /* 8 */
+                                    .col-group > .ml-grid-8,
+                                    .col-grp > .ml-grid-8,
+                                    .column-group > .ml-grid-8,
+                                    .row-group > .ml-grid-8,
+                                    .row-grp > .ml-grid-8,
+                                    .col-group > .m-grid-8,
+                                    .col-grp > .m-grid-8,
+                                    .column-group > .m-grid-8,
+                                    .row-group > .m-grid-8,
+                                    .row-grp > .m-grid-8 {
+                                        height: 12.5%;
+                                        flex-basis: 12.5%;
+                                        width: 12.5%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-8:not(.strict-grid),
+                                        .col-grp > .ml-grid-8:not(.strict-grid),
+                                        .column-group > .ml-grid-8:not(.strict-grid),
+                                        .row-group > .ml-grid-8:not(.strict-grid),
+                                        .row-grp > .ml-grid-8:not(.strict-grid),
+                                        .col-group > .m-grid-8:not(.strict-grid),
+                                        .col-grp > .m-grid-8:not(.strict-grid),
+                                        .column-group > .m-grid-8:not(.strict-grid),
+                                        .row-group > .m-grid-8:not(.strict-grid),
+                                        .row-grp > .m-grid-8:not(.strict-grid) {
+                                            min-height: 12.5%;
+                                            min-width: 12.5%
+                                        }
+
+                                    /* 9 */
+                                    .col-group > .ml-grid-9,
+                                    .col-grp > .ml-grid-9,
+                                    .column-group > .ml-grid-9,
+                                    .row-group > .ml-grid-9,
+                                    .row-grp > .ml-grid-9,
+                                    .col-group > .m-grid-9,
+                                    .col-grp > .m-grid-9,
+                                    .column-group > .m-grid-9,
+                                    .row-group > .m-grid-9,
+                                    .row-grp > .m-grid-9 {
+                                        height: 11.1111%;
+                                        flex-basis: 11.1111%;
+                                        width: 11.1111%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-9:not(.strict-grid),
+                                        .col-grp > .ml-grid-9:not(.strict-grid),
+                                        .column-group > .ml-grid-9:not(.strict-grid),
+                                        .row-group > .ml-grid-9:not(.strict-grid),
+                                        .row-grp > .ml-grid-9:not(.strict-grid),
+                                        .col-group > .m-grid-9:not(.strict-grid),
+                                        .col-grp > .m-grid-9:not(.strict-grid),
+                                        .column-group > .m-grid-9:not(.strict-grid),
+                                        .row-group > .m-grid-9:not(.strict-grid),
+                                        .row-grp > .m-grid-9:not(.strict-grid) {
+                                            min-height: 11.1111%;
+                                            min-width: 11.1111%
+                                        }
+
+                                    /* 10 */
+                                    .col-group > .ml-grid-10,
+                                    .col-grp > .ml-grid-10,
+                                    .column-group > .ml-grid-10,
+                                    .row-group > .ml-grid-10,
+                                    .row-grp > .ml-grid-10,
+                                    .col-group > .m-grid-10,
+                                    .col-grp > .m-grid-10,
+                                    .column-group > .m-grid-10,
+                                    .row-group > .m-grid-10,
+                                    .row-grp > .m-grid-10 {
+                                        height: 10%;
+                                        flex-basis: 10%;
+                                        width: 10%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-10:not(.strict-grid),
+                                        .col-grp > .ml-grid-10:not(.strict-grid),
+                                        .column-group > .ml-grid-10:not(.strict-grid),
+                                        .row-group > .ml-grid-10:not(.strict-grid),
+                                        .row-grp > .ml-grid-10:not(.strict-grid),
+                                        .col-group > .m-grid-10:not(.strict-grid),
+                                        .col-grp > .m-grid-10:not(.strict-grid),
+                                        .column-group > .m-grid-10:not(.strict-grid),
+                                        .row-group > .m-grid-10:not(.strict-grid),
+                                        .row-grp > .m-grid-10:not(.strict-grid) {
+                                            min-height: 10%;
+                                            min-width: 10%
+                                        }
+
+                                    /* 11 */
+                                    .col-group > .ml-grid-11,
+                                    .col-grp > .ml-grid-11,
+                                    .column-group > .ml-grid-11,
+                                    .row-group > .ml-grid-11,
+                                    .row-grp > .ml-grid-11,
+                                    .col-group > .m-grid-11,
+                                    .col-grp > .m-grid-11,
+                                    .column-group > .m-grid-11,
+                                    .row-group > .m-grid-11,
+                                    .row-grp > .m-grid-11 {
+                                        height: 9.09091%;
+                                        flex-basis: 9.09091%;
+                                        width: 9.09091%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-11:not(.strict-grid),
+                                        .col-grp > .ml-grid-11:not(.strict-grid),
+                                        .column-group > .ml-grid-11:not(.strict-grid),
+                                        .row-group > .ml-grid-11:not(.strict-grid),
+                                        .row-grp > .ml-grid-11:not(.strict-grid),
+                                        .col-group > .m-grid-11:not(.strict-grid),
+                                        .col-grp > .m-grid-11:not(.strict-grid),
+                                        .column-group > .m-grid-11:not(.strict-grid),
+                                        .row-group > .m-grid-11:not(.strict-grid),
+                                        .row-grp > .m-grid-11:not(.strict-grid) {
+                                            min-height: 9.09091%;
+                                            min-width: 9.09091%
+                                        }
+
+                                    /* 12 */
+                                    .col-group > .ml-grid-12,
+                                    .col-grp > .ml-grid-12,
+                                    .column-group > .ml-grid-12,
+                                    .row-group > .ml-grid-12,
+                                    .row-grp > .ml-grid-12,
+                                    .col-group > .m-grid-12,
+                                    .col-grp > .m-grid-12,
+                                    .column-group > .m-grid-12,
+                                    .row-group > .m-grid-12,
+                                    .row-grp > .m-grid-12 {
+                                        height: 8.33334%;
+                                        flex-basis: 8.33334%;
+                                        width: 8.33334%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ml-grid-12:not(.strict-grid),
+                                        .col-grp > .ml-grid-12:not(.strict-grid),
+                                        .column-group > .ml-grid-12:not(.strict-grid),
+                                        .row-group > .ml-grid-12:not(.strict-grid),
+                                        .row-grp > .ml-grid-12:not(.strict-grid),
+                                        .col-group > .m-grid-12:not(.strict-grid),
+                                        .col-grp > .m-grid-12:not(.strict-grid),
+                                        .column-group > .m-grid-12:not(.strict-grid),
+                                        .row-group > .m-grid-12:not(.strict-grid),
+                                        .row-grp > .m-grid-12:not(.strict-grid) {
+                                            min-height: 8.33334%;
+                                            min-width: 8.33334%
+                                        }
+                        }
 
                         /* Tablet */
                         @media only all
                             and (max-width: 768px)
-                            and (min-width: 426px) {}
+                            and (min-width: 426px) {
+                                /* Grid Levels */
+                                    /* 0 */
+                                    .col-group > .t-grid-0,
+                                    .col-grp > .t-grid-0,
+                                    .column-group > .t-grid-0,
+                                    .row-group > .t-grid-0,
+                                    .row-grp > .t-grid-0 { flex-basis: 0 }
+
+                                    /* 1 */
+                                    .col-group > .t-grid-1,
+                                    .col-grp > .t-grid-1,
+                                    .column-group > .t-grid-1,
+                                    .row-group > .t-grid-1,
+                                    .row-grp > .t-grid-1 { flex-basis: 100% }
+
+                                    /* 2 */
+                                    .col-group > .t-grid-2,
+                                    .col-grp > .t-grid-2,
+                                    .column-group > .t-grid-2,
+                                    .row-group > .t-grid-2,
+                                    .row-grp > .t-grid-2 {
+                                        height: 50%;
+                                        flex-basis: 50%;
+                                        width: 50%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-2:not(.strict-grid),
+                                        .col-grp > .t-grid-2:not(.strict-grid),
+                                        .column-group > .t-grid-2:not(.strict-grid),
+                                        .row-group > .t-grid-2:not(.strict-grid),
+                                        .row-grp > .t-grid-2:not(.strict-grid) {
+                                            min-height: 50%;
+                                            min-width: 50%
+                                        }
+
+                                    /* 3 */
+                                    .col-group > .t-grid-3,
+                                    .col-grp > .t-grid-3,
+                                    .column-group > .t-grid-3,
+                                    .row-group > .t-grid-3,
+                                    .row-grp > .t-grid-3 {
+                                        height: 33.3333%;
+                                        flex-basis: 33.3333%;
+                                        width: 33.3333%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-3:not(.strict-grid),
+                                        .col-grp > .t-grid-3:not(.strict-grid),
+                                        .column-group > .t-grid-3:not(.strict-grid),
+                                        .row-group > .t-grid-3:not(.strict-grid),
+                                        .row-grp > .t-grid-3:not(.strict-grid) {
+                                            min-height: 33.3333%;
+                                            min-width: 33.3333%
+                                        }
+
+                                    /* 4 */
+                                    .col-group > .t-grid-4,
+                                    .col-grp > .t-grid-4,
+                                    .column-group > .t-grid-4,
+                                    .row-group > .t-grid-4,
+                                    .row-grp > .t-grid-4 {
+                                        height: 25%;
+                                        flex-basis: 25%;
+                                        width: 25%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-4:not(.strict-grid),
+                                        .col-grp > .t-grid-4:not(.strict-grid),
+                                        .column-group > .t-grid-4:not(.strict-grid),
+                                        .row-group > .t-grid-4:not(.strict-grid),
+                                        .row-grp > .t-grid-4:not(.strict-grid) {
+                                            min-height: 25%;
+                                            min-width: 25%
+                                        }
+
+                                    /* 5 */
+                                    .col-group > .t-grid-5,
+                                    .col-grp > .t-grid-5,
+                                    .column-group > .t-grid-5,
+                                    .row-group > .t-grid-5,
+                                    .row-grp > .t-grid-5 {
+                                        height: 20%;
+                                        flex-basis: 20%;
+                                        width: 20%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-5:not(.strict-grid),
+                                        .col-grp > .t-grid-5:not(.strict-grid),
+                                        .column-group > .t-grid-5:not(.strict-grid),
+                                        .row-group > .t-grid-5:not(.strict-grid),
+                                        .row-grp > .t-grid-5:not(.strict-grid) {
+                                            min-height: 20%;
+                                            min-width: 20%
+                                        }
+
+                                    /* 6 */
+                                    .col-group > .t-grid-6,
+                                    .col-grp > .t-grid-6,
+                                    .column-group > .t-grid-6,
+                                    .row-group > .t-grid-6,
+                                    .row-grp > .t-grid-6 {
+                                        height: 16.6666%;
+                                        flex-basis: 16.6666%;
+                                        width: 16.6666%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-6:not(.strict-grid),
+                                        .col-grp > .t-grid-6:not(.strict-grid),
+                                        .column-group > .t-grid-6:not(.strict-grid),
+                                        .row-group > .t-grid-6:not(.strict-grid),
+                                        .row-grp > .t-grid-6:not(.strict-grid) {
+                                            min-height: 16.6666%;
+                                            min-width: 16.6666%
+                                        }
+
+                                    /* 7 */
+                                    .col-group > .t-grid-7,
+                                    .col-grp > .t-grid-7,
+                                    .column-group > .t-grid-7,
+                                    .row-group > .t-grid-7,
+                                    .row-grp > .t-grid-7 {
+                                        height: 14.2857%;
+                                        flex-basis: 14.2857%;
+                                        width: 14.2857%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-7:not(.strict-grid),
+                                        .col-grp > .t-grid-7:not(.strict-grid),
+                                        .column-group > .t-grid-7:not(.strict-grid),
+                                        .row-group > .t-grid-7:not(.strict-grid),
+                                        .row-grp > .t-grid-7:not(.strict-grid) {
+                                            min-height: 14.2857%;
+                                            min-width: 14.2857%
+                                        }
+
+                                    /* 8 */
+                                    .col-group > .t-grid-8,
+                                    .col-grp > .t-grid-8,
+                                    .column-group > .t-grid-8,
+                                    .row-group > .t-grid-8,
+                                    .row-grp > .t-grid-8 {
+                                        height: 12.5%;
+                                        flex-basis: 12.5%;
+                                        width: 12.5%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-8:not(.strict-grid),
+                                        .col-grp > .t-grid-8:not(.strict-grid),
+                                        .column-group > .t-grid-8:not(.strict-grid),
+                                        .row-group > .t-grid-8:not(.strict-grid),
+                                        .row-grp > .t-grid-8:not(.strict-grid) {
+                                            min-height: 12.5%;
+                                            min-width: 12.5%
+                                        }
+
+                                    /* 9 */
+                                    .col-group > .t-grid-9,
+                                    .col-grp > .t-grid-9,
+                                    .column-group > .t-grid-9,
+                                    .row-group > .t-grid-9,
+                                    .row-grp > .t-grid-9 {
+                                        height: 11.1111%;
+                                        flex-basis: 11.1111%;
+                                        width: 11.1111%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-9:not(.strict-grid),
+                                        .col-grp > .t-grid-9:not(.strict-grid),
+                                        .column-group > .t-grid-9:not(.strict-grid),
+                                        .row-group > .t-grid-9:not(.strict-grid),
+                                        .row-grp > .t-grid-9:not(.strict-grid) {
+                                            min-height: 11.1111%;
+                                            min-width: 11.1111%
+                                        }
+
+                                    /* 10 */
+                                    .col-group > .t-grid-10,
+                                    .col-grp > .t-grid-10,
+                                    .column-group > .t-grid-10,
+                                    .row-group > .t-grid-10,
+                                    .row-grp > .t-grid-10 {
+                                        height: 10%;
+                                        flex-basis: 10%;
+                                        width: 10%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-10:not(.strict-grid),
+                                        .col-grp > .t-grid-10:not(.strict-grid),
+                                        .column-group > .t-grid-10:not(.strict-grid),
+                                        .row-group > .t-grid-10:not(.strict-grid),
+                                        .row-grp > .t-grid-10:not(.strict-grid) {
+                                            min-height: 10%;
+                                            min-width: 10%
+                                        }
+
+                                    /* 11 */
+                                    .col-group > .t-grid-11,
+                                    .col-grp > .t-grid-11,
+                                    .column-group > .t-grid-11,
+                                    .row-group > .t-grid-11,
+                                    .row-grp > .t-grid-11 {
+                                        height: 9.09091%;
+                                        flex-basis: 9.09091%;
+                                        width: 9.09091%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-11:not(.strict-grid),
+                                        .col-grp > .t-grid-11:not(.strict-grid),
+                                        .column-group > .t-grid-11:not(.strict-grid),
+                                        .row-group > .t-grid-11:not(.strict-grid),
+                                        .row-grp > .t-grid-11:not(.strict-grid) {
+                                            min-height: 9.09091%;
+                                            min-width: 9.09091%
+                                        }
+
+                                    /* 12 */
+                                    .col-group > .t-grid-12,
+                                    .col-grp > .t-grid-12,
+                                    .column-group > .t-grid-12,
+                                    .row-group > .t-grid-12,
+                                    .row-grp > .t-grid-12 {
+                                        height: 8.33334%;
+                                        flex-basis: 8.33334%;
+                                        width: 8.33334%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .t-grid-12:not(.strict-grid),
+                                        .col-grp > .t-grid-12:not(.strict-grid),
+                                        .column-group > .t-grid-12:not(.strict-grid),
+                                        .row-group > .t-grid-12:not(.strict-grid),
+                                        .row-grp > .t-grid-12:not(.strict-grid) {
+                                            min-height: 8.33334%;
+                                            min-width: 8.33334%
+                                        }
+                        }
 
                         /* Laptop */
                         @media only all
                             and (max-width: 1024px)
-                            and (min-width: 769px) {}
+                            and (min-width: 769px) {
+                                /* Grid Levels */
+                                    /* 0 */
+                                    .col-group > .l-grid-0,
+                                    .col-grp > .l-grid-0,
+                                    .column-group > .l-grid-0,
+                                    .row-group > .l-grid-0,
+                                    .row-grp > .l-grid-0 { flex-basis: 0 }
+
+                                    /* 1 */
+                                    .col-group > .l-grid-1,
+                                    .col-grp > .l-grid-1,
+                                    .column-group > .l-grid-1,
+                                    .row-group > .l-grid-1,
+                                    .row-grp > .l-grid-1 { flex-basis: 100% }
+
+                                    /* 2 */
+                                    .col-group > .l-grid-2,
+                                    .col-grp > .l-grid-2,
+                                    .column-group > .l-grid-2,
+                                    .row-group > .l-grid-2,
+                                    .row-grp > .l-grid-2 {
+                                        height: 50%;
+                                        flex-basis: 50%;
+                                        width: 50%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-2:not(.strict-grid),
+                                        .col-grp > .l-grid-2:not(.strict-grid),
+                                        .column-group > .l-grid-2:not(.strict-grid),
+                                        .row-group > .l-grid-2:not(.strict-grid),
+                                        .row-grp > .l-grid-2:not(.strict-grid) {
+                                            min-height: 50%;
+                                            min-width: 50%
+                                        }
+
+                                    /* 3 */
+                                    .col-group > .l-grid-3,
+                                    .col-grp > .l-grid-3,
+                                    .column-group > .l-grid-3,
+                                    .row-group > .l-grid-3,
+                                    .row-grp > .l-grid-3 {
+                                        height: 33.3333%;
+                                        flex-basis: 33.3333%;
+                                        width: 33.3333%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-3:not(.strict-grid),
+                                        .col-grp > .l-grid-3:not(.strict-grid),
+                                        .column-group > .l-grid-3:not(.strict-grid),
+                                        .row-group > .l-grid-3:not(.strict-grid),
+                                        .row-grp > .l-grid-3:not(.strict-grid) {
+                                            min-height: 33.3333%;
+                                            min-width: 33.3333%
+                                        }
+
+                                    /* 4 */
+                                    .col-group > .l-grid-4,
+                                    .col-grp > .l-grid-4,
+                                    .column-group > .l-grid-4,
+                                    .row-group > .l-grid-4,
+                                    .row-grp > .l-grid-4 {
+                                        height: 25%;
+                                        flex-basis: 25%;
+                                        width: 25%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-4:not(.strict-grid),
+                                        .col-grp > .l-grid-4:not(.strict-grid),
+                                        .column-group > .l-grid-4:not(.strict-grid),
+                                        .row-group > .l-grid-4:not(.strict-grid),
+                                        .row-grp > .l-grid-4:not(.strict-grid) {
+                                            min-height: 25%;
+                                            min-width: 25%
+                                        }
+
+                                    /* 5 */
+                                    .col-group > .l-grid-5,
+                                    .col-grp > .l-grid-5,
+                                    .column-group > .l-grid-5,
+                                    .row-group > .l-grid-5,
+                                    .row-grp > .l-grid-5 {
+                                        height: 20%;
+                                        flex-basis: 20%;
+                                        width: 20%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-5:not(.strict-grid),
+                                        .col-grp > .l-grid-5:not(.strict-grid),
+                                        .column-group > .l-grid-5:not(.strict-grid),
+                                        .row-group > .l-grid-5:not(.strict-grid),
+                                        .row-grp > .l-grid-5:not(.strict-grid) {
+                                            min-height: 20%;
+                                            min-width: 20%
+                                        }
+
+                                    /* 6 */
+                                    .col-group > .l-grid-6,
+                                    .col-grp > .l-grid-6,
+                                    .column-group > .l-grid-6,
+                                    .row-group > .l-grid-6,
+                                    .row-grp > .l-grid-6 {
+                                        height: 16.6666%;
+                                        flex-basis: 16.6666%;
+                                        width: 16.6666%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-6:not(.strict-grid),
+                                        .col-grp > .l-grid-6:not(.strict-grid),
+                                        .column-group > .l-grid-6:not(.strict-grid),
+                                        .row-group > .l-grid-6:not(.strict-grid),
+                                        .row-grp > .l-grid-6:not(.strict-grid) {
+                                            min-height: 16.6666%;
+                                            min-width: 16.6666%
+                                        }
+
+                                    /* 7 */
+                                    .col-group > .l-grid-7,
+                                    .col-grp > .l-grid-7,
+                                    .column-group > .l-grid-7,
+                                    .row-group > .l-grid-7,
+                                    .row-grp > .l-grid-7 {
+                                        height: 14.2857%;
+                                        flex-basis: 14.2857%;
+                                        width: 14.2857%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-7:not(.strict-grid),
+                                        .col-grp > .l-grid-7:not(.strict-grid),
+                                        .column-group > .l-grid-7:not(.strict-grid),
+                                        .row-group > .l-grid-7:not(.strict-grid),
+                                        .row-grp > .l-grid-7:not(.strict-grid) {
+                                            min-height: 14.2857%;
+                                            min-width: 14.2857%
+                                        }
+
+                                    /* 8 */
+                                    .col-group > .l-grid-8,
+                                    .col-grp > .l-grid-8,
+                                    .column-group > .l-grid-8,
+                                    .row-group > .l-grid-8,
+                                    .row-grp > .l-grid-8 {
+                                        height: 12.5%;
+                                        flex-basis: 12.5%;
+                                        width: 12.5%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-8:not(.strict-grid),
+                                        .col-grp > .l-grid-8:not(.strict-grid),
+                                        .column-group > .l-grid-8:not(.strict-grid),
+                                        .row-group > .l-grid-8:not(.strict-grid),
+                                        .row-grp > .l-grid-8:not(.strict-grid) {
+                                            min-height: 12.5%;
+                                            min-width: 12.5%
+                                        }
+
+                                    /* 9 */
+                                    .col-group > .l-grid-9,
+                                    .col-grp > .l-grid-9,
+                                    .column-group > .l-grid-9,
+                                    .row-group > .l-grid-9,
+                                    .row-grp > .l-grid-9 {
+                                        height: 11.1111%;
+                                        flex-basis: 11.1111%;
+                                        width: 11.1111%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-9:not(.strict-grid),
+                                        .col-grp > .l-grid-9:not(.strict-grid),
+                                        .column-group > .l-grid-9:not(.strict-grid),
+                                        .row-group > .l-grid-9:not(.strict-grid),
+                                        .row-grp > .l-grid-9:not(.strict-grid) {
+                                            min-height: 11.1111%;
+                                            min-width: 11.1111%
+                                        }
+
+                                    /* 10 */
+                                    .col-group > .l-grid-10,
+                                    .col-grp > .l-grid-10,
+                                    .column-group > .l-grid-10,
+                                    .row-group > .l-grid-10,
+                                    .row-grp > .l-grid-10 {
+                                        height: 10%;
+                                        flex-basis: 10%;
+                                        width: 10%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-10:not(.strict-grid),
+                                        .col-grp > .l-grid-10:not(.strict-grid),
+                                        .column-group > .l-grid-10:not(.strict-grid),
+                                        .row-group > .l-grid-10:not(.strict-grid),
+                                        .row-grp > .l-grid-10:not(.strict-grid) {
+                                            min-height: 10%;
+                                            min-width: 10%
+                                        }
+
+                                    /* 11 */
+                                    .col-group > .l-grid-11,
+                                    .col-grp > .l-grid-11,
+                                    .column-group > .l-grid-11,
+                                    .row-group > .l-grid-11,
+                                    .row-grp > .l-grid-11 {
+                                        height: 9.09091%;
+                                        flex-basis: 9.09091%;
+                                        width: 9.09091%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-11:not(.strict-grid),
+                                        .col-grp > .l-grid-11:not(.strict-grid),
+                                        .column-group > .l-grid-11:not(.strict-grid),
+                                        .row-group > .l-grid-11:not(.strict-grid),
+                                        .row-grp > .l-grid-11:not(.strict-grid) {
+                                            min-height: 9.09091%;
+                                            min-width: 9.09091%
+                                        }
+
+                                    /* 12 */
+                                    .col-group > .l-grid-12,
+                                    .col-grp > .l-grid-12,
+                                    .column-group > .l-grid-12,
+                                    .row-group > .l-grid-12,
+                                    .row-grp > .l-grid-12 {
+                                        height: 8.33334%;
+                                        flex-basis: 8.33334%;
+                                        width: 8.33334%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .l-grid-12:not(.strict-grid),
+                                        .col-grp > .l-grid-12:not(.strict-grid),
+                                        .column-group > .l-grid-12:not(.strict-grid),
+                                        .row-group > .l-grid-12:not(.strict-grid),
+                                        .row-grp > .l-grid-12:not(.strict-grid) {
+                                            min-height: 8.33334%;
+                                            min-width: 8.33334%
+                                        }
+                        }
 
                         /* Laptop (Large) */
                         @media only all
                             and (max-width: 1440px)
-                            and (min-width: 1025px) {}
+                            and (min-width: 1025px) {
+                                /* Grid Levels */
+                                    /* 0 */
+                                    .col-group > .ll-grid-0,
+                                    .col-grp > .ll-grid-0,
+                                    .column-group > .ll-grid-0,
+                                    .row-group > .ll-grid-0,
+                                    .row-grp > .ll-grid-0 { flex-basis: 0 }
+
+                                    /* 1 */
+                                    .col-group > .ll-grid-1,
+                                    .col-grp > .ll-grid-1,
+                                    .column-group > .ll-grid-1,
+                                    .row-group > .ll-grid-1,
+                                    .row-grp > .ll-grid-1 { flex-basis: 100% }
+
+                                    /* 2 */
+                                    .col-group > .ll-grid-2,
+                                    .col-grp > .ll-grid-2,
+                                    .column-group > .ll-grid-2,
+                                    .row-group > .ll-grid-2,
+                                    .row-grp > .ll-grid-2 {
+                                        height: 50%;
+                                        flex-basis: 50%;
+                                        width: 50%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-2:not(.strict-grid),
+                                        .col-grp > .ll-grid-2:not(.strict-grid),
+                                        .column-group > .ll-grid-2:not(.strict-grid),
+                                        .row-group > .ll-grid-2:not(.strict-grid),
+                                        .row-grp > .ll-grid-2:not(.strict-grid) {
+                                            min-height: 50%;
+                                            min-width: 50%
+                                        }
+
+                                    /* 3 */
+                                    .col-group > .ll-grid-3,
+                                    .col-grp > .ll-grid-3,
+                                    .column-group > .ll-grid-3,
+                                    .row-group > .ll-grid-3,
+                                    .row-grp > .ll-grid-3 {
+                                        height: 33.3333%;
+                                        flex-basis: 33.3333%;
+                                        width: 33.3333%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-3:not(.strict-grid),
+                                        .col-grp > .ll-grid-3:not(.strict-grid),
+                                        .column-group > .ll-grid-3:not(.strict-grid),
+                                        .row-group > .ll-grid-3:not(.strict-grid),
+                                        .row-grp > .ll-grid-3:not(.strict-grid) {
+                                            min-height: 33.3333%;
+                                            min-width: 33.3333%
+                                        }
+
+                                    /* 4 */
+                                    .col-group > .ll-grid-4,
+                                    .col-grp > .ll-grid-4,
+                                    .column-group > .ll-grid-4,
+                                    .row-group > .ll-grid-4,
+                                    .row-grp > .ll-grid-4 {
+                                        height: 25%;
+                                        flex-basis: 25%;
+                                        width: 25%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-4:not(.strict-grid),
+                                        .col-grp > .ll-grid-4:not(.strict-grid),
+                                        .column-group > .ll-grid-4:not(.strict-grid),
+                                        .row-group > .ll-grid-4:not(.strict-grid),
+                                        .row-grp > .ll-grid-4:not(.strict-grid) {
+                                            min-height: 25%;
+                                            min-width: 25%
+                                        }
+
+                                    /* 5 */
+                                    .col-group > .ll-grid-5,
+                                    .col-grp > .ll-grid-5,
+                                    .column-group > .ll-grid-5,
+                                    .row-group > .ll-grid-5,
+                                    .row-grp > .ll-grid-5 {
+                                        height: 20%;
+                                        flex-basis: 20%;
+                                        width: 20%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-5:not(.strict-grid),
+                                        .col-grp > .ll-grid-5:not(.strict-grid),
+                                        .column-group > .ll-grid-5:not(.strict-grid),
+                                        .row-group > .ll-grid-5:not(.strict-grid),
+                                        .row-grp > .ll-grid-5:not(.strict-grid) {
+                                            min-height: 20%;
+                                            min-width: 20%
+                                        }
+
+                                    /* 6 */
+                                    .col-group > .ll-grid-6,
+                                    .col-grp > .ll-grid-6,
+                                    .column-group > .ll-grid-6,
+                                    .row-group > .ll-grid-6,
+                                    .row-grp > .ll-grid-6 {
+                                        height: 16.6666%;
+                                        flex-basis: 16.6666%;
+                                        width: 16.6666%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-6:not(.strict-grid),
+                                        .col-grp > .ll-grid-6:not(.strict-grid),
+                                        .column-group > .ll-grid-6:not(.strict-grid),
+                                        .row-group > .ll-grid-6:not(.strict-grid),
+                                        .row-grp > .ll-grid-6:not(.strict-grid) {
+                                            min-height: 16.6666%;
+                                            min-width: 16.6666%
+                                        }
+
+                                    /* 7 */
+                                    .col-group > .ll-grid-7,
+                                    .col-grp > .ll-grid-7,
+                                    .column-group > .ll-grid-7,
+                                    .row-group > .ll-grid-7,
+                                    .row-grp > .ll-grid-7 {
+                                        height: 14.2857%;
+                                        flex-basis: 14.2857%;
+                                        width: 14.2857%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-7:not(.strict-grid),
+                                        .col-grp > .ll-grid-7:not(.strict-grid),
+                                        .column-group > .ll-grid-7:not(.strict-grid),
+                                        .row-group > .ll-grid-7:not(.strict-grid),
+                                        .row-grp > .ll-grid-7:not(.strict-grid) {
+                                            min-height: 14.2857%;
+                                            min-width: 14.2857%
+                                        }
+
+                                    /* 8 */
+                                    .col-group > .ll-grid-8,
+                                    .col-grp > .ll-grid-8,
+                                    .column-group > .ll-grid-8,
+                                    .row-group > .ll-grid-8,
+                                    .row-grp > .ll-grid-8 {
+                                        height: 12.5%;
+                                        flex-basis: 12.5%;
+                                        width: 12.5%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-8:not(.strict-grid),
+                                        .col-grp > .ll-grid-8:not(.strict-grid),
+                                        .column-group > .ll-grid-8:not(.strict-grid),
+                                        .row-group > .ll-grid-8:not(.strict-grid),
+                                        .row-grp > .ll-grid-8:not(.strict-grid) {
+                                            min-height: 12.5%;
+                                            min-width: 12.5%
+                                        }
+
+                                    /* 9 */
+                                    .col-group > .ll-grid-9,
+                                    .col-grp > .ll-grid-9,
+                                    .column-group > .ll-grid-9,
+                                    .row-group > .ll-grid-9,
+                                    .row-grp > .ll-grid-9 {
+                                        height: 11.1111%;
+                                        flex-basis: 11.1111%;
+                                        width: 11.1111%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-9:not(.strict-grid),
+                                        .col-grp > .ll-grid-9:not(.strict-grid),
+                                        .column-group > .ll-grid-9:not(.strict-grid),
+                                        .row-group > .ll-grid-9:not(.strict-grid),
+                                        .row-grp > .ll-grid-9:not(.strict-grid) {
+                                            min-height: 11.1111%;
+                                            min-width: 11.1111%
+                                        }
+
+                                    /* 10 */
+                                    .col-group > .ll-grid-10,
+                                    .col-grp > .ll-grid-10,
+                                    .column-group > .ll-grid-10,
+                                    .row-group > .ll-grid-10,
+                                    .row-grp > .ll-grid-10 {
+                                        height: 10%;
+                                        flex-basis: 10%;
+                                        width: 10%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-10:not(.strict-grid),
+                                        .col-grp > .ll-grid-10:not(.strict-grid),
+                                        .column-group > .ll-grid-10:not(.strict-grid),
+                                        .row-group > .ll-grid-10:not(.strict-grid),
+                                        .row-grp > .ll-grid-10:not(.strict-grid) {
+                                            min-height: 10%;
+                                            min-width: 10%
+                                        }
+
+                                    /* 11 */
+                                    .col-group > .ll-grid-11,
+                                    .col-grp > .ll-grid-11,
+                                    .column-group > .ll-grid-11,
+                                    .row-group > .ll-grid-11,
+                                    .row-grp > .ll-grid-11 {
+                                        height: 9.09091%;
+                                        flex-basis: 9.09091%;
+                                        width: 9.09091%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-11:not(.strict-grid),
+                                        .col-grp > .ll-grid-11:not(.strict-grid),
+                                        .column-group > .ll-grid-11:not(.strict-grid),
+                                        .row-group > .ll-grid-11:not(.strict-grid),
+                                        .row-grp > .ll-grid-11:not(.strict-grid) {
+                                            min-height: 9.09091%;
+                                            min-width: 9.09091%
+                                        }
+
+                                    /* 12 */
+                                    .col-group > .ll-grid-12,
+                                    .col-grp > .ll-grid-12,
+                                    .column-group > .ll-grid-12,
+                                    .row-group > .ll-grid-12,
+                                    .row-grp > .ll-grid-12 {
+                                        height: 8.33334%;
+                                        flex-basis: 8.33334%;
+                                        width: 8.33334%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .ll-grid-12:not(.strict-grid),
+                                        .col-grp > .ll-grid-12:not(.strict-grid),
+                                        .column-group > .ll-grid-12:not(.strict-grid),
+                                        .row-group > .ll-grid-12:not(.strict-grid),
+                                        .row-grp > .ll-grid-12:not(.strict-grid) {
+                                            min-height: 8.33334%;
+                                            min-width: 8.33334%
+                                        }
+                        }
 
                         /* 4K */
                         @media only all
                             and (max-width: 2560px)
-                            and (min-width: 1441px) {}
+                            and (min-width: 1441px) {
+                                /* Grid Levels */
+                                    /* 0 */
+                                    .col-group > .fourk-grid-0,
+                                    .col-grp > .fourk-grid-0,
+                                    .column-group > .fourk-grid-0,
+                                    .row-group > .fourk-grid-0,
+                                    .row-grp > .fourk-grid-0 { flex-basis: 0 }
+
+                                    /* 1 */
+                                    .col-group > .fourk-grid-1,
+                                    .col-grp > .fourk-grid-1,
+                                    .column-group > .fourk-grid-1,
+                                    .row-group > .fourk-grid-1,
+                                    .row-grp > .fourk-grid-1 { flex-basis: 100% }
+
+                                    /* 2 */
+                                    .col-group > .fourk-grid-2,
+                                    .col-grp > .fourk-grid-2,
+                                    .column-group > .fourk-grid-2,
+                                    .row-group > .fourk-grid-2,
+                                    .row-grp > .fourk-grid-2 {
+                                        height: 50%;
+                                        flex-basis: 50%;
+                                        width: 50%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-2:not(.strict-grid),
+                                        .col-grp > .fourk-grid-2:not(.strict-grid),
+                                        .column-group > .fourk-grid-2:not(.strict-grid),
+                                        .row-group > .fourk-grid-2:not(.strict-grid),
+                                        .row-grp > .fourk-grid-2:not(.strict-grid) {
+                                            min-height: 50%;
+                                            min-width: 50%
+                                        }
+
+                                    /* 3 */
+                                    .col-group > .fourk-grid-3,
+                                    .col-grp > .fourk-grid-3,
+                                    .column-group > .fourk-grid-3,
+                                    .row-group > .fourk-grid-3,
+                                    .row-grp > .fourk-grid-3 {
+                                        height: 33.3333%;
+                                        flex-basis: 33.3333%;
+                                        width: 33.3333%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-3:not(.strict-grid),
+                                        .col-grp > .fourk-grid-3:not(.strict-grid),
+                                        .column-group > .fourk-grid-3:not(.strict-grid),
+                                        .row-group > .fourk-grid-3:not(.strict-grid),
+                                        .row-grp > .fourk-grid-3:not(.strict-grid) {
+                                            min-height: 33.3333%;
+                                            min-width: 33.3333%
+                                        }
+
+                                    /* 4 */
+                                    .col-group > .fourk-grid-4,
+                                    .col-grp > .fourk-grid-4,
+                                    .column-group > .fourk-grid-4,
+                                    .row-group > .fourk-grid-4,
+                                    .row-grp > .fourk-grid-4 {
+                                        height: 25%;
+                                        flex-basis: 25%;
+                                        width: 25%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-4:not(.strict-grid),
+                                        .col-grp > .fourk-grid-4:not(.strict-grid),
+                                        .column-group > .fourk-grid-4:not(.strict-grid),
+                                        .row-group > .fourk-grid-4:not(.strict-grid),
+                                        .row-grp > .fourk-grid-4:not(.strict-grid) {
+                                            min-height: 25%;
+                                            min-width: 25%
+                                        }
+
+                                    /* 5 */
+                                    .col-group > .fourk-grid-5,
+                                    .col-grp > .fourk-grid-5,
+                                    .column-group > .fourk-grid-5,
+                                    .row-group > .fourk-grid-5,
+                                    .row-grp > .fourk-grid-5 {
+                                        height: 20%;
+                                        flex-basis: 20%;
+                                        width: 20%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-5:not(.strict-grid),
+                                        .col-grp > .fourk-grid-5:not(.strict-grid),
+                                        .column-group > .fourk-grid-5:not(.strict-grid),
+                                        .row-group > .fourk-grid-5:not(.strict-grid),
+                                        .row-grp > .fourk-grid-5:not(.strict-grid) {
+                                            min-height: 20%;
+                                            min-width: 20%
+                                        }
+
+                                    /* 6 */
+                                    .col-group > .fourk-grid-6,
+                                    .col-grp > .fourk-grid-6,
+                                    .column-group > .fourk-grid-6,
+                                    .row-group > .fourk-grid-6,
+                                    .row-grp > .fourk-grid-6 {
+                                        height: 16.6666%;
+                                        flex-basis: 16.6666%;
+                                        width: 16.6666%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-6:not(.strict-grid),
+                                        .col-grp > .fourk-grid-6:not(.strict-grid),
+                                        .column-group > .fourk-grid-6:not(.strict-grid),
+                                        .row-group > .fourk-grid-6:not(.strict-grid),
+                                        .row-grp > .fourk-grid-6:not(.strict-grid) {
+                                            min-height: 16.6666%;
+                                            min-width: 16.6666%
+                                        }
+
+                                    /* 7 */
+                                    .col-group > .fourk-grid-7,
+                                    .col-grp > .fourk-grid-7,
+                                    .column-group > .fourk-grid-7,
+                                    .row-group > .fourk-grid-7,
+                                    .row-grp > .fourk-grid-7 {
+                                        height: 14.2857%;
+                                        flex-basis: 14.2857%;
+                                        width: 14.2857%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-7:not(.strict-grid),
+                                        .col-grp > .fourk-grid-7:not(.strict-grid),
+                                        .column-group > .fourk-grid-7:not(.strict-grid),
+                                        .row-group > .fourk-grid-7:not(.strict-grid),
+                                        .row-grp > .fourk-grid-7:not(.strict-grid) {
+                                            min-height: 14.2857%;
+                                            min-width: 14.2857%
+                                        }
+
+                                    /* 8 */
+                                    .col-group > .fourk-grid-8,
+                                    .col-grp > .fourk-grid-8,
+                                    .column-group > .fourk-grid-8,
+                                    .row-group > .fourk-grid-8,
+                                    .row-grp > .fourk-grid-8 {
+                                        height: 12.5%;
+                                        flex-basis: 12.5%;
+                                        width: 12.5%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-8:not(.strict-grid),
+                                        .col-grp > .fourk-grid-8:not(.strict-grid),
+                                        .column-group > .fourk-grid-8:not(.strict-grid),
+                                        .row-group > .fourk-grid-8:not(.strict-grid),
+                                        .row-grp > .fourk-grid-8:not(.strict-grid) {
+                                            min-height: 12.5%;
+                                            min-width: 12.5%
+                                        }
+
+                                    /* 9 */
+                                    .col-group > .fourk-grid-9,
+                                    .col-grp > .fourk-grid-9,
+                                    .column-group > .fourk-grid-9,
+                                    .row-group > .fourk-grid-9,
+                                    .row-grp > .fourk-grid-9 {
+                                        height: 11.1111%;
+                                        flex-basis: 11.1111%;
+                                        width: 11.1111%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-9:not(.strict-grid),
+                                        .col-grp > .fourk-grid-9:not(.strict-grid),
+                                        .column-group > .fourk-grid-9:not(.strict-grid),
+                                        .row-group > .fourk-grid-9:not(.strict-grid),
+                                        .row-grp > .fourk-grid-9:not(.strict-grid) {
+                                            min-height: 11.1111%;
+                                            min-width: 11.1111%
+                                        }
+
+                                    /* 10 */
+                                    .col-group > .fourk-grid-10,
+                                    .col-grp > .fourk-grid-10,
+                                    .column-group > .fourk-grid-10,
+                                    .row-group > .fourk-grid-10,
+                                    .row-grp > .fourk-grid-10 {
+                                        height: 10%;
+                                        flex-basis: 10%;
+                                        width: 10%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-10:not(.strict-grid),
+                                        .col-grp > .fourk-grid-10:not(.strict-grid),
+                                        .column-group > .fourk-grid-10:not(.strict-grid),
+                                        .row-group > .fourk-grid-10:not(.strict-grid),
+                                        .row-grp > .fourk-grid-10:not(.strict-grid) {
+                                            min-height: 10%;
+                                            min-width: 10%
+                                        }
+
+                                    /* 11 */
+                                    .col-group > .fourk-grid-11,
+                                    .col-grp > .fourk-grid-11,
+                                    .column-group > .fourk-grid-11,
+                                    .row-group > .fourk-grid-11,
+                                    .row-grp > .fourk-grid-11 {
+                                        height: 9.09091%;
+                                        flex-basis: 9.09091%;
+                                        width: 9.09091%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-11:not(.strict-grid),
+                                        .col-grp > .fourk-grid-11:not(.strict-grid),
+                                        .column-group > .fourk-grid-11:not(.strict-grid),
+                                        .row-group > .fourk-grid-11:not(.strict-grid),
+                                        .row-grp > .fourk-grid-11:not(.strict-grid) {
+                                            min-height: 9.09091%;
+                                            min-width: 9.09091%
+                                        }
+
+                                    /* 12 */
+                                    .col-group > .fourk-grid-12,
+                                    .col-grp > .fourk-grid-12,
+                                    .column-group > .fourk-grid-12,
+                                    .row-group > .fourk-grid-12,
+                                    .row-grp > .fourk-grid-12 {
+                                        height: 8.33334%;
+                                        flex-basis: 8.33334%;
+                                        width: 8.33334%
+                                    }
+                                        /* Not > Strict Grid */
+                                        .col-group > .fourk-grid-12:not(.strict-grid),
+                                        .col-grp > .fourk-grid-12:not(.strict-grid),
+                                        .column-group > .fourk-grid-12:not(.strict-grid),
+                                        .row-group > .fourk-grid-12:not(.strict-grid),
+                                        .row-grp > .fourk-grid-12:not(.strict-grid) {
+                                            min-height: 8.33334%;
+                                            min-width: 8.33334%
+                                        }
+                        }
 
                 /* Row */
                 .row-group,
