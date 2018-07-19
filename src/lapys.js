@@ -2072,7 +2072,11 @@
 
                                                 else
                                                     // (...)
-                                                    LDKF.isString(body) || (body = 'return ' + LDKF.string(body));
+                                                    body = LDKF.isString(body) ? (
+                                                        body[0] == 'f' && body[1] == 'u' && body[2] == 'n' && body[3] == 'c' && body[4] == 't' && body[5] == 'i' && body[6] == 'o' && body[7] == 'n' ?
+                                                            '(' + body + ')' :
+                                                            body
+                                                    ) : 'return ' + LDKF.string(body);
 
                                             // Name
                                             LDKF.isFunction(name) && (name = name.name);
@@ -3204,7 +3208,16 @@
 
                                                     // Update > Data
                                                     data = !0
-                                                } catch (error) {}
+                                                } catch (error) {
+                                                    // Error Handling
+                                                    try {
+                                                        // Execution
+                                                        LDKF.eval('(function(){(' + value + ')})');
+
+                                                        // Update > Data
+                                                        data = !0
+                                                    } catch (error) {}
+                                                }
 
                                             // Return
                                             return data
@@ -8692,6 +8705,15 @@
 
                                         // Return
                                         return function nodeNextSibling() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Parent Element
+                                    nodeParentElement: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.$nodeProto, 'parentElement').get;
+
+                                        // Return
+                                        return function nodeParentElement() { return method.call(arguments[0]) }
                                     })(),
 
                                     // Parent Node
@@ -23726,9 +23748,6 @@
                                         // Event > Target > [Type]
                                         LDKF.addEvent(eventReference.target = target, type, listener, options);
 
-                                        // Update > (Temporary Object > Event Reference List)
-                                        LDKF.pushArray(tmpObject.eventReferenceList, eventReference);
-
                                         // Update > Event References
                                         eventReferences[iterator] = LDKF.customObject('EventOption', eventReference)
                                     }
@@ -26773,7 +26792,7 @@
                             enumerable: !0,
 
                             // Value
-                            value: function cancelOnHTMLChange() {
+                            value: tmpObject.nodePrototypeCancelOnHTMLChangeDescriptorValue = function cancelOnHTMLChange() {
                                 // Initialization > (Array, Callback, Iterator, Node)
                                 let array = tmpObject.onHTMLChangeWatchList,
                                     callback = arguments[0],
@@ -27531,7 +27550,7 @@
                             enumerable: !0,
 
                             // Value
-                            value: function onHTMLChange() {
+                            value: tmpObject.nodePrototypeOnHTMLChangeDescriptorValue = function onHTMLChange() {
                                 // Initialization > (Length, Node)
                                 let length = arguments.length,
                                     node = this;
@@ -30853,34 +30872,37 @@
                                     marquee: [],
 
                                     // Table
-                                    table: [{element: $n, type: ['table']}],
+                                    table: [],
 
                                     // Toast
-                                    toast: [{element: $n, type: ['toast']}],
+                                    toast: [],
 
                                     // Tooltip
-                                    tooltip: [{element: $n, type: ['tooltip']}]
+                                    tooltip: []
                                 }, secondaryStorage = [];
-
-                            timeout(function() {log(secondaryStorage.valueOf())});
 
                             /* Function */
                                 // Asynchronous Index
                                 function asyncIndex() {
-                                    // Initialization > (Callback, Iterator, Length, Request)
+                                    // Initialization > (Callback, Iterator, Length, Request, Response)
                                     let callback = arguments[0],
                                         iterator = -1,
                                         length = arguments[1],
-                                        request;
+                                        request,
+                                        response = arguments[2];
 
                                     // Function > Index
-                                    length && ((length -= 2) || !0) && (function index() {
+                                    length && ((length -= 1) || !0) && (function index() {
                                         /* Logic
                                                 [if:else statement]
                                         */
-                                        if (iterator == length)
+                                        if (iterator == length) {
                                             // Cancel Animation Frame > Request
                                             LDKF.cancelAnimationFrame(request);
+
+                                            // Response
+                                            response && response(iterator)
+                                        }
 
                                         else {
                                             // Callback
@@ -30911,6 +30933,25 @@
                                     return list
                                 }
 
+                                // Get Nodes
+                                function getNodes(array) {
+                                    // Initialization > (List, Iterator, Length)
+                                    let list = [],
+                                        iterator = 0,
+                                        length = array.length;
+
+                                    /* Loop
+                                            Index Array.
+
+                                        > Update > List
+                                    */
+                                    for (iterator; iterator != length; iterator += 1)
+                                        LDKF.pushArray(list, array[iterator].node);
+
+                                    // Return
+                                    return list
+                                }
+
                                 // Get Types
                                 function getTypes(array) {
                                     // Initialization > (List, Iterator, Length)
@@ -30930,12 +30971,25 @@
                                     return list
                                 }
 
+                                // Same Property Description
+                                function samePropertyDescription(descriptionA, descriptionB) {
+                                    // Logic > Return
+                                    if (descriptionA && descriptionB)
+                                        return descriptionA.configurable === descriptionB.configurable &&
+                                            descriptionA.enumerable === descriptionB.enumerable &&
+                                            descriptionA.get === descriptionB.get &&
+                                            descriptionA.set === descriptionB.set &&
+                                            descriptionA.value === descriptionB.value &&
+                                            descriptionA.writable === descriptionB.writable
+                                }
+
                             // Modification > Secondary Storage > Value Of
                             LDKF.objectDefineProperty(secondaryStorage, 'valueOf', {
                                 // Value
                                 value: function valueOf() {
                                     // Initialization > Array
-                                    let array = [];
+                                    let array = [],
+                                        storage = [];
 
                                     // LapysJS Development Kit Functions > Iterate Object
                                     LDKF.iterateObject(function(key, value) {
@@ -30947,220 +31001,812 @@
                                             LDKF.pushArray(array, value[iterator -= 1])
                                     }, primaryStorage);
 
-                                    let index,
-                                        iterator = 0,
-                                        length = array.length,
-                                        elementsWatch = [],
-                                        typesWatch = [];
+                                    let iterator = array.length;
 
-                                    for (iterator; iterator != length; iterator += 1) {
-                                        let item = array[iterator];
+                                    while (iterator) {
+                                        let item = array[iterator -= 1],
+                                            element = item.element,
+                                            type = item.type;
 
-                                        if (item) {
-                                            if ((index = LDKF.lastIndexOfArray(elementsWatch, item.element)) != -1) {
-                                                item.type = LDKF.concatArray(item.type, typesWatch[index]);
+                                        LDKF.includesArray(getElements(storage), element) ?
+                                            storage[LDKF.indexOfArray(getElements(storage), element)].type = LDKF.concatArray(storage[LDKF.indexOfArray(getElements(storage), element)].type, type) :
+                                            LDKF.pushArray(storage, {element: element, type: [type]})
+                                    }
 
-                                                LDKF.spliceArray(array, index, 1);
-                                                iterator -= 1
-                                            }
+                                    iterator = storage.length;
 
-                                            LDKF.pushArray(elementsWatch, item.element);
-                                            LDKF.pushArray(typesWatch, item.type)
-                                        }
+                                    while (iterator) {
+                                        let item = storage[iterator -= 1],
+                                            type = item.type;
+                                        while ((function() {
+                                            // Initialization > Iterator
+                                            let iterator = type.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator)
+                                                if (LDKF.isArray(type[iterator -= 1]))
+                                                    return !0
+                                        })()) type = LDKF.$concatArray([], type);
+                                        item.type = type
                                     }
 
                                     // Return
-                                    return array
+                                    return storage
                                 }
                             });
 
                             /* Components */
-                                // Accordion --- CHECKPOINT ---
-                                    // Correct Accordions
-                                    function correctAccordions() {}
+                                /* Accordion
+                                        --- UPDATE REQUIRED ---
+                                            #Lapys: Content and headers outside their Accordions are not unset.
+                                */
+                                (function accordion() {
+                                    // Initialization > ((Sub Element) Properties, Watch)
+                                    let properties = {
+                                        // Closed Content
+                                        closedContent: {
+                                            // Configurable
+                                            configurable: !1,
 
-                                    // Set Accordions
-                                    function setAccordions() {
-                                        // Initialization > (Accordion, Length, Properties)
-                                        let accordions = LDKF.getElementsByClassNameDocument('accordion'),
-                                            length = LDKF.get.htmlCollectionLength(accordions),
-                                            properties = {
-                                                // Content
-                                                content: {
-                                                    // Configurable
-                                                    configurable: !0,
+                                            // Enumerable
+                                            enumerable: !1,
 
-                                                    // Enumerable
-                                                    enumerable: !1,
+                                            // Get
+                                            get: function closedContent() {
+                                                // Initialization > (Accordion, Content, Iterator, Length, List)
+                                                let accordion = this,
+                                                    content = properties.content.get.call(accordion),
+                                                    iterator = 0,
+                                                    length = content.length,
+                                                    list = [];
 
-                                                    // Get
-                                                    get: function content() {
-                                                        // Initialization > (List, Iterator, Selection)
-                                                        let list = LDKF.querySelectorAllElement(this, '[role*=content'),
-                                                            iterator = LDKF.get.nodeListLength(list),
-                                                            selection = [];
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Content
+                                                    let $content = content[iterator];
 
-                                                        /* Loop
-                                                                Index List.
-                                                        */
-                                                        while (iterator) {
-                                                            // Initialization > Item
-                                                            let item = list[iterator -= 1];
-
-                                                            // Update > Selection
-                                                            LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(item, 'role') || ''), 'content') && LDKF.pushArray(selection, item)
-                                                        }
-
-                                                        // Return
-                                                        return selection
-                                                    }
-                                                },
-
-                                                // Header
-                                                header: {
-                                                    // Configurable
-                                                    configurable: !0,
-
-                                                    // Enumerable
-                                                    enumerable: !1,
-
-                                                    // Get
-                                                    get: function header() {
-                                                        // Initialization > Element
-                                                        let element = LDKF.querySelectorElement(this, '[role=header');
-
-                                                        /* Logic
-                                                                [if statement]
-                                                        */
-                                                        if (!element) {
-                                                            // Initialization > (List, Iterator)
-                                                            let list = LDKF.querySelectorAllElement(this, '[role*=header'),
-                                                                iterator = LDKF.get.nodeListLength(list);
-
-                                                            /* Loop
-                                                                    Index List.
-                                                            */
-                                                            while (iterator) {
-                                                                // Initialization > Item
-                                                                let item = list[iterator -= 1];
-
-                                                                // Logic > Return
-                                                                if (LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(item, 'role') || ''), 'header'))
-                                                                    return item
-                                                            }
-                                                        }
-
-                                                        // Return
-                                                        return element
-                                                    }
-                                                },
-
-                                                // Closed Content
-                                                closedContent: {
-                                                    // Configurable
-                                                    configurable: !0,
-
-                                                    // Enumerable
-                                                    enumerable: !1,
-
-                                                    // Get
-                                                    get: function closedContent() {
-                                                        // Initialization > (Content, Iterator, Selection)
-                                                        let content = properties.content.get.call(this),
-                                                            iterator = content.length,
-                                                            selection = [];
-
-                                                        /* Loop
-                                                                Index Content.
-                                                        */
-                                                        while (iterator) {
-                                                            // Initialization > Element
-                                                            let element = content[iterator -= 1];
-
-                                                            // Update > Selection
-                                                            (LDKF.getAttributeElement(element, 'state') === 'closed') && LDKF.pushArray(selection)
-                                                        }
-
-                                                        // Return
-                                                        return selection
-                                                    }
-                                                },
-
-                                                // Open Content
-                                                openContent: {
-                                                    // Configurable
-                                                    configurable: !0,
-
-                                                    // Enumerable
-                                                    enumerable: !1,
-
-                                                    // Get
-                                                    get: function openContent() {
-                                                        // Initialization > (Content, Iterator, Selection)
-                                                        let content = properties.content.get.call(this),
-                                                            iterator = content.length,
-                                                            selection = [];
-
-                                                        /* Loop
-                                                                Index Content.
-                                                        */
-                                                        while (iterator) {
-                                                            // Initialization > Element
-                                                            let element = content[iterator -= 1];
-
-                                                            // Update > Selection
-                                                            (LDKF.getAttributeElement(element, 'state') === 'open') && LDKF.pushArray(selection)
-                                                        }
-
-                                                        // Return
-                                                        return selection
-                                                    }
+                                                    // Update > List
+                                                    (LDKF.getAttributeElement($content, 'state') === 'closed') && LDKF.pushArray(list, $content)
                                                 }
-                                            };
 
-                                        // Asynchronous Index > Set Accordion
-                                        asyncIndex(function setAccordion(iterator) {
-                                            // Initialization > Accordion
-                                            let accordion = accordions[iterator];
+                                                // Return
+                                                return list
+                                            }
+                                        },
+
+                                        // Content
+                                        content: {
+                                            // Configurable
+                                            configurable: !1,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function content() {
+                                                // Initialization > (Accordion, Children, Iterator, Length, List)
+                                                let accordion = this,
+                                                    children = LDKF.get.elementChildren(accordion),
+                                                    iterator = 0,
+                                                    length = LDKF.get.htmlCollectionLength(children),
+                                                    list = [];
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Child
+                                                    let child = children[iterator];
+
+                                                    // Update > List
+                                                    LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''), 'content') && LDKF.pushArray(list, child)
+                                                }
+
+                                                // Return
+                                                return list
+                                            }
+                                        },
+
+                                        // Header
+                                        header: {
+                                            // Configurable
+                                            configurable: !1,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function header() {
+                                                // Initialization > (Accordion, Children, Iterator, Length, List)
+                                                let accordion = this,
+                                                    children = LDKF.get.elementChildren(accordion),
+                                                    iterator = 0,
+                                                    length = LDKF.get.htmlCollectionLength(children),
+                                                    list = [];
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Child
+                                                    let child = children[iterator];
+
+                                                    // Logic > Return
+                                                    if (LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''), 'header'))
+                                                        return child
+                                                }
+
+                                                // Return
+                                                return null
+                                            }
+                                        },
+
+                                        // Headers
+                                        headers: {
+                                            // Configurable
+                                            configurable: !1,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function headers() {
+                                                // Initialization > (Accordion, Children, Iterator, Length, List)
+                                                let accordion = this,
+                                                    children = LDKF.get.elementChildren(accordion),
+                                                    iterator = 0,
+                                                    length = LDKF.get.htmlCollectionLength(children),
+                                                    list = [];
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Child
+                                                    let child = children[iterator];
+
+                                                    // Update > List
+                                                    LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''), 'header') && LDKF.pushArray(list, child)
+                                                }
+
+                                                // Return
+                                                return list
+                                            }
+                                        },
+
+                                        // Open Content
+                                        openContent: {
+                                            // Configurable
+                                            configurable: !1,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function openContent() {
+                                                // Initialization > (Accordion, Content, Iterator, Length, List)
+                                                let accordion = this,
+                                                    content = properties.content.get.call(accordion),
+                                                    iterator = 0,
+                                                    length = content.length,
+                                                    list = [];
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Content
+                                                    let $content = content[iterator];
+
+                                                    // Update > List
+                                                    (LDKF.getAttributeElement($content, 'state') === 'open') && LDKF.pushArray(list, $content)
+                                                }
+
+                                                // Return
+                                                return list
+                                            }
+                                        },
+
+                                        // Swap Content
+                                        swapContent: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function swapContent() {
+                                                // Initialization > (Accordion, Content, Iterator)
+                                                let accordion = this,
+                                                    content = properties.content.get.call(accordion),
+                                                    iterator = content.length;
+
+                                                /* Loop
+                                                        Index Content.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Content
+                                                    let $content = content[iterator -= 1];
+
+                                                    // Content > (Close | Open)
+                                                    subElementProperties.content.state.get.call($content) ?
+                                                        subElementProperties.content.close.value.call($content) :
+                                                        subElementProperties.content.open.value.call($content)
+                                                }
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Toggle Content
+                                        toggleContent: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function swapContent() {
+                                                // Initialization > (Accordion, Content, Iterator, Toggle Content Value)
+                                                let accordion = this,
+                                                    content = properties.content.get.call(accordion),
+                                                    iterator = content.length,
+                                                    toggleContentValue = properties.toggleContentValue;
+
+                                                /* Loop
+                                                        Index Content.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Content
+                                                    let $content = content[iterator -= 1];
+
+                                                    // (Close | Open) > Content
+                                                    toggleContentValue ?
+                                                        subElementProperties.content.close.value.call($content) :
+                                                        subElementProperties.content.open.value.call($content)
+                                                }
+
+                                                // Return
+                                                return properties.toggleContentValue = !toggleContentValue
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Toggle Content Value
+                                        toggleContentValue: !1
+                                    }, subElementProperties = {
+                                        // Content
+                                        content: {
+                                            // Accordion
+                                            accordion: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function accordion() {
+                                                    // Initialization > (Element, Accordions, Parent)
+                                                    let element = this,
+                                                        accordions = getElements(primaryStorage.accordion),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(accordions, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            },
+
+                                            // Close
+                                            close: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Value
+                                                value: function open() {
+                                                    // Initialization > Element
+                                                    let element = this;
+
+                                                    // Modification > Element > State
+                                                    LDKF.setAttributeElement(element, 'state', 'closed');
+
+                                                    // Return
+                                                    return !1
+                                                },
+
+                                                // Writable
+                                                writable: !1
+                                            },
+
+                                            // Open
+                                            open: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Value
+                                                value: function open() {
+                                                    // Initialization > Element
+                                                    let element = this;
+
+                                                    // Modification > Element > State
+                                                    LDKF.setAttributeElement(element, 'state', 'open');
+
+                                                    // Return
+                                                    return !0
+                                                },
+
+                                                // Writable
+                                                writable: !1
+                                            },
+
+                                            // State
+                                            state: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function state() {
+                                                    // Initialization > Element
+                                                    let element = this;
+
+                                                    // Return
+                                                    return LDKF.getAttributeElement(element, 'state') === 'open'
+                                                }
+                                            }
+                                        },
+
+                                        // Header
+                                        header: {
+                                            // Accordion
+                                            accordion: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function accordion() {
+                                                    // Initialization > (Element, Accordions, Parent)
+                                                    let element = this,
+                                                        accordions = getElements(primaryStorage.accordion),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(accordions, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            }
+                                        }
+                                    }, watch = {
+                                        // Mouse Up Event Listener
+                                        mouseUpEventListener: function toggleParentAccordion() {
+                                            // Initialization > Parent Accordion
+                                            let header = this,
+                                                parentAccordion = subElementProperties.header.accordion.get.call(header);
+
+                                            // Parent Accordion > Toggle Content
+                                            parentAccordion && properties.toggleContent.value.call(parentAccordion)
+                                        }
+                                    };
+
+                                    // Correct Accordion
+                                    function correctAccordion(accordion) {
+                                        // Initialization > (Allow Correction, Correction Cooldown)
+                                        let allowCorrection = !0,
+                                            correctionCooldown = 100;
+
+                                        // Function > Correct
+                                        function correct() {
+                                            // Initialization > (Headers, Iterator,)
+                                            let headers = properties.headers.get.call(accordion),
+                                                iterator = headers.length;
+
+                                            // Loop > Deletion
+                                            while (iterator > 1)
+                                                LDKF.removeChildNode(accordion, headers[iterator -= 1]);
+
+                                            // Initialization > Header
+                                            let header = headers[0];
+
+                                            // Insertion
+                                            header && ((LDKF.get.$parentNodeFirstElementChild(accordion) === header) || LDKF.insertBeforeNode(accordion, header, LDKF.get.$parentNodeFirstElementChild(accordion)));
 
                                             /* Logic
                                                     [if statement]
                                             */
-                                            if (!LDKF.includesArray(getElements(primaryStorage.accordion), accordion)) {
-                                                // Update > Primary Storage > Accordion
-                                                LDKF.pushArray(primaryStorage.accordion, {element: accordion, type: ['accordion']});
+                                            if (LDKF.includesArray(getNodes(tmpObject.onHTMLChangeWatchList), accordion)) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (LDKF.querySelectorElement(accordion, '[role*=content]:not([state=closed]):not([state=open])')) {
+                                                    // Initialization > (Content, Iterator)
+                                                    let content = properties.content.get.call(accordion),
+                                                        iterator = content.length;
 
-                                                // Initialization > (Headers, Length)
-                                                let headers = LDKF.querySelectorElement(accordion, '[role*=header'),
-                                                    length = LDKF.get.nodeListLength(headers);
+                                                    /* Loop
+                                                            Index Content.
+                                                    */
+                                                    while (iterator) {
+                                                        // Initialization > Content
+                                                        let $content = content[iterator -= 1];
 
-                                                // Loop > Deletion
-                                                while (length > 1) {
-                                                    let header = headers[length -= 1];
-
-                                                    LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(header, 'role') || ''), 'header') && LDKF.removeChildNode(accordion, header)
+                                                        // Content > (Open | Close)
+                                                        subElementProperties.content.state.get.call($content) ?
+                                                            subElementProperties.content.open.value.call($content) :
+                                                            subElementProperties.content.close.value.call($content)
+                                                    }
                                                 }
-
-                                                // Insertion
-                                                (LDKF.get.nodeFirstChild(accordion) === headers[0]) || LDKF.insertBeforeNode(accordion, headers[0], LDKF.get.nodeFirstChild(accordion));
-
-                                                // Modification > Accordion
-                                                    // Content
-                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'content') || {}).get === properties.content.get) || LDKF.objectDefineProperty(accordion, 'content', properties.content);
-
-                                                    // Closed Content
-                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'closedContent') || {}).get === properties.closedContent.get) || LDKF.objectDefineProperty(accordion, 'closedContent', properties.closedContent);
-
-                                                    // Header
-                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'header') || {}).get === properties.header.get) || LDKF.objectDefineProperty(accordion, 'header', properties.header);
-
-                                                    // Open Content
-                                                    ((LDKF.objectGetOwnPropertyDescriptor(accordion, 'openContent') || {}).get === properties.openContent.get) || LDKF.objectDefineProperty(accordion, 'openContent', properties.openContent)
                                             }
+                                        }
+
+                                        // Correct
+                                        correct();
+
+                                        // Accordion > On HTML Change > Watch
+                                        tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(accordion, function correctAccordion() {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.includesArray(getElements(primaryStorage.accordion), accordion)) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (allowCorrection) {
+                                                    // Update > Allow Correction
+                                                    allowCorrection = !1;
+
+                                                    // Correct > Accordion
+                                                    correct(accordion);
+
+                                                    // Set Timeout
+                                                    LDKF.setTimeout(function() { allowCorrection = !0 }, correctionCooldown)
+                                                }
+                                            }
+
+                                            else
+                                                // Accordion > Cancel On HTML Change
+                                                tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(accordion, correctAccordion)
+                                        })
+                                    }
+
+                                    // Index Accordions
+                                    function indexAccordions() {
+                                        // Initialization > (Accordions, Length)
+                                        let accordions = LDKF.getElementsByClassNameDocument('accordion'),
+                                            length = LDKF.get.htmlCollectionLength(accordions);
+
+                                        // Asynchronous Index > Set Accordions
+                                        asyncIndex(function setAccordions(iterator) {
+                                            // Initialization > (Accordion, Request)
+                                            let accordion = accordions[iterator],
+                                                request;
+
+                                            // Set Accordion > [Accordion]
+                                            setAccordion(accordion);
+
+                                            // Function > Watch
+                                            (function watch() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.hasClassHtmlElement(accordion, 'accordion'))
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(watch);
+
+                                                else {
+                                                    // Unset Accordion > Accordion
+                                                    unsetAccordion(accordion);
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+                                            })()
                                         }, length)
                                     }
 
+                                    // Set Accordion
+                                    function setAccordion(accordion) {
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (!LDKF.includesArray(getElements(primaryStorage.accordion), accordion)) {
+                                            // Update > Primary Storage > Accordion
+                                            LDKF.pushArray(primaryStorage.accordion, {element: accordion, type: ['accordion']});
+
+                                            // Deletion
+                                            delete accordion.closedContent;
+                                            delete accordion.content;
+                                            delete accordion.header;
+                                            delete accordion.openContent;
+                                            delete accordion.swapContent;
+                                            delete accordion.toggleContent;
+
+                                            // Modification > Accordion > ((Closed, Open, Swap, Toggle) Content, Header)
+                                            LDKF.objectDefineProperty(accordion, 'closedContent', properties.closedContent);
+                                            LDKF.objectDefineProperty(accordion, 'content', properties.content);
+                                            LDKF.objectDefineProperty(accordion, 'header', properties.header);
+                                            LDKF.objectDefineProperty(accordion, 'openContent', properties.openContent);
+                                            LDKF.objectDefineProperty(accordion, 'swapContent', properties.swapContent);
+                                            LDKF.objectDefineProperty(accordion, 'toggleContent', properties.toggleContent);
+
+                                            // Initialization > (Content, Header)
+                                            let content = properties.content.get.call(accordion),
+                                                header = properties.header.get.call(accordion);
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDKF.isArray(content)) {
+                                                // Initialization > (Iterator, Length)
+                                                let iterator = 0,
+                                                    length = content.length;
+
+                                                /* Loop
+                                                        Index Content.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Content
+                                                    let $content = content[iterator];
+
+                                                    // Deletion
+                                                    delete $content.accordion;
+                                                    delete $content.close;
+                                                    delete $content.open;
+                                                    delete $content.state;
+
+                                                    // Modification > Content > (Accordion, Close, Open, State)
+                                                    LDKF.objectDefineProperty($content, 'accordion', subElementProperties.content.accordion);
+                                                    LDKF.objectDefineProperty($content, 'close', subElementProperties.content.close);
+                                                    LDKF.objectDefineProperty($content, 'open', subElementProperties.content.open);
+                                                    LDKF.objectDefineProperty($content, 'state', subElementProperties.content.state);
+
+                                                    // Content > (Open | Close)
+                                                    subElementProperties.content.state.get.call($content) ?
+                                                        subElementProperties.content.open.value.call($content) :
+                                                        subElementProperties.content.close.value.call($content)
+                                                }
+                                            }
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (header) {
+                                                // Deletion
+                                                delete header.accordion;
+
+                                                // Modification > Header > Accordion
+                                                LDKF.objectDefineProperty(header, 'accordion', subElementProperties.header.accordion);
+
+                                                // Event > Header > Mouse Up
+                                                LDKF.addEvent(header, 'mouseup', watch.mouseUpEventListener)
+                                            }
+
+                                            // Correct Accordion > Accordion
+                                            correctAccordion(accordion)
+                                        }
+                                    }
+
+                                    // Unset Accordion
+                                    function unsetAccordion(accordion) {
+                                        // Initialization > (Content, Header, Index, Iterator)
+                                        let content = properties.content.get.call(accordion),
+                                            header = properties.header.get.call(accordion),
+                                            index = LDKF.indexOfArray(getElements(primaryStorage.accordion), accordion),
+                                            iterator = content.length;
+
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(accordion, 'closedContent'), properties.closedContent) && delete accordion.closedContent;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(accordion, 'content'), properties.content) && delete accordion.content;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(accordion, 'header'), properties.header) && delete accordion.header;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(accordion, 'openContent'), properties.openContent) && delete accordion.openContent;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(accordion, 'swapContent'), properties.swapContent) && delete accordion.swapContent;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(accordion, 'toggleContent'), properties.toggleContent) && delete accordion.toggleContent;
+
+                                        /* Loop
+                                                Index Content.
+
+                                            > Unset Accordion Content > Content
+                                        */
+                                        while (iterator)
+                                            unsetAccordionContent(content[iterator -= 1]);
+
+                                        // Unset Accordion Header > Header
+                                        unsetAccordionHeader(header);
+
+                                        // Update > (Primary Storage > Accordion)
+                                        (index == -1) || LDKF.spliceArray(primaryStorage.accordion, index, 1)
+                                    }
+
+                                    // Unset Accordion Content
+                                    function unsetAccordionContent(content) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(content, 'accordion'), subElementProperties.content.accordion) && delete content.accordion;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(content, 'close'), subElementProperties.content.close) && delete content.close;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(content, 'open'), subElementProperties.content.open) && delete content.open;
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(content, 'state'), subElementProperties.content.state) && delete content.state
+                                    }
+
+                                    // Unset Accordion Header
+                                    function unsetAccordionHeader(header) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(header, 'accordion'), subElementProperties.header.accordion) && delete header.accordion;
+
+                                        // Event > Header > Mouse Up
+                                        LDKF.delEvent(header, 'mouseup', watch.mouseUpEventListener)
+                                    }
+
+                                    // Index Accordions
+                                    indexAccordions()
+                                })();
+
                                 // Carousel
+                                (function carousel() {
+                                    // Initialization > ((Sub Element) Properties, Watch)
+                                    let properties = {
+                                        // First
+                                        first: {},
+
+                                        // Last
+                                        last: {},
+
+                                        // Next
+                                        next: {},
+
+                                        // Previous
+                                        prev: {},
+
+                                        // Random
+                                        random: {}
+                                    }, subElementProperties = {
+                                        // Buttons
+                                        buttons: {},
+
+                                        // Contains
+                                        containers: {
+                                            // Buttons
+                                            button: {},
+
+                                            // Indicator
+                                            indicator: {},
+
+                                            // Slide
+                                            slide: {}
+                                        },
+
+                                        // Indicators
+                                        indicators: {},
+
+                                        // Slides
+                                        slides: {}
+                                    }, watch = {};
+
+                                    // Correct Carousel
+                                    function correctCarousel(carousel) {
+                                        // Initialization > (Allow Correction, Correction Cooldown)
+                                        let allowCorrection = !0,
+                                            correctionCooldown = 100;
+
+                                        // Function > Correct
+                                        function correct() {}
+
+                                        // Correct
+                                        correct();
+
+                                        // Carousel > On HTML Change > Watch
+                                        tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, function correctCarousel() {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.includesArray(getElements(primaryStorage.carousel), carousel)) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (allowCorrection) {
+                                                    // Update > Allow Correction
+                                                    allowCorrection = !1;
+
+                                                    // Correct > Carousel
+                                                    correct(carousel);
+
+                                                    // Set Timeout
+                                                    LDKF.setTimeout(function() { allowCorrection = !0 }, correctionCooldown)
+                                                }
+                                            }
+
+                                            else
+                                                // Carousel > Cancel On HTML Change
+                                                tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, correctCarousel)
+                                        })
+                                    }
+
+                                    // Index Carousels
+                                    function indexCarousels() {
+                                        // Initialization > (Carousels, Length)
+                                        let carousels = LDKF.getElementsByClassNameDocument('carousel'),
+                                            length = LDKF.get.htmlCollectionLength(carousels);
+
+                                        // Asynchronous Index > Set Carousels
+                                        asyncIndex(function setCarousels(iterator) {
+                                            // Initialization > (Carousel, Request)
+                                            let carousel = carousels[iterator],
+                                                request;
+
+                                            // Set Carousel > [Carousel]
+                                            setCarousel(carousel);
+
+                                            // Function > Watch
+                                            (function watch() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.hasClassHtmlElement(carousel, 'carousel'))
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(watch);
+
+                                                else {
+                                                    // Unset Carousel > Carousel
+                                                    unsetCarousel(carousel);
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+                                            })()
+                                        }, length)
+                                    }
+
+                                    // Set Carousel
+                                    function setCarousel(carousel) {
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (!LDKF.includesArray(getElements(primaryStorage.carousel), carousel)) {
+                                            // Update > Primary Storage > Carousel
+                                            LDKF.pushArray(primaryStorage.carousel, {element: carousel, type: ['carousel']});
+
+                                            // Correct Carousel > Carousel
+                                            correctCarousel(carousel)
+                                        }
+                                    }
+
+                                    // Unset Carousel
+                                    function unsetCarousel(carousel) {
+                                        // Initialization > Index
+                                        let index = LDKF.indexOfArray(getElements(primaryStorage.carousel), carousel);
+
+                                        // Update > (Primary Storage > Carousel)
+                                        (index == -1) || LDKF.spliceArray(primaryStorage.carousel, index, 1)
+                                    }
+
+                                    // Index Carousels
+                                    indexCarousels()
+                                })();
+
                                 // Draggable
                                 // Dropdown
                                 // Dynamic Text
