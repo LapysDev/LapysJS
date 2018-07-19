@@ -36,6 +36,9 @@
             // Allow Public Access
             allowPublicAccess: !0,
 
+            // Components
+            components: ['accordion', 'carousel', 'draggable', 'dropdown', 'dynamicText', 'dynamicTime', 'marquee', 'table', 'toast', 'tooltip'],
+
             // Features
             features: {
                 // Active
@@ -99,6 +102,39 @@
         };
 
     /* Logic
+            [if statement]
+    */
+    if (typeof LapysJS == 'object') {
+        // Initialization > Constructor
+        var constructor = (window.LapysJS || {}).constructor;
+
+        /* Logic
+                [if statement]
+        */
+        if (typeof constructor == 'function' && typeof constructor.name == 'string')
+            /* Logic
+                    [if statement]
+            */
+            if (constructor.name != 'LapysJS') {
+                // Modification > Lapys JS Development Kit
+                    // Allow Public Access
+                    LapysJSDevelopmentKit.allowPublicAccess = !!LapysJS.debugMode;
+
+                    // Components
+                    try { ('components' in LapysJS) && (LapysJS.components.constructor === window.Array) && (LapysJSDevelopmentKit.components = LapysJS.components) }
+                    catch (error) {}
+
+                // Modification > Window > LapysJS
+                window.LapysJS = undefined;
+
+                // Deletion
+                delete window.LapysJS
+            }
+    }
+
+    /* Logic
+            [if statement]
+
             --- NOTE ---
                 #Lapys: Do not re-install the library.
     */
@@ -404,6 +440,7 @@
             if (debugMode) {
                 window.LDK = LapysJSDevelopmentKit;
                 window.LDKC = LDK.constants;
+                window.LDKCO = LDK.components;
                 window.LDKG = LDK.global;
                 window.LDKE = LDK.features;
                 window.LDKF = LDK.storage.functions;
@@ -14922,7 +14959,7 @@
                                 configurable: !0,
 
                                 // Value
-                                value: function onDOMNodeAdded() {
+                                value: tmpObject.windowOnDOMNodeAddedDescriptionValue = function onDOMNodeAdded() {
                                     // Initialization > Length
                                     let length = arguments.length;
 
@@ -31417,9 +31454,10 @@
 
                                     // Correct Accordion
                                     function correctAccordion(accordion) {
-                                        // Initialization > (Allow Correction, Correction Cooldown)
-                                        let allowCorrection = !0,
-                                            correctionCooldown = 100;
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 100,
+                                            cooldownValue = !0,
+                                            timeout;
 
                                         // Function > Correct
                                         function correct() {
@@ -31477,15 +31515,21 @@
                                                 /* Logic
                                                         [if statement]
                                                 */
-                                                if (allowCorrection) {
+                                                if (cooldownValue) {
                                                     // Update > Allow Correction
-                                                    allowCorrection = !1;
+                                                    cooldownValue = !1;
 
                                                     // Correct > Accordion
                                                     correct(accordion);
 
                                                     // Set Timeout
-                                                    LDKF.setTimeout(function() { allowCorrection = !0 }, correctionCooldown)
+                                                    timeout = LDKF.setTimeout(function() {
+                                                        // Update > Allow Correction
+                                                        cooldownValue = !0;
+
+                                                        // Clear Timeout > Timeout
+                                                        LDKF.clearTimeout(timeout)
+                                                    }, cooldownDuration)
                                                 }
                                             }
 
@@ -31508,25 +31552,7 @@
                                                 request;
 
                                             // Set Accordion > [Accordion]
-                                            setAccordion(accordion);
-
-                                            // Function > Watch
-                                            (function watch() {
-                                                /* Logic
-                                                        [if:else statement]
-                                                */
-                                                if (LDKF.hasClassHtmlElement(accordion, 'accordion'))
-                                                    // Update > Request
-                                                    request = LDKF.requestAnimationFrame(watch);
-
-                                                else {
-                                                    // Unset Accordion > Accordion
-                                                    unsetAccordion(accordion);
-
-                                                    // Cancel Animation Frame > Request
-                                                    LDKF.cancelAnimationFrame(request)
-                                                }
-                                            })()
+                                            setAccordion(accordion)
                                         }, length)
                                     }
 
@@ -31608,7 +31634,25 @@
                                             }
 
                                             // Correct Accordion > Accordion
-                                            correctAccordion(accordion)
+                                            correctAccordion(accordion);
+
+                                            // Watch Accordion
+                                            (function watchAccordion() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.hasClassHtmlElement(accordion, 'accordion'))
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(watchAccordion);
+
+                                                else {
+                                                    // Unset Accordion > Accordion
+                                                    unsetAccordion(accordion);
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+                                            })()
                                         }
                                     }
 
@@ -31662,151 +31706,38 @@
                                     }
 
                                     // Index Accordions
-                                    indexAccordions()
-                                })();
+                                    indexAccordions();
 
-                                // Carousel
-                                (function carousel() {
-                                    // Initialization > ((Sub Element) Properties, Watch)
-                                    let properties = {
-                                        // First
-                                        first: {},
+                                    // On DOM Node Added > Index Accordion
+                                    tmpObject.windowOnDOMNodeAddedDescriptionValue(function indexAccordion() {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 250,
+                                            cooldownValue = !0,
+                                            timeout;
 
-                                        // Last
-                                        last: {},
-
-                                        // Next
-                                        next: {},
-
-                                        // Previous
-                                        prev: {},
-
-                                        // Random
-                                        random: {}
-                                    }, subElementProperties = {
-                                        // Buttons
-                                        buttons: {},
-
-                                        // Contains
-                                        containers: {
-                                            // Buttons
-                                            button: {},
-
-                                            // Indicator
-                                            indicator: {},
-
-                                            // Slide
-                                            slide: {}
-                                        },
-
-                                        // Indicators
-                                        indicators: {},
-
-                                        // Slides
-                                        slides: {}
-                                    }, watch = {};
-
-                                    // Correct Carousel
-                                    function correctCarousel(carousel) {
-                                        // Initialization > (Allow Correction, Correction Cooldown)
-                                        let allowCorrection = !0,
-                                            correctionCooldown = 100;
-
-                                        // Function > Correct
-                                        function correct() {}
-
-                                        // Correct
-                                        correct();
-
-                                        // Carousel > On HTML Change > Watch
-                                        tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, function correctCarousel() {
-                                            /* Logic
-                                                    [if:else statement]
-                                            */
-                                            if (LDKF.includesArray(getElements(primaryStorage.carousel), carousel)) {
-                                                /* Logic
-                                                        [if statement]
-                                                */
-                                                if (allowCorrection) {
-                                                    // Update > Allow Correction
-                                                    allowCorrection = !1;
-
-                                                    // Correct > Carousel
-                                                    correct(carousel);
-
-                                                    // Set Timeout
-                                                    LDKF.setTimeout(function() { allowCorrection = !0 }, correctionCooldown)
-                                                }
-                                            }
-
-                                            else
-                                                // Carousel > Cancel On HTML Change
-                                                tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, correctCarousel)
-                                        })
-                                    }
-
-                                    // Index Carousels
-                                    function indexCarousels() {
-                                        // Initialization > (Carousels, Length)
-                                        let carousels = LDKF.getElementsByClassNameDocument('carousel'),
-                                            length = LDKF.get.htmlCollectionLength(carousels);
-
-                                        // Asynchronous Index > Set Carousels
-                                        asyncIndex(function setCarousels(iterator) {
-                                            // Initialization > (Carousel, Request)
-                                            let carousel = carousels[iterator],
-                                                request;
-
-                                            // Set Carousel > [Carousel]
-                                            setCarousel(carousel);
-
-                                            // Function > Watch
-                                            (function watch() {
-                                                /* Logic
-                                                        [if:else statement]
-                                                */
-                                                if (LDKF.hasClassHtmlElement(carousel, 'carousel'))
-                                                    // Update > Request
-                                                    request = LDKF.requestAnimationFrame(watch);
-
-                                                else {
-                                                    // Unset Carousel > Carousel
-                                                    unsetCarousel(carousel);
-
-                                                    // Cancel Animation Frame > Request
-                                                    LDKF.cancelAnimationFrame(request)
-                                                }
-                                            })()
-                                        }, length)
-                                    }
-
-                                    // Set Carousel
-                                    function setCarousel(carousel) {
                                         /* Logic
                                                 [if statement]
                                         */
-                                        if (!LDKF.includesArray(getElements(primaryStorage.carousel), carousel)) {
-                                            // Update > Primary Storage > Carousel
-                                            LDKF.pushArray(primaryStorage.carousel, {element: carousel, type: ['carousel']});
+                                        if (cooldownValue) {
+                                            // Update > Cooldown Value
+                                            cooldownValue = !1;
 
-                                            // Correct Carousel > Carousel
-                                            correctCarousel(carousel)
+                                            // Index Accordions
+                                            indexAccordions();
+
+                                            // Update > Timeout
+                                            timeout = LDKF.setTimeout(function() {
+                                                // Update > Cooldown Value
+                                                cooldownValue = !0;
+
+                                                // Clear Timeout
+                                                LDKF.clearTimeout(timeout)
+                                            }, cooldownDuration)
                                         }
-                                    }
-
-                                    // Unset Carousel
-                                    function unsetCarousel(carousel) {
-                                        // Initialization > Index
-                                        let index = LDKF.indexOfArray(getElements(primaryStorage.carousel), carousel);
-
-                                        // Update > (Primary Storage > Carousel)
-                                        (index == -1) || LDKF.spliceArray(primaryStorage.carousel, index, 1)
-                                    }
-
-                                    // Index Carousels
-                                    indexCarousels()
+                                    })
                                 })();
 
+                                // Carousel
                                 // Draggable
                                 // Dropdown
                                 // Dynamic Text
