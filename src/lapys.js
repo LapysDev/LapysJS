@@ -26271,7 +26271,7 @@
                                                 }
 
                                                 // Update > Style Attribute
-                                                stream && (styleAttribute = LDKF.replaceString(styleAttribute, stream, css))
+                                                stream && (styleAttribute = LDKF.replaceString(styleAttribute, stream, LDKF.sliceString(css, 0, -' '.length)))
                                             }
 
                                             else
@@ -31864,6 +31864,11 @@
                                             }
                                         },
 
+                                        /* Buttons
+                                                --- NOTE ---
+                                                    #Lapys: The first item is the left button,
+                                                        the last item is the right button.
+                                        */
                                         buttons: {
                                             // Configurable
                                             configurable: !0,
@@ -31873,17 +31878,17 @@
 
                                             // Get
                                             get: function buttons() {
-                                                // Initialization > (Carousel, Indicator Container, List)
+                                                // Initialization > (Carousel, Button Container, List)
                                                 let carousel = this,
-                                                    indicatorContainer = properties.containers.get.call(carousel).indicator,
+                                                    buttonContainer = properties.containers.get.call(carousel).button,
                                                     list = [];
 
                                                 /* Logic
                                                         [if statement]
                                                 */
-                                                if (indicatorContainer) {
+                                                if (buttonContainer) {
                                                     // Initialization > (Children, Iterator, Length)
-                                                    let children = LDKF.get.elementChildren(indicatorContainer),
+                                                    let children = LDKF.get.elementChildren(buttonContainer),
                                                         iterator = 0,
                                                         length = LDKF.get.htmlCollectionLength(children);
 
@@ -32087,7 +32092,7 @@
 
                                                 // Update > Index
                                                 (index < 0) && (index = numberOfSlides - 1);
-                                                (index > numberOfSlides) && (index = 0);
+                                                (index > numberOfSlides - 1) && (index = 0);
 
                                                 // Return
                                                 return properties.toggle.value.call(carousel, index)
@@ -32254,22 +32259,172 @@
                                         }
                                     }, subElementProperties = {
                                         // Button
-                                        button: {},
+                                        button: {
+                                            // Carousel
+                                            carousel: {
+                                                // Configurable
+                                                configurable: !0,
 
-                                        // Buttons Containers
-                                        buttonsContainers: {},
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function carousel() {
+                                                    // Initialization > (Element, Carousels, Parent)
+                                                    let element = this,
+                                                        carousels = getElements(primaryStorage.carousel),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(carousels, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            }
+                                        },
+
+                                        // Buttons Container
+                                        buttonsContainer: {
+                                            // Carousel
+                                            carousel: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function carousel() {
+                                                    // Initialization > (Element, Carousels, Parent)
+                                                    let element = this,
+                                                        carousels = getElements(primaryStorage.carousel),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(carousels, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            }
+                                        },
 
                                         // Indicator
-                                        indicator: {},
+                                        indicator: {
+                                            // Carousel
+                                            carousel: {
+                                                // Configurable
+                                                configurable: !0,
 
-                                        // Indicators Containers
-                                        indicatorsContainers: {},
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function carousel() {
+                                                    // Initialization > (Element, Carousels, Parent)
+                                                    let element = this,
+                                                        carousels = getElements(primaryStorage.carousel),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(carousels, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            }
+                                        },
+
+                                        // Indicators Container
+                                        indicatorsContainer: {
+                                            // Carousel
+                                            carousel: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function carousel() {
+                                                    // Initialization > (Element, Carousels, Parent)
+                                                    let element = this,
+                                                        carousels = getElements(primaryStorage.carousel),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(carousels, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            }
+                                        },
 
                                         // Slide
-                                        slide: {},
+                                        slide: {
+                                            // Carousel
+                                            carousel: {
+                                                // Configurable
+                                                configurable: !0,
 
-                                        // Slides Containers
-                                        slidesContainers: {}
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function carousel() {
+                                                    // Initialization > (Element, Carousels, Parent)
+                                                    let element = this,
+                                                        carousels = getElements(primaryStorage.carousel),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(carousels, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            }
+                                        },
+
+                                        // Slides Container
+                                        slidesContainer: {
+                                            // Carousel
+                                            carousel: {
+                                                // Configurable
+                                                configurable: !0,
+
+                                                // Enumerable
+                                                enumerable: !1,
+
+                                                // Get
+                                                get: function carousel() {
+                                                    // Initialization > (Element, Carousels, Parent)
+                                                    let element = this,
+                                                        carousels = getElements(primaryStorage.carousel),
+                                                        parent = element;
+
+                                                    // Loop > Logic > Return
+                                                    while (LDKF.isNode(parent) && LDKF.get.nodeParentElement(parent))
+                                                        if (LDKF.includesArray(carousels, parent = LDKF.get.nodeParentElement(parent)))
+                                                            return parent;
+
+                                                    // Return
+                                                    return null
+                                                }
+                                            }
+                                        }
                                     }, watch = {
                                         // Button > Next Event Listener
                                         buttonNextEventListener: function next() {},
@@ -32306,10 +32461,8 @@
                                             cooldownValue = !0,
                                             timeout;
 
-                                        // Function > Correct
-                                        function correct() {
-
-                                        }
+                                        // Function > Correct --- CHECKPOINT ---
+                                        function correct() {}
 
                                         // Correct
                                         correct();
@@ -32408,8 +32561,9 @@
                                             LDKF.setAttributeElement(indicatorContainer, 'role', 'indicator-container');
                                             LDKF.setAttributeElement(slideContainer, 'role', 'slide-container');
 
-                                            // Initialization > (Children, Options, Iterator, Length)
-                                            let children = LDKF.toArray(LDKF.get.elementChildren(carousel)),
+                                            // Initialization > (Active Child, Children, Options, Iterator, Length)
+                                            let activeChild = null,
+                                                children = LDKF.toArray(LDKF.get.elementChildren(carousel)),
                                                 options = LDKF.sortList(LDKF.getAttributeElement(carousel, 'options') || ''),
                                                 iterator = 0,
                                                 length = children.length;
@@ -32419,11 +32573,23 @@
 
                                             /* Loop
                                                     Index Children.
-
-                                                > Insertion
                                             */
-                                            for (iterator; iterator != length; iterator += 1)
-                                                LDKF.appendChildNode(slideContainer, children[iterator]);
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Child
+                                                let child = children[iterator];
+
+                                                // Update > Active Child
+                                                LDKF.isNull(activeChild) && (LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(child, 'state') || ''), 'active') && (activeChild = iterator));
+
+                                                // Modification > Child > Role
+                                                LDKF.setAttributeElement(child, 'role', LDKF.joinArray(LDKF.concatArray(['slide'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''), function(item) { return item !== 'slide' })), ' '));
+
+                                                // Insertion
+                                                LDKF.appendChildNode(slideContainer, child);
+                                            }
+
+                                            // Carousel > Toggle
+                                            properties.toggle.value.call(carousel, LDKF.isNull(activeChild) ? 0 : activeChild);
 
                                             /* Logic
                                                     [if statement]
@@ -32433,8 +32599,10 @@
                                                 let leftButton = LDKF.createElementDocument('button'),
                                                     rightButton = LDKF.createElementDocument('button');
 
-                                                // Modification > (Left, Right) Button > Role
+                                                // Modification > (Left, Right) Button > (Inner HTML, Role)
+                                                LDKF.set.elementInnerHTML(leftButton, '&blacktriangleleft;');
                                                 LDKF.setAttributeElement(leftButton, 'role', 'button left-button');
+                                                LDKF.set.elementInnerHTML(rightButton, '&blacktriangleright;');
                                                 LDKF.setAttributeElement(rightButton, 'role', 'button right-button');
 
                                                 // Insertion
@@ -32458,7 +32626,7 @@
                                                     LDKF.setAttributeElement(indicator, 'role', 'indicator');
 
                                                     // Insertion
-                                                    LDKF.appendChildNode(carousel, indicator);
+                                                    LDKF.appendChildNode(indicatorContainer, indicator);
 
                                                     // Update > Iterator
                                                     iterator -= 1

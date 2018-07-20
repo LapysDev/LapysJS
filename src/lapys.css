@@ -300,18 +300,17 @@
         border: 1px solid;
         border-color: rgba(0, 0, 0, .25);
         border-radius: 1.5px;
-        box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05),
-            inset 0 -10px 0 0 rgba(0, 0, 0, .5),
-            inset 0 0 0 750px transparent;
+        box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05);
         color: #666666;
         font-weight: 400;
         margin: 3px;
+        outline-color: transparent;
         padding-bottom: 5%;
         padding-left: 2.5%;
         padding-right: 2.5%;
         padding-top: 2.5%;
         transition: box-shadow .3s ease-in-out 0s,
-            outline .3s ease-in-out 0s,
+            border-color .3s ease-in-out 0s,
             padding-bottom .15s ease-in-out 0s,
             padding-top .15s ease-in-out 0s;
         user-select: none;
@@ -339,7 +338,8 @@
     input[type=button],
     input[type=reset],
     input[type=submit],
-    .button { font-family: Raleway, 'PT Sans', 'Calibri Light', Calibri, Arial, sans-serif }
+    .button,
+    .carousel > [role~=slide-container] > [role~=slide] { font-family: Raleway, 'PT Sans', 'Calibri Light', Calibri, Arial, sans-serif }
         /* @media */
             /* Mobile */
             @media only all and (max-width: 425px) {
@@ -347,11 +347,7 @@
                 input[type=button],
                 input[type=reset],
                 input[type=submit],
-                .button {
-                    box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05),
-                        inset 0 -5px 0 0 rgba(0, 0, 0, .5),
-                        inset 0 0 0 750px transparent
-                }
+                .button { box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05) }
             }
 
         /* States */
@@ -362,10 +358,7 @@
             input[type=submit]:active,
             .button:active {
                 border-color: rgba(0, 0, 0, .5) !important;
-                box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1),
-                    inset 0 10px 0 0 rgba(0, 0, 0, .5),
-                    inset 0 0 0 750px rgba(0, 0, 0, .1) !important;
-                outline-color: rgba(0, 0, 0, .5) !important;
+                box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1) !important;
                 transition: box-shadow .125s ease-in-out 0s,
                     outline .3s ease-in-out 0s,
                     padding-bottom .15s ease-in-out 0s,
@@ -379,10 +372,7 @@
             input[type=submit]:focus,
             .button:focus {
                 border-color: rgba(0, 153, 255, .5);
-                box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05),
-                    inset 0 10px 0 0 rgba(0, 0, 0, .5),
-                    inset 0 0 0 750px rgba(0, 0, 0, .00625);
-                outline-color: rgba(0, 153, 255, .5);
+                box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05);
                 padding-bottom: 2.5%;
                 padding-top: 5%
             }
@@ -393,11 +383,7 @@
                         input[type=button]:focus,
                         input[type=reset]:focus,
                         input[type=submit]:focus,
-                        .button:focus {
-                            box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05),
-                                inset 0 5px 0 0 rgba(0, 0, 0, .5),
-                                inset 0 0 0 750px rgba(0, 0, 0, .00625)
-                        }
+                        .button:focus { box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05) }
                     }
 
                 /* States */
@@ -406,20 +392,14 @@
                     input[type=button]:focus:invalid,
                     input[type=reset]:focus:invalid,
                     input[type=submit]:focus:invalid,
-                    .button:focus:invalid {
-                        border-color: rgba(255, 0, 0, .25);
-                        outline-color: rgba(255, 0, 0, .25)
-                    }
+                    .button:focus:invalid { border-color: rgba(255, 0, 0, .25) }
 
                     /* Valid */
                     button:focus:valid,
                     input[type=button]:focus:valid,
                     input[type=reset]:focus:valid,
                     input[type=submit]:focus:valid,
-                    .button:focus:valid {
-                        border-color: rgba(0, 255, 0, .25);
-                        outline-color: rgba(0, 255, 0, .25)
-                    }
+                    .button:focus:valid { border-color: rgba(0, 255, 0, .25) }
 
             /* Hover */
             button:hover,
@@ -427,9 +407,7 @@
             input[type=reset]:hover,
             input[type=submit]:hover,
             .button:hover {
-                box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1),
-                    inset 0 10px 0 0 rgba(0, 0, 0, .5),
-                    inset 0 0 0 750px rgba(0, 0, 0, .0125);
+                box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1);
                 padding-bottom: 2.5%;
                 padding-top: 5%
             }
@@ -440,11 +418,7 @@
                         input[type=button]:hover,
                         input[type=reset]:hover,
                         input[type=submit]:hover,
-                        .button:hover {
-                            box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1),
-                                inset 0 5px 0 0 rgba(0, 0, 0, .5),
-                                inset 0 0 0 750px rgba(0, 0, 0, .0125)
-                        }
+                        .button:hover { box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1) }
                     }
 
     /* <h1> */
@@ -619,6 +593,125 @@
                     padding: 10px
                 }
 
+        /* Carousel */
+        .carousel {
+            min-height: 300px
+        }
+            /* Containers */
+                /* Button */
+                .carousel > [role~=button-container] {
+                    margin-top: -200px;
+                    width: 75%
+                }
+                    /* <button> */
+                    .carousel > [role~=button-container] > button {
+                        border: 1px solid rgba(255, 255, 255, .5);
+                        box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
+                        font-size: 37.5px;
+                        height: 65px;
+                        max-height: 65px;
+                        max-width: 40px;
+                        min-height: 65px;
+                        min-width: 40px;
+                        justify-content: space-between;
+                        transition: background-color .3s linear 0s;
+                        width: 40px
+                    }
+
+                    /* Left Button */
+                    .carousel > [role~=button-container] > button[role~=left-button] { margin-right: 50% }
+
+                    /* Right Button */
+                    .carousel > [role~=button-container] > button[role~=right-button] { margin-left: 50% }
+
+                /* Button, Indicator */
+                .carousel > [role~=button-container],
+                .carousel > [role~=indicator-container] {
+                    display: flex;
+                    justify-content: center
+                }
+
+                .carousel > [role~=button-container],
+                .carousel > [role~=indicator-container],
+                .carousel > [role~=slide-container] > [role~=slide] { position: absolute }
+                    /* <button> */
+                    .carousel > [role~=button-container] > button,
+                    .carousel > [role~=indicator-container] > button {
+                        align-self: center;
+                        background-color: rgba(0, 0, 0, .65);
+                        color: #FFFFFF;
+                        filter: drop-shadow(0px 0px 2px rgba(255, 255, 255, .375))
+                    }
+                        /* States */
+                            /* Focus */
+                            .carousel > [role~=button-container] > button:focus,
+                            .carousel > [role~=indicator-container] > button:focus { background-color: rgba(127, 127, 127, .65) }
+
+                            /* Hover */
+                            .carousel > [role~=button-container] > button:hover,
+                            .carousel > [role~=indicator-container] > button:hover { background-color: rgba(0, 0, 0, .9) }
+
+                /* Indicator */
+                .carousel > [role~=indicator-container] { margin-top: -50px }
+                    /* <button> */
+                    .carousel > [role~=indicator-container] > button {
+                        border: 1.75px solid #FFFFFF;
+                        box-shadow: 0 0 0 1px rgba(0, 0, 0, .05),
+                                            0 3px 3px 0 rgba(0, 0, 0, .1),
+                                            inset 0 -1px 0 3px rgba(0, 0, 0, .025);
+                        border-radius: 50%;
+                        bottom: 0px;
+                        height: 25px;
+                        max-height: 25px;
+                        max-width: 25px;
+                        min-height: 25px;
+                        min-width: 25px;
+                        top: 0px;
+                        transition: background-color .3s linear 0s,
+                                        box-shadow .3s linear 0s,
+                                        top .15s linear 0s;
+                        width: 25px
+                    }
+                        /* States */
+                            /* Active */
+                            .carousel > [role~=indicator-container] > button:active {
+                                border-color: #FFFFFF !important;
+                                top: 3px !important
+                            }
+
+                            /* Focus */
+                            .carousel > [role~=indicator-container] > button:focus { top: 1.25px }
+
+                            /* Focus, Hover */
+                            .carousel > [role~=indicator-container] > button:focus,
+                            .carousel > [role~=indicator-container] > button:hover {
+                                box-shadow: 0 0 0 1px rgba(127, 127, 127, .05),
+                                                    0 3px 3px 0 rgba(127, 127, 127, .1),
+                                                    inset 0 -1px 0 3px rgba(0, 0, 0, .075)
+                            }
+
+                            /* Hover */
+                            .carousel > [role~=indicator-container] > button:hover { top: -3px }
+
+            /* Slide */
+            .carousel > [role~=slide-container] {
+                background-color: rgba(0, 0, 0, .65);
+                color: #FFFFFF;
+                overflow: hidden
+            }
+
+            .carousel > [role~=indicator-container] > button,
+            .carousel > [role~=slide-container] { position: relative }
+                /* Slide */
+                .carousel > [role~=slide-container] > [role~=slide] {
+                    background-color: inherit;
+                    color: inherit;
+                    pointer-events: none;
+                    z-index: -1
+                }
+
+                .carousel > [role~=slide-container] > [role~=slide][state~=active] { z-index: initial }
+
         /* Dialog */
         .dialog {
             box-shadow: 0 0 0 1000px rgba(0, 0, 0, .9);
@@ -633,9 +726,13 @@
             height: 42.5vh;
             justify-content: space-around;
             margin: 0;
-            min-height: 50%;
-            padding: 0
+            min-height: 50%
         }
+
+        .carousel > [role~=button-container] > button,
+        .carousel > [role~=indicator-container] > button,
+        .jumbotron { padding: 0 }
+
             /* All */
             .jumbotron > * {
                 font-size: inherit
@@ -4162,6 +4259,7 @@
                 /* Fill */
                 body:not(:empty),
                 html:not(:empty),
+                .carousel > [role~=slide-container],
                 .fill,
                 .fill-h,
                 .grid-1,
@@ -4252,6 +4350,7 @@
                 .min-full-h { min-height: 100vh }
 
                 /* Full */
+                .carousel > [role~=slide-container],
                 .min-match,
                 .min-match-h { min-height: inherit }
 
@@ -4286,6 +4385,9 @@
                 /* Fill */
                 body:not(:empty),
                 html:not(:empty),
+                .carousel,
+                .carousel > [role~=slide-container],
+                .carousel > [role~=slide-container] > [role~=slide],
                 .col-group,
                 .col-grp,
                 .column-group,
@@ -4309,21 +4411,39 @@
         /* Offset */
             /* Center */
             .center,
+            .jumbotron { align-items: center }
+
+            .carousel > [role~=slide-container] > [role~=slide],
+            .center,
             .dialog {
                 bottom: 0;
+                top: 0
+            }
+
+            .carousel > [role~=button-container],
+            .carousel > [role~=indicator-container],
+            .carousel > [role~=slide-container] > [role~=slide],
+            .center,
+            .dialog {
                 left: 0;
-                margin-bottom: auto;
-                margin-left: auto;
-                margin-right: auto;
-                margin-top: auto;
                 right: 0;
                 ruby-align: center;
-                top: 0;
                 vertical-align: middle
             }
 
             .center,
-            .jumbotron { align-items: center }
+            .dialog {
+                margin-bottom: auto;
+                margin-top: auto
+            }
+
+            .carousel > [role~=button-container],
+            .carousel > [role~=indicator-container],
+            .carousel > [role~=button-container] > button,
+            .center {
+                margin-left: auto;
+                margin-right: auto
+            }
 
         /* Position */
             /* Absolute */
@@ -4432,6 +4552,8 @@
         /* Text */
             /* Alignment */
                 /* Center */
+                .carousel > [role~=button-container],
+                .carousel > [role~=indicator-container],
                 .center,
                 .text-center,
                 .txt-c { text-align: center }
