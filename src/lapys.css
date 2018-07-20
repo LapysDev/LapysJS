@@ -593,7 +593,7 @@
         /* Accordion */
         .accordion { display: block }
             /* Title */
-            .accordion > [role=header] {
+            .accordion > [role~=header] {
                 cursor: pointer;
                 font-size: 110%;
                 font-weight: 500
@@ -654,10 +654,10 @@
                     }
 
                 /* Header */
-                .jumbotron > [role=header] { font-weight: bold }
+                .jumbotron > [role~=header] { font-weight: bold }
 
                 /* Sub Header */
-                .jumbotron > [role=subheader] { font-size: 75% }
+                .jumbotron > [role~=subheader] { font-size: 75% }
 
     /* Features */
         /* Background */
@@ -715,7 +715,7 @@
             input[type=button],
             input[type=reset],
             input[type=submit],
-            .accordion > [role=header],
+            .accordion > [role~=header],
             .button,
             .cur-pointer,
             .cur-select,
@@ -726,11 +726,11 @@
             .z-0 { z-index: 0 }
 
             /* Level 1 */
-            .accordion > [role=content],
+            .accordion > [role~=content],
             .z-1 { z-index: 1 }
 
             /* Level 2 */
-            .accordion > [role=header],
+            .accordion > [role~=header],
             .z-2 { z-index: 2 }
 
             /* Level 3 */
@@ -816,8 +816,11 @@
             .-webkit-inline-box { display: -webkit-inline-box !important }
 
         /* Filter */
-            /* Hidden */
-            .accordion > [role=content][state=closed],
+            /* Hidden
+                    --- CHECKPOINT ---
+                        #Lapys: Is there a way to match attribute values like classes?
+            */
+            .accordion > [role~=content][state~=closed],
             .hidden { display: none }
 
             .hidden {
@@ -4573,7 +4576,7 @@
             /* Selection */
                 /* Transparent */
                     /* States > Selection */
-                    .accordion > [role=header]::selection,
+                    .accordion > [role~=header]::selection,
                     .card::selection,
                     .no-select::selection,
                     .transp-select::selection,

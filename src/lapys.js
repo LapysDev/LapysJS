@@ -31072,7 +31072,10 @@
                                 }
                             });
 
-                            /* Components */
+                            /* Components
+                                    --- WARN ---
+                                        #Lapys: Merge components at your own risk.
+                            */
                                 /* Accordion
                                         --- UPDATE REQUIRED ---
                                             #Lapys: Content and headers outside their Accordions are not unset.
@@ -31101,11 +31104,12 @@
                                                         Index Children.
                                                 */
                                                 for (iterator; iterator != length; iterator += 1) {
-                                                    // Initialization > Content
-                                                    let $content = content[iterator];
+                                                    // Initialization > (Content, States)
+                                                    let $content = content[iterator],
+                                                        states = LDKF.sortList(LDKF.getAttributeElement($content, 'state') || '');
 
                                                     // Update > List
-                                                    (LDKF.getAttributeElement($content, 'state') === 'closed') && LDKF.pushArray(list, $content)
+                                                    (LDKF.includesArray(states, 'closed') && !LDKF.includesArray('open')) && LDKF.pushArray(list, $content)
                                                 }
 
                                                 // Return
@@ -31234,11 +31238,12 @@
                                                         Index Children.
                                                 */
                                                 for (iterator; iterator != length; iterator += 1) {
-                                                    // Initialization > Content
-                                                    let $content = content[iterator];
+                                                    // Initialization > (Content, States)
+                                                    let $content = content[iterator],
+                                                        states = LDKF.sortList(LDKF.getAttributeElement($content, 'state') || '');
 
                                                     // Update > List
-                                                    (LDKF.getAttributeElement($content, 'state') === 'open') && LDKF.pushArray(list, $content)
+                                                    (!LDKF.includesArray(states, 'closed') && LDKF.includesArray('open')) && LDKF.pushArray(list, $content)
                                                 }
 
                                                 // Return
@@ -31355,12 +31360,12 @@
                                                 enumerable: !1,
 
                                                 // Value
-                                                value: function open() {
+                                                value: function close() {
                                                     // Initialization > Element
                                                     let element = this;
 
                                                     // Modification > Element > State
-                                                    LDKF.setAttributeElement(element, 'state', 'closed');
+                                                    LDKF.setAttributeElement(element, 'state', LDKF.joinArray(LDKF.concatArray(['closed'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(element, 'state') || ''), function(item) { return item !== 'closed' && item !== 'open' })), ' '));
 
                                                     // Return
                                                     return !1
@@ -31384,7 +31389,7 @@
                                                     let element = this;
 
                                                     // Modification > Element > State
-                                                    LDKF.setAttributeElement(element, 'state', 'open');
+                                                    LDKF.setAttributeElement(element, 'state', LDKF.joinArray(LDKF.concatArray(['open'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(element, 'state') || ''), function(item) { return item !== 'closed' && item !== 'open' })), ' '));
 
                                                     // Return
                                                     return !0
@@ -31403,12 +31408,23 @@
                                                 enumerable: !1,
 
                                                 // Get
-                                                get: function state() {
+                                                get: function getState() {
                                                     // Initialization > Element
                                                     let element = this;
 
                                                     // Return
-                                                    return LDKF.getAttributeElement(element, 'state') === 'open'
+                                                    return LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(element, 'state') || ''), 'open')
+                                                },
+
+                                                // Set
+                                                set: function setState() {
+                                                    // Initialization > Element
+                                                    let element = this;
+
+                                                    // Return
+                                                    return arguments[0] ?
+                                                        subElementProperties.content.open.value.call(element) :
+                                                        subElementProperties.content.close.value.call(element)
                                                 }
                                             }
                                         },
@@ -31459,7 +31475,12 @@
                                             cooldownValue = !0,
                                             timeout;
 
-                                        // Function > Correct
+                                        /* Function > Correct
+                                                --- NOTE ---
+                                                    #Lapys:
+                                                        - The function that does the actual correcting.
+                                                        - Although we place this on a cooldown so as not to stress the DOM.
+                                        */
                                         function correct() {
                                             // Initialization > (Headers, Iterator,)
                                             let headers = properties.headers.get.call(accordion),
@@ -31507,7 +31528,7 @@
                                         correct();
 
                                         // Accordion > On HTML Change > Watch
-                                        tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(accordion, function correctAccordion() {
+                                        LDKF.includesArray(getElements(primaryStorage.accordion), accordion) || tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(accordion, function correctAccordion() {
                                             /* Logic
                                                     [if:else statement]
                                             */
@@ -31547,12 +31568,8 @@
 
                                         // Asynchronous Index > Set Accordions
                                         asyncIndex(function setAccordions(iterator) {
-                                            // Initialization > (Accordion, Request)
-                                            let accordion = accordions[iterator],
-                                                request;
-
-                                            // Set Accordion > [Accordion]
-                                            setAccordion(accordion)
+                                            // Set Accordion > Accordion
+                                            setAccordion(accordions[iterator])
                                         }, length)
                                     }
 
@@ -31611,11 +31628,7 @@
                                                     LDKF.objectDefineProperty($content, 'close', subElementProperties.content.close);
                                                     LDKF.objectDefineProperty($content, 'open', subElementProperties.content.open);
                                                     LDKF.objectDefineProperty($content, 'state', subElementProperties.content.state);
-
-                                                    // Content > (Open | Close)
-                                                    subElementProperties.content.state.get.call($content) ?
-                                                        subElementProperties.content.open.value.call($content) :
-                                                        subElementProperties.content.close.value.call($content)
+                                                    subElementProperties.content.state.set.call($content, subElementProperties.content.state.get.call($content))
                                                 }
                                             }
 
@@ -31738,6 +31751,786 @@
                                 })();
 
                                 // Carousel
+                                (function carousel() {
+                                    // Initialization > ((Sub Element) Properties, Watch)
+                                    let properties = {
+                                        // Active Slide
+                                        activeSlide: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function getActiveSlide() {
+                                                // Initialization > (Carousel, Slides, Iterator, Length)
+                                                let carousel = this,
+                                                    slides = properties.slides.get.call(carousel),
+                                                    iterator = 0,
+                                                    length = slides.length;
+
+                                                /* Loop
+                                                        Index Slides.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > (Slide, States)
+                                                    let slide = slides[iterator],
+                                                        states = LDKF.sortList(LDKF.getAttributeElement(slide, 'state') || '');
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (LDKF.includesArray(states, 'active') && !LDKF.includesArray(states, 'passive')) {
+                                                        // Initialization > Slides Iterator
+                                                        let slidesIterator = slides.length;
+
+                                                        /* Loop
+                                                                Index Slides.
+                                                        */
+                                                        while (slidesIterator) {
+                                                            // Initialization > Slide
+                                                            let slide = slides[slidesIterator -= 1];
+
+                                                            // Modification > Slide > State
+                                                            LDKF.setAttributeElement(slide, 'state', LDKF.joinArray(LDKF.concatArray(['passive'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(slide, 'state') || ''), function(item) { return item !== 'active' && item !== 'passive'})), ' '))
+                                                        }
+
+                                                        // Modification > Slide > State
+                                                        LDKF.setAttributeElement(slide, 'state', LDKF.joinArray(LDKF.concatArray(['active'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(slide, 'state') || ''), function(item) { return item !== 'active' && item !== 'passive'})), ' '));
+
+                                                        // Return
+                                                        return slide
+                                                    }
+                                                }
+
+                                                // Return
+                                                return null
+                                            }
+                                        },
+
+                                        // Active Slide Index
+                                        activeSlideIndex: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function getActiveSlideIndex() {
+                                                // Initialization > (Carousel, Slides, Iterator, Length)
+                                                let carousel = this,
+                                                    slides = properties.slides.get.call(carousel),
+                                                    iterator = 0,
+                                                    length = slides.length;
+
+                                                /* Loop
+                                                        Index Slides.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > (Slide, States)
+                                                    let slide = slides[iterator],
+                                                        states = LDKF.sortList(LDKF.getAttributeElement(slide, 'state') || '');
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (LDKF.includesArray(states, 'active') && !LDKF.includesArray(states, 'passive')) {
+                                                        // Initialization > Slides Iterator
+                                                        let slidesIterator = slides.length;
+
+                                                        /* Loop
+                                                                Index Slides.
+                                                        */
+                                                        while (slidesIterator) {
+                                                            // Initialization > Slide
+                                                            let slide = slides[slidesIterator -= 1];
+
+                                                            // Modification > Slide > State
+                                                            LDKF.setAttributeElement(slide, 'state', LDKF.joinArray(LDKF.concatArray(['passive'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(slide, 'state') || ''), function(item) { return item !== 'active' && item !== 'passive'})), ' '))
+                                                        }
+
+                                                        // Modification > Slide > State
+                                                        LDKF.setAttributeElement(slide, 'state', LDKF.joinArray(LDKF.concatArray(['active'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(slide, 'state') || ''), function(item) { return item !== 'active' && item !== 'passive'})), ' '));
+
+                                                        // Return
+                                                        return iterator
+                                                    }
+                                                }
+
+                                                // Return
+                                                return -1
+                                            }
+                                        },
+
+                                        buttons: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function buttons() {
+                                                // Initialization > (Carousel, Indicator Container, List)
+                                                let carousel = this,
+                                                    indicatorContainer = properties.containers.get.call(carousel).indicator,
+                                                    list = [];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (indicatorContainer) {
+                                                    // Initialization > (Children, Iterator, Length)
+                                                    let children = LDKF.get.elementChildren(indicatorContainer),
+                                                        iterator = 0,
+                                                        length = LDKF.get.htmlCollectionLength(children);
+
+                                                    /* Loop
+                                                            Index Children.
+                                                    */
+                                                    for (iterator; iterator != length; iterator += 1) {
+                                                        // Initialization > Child
+                                                        let child = children[iterator];
+
+                                                        // Update > List
+                                                        LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''), 'button') && LDKF.pushArray(list, child)
+                                                    }
+                                                }
+
+                                                // Return
+                                                return list
+                                            }
+                                        },
+
+                                        // Containers
+                                        containers: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function containers() {
+                                                // Initialization > (Carousel, Children, Containers, Iterator)
+                                                let carousel = this,
+                                                    children = LDKF.get.elementChildren(carousel),
+                                                    $containers = {button: null, indicator: null, slide: null},
+                                                    iterator = LDKF.get.htmlCollectionLength(children);
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > (Child, Roles, Stop Searching)
+                                                    let child = children[iterator -= 1],
+                                                        roles = LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''),
+                                                        stopSearching = !0;
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (!$containers.slide && stopSearching)
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (LDKF.includesArray(roles, 'slide-container')) {
+                                                            // Modification > Containers > Slide
+                                                            $containers.slide = child;
+                                                                // Role
+                                                                (LDKF.includesArray(roles, 'button-container') || LDKF.includesArray(roles, 'indicator-container')) && LDKF.setAttributeElement($containers.slide, 'role', LDKF.joinArray(LDKF.filterArray(roles, function(item) { return item !== 'button-container' && item !== 'indicator-container' }), ' '));
+
+                                                            // Update > Stop Searching
+                                                            stopSearching = !1
+                                                        }
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (!$containers.button && stopSearching)
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (LDKF.includesArray(roles, 'button-container')) {
+                                                            // Modification > Containers > Button
+                                                            $containers.button = child;
+                                                                // Role
+                                                                (LDKF.includesArray(roles, 'indicator-container') || LDKF.includesArray(roles, 'slide-container')) && LDKF.setAttributeElement($containers.button, 'role', LDKF.joinArray(LDKF.filterArray(roles, function(item) { return item !== 'indicator-container' && item !== 'slide-container' }), ' '));
+
+                                                            // Update > Stop Searching
+                                                            stopSearching = !1
+                                                        }
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (!$containers.indicator && stopSearching)
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (LDKF.includesArray(roles, 'indicator-container')) {
+                                                            // Modification > Containers > Indicator
+                                                            $containers.indicator = child;
+                                                                // Role
+                                                                (LDKF.includesArray(roles, 'button-container') || LDKF.includesArray(roles, 'slide-container')) && LDKF.setAttributeElement($containers.indicator, 'role', LDKF.joinArray(LDKF.filterArray(roles, function(item) { return item !== 'button-container' && item !== 'slide-container' }), ' '));
+
+                                                            // Update > Stop Searching
+                                                            stopSearching = !1
+                                                        }
+                                                }
+
+                                                // Return
+                                                return $containers
+                                            }
+                                        },
+
+                                        // First
+                                        first: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function first() {
+                                                // Initialization > Carousel
+                                                let carousel = this;
+
+                                                // Return
+                                                return properties.toggle.value.call(carousel, 0)
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Last
+                                        last: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function last() {
+                                                // Initialization > (Carousel, Slides)
+                                                let carousel = this,
+                                                    slides = properties.slides.get.call(carousel);
+
+                                                // Return
+                                                return properties.toggle.value.call(carousel, (slides.length || 1) - 1)
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Indicators
+                                        indicators: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function indicators() {
+                                                // Initialization > (Carousel, Indicator Container, List)
+                                                let carousel = this,
+                                                    indicatorContainer = properties.containers.get.call(carousel).indicator,
+                                                    list = [];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (indicatorContainer) {
+                                                    // Initialization > (Children, Iterator, Length)
+                                                    let children = LDKF.get.elementChildren(indicatorContainer),
+                                                        iterator = 0,
+                                                        length = LDKF.get.htmlCollectionLength(children);
+
+                                                    /* Loop
+                                                            Index Children.
+                                                    */
+                                                    for (iterator; iterator != length; iterator += 1) {
+                                                        // Initialization > Child
+                                                        let child = children[iterator];
+
+                                                        // Update > List
+                                                        LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''), 'indicator') && LDKF.pushArray(list, child)
+                                                    }
+                                                }
+
+                                                // Return
+                                                return list
+                                            }
+                                        },
+
+                                        // Next
+                                        next: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function next() {
+                                                // Initialization > (Carousel, Index, Number of Slides)
+                                                let carousel = this,
+                                                    index = properties.activeSlideIndex.get.call(carousel) + 1,
+                                                    numberOfSlides = properties.slides.get.call(carousel).length;
+
+                                                // Update > Index
+                                                (index < 0) && (index = numberOfSlides - 1);
+                                                (index > numberOfSlides) && (index = 0);
+
+                                                // Return
+                                                return properties.toggle.value.call(carousel, index)
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Options
+                                        options: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function options() {
+                                                // Return
+                                                return LDKF.sortList(LDKF.getAttributeElement(this, 'options') || '')
+                                            }
+                                        },
+
+                                        // Previous
+                                        prev: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function previous() {
+                                                // Initialization > (Carousel, Index, Number of Slides)
+                                                let carousel = this,
+                                                    index = properties.activeSlideIndex.get.call(carousel) - 1,
+                                                    numberOfSlides = properties.slides.get.call(carousel).length;
+
+                                                // Update > Index
+                                                (index < 0) && (index = numberOfSlides - 1);
+                                                (index > numberOfSlides) && (index = 0);
+
+                                                // Return
+                                                return properties.toggle.value.call(carousel, index)
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Random
+                                        random: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function random() {
+                                                // Initialization > (Carousel, Number of Slides, Index)
+                                                let carousel = this,
+                                                    numberOfSlides = properties.slides.get.call(carousel).length,
+                                                    index = LDKF.numberParseInt(LDKF.mathRandom() * numberOfSlides);
+
+                                                // Return
+                                                return properties.toggle.value.call(carousel, index)
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Toggle
+                                        toggle: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: function toggle() {
+                                                // Initialization > (Carousel, (Active Slide) Index, Slides, Number of Slides)
+                                                let carousel = this,
+                                                    activeSlideIndex = properties.activeSlideIndex.get.call(carousel),
+                                                    index = arguments[0],
+                                                    slides = properties.slides.get.call(carousel),
+                                                    numberOfSlides = slides.length;
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (arguments.length) {
+                                                    // Error
+                                                    LDKF.isSafeInteger(index) || LDKF.error("'toggle'", 'argument', LDKF.debugMessage(index, ['must', 'a'], 'safe integer'));
+                                                    (toggle < 0) && LDKF.error("'toggle'", 'argument', 'Index given must be greater than 0');
+                                                    (toggle > numberOfSlides) && LDKF.error("'toggle'", 'argument', 'Index given must be less than the current number of slides (' + numberOfSlides + ')');
+
+                                                    /* Loop
+                                                            Index Slides.
+                                                    */
+                                                    while (numberOfSlides) {
+                                                        // Initialization > Slide
+                                                        let slide = slides[numberOfSlides -= 1];
+
+                                                        // Modification > Slide > State
+                                                        LDKF.setAttributeElement(slide, 'state', LDKF.joinArray(LDKF.concatArray(['passive'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(slide, 'state') || ''), function(item) { return item !== 'active' && item !== 'passive'})), ' '))
+                                                    }
+
+                                                    // Modification > Slide > State
+                                                    LDKF.setAttributeElement(slides[index], 'state', LDKF.joinArray(LDKF.concatArray(['active'], LDKF.filterArray(LDKF.sortList(LDKF.getAttributeElement(slides[index], 'state') || ''), function(item) { return item !== 'active' && item !== 'passive'})), ' '))
+                                                }
+
+                                                else
+                                                    // Error
+                                                    LDKF.error("'toggle'", 'argument', [1, 0])
+                                            },
+
+                                            // Writable
+                                            writable: !1
+                                        },
+
+                                        // Slides
+                                        slides: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function indicators() {
+                                                // Initialization > (Carousel, Slide Container, List)
+                                                let carousel = this,
+                                                    slideContainer = properties.containers.get.call(carousel).slide,
+                                                    list = [];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (slideContainer) {
+                                                    // Initialization > (Children, Iterator, Length)
+                                                    let children = LDKF.get.elementChildren(slideContainer),
+                                                        iterator = 0,
+                                                        length = LDKF.get.htmlCollectionLength(children);
+
+                                                    /* Loop
+                                                            Index Children.
+                                                    */
+                                                    for (iterator; iterator != length; iterator += 1) {
+                                                        // Initialization > Child
+                                                        let child = children[iterator];
+
+                                                        // Update > List
+                                                        LDKF.includesArray(LDKF.sortList(LDKF.getAttributeElement(child, 'role') || ''), 'slide') && LDKF.pushArray(list, child)
+                                                    }
+                                                }
+
+                                                // Return
+                                                return list
+                                            }
+                                        }
+                                    }, subElementProperties = {
+                                        // Button
+                                        button: {},
+
+                                        // Buttons Containers
+                                        buttonsContainers: {},
+
+                                        // Indicator
+                                        indicator: {},
+
+                                        // Indicators Containers
+                                        indicatorsContainers: {},
+
+                                        // Slide
+                                        slide: {},
+
+                                        // Slides Containers
+                                        slidesContainers: {}
+                                    }, watch = {
+                                        // Button > Next Event Listener
+                                        buttonNextEventListener: function next() {},
+
+                                        // Button > Previous Event Listener
+                                        buttonPreviousEventListener: function previous() {},
+
+                                        // First Event Listener
+                                        firstEventListener: function first() {},
+
+                                        // Indicator > Toggle Event Listener
+                                        indicatorToggleEventListener: function toggle() {},
+
+                                        // Last Event Listener
+                                        lastEventListener: function last() {},
+
+                                        // Next Event Listener
+                                        nextEventListener: function next() {},
+
+                                        // Previous Event Listener
+                                        prevEventListener: function previous() {},
+
+                                        // Random Event Listener
+                                        randomEventListener: function random() {},
+
+                                        // Toggle Event Listener
+                                        toggleEventListener: function toggle() {}
+                                    };
+
+                                    // Correct Carousel
+                                    function correctCarousel(carousel) {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 100,
+                                            cooldownValue = !0,
+                                            timeout;
+
+                                        // Function > Correct
+                                        function correct() {
+
+                                        }
+
+                                        // Correct
+                                        correct();
+
+                                        // Carousel > On HTML Change > Watch
+                                        LDKF.includesArray(getElements(primaryStorage.carousel), carousel) || tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, function correctCarousel() {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.includesArray(getElements(primaryStorage.carousel), carousel)) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (cooldownValue) {
+                                                    // Update > Allow Correction
+                                                    cooldownValue = !1;
+
+                                                    // Correct > Carousel
+                                                    correct(carousel);
+
+                                                    // Set Timeout
+                                                    timeout = LDKF.setTimeout(function() {
+                                                        // Update > Allow Correction
+                                                        cooldownValue = !0;
+
+                                                        // Clear Timeout > Timeout
+                                                        LDKF.clearTimeout(timeout)
+                                                    }, cooldownDuration)
+                                                }
+                                            }
+
+                                            else
+                                                // Carousel > Cancel On HTML Change
+                                                tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, correctAccordion)
+                                        })
+                                    }
+
+                                    // Index Carousels
+                                    function indexCarousels() {
+                                        // Initialization > (Carousels, Length)
+                                        let carousels = LDKF.getElementsByClassNameDocument('carousel'),
+                                            length = LDKF.get.htmlCollectionLength(carousels);
+
+                                        // Asynchronous Index > Set Carousels
+                                        asyncIndex(function setCarousels(iterator) {
+                                            // Set Carousel > Carousel
+                                            setCarousel(carousels[iterator])
+                                        }, length)
+                                    }
+
+                                    // Set Carousel
+                                    function setCarousel(carousel) {
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (!LDKF.includesArray(getElements(primaryStorage.carousel), carousel)) {
+                                            // Update > Primary Storage > Carousel
+                                            LDKF.pushArray(primaryStorage.carousel, {element: carousel, type: ['carousel']});
+
+                                            // Deletion
+                                            delete carousel.activeSlide;
+                                            delete carousel.activeSlideIndex;
+                                            delete carousel.buttons;
+                                            delete carousel.containers;
+                                            delete carousel.first;
+                                            delete carousel.last;
+                                            delete carousel.indicators;
+                                            delete carousel.next;
+                                            delete carousel.prev;
+                                            delete carousel.random;
+                                            delete carousel.toggle;
+                                            delete carousel.slides;
+
+                                            // Modification > Carousel > (Active Slide (Index), Buttons, Containers, First, Last, Indicators, Next, Previous, Random, Toggle, Slides)
+                                            LDKF.objectDefineProperty(carousel, 'activeSlide', properties.activeSlide);
+                                            LDKF.objectDefineProperty(carousel, 'activeSlideIndex', properties.activeSlideIndex);
+                                            LDKF.objectDefineProperty(carousel, 'buttons', properties.buttons);
+                                            LDKF.objectDefineProperty(carousel, 'containers', properties.containers);
+                                            LDKF.objectDefineProperty(carousel, 'first', properties.first);
+                                            LDKF.objectDefineProperty(carousel, 'last', properties.last);
+                                            LDKF.objectDefineProperty(carousel, 'indicators', properties.indicators);
+                                            LDKF.objectDefineProperty(carousel, 'next', properties.next);
+                                            LDKF.objectDefineProperty(carousel, 'options', properties.options);
+                                            LDKF.objectDefineProperty(carousel, 'prev', properties.prev);
+                                            LDKF.objectDefineProperty(carousel, 'random', properties.random);
+                                            LDKF.objectDefineProperty(carousel, 'toggle', properties.toggle);
+                                            LDKF.objectDefineProperty(carousel, 'slides', properties.slides);
+
+                                            // Initialization > (Button, Indicator, Slide) Container
+                                            let buttonContainer = LDKF.createElementDocument('div'),
+                                                indicatorContainer = LDKF.createElementDocument('div'),
+                                                slideContainer = LDKF.createElementDocument('div');
+
+                                            // Modification > (Button, Indicator, Slide) Container > Role
+                                            LDKF.setAttributeElement(buttonContainer, 'role', 'button-container');
+                                            LDKF.setAttributeElement(indicatorContainer, 'role', 'indicator-container');
+                                            LDKF.setAttributeElement(slideContainer, 'role', 'slide-container');
+
+                                            // Initialization > (Children, Options, Iterator, Length)
+                                            let children = LDKF.toArray(LDKF.get.elementChildren(carousel)),
+                                                options = LDKF.sortList(LDKF.getAttributeElement(carousel, 'options') || ''),
+                                                iterator = 0,
+                                                length = children.length;
+
+                                            // Insertion
+                                            LDKF.appendChildNode(carousel, slideContainer);
+
+                                            /* Loop
+                                                    Index Children.
+
+                                                > Insertion
+                                            */
+                                            for (iterator; iterator != length; iterator += 1)
+                                                LDKF.appendChildNode(slideContainer, children[iterator]);
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDKF.includesArray(options, 'buttons')) {
+                                                // Initialization > (Left, Right) Button
+                                                let leftButton = LDKF.createElementDocument('button'),
+                                                    rightButton = LDKF.createElementDocument('button');
+
+                                                // Modification > (Left, Right) Button > Role
+                                                LDKF.setAttributeElement(leftButton, 'role', 'button left-button');
+                                                LDKF.setAttributeElement(rightButton, 'role', 'button right-button');
+
+                                                // Insertion
+                                                LDKF.appendChildNode(buttonContainer, leftButton);
+                                                LDKF.appendChildNode(buttonContainer, rightButton);
+                                                LDKF.appendChildNode(carousel, buttonContainer)
+                                            }
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (LDKF.includesArray(options, 'indicators')) {
+                                                /* Loop
+                                                        [while statement]
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Indicator
+                                                    let indicator = LDKF.createElementDocument('button');
+
+                                                    // Modification > Indicator > Role
+                                                    LDKF.setAttributeElement(indicator, 'role', 'indicator');
+
+                                                    // Insertion
+                                                    LDKF.appendChildNode(carousel, indicator);
+
+                                                    // Update > Iterator
+                                                    iterator -= 1
+                                                }
+
+                                                // Insertion
+                                                LDKF.appendChildNode(carousel, indicatorContainer)
+                                            }
+
+                                            // Correct Carousel > Carousel
+                                            correctCarousel(carousel);
+
+                                            // Watch Carousel
+                                            (function watchCarousel() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.hasClassHtmlElement(carousel, 'carousel'))
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(watchCarousel);
+
+                                                else {
+                                                    // Unset Carousel > Carousel
+                                                    unsetCarousel(carousel);
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+                                            })()
+                                        }
+                                    }
+
+                                    // Unset Carousel
+                                    function unsetCarousel(carousel) {
+                                        let index = LDKF.indexOfArray(getElements(primaryStorage.carousel), carousel);
+
+                                        // Update > (Primary Storage > Carousel)
+                                        (index == -1) || LDKF.spliceArray(primaryStorage.carousel, index, 1)
+                                    }
+
+                                    // Index Carousels
+                                    indexCarousels();
+
+                                    // On DOM Node Added > Index Carousel
+                                    tmpObject.windowOnDOMNodeAddedDescriptionValue(function indexCarousel() {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 250,
+                                            cooldownValue = !0,
+                                            timeout;
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (cooldownValue) {
+                                            // Update > Cooldown Value
+                                            cooldownValue = !1;
+
+                                            // Index Carousels
+                                            indexCarousels();
+
+                                            // Update > Timeout
+                                            timeout = LDKF.setTimeout(function() {
+                                                // Update > Cooldown Value
+                                                cooldownValue = !0;
+
+                                                // Clear Timeout
+                                                LDKF.clearTimeout(timeout)
+                                            }, cooldownDuration)
+                                        }
+                                    })
+                                })();
+
                                 // Draggable
                                 // Dropdown
                                 // Dynamic Text
@@ -31746,6 +32539,145 @@
                                 // Table
                                 // Toast
                                 // Tooltip
+
+                                // [Template]
+                                function template() {
+                                    // Initialization > ((Sub Element) Properties, Watch)
+                                    let properties = {
+                                    }, subElementProperties = {
+                                    }, watch = {
+                                    };
+
+                                    // Correct Template
+                                    function correctTemplate(template) {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 100,
+                                            cooldownValue = !0,
+                                            timeout;
+
+                                        // Function > Correct
+                                        function correct() {}
+
+                                        // Correct
+                                        correct();
+
+                                        // Template > On HTML Change > Watch
+                                        LDKF.includesArray(getElements(primaryStorage.template), template) || tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(template, function correctTemplate() {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.includesArray(getElements(primaryStorage.template), template)) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (cooldownValue) {
+                                                    // Update > Allow Correction
+                                                    cooldownValue = !1;
+
+                                                    // Correct > Template
+                                                    correct(template);
+
+                                                    // Set Timeout
+                                                    timeout = LDKF.setTimeout(function() {
+                                                        // Update > Allow Correction
+                                                        cooldownValue = !0;
+
+                                                        // Clear Timeout > Timeout
+                                                        LDKF.clearTimeout(timeout)
+                                                    }, cooldownDuration)
+                                                }
+                                            }
+
+                                            else
+                                                // Template > Cancel On HTML Change
+                                                tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(template, correctAccordion)
+                                        })
+                                    }
+
+                                    // Index Templates
+                                    function indexTemplates() {
+                                        // Initialization > (Templates, Length)
+                                        let templates = LDKF.getElementsByClassNameDocument('template'),
+                                            length = LDKF.get.htmlCollectionLength(templates);
+
+                                        // Asynchronous Index > Set Templates
+                                        asyncIndex(function setTemplates(iterator) {
+                                            // Set Template > Template
+                                            setTemplate(templates[iterator])
+                                        }, length)
+                                    }
+
+                                    // Set Template
+                                    function setTemplate(template) {
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (!LDKF.includesArray(getElements(primaryStorage.template), template)) {
+                                            // Update > Primary Storage > Template
+                                            LDKF.pushArray(primaryStorage.template, {element: template, type: ['template']});
+
+                                            // Correct Template > Template
+                                            correctTemplate(template);
+
+                                            // Watch Template
+                                            (function watchTemplate() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.hasClassHtmlElement(template, 'template'))
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(watchTemplate);
+
+                                                else {
+                                                    // Unset Template > Template
+                                                    unsetTemplate(template);
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+                                            })()
+                                        }
+                                    }
+
+                                    // Unset Template
+                                    function unsetTemplate(template) {
+                                        let index = LDKF.indexOfArray(getElements(primaryStorage.template), template);
+
+                                        // Update > (Primary Storage > Template)
+                                        (index == -1) || LDKF.spliceArray(primaryStorage.template, index, 1)
+                                    }
+
+                                    // Index Templates
+                                    indexTemplates();
+
+                                    // On DOM Node Added > Index Template
+                                    tmpObject.windowOnDOMNodeAddedDescriptionValue(function indexTemplate() {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 250,
+                                            cooldownValue = !0,
+                                            timeout;
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (cooldownValue) {
+                                            // Update > Cooldown Value
+                                            cooldownValue = !1;
+
+                                            // Index Templates
+                                            indexTemplates();
+
+                                            // Update > Timeout
+                                            timeout = LDKF.setTimeout(function() {
+                                                // Update > Cooldown Value
+                                                cooldownValue = !0;
+
+                                                // Clear Timeout
+                                                LDKF.clearTimeout(timeout)
+                                            }, cooldownDuration)
+                                        }
+                                    })
+                                }
                         })
                 }
 
