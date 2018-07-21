@@ -19,20 +19,18 @@
         <!-- Header -->
         <h1 script="this.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))"></h1>
 
+        <br> <br>
+
         <!-- Accordion -->
         <div class=accordion id=accordion>
-            <div role=header> Accordion Header </div>
-            <div role=content> Accordion content </div>
+            <h1 role=header> Accordion Header </h1>
+            <div role=content state=open> Accordion content </div>
         </div>
 
         <hr>
 
         <!-- Carousel -->
-        <div class=carousel id=carousel options='buttons indicators'>
-            <div> Slide A </div>
-            <div> Slide B </div>
-            <div> Slide C </div>
-        </div>
+        <div id=carousel options='buttons indicators' script='let carousel = this, colors = ["#FF7700", "#00AA00", "#0077FF", "#0000AA", "#333333", "#770077"]; repeat(function(key) { carousel.innerHTML += `<div style="background-color: ` + colors.randomElement + `"> Slide ` + key + " </div>" }, int(rand(5, 10))); carousel.addClass("carousel")'> </div>
     </main>
 
     <!-- Scripts -->

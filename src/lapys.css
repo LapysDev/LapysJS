@@ -600,7 +600,9 @@
             /* Containers */
                 /* Button */
                 .carousel > [role~=button-container] {
+                    left: 0;
                     margin-top: -200px;
+                    right: 0;
                     width: 75%
                 }
                     /* <button> */
@@ -706,11 +708,19 @@
                 .carousel > [role~=slide-container] > [role~=slide] {
                     background-color: inherit;
                     color: inherit;
+                    left: -100%;
+                    opacity: 0;
                     pointer-events: none;
-                    z-index: -1
+                    transition: .3s ease-in 0s
                 }
 
-                .carousel > [role~=slide-container] > [role~=slide][state~=active] { z-index: initial }
+                .carousel > [role~=slide-container] > [role~=slide][state~=active] {
+                    left: 0;
+                    opacity: 1;
+                    pointer-events: all
+                }
+
+                .carousel > [role~=slide-container] > [role~=slide][state~=active] + [role~=slide] { left: 100% }
 
         /* Dialog */
         .dialog {
