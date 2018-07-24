@@ -711,7 +711,7 @@
                     left: -100%;
                     opacity: 0;
                     pointer-events: none;
-                    transition: .3s ease-in 0s
+                    transition: .1s ease-in 0s
                 }
 
                 .carousel > [role~=slide-container] > [role~=slide][state~=active] {

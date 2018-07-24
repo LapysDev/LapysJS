@@ -30,7 +30,20 @@
         <hr>
 
         <!-- Carousel -->
-        <div id=carousel options='buttons indicators' script='let carousel = this, colors = ["#FF7700", "#00AA00", "#0077FF", "#0000AA", "#333333", "#770077"]; repeat(function(key) { carousel.innerHTML += `<div style="background-color: ` + colors.randomElement + `"> Slide ` + key + " </div>" }, int(rand(5, 10))); carousel.addClass("carousel")'> </div>
+        <div class=carousel id=carousel options='auto buttons indicators'>
+            <div> Slide A </div>
+            <div> Slide B </div>
+            <div> Slide C </div>
+        </div>
+
+        <hr>
+
+        <!-- Dropdown -->
+        <div class=dropdown id=dropdown>
+            <div> Dropdown Activator </div>
+        </div>
+
+        <div dropdown-id=dropdown> Dropdown content </div>
     </main>
 
     <!-- Scripts -->

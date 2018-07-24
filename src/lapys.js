@@ -7153,6 +7153,14 @@
                                 return function getElementsByClassNameDocument() { return method.call(LDKO.$document, arguments[0]) }
                             })();
 
+                            LDKF.$getElementsByClassNameDocument = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$documentProto.getElementsByClassName;
+
+                                // Return
+                                return function $getElementsByClassNameDocument() { return method.call(arguments[0], arguments[1]) }
+                            })();
+
                             // Get Elements By Tag Name
                             LDKF.getElementsByTagNameDocument = (function() {
                                 // Initialization > Method
@@ -31597,7 +31605,7 @@
                                         correct();
 
                                         // Accordion > On HTML Change > Watch
-                                        LDKF.includesArray(getElements(primaryStorage.accordion), accordion) || tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(accordion, function correctAccordion() {
+                                        LDKF.includesArray(getElements(primaryStorage.accordion), accordion) && tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(accordion, function correctAccordion() {
                                             /* Logic
                                                     [if:else statement]
                                             */
@@ -32312,32 +32320,36 @@
                                                     numberOfSlides = slides.length;
 
                                                 /* Logic
-                                                        [if:else statement]
+                                                        [if statement]
                                                 */
-                                                if (arguments.length) {
-                                                    // Error
-                                                    LDKF.isSafeInteger(index) || LDKF.error("'toggle'", 'argument', LDKF.debugMessage(index, ['must', 'a'], 'safe integer'));
-                                                    (toggle < 0) && LDKF.error("'toggle'", 'argument', 'Index given must be greater than 0');
-                                                    (toggle > numberOfSlides) && LDKF.error("'toggle'", 'argument', 'Index given must be less than the current number of slides (' + numberOfSlides + ')');
-
-                                                    /* Loop
-                                                            Index Slides.
+                                                if (numberOfSlides)
+                                                    /* Logic
+                                                            [if:else statement]
                                                     */
-                                                    while (numberOfSlides) {
-                                                        // Initialization > Slide
-                                                        let slide = slides[numberOfSlides -= 1];
+                                                    if (arguments.length) {
+                                                        // Error
+                                                        LDKF.isSafeInteger(index) || LDKF.error("'toggle'", 'argument', LDKF.debugMessage(index, ['must', 'a'], 'safe integer'));
+                                                        (toggle < 0) && LDKF.error("'toggle'", 'argument', 'Index given must be greater than 0');
+                                                        (toggle > numberOfSlides) && LDKF.error("'toggle'", 'argument', 'Index given must be less than the current number of slides (' + numberOfSlides + ')');
+
+                                                        /* Loop
+                                                                Index Slides.
+                                                        */
+                                                        while (numberOfSlides) {
+                                                            // Initialization > Slide
+                                                            let slide = slides[numberOfSlides -= 1];
+
+                                                            // Modification > Slide > State
+                                                            setSortedAttribute(slide, 'state', 'passive', 'active')
+                                                        }
 
                                                         // Modification > Slide > State
-                                                        setSortedAttribute(slide, 'state', 'passive', 'active')
+                                                        setSortedAttribute(slides[index], 'state', 'active', 'passive')
                                                     }
 
-                                                    // Modification > Slide > State
-                                                    setSortedAttribute(slides[index], 'state', 'active', 'passive')
-                                                }
-
-                                                else
-                                                    // Error
-                                                    LDKF.error("'toggle'", 'argument', [1, 0])
+                                                    else
+                                                        // Error
+                                                        LDKF.error("'toggle'", 'argument', [1, 0])
                                             },
 
                                             // Writable
@@ -32556,28 +32568,90 @@
                                         // {Mouse Input} Button
                                             // Next Event Listener
                                             buttonNextEventListener: function next() {
-                                                let rightButton = this;
+                                                // Initialization > (Right Button, Carousel)
+                                                let rightButton = this,
+                                                    carousel = subElementProperties.button.carousel.get.call(rightButton);
+
+                                                // Return
+                                                return carousel ? properties.next.value.call(carousel) : null
                                             },
 
                                             // Previous Event Listener
-                                            buttonPreviousEventListener: function previous() {},
+                                            buttonPreviousEventListener: function previous() {
+                                                // Initialization > (Left Button, Carousel)
+                                                let leftButton = this,
+                                                    carousel = subElementProperties.button.carousel.get.call(leftButton);
+
+                                                // Return
+                                                return carousel ? properties.prev.value.call(carousel) : null
+                                            },
 
                                         // {Mouse Input} Indicator > Toggle Event Listener
-                                        indicatorToggleEventListener: function toggle() {},
+                                        indicatorToggleEventListener: function toggle() {
+                                            // Initialization > (Indicator, Carousel, Index)
+                                            let indicator = this,
+                                                carousel = subElementProperties.indicator.carousel.get.call(indicator),
+                                                index = LDKF.indexOfArray(properties.indicators.get.call(carousel), indicator);
+
+                                            // Return
+                                            return index == -1 ? null : properties.toggle.value.call(carousel, index)
+                                        },
 
                                         // {Drag/ Touch Input} Slide Container
                                             // Next Event Listener
-                                            slideContainerNextEventListener: function next() {},
+                                            slideContainerNextEventListener: function next() {
+                                                // Initialization > (Slide, Carousel)
+                                                let slide = this,
+                                                    carousel = subElementProperties.slide.carousel.get.call(slide);
+
+                                                // Return
+                                                return carousel ? properties.next.value.call(carousel) : null
+                                            },
 
                                             // Previous Event Listener
-                                            slideContainerPreviousEventListener: function previous() {},
+                                            slideContainerPreviousEventListener: function previous() {
+                                                // Initialization > (Slide, Carousel)
+                                                let slide = this,
+                                                    carousel = subElementProperties.slide.carousel.get.call(slide);
+
+                                                // Return
+                                                return carousel ? properties.prev.value.call(carousel) : null
+                                            },
 
                                         // {Key Input} Window
                                             // Next Event Listener
-                                            windowNextEventListener: function nextCarouselSlide() {},
+                                            windowNextEventListener: function nextCarouselSlide() {
+                                                // Initialization > (Document, Carousels, Iterator, Length)
+                                                let document = this.document,
+                                                    carousels = LDKF.$getElementsByClassNameDocument(LDKF.isDocument(document) ? document : LDKO.$document, 'carousel'),
+                                                    iterator = 0,
+                                                    length = LDKF.get.htmlCollectionLength(carousels);
+
+                                                /* Loop
+                                                        Index Carousels.
+
+                                                    > Carousel > Next
+                                                */
+                                                for (iterator; iterator != length; iterator += 1)
+                                                    properties.next.value.call(carousels[iterator])
+                                            },
 
                                             // Previous Event Listener
-                                            windowPreviousEventListener: function previousCarouselSlide() {}
+                                            windowPreviousEventListener: function previousCarouselSlide() {
+                                                // Initialization > (Document, Carousels, Iterator, Length)
+                                                let document = this.document,
+                                                    carousels = LDKF.$getElementsByClassNameDocument(LDKF.isDocument(document) ? document : LDKO.$document, 'carousel'),
+                                                    iterator = 0,
+                                                    length = LDKF.get.htmlCollectionLength(carousels);
+
+                                                /* Loop
+                                                        Index Carousels.
+
+                                                    > Carousel > Previous
+                                                */
+                                                for (iterator; iterator != length; iterator += 1)
+                                                    properties.prev.value.call(carousels[iterator])
+                                            }
                                     };
 
                                     // Correct Carousel
@@ -32587,14 +32661,294 @@
                                             cooldownValue = !0,
                                             timeout;
 
-                                        // Function > Correct --- CHECKPOINT ---
-                                        function correct() {}
+                                        // Function > Correct
+                                        function correct() {
+                                            // Initialization > ((Button, Indicator, Slide) Container, Options)
+                                            let buttonContainer = properties.containers.get.call(carousel).button,
+                                                indicatorContainer = properties.containers.get.call(carousel).indicator,
+                                                slideContainer = properties.containers.get.call(carousel).slide,
+                                                options = getSortedAttribute(carousel, 'options');
+
+                                            // Insertion | Deletion
+                                            LDKF.includesArray(options, 'buttons') ?
+                                                buttonContainer || LDKF.appendChildNode(carousel, buttonContainer = (function() {
+                                                    // Initialization > Button Container
+                                                    let buttonContainer = LDKF.createElementDocument('div');
+
+                                                    // Modification > Button Container > (Carousel, Role)
+                                                    LDKF.objectDefineProperty(buttonContainer, 'carousel', subElementProperties.buttonsContainer.carousel);
+                                                    LDKF.setAttributeElement(buttonContainer, 'role', 'button-container');
+
+                                                    // Return
+                                                    return buttonContainer
+                                                })()) :
+                                                buttonContainer && LDKF.removeChildNode(carousel, buttonContainer);
+
+                                            LDKF.includesArray(options, 'indicators') ?
+                                                indicatorContainer || LDKF.appendChildNode(carousel, indicatorContainer = (function() {
+                                                    // Initialization > Indicator Container
+                                                    let indicatorContainer = LDKF.createElementDocument('div');
+
+                                                    // Modification > Indicator Container > (Carousel, Role)
+                                                    LDKF.objectDefineProperty(indicatorContainer, 'carousel', subElementProperties.indicatorsContainer.carousel);
+                                                    LDKF.setAttributeElement(indicatorContainer, 'role', 'indicator-container');
+
+                                                    // Return
+                                                    return indicatorContainer
+                                                })()) :
+                                                indicatorContainer && LDKF.removeChildNode(carousel, indicatorContainer);
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (slideContainer) {
+                                                // Initialization > (Children, Iterator)
+                                                let children = LDKF.get.elementChildren(slideContainer),
+                                                    iterator = LDKF.get.htmlCollectionLength(children);
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Child
+                                                    let child = children[iterator -= 1];
+
+                                                    // Modification > Child > Role
+                                                    LDKF.includesArray(getSortedAttribute(child, 'role'), 'slide') || setSortedAttribute(child, 'role', 'slide')
+                                                }
+                                            }
+
+                                            else {
+                                                // Initialization > (Slide Container, Children, Iterator)
+                                                let slideContainer = LDKF.createElementDocument('div'),
+                                                    children = LDKF.toArray(LDKF.get.elementChildren(carousel)),
+                                                    iterator = children.length;
+
+                                                // Modification > Slide Container > (Carousel, Role)
+                                                LDKF.objectDefineProperty(slideContainer, 'carousel', subElementProperties.slidesContainer.carousel);
+                                                LDKF.setAttributeElement(slideContainer, 'role', 'slide-container');
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (iterator) {
+                                                    /* Loop
+                                                            Index Children.
+                                                    */
+                                                    while (iterator) {
+                                                        // Initialization > Child
+                                                        let child = children[iterator -= 1];
+
+                                                        // Insertion
+                                                        (child === buttonContainer || child === indicatorContainer) || LDKF.appendChildNode(slideContainer, child)
+                                                    }
+
+                                                    // Insertion
+                                                    LDKF.insertBeforeNode(carousel, slideContainer, LDKF.get.$parentNodeFirstElementChild(carousel))
+                                                }
+
+                                                else
+                                                    // Insertion
+                                                    LDKF.appendChildNode(carousel, slideContainer)
+                                            }
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (buttonContainer) {
+                                                // Initialization > (Buttons, Children, Iterator)
+                                                let buttons = properties.buttons.get.call(carousel),
+                                                    children = LDKF.get.elementChildren(buttonContainer),
+                                                    iterator = LDKF.get.htmlCollectionLength(children);
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > (Child, Roles)
+                                                    let child = children[iterator -= 1],
+                                                        roles = getSortedAttribute(child, 'role');
+
+                                                    // Deletion
+                                                    (LDKF.includesArray(roles, 'button') || LDKF.includesArray(roles, 'left-button') || LDKF.includesArray(roles, 'right-button')) || LDKF.remove$ChildNode(child)
+                                                }
+
+                                                // Initialization > Length
+                                                let length = LDKF.get.htmlCollectionLength(children = LDKF.get.elementChildren(buttonContainer));
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (length > 2)
+                                                    /* Loop
+                                                            [while statement]
+                                                    */
+                                                    while (length > 2) {
+                                                        // Deletion
+                                                        LDKF.removeChildNode(buttonContainer, children[length - 1]);
+
+                                                        // Update > Length
+                                                        length = LDKF.get.htmlCollectionLength(children = LDKF.get.elementChildren(buttonContainer))
+                                                    }
+
+                                                else if (!length) {
+                                                    // Initialization > (Left, Right) Button
+                                                    let leftButton = LDKF.createElementDocument('button'),
+                                                        rightButton = LDKF.createElementDocument('button');
+
+                                                    // Modification > (Left, Right) Button > Role
+                                                    LDKF.setAttributeElement(leftButton, 'role', 'button left-button');
+                                                    LDKF.setAttributeElement(rightButton, 'role', 'button right-button');
+
+                                                    // Insertion
+                                                    LDKF.appendChildNode(buttonContainer, leftButton);
+                                                    LDKF.appendChildNode(buttonContainer, rightButton)
+                                                }
+
+                                                // Update > Iterator
+                                                iterator = length;
+
+                                                // Initialization > ((Left, Right) Button) Found
+                                                let leftButton, leftButtonFound = !1,
+                                                    rightButton, rightButtonFound = !1;
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > (Button, Roles)
+                                                    let button = children[iterator -= 1],
+                                                        roles = getSortedAttribute(button, 'role');
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (!leftButtonFound || !rightButtonFound)
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if (LDKF.includesArray(roles, 'left-button')) {
+                                                            // Modification > Left Button > Role
+                                                            setSortedAttribute(leftButton = button, 'role', 'button');
+
+                                                            // Update > Left Button Found
+                                                            leftButtonFound = !0
+                                                        }
+
+                                                        else if (LDKF.includesArray(roles, 'right-button')) {
+                                                            // Modification > Right Button > Role
+                                                            setSortedAttribute(rightButton = button, 'role', 'button');
+
+                                                            // Update > Right Button Found
+                                                            rightButtonFound = !0
+                                                        }
+
+                                                        else if (!leftButtonFound) {
+                                                            // Modification > Left Button > Role
+                                                            setSortedAttribute(leftButton = button, 'role', ['button', 'left-button']);
+
+                                                            // Update > Left Button Found
+                                                            leftButtonFound = !0
+                                                        }
+
+                                                        else {
+                                                            // Modification > Right Button > Role
+                                                            setSortedAttribute(rightButton = button, 'role', ['button', 'right-button']);
+
+                                                            // Update > Right Button Found
+                                                            rightButtonFound = !0
+                                                        }
+                                                }
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (!LDKF.includesArray(buttons, leftButton)) {
+                                                    // Unset Carousel Button > Left Button
+                                                    unsetCarouselButton(leftButton);
+
+                                                    // Modification > Left Button > Carousel
+                                                    LDKF.objectDefineProperty(leftButton, 'carousel', subElementProperties.button.carousel);
+
+                                                    // Event > Left Button > Mouse Up
+                                                    LDKF.addEvent(leftButton, 'mouseup', watch.buttonPreviousEventListener)
+                                                }
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (!LDKF.includesArray(buttons, rightButton)) {
+                                                    // Unset Carousel Button > Right Button
+                                                    unsetCarouselButton(rightButton);
+
+                                                    // Modification > Right Button > Carousel
+                                                    LDKF.objectDefineProperty(rightButton, 'carousel', subElementProperties.button.carousel);
+
+                                                    // Event > Right Button > Mouse Up
+                                                    LDKF.addEvent(rightButton, 'mouseup', watch.buttonNextEventListener)
+                                                }
+                                            }
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (indicatorContainer) {
+                                                // Initialization > (Indicators, Children, Iterator)
+                                                let indicators = properties.indicators.get.call(carousel),
+                                                    children = LDKF.get.elementChildren(indicatorContainer),
+                                                    iterator = LDKF.get.htmlCollectionLength(children);
+
+                                                /* Loop
+                                                        Index Children.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Child
+                                                    let child = children[iterator -= 1];
+
+                                                    // Deletion
+                                                    LDKF.includesArray(getSortedAttribute(child, 'role'), 'indicator') || LDKF.remove$ChildNode(child)
+                                                }
+
+                                                // Initialization > Length
+                                                let length = LDKF.get.htmlCollectionLength(children = LDKF.get.elementChildren(indicatorContainer));
+
+                                                /* Loop
+                                                        [while statement]
+                                                */
+                                                while (length < properties.slides.get.call(carousel).length) {
+                                                    // Initialization > Indicator
+                                                    let indicator = LDKF.createElementDocument('button');
+
+                                                    // Deletion
+                                                    delete indicator.carousel;
+
+                                                    // Modification > Indicator > (Carousel, Role)
+                                                    LDKF.objectDefineProperty(indicator, 'carousel', subElementProperties.indicator.carousel);
+                                                    LDKF.setAttributeElement(indicator, 'role', 'indicator');
+
+                                                    // Event > Indicator > Mouse Up
+                                                    LDKF.addEvent(indicator, 'mouseup', watch.indicatorToggleEventListener);
+
+                                                    // Insertion
+                                                    LDKF.appendChildNode(indicatorContainer, indicator);
+
+                                                    // Update > Length
+                                                    length = LDKF.get.htmlCollectionLength(children = LDKF.get.elementChildren(indicatorContainer))
+                                                }
+                                            }
+
+                                            // Initialization > Active Slide Index
+                                            let activeSlideIndex = properties.activeSlideIndex.get.call(carousel);
+
+                                            // Carousel > Toggle
+                                            properties.toggle.value.call(carousel, activeSlideIndex < 1 ? 0 : activeSlideIndex || 0)
+                                        }
 
                                         // Correct
                                         correct();
 
                                         // Carousel > On HTML Change > Watch
-                                        LDKF.includesArray(getElements(primaryStorage.carousel), carousel) || tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, function correctCarousel() {
+                                        LDKF.includesArray(getElements(primaryStorage.carousel), carousel) && tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(carousel, function correctCarousel() {
                                             /* Logic
                                                     [if:else statement]
                                             */
@@ -32723,12 +33077,19 @@
                                                 // Update > Active Child
                                                 LDKF.isNull(activeChild) && (LDKF.includesArray(getSortedAttribute(child, 'state'), 'active') && (activeChild = iterator));
 
-                                                // Modification > Child > Role
+                                                // Deletion
+                                                delete child.carousel;
+
+                                                // Modification > Child > (Carousel, Role)
+                                                LDKF.objectDefineProperty(child, 'carousel', subElementProperties.slide.carousel);
                                                 LDKF.includesArray(getSortedAttribute(child, 'role'), 'slide') || setSortedAttribute(child, 'role', 'slide');
 
                                                 // Insertion
-                                                LDKF.appendChildNode(slideContainer, child);
+                                                LDKF.appendChildNode(slideContainer, child)
                                             }
+
+                                            // Modification > Slide Container > Carousel
+                                            LDKF.objectDefineProperty(slideContainer, 'carousel', subElementProperties.slidesContainer.carousel);
 
                                             // Carousel > Toggle
                                             properties.toggle.value.call(carousel, LDKF.isNull(activeChild) ? 0 : activeChild);
@@ -32779,6 +33140,21 @@
                                                     LDKF.appendChildNode(buttonContainer, rightButton)
                                                 }
 
+                                                // Deletion
+                                                delete leftButton.carousel;
+                                                delete rightButton.carousel;
+
+                                                // Modification > (Left, Right) Button > Carousel
+                                                LDKF.objectDefineProperty(leftButton, 'carousel', subElementProperties.button.carousel);
+                                                LDKF.objectDefineProperty(rightButton, 'carousel', subElementProperties.button.carousel);
+
+                                                // Event > (Left, Right) Button > Mouse Up
+                                                LDKF.addEvent(leftButton, 'mouseup', watch.buttonPreviousEventListener);
+                                                LDKF.addEvent(rightButton, 'mouseup', watch.buttonNextEventListener);
+
+                                                // Modification > Indicator Container > Carousel
+                                                LDKF.objectDefineProperty(buttonContainer, 'carousel', subElementProperties.buttonsContainer.carousel);
+
                                                 // Insertion
                                                 LDKF.appendChildNode(carousel, buttonContainer)
                                             }
@@ -32787,6 +33163,9 @@
                                                     [if statement]
                                             */
                                             if (LDKF.includesArray(options, 'indicators')) {
+                                                // Modification > Indicator Container > Inner HTML
+                                                LDKF.set.elementInnerHTML(indicatorContainer, '');
+
                                                 /* Loop
                                                         [while statement]
                                                 */
@@ -32794,8 +33173,15 @@
                                                     // Initialization > Indicator
                                                     let indicator = LDKF.createElementDocument('button');
 
-                                                    // Modification > Indicator > Role
+                                                    // Deletion
+                                                    delete indicator.carousel;
+
+                                                    // Modification > Indicator > (Carousel, Role)
+                                                    LDKF.objectDefineProperty(indicator, 'carousel', subElementProperties.indicator.carousel);
                                                     LDKF.setAttributeElement(indicator, 'role', 'indicator');
+
+                                                    // Event > Indicator > Mouse Up
+                                                    LDKF.addEvent(indicator, 'mouseup', watch.indicatorToggleEventListener);
 
                                                     // Insertion
                                                     LDKF.appendChildNode(indicatorContainer, indicator);
@@ -32804,9 +33190,18 @@
                                                     iterator -= 1
                                                 }
 
+                                                // Modification > Indicator Container > Carousel
+                                                LDKF.objectDefineProperty(indicatorContainer, 'carousel', subElementProperties.indicatorsContainer.carousel);
+
                                                 // Insertion
                                                 LDKF.appendChildNode(carousel, indicatorContainer)
                                             }
+
+                                            // Initialization > (Is Spinning, Interval)
+                                            let isSpinning = !1, interval;
+
+                                            // Update > Iterator
+                                            iterator = options.length;
 
                                             // Correct Carousel > Carousel
                                             correctCarousel(carousel);
@@ -32816,9 +33211,91 @@
                                                 /* Logic
                                                         [if:else statement]
                                                 */
-                                                if (LDKF.hasClassHtmlElement(carousel, 'carousel'))
+                                                if (LDKF.hasClassHtmlElement(carousel, 'carousel')) {
+                                                    // Initialization > (Interval Duration, Spinnable)
+                                                    let intervalDuration = 3e3,
+                                                        spinnable = !1;
+
+                                                    // Update > Iterator
+                                                    iterator = (options = properties.options.get.call(carousel)).length;
+
+                                                    /* Loop
+                                                            Index Options.
+                                                    */
+                                                    while (iterator) {
+                                                        // Initialization > Option
+                                                        let option = options[iterator -= 1];
+
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (option == 'auto' || (option[0] == 'a' && option[1] == 'u' && option[2] == 't' && option[3] == 'o')) {
+                                                            // Update > (Interval Duration, Spinnable)
+                                                            (option.length > 4) && (intervalDuration = (LDKF.numberParseInt(LDKF.sliceString(option, 'auto='.length)) || 3) * 1e3);
+                                                            spinnable = !0;
+
+                                                            // Break
+                                                            break
+                                                        }
+                                                    }
+
+                                                    /* Logic
+                                                            [if:else statement]
+                                                    */
+                                                    if (spinnable) {
+                                                        /* Logic
+                                                                [if statement]
+
+                                                            > Update > (Interval, Is Spinning)
+                                                        */
+                                                        if (!isSpinning) {
+                                                            interval = LDKF.setInterval(function spin() {
+                                                                // Initialization > Direction
+                                                                let direction = 'next';
+
+                                                                // Update > Iterator
+                                                                iterator = options.length;
+
+                                                                /* Loop
+                                                                        Index Options.
+                                                                */
+                                                                while (iterator) {
+                                                                    // Initialization > Option
+                                                                    let option = options[iterator -= 1];
+
+                                                                    /* Logic
+                                                                            [if statement]
+                                                                    */
+                                                                    if (option[0] == 'd' && option[1] == 'i' && option[2] == 'r' && option[3] == 'e' && option[4] == 'c' && option[5] == 't' && option[6] == 'i' && option[7] == 'o' && option[8] == 'n' && option[9] == '=') {
+                                                                        // Update > Direction
+                                                                        direction = LDKF.sliceString(option, 'direction='.length);
+
+                                                                        // Break
+                                                                        break
+                                                                    }
+                                                                }
+
+                                                                // Update > Direction
+                                                                direction = direction == 'left' || direction == 'right' ? (direction == 'left' ? 'prev' : 'next') : 'next';
+
+                                                                // Carousel > Next
+                                                                properties[direction].value.call(carousel)
+                                                            }, intervalDuration);
+                                                            isSpinning = !0
+                                                        }
+                                                    }
+
+                                                    else {
+                                                        // Clear Interval > Interval
+                                                        LDKF.clearInterval(interval);
+
+                                                        // Update > Is Spinning
+                                                        isSpinning = !1
+                                                    }
+
                                                     // Update > Request
-                                                    request = LDKF.requestAnimationFrame(watchCarousel);
+                                                    request = LDKF.requestAnimationFrame(watchCarousel)
+                                                }
 
                                                 else {
                                                     // Unset Carousel > Carousel
@@ -32903,22 +33380,47 @@
                                     }
 
                                     // Unset Carousel Button
-                                    function unsetCarouselButton(button) {}
+                                    function unsetCarouselButton(button) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(button, 'carousel'), subElementProperties.button.carousel) && delete button.carousel;
+
+                                        // Event > Button > Mouse Up
+                                        LDKF.delEvent(button, 'mouseup', watch.buttonPreviousEventListener);
+                                        LDKF.delEvent(button, 'mouseup', watch.buttonNextEventListener)
+                                    }
 
                                     // Unset Carousel Button Container
-                                    function unsetCarouselButtonContainer(buttonContainer) {}
+                                    function unsetCarouselButtonContainer(buttonContainer) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(buttonContainer, 'carousel'), subElementProperties.buttonsContainer.carousel) && delete buttonContainer.carousel
+                                    }
 
                                     // Unset Carousel Indicator
-                                    function unsetCarouselIndicator(indicator) {}
+                                    function unsetCarouselIndicator(indicator) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(indicator, 'carousel'), subElementProperties.indicator.carousel) && delete indicator.carousel;
+
+                                        // Event > Indicator > Mouse Up
+                                        LDKF.delEvent(indicator, 'mouseup', watch.indicatorToggleEventListener)
+                                    }
 
                                     // Unset Carousel Indicator Container
-                                    function unsetCarouselIndicatorContainer(indicatorContainer) {}
+                                    function unsetCarouselIndicatorContainer(indicatorContainer) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(indicatorContainer, 'carousel'), subElementProperties.indicatorsContainer.carousel) && delete indicatorContainer.carousel
+                                    }
 
                                     // Unset Carousel Slide
-                                    function unsetCarouselSlide(slide) {}
+                                    function unsetCarouselSlide(slide) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(slide, 'carousel'), subElementProperties.slide.carousel) && delete slide.carousel
+                                    }
 
                                     // Unset Carousel Slide Container
-                                    function unsetCarouselSlideContainer(indicatorContainer) {}
+                                    function unsetCarouselSlideContainer(slideContainer) {
+                                        // Deletion
+                                        samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(slideContainer, 'carousel'), subElementProperties.slidesContainer.carousel) && delete slideContainer.carousel
+                                    }
 
                                     // Index Carousels
                                     indexCarousels();
@@ -32983,7 +33485,7 @@
                                         correct();
 
                                         // Template > On HTML Change > Watch
-                                        LDKF.includesArray(getElements(primaryStorage.template), template) || tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(template, function correctTemplate() {
+                                        LDKF.includesArray(getElements(primaryStorage.template), template) && tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(template, function correctTemplate() {
                                             /* Logic
                                                     [if:else statement]
                                             */
@@ -33011,7 +33513,7 @@
 
                                             else
                                                 // Template > Cancel On HTML Change
-                                                tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(template, correctAccordion)
+                                                tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(template, correctTemplate)
                                         })
                                     }
 
