@@ -770,13 +770,13 @@
         /* Background */
             /* Color */
                 /* Blue */
-                .bg-c-b { background-color: #0000FF }
+                .bg-c-b { background-color: #0000FF !important }
 
                 /* Green */
-                .bg-c-g { background-color: #00FF00 }
+                .bg-c-g { background-color: #00FF00 !important }
 
                 /* Red */
-                .bg-c-r { background-color: #FF0000 }
+                .bg-c-r { background-color: #FF0000 !important }
 
             /* Position */
             .background,
@@ -789,22 +789,22 @@
 
         /* Color */
             /* Black */
-            .color-black { color: #000000 }
+            .color-black { color: #000000 !important }
 
             /* Blue */
-            .color-blue { color: #0000FF }
+            .color-blue { color: #0000FF !important }
 
             /* Green */
-            .color-green { color: #00FF00 }
+            .color-green { color: #00FF00 !important }
 
             /* Red */
-            .color-red { color: #FF0000 }
+            .color-red { color: #FF0000 !important }
 
             /* White */
             .bg-c-b,
             .bg-c-g,
             .bg-c-r,
-            .color-white { color: #FFFFFF }
+            .color-white { color: #FFFFFF !important }
 
         /* Cursor */
             /* Default */

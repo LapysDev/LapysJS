@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Document Metadata -->
+        <!-- Character Encoding Set -->
+        <meta charset=utf-8>
+
+    <!-- Stylesheets -->
+        <!-- LapysJS Stylesheet -->
+        <link href=../src/lapys.css media=all rel=stylesheet type=text/css>
+
+    <!-- Document Title -->
+    <title script="app.name = 'LapysJS | Components Debugging Room'"> LapysJS </title>
+</head>
+
+<body>
+    <!-- Main -->
+    <main>
+        <!-- Header -->
+        <h1 script="this.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))"></h1>
+
+        <br> <br>
+
+        <!-- Accordion -->
+        <div class=accordion id=accordion>
+            <!-- Header -->
+            <h1 role=header> Accordion Header </h1>
+
+            <!-- Content -->
+            <p role=content state=open> Accordion content </p>
+        </div>
+
+        <hr>
+
+        <!-- Carousel -->
+        <div class=carousel id=carousel options='auto=2 buttons direction=left indicators'>
+            <div class=bg-c-r> Slide A </div>
+            <div class=bg-c-g> Slide B </div>
+            <div class=bg-c-b> Slide C </div>
+        </div>
+
+        <hr>
+
+        <!-- Dropdown -->
+        <div class=dropdown id=dropdown>
+            <!-- Activator -->
+            <h1 role=activator> Dropdown Activator </h1>
+        </div>
+
+        <!-- Receiver -->
+        <p dropdown=dropdown role=receiver state=closed> Dropdown content </p>
+
+        <hr>
+    </main>
+
+    <!-- Scripts -->
+        <!-- LapysJS Script -->
+        <script features=script-attribute src=../src/lapys.js type=text/javascript> </script>
+</body>
+</html>
