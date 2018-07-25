@@ -157,7 +157,7 @@
         filter: none;
         flood-color: #000;
         flood-opacity: 1;
-        font-family: Gadugi, 'PT Sans', 'Calibri Light', sans-serif;
+        font-family: -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         font-feature-settings: inherit;
         font-size: 1em;
         font-language-override: normal;
@@ -305,14 +305,12 @@
         font-weight: 400;
         margin: 3px;
         outline-color: transparent;
-        padding-bottom: 5%;
+        padding-bottom: 3.75%;
         padding-left: 2.5%;
         padding-right: 2.5%;
-        padding-top: 2.5%;
+        padding-top: 3.75%;
         transition: box-shadow .3s ease-in-out 0s,
-            border-color .3s ease-in-out 0s,
-            padding-bottom .15s ease-in-out 0s,
-            padding-top .15s ease-in-out 0s;
+            border-color .3s ease-in-out 0s;
         user-select: none;
         vertical-align: text-top;
         -webkit-appearance: button
@@ -360,9 +358,7 @@
                 border-color: rgba(0, 0, 0, .5) !important;
                 box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1) !important;
                 transition: box-shadow .125s ease-in-out 0s,
-                    outline .3s ease-in-out 0s,
-                    padding-bottom .15s ease-in-out 0s,
-                    padding-top .15s ease-in-out 0s
+                    outline .3s ease-in-out 0s
             }
 
             /* Focus */
@@ -372,9 +368,7 @@
             input[type=submit]:focus,
             .button:focus {
                 border-color: rgba(0, 153, 255, .5);
-                box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05);
-                padding-bottom: 2.5%;
-                padding-top: 5%
+                box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05)
             }
                 /* @media */
                     /* Mobile */
@@ -407,9 +401,7 @@
             input[type=reset]:hover,
             input[type=submit]:hover,
             .button:hover {
-                box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1);
-                padding-bottom: 2.5%;
-                padding-top: 5%
+                box-shadow: 0 2.5px 10px 1px rgba(0, 0, 0, .1)
             }
                 /* @media */
                     /* Mobile */
@@ -600,9 +592,7 @@
             /* Containers */
                 /* Button */
                 .carousel > [role~=button-container] {
-                    left: 0;
                     margin-top: -200px;
-                    right: 0;
                     width: 75%
                 }
                     /* <button> */
@@ -662,13 +652,11 @@
                                             0 3px 3px 0 rgba(0, 0, 0, .1),
                                             inset 0 -1px 0 3px rgba(0, 0, 0, .025);
                         border-radius: 50%;
-                        bottom: 0px;
                         height: 25px;
                         max-height: 25px;
                         max-width: 25px;
                         min-height: 25px;
                         min-width: 25px;
-                        top: 0px;
                         transition: background-color .3s linear 0s,
                                         box-shadow .3s linear 0s,
                                         top .15s linear 0s;
@@ -715,12 +703,9 @@
                 }
 
                 .carousel > [role~=slide-container] > [role~=slide][state~=active] {
-                    left: 0;
                     opacity: 1;
                     pointer-events: all
                 }
-
-                .carousel > [role~=slide-container] > [role~=slide][state~=active] + [role~=slide] { left: 100% }
 
         /* Dialog */
         .dialog {
@@ -923,10 +908,7 @@
             .-webkit-inline-box { display: -webkit-inline-box !important }
 
         /* Filter */
-            /* Hidden
-                    --- CHECKPOINT ---
-                        #Lapys: Is there a way to match attribute values like classes?
-            */
+            /* Hidden */
             .accordion > [role~=content][state~=closed],
             .hidden { display: none }
 
@@ -966,6 +948,29 @@
                 filter: opacity(0);
                 opacity: 0 !important
             }
+
+        /* Flex */
+            /* End */
+            .flex-end {
+                align-content: flex-end;
+                align-items: flex-end;
+                align-self: flex-end;
+                justify-content: flex-end
+            }
+
+            /* Start */
+            .flex-start {
+                align-content: flex-start;
+                align-items: flex-start;
+                align-self: flex-start;
+                justify-content: flex-start
+            }
+
+            /* Wrap */
+            .wrap { flex-wrap: wrap }
+
+            /* Wrap Reverse */
+            .wrap-reverse { flex-wrap: wrap-reverse }
 
         /* Font */
             /* Size */
@@ -4419,24 +4424,23 @@
                 .match-w { width: inherit }
 
         /* Offset */
+            /* Bottom */
+            .bottom-0,
+            .carousel > [role~=indicator-container] > button,
+            .carousel > [role~=slide-container] > [role~=slide],
+            .center,
+            .dialog { bottom: 0 }
+            .bottom-100 { bottom: 100% }
+
             /* Center */
             .center,
             .jumbotron { align-items: center }
-
-            .carousel > [role~=slide-container] > [role~=slide],
-            .center,
-            .dialog {
-                bottom: 0;
-                top: 0
-            }
 
             .carousel > [role~=button-container],
             .carousel > [role~=indicator-container],
             .carousel > [role~=slide-container] > [role~=slide],
             .center,
             .dialog {
-                left: 0;
-                right: 0;
                 ruby-align: center;
                 vertical-align: middle
             }
@@ -4454,6 +4458,35 @@
                 margin-left: auto;
                 margin-right: auto
             }
+
+            /* Left */
+            .carousel > [role~=button-container],
+            .carousel > [role~=indicator-container],
+            .carousel > [role~=slide-container] > [role~=slide],
+            .carousel > [role~=slide-container] > [role~=slide][state~=active],
+            .center,
+            .dialog,
+            .left-0 { left: 0 }
+
+            .carousel > [role~=slide-container] > [role~=slide][state~=active] + [role~=slide],
+            .left-100 { left: 100% }
+
+            /* Right */
+            .carousel > [role~=button-container],
+            .carousel > [role~=indicator-container],
+            .carousel > [role~=slide-container] > [role~=slide],
+            .center,
+            .dialog,
+            .right-0 { right: 0 }
+            .right-100 { right: 100% }
+
+            /* Top */
+            .carousel > [role~=indicator-container] > button,
+            .carousel > [role~=slide-container] > [role~=slide],
+            .center,
+            .dialog,
+            .top-0 { top: 0 }
+            .top-100 { top: 100% }
 
         /* Position */
             /* Absolute */
@@ -4569,6 +4602,7 @@
                 .txt-c { text-align: center }
 
                 /* End */
+                .flex-end,
                 .text-end,
                 .txt-e { text-align: end }
 
@@ -4589,6 +4623,7 @@
                 .txt-r { text-align: right }
 
                 /* Start */
+                .flex-start,
                 .text-start,
                 .txt-s { text-align: start }
 

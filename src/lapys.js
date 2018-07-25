@@ -34,7 +34,7 @@
         // LapysJS Development Kit
         LapysJSDevelopmentKit = {
             // Allow Public Access
-            allowPublicAccess: !0,
+            allowPublicAccess: !1,
 
             // Components
             components: ['accordion', 'carousel', 'draggable', 'dropdown', 'dynamicText', 'dynamicTime', 'marquee', 'table', 'toast', 'tooltip'],
@@ -13446,6 +13446,23 @@
                                 writable: !0
                             });
 
+                            /* End
+                                    --- UPDATE REQUIRED ---
+                                        #Lapys:
+                                            - Stop the calling script from executing.
+                                            - It's function could also change depending on the current stack frame.
+                            */
+                            LDKF.objectDefineProperty(window, 'end', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function end() {},
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Execute
                             LDKF.objectDefineProperty(window, 'exec', {
                                 // Configurable
@@ -13470,7 +13487,10 @@
                                         file = LDKF.cloneObject(constructor);
 
                                     // Modification > File
-                                        // Create
+                                        /* Create
+                                                --- UPDATE REQUIRED ---
+                                                    #Lapys: Create a new file object.
+                                        */
                                         LDKF.objectDefineProperty(file, 'create', {
                                             // Configurable
                                             configurable: !0,
@@ -13546,7 +13566,10 @@
                                             }
                                         });
 
-                                        // Open
+                                        /* Open
+                                                --- UPDATE REQUIRED ---
+                                                    #Lapys: (Request to) open a file from the local machine.
+                                        */
                                         LDKF.objectDefineProperty(file, 'open', {
                                             // Configurable
                                             configurable: !0,
@@ -13579,7 +13602,10 @@
                                             }
                                         });
 
-                                        // Remove
+                                        /* Remove
+                                                --- UPDATE REQUIRED ---
+                                                    #Lapys: (Request to) delete a file from the local machine.
+                                        */
                                         LDKF.objectDefineProperty(file, 'remove', {
                                             // Configurable
                                             configurable: !0,
@@ -13600,7 +13626,10 @@
                                             }
                                         });
 
-                                        // Write
+                                        /* Write
+                                                --- UPDATE REQUIRED ---
+                                                    #Lapys: (Request to) edit a file from the local machine.
+                                        */
                                         LDKF.objectDefineProperty(file, 'write', {
                                             // Configurable
                                             configurable: !0,
@@ -13670,7 +13699,7 @@
                                                     /* Logic
                                                             [if:else statement]
                                                     */
-                                                    if (!LDKF.querySelectorDocument("style[font-name='" + fontName + "']") && !LDKF.querySelectorDocument("style[font-type='" + fontType + "']") && !LDKF.querySelectorDocument("style[font-url='" + fontURL + "']")) {
+                                                    if (!LDKF.querySelectorDocument("style[font-name='" + fontName + "']") && !LDKF.querySelectorDocument("style[font-url='" + fontURL + "']")) {
                                                         // Modification > Element > (Font (Name, Type, URL), Inner HTML, Media, Type)
                                                         LDKF.setAttributeElement(element, 'font-name', fontName);
                                                         LDKF.setAttributeElement(element, 'font-type', fontType);
@@ -21576,7 +21605,9 @@
                                         script = LDKF.hasAttributeElement(element, 'script') ? LDKF.getAttributeElement(element, 'script') : null;
 
                                     // Return
-                                    return LDKF.isExecutable(script).value && !LDKF.isNull(script) ? LDKF.$func(script) : null
+                                    return LDKF.isExecutable(script).value && !LDKF.isNull(script) ?
+                                        LDKF.$func("var end = (function() { let element = this; return function end() { element.removeAttribute('script') } }).call(this); return (" + LDKF.$func(script) + ').apply(this, arguments)') :
+                                        null
                                 }
                             },
 

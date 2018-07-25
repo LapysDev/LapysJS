@@ -17,7 +17,7 @@
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1 script="this.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))"></h1>
+        <h1 script=this.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))></h1>
 
         <br> <br>
 
@@ -54,6 +54,9 @@
     </main>
 
     <!-- Scripts -->
+        <!-- Document Script -->
+        <script type=text/javascript> window.LapysJS = {debugMode: true} </script>
+
         <!-- LapysJS Script -->
         <script features=script-attribute src=../src/lapys.js type=text/javascript> </script>
 </body>
