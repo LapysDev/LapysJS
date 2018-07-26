@@ -12474,7 +12474,7 @@
                                 configurable: !0,
 
                                 // Value
-                                value: function cancelOnDOMElementAdded() {
+                                value: tmpObject.windowOnDOMElementAddedDescriptionValue = function cancelOnDOMElementAdded() {
                                     // Initialization > (Array, Callback, Iterator)
                                     let array = tmpObject.onDOMElementAddedWatchList,
                                         callback = arguments[0],
@@ -13708,7 +13708,7 @@
                                                             element,
                                                             '@font-face {' +
                                                                 "font-family: '" + fontName + "';" +
-                                                                "src: local('*') " +
+                                                                "src: local('" + fontName + "'), " +
                                                                     (fontType != 'svg' && fontType != 'ttf' && fontType != 'woff' ? "url('" + fontURL + "')" : '') +
                                                                     (fontType == 'woff' ? "url('" + fontURL + "') format('woff')" : '') +
                                                                     (fontType == 'ttf' ? "url('" + fontURL + "') format('truetype')" : '') +
@@ -14996,7 +14996,7 @@
                                 configurable: !0,
 
                                 // Value
-                                value: tmpObject.windowOnDOMNodeAddedDescriptionValue = function onDOMNodeAdded() {
+                                value: function onDOMNodeAdded() {
                                     // Initialization > Length
                                     let length = arguments.length;
 
@@ -31168,7 +31168,7 @@
                                         --- UPDATE REQUIRED ---
                                             #Lapys: Content and headers outside their Accordions are not unset.
                                 */
-                                (function accordion() {
+                                LDKF.includesArray(LDK.components, 'accordion') && (function accordion() {
                                     // Initialization > ((Sub Element) Properties, Watch)
                                     let properties = {
                                         // Closed Content
@@ -31829,8 +31829,8 @@
                                     // Index Accordions
                                     indexAccordions();
 
-                                    // On DOM Node Added > Index Accordion
-                                    tmpObject.windowOnDOMNodeAddedDescriptionValue(function indexAccordion() {
+                                    // On DOM Element Added > Index Accordion
+                                    tmpObject.windowOnDOMElementAddedDescriptionValue(function indexAccordion() {
                                         // Initialization > (Cooldown (Duration, Value), Timeout)
                                         let cooldownDuration = 250,
                                             cooldownValue = !0,
@@ -31859,7 +31859,7 @@
                                 })();
 
                                 // Carousel
-                                (function carousel() {
+                                LDKF.includesArray(LDK.components, 'carousel') && (function carousel() {
                                     // Initialization > ((Sub Element) Properties, Watch)
                                     let properties = {
                                         // Active Slide
@@ -33456,8 +33456,8 @@
                                     // Index Carousels
                                     indexCarousels();
 
-                                    // On DOM Node Added > Index Carousel
-                                    tmpObject.windowOnDOMNodeAddedDescriptionValue(function indexCarousel() {
+                                    // On DOM Element Added > Index Carousel
+                                    tmpObject.windowOnDOMElementAddedDescriptionValue(function indexCarousel() {
                                         // Initialization > (Cooldown (Duration, Value), Timeout)
                                         let cooldownDuration = 250,
                                             cooldownValue = !0,
@@ -33494,8 +33494,11 @@
                                 // Toast
                                 // Tooltip
 
-                                // [Template]
-                                function template() {
+                                /* [Template]
+                                        --- UPDATE REQUIRED ---
+                                            #Lapys: Remove when done.
+                                */
+                                LDKF.includesArray(LDK.components, 'template') && (function template() {
                                     // Initialization > ((Sub Element) Properties, Watch)
                                     let properties = {
                                     }, subElementProperties = {
@@ -33604,8 +33607,8 @@
                                     // Index Templates
                                     indexTemplates();
 
-                                    // On DOM Node Added > Index Template
-                                    tmpObject.windowOnDOMNodeAddedDescriptionValue(function indexTemplate() {
+                                    // On DOM Element Added > Index Template
+                                    tmpObject.windowOnDOMElementAddedDescriptionValue(function indexTemplate() {
                                         // Initialization > (Cooldown (Duration, Value), Timeout)
                                         let cooldownDuration = 250,
                                             cooldownValue = !0,
@@ -33631,7 +33634,7 @@
                                             }, cooldownDuration)
                                         }
                                     })
-                                }
+                                })()
                         })
                 }
 
