@@ -568,11 +568,12 @@
         .upper { text-transform: uppercase }
 
     /* Components */
-        /* Accordion */
-        .accordion { display: block }
+        /* Accordion, Dropdown */
+        .accordion,
+        .dropdown { display: block }
             /* Title */
-            .accordion > [role~=header] {
-                cursor: pointer;
+            .accordion > [role~=header],
+            .dropdown > [role~=header] {
                 font-size: 110%;
                 font-weight: 500
             }
@@ -823,6 +824,7 @@
             .button,
             .cur-pointer,
             .cur-select,
+            .dropdown > [role~=header],
             .selectable { cursor: pointer }
 
         /* Depth */
@@ -1733,7 +1735,8 @@
             /* Hidden */
             .accordion > [role~=content][state~=closed],
             .hidden,
-            .screen-reader-only { display: none }
+            .screen-reader-only,
+            [dropdown][role~=content][state~=closed] { display: none }
 
             .hidden {
                 filter: opacity(0);
@@ -16593,6 +16596,7 @@
                     /* States > Selection */
                     .accordion > [role~=header]::selection,
                     .card::selection,
+                    .dropdown > [role~=header]::selection,
                     .no-select::selection,
                     .transp-select::selection,
                     .transparent-select::selection {

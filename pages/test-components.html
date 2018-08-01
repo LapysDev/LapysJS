@@ -17,7 +17,7 @@
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1 script=this.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))></h1>
+        <h1 script=h1.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))></h1>
 
         <br> <br>
 
@@ -33,7 +33,7 @@
         <hr>
 
         <!-- Carousel -->
-        <div class=carousel id=carousel options='auto=2 buttons direction=left indicators'>
+        <div class=carousel id=carousel options='auto=2 buttons direction=random indicators'>
             <div class=bg-c-r> Slide A </div>
             <div class=bg-c-g> Slide B </div>
             <div class=bg-c-b> Slide C </div>
@@ -41,14 +41,25 @@
 
         <hr>
 
-        <!-- Dropdown -->
-        <div class=dropdown id=dropdown>
-            <!-- Activator -->
-            <h1 role=activator> Dropdown Activator </h1>
+        <!-- Draggable -->
+        <div class='bg-c-r draggable'>
+            <p> This is draggable content </p>
         </div>
 
-        <!-- Receiver -->
-        <p dropdown=dropdown role=receiver state=closed> Dropdown content </p>
+        <!-- Drop Zone -->
+        <div role=dropzone> <p> This is a dropzone </p> </div>
+        <div role=dropzone> <p> This is another dropzone </p> </div>
+
+        <hr>
+
+        <!-- Dropdown -->
+        <div class=dropdown id=dropdown>
+            <!-- Header -->
+            <h1 role=header> Dropdown Header </h1>
+        </div>
+
+        <!-- {Dropdown} Content -->
+        <p dropdown=dropdown role=content state=open> Dropdown content </p>
 
         <hr>
     </main>
