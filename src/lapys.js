@@ -5382,13 +5382,13 @@
                                     }
 
                                 else {
-                                    // Initialization
-                                        // (Listeners, Options, Types)
-                                        let listeners = arguments.length > 1 ? (LDKF.isArray(arguments[1]) ? arguments[1] : [arguments[1]]) : [],
-                                            options = arguments.length > 2 ? (LDKF.isArray(arguments[2]) ? arguments[2] : [arguments[2]]) : [{capture: !1, once: !1, passive: !1}],
-                                            types = arguments.length ? (LDKF.isArray(arguments[0]) ? arguments[0] : [arguments[0]]) : [];
+                                    // Initialization > (Listeners, Options, Types)
+                                    let listeners = arguments.length > 1 ? (LDKF.isArray(arguments[1]) ? arguments[1] : [arguments[1]]) : [],
+                                        options = arguments.length > 2 ? (LDKF.isArray(arguments[2]) ? arguments[2] : [arguments[2]]) : [{capture: !1, once: !1, passive: !1}],
+                                        types = arguments.length ? (LDKF.isArray(arguments[0]) ? arguments[0] : [arguments[0]]) : [];
 
-                                        // Initialization > (Listeners, Options, Types) (Iterator, Length)
+                                    // Initialization
+                                        // (Listeners, Options, Types) (Iterator, Length)
                                         let listenersIterator = 0,
                                             listenersLength = listeners.length,
                                             optionsIterator = 0,
@@ -5432,6 +5432,146 @@
                                     else
                                         // Error
                                         LDKF.error('No listeners or types found')
+                                }
+
+                                // Update > (Iterator, Length)
+                                iterator = 0;
+                                length = eventReferences.length;
+
+                                /* Loop
+                                        Index Event References.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > (Event Reference, Listener, Options, Target)
+                                    let eventReference = eventReferences[iterator],
+                                        listener = eventReference.listener,
+                                        options = eventReference.options,
+                                        target = eventReference.target;
+
+                                    /* Logic
+                                            [switch:case:break statement]
+                                    */
+                                    switch (eventReference.type) {
+                                        // Animation
+                                        case 'animation':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'animationend'},
+                                                {listener: listener, options: options, target: target, type: 'animationiteration'},
+                                                {listener: listener, options: options, target: target, type: 'animationstart'}
+                                            );
+                                            break;
+
+                                        // Can Play
+                                        case 'canplay':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'canplay'},
+                                                {listener: listener, options: options, target: target, type: 'canplaythrough'}
+                                            );
+                                            break;
+
+                                        // Device
+                                        case 'device':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'devicemotion'},
+                                                {listener: listener, options: options, target: target, type: 'deviceorientation'},
+                                                {listener: listener, options: options, target: target, type: 'deviceorientationabsolute'}
+                                            );
+                                            break;
+
+                                        // Drag
+                                        case 'drag':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'drag'},
+                                                {listener: listener, options: options, target: target, type: 'dragend'},
+                                                {listener: listener, options: options, target: target, type: 'dragenter'},
+                                                {listener: listener, options: options, target: target, type: 'dragleave'},
+                                                {listener: listener, options: options, target: target, type: 'dragover'},
+                                                {listener: listener, options: options, target: target, type: 'dragstart'}
+                                            );
+                                            break;
+
+                                        // Key
+                                        case 'key':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'keydown'},
+                                                {listener: listener, options: options, target: target, type: 'keypress'},
+                                                {listener: listener, options: options, target: target, type: 'keyup'}
+                                            );
+                                            break;
+
+                                        // Load
+                                        case 'load':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'load'},
+                                                {listener: listener, options: options, target: target, type: 'loadeddata'},
+                                                {listener: listener, options: options, target: target, type: 'loadedmetadata'},
+                                                {listener: listener, options: options, target: target, type: 'loadstart'}
+                                            );
+                                            break;
+
+                                        // Message
+                                        case 'message':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'message'},
+                                                {listener: listener, options: options, target: target, type: 'messageerror'}
+                                            );
+                                            break;
+
+                                        // Mouse
+                                        case 'mouse':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'mousedown'},
+                                                {listener: listener, options: options, target: target, type: 'mouseenter'},
+                                                {listener: listener, options: options, target: target, type: 'mouseleave'},
+                                                {listener: listener, options: options, target: target, type: 'mousemove'},
+                                                {listener: listener, options: options, target: target, type: 'mouseout'},
+                                                {listener: listener, options: options, target: target, type: 'mouseover'},
+                                                {listener: listener, options: options, target: target, type: 'mouseup'},
+                                                {listener: listener, options: options, target: target, type: 'mousewheel'}
+                                            );
+                                            break;
+
+                                        // Page
+                                        case 'page':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'pagehide'},
+                                                {listener: listener, options: options, target: target, type: 'pageshow'}
+                                            );
+                                            break;
+
+                                        // Play
+                                        case 'play':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'play'},
+                                                {listener: listener, options: options, target: target, type: 'playing'}
+                                            );
+                                            break;
+
+                                        // Pointer
+                                        case 'pointer':
+                                            LDKF.spliceArray(
+                                                eventReferences, iterator, 1,
+                                                {listener: listener, options: options, target: target, type: 'pointercancel'},
+                                                {listener: listener, options: options, target: target, type: 'pointerdown'},
+                                                {listener: listener, options: options, target: target, type: 'pointerenter'},
+                                                {listener: listener, options: options, target: target, type: 'pointermove'},
+                                                {listener: listener, options: options, target: target, type: 'pointerleave'},
+                                                {listener: listener, options: options, target: target, type: 'pointerout'},
+                                                {listener: listener, options: options, target: target, type: 'pointerover'},
+                                                {listener: listener, options: options, target: target, type: 'pointerup'}
+                                            );
+                                            break;
+                                    }
                                 }
 
                                 // Return
@@ -26014,7 +26154,7 @@
                             enumerable: !0,
 
                             // Get
-                            get: function _nextSiblings() {
+                            get: tmpObject.nodeNextSiblingsDescriptionGetter = function _nextSiblings() {
                                 // Initialization > (Node, Parent, Children, Index, Iterator, Next Siblings)
                                 let node = this,
                                     parent = LDKF.get.nodeParentNode(node),
@@ -26052,7 +26192,7 @@
                             enumerable: !0,
 
                             // Get
-                            get: function _previousSiblings() {
+                            get: tmpObject.nodePreviousSiblingsDescriptionGetter = function _previousSiblings() {
                                 // Initialization > (Node, Parent, Children, Index, Iterator, Previous Siblings)
                                 let node = this,
                                     parent = LDKF.get.nodeParentNode(node),
@@ -28695,7 +28835,7 @@
                                         > Update > List
                                     */
                                     if (LDKF.isSafeNumber(option))
-                                        LDKF.pushArray(list, option < incrementedSelectionLength ? selection[option] : null);
+                                        LDKF.pushArray(list, option < incrementedSelectionLength ? (function(node) { return LDKF.isNonConstructible(node) ? null : node })(selection[option]) : null);
 
                                     else if (option === 'first')
                                         LDKF.pushArray(list, selectionLength ? selection[0] : null);
@@ -28756,7 +28896,7 @@
                                     arguments.length && (elements = optionUpdate.apply(elements, arguments));
 
                                     // Return
-                                    return elements
+                                    return elements.length ? LDKF.customArray('LapysJSNodeList', elements) : null
                                 }
                             });
                                 // Definition
@@ -28788,7 +28928,7 @@
                                     arguments.length && (nodes = optionUpdate.apply(nodes, arguments));
 
                                     // Return
-                                    return nodes
+                                    return nodes.length ? LDKF.customArray('LapysJSNodeList', nodes) : null
                                 }
                             });
                                 // Definition
@@ -28877,7 +29017,7 @@
                                             return null;
 
                                         else if (options.length) {
-                                            // Update > Selection
+                                            // Update > List
                                             list = optionUpdate.apply(list, options);
 
                                             // Return
@@ -28910,7 +29050,7 @@
                                     writable: !0
                                 });
 
-                            // Antepenult Child --- CHECKPOINT ---
+                            // Antepenult Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$n2', {
                                 // Configurable
                                 configurable: !0,
@@ -28919,8 +29059,37 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$N2DescriptorGetter = function $n2() {}
+                                get: tmpObject.parentNode$N2DescriptorGetter = function $n2() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$N1DescriptorGetter.call(this);
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementPreviousElementSibling(node) || LDKF.get.nodePreviousSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodePreviousSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
                             });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$n2', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    get: function $n2() {
+                                        // Return
+                                        return tmpObject.parentNode$N2DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
 
                             // Descendant Query Selector
                             LDKF.objectDefineProperty(parentNodePrototype, '$d', {
@@ -28987,7 +29156,7 @@
                                             return null;
 
                                         else if (options.length) {
-                                            // Update > Selection
+                                            // Update > List
                                             list = optionUpdate.apply(list, options);
 
                                             // Return
@@ -29059,17 +29228,14 @@
                                     // Configurable
                                     configurable: !0,
 
-                                    // Value
-                                    value: function $x() {
+                                    // Get
+                                    get: function $x() {
                                         // Return
                                         return tmpObject.parentNode$XDescriptorGetter.apply(LDKO.$document, arguments)
-                                    },
-
-                                    // Writable
-                                    writable: !0
+                                    }
                                 });
 
-                            // Child Nodes --- CHECKPOINT ---
+                            // Child Nodes
                             LDKF.objectDefineProperty(parentNodePrototype, '$X', {
                                 // Configurable
                                 configurable: !0,
@@ -29078,10 +29244,30 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$_XDescriptorGetter = function $X() {}
-                            });
+                                get: tmpObject.parentNode$_XDescriptorGetter = function $X() {
+                                    // Initialization > Children
+                                    let children = LDKF.get.nodeChildNodes(this);
 
-                            // First Child --- CHECKPOINT ---
+                                    // Update > Children
+                                    arguments.length && (children = optionUpdate.apply(children, arguments));
+
+                                    // Return
+                                    return children
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$X', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $X() {
+                                        // Return
+                                        return tmpObject.parentNode$_XDescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // First Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$1', {
                                 // Configurable
                                 configurable: !0,
@@ -29090,10 +29276,39 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$1DescriptorGetter = function $1() {}
-                            });
+                                get: tmpObject.parentNode$1DescriptorGetter = function $1() {
+                                    // Initialization > Node
+                                    let node = this;
 
-                            // Fourth Child --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.$parentNodeFirstElementChild(node) || LDKF.get.nodeFirstChild(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodeFirstChild(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$1', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $1() {
+                                        // Return
+                                        return tmpObject.parentNode$1DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Fourth Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$4', {
                                 // Configurable
                                 configurable: !0,
@@ -29102,10 +29317,39 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$4DescriptorGetter = function $4() {}
-                            });
+                                get: tmpObject.parentNode$4DescriptorGetter = function $4() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$3DescriptorGetter.call(this);
 
-                            // Fifth Child --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementNextElementSibling(node) || LDKF.get.nodeNextSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodeNextSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$4', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $4() {
+                                        // Return
+                                        return tmpObject.parentNode$4DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Fifth Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$5', {
                                 // Configurable
                                 configurable: !0,
@@ -29114,10 +29358,39 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$5DescriptorGetter = function $5() {}
-                            });
+                                get: tmpObject.parentNode$5DescriptorGetter = function $5() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$4DescriptorGetter.call(this);
 
-                            // Get Elements By Class Name --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementNextElementSibling(node) || LDKF.get.nodeNextSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodeNextSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$5', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $5() {
+                                        // Return
+                                        return tmpObject.parentNode$5DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Get Elements By Class Name
                             LDKF.objectDefineProperty(parentNodePrototype, '$c', {
                                 // Configurable
                                 configurable: !0,
@@ -29126,13 +29399,77 @@
                                 enumerable: !0,
 
                                 // Value
-                                value: tmpObject.parentNode$CDescriptorValue = function $c() {},
+                                value: tmpObject.parentNode$CDescriptorValue = function $c() {
+                                    // Initialization > (Node, Query, Options, Selection, List)
+                                    let node = this,
+                                        query = arguments[0],
+                                        options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                        selection = [],
+                                        list = [];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Update > Query
+                                        query = query == '*' ? '[class' : "[class='" + query + "']";
+
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > Update > Selection
+                                        */
+                                        if (LDKF.isDocument(node))
+                                            selection = LDKF.$querySelectorAllDocument(node, query);
+
+                                        else if (LDKF.isDocumentFragment(node))
+                                            selection = LDKF.querySelectorAllDocumentFragment(node, query);
+
+                                        else if (LDKF.isElement(node))
+                                            selection = LDKF.querySelectorAllElement(node, query);
+
+                                        // Update > List
+                                        list = LDKF.toArray(selection);
+
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (!list.length)
+                                            // Return
+                                            return null;
+
+                                        else if (options.length) {
+                                            // Update > List
+                                            list = optionUpdate.apply(list, options);
+
+                                            // Return
+                                            return LDKF.isArray(list) ? (list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null) : list || null
+                                        }
+
+                                        // Return
+                                        return list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null
+                                    }
+
+                                    // Return
+                                    return null
+                                },
 
                                 // Writable
                                 writable: !0
                             });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$c', {
+                                    // Configurable
+                                    configurable: !0,
 
-                            // Get Elements By ID --- CHECKPOINT ---
+                                    // Value
+                                    value: function $c() {
+                                        // Return
+                                        return tmpObject.parentNode$CDescriptorValue.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Get Elements By ID
                             LDKF.objectDefineProperty(parentNodePrototype, '$i', {
                                 // Configurable
                                 configurable: !0,
@@ -29141,13 +29478,77 @@
                                 enumerable: !0,
 
                                 // Value
-                                value: tmpObject.parentNode$IDescriptorValue = function $i() {},
+                                value: tmpObject.parentNode$IDescriptorValue = function $i() {
+                                    // Initialization > (Node, Query, Options, Selection, List)
+                                    let node = this,
+                                        query = arguments[0],
+                                        options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                        selection = [],
+                                        list = [];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Update > Query
+                                        query = query == '*' ? '[id' : "[id='" + query + "']";
+
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > Update > Selection
+                                        */
+                                        if (LDKF.isDocument(node))
+                                            selection = LDKF.$querySelectorAllDocument(node, query);
+
+                                        else if (LDKF.isDocumentFragment(node))
+                                            selection = LDKF.querySelectorAllDocumentFragment(node, query);
+
+                                        else if (LDKF.isElement(node))
+                                            selection = LDKF.querySelectorAllElement(node, query);
+
+                                        // Update > List
+                                        list = LDKF.toArray(selection);
+
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (!list.length)
+                                            // Return
+                                            return null;
+
+                                        else if (options.length) {
+                                            // Update > List
+                                            list = optionUpdate.apply(list, options);
+
+                                            // Return
+                                            return LDKF.isArray(list) ? (list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null) : list || null
+                                        }
+
+                                        // Return
+                                        return list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null
+                                    }
+
+                                    // Return
+                                    return null
+                                },
 
                                 // Writable
                                 writable: !0
                             });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$i', {
+                                    // Configurable
+                                    configurable: !0,
 
-                            // Get Elements By Tag Name --- CHECKPOINT ---
+                                    // Value
+                                    value: function $i() {
+                                        // Return
+                                        return tmpObject.parentNode$IDescriptorValue.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Get Elements By Tag Name
                             LDKF.objectDefineProperty(parentNodePrototype, '$t', {
                                 // Configurable
                                 configurable: !0,
@@ -29156,13 +29557,74 @@
                                 enumerable: !0,
 
                                 // Value
-                                value: tmpObject.parentNode$TDescriptorValue = function $t() {},
+                                value: tmpObject.parentNode$TDescriptorValue = function $t() {
+                                    // Initialization > (Node, Query, Options, Selection, List)
+                                    let node = this,
+                                        query = arguments[0],
+                                        options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                        selection = [],
+                                        list = [];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > Update > Selection
+                                        */
+                                        if (LDKF.isDocument(node))
+                                            selection = LDKF.$getElementsByTagNameDocument(node, query);
+
+                                        else if (LDKF.isDocumentFragment(node))
+                                            selection = LDKF.getElementsByTagNameDocumentFragment(node, query);
+
+                                        else if (LDKF.isElement(node))
+                                            selection = LDKF.getElementsByTagNameElement(node, query);
+
+                                        // Update > List
+                                        list = LDKF.toArray(selection);
+
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (!list.length)
+                                            // Return
+                                            return null;
+
+                                        else if (options.length) {
+                                            // Update > List
+                                            list = optionUpdate.apply(list, options);
+
+                                            // Return
+                                            return LDKF.isArray(list) ? (list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null) : list || null
+                                        }
+
+                                        // Return
+                                        return list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null
+                                    }
+
+                                    // Return
+                                    return null
+                                },
 
                                 // Writable
                                 writable: !0
                             });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$t', {
+                                    // Configurable
+                                    configurable: !0,
 
-                            // Last Child --- CHECKPOINT ---
+                                    // Value
+                                    value: function $t() {
+                                        // Return
+                                        return tmpObject.parentNode$TDescriptorValue.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Last Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$n', {
                                 // Configurable
                                 configurable: !0,
@@ -29171,10 +29633,144 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$NDescriptorGetter = function $n() {}
-                            });
+                                get: tmpObject.parentNode$NDescriptorGetter = function $n() {
+                                    // Initialization > Node
+                                    let node = this;
 
-                            // Penult Child --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.$parentNodeLastElementChild(node) || LDKF.get.nodeLastChild(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodeLastChild(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$n', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $n() {
+                                        // Return
+                                        return tmpObject.parentNode$NDescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Next Sibling Query Selector
+                            LDKF.objectDefineProperty(parentNodePrototype, '$ns', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: tmpObject.parentNode$NsDescriptorValue = function $ns() {
+                                    // Initialization > (Node, Parent, Next Siblings, Query, Options, Selection, List)
+                                    let node = this,
+                                        parent = LDKF.get.nodeParentNode(node),
+                                        nextSiblings = tmpObject.nodeNextSiblingsDescriptionGetter.call(node),
+                                        query = arguments[0],
+                                        options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                        selection = [],
+                                        list = [];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length && LDKF.isNode(parent)) {
+                                        // Error Handling
+                                        try {
+                                            /* Logic
+                                                    [if:else if:else statement]
+
+                                                > Update > Selection
+                                            */
+                                            if (LDKF.isDocument(parent))
+                                                selection = LDKF.$querySelectorAllDocument(parent, query);
+
+                                            else if (LDKF.isDocumentFragment(parent))
+                                                selection = LDKF.querySelectorAllDocumentFragment(parent, query);
+
+                                            else if (LDKF.isElement(parent))
+                                                selection = LDKF.querySelectorAllElement(parent, query)
+                                        } catch (error) {}
+
+                                        // Update > Selection
+                                        selection = LDKF.toArray(selection);
+
+                                        // Initialization > (Iterator, Length)
+                                        let iterator = 0,
+                                            length = selection.length;
+
+                                        /* Loop
+                                                Index Selection.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Node
+                                            let node = selection[iterator];
+
+                                            // Update > List
+                                            LDKF.includesArray(nextSiblings, node) && LDKF.pushArray(list, node)
+                                        }
+
+                                        // Initialization > Index
+                                        let index = LDKF.indexOfArray(list, node);
+
+                                        // Update > (List, Index)
+                                        (index == -1) || LDKF.spliceArray(list, index, 1);
+
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (!list.length)
+                                            // Return
+                                            return null;
+
+                                        else if (options.length) {
+                                            // Update > List
+                                            list = optionUpdate.apply(list, options);
+
+                                            // Return
+                                            return LDKF.isArray(list) ? (list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null) : list || null
+                                        }
+
+                                        // Return
+                                        return list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null
+                                    }
+
+                                    // Return
+                                    return null
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$ns', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function $ns() {
+                                        // Return
+                                        return tmpObject.parentNode$NsDescriptorValue.apply(LDKO.$document, arguments)
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                            // Penult Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$n1', {
                                 // Configurable
                                 configurable: !0,
@@ -29183,10 +29779,39 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$N1DescriptorGetter = function $n1() {}
-                            });
+                                get: tmpObject.parentNode$N1DescriptorGetter = function $n1() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$NDescriptorGetter.call(this);
 
-                            // Preantepenult Child --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementPreviousElementSibling(node) || LDKF.get.nodePreviousSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodePreviousSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$n1', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $n1() {
+                                        // Return
+                                        return tmpObject.parentNode$N1DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Preantepenult Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$n3', {
                                 // Configurable
                                 configurable: !0,
@@ -29195,10 +29820,39 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$N3DescriptorGetter = function $n3() {}
-                            });
+                                get: tmpObject.parentNode$N3DescriptorGetter = function $n3() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$N2DescriptorGetter.call(this);
 
-                            // Previous Preantepenult Child --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementPreviousElementSibling(node) || LDKF.get.nodePreviousSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodePreviousSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$n3', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $n3() {
+                                        // Return
+                                        return tmpObject.parentNode$N3DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Previous Preantepenult Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$n4', {
                                 // Configurable
                                 configurable: !0,
@@ -29207,10 +29861,144 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$N4DescriptorGetter = function $n4() {}
-                            });
+                                get: tmpObject.parentNode$N4DescriptorGetter = function $n4() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$N3DescriptorGetter.call(this);
 
-                            // Query Selector --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementPreviousElementSibling(node) || LDKF.get.nodePreviousSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodePreviousSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$n4', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $n4() {
+                                        // Return
+                                        return tmpObject.parentNode$N4DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Previous Sibling Query Selector
+                            LDKF.objectDefineProperty(parentNodePrototype, '$ps', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: tmpObject.parentNode$PsDescriptorValue = function $ps() {
+                                    // Initialization > (Node, Parent, Previous Siblings, Query, Options, Selection, List)
+                                    let node = this,
+                                        parent = LDKF.get.nodeParentNode(node),
+                                        previousSiblings = tmpObject.nodePreviousSiblingsDescriptionGetter.call(node),
+                                        query = arguments[0],
+                                        options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                        selection = [],
+                                        list = [];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length && LDKF.isNode(parent)) {
+                                        // Error Handling
+                                        try {
+                                            /* Logic
+                                                    [if:else if:else statement]
+
+                                                > Update > Selection
+                                            */
+                                            if (LDKF.isDocument(parent))
+                                                selection = LDKF.$querySelectorAllDocument(parent, query);
+
+                                            else if (LDKF.isDocumentFragment(parent))
+                                                selection = LDKF.querySelectorAllDocumentFragment(parent, query);
+
+                                            else if (LDKF.isElement(parent))
+                                                selection = LDKF.querySelectorAllElement(parent, query)
+                                        } catch (error) {}
+
+                                        // Update > Selection
+                                        selection = LDKF.toArray(selection);
+
+                                        // Initialization > (Iterator, Length)
+                                        let iterator = 0,
+                                            length = selection.length;
+
+                                        /* Loop
+                                                Index Selection.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Node
+                                            let node = selection[iterator];
+
+                                            // Update > List
+                                            LDKF.includesArray(previousSiblings, node) && LDKF.pushArray(list, node)
+                                        }
+
+                                        // Initialization > Index
+                                        let index = LDKF.indexOfArray(list, node);
+
+                                        // Update > (List, Index)
+                                        (index == -1) || LDKF.spliceArray(list, index, 1);
+
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (!list.length)
+                                            // Return
+                                            return null;
+
+                                        else if (options.length) {
+                                            // Update > List
+                                            list = optionUpdate.apply(list, options);
+
+                                            // Return
+                                            return LDKF.isArray(list) ? (list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null) : list || null
+                                        }
+
+                                        // Return
+                                        return list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null
+                                    }
+
+                                    // Return
+                                    return null
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$ps', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function $ps() {
+                                        // Return
+                                        return tmpObject.parentNode$PsDescriptorValue.apply(LDKO.$document, arguments)
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                            // Query Selector
                             LDKF.objectDefineProperty(parentNodePrototype, '$$', {
                                 // Configurable
                                 configurable: !0,
@@ -29219,13 +30007,77 @@
                                 enumerable: !0,
 
                                 // Value
-                                value: tmpObject.parentNode$$DescriptorValue = function $$() {},
+                                value: tmpObject.parentNode$$DescriptorValue = function $$() {
+                                    // Initialization > (Node, Query, Options, Selection, List)
+                                    let node = this,
+                                        query = arguments[0],
+                                        options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                        selection = [],
+                                        list = [];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Error Handling
+                                        try {
+                                            /* Logic
+                                                    [if:else if:else statement]
+
+                                                > Update > Selection
+                                            */
+                                            if (LDKF.isDocument(node))
+                                                selection = LDKF.$querySelectorAllDocument(node, query);
+
+                                            else if (LDKF.isDocumentFragment(node))
+                                                selection = LDKF.querySelectorAllDocumentFragment(node, query);
+
+                                            else if (LDKF.isElement(node))
+                                                selection = LDKF.querySelectorAllElement(node, query)
+                                        } catch (error) {}
+
+                                        // Update > List
+                                        list = LDKF.toArray(selection);
+
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (!list.length)
+                                            // Return
+                                            return null;
+
+                                        else if (options.length) {
+                                            // Update > List
+                                            list = optionUpdate.apply(list, options);
+
+                                            // Return
+                                            return LDKF.isArray(list) ? (list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null) : list || null
+                                        }
+
+                                        // Return
+                                        return list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null
+                                    }
+
+                                    // Return
+                                    return null
+                                },
 
                                 // Writable
                                 writable: !0
                             });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$$', {
+                                    // Configurable
+                                    configurable: !0,
 
-                            // Random Descendant --- CHECKPOINT ---
+                                    // Value
+                                    value: function $$() {
+                                        // Return
+                                        return tmpObject.parentNode$$DescriptorValue.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Random Descendant
                             LDKF.objectDefineProperty(parentNodePrototype, '$r', {
                                 // Configurable
                                 configurable: !0,
@@ -29234,10 +30086,30 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$RDescriptorGetter = function $r() {}
-                            });
+                                get: tmpObject.parentNode$RDescriptorGetter = function $r() {
+                                    // Initialization > Nodes
+                                    let nodes = LDKF.allNodeNodes(this);
 
-                            // Second Child --- CHECKPOINT ---
+                                    // Update > Elements
+                                    arguments.length && (nodes = optionUpdate.apply(nodes, arguments));
+
+                                    // Return
+                                    return nodes[LDKF.numberParseInt(LDKF.mathRandom() * nodes.length)]
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$r', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $r() {
+                                        // Return
+                                        return tmpObject.parentNode$RDescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Second Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$2', {
                                 // Configurable
                                 configurable: !0,
@@ -29246,10 +30118,39 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$2DescriptorGetter = function $2() {}
-                            });
+                                get: tmpObject.parentNode$2DescriptorGetter = function $2() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$1DescriptorGetter.call(this);
 
-                            // Sibling Query Selector --- CHECKPOINT ---
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementNextElementSibling(node) || LDKF.get.nodeNextSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodeNextSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$2', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $2() {
+                                        // Return
+                                        return tmpObject.parentNode$2DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                });
+
+                            // Sibling Query Selector
                             LDKF.objectDefineProperty(parentNodePrototype, '$s', {
                                 // Configurable
                                 configurable: !0,
@@ -29258,13 +30159,103 @@
                                 enumerable: !0,
 
                                 // Value
-                                value: tmpObject.parentNode$SDescriptorValue = function $s() {},
+                                value: tmpObject.parentNode$SDescriptorValue = function $s() {
+                                    // Initialization > (Node, Parent, Siblings, Query, Options, Selection, List)
+                                    let node = this,
+                                        parent = LDKF.get.nodeParentNode(node),
+                                        siblings = LDKF.isNode(parent) ? LDKF.toArray(LDKF.get.nodeChildNodes(parent)) : [],
+                                        query = arguments[0],
+                                        options = LDKF.sliceArray(LDKF.toArray(arguments), 1),
+                                        selection = [],
+                                        list = [];
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length && LDKF.isNode(parent)) {
+                                        // Error Handling
+                                        try {
+                                            /* Logic
+                                                    [if:else if:else statement]
+
+                                                > Update > Selection
+                                            */
+                                            if (LDKF.isDocument(parent))
+                                                selection = LDKF.$querySelectorAllDocument(parent, query);
+
+                                            else if (LDKF.isDocumentFragment(parent))
+                                                selection = LDKF.querySelectorAllDocumentFragment(parent, query);
+
+                                            else if (LDKF.isElement(parent))
+                                                selection = LDKF.querySelectorAllElement(parent, query)
+                                        } catch (error) {}
+
+                                        // Update > Selection
+                                        selection = LDKF.toArray(selection);
+
+                                        // Initialization > (Iterator, Length)
+                                        let iterator = 0,
+                                            length = selection.length;
+
+                                        /* Loop
+                                                Index Selection.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Node
+                                            let node = selection[iterator];
+
+                                            // Update > List
+                                            LDKF.includesArray(siblings, node) && LDKF.pushArray(list, node)
+                                        }
+
+                                        // Initialization > Index
+                                        let index = LDKF.indexOfArray(list, node);
+
+                                        // Update > List
+                                        (index == -1) || LDKF.spliceArray(list, index, 1);
+
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (!list.length)
+                                            // Return
+                                            return null;
+
+                                        else if (options.length) {
+                                            // Update > List
+                                            list = optionUpdate.apply(list, options);
+
+                                            // Return
+                                            return LDKF.isArray(list) ? (list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null) : list || null
+                                        }
+
+                                        // Return
+                                        return list.length > 1 ? LDKF.customArray('LapysJSNodeList', list) : list[0] || null
+                                    }
+
+                                    // Return
+                                    return null
+                                },
 
                                 // Writable
                                 writable: !0
                             });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$s', {
+                                    // Configurable
+                                    configurable: !0,
 
-                            // Third Child --- CHECKPOINT ---
+                                    // Value
+                                    value: function $s() {
+                                        // Return
+                                        return tmpObject.parentNode$SDescriptorValue.apply(LDKO.$document, arguments)
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                            // Third Child
                             LDKF.objectDefineProperty(parentNodePrototype, '$3', {
                                 // Configurable
                                 configurable: !0,
@@ -29273,8 +30264,37 @@
                                 enumerable: !0,
 
                                 // Get
-                                get: tmpObject.parentNode$3DescriptorGetter = function $3() {}
-                            })
+                                get: tmpObject.parentNode$3DescriptorGetter = function $3() {
+                                    // Initialization > Node
+                                    let node = tmpObject.parentNode$2DescriptorGetter.call(this);
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isNode(node)) {
+                                        // Error Handling > Return
+                                        try { return LDKF.get.elementNextElementSibling(node) || LDKF.get.nodeNextSibling(node) || null }
+                                        catch (error) {}
+
+                                        // Return
+                                        return LDKF.get.nodeNextSibling(node) || null
+                                    }
+
+                                    // Return
+                                    return null
+                                }
+                            });
+                                // Definition
+                                LDKF.objectDefineProperty(window, '$3', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function $3() {
+                                        // Return
+                                        return tmpObject.parentNode$3DescriptorGetter.apply(LDKO.$document, arguments)
+                                    }
+                                })
                         }
                     })();
 
