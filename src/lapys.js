@@ -20732,63 +20732,6 @@
                             writable: !0
                         });
 
-                        // Attribute
-                        LDKF.objectDefineProperty(currentPrototype, 'attr', {
-                            // Configurable
-                            configurable: !0,
-
-                            // Enumerable
-                            enumerable: !0,
-
-                            // Value
-                            value: function attribute() {
-                                // Initialization > (Element, Length)
-                                let element = this,
-                                    length = arguments.length;
-
-                                /* Logic
-                                        [if:else statement]
-                                */
-                                if (length) {
-                                    // Initialization > (Arguments, ...)
-                                    let args = LDKF.toArray(arguments),
-                                        $0 = arguments[0],
-                                        $1 = arguments[1];
-
-                                    /* Logic
-                                            [if:else if:else statement]
-                                    */
-                                    if (length == 1) {
-                                        /* Logic
-                                                [if:else statement]
-                                        */
-                                        if (LDKF.isArray($0) || LDKF.isObject($0))
-                                            // Modification > Element > (...)
-                                            LDKF.setAttrElement(element, $0, '');
-
-                                        else
-                                            // Modification > Element > (...)
-                                            LDKF.delAttrElement(element, $0)
-                                    }
-
-                                    else if (length == 2)
-                                        // Modification > Element > (...)
-                                        LDKF.$setAttrElement(element, args);
-
-                                    else
-                                        // Modification > Element > (...)
-                                        LDKF.$delAttrElement(element, args)
-                                }
-
-                                else
-                                    // Error
-                                    LDKF.error(["'attribute'", "'Element'"], 'argument')
-                            },
-
-                            // Writable
-                            writable: !0
-                        });
-
                         // Bounding Box
                         LDKF.objectDefineProperty(currentPrototype, 'boundingBox', new (function Object() {
                             // Initialization > Target
