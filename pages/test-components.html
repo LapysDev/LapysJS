@@ -41,14 +41,20 @@
 
         <hr>
 
-        <!-- Draggable -->
-        <div class='bg-c-r draggable'>
-            <p> This is draggable content </p>
-        </div>
+        <!-- Dropzone
+                    --- NOTE ---
+                        #Lapys: This a also a dropzone.
+        -->
+        <div role=dropzone style='background-color: rgba(0, 0, 0, .05)'>
+            <!-- Draggable -->
+            <div class=draggable id=draggable style='background-color: #FFF; height: 50px; outline: 1px solid #777; width: 50%'>
+                <p> This is draggable content </p>
+            </div>
 
-        <!-- Drop Zone -->
-        <div role=dropzone> <p> This is a dropzone </p> </div>
-        <div role=dropzone> <p> This is another dropzone </p> </div>
+            <!-- Dropzone -->
+            <div role=dropzone style='background-color: #FFF; height: 100px; width: 65%; outline: 1px solid #F70'> <p> This is a dropzone </p> </div>
+            <div role=dropzone style='background-color: #FFF; height: 100px; width: 65%; outline: 1px solid #07F'> <p> This is another dropzone </p> </div>
+        </div>
 
         <hr>
 

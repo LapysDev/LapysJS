@@ -9,6 +9,9 @@
             - Returns 1 if there`s an error, returns 0 otherwise.
             - The rules of building the library also get to me too.
 
+            - Over its years of development, the library is still a bare-bones version of what it could be and code could still be improved.
+                The current script here is only the minimum baseline at which the library is functional.
+
     --- WARN ---
         #Lapys:
             - No arrow functions... :'(
@@ -6571,6 +6574,11 @@
                                 // Prototype
                                 LDKO.messageEventProto = LDKO.messageEvent.prototype;
 
+                            // Mouse Event
+                            LDKO.mouseEvent = MouseEvent;
+                                // Prototype
+                                LDKO.mouseEventProto = LDKO.mouseEvent.prototype;
+
                             // Named Node Map
                             LDKO.namedNodeMap = NamedNodeMap;
                                 // Prototype
@@ -8787,6 +8795,23 @@
 
                                         // Return
                                         return function messageEventSource() { return method.call(arguments[0]) }
+                                    })(),
+
+                                // Mouse Event
+                                    // Client X
+                                    mouseEventClientX: (function() {
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.mouseEventProto, 'clientX').get;
+
+                                        // Return
+                                        return function mouseEventClientX() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Client Y
+                                    mouseEventClientY: (function() {
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.mouseEventProto, 'clientY').get;
+
+                                        // Return
+                                        return function mouseEventClientY() { return method.call(arguments[0]) }
                                     })(),
 
                                 // Named Node Map
@@ -13278,12 +13303,11 @@
                                             // Range > Select Node Contents > Input
                                             LDKF.selectNodeContentsRange(range, input);
 
-                                            // Selection
-                                                // Remove All Ranges
-                                                LDKF.removeAllRangesSelection(selection);
+                                            // Deletion
+                                            LDKF.removeAllRangesSelection(selection);
 
-                                                // Add Range > Range
-                                                LDKF.addRangeSelection(selection, range);
+                                            // Insertion
+                                            LDKF.addRangeSelection(selection, range);
 
                                             // LapysJS Development Kit Functions
                                                 // (...)
@@ -13300,10 +13324,8 @@
 
                                             // Set Timeout
                                             LDKF.setTimeout(function() {
-                                                // Selection > Remove All Ranges
-                                                LDKF.removeAllRangesSelection(selection);
-
                                                 // Deletion
+                                                LDKF.removeAllRangesSelection(selection);
                                                 LDKF.remove$ChildNode(input)
                                             });
 
@@ -13490,12 +13512,11 @@
                                             // Range > Select Node Contents > Input
                                             LDKF.selectNodeContentsRange(range, input);
 
-                                            // Selection
-                                                // Remove All Ranges
-                                                LDKF.removeAllRangesSelection(selection);
+                                            // Deletion
+                                            LDKF.removeAllRangesSelection(selection);
 
-                                                // Add Range > Range
-                                                LDKF.addRangeSelection(selection, range);
+                                            // Insertion
+                                            LDKF.addRangeSelection(selection, range);
 
                                             // LapysJS Development Kit Functions
                                                 // (...)
@@ -13516,10 +13537,8 @@
 
                                             // Set Timeout
                                             LDKF.setTimeout(function() {
-                                                // Selection > Remove All Ranges
-                                                LDKF.removeAllRangesSelection(selection);
-
                                                 // Deletion
+                                                LDKF.removeAllRangesSelection(selection);
                                                 LDKF.remove$ChildNode(input)
                                             });
 
@@ -15611,12 +15630,11 @@
                                             // Range > Select Node Contents > Input
                                             LDKF.selectNodeContentsRange(range, input);
 
-                                            // Selection
-                                                // Remove All Ranges
-                                                LDKF.removeAllRangesSelection(selection);
+                                            // Deletion
+                                            LDKF.removeAllRangesSelection(selection);
 
-                                                // Add Range > Range
-                                                LDKF.addRangeSelection(selection, range);
+                                            // Insertion
+                                            LDKF.addRangeSelection(selection, range);
 
                                             // LapysJS Development Kit Functions
                                                 // (...)
@@ -15633,10 +15651,8 @@
 
                                             // Set Timeout
                                             LDKF.setTimeout(function() {
-                                                // Selection > Remove All Ranges
-                                                LDKF.removeAllRangesSelection(selection);
-
                                                 // Deletion
+                                                LDKF.removeAllRangesSelection(selection);
                                                 LDKF.remove$ChildNode(input)
                                             });
 
@@ -16257,11 +16273,12 @@
                                     // Initialization > (Length, Special Character)
                                     let length = arguments.length;
 
-                                    // Initialization > (Callback, Object, State, Is Iterable Object)
+                                    // Initialization > (Callback, Object, State, Is (Iterable Object, Node))
                                     let callback = arguments[0];
                                         object = length > 1 ? arguments[1] : tmp,
                                         state = length > 2 ? arguments[2] : 'defer',
-                                        isIterableObject = LDKF.isBoolean(object) || LDKF.isFunction(object) || LDKF.isNumber(object) || LDKF.isRegex(object) || LDKF.isSymbol(object);
+                                        isIterableObject = LDKF.isBoolean(object) || LDKF.isFunction(object) || LDKF.isNumber(object) || LDKF.isRegex(object) || LDKF.isSymbol(object),
+                                        isNode = LDKF.isNode(object);
 
                                     /* Logic
                                             [if statement]
@@ -16282,6 +16299,108 @@
                                         // Initialization > (Length, Prototype)
                                         let length = isIterableObject ? LDKF.get.objectLength(object) : 0,
                                             prototype = LDKF.isConstructible(object) ? object.constructor.prototype : {};
+
+                                        // Function > Iterate Object
+                                        function iterateObject(callback, object) {
+                                            // Initialization > (Allow Error, Descriptions, Keys, Values, Iterator, Length)
+                                            let allowError = [!1, !1, !1],
+                                                descriptions = [],
+                                                keys = [],
+                                                values = [],
+                                                iterator = 0,
+                                                length;
+
+                                            /* Error Handling
+                                                    --- NOTE ---
+                                                        #Lapys: The `values` array is updated first
+                                                            because its latent elements are subject to errors.
+                                            */
+                                            try {
+                                                // Initialization > (Descriptors (Keys), Iterator, Length)
+                                                let descriptors = LDKF.objectGetOwnPropertyDescriptors(object),
+                                                    descriptorsKeys = LDKF.objectKeys(descriptors),
+                                                    iterator = 0,
+                                                    length = descriptorsKeys.length;
+
+                                                /* Loop
+                                                        Index Descriptors.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Description
+                                                    let description = descriptors[iterator];
+
+                                                    // Error Handling > Update > (Values, Keys, Descriptions)
+                                                    try {
+                                                        LDKF.pushArray(values, 'value' in description ? description.value : description.get.call(object));
+                                                        LDKF.pushArray(keys, descriptorsKeys[iterator]);
+                                                        LDKF.pushArray(descriptions, description)
+                                                    } catch (error) {}
+                                                }
+                                            } catch (error) {
+                                                // Update > Allow Error
+                                                allowError[0] = !0
+                                            }
+
+                                            try {
+                                                // Initialization > Key
+                                                let key;
+
+                                                /* Loop
+                                                        Index Object.
+                                                */
+                                                for (key in object)
+                                                    // Logic > Error Handling > Update > (Values, Keys, Descriptions)
+                                                    if (!LDKF.includesArray(keys, key))
+                                                        try {
+                                                            LDKF.pushArray(values, object[key]);
+                                                            LDKF.pushArray(keys, key);
+                                                            LDKF.pushArray(descriptions, null)
+                                                        } catch (error) {}
+                                            } catch (error) {
+                                                // Update > Allow Error
+                                                allowError[1] = !0
+                                            }
+
+                                            try {
+                                                // Initialization > (Keys, Iterator, Length)
+                                                let $keys = LDKF.objectKeys(object),
+                                                    iterator = 0,
+                                                    length = $keys.length;
+
+                                                /* Loop
+                                                        Index Keys.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Key
+                                                    let key = $keys[iterator];
+
+                                                    // Logic > Error Handling > Update > (Values, Keys, Descriptions)
+                                                    if (!LDKF.includesArray(keys, key))
+                                                        try {
+                                                            LDKF.pushArray(values, object[key]);
+                                                            LDKF.pushArray(keys, key);
+                                                            LDKF.pushArray(descriptions, LDKF.objectGetOwnPropertyDescriptor(object, key) || null)
+                                                        } catch (error) {}
+                                                }
+                                            } catch (error) {
+                                                // Update > Allow Error
+                                                allowError[2] = !0
+                                            }
+
+                                            // Error
+                                            allowError[0] && allowError[1] && allowError[2] && LDKF.error('repeat', 'argument', 'Could not iterate through object');
+
+                                            // Update > Length
+                                            length = keys.length;
+
+                                            /* Loop
+                                                    Index Keys.
+
+                                                > Callback
+                                            */
+                                            for (iterator; iterator != length; iterator += 1)
+                                                callback.call(object, keys[iterator], values[iterator], descriptions[iterator])
+                                        }
 
                                         /* Logic
                                                 [if:else statement]
@@ -16325,17 +16444,17 @@
                                                     props = [],
                                                     propsLength = 0;
 
-                                                // LapysJS Development Kit Functions > Iterate Object
-                                                LDKF.iterateObject(function(key, value, description) {
+                                                // Iterate Object
+                                                iterateObject(function(key, value, description) {
                                                     /* Logic
                                                             [if statement]
                                                     */
-                                                    if (!(key in prototype)) {
+                                                    if (!(key in prototype) || isNode) {
                                                         // Update > (Properties, Length)
                                                         LDKF.pushArray(props, {key: key, value: value, description: description});
                                                         length += 1
                                                     }
-                                                }, object, !0, !1);
+                                                }, object);
 
                                                 // Update > Properties Length
                                                 propsLength = props.length;
@@ -16396,19 +16515,19 @@
                                             }
 
                                             else
-                                                // LapysJS Development Kit Functions > Iterate Object
-                                                LDKF.iterateObject(function(key, value, description) {
+                                                // Iterate Object
+                                                iterateObject(function(key, value, description) {
                                                     /* Logic
                                                             [if statement]
                                                     */
-                                                    if (!(key in prototype)) {
+                                                    if (!(key in prototype) || isNode) {
                                                         // Callback
                                                         callback.call(object, key, value, description, iterationCount += 1);
 
                                                         // Update > Length
                                                         length += 1
                                                     }
-                                                }, object, !0, !1)
+                                                }, object)
                                         }
 
                                         // Return
@@ -16492,12 +16611,11 @@
                                         // Range > Select Node Contents > Element
                                         LDKF.selectNodeContentsRange(range, element);
 
-                                        // Selection
-                                            // Remove All Ranges
-                                            LDKF.removeAllRangesSelection(selection);
+                                        // Deletion
+                                        LDKF.removeAllRangesSelection(selection);
 
-                                            // Add Range > Range
-                                            LDKF.addRangeSelection(selection, range);
+                                        // Insertion
+                                        LDKF.addRangeSelection(selection, range);
 
                                         /* Logic
                                                 [if:else if statement]
@@ -24599,7 +24717,10 @@
                             }
                         });
 
-                        // Set CSS
+                        /* Set CSS
+                                --- UPDATE REQUIRED ---
+                                    #Lapys: Might insert stringified window object into stylesheet.
+                        */
                         LDKF.objectDefineProperty(currentPrototype, 'setCSS', {
                             // Configurable
                             configurable: !0,
@@ -31405,6 +31526,15 @@
                                     // Marquee
                                     marquee: [],
 
+                                    // Media
+                                    media: [],
+
+                                    // Playlist
+                                    playlist: [],
+
+                                    // Resizable
+                                    resizable: [],
+
                                     // Table
                                     table: [],
 
@@ -31624,7 +31754,7 @@
                                         // Closed Content
                                         closedContent: {
                                             // Configurable
-                                            configurable: !1,
+                                            configurable: !0,
 
                                             // Enumerable
                                             enumerable: !1,
@@ -31658,7 +31788,7 @@
                                         // Content
                                         content: {
                                             // Configurable
-                                            configurable: !1,
+                                            configurable: !0,
 
                                             // Enumerable
                                             enumerable: !1,
@@ -31691,7 +31821,7 @@
                                         // Header
                                         header: {
                                             // Configurable
-                                            configurable: !1,
+                                            configurable: !0,
 
                                             // Enumerable
                                             enumerable: !1,
@@ -31725,7 +31855,7 @@
                                         // Headers
                                         headers: {
                                             // Configurable
-                                            configurable: !1,
+                                            configurable: !0,
 
                                             // Enumerable
                                             enumerable: !1,
@@ -31758,7 +31888,7 @@
                                         // Open Content
                                         openContent: {
                                             // Configurable
-                                            configurable: !1,
+                                            configurable: !0,
 
                                             // Enumerable
                                             enumerable: !1,
@@ -32308,7 +32438,10 @@
                                     })
                                 })();
 
-                                // Carousel
+                                /* Carousel
+                                        --- CHECKPOINT ---
+                                            #Lapys: Other event types such as Drags and Key inputs are not installed.
+                                */
                                 LDKF.includesArray(LDK.components, 'carousel') && (function carousel() {
                                     // Initialization > ((Sub Element) Properties, Watch)
                                     let properties = {
@@ -33942,7 +34075,386 @@
                                     })
                                 })();
 
-                                // Draggable
+                                /* Draggable
+                                        --- CHECKPOINT ---
+                                            #Lapys: Dynamic Co-ordinate Tolerance should allow for
+                                                altering otherwise valid Dropzones (allow North, South, East & West boundaries to be ignored).
+                                */
+                                LDKF.includesArray(LDK.components, 'draggable') && (function draggable() {
+                                    // Initialization > (Properties, Watch)
+                                    let properties = {
+                                        // Dropzone Selector Match
+                                        dropzoneSelectorMatch: {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: null,
+
+                                            // Writable
+                                            writable: !0
+                                        }
+                                    }, subElementProperties = {
+                                        /* Drop Draggable
+                                                --- NOTE ---
+                                                    #Lapys: Responsible for dropping Draggables into valid Dropzones.
+                                        */
+                                        dropDraggable: function dropDraggable(dropzone, draggable) {
+                                            // Initialization > Draggable Dropzone Selector Match Property Description
+                                            let draggableDropzoneSelectorMatchPropertyDescription = LDKF.objectGetOwnPropertyDescriptor(draggable, 'dropzoneSelectorMatch');
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (draggableDropzoneSelectorMatchPropertyDescription)
+                                                // Error Handling
+                                                try {
+                                                    // Initialization > Query
+                                                    let query = 'value' in draggableDropzoneSelectorMatchPropertyDescription ? draggableDropzoneSelectorMatchPropertyDescription.value : draggableDropzoneSelectorMatchPropertyDescription.get.call(draggable);
+
+                                                    // Insertion
+                                                    LDKF.isNull(query) ?
+                                                        LDKF.appendChildNode(dropzone, draggable) :
+                                                        LDKF.includesArray(LDKF.toArray(LDKF.querySelectorAllDocument(LDKF.string(query))), dropzone) && LDKF.appendChildNode(dropzone, draggable)
+                                                } catch (error) {}
+
+                                            else
+                                                // Insertion
+                                                LDKF.appendChildNode(dropzone, draggable);
+
+                                            // Initialization > Description
+                                            let description = LDKF.objectGetOwnPropertyDescriptor(dropzone, 'onElementDropped');
+
+                                            // [On Element Dropped]
+                                            description && ('value' in description) && LDKF.isFunction(description.value) && description.value.call(dropzone, draggable)
+                                        }
+                                    }, watch = {
+                                        /* Dragged
+                                                --- NOTE ---
+                                                    #Lapys: On the off-chance there are multiple pointers
+                                                        active on the screen causing the Drag and Drop events,
+                                                        this array will be needed to register each active Draggable element.
+                                        */
+                                        dragged: [],
+
+                                        // Drag
+                                        drag: function drag(event) {
+                                            // Deletion
+                                            LDKF.removeAllRangesSelection(LDKF.getSelectionDocument());
+
+                                            // Initialization > (Dragged, Index)
+                                            let dragged = watch.dragged,
+                                                index = watch.dragged.index += 1;
+
+                                            // Update > Index
+                                            (index == dragged.length) && (index = watch.dragged.index = 0);
+
+                                            // Initialization > (Draggable, Former (Height, Left, Top, Width), (X, Y) (Difference), Bounding Client Rectangle, Style)
+                                            let draggable = dragged[index].element,
+                                                formerHeight = dragged[index].height,
+                                                formerLeft = dragged[index].left,
+                                                formerTop = dragged[index].top,
+                                                formerWidth = dragged[index].width,
+                                                xDifference = dragged[index].xDifference,
+                                                yDifference = dragged[index].yDifference,
+                                                boundingClientRect = LDKF.getBoundingClientRectElement(draggable),
+                                                style = LDKF.get.htmlElementStyle(draggable),
+                                                x = LDKF.get.mouseEventClientX(event) - xDifference,
+                                                y = LDKF.get.mouseEventClientY(event) - yDifference;
+
+                                            // Modification
+                                                // Style > (Left, Position, Top)
+                                                style.left = style.position = style.top = '';
+
+                                                // Draggable > Style
+                                                LDKF.setAttributeElement(draggable, 'style', 'height: ' + formerHeight + 'px !important; left: ' + x + 'px !important; position: fixed !important; top: ' + y + 'px !important; width: ' + formerWidth + 'px !important; ' + (LDKF.getAttributeElement(draggable, 'style') || ''))
+                                        },
+
+                                        /* Drop
+                                                --- NOTE ---
+                                                    #Lapys: Move the Draggable around relative to the cursor.
+                                        */
+                                        drop: function drop(event) {
+                                            // Initialization > (Dragged, Index, Draggable, (Former) Style, Bounding Client Rectangle, Height, Left, Top, Width, Bottom, Right)
+                                            let dragged = watch.dragged,
+                                                index = watch.dragged.index,
+                                                draggable = dragged[index].element,
+                                                formerStyle = dragged[index].style,
+                                                style = LDKF.get.htmlElementStyle(draggable),
+                                                boundingClientRect = LDKF.getBoundingClientRectElement(draggable),
+                                                height = boundingClientRect.height,
+                                                left = LDKF.get.mouseEventClientX(event),
+                                                top = LDKF.get.mouseEventClientY(event),
+                                                width = boundingClientRect.width,
+                                                bottom = height + boundingClientRect.top,
+                                                right = boundingClientRect.left + width;
+
+                                            // Initialization > (Dropzones, Iterator)
+                                            let dropzones = LDKF.querySelectorAllDocument('[role=dropzone'),
+                                                iterator = LDKF.get.nodeListLength(dropzones);
+
+                                            // Update > Dragged
+                                            LDKF.spliceArray(dragged, index, 1);
+
+                                            /* Loop
+                                                    Index Dropzones.
+                                            */
+                                            while (iterator) {
+                                                // Initialization > (Dropzone, Bounding Client Rectangle, Dropzone (Height, Left, Top, Width, Bottom, Right))
+                                                let dropzone = dropzones[iterator -= 1],
+                                                    boundingClientRect = LDKF.getBoundingClientRectElement(dropzone),
+                                                    dropzoneHeight = boundingClientRect.height,
+                                                    dropzoneLeft = boundingClientRect.left,
+                                                    dropzoneTop = boundingClientRect.top,
+                                                    dropzoneWidth = boundingClientRect.width,
+                                                    dropzoneBottom = dropzoneHeight + dropzoneTop,
+                                                    dropzoneRight = dropzoneLeft + dropzoneWidth;
+
+                                                /* Logic
+                                                        If
+                                                            the Draggable is 'within' the Dropzone.
+
+                                                        --- NOTE ---
+                                                            #Lapys: Responsible for determining if the Draggable
+                                                                is 'within' the Dropzone.
+                                                */
+                                                if (dropzoneLeft < left && dropzoneTop < top)
+                                                    /* Logic
+                                                            If
+                                                                the Dropzone is bigger than the Draggable;
+
+                                                            else if
+                                                                the Dropzone is taller than the Draggable;
+
+                                                            else if
+                                                                the Dropzone is longer than the Draggable;
+
+                                                            else if
+                                                                the Dropzone is smaller than the Draggable.
+                                                    */
+                                                    if (dropzoneHeight > height && dropzoneWidth > width) {
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (dropzoneBottom > bottom && dropzoneRight > right) {
+                                                            // Sub Element Properties > Drop Draggable
+                                                            subElementProperties.dropDraggable(dropzone, draggable);
+
+                                                            // Break
+                                                            break
+                                                        }
+                                                    }
+
+                                                    else if (dropzoneHeight > height && dropzoneWidth < width) {
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (dropzoneBottom > bottom) {
+                                                            // Sub Element Properties > Drop Draggable
+                                                            subElementProperties.dropDraggable(dropzone, draggable);
+
+                                                            // Break
+                                                            break
+                                                        }
+                                                    }
+
+                                                    else if (dropzoneHeight < height && dropzoneWidth > width) {
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (dropzoneRight > right) {
+                                                            // Sub Element Properties > Drop Draggable
+                                                            subElementProperties.dropDraggable(dropzone, draggable);
+
+                                                            // Break
+                                                            break
+                                                        }
+                                                    }
+
+                                                    else if (dropzoneHeight < height && dropzoneWidth < width) {
+                                                        // Sub Element Properties > Drop Draggable
+                                                        subElementProperties.dropDraggable(dropzone, draggable);
+
+                                                        // Break
+                                                        break
+                                                    }
+                                            }
+
+                                            /* Modification > Style > (Height, Left, Position, Top, Width)
+                                                    --- NOTE ---
+                                                        #Lapys: Reset the Draggable`s CSS properties.
+                                            */
+                                            style.height = formerStyle.height;
+                                            style.left = formerStyle.left;
+                                            style.position = formerStyle.position;
+                                            style.top = formerStyle.top;
+                                            style.width = formerStyle.width;
+
+                                            // Event > Window > Mouse (Move, Up)
+                                            LDKF.delEvent(window, 'mousemove', watch.drag);
+                                            LDKF.delEvent(window, 'mouseup', watch.drop)
+                                        }
+                                    };
+                                        // Modification > (Watch > Dragged) > Index
+                                        watch.dragged.index = 0;
+
+                                    // Index Draggables
+                                    function indexDraggables() {
+                                        // Initialization > (Draggables, Length)
+                                        let draggables = LDKF.getElementsByClassNameDocument('draggable'),
+                                            length = LDKF.get.htmlCollectionLength(draggables);
+
+                                        // Asynchronous Index > Set Draggables
+                                        asyncIndex(function setDraggables(iterator) {
+                                            // Set Draggable > Draggable
+                                            setDraggable(draggables[iterator])
+                                        }, length)
+                                    }
+
+                                    // Set Draggable
+                                    function setDraggable(draggable) {
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (!LDKF.includesArray(getElements(primaryStorage.draggable), draggable)) {
+                                            // Update > Primary Storage > Draggable
+                                            LDKF.pushArray(primaryStorage.draggable, {element: draggable, type: ['draggable']});
+
+                                            // Deletion
+                                            delete draggable.dropzoneSelectorMatch;
+
+                                            // Modification > Draggable > Dropzone Selector Match
+                                            LDKF.objectDefineProperty(draggable, 'dropzoneSelectorMatch', properties.dropzoneSelectorMatch);
+
+                                            // Watch Draggable
+                                            (function watchDraggable() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.hasClassHtmlElement(draggable, 'draggable'))
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(watchDraggable);
+
+                                                else {
+                                                    // Unset Draggable > Draggable
+                                                    unsetDraggable(draggable);
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+                                            })()
+                                        }
+                                    }
+
+                                    // Unset Draggable
+                                    function unsetDraggable(draggable) {
+                                        // Initialization > Index
+                                        let index = LDKF.indexOfArray(getElements(primaryStorage.draggable), draggable);
+
+                                        // Initialization > (Draggable Dropzone Selector Match Property Description, Properties Dropzone Selector Match)
+                                        let draggableDropzoneSelectorMatchPropertyDescription = LDKF.objectGetOwnPropertyDescriptor(draggable, 'dropzoneSelectorMatch'),
+                                            propertiesDropzoneSelectorMatch = LDKF.objectAssign({}, properties.dropzoneSelectorMatch);
+
+                                        // Deletion
+                                        samePropertyDescription(draggableDropzoneSelectorMatchPropertyDescription, propertiesDropzoneSelectorMatch) && delete draggable.dropzoneSelectorMatch;
+
+                                        // Update > (Primary Storage > Draggable)
+                                        (index == -1) || LDKF.spliceArray(primaryStorage.draggable, index, 1)
+                                    }
+
+                                    // Index Draggables
+                                    indexDraggables();
+
+                                    /* Event > Window > Mouse Down
+                                            --- NOTE ---
+                                                #Lapys: Responsible for picking up the Draggable for movement.
+                                    */
+                                    LDKF.addEvent(window, 'mousedown', function pickDraggable(event) {
+                                        // Initialization > Target
+                                        let target = LDKF.queryEventTarget(event);
+
+                                        /* Loop
+                                                [while statement]
+
+                                            > Update > Target
+                                        */
+                                        while (target && !LDKF.includesArray(getElements(primaryStorage.draggable), target))
+                                            target = LDKF.get.nodeParentNode(target);
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (target) {
+                                            // Initialization > (Bounding Client Rectangle, Left, Top, Style)
+                                            let boundingClientRect = LDKF.getBoundingClientRectElement(target),
+                                                left = boundingClientRect.left,
+                                                top = boundingClientRect.top,
+                                                style = LDKF.get.htmlElementStyle(target);
+
+                                            // Update > (Watch > Dragged)
+                                            LDKF.pushArray(watch.dragged, {
+                                                // Element
+                                                element: target,
+
+                                                // Height
+                                                height: boundingClientRect.height,
+
+                                                // Left
+                                                left: left,
+
+                                                // Style
+                                                style: {height: style.height, left: style.left, position: style.position, top: style.top, width: style.width},
+
+                                                // Top
+                                                top: top,
+
+                                                // Width
+                                                width: boundingClientRect.width,
+
+                                                // X Difference
+                                                xDifference: LDKF.abs(LDKF.get.mouseEventClientX(event) - left),
+
+                                                // Y Difference
+                                                yDifference: LDKF.abs(LDKF.get.mouseEventClientY(event) - top)
+                                            });
+
+                                            // Event > Window > Mouse (Move, Up)
+                                            LDKF.addEvent(window, 'mousemove', watch.drag);
+                                            LDKF.addEvent(window, 'mouseup', watch.drop)
+                                        }
+                                    });
+
+                                    // On DOM Element Added > Index Draggable
+                                    tmpObject.windowOnDOMElementAddedDescriptionValue(function indexDraggable() {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 250,
+                                            cooldownValue = !0,
+                                            timeout;
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (cooldownValue) {
+                                            // Update > Cooldown Value
+                                            cooldownValue = !1;
+
+                                            // Index Draggables
+                                            indexDraggables();
+
+                                            // Update > Timeout
+                                            timeout = LDKF.setTimeout(function() {
+                                                // Update > Cooldown Value
+                                                cooldownValue = !0;
+
+                                                // Clear Timeout
+                                                LDKF.clearTimeout(timeout)
+                                            }, cooldownDuration)
+                                        }
+                                    })
+                                })()
 
                                 // Dropdown
                                 LDKF.includesArray(LDK.components, 'dropdown') && (function dropdown() {
@@ -34666,11 +35178,17 @@
                                             }, cooldownDuration)
                                         }
                                     })
-                                })()
+                                })();
 
                                 // Dynamic Text
                                 // Dynamic Time
-                                // Marquee
+                                /* Marquee
+                                        --- NOTE ---
+                                            #Lapys: Formerly called Roulette.
+                                */
+                                // Media
+                                // Playlist
+                                // Resizable
                                 // Table
                                 // Toast
                                 // Tooltip
