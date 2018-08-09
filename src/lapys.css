@@ -824,6 +824,8 @@
             .button,
             .cur-pointer,
             .cur-select,
+            .draggable,
+            .draggable:active,
             .dropdown > [role~=header],
             .selectable { cursor: pointer }
 

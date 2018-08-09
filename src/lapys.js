@@ -7,10 +7,10 @@
     --- NOTE ---
         #Lapys:
             - Returns 1 if there`s an error, returns 0 otherwise.
-            - The rules of building the library also get to me too.
+            - The rules of building the library also get to me too but they are there for the greater good.
 
-            - Over its years of development, the library is still a bare-bones version of what it could be and code could still be improved.
-                The current script here is only the minimum baseline at which the library is functional.
+            Over its years of development, the library is still a bare-bones version of what it could be and code could still be improved.
+            The current script here is only the minimum baseline at which the library is functional.
 
     --- WARN ---
         #Lapys:
@@ -1651,6 +1651,9 @@
                                 return function Eval() { return method.call(this, arguments[0]) }
                             })();
 
+                            // Exponent
+                            LDKF.exp = Math.exp;
+
                             // Function
                             LDKF.$func = function Function() {
                                 // Initialization > (Length, (...), Format)
@@ -1934,6 +1937,40 @@
 
                                 // Return
                                 return types
+                            };
+
+                            // Get Event X Coordinate
+                            LDKF.getEventXCoord = function getEventXCoord(event) {
+                                /* Logic
+                                        [switch:case:default statement]
+                                */
+                                switch (event.constructor) {
+                                    // Mouse Event
+                                    case LDKO.mouseEvent: return LDKF.get.mouseEventClientX(event); break;
+
+                                    // Touch Event
+                                    case LDKO.touchEvent: return LDKF.get.touchClientX(LDKF.get.touchEventTouches(event)[0] || LDKF.get.touchEventChangedTouches(event)[0]); break;
+
+                                    // [Default]
+                                    default: return LDKO.numberNaN
+                                }
+                            };
+
+                            // Get Event Y Coordinate
+                            LDKF.getEventYCoord = function getEventYCoord(event) {
+                                /* Logic
+                                        [switch:case:default statement]
+                                */
+                                switch (event.constructor) {
+                                    // Mouse Event
+                                    case LDKO.mouseEvent: return LDKF.get.mouseEventClientY(event); break;
+
+                                    // Touch Event
+                                    case LDKO.touchEvent: return LDKF.get.touchClientY(LDKF.get.touchEventTouches(event)[0] || LDKF.get.touchEventChangedTouches(event)[0]); break;
+
+                                    // [Default]
+                                    default: return LDKO.numberNaN
+                                }
                             };
 
                             // Get Falsy Elements From Array
@@ -5445,135 +5482,32 @@
                                         Index Event References.
                                 */
                                 for (iterator; iterator != length; iterator += 1) {
-                                    // Initialization > (Event Reference, Listener, Options, Target)
+                                    // Initialization > (Event Reference, Listener, Options, Target, Type (Iterator, Length), Types)
                                     let eventReference = eventReferences[iterator],
                                         listener = eventReference.listener,
                                         options = eventReference.options,
-                                        target = eventReference.target;
+                                        target = eventReference.target,
+                                        types = LDKF.updateEventType(eventReference.type),
+                                        typeIterator = 0,
+                                        typeLength = types.length;
 
                                     /* Logic
-                                            [switch:case:break statement]
+                                            [if statement]
                                     */
-                                    switch (eventReference.type) {
-                                        // Animation
-                                        case 'animation':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'animationend'},
-                                                {listener: listener, options: options, target: target, type: 'animationiteration'},
-                                                {listener: listener, options: options, target: target, type: 'animationstart'}
-                                            );
-                                            break;
+                                    if (!LDKF.includesArray(types, eventReference.type)) {
+                                        // Initialization > Updated Event References
+                                        let updatedEventReferences = [];
 
-                                        // Can Play
-                                        case 'canplay':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'canplay'},
-                                                {listener: listener, options: options, target: target, type: 'canplaythrough'}
-                                            );
-                                            break;
+                                        /* Loop
+                                                Index Types.
 
-                                        // Device
-                                        case 'device':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'devicemotion'},
-                                                {listener: listener, options: options, target: target, type: 'deviceorientation'},
-                                                {listener: listener, options: options, target: target, type: 'deviceorientationabsolute'}
-                                            );
-                                            break;
+                                            > Update > Updated Event References
+                                        */
+                                        for (typeIterator; typeIterator != typeLength; typeIterator += 1)
+                                            LDKF.pushArray(updatedEventReferences, {listener: listener, options: options, target: target, type: types[typeIterator]});
 
-                                        // Drag
-                                        case 'drag':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'drag'},
-                                                {listener: listener, options: options, target: target, type: 'dragend'},
-                                                {listener: listener, options: options, target: target, type: 'dragenter'},
-                                                {listener: listener, options: options, target: target, type: 'dragleave'},
-                                                {listener: listener, options: options, target: target, type: 'dragover'},
-                                                {listener: listener, options: options, target: target, type: 'dragstart'}
-                                            );
-                                            break;
-
-                                        // Key
-                                        case 'key':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'keydown'},
-                                                {listener: listener, options: options, target: target, type: 'keypress'},
-                                                {listener: listener, options: options, target: target, type: 'keyup'}
-                                            );
-                                            break;
-
-                                        // Load
-                                        case 'load':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'load'},
-                                                {listener: listener, options: options, target: target, type: 'loadeddata'},
-                                                {listener: listener, options: options, target: target, type: 'loadedmetadata'},
-                                                {listener: listener, options: options, target: target, type: 'loadstart'}
-                                            );
-                                            break;
-
-                                        // Message
-                                        case 'message':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'message'},
-                                                {listener: listener, options: options, target: target, type: 'messageerror'}
-                                            );
-                                            break;
-
-                                        // Mouse
-                                        case 'mouse':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'mousedown'},
-                                                {listener: listener, options: options, target: target, type: 'mouseenter'},
-                                                {listener: listener, options: options, target: target, type: 'mouseleave'},
-                                                {listener: listener, options: options, target: target, type: 'mousemove'},
-                                                {listener: listener, options: options, target: target, type: 'mouseout'},
-                                                {listener: listener, options: options, target: target, type: 'mouseover'},
-                                                {listener: listener, options: options, target: target, type: 'mouseup'},
-                                                {listener: listener, options: options, target: target, type: 'mousewheel'}
-                                            );
-                                            break;
-
-                                        // Page
-                                        case 'page':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'pagehide'},
-                                                {listener: listener, options: options, target: target, type: 'pageshow'}
-                                            );
-                                            break;
-
-                                        // Play
-                                        case 'play':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'play'},
-                                                {listener: listener, options: options, target: target, type: 'playing'}
-                                            );
-                                            break;
-
-                                        // Pointer
-                                        case 'pointer':
-                                            LDKF.spliceArray(
-                                                eventReferences, iterator, 1,
-                                                {listener: listener, options: options, target: target, type: 'pointercancel'},
-                                                {listener: listener, options: options, target: target, type: 'pointerdown'},
-                                                {listener: listener, options: options, target: target, type: 'pointerenter'},
-                                                {listener: listener, options: options, target: target, type: 'pointermove'},
-                                                {listener: listener, options: options, target: target, type: 'pointerleave'},
-                                                {listener: listener, options: options, target: target, type: 'pointerout'},
-                                                {listener: listener, options: options, target: target, type: 'pointerover'},
-                                                {listener: listener, options: options, target: target, type: 'pointerup'}
-                                            );
-                                            break;
+                                        // Update > Event References
+                                        LDKF.$spliceArray(eventReferences, LDKF.concatArray([iterator, 1], updatedEventReferences))
                                     }
                                 }
 
@@ -6053,6 +5987,15 @@
                                 return function setInterval() { return method.apply(window, LDKF.toArray(arguments)) }
                             })();
 
+                            /* Sigmoid
+                                    --- NOTE ---
+                                        #Lapys: For logistic curves...
+                            */
+                            LDKF.sigmoid = function sigmoid(input) {
+                                // Return
+                                return 1 / (1 + LDKF.exp(-input))
+                            };
+
                             /* Sort List
                                     --- NOTE ---
                                         #Lapys: Use this method to sort array or string lists.
@@ -6362,6 +6305,64 @@
                                 return (LDKF.objectProtoToString || LDKO.$objectProto.toString).call(data)
                             };
 
+                            // Update Event Type
+                            LDKF.updateEventType = function updateEventType() {
+                                // Initialization > Type
+                                let type = arguments[0];
+
+                                /* Logic
+                                        [switch:case:default statement]
+                                */
+                                switch (type) {
+                                    // Predefined Events
+                                        // Animation
+                                        case '$animation': return ['animationend', 'animationiteration', 'animationstart']; break;
+
+                                        // Before
+                                        case '$before': return ['beforecopy', 'beforecut', 'beforepaste']; break;
+
+                                        // Can Play
+                                        case '$canplay': return ['canplay', 'canplaythrough']; break;
+
+                                        // Device
+                                        case '$device': return ['devicemotion', 'deviceorientation', 'deviceorientationabsolute']; break;
+
+                                        // Drag
+                                        case '$drag': return ['drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart']; break;
+
+                                        // Key
+                                        case '$key': return ['keydown', 'keypress', 'keyup']; break;
+
+                                        // Load
+                                        case '$load': return ['load', 'loadeddata', 'loadedmetadata', 'loadstart']; break;
+
+                                        // Message
+                                        case '$message': return ['message', 'messageerror']; break;
+
+                                        // Mouse
+                                        case '$mouse': return ['mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'mousewheel']; break;
+
+                                        // Page
+                                        case '$page': return ['pagehide', 'pageshow']; break;
+
+                                        // Play
+                                        case '$play': return ['play', 'playing']; break;
+
+                                        // Pointer
+                                        case '$pointer': return ['pointercancel', 'pointerdown', 'pointerenter', 'pointermove', 'pointerleave', 'pointerout', 'pointerover', 'pointerup']; break;
+
+                                        // Touch
+                                        case '$touch': return ['touchcancel', 'touchend', 'touchmove', 'touchstart']; break;
+
+                                    // Custom Events
+                                        // Edit
+                                        case '$edit': return ['change', 'input']; break;
+
+                                    // [Default]
+                                    default: return [type]
+                                }
+                            };
+
                             // Warn
                             LDKF.warn = function warn() {
                                 // Error
@@ -6569,6 +6570,10 @@
                                 // Protocol
                                 LDKO.locationProtocol = LDKO.$location.protocol;
 
+                            // Math
+                                // Euler
+                                LDKO.mathE = Math.E;
+
                             // Message Event
                             LDKO.messageEvent = window.MessageEvent || tmp;
                                 // Prototype
@@ -6730,6 +6735,16 @@
 
                             // Syntax Error
                             LDKO.syntaxError = SyntaxError;
+
+                            // Touch
+                            LDKO.touch = window.Touch || function Touch() {};
+                                // Prototype
+                                LDKO.touchProto = LDKO.touch.prototype;
+
+                            // Touch Event
+                            LDKO.touchEvent = window.TouchEvent || function TouchEvent() {};
+                                // Prototype
+                                LDKO.touchEventProto = LDKO.touchEvent.prototype;
 
                             // Type Error
                             LDKO.typeError = TypeError;
@@ -6921,6 +6936,21 @@
                                 // Return
                                 return function attachEventEventTarget() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
+
+                            // Average
+                            LDKF.avg = function avg() {
+                                // Initialization > (Iterator, Length, Result)
+                                let iterator = arguments.length,
+                                    length = iterator,
+                                    result = 0;
+
+                                // Loop > Update > Result
+                                while (iterator)
+                                    result += arguments[iterator -= 1];
+
+                                // Return
+                                return result / length
+                            };
 
                             // Bind Function
                             LDKF.bindFunction = (function() {
@@ -7628,6 +7658,15 @@
 
                             // Power
                             LDKF.pow = Math.pow;
+
+                            // Prevent Default Event
+                            LDKF.preventDefaultEvent = (function() {
+                                // Initialization > Method
+                                let method = LDKO.eventProto.preventDefault;
+
+                                // Return
+                                return function preventDefaultEvent() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
+                            })();
 
                             // Prompt Window
                             LDKF.promptWindow = (function() {
@@ -9044,6 +9083,44 @@
 
                                         // Return
                                         return function screenHeight() { return method.call(LDKO.$screen) }
+                                    })(),
+
+                                // Touch
+                                    // Client X
+                                    touchClientX: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.touchProto, 'clientX').get;
+
+                                        // Return
+                                        return function touchClientX() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Client Y
+                                    touchClientY: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.touchProto, 'clientY').get;
+
+                                        // Return
+                                        return function touchClientY() { return method.call(arguments[0]) }
+                                    })(),
+
+                                // Touch Events
+                                    // Changed Touches
+                                    touchEventChangedTouches: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.touchEventProto, 'changedTouches').get;
+
+                                        // Return
+                                        return function touchEventChangedTouches() { return method.call(arguments[0]) }
+                                    })(),
+
+                                    // Touches
+                                    touchEventTouches: (function() {
+                                        // Initialization > Method
+                                        let method = LDKF.objectGetOwnPropertyDescriptor(LDKO.touchEventProto, 'touches').get;
+
+                                        // Return
+                                        return function touchEventTouches() { return method.call(arguments[0]) }
                                     })(),
 
                                 // X Domain Request
@@ -14071,19 +14148,7 @@
                                     configurable: !0,
 
                                     // Value
-                                    value: function avg() {
-                                        // Initialization > (Iterator, Length, Result)
-                                        let iterator = arguments.length,
-                                            length = iterator,
-                                            result = 0;
-
-                                        // Loop > Update > Result
-                                        while (iterator)
-                                            result += arguments[iterator -= 1];
-
-                                        // Return
-                                        return result / length
-                                    },
+                                    value: LDKF.avg,
 
                                     // Writable
                                     writable: !0
@@ -14131,11 +14196,7 @@
                                     writable: !0
                                 })
 
-                                /* Random > Between
-                                        --- WARN ---
-                                            #Lapys: No idea what happens if non-numeral data is
-                                                used with this method.
-                                */
+                                // Random > Between
                                 LDKF.objectDefineProperty(Math.random, 'between', {
                                     // Configurable
                                     configurable: !0,
@@ -14155,131 +14216,310 @@
                                                 result = 0;
 
                                             /* Logic
-                                                    [if statement]
+                                                    If
+                                                        there is a non-valid numeric value in the arguments.
                                             */
-                                            if (length == 1) {
-                                                /* Initialization > (Number, Exponential Potency)
-                                                        --- NOTE ---
-                                                            #Lapys: Random formula I came up with:
-                                                                f(x) = (x * 2) / 3
-                                                */
-                                                let number = args[0],
-                                                    exponentialPotency = (number * 2) / 3;
+                                            if (LDKF.filterArray(args, function(item) { return !LDKF.isSafeNumber(item) }).length && LDKF.filterArray(args, function(item) { return !LDKF.isNumber(item) }).length !== args.length)
+                                                // Return
+                                                return;
 
-                                                // Update > (Arguments, Length)
-                                                args[0] = number - exponentialPotency;
-                                                args[1] = number + exponentialPotency;
-                                                length = 2
-                                            }
-
-                                            // Initialization > (Decremented Length, Iterator, Swapped)
-                                            let decrementedLength = length - 1,
-                                                iterator = 0,
-                                                swapped;
-
-                                            // Function > Between
-                                            function between() {
-                                                // Initialization > (Number (A, B), (Max, Min)imum, Difference, Random, Result)
-                                                let numberA = arguments[0],
-                                                    numberB = arguments[1],
-                                                    max = LDKF.max(arguments[0], arguments[1]),
-                                                    min = LDKF.min(arguments[0], arguments[1]),
-                                                    difference = max - min,
-                                                    random = LDKF.mathRandom(),
-                                                    result = 0;
-
+                                            else {
                                                 /* Logic
-                                                        [if:else statement]
+                                                        [if statement]
+
+                                                        --- NOTE ---
+                                                            #Lapys: Convert the single input into two acceptable inputs
+                                                                for processing.
                                                 */
-                                                if (difference > -1 && difference < 2) {
-                                                    // Update > Result
-                                                    result = min + random;
+                                                if (length == 1) {
+                                                    // Initialization > (Number, Base Exponent, Exponential (Factors, Difference))
+                                                    let number = args[0],
+                                                        baseExponent = exponent(number) + 1,
+                                                        exponentialFactors = [],
+                                                        exponentialDifference = null;
+
+                                                    // Function
+                                                        /* Exponent
+                                                                --- NOTE ---
+                                                                    #Lapys: Get the number of significant digits from the Input
+                                                        */
+                                                        function exponent(input) {
+                                                            // Update > Input
+                                                            input = LDKF.abs(input);
+
+                                                            /* Logic
+                                                                    [if:else if statement]
+                                                            */
+                                                            if (LDKF.numberIsSafeInteger(input))
+                                                                // Return
+                                                                return LDKF.string(input).length;
+
+                                                            else if (input > -0 && input < 1) {
+                                                                // Update > Input
+                                                                input = LDKF.string(input);
+
+                                                                // Initialization > (Allow Stream, Iterator, Length, Stream)
+                                                                let allowStream = !1,
+                                                                    iterator = 0,
+                                                                    length = input.length,
+                                                                    stream = '';
+
+                                                                /* Loop
+                                                                        Iterate through Input.
+                                                                */
+                                                                for (iterator; iterator != length; iterator += 1) {
+                                                                    // Initialization > Digit
+                                                                    let digit = input[iterator];
+
+                                                                    // Update > (Stream, Allow Stream)
+                                                                    allowStream && (stream += digit);
+                                                                    allowStream || ((digit == '.') && (allowStream = !0))
+                                                                }
+
+                                                                // Return
+                                                                return stream.length
+                                                            }
+
+                                                            // Return
+                                                            return LDKF.string(LDKF.numberParseInt(input)).length
+                                                        }
+
+                                                        /* Exponential Potency
+                                                                --- NOTE ---
+                                                                    #Lapys: Returns a third of the double of a number.
+                                                        */
+                                                        function exponentialPotency(input) {
+                                                            // Return
+                                                            return (input * 2) / 3
+                                                        }
+
+                                                        /* Parse Exponential Potencies
+                                                                --- NOTE ---
+                                                                    #Lapys: It's difficult to explain how this function works but via examples hopefully it will be understood.
+                                                                        f(10000) = [
+                                                                            g(10000),
+                                                                            g(h(10000)), g(h(10000)),
+
+                                                                            ...
+                                                                            until function h recursively alters 10000 to be of exponent = 1 i.e. h(... (h(10000))) is of one digit
+
+                                                                            g(h(h(h(h(10000))))), g(h(h(h(h(10000))))), g(h(h(h(h(10000))))), g(h(h(h(h(10000))))), g(h(h(h(h(10000))))),
+                                                                        ]
+
+                                                                            where f = parseExponentialPotencies and
+                                                                                g = exponentialPotency
+                                                                                h = exponentialDivision
+                                                        */
+                                                        (function parseExponentialPotencies(input, previousExponent) {
+                                                            // Initialization
+                                                                /* Exponent
+                                                                        --- NOTE ---
+                                                                            #Lapys: How many digits within the input.
+                                                                                (For lack of a better term, it's called the Exponent)
+                                                                */
+                                                                let exp = exponent(input),
+
+                                                                // Iterator
+                                                                iterator = 0,
+
+                                                                // Length
+                                                                length = baseExponent - exp,
+
+                                                                /* State
+                                                                        --- NOTE ---
+                                                                            #Lapys: Is the number positive or negative?
+                                                                */
+                                                                state = !(input < 0 || LDKF.objectIs(input, -0));
+
+                                                            /* Update > Input
+                                                                    --- NOTE ---
+                                                                        #Lapys: We only care about the number, not its state (which we preserve).
+                                                            */
+                                                            input = LDKF.abs(input);
+
+                                                            /* Logic
+                                                                    [if statement]
+
+                                                                    --- NOTE ---
+                                                                        #Lapys: Prevent infinite loops.
+                                                            */
+                                                            if (previousExponent == exp + 1 || LDKF.isUndefined(previousExponent)) {
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (exp == 1)
+                                                                    /* Loop
+                                                                            [for statement]
+
+                                                                        > Update > Exponential Factors
+                                                                    */
+                                                                    for (iterator; iterator != length; iterator += 1)
+                                                                        LDKF.pushArray(exponentialFactors, exponentialPotency(input));
+
+                                                                else {
+                                                                    /* Initialization > Exponential Division
+                                                                            --- NOTE ---
+                                                                                #Lapys: Things get a little dodgy when the condition here is true,
+                                                                                    since the calculations with JavaScript are only definitely precise up to 2 decimal points.
+
+                                                                                    And also when you have issues like .1 + .2 = .30000000000000004.
+                                                                    */
+                                                                    let exponentialDivision = input > -0 && input < 1 ?
+                                                                        function exponentialDivision(input) {
+                                                                            // Return
+                                                                            return input + (function(iterator) {
+                                                                                // Initialization > Stream
+                                                                                let stream = '.';
+
+                                                                                /* Loop
+                                                                                        [while statement]
+
+                                                                                    > Update > (Stream, Iterator)
+                                                                                */
+                                                                                while (iterator > 0) {
+                                                                                    stream += '0';
+                                                                                    iterator -= 1
+                                                                                }
+
+                                                                                // Update > Stream
+                                                                                stream += (function(input) { input = LDKF.string(input); return input[input.length - 1] })(input);
+
+                                                                                // Return
+                                                                                return +stream
+                                                                            })(exp - 1)
+                                                                        } :
+                                                                        function exponentialDivision(input) { return input / 10 };
+
+                                                                    /* Loop
+                                                                            [for statement]
+
+                                                                        > Update > Exponential Factors
+                                                                    */
+                                                                    for (iterator = 0; iterator != length; iterator += 1)
+                                                                        LDKF.pushArray(exponentialFactors, exponentialPotency(input));
+
+                                                                    // Parse Exponential Potencies
+                                                                    parseExponentialPotencies(exponentialDivision(input), exp)
+                                                                }
+                                                            }
+                                                        })(number);
+
+                                                    // Update > (Exponential Difference, Arguments, Length)
+                                                    exponentialDifference = LDKF.avg.apply(LDKF, exponentialFactors);
+                                                    args[0] = (number + (number - LDKF.sigmoid(exponentialDifference))) / 2;
+                                                    args[1] = (number + (number + LDKF.sigmoid(exponentialDifference))) / 2;
+                                                    length = 2
+                                                }
+
+                                                // Initialization > (Decremented Length, Iterator, Swapped)
+                                                let decrementedLength = length - 1,
+                                                    iterator = 0,
+                                                    swapped;
+
+                                                // Function > Between
+                                                function between() {
+                                                    // Initialization > (Number (A, B), (Max, Min)imum, Difference, Random, Result)
+                                                    let numberA = arguments[0],
+                                                        numberB = arguments[1],
+                                                        max = LDKF.max(arguments[0], arguments[1]),
+                                                        min = LDKF.min(arguments[0], arguments[1]),
+                                                        difference = max - min,
+                                                        random = LDKF.mathRandom(),
+                                                        result = 0;
 
                                                     /* Logic
                                                             [if:else statement]
                                                     */
-                                                    if (difference > (random * 2) / 3) {
-                                                        // Loop > Update > Result
-                                                        while (result > max) result -= difference * LDKF.mathRandom();
-                                                        while (result < min) result += difference * LDKF.mathRandom()
-                                                    }
-
-                                                    else {
-                                                        // Initialization > Smallest Random Increment
-                                                        let smallestRandomIncrement = LDKC.smallestCalculableDecimal / LDKF.mathRandom();
-
+                                                    if (difference > -1 && difference < 2) {
                                                         // Update > Result
-                                                        result = min + smallestRandomIncrement
+                                                        result = min + random;
+
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (difference > (random * 2) / 3) {
+                                                            // Loop > Update > Result
+                                                            while (result > max) result -= difference * LDKF.mathRandom();
+                                                            while (result < min) result += difference * LDKF.mathRandom()
+                                                        }
+
+                                                        else {
+                                                            // Initialization > Smallest Random Increment
+                                                            let smallestRandomIncrement = LDKC.smallestCalculableDecimal / LDKF.mathRandom();
+
+                                                            // Update > Result
+                                                            result = min + smallestRandomIncrement
+                                                        }
                                                     }
+
+                                                    else
+                                                        // Update > Result
+                                                        result = random * (max - min) + min;
+
+                                                    // Return
+                                                    return result
                                                 }
-
-                                                else
-                                                    // Update > Result
-                                                    result = random * (max - min) + min;
-
-                                                // Return
-                                                return result
-                                            }
-
-                                            /* Loop
-                                                    [do:while statement]
-
-                                                    --- NOTE ---
-                                                        #Lapys: Basically bubble sort...
-                                            */
-                                            do {
-                                                // Update > Swapped
-                                                swapped = !1;
 
                                                 /* Loop
-                                                        Index Arguments.
+                                                        [do:while statement]
+
+                                                        --- NOTE ---
+                                                            #Lapys: Basically bubble sort...
                                                 */
-                                                for (iterator = 0; iterator < decrementedLength; iterator += 1) {
-                                                    // Initialization > Incremented Iterator
-                                                    let incrementedIterator = iterator + 1;
+                                                do {
+                                                    // Update > Swapped
+                                                    swapped = !1;
 
-                                                    /* Logic
-                                                            [if statement]
+                                                    /* Loop
+                                                            Index Arguments.
                                                     */
-                                                    if (args[iterator] > args[incrementedIterator]) {
-                                                        // Initialization > Number
-                                                        let number = args[iterator];
+                                                    for (iterator = 0; iterator < decrementedLength; iterator += 1) {
+                                                        // Initialization > Incremented Iterator
+                                                        let incrementedIterator = iterator + 1;
 
-                                                        // Update > (Arguments, Swapped)
-                                                        args[iterator] = args[incrementedIterator];
-                                                        args[incrementedIterator] = number;
-                                                        swapped = !0
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (args[iterator] > args[incrementedIterator]) {
+                                                            // Initialization > Number
+                                                            let number = args[iterator];
+
+                                                            // Update > (Arguments, Swapped)
+                                                            args[iterator] = args[incrementedIterator];
+                                                            args[incrementedIterator] = number;
+                                                            swapped = !0
+                                                        }
                                                     }
+                                                } while (swapped);
+
+                                                /* Loop
+                                                        [while statement]
+
+                                                        --- NOTE ---
+                                                            #Lapys: Pick a random number using the Between function
+                                                                between every two elements at the start and the end of the Arguments set.
+                                                */
+                                                while (args.length > 3) {
+                                                    // Initialization > (Sibling) Number
+                                                    let number = args[0],
+                                                        siblingNumber = args[1];
+
+                                                    // Update > (Arguments, (Sibling) Number)
+                                                    LDKF.spliceArray(args, 1, 1);
+                                                    args[0] = between(number, siblingNumber);
+                                                    number = args[args.length - 1];
+                                                    siblingNumber = args[args.length - 2];
+                                                    LDKF.spliceArray(args, args.length - 2, 1);
+                                                    args[args.length - 1] = between(siblingNumber, number)
                                                 }
-                                            } while (swapped);
 
-                                            /* Loop
-                                                    [while statement]
+                                                // Update > (Arguments, Result)
+                                                ((length = args.length) == 3) && (args = [between(args[0], args[1]), args[2]]);
+                                                result = between(args[0], args[1]);
 
-                                                    --- NOTE ---
-                                                        #Lapys: Pick a random number using the Between function
-                                                            between every two elements at the start and the end of the Arguments set.
-                                            */
-                                            while (args.length > 3) {
-                                                // Initialization > (Sibling) Number
-                                                let number = args[0],
-                                                    siblingNumber = args[1];
-
-                                                // Update > (Arguments, (Sibling) Number)
-                                                LDKF.spliceArray(args, 1, 1);
-                                                args[0] = between(number, siblingNumber);
-                                                number = args[args.length - 1];
-                                                siblingNumber = args[args.length - 2];
-                                                LDKF.spliceArray(args, args.length - 2, 1);
-                                                args[args.length - 1] = between(siblingNumber, number)
+                                                // Return
+                                                return LDKF.objectIs(LDKF.abs(mainNumber), mainNumber) ? LDKF.abs(result) : -LDKF.abs(result)
                                             }
-
-                                            // Update > (Arguments, Result)
-                                            ((length = args.length) == 3) && (args = [between(args[0], args[1]), args[2]]);
-                                            result = between(args[0], args[1]);
-
-                                            // Return
-                                            return LDKF.objectIs(LDKF.abs(mainNumber), mainNumber) ? LDKF.abs(result) : -LDKF.abs(result)
                                         }
 
                                         // Return
@@ -22409,6 +22649,10 @@
 
                                     /* Logic
                                             [if:else if statement]
+
+                                            --- NOTE ---
+                                                #Lapys: Not my best handle on this method,
+                                                    but it'll be updated sometime in the future.
                                     */
                                     if (
                                         tmpObject.eventReferenceList.length &&
@@ -22452,7 +22696,7 @@
                                         */
                                         while (iterator) {
                                             // Initialization > (Argument, Event Reference List Iterator)
-                                            let arg = LDKF.string(args[iterator -= 1]),
+                                            let arg = LDKF.updateEventType(LDKF.string(args[iterator -= 1])),
                                                 eventReferenceListIterator = eventReferenceList.length;
 
                                             /* Loop
@@ -22466,7 +22710,7 @@
                                                         [if statement]
                                                 */
                                                 if (
-                                                    arg == eventReference.type &&
+                                                    LDKF.includesArray(arg, eventReference.type) &&
                                                     target === eventReference.target
                                                 ) {
                                                     // Event > Target > [Event Reference > Type]
@@ -22474,7 +22718,7 @@
 
                                                     /* Modification > Event Reference > Pending
                                                             --- NOTE ---
-                                                                #Lapys: — Pending to be deleted...
+                                                                #Lapys: Pending event references to be deleted...
                                                     */
                                                     eventReference.pending = !0
                                                 }
@@ -22514,41 +22758,67 @@
                                             )
                                         )
                                     ) {
-                                        // Initialization > (Event Reference List, Iterator)
-                                        let eventReferenceList = tmpObject.eventReferenceList,
-                                            iterator = eventReferenceList.length;
+                                        // Update > (...)
+                                        $0 = LDKF.updateEventType($0);
+
+                                        // Initialization
+                                            // (...) Iterator
+                                            let $0Iterator = $0.length;
+
+                                            // Event Reference List, Iterator
+                                            let eventReferenceList = tmpObject.eventReferenceList,
+                                                iterator = eventReferenceList.length;
 
                                         /* Loop
-                                                Index Event Reference List.
+                                                [while statement]
                                         */
                                         while (iterator) {
                                             // Initialization > Event Reference
                                             let eventReference = eventReferenceList[iterator -= 1];
 
-                                            // Update > Event Reference List
-                                            (
-                                                target === eventReference.target &&
-                                                $1 === eventReference.listener &&
-                                                (length > 3 ?
-                                                    (
-                                                        (LDKF.isBoolean($2) ? ($2 == eventReference.options.capture) : !1) ||
+                                            /* Loop
+                                                    [while statement]
+                                            */
+                                            while ($0Iterator) {
+                                                /* Initialization > (...)
+                                                        --- NOTE ---
+                                                            #Lapys: This represents each Event Type.
+                                                */
+                                                let _0 = $0[$0Iterator -= 1];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (
+                                                    target === eventReference.target &&
+                                                    $1 === eventReference.listener &&
+                                                    (length > 3 ?
                                                         (
-                                                            !!$2.capture === eventReference.options.capture &&
-                                                            !!$2.once === eventReference.options.once &&
-                                                            !!$2.passive === eventReference.options.passive
-                                                        )
-                                                    ) :
-                                                    !0
-                                                ) &&
-                                                $0 == eventReference.type
-                                            ) && (eventReferenceList[iterator] = void 0)
+                                                            (LDKF.isBoolean($2) ? ($2 == eventReference.options.capture) : !1) ||
+                                                            (
+                                                                !!$2.capture === eventReference.options.capture &&
+                                                                !!$2.once === eventReference.options.once &&
+                                                                !!$2.passive === eventReference.options.passive
+                                                            )
+                                                        ) :
+                                                        !0
+                                                    ) &&
+                                                    _0 == eventReference.type
+                                                ) {
+                                                    // Event > Target > (...)
+                                                    length > 3 ? LDKF.delEvent(target, _0, $1, $2) : LDKF.delEvent(target, _0, $1);
+
+                                                    // Modification > (...) > Pending
+                                                    eventReferenceList[iterator].pending = !0
+                                                }
+                                            }
+
+                                            // Update > (...) Iterator
+                                            $0Iterator = $0.length
                                         }
 
                                         // Update > Temporary Object > Event Reference List
-                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, function(item) { return !LDKF.isUndefined(item) }));
-
-                                        // Event > Target > (...)
-                                        length > 3 ? LDKF.delEvent(target, $0, $1, $2) : LDKF.delEvent(target, $0, $1);
+                                        LDKF.resetArray(tmpObject.eventReferenceList, LDKF.filterArray(eventReferenceList, function(item) { return !item.pending }));
 
                                         // Return
                                         return !0
@@ -22674,6 +22944,9 @@
                                         if (LDKF.isArray(args[iterator -= 1]))
                                             return !0
                                 })()) args = LDKF.$concatArray([], args);
+
+                                // Update > Arguments
+                                args = LDKF.updateEventType.apply(LDKF, args);
 
                                 /* Loop
                                         Index Event References List.
@@ -22803,45 +23076,57 @@
 
                             // Value
                             value: function runEvent() {
-                                // Initialization > (Target, Type, Length)
+                                // Initialization > (Target, Types, Length)
                                 let target = this,
-                                    type = LDKF.string(arguments[0]),
+                                    types = LDKF.updateEventType(LDKF.string(arguments[0])),
                                     length = arguments.length;
 
                                 /* Logic
                                         [if statement]
                                 */
                                 if (length) {
-                                    // Initialization > (Event, Test)
-                                    let event,
-                                        test = LDKF.isNativeFunction(LDKO.documentCreateEvent);
+                                    // Initialization > Iterator
+                                    let iterator = 0;
 
-                                    /* Logic
-                                            [if:else statement]
+                                    // Update > Length
+                                    length = types.length;
+
+                                    /* Loop
+                                            Index Types.
                                     */
-                                    if (test) {
-                                        // Update > Event
-                                        event = LDKF.createEventDocument('HTMLEvents');
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > (Event, Test, Type)
+                                        let event,
+                                            test = LDKF.isNativeFunction(LDKO.documentCreateEvent),
+                                            type = types[iterator];
 
-                                        // Initialize Event > Event
-                                        LDKF.initEventEvent(event, type, !0, !0);
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (test) {
+                                            // Update > Event
+                                            event = LDKF.createEventDocument('HTMLEvents');
+
+                                            // Initialize Event > Event
+                                            LDKF.initEventEvent(event, type, !0, !0);
+                                        }
+
+                                        else {
+                                            // Update > Event
+                                            event = LDKO.documentCreateEventObject.call(LDKO.$document)
+
+                                            // Modification > Event > Event Type
+                                            event.eventType = type;
+                                        }
+
+                                        // Modification > Event > Event Name
+                                        event.eventName = type;
+
+                                        // (...)
+                                        test ?
+                                            LDKF.dispatchEventEventTarget(target, event) :
+                                            LDKF.fireEventEventTarget(target, 'on' + event.eventType, event)
                                     }
-
-                                    else {
-                                        // Update > Event
-                                        event = LDKO.documentCreateEventObject.call(LDKO.$document)
-
-                                        // Modification > Event > Event Type
-                                        event.eventType = type;
-                                    }
-
-                                    // Modification > Event > Event Name
-                                    event.eventName = type;
-
-                                    // (...)
-                                    test ?
-                                        LDKF.dispatchEventEventTarget(target, event) :
-                                        LDKF.fireEventEventTarget(target, 'on' + event.eventType, event);
 
                                     // Return
                                     return !0
@@ -25525,7 +25810,10 @@
                                                             let timeoutSet = !1;
 
                                                             // Function > Watcher
-                                                            function watcher() {
+                                                            function watcher(event) {
+                                                                // Event > Prevent Default
+                                                                LDKF.preventDefaultEvent(event);
+
                                                                 /* Logic
                                                                         [if statement]
                                                                 */
@@ -30391,7 +30679,7 @@
                         });
 
                         // Count
-                        LDKF.objectDefineProperty(currentPrototype, 'count', {
+                        LDKF.objectDefineProperty(currentPrototype, 'count', tmpObject.stringPrototypeCountDescription = {
                             // Configurable
                             configurable: !0,
 
@@ -30797,7 +31085,7 @@
                             // Value
                             value: function hasChar() {
                                 // Return
-                                return arguments.length ? LDKF.includesString(this, arguments[0]) : !1
+                                return arguments.length ? !!tmpObject.stringPrototypeCountDescription.value.call(this, arguments[0]) : !1
                             },
 
                             // Writable
@@ -31403,6 +31691,9 @@
                                 (function focusAttribute() {
                                     // Initialization > Listener
                                     let listener = function focusAttributeFeatureEventListener(event) {
+                                        // Event > Prevent Default
+                                        LDKF.preventDefaultEvent(event);
+
                                         // Initialization > (Target, List, Length)
                                         let target = LDKF.queryEventTarget(event),
                                             list = LDKF.querySelectorAllDocument('[focusable=true'),
@@ -31441,16 +31732,18 @@
                                                 [if:else if statement]
                                         */
                                         if (LDKF.includesArray(LDKE.active, 'focus-attribute') && !LapysJS.tmp.focusAttributeFeatureEventSet) {
-                                            // Event > Window > Mouse Up
+                                            // Event > Window > (Mouse Up, Touch Start)
                                             LDKF.addEvent(window, 'mouseup', listener);
+                                            LDKF.addEvent(window, 'touchstart', listener);
 
                                             // Modification > (LapysJS > Temporary Data) > Focus Attribute Feature Event Set
                                             LapysJS.tmp.focusAttributeFeatureEventSet = !0
                                         }
 
                                         else if (LapysJS.tmp.focusAttributeFeatureEventSet) {
-                                            // Event > Window > Mouse Up
+                                            // Event > Window > (Mouse Up, Touch Start)
                                             LDKF.delEvent(window, 'mouseup', listener);
+                                            LDKF.delEvent(window, 'touchstart', listener);
 
                                             // Modification > (LapysJS > Temporary Data) > Focus Attribute Feature Event Set
                                             LapysJS.tmp.focusAttributeFeatureEventSet = !1
@@ -32146,7 +32439,10 @@
                                         }
                                     }, watch = {
                                         // Mouse Up Event Listener
-                                        mouseUpEventListener: function toggleParentAccordion() {
+                                        mouseUpEventListener: function toggleParentAccordion(event) {
+                                            // Event > Prevent Default
+                                            LDKF.preventDefaultEvent(event);
+
                                             // Initialization > (Header, Parent Accordion)
                                             let header = this,
                                                 parentAccordion = subElementProperties.header.accordion.get.call(header);
@@ -32330,8 +32626,9 @@
                                                 // Modification > Header > Accordion
                                                 LDKF.objectDefineProperty(header, 'accordion', subElementProperties.header.accordion);
 
-                                                // Event > Header > Mouse Up
-                                                LDKF.addEvent(header, 'mouseup', watch.mouseUpEventListener)
+                                                // Event > Header > (Mouse Up, Touch Start)
+                                                LDKF.addEvent(header, 'mouseup', watch.mouseUpEventListener);
+                                                LDKF.addEvent(header, 'touchstart', watch.mouseUpEventListener)
                                             }
 
                                             // Correct Accordion > Accordion
@@ -32403,6 +32700,7 @@
                                         samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(header, 'accordion'), subElementProperties.header.accordion) && delete header.accordion;
 
                                         // Event > Header > Mouse Up
+                                        LDKF.delEvent(header, 'mouseup', watch.mouseUpEventListener);
                                         LDKF.delEvent(header, 'mouseup', watch.mouseUpEventListener)
                                     }
 
@@ -33188,7 +33486,10 @@
                                     }, watch = {
                                         // {Mouse Input} Button
                                             // Next Event Listener
-                                            buttonNextEventListener: function next() {
+                                            buttonNextEventListener: function next(event) {
+                                                // Event > Prevent Default
+                                                LDKF.preventDefaultEvent(event);
+
                                                 // Initialization > (Right Button, Carousel)
                                                 let rightButton = this,
                                                     carousel = subElementProperties.button.carousel.get.call(rightButton);
@@ -33198,7 +33499,10 @@
                                             },
 
                                             // Previous Event Listener
-                                            buttonPreviousEventListener: function previous() {
+                                            buttonPreviousEventListener: function previous(event) {
+                                                // Event > Prevent Default
+                                                LDKF.preventDefaultEvent(event);
+
                                                 // Initialization > (Left Button, Carousel)
                                                 let leftButton = this,
                                                     carousel = subElementProperties.button.carousel.get.call(leftButton);
@@ -33208,7 +33512,10 @@
                                             },
 
                                         // {Mouse Input} Indicator > Toggle Event Listener
-                                        indicatorToggleEventListener: function toggle() {
+                                        indicatorToggleEventListener: function toggle(event) {
+                                            // Event > Prevent Default
+                                            LDKF.preventDefaultEvent(event);
+
                                             // Initialization > (Indicator, Carousel, Index)
                                             let indicator = this,
                                                 carousel = subElementProperties.indicator.carousel.get.call(indicator),
@@ -33219,60 +33526,7 @@
                                         },
 
                                         // {Drag/ Touch Input} Slide Container
-                                            // Next Event Listener
-                                            slideContainerNextEventListener: function next() {
-                                                // Initialization > (Slide, Carousel)
-                                                let slide = this,
-                                                    carousel = subElementProperties.slide.carousel.get.call(slide);
-
-                                                // Return
-                                                return carousel ? properties.next.value.call(carousel) : null
-                                            },
-
-                                            // Previous Event Listener
-                                            slideContainerPreviousEventListener: function previous() {
-                                                // Initialization > (Slide, Carousel)
-                                                let slide = this,
-                                                    carousel = subElementProperties.slide.carousel.get.call(slide);
-
-                                                // Return
-                                                return carousel ? properties.prev.value.call(carousel) : null
-                                            },
-
                                         // {Key Input} Window
-                                            // Next Event Listener
-                                            windowNextEventListener: function nextCarouselSlide() {
-                                                // Initialization > (Document, Carousels, Iterator, Length)
-                                                let document = this.document,
-                                                    carousels = LDKF.$getElementsByClassNameDocument(LDKF.isDocument(document) ? document : LDKO.$document, 'carousel'),
-                                                    iterator = 0,
-                                                    length = LDKF.get.htmlCollectionLength(carousels);
-
-                                                /* Loop
-                                                        Index Carousels.
-
-                                                    > Carousel > Next
-                                                */
-                                                for (iterator; iterator != length; iterator += 1)
-                                                    properties.next.value.call(carousels[iterator])
-                                            },
-
-                                            // Previous Event Listener
-                                            windowPreviousEventListener: function previousCarouselSlide() {
-                                                // Initialization > (Document, Carousels, Iterator, Length)
-                                                let document = this.document,
-                                                    carousels = LDKF.$getElementsByClassNameDocument(LDKF.isDocument(document) ? document : LDKO.$document, 'carousel'),
-                                                    iterator = 0,
-                                                    length = LDKF.get.htmlCollectionLength(carousels);
-
-                                                /* Loop
-                                                        Index Carousels.
-
-                                                    > Carousel > Previous
-                                                */
-                                                for (iterator; iterator != length; iterator += 1)
-                                                    properties.prev.value.call(carousels[iterator])
-                                            }
                                     };
 
                                     // Correct Carousel
@@ -33491,8 +33745,9 @@
                                                     // Modification > Left Button > Carousel
                                                     LDKF.objectDefineProperty(leftButton, 'carousel', subElementProperties.button.carousel);
 
-                                                    // Event > Left Button > Mouse Up
-                                                    LDKF.addEvent(leftButton, 'mouseup', watch.buttonPreviousEventListener)
+                                                    // Event > Left Button > (Mouse Up, Touch Start)
+                                                    LDKF.addEvent(leftButton, 'mouseup', watch.buttonPreviousEventListener);
+                                                    LDKF.addEvent(leftButton, 'touchstart', watch.buttonPreviousEventListener)
                                                 }
 
                                                 /* Logic
@@ -33505,8 +33760,9 @@
                                                     // Modification > Right Button > Carousel
                                                     LDKF.objectDefineProperty(rightButton, 'carousel', subElementProperties.button.carousel);
 
-                                                    // Event > Right Button > Mouse Up
-                                                    LDKF.addEvent(rightButton, 'mouseup', watch.buttonNextEventListener)
+                                                    // Event > Right Button > (Mouse Up, Touch Start)
+                                                    LDKF.addEvent(rightButton, 'mouseup', watch.buttonNextEventListener);
+                                                    LDKF.addEvent(rightButton, 'touchstart', watch.buttonNextEventListener)
                                                 }
                                             }
 
@@ -33547,8 +33803,9 @@
                                                     LDKF.objectDefineProperty(indicator, 'carousel', subElementProperties.indicator.carousel);
                                                     LDKF.setAttributeElement(indicator, 'role', 'indicator');
 
-                                                    // Event > Indicator > Mouse Up
+                                                    // Event > Indicator > (Mouse Up, Touch Start)
                                                     LDKF.addEvent(indicator, 'mouseup', watch.indicatorToggleEventListener);
+                                                    LDKF.addEvent(indicator, 'touchstart', watch.indicatorToggleEventListener);
 
                                                     // Insertion
                                                     LDKF.appendChildNode(indicatorContainer, indicator);
@@ -33769,9 +34026,11 @@
                                                 LDKF.objectDefineProperty(leftButton, 'carousel', subElementProperties.button.carousel);
                                                 LDKF.objectDefineProperty(rightButton, 'carousel', subElementProperties.button.carousel);
 
-                                                // Event > (Left, Right) Button > Mouse Up
+                                                // Event > (Left, Right) Button > (Mouse Up, Touch Start)
                                                 LDKF.addEvent(leftButton, 'mouseup', watch.buttonPreviousEventListener);
+                                                LDKF.addEvent(leftButton, 'touchstart', watch.buttonPreviousEventListener);
                                                 LDKF.addEvent(rightButton, 'mouseup', watch.buttonNextEventListener);
+                                                LDKF.addEvent(rightButton, 'touchstart', watch.buttonNextEventListener);
 
                                                 // Modification > Indicator Container > Carousel
                                                 LDKF.objectDefineProperty(buttonContainer, 'carousel', subElementProperties.buttonsContainer.carousel);
@@ -33801,8 +34060,9 @@
                                                     LDKF.objectDefineProperty(indicator, 'carousel', subElementProperties.indicator.carousel);
                                                     LDKF.setAttributeElement(indicator, 'role', 'indicator');
 
-                                                    // Event > Indicator > Mouse Up
+                                                    // Event > Indicator > (Mouse Up, Touch Start)
                                                     LDKF.addEvent(indicator, 'mouseup', watch.indicatorToggleEventListener);
+                                                    LDKF.addEvent(indicator, 'touchstart', watch.indicatorToggleEventListener);
 
                                                     // Insertion
                                                     LDKF.appendChildNode(indicatorContainer, indicator);
@@ -34005,9 +34265,11 @@
                                         // Deletion
                                         samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(button, 'carousel'), subElementProperties.button.carousel) && delete button.carousel;
 
-                                        // Event > Button > Mouse Up
+                                        // Event > Button > (Mouse Up, Touch Start)
                                         LDKF.delEvent(button, 'mouseup', watch.buttonPreviousEventListener);
-                                        LDKF.delEvent(button, 'mouseup', watch.buttonNextEventListener)
+                                        LDKF.delEvent(button, 'touchstart', watch.buttonPreviousEventListener);
+                                        LDKF.delEvent(button, 'mouseup', watch.buttonNextEventListener);
+                                        LDKF.delEvent(button, 'touchstart', watch.buttonNextEventListener)
                                     }
 
                                     // Unset Carousel Button Container
@@ -34021,8 +34283,9 @@
                                         // Deletion
                                         samePropertyDescription(LDKF.objectGetOwnPropertyDescriptor(indicator, 'carousel'), subElementProperties.indicator.carousel) && delete indicator.carousel;
 
-                                        // Event > Indicator > Mouse Up
-                                        LDKF.delEvent(indicator, 'mouseup', watch.indicatorToggleEventListener)
+                                        // Event > Indicator > (Mouse Up, Touch Start)
+                                        LDKF.delEvent(indicator, 'mouseup', watch.indicatorToggleEventListener);
+                                        LDKF.delEvent(indicator, 'touchstart', watch.indicatorToggleEventListener)
                                     }
 
                                     // Unset Carousel Indicator Container
@@ -34107,23 +34370,28 @@
                                             let draggableDropzoneSelectorMatchPropertyDescription = LDKF.objectGetOwnPropertyDescriptor(draggable, 'dropzoneSelectorMatch');
 
                                             /* Logic
-                                                    [if:else statement]
+                                                    [if statement]
                                             */
-                                            if (draggableDropzoneSelectorMatchPropertyDescription)
-                                                // Error Handling
-                                                try {
-                                                    // Initialization > Query
-                                                    let query = 'value' in draggableDropzoneSelectorMatchPropertyDescription ? draggableDropzoneSelectorMatchPropertyDescription.value : draggableDropzoneSelectorMatchPropertyDescription.get.call(draggable);
+                                            if (dropzone !== LDKF.get.nodeParentNode(draggable)) {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (draggableDropzoneSelectorMatchPropertyDescription)
+                                                    // Error Handling
+                                                    try {
+                                                        // Initialization > Query
+                                                        let query = 'value' in draggableDropzoneSelectorMatchPropertyDescription ? draggableDropzoneSelectorMatchPropertyDescription.value : draggableDropzoneSelectorMatchPropertyDescription.get.call(draggable);
 
+                                                        // Insertion
+                                                        LDKF.isNull(query) ?
+                                                            LDKF.appendChildNode(dropzone, draggable) :
+                                                            LDKF.includesArray(LDKF.toArray(LDKF.querySelectorAllDocument(LDKF.string(query))), dropzone) && LDKF.appendChildNode(dropzone, draggable)
+                                                    } catch (error) {}
+
+                                                else
                                                     // Insertion
-                                                    LDKF.isNull(query) ?
-                                                        LDKF.appendChildNode(dropzone, draggable) :
-                                                        LDKF.includesArray(LDKF.toArray(LDKF.querySelectorAllDocument(LDKF.string(query))), dropzone) && LDKF.appendChildNode(dropzone, draggable)
-                                                } catch (error) {}
-
-                                            else
-                                                // Insertion
-                                                LDKF.appendChildNode(dropzone, draggable);
+                                                    LDKF.appendChildNode(dropzone, draggable)
+                                            }
 
                                             // Initialization > Description
                                             let description = LDKF.objectGetOwnPropertyDescriptor(dropzone, 'onElementDropped');
@@ -34142,6 +34410,9 @@
 
                                         // Drag
                                         drag: function drag(event) {
+                                            // Event > Prevent Default
+                                            LDKF.preventDefaultEvent(event);
+
                                             // Deletion
                                             LDKF.removeAllRangesSelection(LDKF.getSelectionDocument());
 
@@ -34162,8 +34433,8 @@
                                                 yDifference = dragged[index].yDifference,
                                                 boundingClientRect = LDKF.getBoundingClientRectElement(draggable),
                                                 style = LDKF.get.htmlElementStyle(draggable),
-                                                x = LDKF.get.mouseEventClientX(event) - xDifference,
-                                                y = LDKF.get.mouseEventClientY(event) - yDifference;
+                                                x = LDKF.getEventXCoord(event) - xDifference,
+                                                y = LDKF.getEventYCoord(event) - yDifference;
 
                                             // Modification
                                                 // Style > (Left, Position, Top)
@@ -34178,6 +34449,9 @@
                                                     #Lapys: Move the Draggable around relative to the cursor.
                                         */
                                         drop: function drop(event) {
+                                            // Event > Prevent Default
+                                            LDKF.preventDefaultEvent(event);
+
                                             // Initialization > (Dragged, Index, Draggable, (Former) Style, Bounding Client Rectangle, Height, Left, Top, Width, Bottom, Right)
                                             let dragged = watch.dragged,
                                                 index = watch.dragged.index,
@@ -34186,8 +34460,8 @@
                                                 style = LDKF.get.htmlElementStyle(draggable),
                                                 boundingClientRect = LDKF.getBoundingClientRectElement(draggable),
                                                 height = boundingClientRect.height,
-                                                left = LDKF.get.mouseEventClientX(event),
-                                                top = LDKF.get.mouseEventClientY(event),
+                                                left = LDKF.getEventXCoord(event),
+                                                top = LDKF.getEventYCoord(event),
                                                 width = boundingClientRect.width,
                                                 bottom = height + boundingClientRect.top,
                                                 right = boundingClientRect.left + width;
@@ -34293,9 +34567,11 @@
                                             style.top = formerStyle.top;
                                             style.width = formerStyle.width;
 
-                                            // Event > Window > Mouse (Move, Up)
-                                            LDKF.delEvent(window, 'mousemove', watch.drag);
-                                            LDKF.delEvent(window, 'mouseup', watch.drop)
+                                            // Event > Window > (Mouse (Move, Up), Touch (End, Move))
+                                            LDKF.delEvent(window, 'mousemove', watch.drag, {passive: !1});
+                                            LDKF.delEvent(window, 'touchmove', watch.drag, {passive: !1});
+                                            LDKF.delEvent(window, 'mouseup', watch.drop, {passive: !1});
+                                            LDKF.delEvent(window, 'touchend', watch.drop, {passive: !1})
                                         }
                                     };
                                         // Modification > (Watch > Dragged) > Index
@@ -34368,64 +34644,78 @@
                                     // Index Draggables
                                     indexDraggables();
 
-                                    /* Event > Window > Mouse Down
-                                            --- NOTE ---
-                                                #Lapys: Responsible for picking up the Draggable for movement.
-                                    */
-                                    LDKF.addEvent(window, 'mousedown', function pickDraggable(event) {
+                                    // Function > Pick Draggable
+                                    function pickDraggable(event) {
+                                        // Event > Prevent Default
+                                        LDKF.preventDefaultEvent(event);
+
                                         // Initialization > Target
                                         let target = LDKF.queryEventTarget(event);
-
-                                        /* Loop
-                                                [while statement]
-
-                                            > Update > Target
-                                        */
-                                        while (target && !LDKF.includesArray(getElements(primaryStorage.draggable), target))
-                                            target = LDKF.get.nodeParentNode(target);
 
                                         /* Logic
                                                 [if statement]
                                         */
-                                        if (target) {
-                                            // Initialization > (Bounding Client Rectangle, Left, Top, Style)
-                                            let boundingClientRect = LDKF.getBoundingClientRectElement(target),
-                                                left = boundingClientRect.left,
-                                                top = boundingClientRect.top,
-                                                style = LDKF.get.htmlElementStyle(target);
+                                        if (LDKF.isNode(target)) {
+                                            /* Loop
+                                                    [while statement]
 
-                                            // Update > (Watch > Dragged)
-                                            LDKF.pushArray(watch.dragged, {
-                                                // Element
-                                                element: target,
+                                                > Update > Target
+                                            */
+                                            while (target && !LDKF.includesArray(getElements(primaryStorage.draggable), target))
+                                                target = LDKF.get.nodeParentNode(target);
 
-                                                // Height
-                                                height: boundingClientRect.height,
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (target) {
+                                                // Initialization > (Bounding Client Rectangle, Left, Top, Style)
+                                                let boundingClientRect = LDKF.getBoundingClientRectElement(target),
+                                                    left = boundingClientRect.left,
+                                                    top = boundingClientRect.top,
+                                                    style = LDKF.get.htmlElementStyle(target);
 
-                                                // Left
-                                                left: left,
+                                                // Update > (Watch > Dragged)
+                                                LDKF.pushArray(watch.dragged, {
+                                                    // Element
+                                                    element: target,
 
-                                                // Style
-                                                style: {height: style.height, left: style.left, position: style.position, top: style.top, width: style.width},
+                                                    // Height
+                                                    height: boundingClientRect.height,
 
-                                                // Top
-                                                top: top,
+                                                    // Left
+                                                    left: left,
 
-                                                // Width
-                                                width: boundingClientRect.width,
+                                                    // Style
+                                                    style: {height: style.height, left: style.left, position: style.position, top: style.top, width: style.width},
 
-                                                // X Difference
-                                                xDifference: LDKF.abs(LDKF.get.mouseEventClientX(event) - left),
+                                                    // Top
+                                                    top: top,
 
-                                                // Y Difference
-                                                yDifference: LDKF.abs(LDKF.get.mouseEventClientY(event) - top)
-                                            });
+                                                    // Width
+                                                    width: boundingClientRect.width,
 
-                                            // Event > Window > Mouse (Move, Up)
-                                            LDKF.addEvent(window, 'mousemove', watch.drag);
-                                            LDKF.addEvent(window, 'mouseup', watch.drop)
+                                                    // X Difference
+                                                    xDifference: LDKF.abs(LDKF.getEventXCoord(event) - left),
+
+                                                    // Y Difference
+                                                    yDifference: LDKF.abs(LDKF.getEventYCoord(event) - top)
+                                                });
+
+                                                // Event > Window > (Mouse (Move, Up), Touch (End, Move))
+                                                LDKF.addEvent(window, 'mousemove', watch.drag, {passive: !1});
+                                                LDKF.addEvent(window, 'touchmove', watch.drag, {passive: !1});
+                                                LDKF.addEvent(window, 'mouseup', watch.drop, {passive: !1});
+                                                LDKF.addEvent(window, 'touchend', watch.drop, {passive: !1})
+                                            }
                                         }
-                                    });
+                                    }
+
+                                    /* Event > Window > (Mouse Down, Touch Start)
+                                            --- NOTE ---
+                                                #Lapys: Responsible for picking up the Draggable for movement.
+                                    */
+                                    LDKF.addEvent(window, 'mousedown', pickDraggable, {passive: !1});
+                                    LDKF.addEvent(window, 'touchstart', pickDraggable, {passive: !1});
 
                                     // On DOM Element Added > Index Draggable
                                     tmpObject.windowOnDOMElementAddedDescriptionValue(function indexDraggable() {
