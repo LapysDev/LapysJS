@@ -47,7 +47,7 @@
         -->
         <div role=dropzone style='background-color: rgba(0, 0, 0, .05)'>
             <!-- Draggable -->
-            <div class=draggable id=draggable style='background-color: #FFF; height: 50px; outline: 1px solid #777; width: 50%'>
+            <div class=draggable id=draggable ignore-coordinate=right style='background-color: #FFF; height: 50px; outline: 1px solid #777; width: 50%'>
                 <p> This is draggable content </p>
             </div>
 
@@ -68,6 +68,12 @@
         <p dropdown=dropdown role=content state=open> Dropdown content </p>
 
         <hr>
+
+        <!-- Dynamic Text -->
+        <span class=dynamic-text id=dynamicText sequence='
+            type, delay, highlight=--, clear, delay=1e3;
+            type=--, switch=first, delay, highlight=++, clear, delay=1e3
+        ' splits=,; text='Text Sequence\, A,B \,ecneuqeS txeT'> </span>
     </main>
 
     <!-- Scripts -->

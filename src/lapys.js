@@ -40,7 +40,7 @@
             allowPublicAccess: !1,
 
             // Components
-            components: ['accordion', 'carousel', 'draggable', 'dropdown', 'dynamicText', 'dynamicTime', 'marquee', 'table', 'toast', 'tooltip'],
+            components: ['accordion', 'carousel', 'draggable', 'dropdown', 'dynamic-text', 'dynamic-time', 'marquee', 'table', 'toast', 'tooltip'],
 
             // Features
             features: {
@@ -7576,7 +7576,7 @@
                             LDKF.numberParseFloat = LDKO.number.parseFloat;
 
                             // Number Parse Int
-                            LDKF.numberParseInt = LDKO.number.parseInt;
+                            LDKF.numberParseInt = function parseInt() { return arguments[0] | 0 } || LDKO.number.parseInt;
 
                             // Object
                             LDKF.object = LDKF.cloneObject(Object);
@@ -8173,6 +8173,15 @@
 
                                 // Return
                                 return function spliceArray() { return method.apply(arguments[0], arguments[1]) }
+                            })();
+
+                            // Split String
+                            LDKF.splitString = (function() {
+                                // Initialization > Method
+                                let method = LDKO.$stringProto.split;
+
+                                // Return
+                                return function splitString() { return method.apply(arguments[0], LDKF.sliceArray(LDKF.toArray(arguments), 1)) }
                             })();
 
                             // Square Root
@@ -14024,7 +14033,15 @@
                                 writable: !0
                             });
 
-                            // Integer
+                            /* Integer
+                                    --- NOTE ---
+                                        #Lapys: The following cryptic hacks can be implemented as well.
+                                            - x >> 0
+                                            - x | 0
+                                            - x & -1
+                                            - x ^ 0
+                                            - ~~x
+                            */
                             LDKF.objectDefineProperty(window, 'int', {
                                 // Configurable
                                 configurable: !0,
@@ -31604,11 +31621,12 @@
 
                                 // Loop > Update > Selection
                                 while (
-                                    string && selection &&
+                                    string && selection && selection[0] &&
                                     'index' in selection &&
                                     selection.index === 0
-                                )
+                                ) {
                                     selection = LDKF.matchString(string = LDKF.sliceString(string, selection[0].length), match);
+                                }
 
                                 // Return
                                 return LDKF.string(string)
@@ -31651,7 +31669,7 @@
 
                                 // Loop > Update > Selection
                                 while (
-                                    string && selection &&
+                                    string && selection && selection[0] &&
                                     LDKF.lastIndexOfString(string, selection[selection.length - 1]) + selection[selection.length - 1].length == string.length
                                 )
                                     selection = LDKF.matchString(string = LDKF.sliceString(string, 0, -selection[selection.length - 1].length), match);
@@ -32736,10 +32754,7 @@
                                     })
                                 })();
 
-                                /* Carousel
-                                        --- CHECKPOINT ---
-                                            #Lapys: Other event types such as Drags and Key inputs are not installed.
-                                */
+                                // Carousel
                                 LDKF.includesArray(LDK.components, 'carousel') && (function carousel() {
                                     // Initialization > ((Sub Element) Properties, Watch)
                                     let properties = {
@@ -33484,7 +33499,7 @@
                                             }
                                         }
                                     }, watch = {
-                                        // {Mouse Input} Button
+                                        // Button
                                             // Next Event Listener
                                             buttonNextEventListener: function next(event) {
                                                 // Event > Prevent Default
@@ -33511,7 +33526,10 @@
                                                 return carousel ? properties.prev.value.call(carousel) : null
                                             },
 
-                                        // {Mouse Input} Indicator > Toggle Event Listener
+                                        // Carousels
+                                        carousels: [],
+
+                                        // Indicator > Toggle Event Listener
                                         indicatorToggleEventListener: function toggle(event) {
                                             // Event > Prevent Default
                                             LDKF.preventDefaultEvent(event);
@@ -33525,8 +33543,48 @@
                                             return index == -1 ? null : properties.toggle.value.call(carousel, index)
                                         },
 
-                                        // {Drag/ Touch Input} Slide Container
-                                        // {Key Input} Window
+                                        // Slide Container
+                                        slideContainerToggleEventListener: function toggle(event) {
+                                            // Initialization > (Slide Container, Carousel(s), Iterator, X)
+                                            let slideContainer = this,
+                                                carousel = subElementProperties.slidesContainer.carousel.get.call(slideContainer),
+                                                carousels = watch.carousels,
+                                                iterator = carousels.length,
+                                                x = LDKF.getEventXCoord(event);
+
+                                            /* Loop
+                                                    Index (Watch > Carousels)
+                                            */
+                                            while (iterator) {
+                                                // Initialization > Carousel
+                                                let $carousel = carousels[iterator -= 1];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if ($carousel.element === carousel) {
+                                                    // Initialization > Former X
+                                                    let formerX = $carousel.x;
+
+                                                    /* Logic
+                                                            [if:else if statement]
+                                                    */
+                                                    // swipe left --- CHECKPOINT --- #Lapys: Don't forget for key inputs as well. This function is the Drop event listener
+                                                    if (formerX > x) {}
+
+                                                    // swipe right
+                                                    else if (formerX < x) {}
+
+                                                    // Update > Carousels
+                                                    LDKF.spliceArray(carousels, iterator, 1);
+
+                                                    // Break
+                                                    break
+                                                }
+                                            }
+                                        }
+
+                                        // Window
                                     };
 
                                     // Correct Carousel
@@ -34338,13 +34396,9 @@
                                     })
                                 })();
 
-                                /* Draggable
-                                        --- CHECKPOINT ---
-                                            #Lapys: Dynamic Co-ordinate Tolerance should allow for
-                                                altering otherwise valid Dropzones (allow North, South, East & West boundaries to be ignored).
-                                */
+                                // Draggable
                                 LDKF.includesArray(LDK.components, 'draggable') && (function draggable() {
-                                    // Initialization > (Properties, Watch)
+                                    // Initialization > (Properties, Sub Element Properties, Watch)
                                     let properties = {
                                         // Dropzone Selector Match
                                         dropzoneSelectorMatch: {
@@ -34495,7 +34549,10 @@
                                                             #Lapys: Responsible for determining if the Draggable
                                                                 is 'within' the Dropzone.
                                                 */
-                                                if (dropzoneLeft < left && dropzoneTop < top)
+                                                if (
+                                                    (dropzoneLeft < left || LDKF.includesArray(getSortedAttribute(draggable, 'ignore-coordinate'), 'left')) &&
+                                                    (dropzoneTop < top || LDKF.includesArray(getSortedAttribute(draggable, 'ignore-coordinate'), 'top'))
+                                                )
                                                     /* Logic
                                                             If
                                                                 the Dropzone is bigger than the Draggable;
@@ -34513,7 +34570,10 @@
                                                         /* Logic
                                                                 [if statement]
                                                         */
-                                                        if (dropzoneBottom > bottom && dropzoneRight > right) {
+                                                        if (
+                                                            (dropzoneBottom > bottom || LDKF.includesArray(getSortedAttribute(draggable, 'ignore-coordinate'), 'bottom')) &&
+                                                            (dropzoneRight > right || LDKF.includesArray(getSortedAttribute(draggable, 'ignore-coordinate'), 'right'))
+                                                        ) {
                                                             // Sub Element Properties > Drop Draggable
                                                             subElementProperties.dropDraggable(dropzone, draggable);
 
@@ -34526,7 +34586,7 @@
                                                         /* Logic
                                                                 [if statement]
                                                         */
-                                                        if (dropzoneBottom > bottom) {
+                                                        if (dropzoneBottom > bottom || LDKF.includesArray(getSortedAttribute(draggable, 'ignore-coordinate'), 'bottom')) {
                                                             // Sub Element Properties > Drop Draggable
                                                             subElementProperties.dropDraggable(dropzone, draggable);
 
@@ -34539,7 +34599,7 @@
                                                         /* Logic
                                                                 [if statement]
                                                         */
-                                                        if (dropzoneRight > right) {
+                                                        if (dropzoneRight > right || LDKF.includesArray(getSortedAttribute(draggable, 'ignore-coordinate'), 'right')) {
                                                             // Sub Element Properties > Drop Draggable
                                                             subElementProperties.dropDraggable(dropzone, draggable);
 
@@ -35470,7 +35530,174 @@
                                     })
                                 })();
 
-                                // Dynamic Text
+                                /* Dynamic Text --- CHECKPOINT ---
+                                        --- NOTE ---
+                                            #Lapys: Get its typing sequence functional.
+                                */
+                                LDKF.includesArray(LDK.components, 'dynamic-text') && (function dynamicText() {
+                                    // Initialization > ((Sub Element) Properties, Watch)
+                                    let properties = {
+                                        // Cursor Index
+                                        cursorIndex: {},
+
+                                        // Sequence
+                                        sequence: {},
+
+                                        // Text
+                                        text: {}
+                                    }, subElementProperties = {
+                                    }, watch = {
+                                        // Procedure
+                                        procedure: {
+                                            // Clear
+                                            clear: {
+                                                // Default
+                                                'default': null,
+
+                                                // Duration
+                                                duration: 0,
+
+                                                // Value
+                                                value: function clear() {}
+                                            }
+                                        },
+
+                                        // Texts
+                                        texts: []
+                                    };
+
+                                    // Correct Dynamic Text
+                                    function correctDynamicText(dynamicText) {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 100,
+                                            cooldownValue = !0,
+                                            timeout;
+
+                                        // Function > Correct
+                                        function correct() {}
+
+                                        // Correct
+                                        correct();
+
+                                        // Dynamic Text > On HTML Change > Watch
+                                        LDKF.includesArray(getElements(primaryStorage.dynamicText), dynamicText) && tmpObject.nodePrototypeOnHTMLChangeDescriptorValue.call(dynamicText, function correctDynamicText() {
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.includesArray(getElements(primaryStorage.dynamicText), dynamicText)) {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (cooldownValue) {
+                                                    // Update > Allow Correction
+                                                    cooldownValue = !1;
+
+                                                    // Correct > Dynamic Text
+                                                    correct(dynamicText);
+
+                                                    // Set Timeout
+                                                    timeout = LDKF.setTimeout(function() {
+                                                        // Update > Allow Correction
+                                                        cooldownValue = !0;
+
+                                                        // Clear Timeout > Timeout
+                                                        LDKF.clearTimeout(timeout)
+                                                    }, cooldownDuration)
+                                                }
+                                            }
+
+                                            else
+                                                // Dynamic Text > Cancel On HTML Change
+                                                tmpObject.nodePrototypeCancelOnHTMLChangeDescriptorValue.call(dynamicText, correctDynamicText)
+                                        })
+                                    }
+
+                                    // Index Dynamic Texts
+                                    function indexDynamicTexts() {
+                                        // Initialization > (Dynamic Texts, Length)
+                                        let dynamicTexts = LDKF.getElementsByClassNameDocument('dynamic-text'),
+                                            length = LDKF.get.htmlCollectionLength(dynamicTexts);
+
+                                        // Asynchronous Index > Set Dynamic Texts
+                                        asyncIndex(function setDynamicTexts(iterator) {
+                                            // Set Dynamic Text > Dynamic Text
+                                            setDynamicText(dynamicTexts[iterator])
+                                        }, length)
+                                    }
+
+                                    // Set Dynamic Text
+                                    function setDynamicText(dynamicText) {
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (!LDKF.includesArray(getElements(primaryStorage.dynamicText), dynamicText)) {
+                                            // Update > Primary Storage > Dynamic Text
+                                            LDKF.pushArray(primaryStorage.dynamicText, {element: dynamicText, type: ['dynamic-text']});
+
+                                            // Correct Dynamic Text > Dynamic Text
+                                            correctDynamicText(dynamicText);
+
+                                            // Watch Dynamic Text
+                                            (function watchDynamicText() {
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.hasClassHtmlElement(dynamicText, 'dynamic-text'))
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(watchDynamicText);
+
+                                                else {
+                                                    // Unset Dynamic Text > Dynamic Text
+                                                    unsetDynamicText(dynamicText);
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+                                            })()
+                                        }
+                                    }
+
+                                    // Unset Dynamic Text
+                                    function unsetDynamicText(dynamicText) {
+                                        // Initialization > Index
+                                        let index = LDKF.indexOfArray(getElements(primaryStorage.dynamicText), dynamicText);
+
+                                        // Update > (Primary Storage > Dynamic Text)
+                                        (index == -1) || LDKF.spliceArray(primaryStorage.dynamicText, index, 1)
+                                    }
+
+                                    // Index Dynamic Texts
+                                    indexDynamicTexts();
+
+                                    // On DOM Element Added > Index Dynamic Text
+                                    tmpObject.windowOnDOMElementAddedDescriptionValue(function indexDynamicText() {
+                                        // Initialization > (Cooldown (Duration, Value), Timeout)
+                                        let cooldownDuration = 250,
+                                            cooldownValue = !0,
+                                            timeout;
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (cooldownValue) {
+                                            // Update > Cooldown Value
+                                            cooldownValue = !1;
+
+                                            // Index Dynamic Texts
+                                            indexDynamicTexts();
+
+                                            // Update > Timeout
+                                            timeout = LDKF.setTimeout(function() {
+                                                // Update > Cooldown Value
+                                                cooldownValue = !0;
+
+                                                // Clear Timeout
+                                                LDKF.clearTimeout(timeout)
+                                            }, cooldownDuration)
+                                        }
+                                    })
+                                })();
+
                                 // Dynamic Time
                                 /* Marquee
                                         --- NOTE ---
