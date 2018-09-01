@@ -8,50 +8,27 @@
     <!-- Stylesheets -->
         <!-- LapysJS Stylesheet -->
         <link href=src/lapys.css media=all rel=stylesheet type=text/css>
+
+        <!-- Base Stylesheet -->
+        <link href=assets/css/base.css media=all rel=stylesheet type=text/css>
+
+        <!-- Document Stylesheet -->
+        <link href=assets/css/index.css media=all rel=stylesheet type=text/css>
 </head>
 
 <body>
     <!-- Scripts -->
+        <script type=text/javascript> window.LapysJS = {components: ['carousel']} </script>
+
         <!-- LapysJS Script -->
-        <script features=script-attribute src=src/lapys.js type=text/javascript> </script>
+        <script src=src/lapys.js type=text/javascript> </script>
 
         <!-- Base Script -->
         <script src=assets/js/base.js type=text/javascript> </script>
 
     <!-- Main -->
     <main>
-        <!-- Jumbotron
-                    --- NOTE ---
-                        #Lapys:
-                            - Jumbotrons have Bottom, Middle and Top sub-elements.
-                            - Logos are Divisions and Images combined.
-        -->
-        <jumbotron-element class='cur-default no-overflow no-select' id=jumbotron>
-            <!-- Middle -->
-            <middle class=fill>
-                <!-- Logo -->
-                <logo script=this.src=ASSETS.images.logo> </logo>
-
-                <!-- Header Group -->
-                <hgroup>
-                    <!-- Header -->
-                    <h1 role=header script=this.write(app.name)> </h1>
-
-                    <!-- Sub Header -->
-                    <h2 class=cur-text role=subheader>
-                        <dynamic-text
-                            format='no-newlines no-tabspaces'
-                            sequences=''
-                            text='
-                                Burst out your inner <strong>creativity</strong>,
-                                <strong>Develop</strong> the kind of apps you want,
-                                Do it all with <strong>innovative</strong> technology.
-                            '
-                        > </dynamic-text>
-                    </h2>
-                </hgroup>
-            </middle>
-        </jumbotron-element>
+        <h1> Home Page </h1>
     </main>
 </body>
 </html>

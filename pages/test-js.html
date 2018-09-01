@@ -10,7 +10,7 @@
         <link href=../src/lapys.css media=all rel=stylesheet type=text/css>
 
     <!-- Document Title -->
-    <title script="app.name = 'LapysJS | JavaScript Debugging Room'"> LapysJS </title>
+    <title script="app.name = 'LapysJS | Components Debugging Room'"> LapysJS </title>
 </head>
 
 <body>
@@ -18,6 +18,62 @@
     <main>
         <!-- Header -->
         <h1 script=h1.write(app.name.getAfterChar(/LapysJS[^\w]{0,}/))></h1>
+
+        <br> <br>
+
+        <!-- Accordion -->
+        <div class=accordion id=accordion>
+            <!-- Header -->
+            <h1 role=header> Accordion Header </h1>
+
+            <!-- Content -->
+            <p role=content state=open> Accordion content </p>
+        </div>
+
+        <hr>
+
+        <!-- Carousel -->
+        <div class=carousel id=carousel options='auto=2 buttons direction=random indicators'>
+            <div class=bg-c-r> Slide A </div>
+            <div class=bg-c-g> Slide B </div>
+            <div class=bg-c-b> Slide C </div>
+        </div>
+
+        <hr>
+
+        <!-- Dropzone
+                    --- NOTE ---
+                        #Lapys: This a also a dropzone.
+        -->
+        <div role=dropzone style='background-color: rgba(0, 0, 0, .05)'>
+            <!-- Draggable -->
+            <div class=draggable id=draggable ignore-coordinate=right style='background-color: #FFF; height: 50px; outline: 1px solid #777; width: 50%'>
+                <p> This is draggable content </p>
+            </div>
+
+            <!-- Dropzone -->
+            <div role=dropzone style='background-color: #FFF; height: 100px; width: 65%; outline: 1px solid #F70'> <p> This is a dropzone </p> </div>
+            <div role=dropzone style='background-color: #FFF; height: 100px; width: 65%; outline: 1px solid #07F'> <p> This is another dropzone </p> </div>
+        </div>
+
+        <hr>
+
+        <!-- Dropdown -->
+        <div class=dropdown id=dropdown>
+            <!-- Header -->
+            <h1 role=header> Dropdown Header </h1>
+        </div>
+
+        <!-- {Dropdown} Content -->
+        <p dropdown=dropdown role=content state=open> Dropdown content </p>
+
+        <hr>
+
+        <!-- Dynamic Text -->
+        <span class=dynamic-text id=dynamicText sequence='
+            type, delay, highlight=--, clear, delay=1e3;
+            type=--, switch=first, delay, highlight=++, clear, delay=1e3
+        ' splits=,; text='Text Sequence\, A,B \,ecneuqeS txeT'> </span>
     </main>
 
     <!-- Scripts -->

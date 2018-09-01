@@ -1,107 +1,112 @@
-// Function > Main
+/* Function > Main */
 (function Main(argc, argv) {
-    // Initialization > (LapysJS) (Error, Development Kit (...))
-    const LapysJS = argv[0],
-        LapysJSError = argv[1],
-        LDK = argv[2],
-        LDKC = LDK.constants,
-        LDKE = LDK.features,
-        LDKF = LDK.storage.functions,
-        LDKG = LDK.global,
-        LDKI = LDK.info,
-        LDKO = LDK.objects,
-        tmp = LDK.tmp.valueOf(),
-        tmpObjects = LDK.tmp.objects;
+    // Update > Argument Count
+    argc += argv.length;
+
+    /* Modification */
+        // Location > URL
+        location.constructor.prototype.def('url', {
+            // Get
+            get: function getURL() {
+                // Initialization > URL
+                let url = {};
+
+                // Modification > URL
+                    // Origin
+                    url.def('origin', {get: function origin() { return location.origin }});
+
+                    // Path
+                    url.def('path', {get: function path() { return location.href }});
+
+                    // Query
+                    url.def('query', {get: function query() { return location.search }});
+
+                    // Type
+                    url.def('type', {get: function type() { return location.protocol }});
+
+                    // Value Of
+                    url.def('valueOf', {value: function valueOf() { return url.path }});
+
+                // Return
+                return url
+            },
+
+            // Set
+            set: function setURL(path) {
+                // Location > Assign > Path
+                location.assign(path)
+            }
+        });
 
     /* Global Data */
+        // Author
+        var AUTHOR = 'Lapys Dev Team',
+
+        // Description
+        DESCRIPTION = 'LapysJS is a code library challenged/ designed to stand out from other code sources using native & simplistic means.',
+
+        // URL
+        URL = 'https://www.github.com/LapysDev/LapysJS',
+
+        // Version
+        VERSION = '0.0.1',
+
         // Manager
-        def('MANAGER', {
-            // Value
-            value: new (def('Manager', class Manager {
-                // Constructor
-                constructor() {
-                    // Initialization > Manager (Constructor, Prototype)
-                    let manager = this,
-                        managerConstructor = manager.constructor,
-                        managerProto = manager.__proto__;
+        Manager = def('MANAGER', {value: new (function Manager() {
+            // Initialization > Target
+            let that = this;
 
-                    // Modification > Manager Prototype
-                        // (To String, Value Of, (...))
-                        managerProto.def('toString', {value: function toString() { return managerProto.valueOf() }});
-                        managerProto.def('valueOf', {value: function valueOf() { return manager }});
-                        managerProto.def(Symbol.toStringTag, {value: 'Manager'});
+            // Modification
+                // Dynamic Text
+                that.def('dynamicText', {value: (function dynamicText() {
+                    // Initialization > (Current URL, (URL) (Path, Address))
+                    let currentURL = location.url,
+                        urlPath = currentURL.path,
+                        urlAddress = getURLAddress(urlPath),
+                        url = null;
 
-                    // Return
-                    return manager
-                }
-            }))
-        });
-            // Information
-            MANAGER.__proto__.def('info', {
-                // Dynamic URL
-                dynamicURL: def('DYNAMIC_URL', (function() {
-                    // Initialization > URL
-                    let url = '';
+                    function getURLAddress(url) {
+                        // (Loop > )Update > URL
+                        while (url.hasChar('&')) url = url.getBeforeChar('&', true);
+                        while (url.hasChar('?')) url = url.getBeforeChar('?', true);
+                        url.endsWith(/[^\w]/) && (url = url.getBeforeChar('/', true));
+
+                        // Return
+                        return url
+                    }
+
+                    // Logic > Update > URL
+                    if (
+                        urlPath == 'about:blank' ||
+                        urlAddress.endsWith(/index(.html|)/) ||
+                        urlAddress.endsWith('LapysJS') ||
+                        getURLAddress(currentURL.origin).endsWith('localhost')
+                    )
+                        url = '';
+
+                    else if (urlAddress.getBeforeChar('/', true).endsWith('pages'))
+                        url = '../../';
 
                     // Return
                     return url
-                })())
-            });
+                })()});
 
-            // Types
-            MANAGER.__proto__.def('types', LDKF.customObject('ManagerTypesList', {
-                // Web
-                web: def('WebManager', {
-                    // Value
-                    value: new (class WebManager extends MANAGER.constructor {
-                        // Constructor
-                        constructor() {
-                            // Initialization > (Length, Super Arguments)
-                            let length = arguments.length,
-                                superArguments = 'super(';
+            // Return
+            return that
+        })});
 
-                            // Repeat
-                            repeat(iterator => superArguments += 'arguments[' + iterator + ']' + (iterator == length - 1 ? '' : ''), length);
+    /* Functions */
+        // On DOM Ready
+        onDOMReady(function onDOMReady() {
 
-                            // Execution
-                            eval(superArguments + ')');
+        })
+})(0, [
+    /* {Location}
+            --- NOTE ---
+                #Lapys: Location is a default argument value.
+    */
+    (function location(){try{return document.currentScript.src}catch(error){}return'*'})(),
 
-                            // Initialization > Target
-                            let that = this,
-                                $that = that.__proto__;
-
-                            // Modification > Target
-                                // Global
-                                $that.def('global', {
-                                    // Assets
-                                    assets: {
-                                        // Images
-                                        images: {
-                                            // Logo
-                                            logo: DYNAMIC_URL + 'assets/img/png/logo.png'
-                                        }
-                                    }
-                                });
-
-                            // Return
-                            return that
-                        }
-                    })
-                })
-            }));
-
-        // Assets --- CHECKPOINT ---
-        def('ASSETS', {
-            // Value
-            value: (function() {
-                // Initialization > Object
-                let object = {};
-
-                // Return
-                return object
-            })()
-        });
-
-    // Return
-    return 0
-})([''], [LapysJS, LapysJSError, LapysJS.valueOf()])
+    // {Parent Window}
+    (function parentWindow(){try{return window.parent}catch(error){}return null})()
+])
