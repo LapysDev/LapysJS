@@ -6589,7 +6589,7 @@
                                 LDKO.locationProtocol = LDKO.$location.protocol;
 
                             // Math
-                                // Euler
+                                // Euler's Number
                                 LDKO.mathE = Math.E;
 
                             // Message Event

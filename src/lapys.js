@@ -18,13 +18,27 @@
 
     --- RULES ---
         #Lapys:
-            - Invalid Sequences: const, let, ..., =>
+            - Invalid Keywords
+                -- await
+                -- class
+                -- const
+                -- let
+                -- with
+                -- ...
+                -- =>
+
+            - Invalid Objects
+                -- AudioContext
+                -- AudioNode
+                -- EventTarget
+
+            - Must be compatible with 'modern' legacy browsers.
             - Prefix poly-filled properties & methods with the `$` character.
             - All external/ sourced script code must be credited to the author and poly-filled.
 
     --- UPDATE REQUIRED ---
         #Lapys:
-            - The following code should not be subject to editing by the developer:
+            - The following code should not be subject to editing by the developer before script execution:
                 -- `Object.create` method.
                 -- `Object.defineProperty` method.
                 -- `Object.getOwnPropertyDescriptor` method.
@@ -89,6 +103,81 @@ window && (function Main(args) {
 
                     // Return
                     return number < -0 ? -number : number
+                },
+
+                // Add Class To Element
+                addClassToElement: function addClassToElement() {
+                    // Initialization > (Element, Class (List, Value, Iterator, Length))
+                    var element = arguments[0],
+                        classList = LDKF.rendArray(arguments, 1),
+                        classValue = LDKF.joinStringToArray(LDKF.elementPrototypeGetAttribute(element, 'class') || ''),
+                        iterator = 0,
+                        length = classList.length;
+
+                    /* Loop
+                            Index Class List.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Class Name
+                        var className = classList[iterator];
+
+                        /* Logic
+                                [if:else statement]
+                        */
+                        if (LDKF.isArray(className)) {
+                            // Initialization > (Class Name) (Iterator, Length)
+                            var classNameIterator = 0,
+                                classNameLength = className.length;
+
+                            /* Loop
+                                    Index Class Name.
+
+                                > Update > Class Name
+                            */
+                            for (classNameIterator; classNameIterator != classNameLength; classNameIterator += 1)
+                                LDKF.isInArray(classValue, className[classNameIterator]) || (classValue[classValue.length] = className[classNameIterator])
+                        }
+
+                        else
+                            // Update > Class Name
+                            LDKF.isInArray(classValue, className) || (classValue[classValue.length] = className)
+                    }
+
+                    // Modification > Element > Class
+                    LDKF.elementPrototypeSetAttribute(element, 'class', classValue = LDKF.joinArrayToString(classValue, ' '));
+
+                    // Return
+                    return classValue
+                },
+
+                // Add Event To Node
+                addEventToNode: function addEventToNode(node, type, listener, options) {
+                    // Return
+                    return LDKO.addEvent.call(node, LDKO.addEvent === LDKO.windowPrototype.attachEvent ? 'on' + LDKF.string(type) : type, listener, options || !1)
+                },
+
+                /* Build Array
+                        --- NOTE ---
+                            #Lapys: Update all an array`s numerically keyed items with a function.
+                */
+                buildArray: function buildArray(array, build) {
+                    // Initialization > Iterator
+                    var iterator = array.length;
+
+                    /* Loop
+                            Index Array.
+                    */
+                    while (iterator) {
+                        // Initialization > Item
+                        var item = array[iterator -= 1];
+
+                        // Error Handling > Update > Array
+                        try { array[iterator] = build.call(array, item, {previousValue: array[iterator - 1], nextValue: array[iterator + 1]}) }
+                        catch (error) { array[iterator] = error }
+                    }
+
+                    // Return
+                    return array
                 },
 
                 /* Character Code At String
@@ -183,7 +272,39 @@ window && (function Main(args) {
                     return LapysJSDevelopmentKit.objects.clearTimeout.apply(window, arguments)
                 },
 
-                // Create Element --- CHECKPOINT ---
+                /* Copy in Array
+                        --- NOTE ---
+                            #Lapys: Detect if an array has a duplicate item.
+                */
+                copyInArray: function copyInArray(array) {
+                    // Initialization > (Iterator, Index)
+                    var iterator = array.length,
+                        index = [];
+
+                    /* Loop
+                            Index Array.
+                    */
+                    while (iterator) {
+                        // Initialization > Item
+                        var item = array[iterator -= 1];
+
+                        /* Logic
+                                [if:else statement]
+                        */
+                        if (LDKF.isInArray(index, item))
+                            // Return
+                            return !0
+
+                        else
+                            // Update > Index
+                            index[iterator] = item
+                    }
+
+                    // Return
+                    return !1
+                },
+
+                // Create Element
                 createElement: function createElement(tagName, selector, html) {
                     // Initialization > Length
                     var length = arguments.length;
@@ -216,10 +337,8 @@ window && (function Main(args) {
                         // (LapysJS Development Kit > Functions) > Set Selector On Element > Element
                         selector && LDKF.setSelectorOnElement(element, selector)
 
-                        /* Logic
-                                [if statement]
-                        */
-                        if (html) {}
+                        // Modification > Element > Inner HTML
+                        html && LDKF.set.elementPrototypeInnerHTML(element, html);
 
                         // Return
                         return element
@@ -343,7 +462,34 @@ window && (function Main(args) {
                                 break;
 
                             // Not
-                            case 'not': break;
+                            case 'not':
+                                // Update > Message
+                                message = stackSet[0] + ' is not ' + (option[1] == 'a' || option[1] == 'an' ? (isVowel((function(string) {
+                                    // Initialization > ((Allow) Stream, Iterator, Length)
+                                    var allowStream = !1,
+                                        iterator = 0,
+                                        length = string.length,
+                                        stream = '';
+
+                                    /* Loop
+                                            Iterate through String.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > Character
+                                        var character = string[iterator];
+
+                                        /* Update > (Allow) Stream
+                                                --- NOTE ---
+                                                    #Lapys: The stream contains only the alphabetical characters of the String.
+                                        */
+                                        (!allowStream && isAlphabet(character)) && (allowStream = !0);
+                                        allowStream && (stream += character)
+                                    }
+
+                                    // Return
+                                    return stream[0]
+                                })(description[0])) ? 'an' : 'a') : '') + (option.length == 1 ? '' : ' ') + join(description, ',', 'or');
+                                break;
 
                             // Only
                             case 'only':
@@ -362,6 +508,12 @@ window && (function Main(args) {
                             #Lapys: Used to encode the URI Error.
                 */
                 decodeURIComponent: window.decodeURIComponent,
+
+                // Delete Event From Node
+                delEventFromNode: function delEventFromNode(node, type, listener, options) {
+                    // Return
+                    return LDKO.delEvent.call(node, LDKO.delEvent === LDKO.windowPrototype.dettachEvent ? 'on' + LDKF.string(type) : type, listener, options || !1)
+                },
 
                 // Error
                 error: function error(message) {
@@ -490,6 +642,34 @@ window && (function Main(args) {
                     }
                 },
 
+                // Exponent
+                exp: function exp() {
+                    // Return
+                    return LDKF.pow(LDKO.E, arguments[0])
+                },
+
+                // Filter Array
+                filterArray: function filterArray(array, match) {
+                    // Initialization > (Filter, Iterator, Length)
+                    var filter = [],
+                        iterator = 0,
+                        length = array.length;
+
+                    /* Loop
+                            Index Array.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Item
+                        var item = array[iterator];
+
+                        // Update > Filter
+                        match.call(array, item) && (filter[filter.length] = item)
+                    }
+
+                    // Return
+                    return filter
+                },
+
                 /* Get
                         --- NOTE ---
                             #Lapys: Library of query functions.
@@ -498,6 +678,32 @@ window && (function Main(args) {
                             #Lapys: Do not redefine.
                 */
                 get: {},
+
+                /* Get Array Copies
+                        --- NOTE ---
+                            #Lapys: Return all duplicated items from the array in a new array.
+                */
+                getArrayCopies: function getArrayCopies(array) {
+                    // Initialization > (Copies, Frequencies, Iterator, Length)
+                    var copies = [],
+                        frequencies = LDKF.getArrayFrequencies(array),
+                        iterator = 0,
+                        length = frequencies.length;
+
+                    /* Loop
+                            Index Frequencies.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Frequency
+                        var frequency = frequencies[iterator];
+
+                        // Update > Copies
+                        (frequency.frequency == 1) || (copies[copies.length] = frequency.item)
+                    }
+
+                    // Return
+                    return copies
+                },
 
                 // Get Array Frequencies
                 getArrayFrequencies: function getArrayFrequencies(array) {
@@ -625,10 +831,16 @@ window && (function Main(args) {
                     return rmode.length > 1 ? null : rmode[0]
                 },
 
+                // Get Computed Style
+                getComputedStyle: function getComputedStyle(element) {
+                    // Return
+                    return LDKO.getComputedStyle.call(window, element)
+                },
+
                 // Get Object Depth
                 getObjectDepth: function getObjectDepth(object) {
                     // Initialization > Depth
-                    var depth;
+                    var depth = 0;
 
                     /* Logic
                             [if statement]
@@ -723,6 +935,28 @@ window && (function Main(args) {
                     return depth
                 },
 
+                // Get Prototypes
+                getPrototypes: function getPrototypes(object) {
+                    /* Logic
+                            [if statement]
+                    */
+                    if (LapysJSDevelopmentKit.functions.isConstructible(object)) {
+                        // Initialization > Prototype(s)
+                        var proto = object.__proto__,
+                            protos = [proto];
+
+                        // Loop > Update > Prototypes
+                        while (proto.__proto__)
+                            protos[protos.length] = (proto = proto.__proto__);
+
+                        // Return
+                        return protos
+                    }
+
+                    // Return
+                    return null
+                },
+
                 /* Get Regular Expression Characters
                         --- NOTE ---
                             #Lapys: Mostly used to determine which characters in a string have
@@ -762,26 +996,57 @@ window && (function Main(args) {
                     return stream
                 },
 
-                // Get Prototypes
-                getPrototypes: function getPrototypes(object) {
-                    /* Logic
-                            [if statement]
+                /* Join Array To String
+                        --- NOTE ---
+                            #Lapys: Convert arrays to character separated strings.
+                */
+                joinArrayToString: function joinArrayToString(array) {
+                    // Initialization > (String, Iterator, (Decremented) Length, Separator)
+                    var string = '',
+                        iterator = 0,
+                        length = array.length,
+                        decrementedLength = length - 1,
+                        separator = arguments.length > 1 ? LDKF.string(arguments[1]) : ', ';
+
+                    /* Loop
+                            Index Array.
+
+                        > Update > String
                     */
-                    if (LapysJSDevelopmentKit.functions.isConstructible(object)) {
-                        // Initialization > Prototype(s)
-                        var proto = object.__proto__,
-                            protos = [proto];
+                    for (iterator; iterator != length; iterator += 1)
+                        string += array[iterator] + (iterator == decrementedLength ? '' : separator);
 
-                        // Loop > Update > Prototypes
-                        while (proto.__proto__)
-                            protos[protos.length] = (proto = proto.__proto__);
+                    // Return
+                    return string
+                },
 
-                        // Return
-                        return protos
+                /* Join String To Array
+                        --- NOTE ---
+                            #Lapys: Convert character separated strings to arrays.
+                */
+                joinStringToArray: function joinStringToArray(string) {
+                    // Initialization > (Array, Iterator, Length, Index, Separator)
+                    var array = [],
+                        iterator = 0,
+                        length = string.length,
+                        index = 0,
+                        separator = arguments.length > 1 ? LDKF.string(arguments[1]) : ' ';
+
+                    /* Loop
+                            Iterate through String.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Character
+                        var character = string[iterator];
+
+                        // Update > (Array, Index)
+                        array[index] || (array[index] = '');
+                        (character == separator) || (array[index] += character);
+                        (character == separator) && (!index || array[index - 1]) && (index += 1)
                     }
 
                     // Return
-                    return null
+                    return array
                 },
 
                 /* Internal Multiplication
@@ -852,11 +1117,17 @@ window && (function Main(args) {
                     // Error Handling
                     try {
                         // Return
-                        return typeof arg == 'object' && !arg.__proto__.__proto__.__proto__ && arg.constructor == [].constructor
+                        return typeof arg == 'object' && !arg.__proto__.__proto__.__proto__ && arg.constructor === LDKO.array
                     } catch (error) {}
 
                     // Return
                     return !1
+                },
+
+                // Is Array-Like
+                isArrayLike: function isArrayLike(arg) {
+                    // Return
+                    return LDKF.isArray(arg) || LDKF.isStrictlyArrayLike(arg)
                 },
 
                 /* Is Arrow Function
@@ -953,8 +1224,28 @@ window && (function Main(args) {
                     return !1
                 },
 
+                // Is Attribute
+                isAttr: function isAttr(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.attr }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
                 // Is Boolean
                 isBoolean: function isBoolean(arg) { return typeof arg == 'boolean' },
+
+                // Is Character Data
+                isCharacterData: function isCharacterData(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.characterData }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
 
                 // Is Class
                 isClass: function isClass(arg) {
@@ -975,6 +1266,46 @@ window && (function Main(args) {
                 isDigit: function isDigit(character) {
                     // Return
                     return character == '0' || character == '1' || character == '2' || character == '3' || character == '4' || character == '5' || character == '6' || character == '7' || character == '8' || character == '9'
+                },
+
+                // Is Document
+                isDocument: function isDocument(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.document }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is Document Fragment
+                isDocumentFragment: function isDocumentFragment(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.documentFragment }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is Document Type
+                isDocumentType: function isDocumentType(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.documentType }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is Element
+                isElement: function isElement(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.element }
+                    catch (error) {}
+
+                    // Return
+                    return !1
                 },
 
                 // Is Error
@@ -1004,8 +1335,97 @@ window && (function Main(args) {
                     return !1
                 },
 
+                // Is Evaluation String
+                isEvaluationString: function isEvaluationString(code) {
+                    // Initialization > Valid
+                    var valid = !1;
+
+                    if (!LDKF.isString(code))
+                        return valid;
+
+                    // Error Handling
+                    try {
+                        // Execution
+                        LDKO.eval('(function(){' + code + '})');
+
+                        // Update > Valid
+                        valid = !0
+                    } catch (error) {
+                        // Error Handling
+                        try {
+                            // Execution
+                            LDKO.eval('(function(){(' + code + ')})');
+
+                            // Update > Valid
+                            valid = !0
+                        }
+                        catch (error) {}
+                    }
+
+                    // Return
+                    return valid
+                },
+
+                /* Is Executable
+                        --- CHECKPOINT ---
+                            #Lapys: You know what must be done.
+                */
+                isExecutable: function isExecutable(data) {},
+
+                /* Is Finite
+                        --- NOTE ---
+                            #Lapys: Maybe less redundant methods are required here?
+                */
+                isFinite: function isFinite(arg) {
+                    // Initialization > String
+                    var string = LDKF.string(arg);
+
+                    // Return
+                    return LDKF.isNumber(arg) && (string !== 'Infinity' && string !== '-Infinity')
+                },
+
                 // Is Function
                 isFunction: function isFunction(arg) { return typeof arg == 'function' },
+
+                // Is HTML All Collection
+                isHTMLAllCollection: function isHTMLAllCollection(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'undefined' && arg.constructor === LDKO.htmlAllCollection }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is HTML Collection
+                isHTMLCollection: function isHTMLCollection(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.htmlCollection }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is HTML Document
+                isHTMLDocument: function isHTMLDocument(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.htmlDocument }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is HTML Element
+                isHTMLElement: function isHTMLElement(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.htmlElement }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
 
                 // Is In Array
                 isInArray: function isInArray(array, item) {
@@ -1020,6 +1440,12 @@ window && (function Main(args) {
                     // Return
                     return !1
                 },
+
+                /* Is Input Element
+                        --- CHECKPOINT ---
+                            #Lapys: `<input>` or `<textarea>`
+                */
+                isInputElement: function isInputElement(arg) {},
 
                 // Is In String
                 isInString: function isInString(string, match) {
@@ -1068,6 +1494,21 @@ window && (function Main(args) {
 
                     // Return
                     return !1
+                },
+
+                // Is Mobile Viewport --- CHECKPOINT ---
+                isMobileViewport: function isMobileViewport() {
+                    // Return
+                    return
+                },
+
+                /* Is Not a Number
+                        --- NOTE ---
+                            #Lapys: Maybe less redundant methods are required here?
+                */
+                isNaN: function isNaN(arg) {
+                    // Return
+                    return LDKF.isNumber(arg) && LDKF.string(arg) == 'NaN'
                 },
 
                 // Is Native Function
@@ -1176,6 +1617,26 @@ window && (function Main(args) {
                     return !1
                 },
 
+                // Is Node
+                isNode: function isNode(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.node }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is Node List
+                isNodeList: function isNodeList(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.nodeList }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
                 // Is Null
                 isNull: function isNull(arg) { return arg === null },
 
@@ -1188,16 +1649,50 @@ window && (function Main(args) {
                     return LDKF.isConstructible(arg) && !LDKF.isArray(arg) && !LDKF.isBoolean(arg) && !LDKF.isFunction(arg) && !LDKF.isNumber(arg) && !LDKF.isRegex(arg) && !LDKF.isString(arg) && !LDKF.isSymbol(arg)
                 },
 
+                // Is Processing Instruction
+                isProcessingInstruction: function isProcessingInstruction(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.processingInstruction }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is Pure Object
+                isPureObject: function isPureObject(arg) {
+                    // Error Handling
+                    try {
+                        // Return
+                        return typeof arg == 'object' && !arg.__proto__.__proto__ && arg.constructor === LDKO.object
+                    } catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
                 // Is Regular Expression
                 isRegex: function isRegex(arg) {
                     // Error Handling
                     try {
                         // Return
-                        return typeof arg == 'object' && !arg.__proto__.__proto__.__proto__ && arg.constructor == (/ /).constructor
+                        return typeof arg == 'object' && !arg.__proto__.__proto__.__proto__ && arg.constructor === (/ /).constructor
                     } catch (error) {}
 
                     // Return
                     return !1
+                },
+
+                // Is Safe Integer
+                isSafeInteger: function isSafeInteger(arg) {
+                    // Return
+                    return LDKF.isSafeNumber(arg) && LDKF.int(arg) === arg
+                },
+
+                // Is Safe Number
+                isSafeNumber: function isSafeNumber(arg) {
+                    // Return
+                    return LDKF.isNumber(arg) && LDKF.isFinite(arg) && !LDKF.isNaN(arg)
                 },
 
                 /* Is Same Source Object
@@ -1255,27 +1750,41 @@ window && (function Main(args) {
                                 /* Logic
                                         [if statement]
 
-                                    > Return
+                                        --- WARN ---
+                                            #Lapys: Exceptions in comparisons.
+
+                                    > Logic > Return
                                 */
                                 if (
-                                    propertyAKey !== propertyBKey ||
-                                    propertyAValue !== propertyBValue ||
-                                    (
+                                    (propertyADescription && propertyBDescription) &&
+                                    (!LDKF.isNaN(propertyAValue) && !LDKF.isNaN(propertyBValue))
+                                )
+                                    if (
+                                        propertyAKey !== propertyBKey ||
                                         propertyADescription.configurable !== propertyBDescription.configurable ||
                                         propertyADescription.enumerable !== propertyBDescription.enumerable ||
                                         propertyADescription.get !== propertyBDescription.get ||
                                         propertyADescription.set !== propertyBDescription.set ||
-                                        propertyADescription.value !== propertyBDescription.value ||
+                                        propertyAValue !== propertyBValue ||
                                         propertyADescription.writable !== propertyBDescription.writable
                                     )
-                                )
-                                    return !1
+                                        return !1
                             }
 
                             // Return
                             return !0
                         }
                     }
+
+                    // Return
+                    return !1
+                },
+
+                // Is Strictly Array-Like
+                isStrictlyArrayLike: function isStrictlyArrayLike(arg) {
+                    // Error Handling > Return
+                    try { return LDKF.isHTMLAllCollection(arg) || LDKF.isHTMLCollection(arg) || LDKF.isNodeList(arg) }
+                    catch (error) {}
 
                     // Return
                     return !1
@@ -1289,6 +1798,19 @@ window && (function Main(args) {
 
                 // Is Void
                 isVoid: function isVoid(arg) { return arguments.length ? arg === void 0 : !1 },
+
+                // Is Window
+                isWindow: function isWindow(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.window }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is XML HTTP Request --- CHECKPOINT ---
+                isXmlHttpRequest: function isXmlHttpRequest(arg) {},
 
                 // Last Index Of String
                 lastIndexOfString: function lastIndexOfString(string, character) {
@@ -1317,6 +1839,52 @@ window && (function Main(args) {
 
                     // Return
                     return length - 1
+                },
+
+                // Maximum
+                max: function maximum() {
+                    // Initialization > (Numbers, Iterator, Maximum)
+                    var numbers = arguments,
+                        iterator = arguments.length,
+                        maximum = numbers[0];
+
+                    /* Logic
+                            [if statement]
+                    */
+                    if (iterator) {
+                        // Loop > Update > Maximum
+                        while (iterator)
+                            (numbers[iterator -= 1] > maximum) && (maximum = numbers[iterator]);
+
+                        // Return
+                        return maximum
+                    }
+
+                    // Return
+                    return -LDKO.infinity
+                },
+
+                // Maximum
+                min: function minimum() {
+                    // Initialization > (Numbers, Iterator, Minimum)
+                    var numbers = arguments,
+                        iterator = arguments.length,
+                        minimum = numbers[0];
+
+                    /* Logic
+                            [if statement]
+                    */
+                    if (iterator) {
+                        // Loop > Update > Minimum
+                        while (iterator)
+                            (numbers[iterator -= 1] < minimum) && (minimum = numbers[iterator]);
+
+                        // Return
+                        return minimum
+                    }
+
+                    // Return
+                    return LDKO.infinity
                 },
 
                 // Number
@@ -1355,6 +1923,90 @@ window && (function Main(args) {
                 // Object
                 object: ({}).constructor,
 
+                /* Power
+                        --- NOTE ---
+                            #Lapys: Returns the integer exponent of a number.
+
+                        --- UPDATE REQUIRED ---
+                            #Lapys: Non-integer exponents should return safe numeral values.
+                */
+                pow: function pow(base, exponent) {
+                    // Error
+                    LDKF.isSafeNumber(base) || LDKF.throwError('pow', 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'safe number'));
+                    LDKF.isSafeNumber(exponent) || LDKF.throwError('pow', 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'safe number'));
+
+                    // Function
+                        // Power
+                        function pow(base, exponent) {
+                            // Initialization > Result
+                            var result = 1;
+
+                            // Logic > Return
+                            if (exponent < 0)
+                                return 1 / pow(base, -exponent);
+
+                            /* Loop
+                                    [while statement]
+
+                                > Update > (Result, Exponent, Base)
+                            */
+                            while (exponent > 0) {
+                                (exponent & 1) && (result *= base);
+                                exponent >>= 1;
+                                base *= base
+                            }
+
+                            // Return
+                            return result
+                        }
+
+                        // Root
+                        function root(base, exponent) {
+                            // Initialization > ((Former) Result, EPS, Difference)
+                            var formerResult = LDKF.int(LDKF.random() * 10),
+                                eps = .001,
+                                difference = 2147483647,
+                                result;
+
+                            /* Loop
+                                    [while statement]
+
+                                > Update > ((Former) Result, Difference)
+                            */
+                            while (difference > eps) {
+                                result = ((exponent - 1) * formerResult + base / pow(formerResult, exponent - 1)) / exponent;
+                                difference = LDKF.abs(result - formerResult);
+                                formerResult = result
+                            }
+
+                            // Return
+                            return result
+                        }
+
+                    /* Logic
+                            [if:else if statement]
+
+                            --- NOTE ---
+                                #Lapys: The `root` function is still quirky with the results.
+
+                        > Return
+                    */
+                    if (LDKF.int(exponent) === exponent)
+                        // Return
+                        return pow(base, exponent);
+
+                    else if (LDKF.int(1 / exponent) === 1 / exponent)
+                        // Return
+                        return root(base, 1 / exponent);
+
+                    /* Return
+                            --- NOTE ---
+                                #Lapys: This is only returned for non-integer exponents
+                                    that are not rooted.
+                    */
+                    return LDKO.nan
+                },
+
                 /* Random
                         --- NOTE ---
                             #Lapys:
@@ -1368,14 +2020,14 @@ window && (function Main(args) {
 
                 /* Remove Character String
                         --- NOTE ---
-                            #Lapys: Remove a specified set of characters from a string
+                            #Lapys: Remove a specified character from a string
                                 a specified number of times.
                 */
                 removeCharString: function removeCharString() {
                     // Initialization > (Amount, Match, String)
                     var amount = arguments.length > 2 ? arguments[2] : 1,
                         match = arguments[1],
-                        string = LDKF.string(arguments[0])
+                        string = LapysJSDevelopmentKit.functions.string(arguments[0]);
 
                     /* Logic
                             [if statement]
@@ -1403,6 +2055,70 @@ window && (function Main(args) {
 
                     // Return
                     return string
+                },
+
+                // Remove Item Array
+                removeItemArray: function removeItemArray() {
+                    // Initialization > (Array, Match, Amount)
+                    var array = arguments[0],
+                        match = arguments[1],
+                        amount = arguments.length > 2 ? arguments[2] : 1;
+
+                    /* Logic
+                            [if statement]
+                    */
+                    if (arguments.length) {
+                        // Initialization > (Iterator, Length)
+                        var iterator = 0,
+                            length = array.length;
+
+                        /* Loop
+                                Index Array.
+                        */
+                        for (iterator; iterator != length; iterator += 1) {
+                            // Initialization > Item
+                            var item = array[iterator];
+
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (amount > 0 && item === match) {
+                                // Initialization > End (Array, Iterator)
+                                var endArray = [],
+                                    endIterator = iterator + 1;
+
+                                /* Loop
+                                        Index Array.
+
+                                    > Update > End Array
+                                */
+                                for (endIterator; endIterator < length; endIterator += 1)
+                                    endArray[endArray.length] = array[endIterator];
+
+                                // Update > Array
+                                array.length = iterator;
+
+                                // Initialization > End Length
+                                var endLength = endArray.length;
+
+                                /* Loop
+                                        Index End Array.
+
+                                    > Update > Array
+                                */
+                                for (endIterator = 0; endIterator < endLength; endIterator += 1)
+                                    array[iterator + endIterator] = endArray[endIterator];
+
+                                // Update > (Iterator, Length, Amount)
+                                iterator = 0;
+                                length = array.length;
+                                amount -= 1
+                            }
+                        }
+                    }
+
+                    // Return
+                    return array
                 },
 
                 /* Rend Array
@@ -1541,6 +2257,219 @@ window && (function Main(args) {
                     return LapysJSDevelopmentKit.objects.setTimeout.apply(window, arguments)
                 },
 
+                // Set Selector On Element
+                setSelectorOnElement: function setSelectorOnElement(element, selector) {
+                    // Initialization > (Allow Mode Change, Iterator, Length, Mode (Lock), Properties (Index))
+                    var allowModeChange = !0,
+                        iterator = 0,
+                        length = selector.length,
+                        mode = '',
+                        modeLock,
+                        properties = {attributes: [], class: [], id: []},
+                        propertiesIndex = {attributes: -1, class: -1, id: -1};
+
+                    // Error Handling
+                    try { LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), selector) }
+                    catch (error) { LDKF.throwError('setSelectorOnElement', 'argument', LDKF.debugMessage("'" + selector + "'", ['not', 'a'], 'valid selector')) }
+
+                    // Update > Selector
+                    selector = LDKF.string(selector);
+
+                    if (selector) {
+                        /* Loop
+                                Iterate through Selector.
+                        */
+                        for (iterator; iterator != length; iterator += 1) {
+                            // Initialization > Character
+                            var character = selector[iterator];
+
+                            /* Logic
+                                    [if:else if statement]
+
+                                    --- WARN ---
+                                        #Lapys: Take attribute values into consideration (the values could contain values such as `.` and `#`).
+                            */
+                            if (allowModeChange) {
+                                /* Logic
+                                        [if:else if statement]
+                                */
+                                if (character == '[') {
+                                    // Update > (Allow Mode Change, Mode)
+                                    allowModeChange = !1;
+                                    mode = 'attribute';
+
+                                    // Modification > Properties Index > Attributes
+                                    propertiesIndex.attributes += 1
+                                }
+
+                                else if (character == '.') {
+                                    // Update > Mode
+                                    mode = 'class';
+
+                                    // Modification > Properties Index > Class
+                                    propertiesIndex.class += 1
+                                }
+
+                                else if (character == '#') {
+                                    // Update > Mode
+                                    mode = 'id';
+
+                                    // Modification > Properties Index > ID
+                                    propertiesIndex.id += 1
+                                }
+                            }
+
+                            else if (character == ']')
+                                // Update > Allow Mode Change
+                                allowModeChange = !0;
+
+                            /* Logic
+                                    [switch:case statement]
+
+                                > Update > (Properties > ...)
+                            */
+                            switch (mode) {
+                                // Attribute
+                                case 'attribute':
+                                    properties.attributes[propertiesIndex.attributes] ?
+                                        properties.attributes[propertiesIndex.attributes] += character :
+                                        properties.attributes[propertiesIndex.attributes] = character;
+                                    break;
+
+                                // Class
+                                case 'class':
+                                    properties.class[propertiesIndex.class] ?
+                                        properties.class[propertiesIndex.class] += character :
+                                        properties.class[propertiesIndex.class] = character;
+                                    break;
+
+                                // ID
+                                case 'id':
+                                    properties.id[propertiesIndex.id] ?
+                                        properties.id[propertiesIndex.id] += character :
+                                        properties.id[propertiesIndex.id] = character
+                            }
+                        }
+
+                        /* Logic
+                                [if statement]
+                        */
+                        if (properties.attributes.length) {
+                            // Initialization > Attributes
+                            var attributes = properties.attributes;
+
+                            // Update > (Iterator, Length)
+                            iterator = 0; length = attributes.length;
+
+                            /* Loop
+                                    Index Attributes.
+                            */
+                            for (iterator; iterator != length; iterator += 1) {
+                                // Initialization > Attribute
+                                var attribute = attributes[iterator];
+
+                                // Update > Attribute
+                                (attribute[attribute.length - 1] == ']') || (attribute += ']');
+                                attribute = LDKF.rendString(LDKF.rendString(attribute, 1), -1);
+
+                                // Modification > Element > [Name]
+                                LDKF.elementPrototypeSetAttribute(
+                                    // Element
+                                    element,
+
+                                    // {Name}
+                                    (function name(attribute) {
+                                        // Initialization > (Allow Stream, Iterator, Length, Stream)
+                                        var allowStream = !0,
+                                            iterator = 0,
+                                            length = attribute.length,
+                                            stream = '';
+
+                                        /* Loop
+                                                Iterate through Attribute.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Character
+                                            var character = attribute[iterator];
+
+                                            // Update > (Allow) Stream
+                                            (character == '=') && (allowStream = !1);
+                                            allowStream && (stream += character)
+                                        }
+
+                                        // Return
+                                        return stream
+                                    })(attribute),
+
+                                    // {Value}
+                                    (function value(attribute) {
+                                        // Initialization > (Allow Stream, Iterator, Length, Stream)
+                                        var allowStream = !1,
+                                            iterator = 0,
+                                            length = attribute.length,
+                                            stream = '';
+
+                                        /* Loop
+                                                Iterate through Attribute.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Character
+                                            var character = attribute[iterator];
+
+                                            // Update > (Allow) Stream
+                                            allowStream && (stream += character);
+                                            (character == '=') && (allowStream = !0)
+                                        }
+
+                                        // Update > Stream
+                                        (
+                                            (stream[0] == '"' || stream[0] == "'") &&
+                                            (stream[stream.length - 1] == '"' || stream[stream.length - 1] == "'")
+                                        ) && (stream = LDKF.rendString(LDKF.rendString(stream, 1), -1));
+
+                                        // Return
+                                        return stream
+                                    })(attribute)
+                                )
+                            }
+                        }
+
+                        /* Logic
+                                [if statement]
+                        */
+                        if (properties.class.length) {
+                            // Initialization > Classes
+                            var classes = properties.class;
+
+                            // Update > (Iterator, Length)
+                            iterator = 0; length = classes.length;
+
+                            /* Loop
+                                    Index Classes.
+
+                                > Modification > Element > Class
+                            */
+                            for (iterator; iterator != length; iterator += 1)
+                                LDKF.addClassToElement(element, LDKF.rendString(classes[iterator], 1))
+                        }
+
+                        // Modification > Element > ID
+                        properties.id.length && LDKF.elementPrototypeSetAttribute(element, 'id', LDKF.rendString(properties.id[properties.id.length - 1], 1))
+                    }
+
+                    // Return
+                    return selector
+                },
+
+                /* Sigmoid
+                        --- NOTE ---
+                            #Lapys: Return number closer to 1.
+                */
+                sigmoid: function sigmoid(number) {
+                    // Return
+                    return 1 / (1 + LDKF.exp(-number))
+                },
+
                 // String
                 string: function string(arg) {
                     /* Logic
@@ -1553,7 +2482,7 @@ window && (function Main(args) {
                         */
                         return '';
 
-                    else if (LDKF.isString(arg))
+                    else if (LapysJSDevelopmentKit.functions.isString(arg))
                         // Return
                         return arg;
 
@@ -1567,7 +2496,7 @@ window && (function Main(args) {
                         catch (error) {}
 
                         // Return
-                        return LDKO.string(arg)
+                        return LapysJSDevelopmentKit.objects.string(arg)
                     }
                 },
 
@@ -1756,11 +2685,8 @@ window && (function Main(args) {
                     // Prototype
                     arrayPrototype: [].__proto__,
 
-                /* Backups
-                        --- NOTE ---
-                            #Lapys: Contain all backed up objects.
-                */
-                backups: {},
+                // Character Data
+                characterData: window.CharacterData,
 
                 /* Clear Timeout
                         --- WARN ---
@@ -1775,6 +2701,9 @@ window && (function Main(args) {
 
                 // Descriptions
                 descriptions: {},
+
+                // Document Type
+                documentType: window.DocumentType,
 
                 // DOM Error
                 domError: window.DOMError,
@@ -1797,6 +2726,9 @@ window && (function Main(args) {
 
                 // Evaluation Error
                 evalError: window.EvalError,
+
+                // Euler`s Number
+                E: 2.718281828459045,
 
                 // Function
                 func: (function() {}).constructor,
@@ -1824,6 +2756,9 @@ window && (function Main(args) {
 
                 // Over-Constrained Error
                 overconstrainedError: window.OverconstrainedError,
+
+                // Processing Instruction
+                processingInstruction: window.ProcessingInstruction,
 
                 // Range Error
                 rangeError: (function rangeError() {
@@ -1894,7 +2829,10 @@ window && (function Main(args) {
                 valueTypes: ['boolean', 'function', 'number', 'object', 'string', 'symbol']
             }
         };
-            // Functions
+            /* Functions
+                    --- NOTE ---
+                        #Lapys: Functions required to add values to the LapysJS Development Kit.
+            */
                 // Array > Prototype
                     // Push
                     LapysJSDevelopmentKit.functions.arrayPrototypePush = LapysJSDevelopmentKit.objects.arrayPrototype.push;
@@ -1925,7 +2863,46 @@ window && (function Main(args) {
                             return function objectPrototypeToString() { return arguments.length ? method.call(arguments[0]) : '' }
                         })();
 
-            // Objects
+            /* Objects
+                    --- NOTE ---
+                        #Lapys: Necessary functions and objects are added here to
+                            prepare the library.
+            */
+                // Add Event
+                LapysJSDevelopmentKit.objects.addEvent = (function() {
+                    // Initialization > (Methods, Index, Length)
+                    var methods = [LapysJSDevelopmentKit.objects.windowPrototype.addEventListener, LapysJSDevelopmentKit.objects.windowPrototype.attachEvent],
+                        index = 0,
+                        length = methods.length;
+
+                    // Loop > Update > Index
+                    while (!LapysJSDevelopmentKit.functions.isNativeFunction(methods[index]) && index != length)
+                        index += 1;
+
+                    // Return
+                    return index == length ? null : methods[index]
+                })();
+
+                // Cancel Animation Frame
+                LapysJSDevelopmentKit.objects.cancelAnimationFrame = (function() {
+                    // Initialization > (Methods, Iterator, Length)
+                    var methods = [window.cancelAnimationFrame, window.mozCancelAnimationFrame, window.webkitCancelAnimationFrame],
+                        iterator = 0,
+                        length = methods.length;
+
+                    /* Loop
+                            Index Methods.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Method
+                        var method = methods[iterator];
+
+                        // Logic > Return
+                        if (LapysJSDevelopmentKit.functions.isNativeFunction(method))
+                            return method
+                    }
+                })();
+
                 // Date > Prototype
                     // Get Milliseconds
                     LapysJSDevelopmentKit.objects.datePrototypeGetMilliseconds = LapysJSDevelopmentKit.objects.datePrototype.getMilliseconds;
@@ -1935,30 +2912,78 @@ window && (function Main(args) {
                         // Document
                         LapysJSDevelopmentKit.objects.descriptions.windowDocument = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'document') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'document');
 
-                    // Document
-                        // Prototype
-                        LapysJSDevelopmentKit.objects.descriptions.documentPrototype = (function documentPrototype() {
-                            // Initialization > (Prototypes, Iterator)
-                            var protos = LapysJSDevelopmentKit.functions.getPrototypes(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window)),
-                                iterator = protos.length;
+                        // Performance
+                        LapysJSDevelopmentKit.objects.descriptions.windowPerformance = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'performance') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'performance');
 
-                            /* Loop
-                                    Index Prototypes.
-                            */
-                            while (iterator) {
-                                // Initialization > Prototype String
-                                var protoString = LapysJSDevelopmentKit.functions.objectPrototypeToString(protos[iterator -= 1]);
+                /* Document > Prototype
+                        --- NOTE ---
+                            #Lapys: Collect the `Document` prototype from the current window document object.
+                */
+                LapysJSDevelopmentKit.objects.documentPrototype = (function documentPrototype() {
+                    // Initialization > (Prototypes, Iterator)
+                    var protos = LapysJSDevelopmentKit.functions.getPrototypes(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window)),
+                        iterator = protos.length;
 
-                                // Logic > Return
-                                if (protoString == '[object Document]' || protoString == '[object DocumentPrototype]')
-                                    return protos[iterator]
-                            }
-                        })();
-                            // Create Element
-                            LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.descriptions.documentPrototype, 'createElement');
+                    /* Loop
+                            Index Prototypes.
+                    */
+                    while (iterator) {
+                        // Initialization > Prototype String
+                        var protoString = LapysJSDevelopmentKit.functions.objectPrototypeToString(protos[iterator -= 1]);
 
-                            // Query Selector
-                            LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelector = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.descriptions.documentPrototype, 'querySelector');
+                        // Logic
+                        if (protoString == '[object Document]' || protoString == '[object DocumentPrototype]') {
+                            // Modification > (LapysJS Development Kit > Objects) > Document
+                            LapysJSDevelopmentKit.objects.document = protos[iterator].constructor;
+
+                            // Return
+                            return protos[iterator]
+                        }
+                    }
+                })();
+
+                // Delete Event
+                LapysJSDevelopmentKit.objects.delEvent = (function() {
+                    // Initialization > (Methods, Index, Length)
+                    var methods = [LapysJSDevelopmentKit.objects.windowPrototype.removeEventListener, LapysJSDevelopmentKit.objects.windowPrototype.detachEvent],
+                        index = 0,
+                        length = methods.length;
+
+                    // Loop > Update > Index
+                    while (!LapysJSDevelopmentKit.functions.isNativeFunction(methods[index]) && index != length)
+                        index += 1;
+
+                    // Return
+                    return index == length ? null : methods[index]
+                })();
+
+                // HTML Document
+                LapysJSDevelopmentKit.objects.htmlDocument = LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window).constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.htmlDocumentPrototype = LapysJSDevelopmentKit.objects.htmlDocument.prototype;
+
+                // Descriptions
+                    // Document Prototype
+                        // All
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeAll = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'all') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlDocumentPrototype, 'all');
+
+                        // Create Document Fragment
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateDocumentFragment = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'createDocumentFragment');
+
+                        // Create Element
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'createElement');
+
+                        // Document Element
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeDocumentElement = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'documentElement');
+
+                        // HTML Collection
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetElementsByTagName = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'getElementsByTagName');
+
+                        // Query Selector
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelector = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'querySelector');
+
+                        // Query Selector All
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelectorAll = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'querySelectorAll');
 
                 // Parameters
                 LapysJSDevelopmentKit.objects.parameter = function Parameter() {};
@@ -1970,7 +2995,30 @@ window && (function Main(args) {
                     // Prototype
                     (LapysJSDevelopmentKit.objects.parameterListPrototype = LapysJSDevelopmentKit.objects.parameterList.prototype).__proto__ = LapysJSDevelopmentKit.objects.arrayPrototype;
 
-            // Functions
+                // Request Animation Frame
+                LapysJSDevelopmentKit.objects.requestAnimationFrame = (function() {
+                    // Initialization > (Methods, Iterator, Length)
+                    var methods = [window.requestAnimationFrame, window.mozRequestAnimationFrame, window.msRequestAnimationFrame, window.webkitRequestAnimationFrame],
+                        iterator = 0,
+                        length = methods.length;
+
+                    /* Loop
+                            Index Methods.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Method
+                        var method = methods[iterator];
+
+                        // Logic > Return
+                        if (LapysJSDevelopmentKit.functions.isNativeFunction(method))
+                            return method
+                    }
+                })();
+
+            /* Functions
+                    --- NOTE ---
+                        #Lapys: Prototype-based functions with getters and setters are added here.
+            */
                 // Date > Prototype
                     // Get Milliseconds
                     LapysJSDevelopmentKit.functions.datePrototypeGetMilliseconds = function datePrototypeGetMilliseconds() {
@@ -1979,6 +3027,13 @@ window && (function Main(args) {
                     };
 
                 // Get
+                    // Document
+                        // All
+                        LapysJSDevelopmentKit.functions.get.documentPrototypeAll = function documentPrototypeAll() {
+                            // Return
+                            return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeAll.get.call(arguments.length ? arguments[0] : LapysJSDevelopmentKit.functions.get.windowDocument())
+                        };
+
                     // Window
                         // Document
                         LapysJSDevelopmentKit.functions.get.windowDocument = function windowDocument() {
@@ -1986,17 +3041,54 @@ window && (function Main(args) {
                             return LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(arguments.length ? arguments[0] : window)
                         };
 
+                        // Performance
+                        LapysJSDevelopmentKit.functions.get.windowPerformance = function windowPerformance() {
+                            // Return
+                            return LapysJSDevelopmentKit.objects.descriptions.windowPerformance.get.call(arguments.length ? arguments[0] : window)
+                        };
+
                 // Document > Prototype
                     // Create Element
                     LapysJSDevelopmentKit.functions.documentPrototypeCreateElement = function documentPrototypeCreateElement() {
                         // Return
-                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.apply(arguments[0], LDKF.rendArray(arguments, 1))
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                    // Document Element
+                    LapysJSDevelopmentKit.functions.documentPrototypeDocumentElement = function documentPrototypeDocumentElement() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeDocumentElement.get.call(arguments[0])
+                    };
+
+                    // Get Elements By Tag Name
+                    LapysJSDevelopmentKit.functions.documentPrototypeGetElementsByTagName = function documentPrototypeGetElementsByTagName() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetElementsByTagName.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
                     // Query Selector
                     LapysJSDevelopmentKit.functions.documentPrototypeQuerySelector = function documentPrototypeQuerySelector() {
                         // Return
                         return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelector.value.apply(arguments[0], LDKF.rendArray(arguments, 1))
+                    };
+
+                    // Query Selector All
+                    LapysJSDevelopmentKit.functions.documentPrototypeQuerySelectorAll = function documentPrototypeQuerySelectorAll() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelectorAll.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                // Element > Prototype
+                    // Get Attribute
+                    LapysJSDevelopmentKit.functions.elementPrototypeGetAttribute = function elementPrototypeGetAttribute() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.elementPrototypeGetAttribute.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                    // Set Attribute
+                    LapysJSDevelopmentKit.functions.elementPrototypeSetAttribute = function elementPrototypeSetAttribute() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.elementPrototypeSetAttribute.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
                 // Performance > Prototype
@@ -2006,7 +3098,26 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.performancePrototypeNow.call(arguments[0])
                     };
 
-            // Objects
+            /* Objects
+                    --- NOTE ---
+                        #Lapys: Add all other necessary objects to the LapysJS Development Kit.
+            */
+                // Document Fragment
+                LapysJSDevelopmentKit.objects.documentFragment = (function() {
+                    // Return
+                    return (function() {
+                        // Initialization > (Native Code, Stream)
+                        var nativeCode = LapysJSDevelopmentKit.functions.string(window.DocumentFragment),
+                            stream = LapysJSDevelopmentKit.functions.removeCharString(LapysJSDevelopmentKit.functions.trimLeftString(nativeCode), ' ');
+
+                        // Return
+                        return stream[0] == 'f' && stream[1] == 'u' && stream[2] == 'n' && stream[3] == 'c' && stream[4] == 't' && stream[5] == 'i' && stream[6] == 'o' && stream[7] == 'n' &&
+                            stream[8] == 'D' && stream[9] == 'o' && stream[10] == 'c' && stream[11] == 'u' && stream[12] == 'm' && stream[13] == 'e' && stream[14] == 'n' && stream[15] == 't' && stream[16] == 'F' && stream[17] == 'r' && stream[18] == 'a' && stream[19] == 'g' && stream[20] == 'm' && stream[21] == 'e' && stream[22] == 'n' && stream[23] == 't'
+                    })() && LapysJSDevelopmentKit.functions.isNativeFunction(window.DocumentFragment) ?
+                        window.DocumentFragment :
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateDocumentFragment.value.call(LapysJSDevelopmentKit.functions.get.windowDocument()).constructor
+                })();
+
                 // DOM Exception
                 LapysJSDevelopmentKit.objects.domException = (function domException() {
                     // Initialization > Error Object
@@ -2019,6 +3130,66 @@ window && (function Main(args) {
                     // Return
                     return errorObject
                 })();
+
+                // HTML All Collection
+                LapysJSDevelopmentKit.objects.htmlAllCollection = LapysJSDevelopmentKit.functions.get.documentPrototypeAll().constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.htmlAllCollectionPrototype = LapysJSDevelopmentKit.objects.htmlAllCollection.prototype;
+
+                // HTML Collection
+                LapysJSDevelopmentKit.objects.htmlCollection = LapysJSDevelopmentKit.functions.documentPrototypeGetElementsByTagName(LapysJSDevelopmentKit.functions.get.windowDocument(), '').constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.htmlCollectionPrototype = LapysJSDevelopmentKit.objects.htmlCollection.prototype;
+
+                // HTML Element
+                LapysJSDevelopmentKit.objects.htmlElement = LapysJSDevelopmentKit.functions.documentPrototypeDocumentElement(LapysJSDevelopmentKit.functions.get.windowDocument()).__proto__.__proto__.constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.htmlElementPrototype = LapysJSDevelopmentKit.objects.htmlElement.prototype;
+
+                // Element
+                LapysJSDevelopmentKit.objects.element = LapysJSDevelopmentKit.objects.htmlElement.__proto__;
+                    /* Prototype
+                            --- NOTE ---
+                                #Lapys: The conditional fallback is only for legacy browsers
+                                    (The `class` keyword is not valid in such browsers).
+                    */
+                    LapysJSDevelopmentKit.objects.elementPrototype = LapysJSDevelopmentKit.objects.element.prototype || (LapysJSDevelopmentKit.objects.element = window.Element).prototype;
+                        // Get Attribute Node
+                        LapysJSDevelopmentKit.objects.elementPrototypeGetAttributeNode = LapysJSDevelopmentKit.objects.elementPrototype.getAttributeNode;
+
+                        // Get Attribute
+                        LapysJSDevelopmentKit.objects.elementPrototypeGetAttribute = LapysJSDevelopmentKit.objects.elementPrototype.getAttribute;
+
+                        // Has Attribute
+                        LapysJSDevelopmentKit.objects.elementPrototypeHasAttribute = function hasAttribute(name) {
+                            // Return
+                            return !LapysJSDevelopmentKit.functions.isNull(LapysJSDevelopmentKit.objects.elementPrototypeGetAttribute.apply(this, arguments))
+                        };
+
+                        // Set Attribute
+                        LapysJSDevelopmentKit.objects.elementPrototypeSetAttribute = LapysJSDevelopmentKit.objects.elementPrototype.setAttribute;
+
+                // Attribute
+                LapysJSDevelopmentKit.objects.attr = (function() {
+                    // Initialization > Element
+                    var element = LapysJSDevelopmentKit.functions.documentPrototypeCreateElement(LapysJSDevelopmentKit.functions.get.windowDocument(), 'a');
+
+                    // Modification > Element > [Name]
+                    LapysJSDevelopmentKit.objects.elementPrototypeSetAttribute.call(element, 'a', '');
+
+                    // Return
+                    return LapysJSDevelopmentKit.objects.elementPrototypeGetAttributeNode.call(element, 'a').constructor
+                })();
+
+                // Node
+                LapysJSDevelopmentKit.objects.node = LapysJSDevelopmentKit.objects.element.__proto__;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.nodePrototype = LapysJSDevelopmentKit.objects.node.prototype || (LapysJSDevelopmentKit.objects.node = window.Node).prototype;
+
+                // Node List
+                LapysJSDevelopmentKit.objects.nodeList = LapysJSDevelopmentKit.functions.documentPrototypeQuerySelectorAll(LapysJSDevelopmentKit.functions.get.windowDocument(), '*').constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.nodeListPrototype = LapysJSDevelopmentKit.objects.nodeList.prototype;
 
                 // Reference Error
                 LapysJSDevelopmentKit.objects.referenceError = (function referenceError() {
@@ -2079,7 +3250,23 @@ window && (function Main(args) {
                     return errorObject
                 })();
 
-            // Random
+                /* Descriptions */
+                    // Element > Prototype
+                        // Inner HTML
+                        LapysJSDevelopmentKit.objects.descriptions.elementPrototypeInnerHTML = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.elementPrototype, 'innerHTML');
+
+                    // Node > Prototype
+                        // Child Nodes
+                        LapysJSDevelopmentKit.objects.descriptions.nodePrototypeChildNodes = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.nodePrototype, 'childNodes');
+
+                    // Node List > Prototype
+                        // Length
+                        LapysJSDevelopmentKit.objects.descriptions.nodeListPrototypeLength = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.nodeListPrototype, 'length');
+
+            /* Random
+                    --- NOTE ---
+                        #Lapys: Miscellaneous but useful values.
+            */
                 // Class Keyword Valid
                 LapysJSDevelopmentKit.random.classKeywordValid = (function classKeywordValid() {
                     // Initialization > Is Valid
@@ -2184,6 +3371,9 @@ window && (function Main(args) {
 
     /* Logic
             [if statement]
+
+            --- NOTE ---
+                #Lapys: If custom settings are applied to the library.
     */
     if (typeof LapysJS == 'object') {
         // Initialization > Constructor
@@ -2239,6 +3429,9 @@ window && (function Main(args) {
     if (typeof LapysJS == 'undefined')
         try {
             /* Global Data */
+                // LapysJS Features
+                var LapysJSFeatures = LDK.features.valueOf();
+
                 // LapysJS
                 LDKF.objectDefineProperty(window, 'LapysJS', {
                     // Configurable
@@ -2275,6 +3468,115 @@ window && (function Main(args) {
                     // Writable
                     writable: !1
                 });
+                    // Add Feature
+                    LDKF.objectDefineProperty(LapysJS, 'addFeature', {
+                        // Configurable
+                        configurable: !1,
+
+                        // Enumerable
+                        enumerable: !0,
+
+                        // Value
+                        value: function addFeature() {
+                            // Initialization > (Features, Iterator, Length)
+                            var features = arguments,
+                                iterator = 0,
+                                length = features.length;
+
+                            /* Loop
+                                    Index Features.
+                            */
+                            for (iterator; iterator != length; iterator += 1) {
+                                // Initialization > Feature
+                                var feature = features[iterator];
+
+                                // (Update > (LapysJS Development Kit > Features > Active) | Warn)
+                                LDKF.isInArray(LapysJSFeatures, feature) ?
+                                    LDK.features.active[LDK.features.active.length] = feature :
+                                    LDKF.throwWarning(feature, ['not', 'a'], 'feature of LapysJS')
+                            }
+
+                            // Return
+                            return LDK.features.active
+                        },
+
+                        // Writable
+                        writable: !1
+                    });
+
+                    // Clear Features
+                    LDKF.objectDefineProperty(LapysJS, 'clearFeatures', {
+                        // Configurable
+                        configurable: !1,
+
+                        // Enumerable
+                        enumerable: !0,
+
+                        // Value
+                        value: function clearFeatures() {
+                            // Update > (LapysJS Development Kit > Features > Active)
+                            LDKF.resetArray(LDK.features.active)
+
+                            // Return
+                            return LDK.features.active
+                        },
+
+                        // Writable
+                        writable: !1
+                    });
+
+                    // Remove Feature
+                    LDKF.objectDefineProperty(LapysJS, 'removeFeature', {
+                        // Configurable
+                        configurable: !1,
+
+                        // Enumerable
+                        enumerable: !0,
+
+                        // Value
+                        value: function removeFeature() {
+                            // Initialization > (Features, Iterator, Length)
+                            var features = arguments,
+                                iterator = 0,
+                                length = features.length;
+
+                            /* Loop
+                                    Index Features.
+                            */
+                            for (iterator; iterator != length; iterator += 1) {
+                                // Initialization > Feature
+                                var feature = features[iterator];
+
+                                // (Update > (LapysJS Development Kit > Features > Active) | Warn)
+                                LDKF.isInArray(LapysJSFeatures, feature) ?
+                                    LDKF.removeItemArray(LDK.features.active, feature) :
+                                    LDKF.throwWarning(feature, ['not', 'a'], 'feature of LapysJS')
+                            }
+
+                            // Return
+                            return LDK.features.active
+                        },
+
+                        // Writable
+                        writable: !1
+                    });
+
+                    // Script --- CHECKPOINT ---
+                    LDKF.objectDefineProperty(LapysJS, 'script', {
+                        // Configurable
+                        configurable: !1,
+
+                        // Enumerable
+                        enumerable: !0,
+
+                        // Value
+                        value: (function() {
+
+                        })(),
+
+                        // Writable
+                        writable: !1
+                    });
 
                 // LapysJS Error
                 LDKF.objectDefineProperty(window, 'LapysJSError', {
@@ -2286,6 +3588,45 @@ window && (function Main(args) {
 
                     // Value
                     value: (new LDKF.error).constructor,
+
+                    // Writable
+                    writable: !0
+                });
+
+                /* LapysJS Object
+                        --- NOTE ---
+                            #Lapys: Any value that is a LapysJS object lets the developer know
+                                the object is a substitute value for another value that could not be parsed.
+                */
+                LDKF.objectDefineProperty(window, 'LapysJSObject', {
+                    // Configurable
+                    configurable: !0,
+
+                    // Enumerable
+                    enumerable: !1,
+
+                    // Value
+                    value: function LapysJSObject() {
+                        // Initialization > (Object, Properties)
+                        var object = {},
+                            properties = arguments[0];
+
+                        // ((LapysJS Development Kit > Functions) > Iterate Object) > Properties
+                        LDKF.iterateObject(properties, function(key, value, description) {
+                            // Error Handling > Modification > Object > [Key]
+                            try { (key === '__proto__') || LDKF.objectDefineProperty(object, key, description) }
+                            catch (error) {}
+                        }, function(key, value, description, iteratorObject) { return properties === iteratorObject }, !0);
+
+                        /* Modification > Object > (Constructor, Prototype)
+                                --- NOTE ---
+                                    #Lapys: This makes the object a LapysJS object.
+                        */
+                        object.__proto__ = LapysJSObject.prototype;
+
+                        // Return
+                        return object
+                    },
 
                     // Writable
                     writable: !0
@@ -2314,6 +3655,19 @@ window && (function Main(args) {
                             stream[8] != 'c' || stream[9] != 'l' || stream[10] != 'e' || stream[11] != 'a' || stream[12] != 'r' || stream[13] != 'T' || stream[14] != 'i' || stream[15] != 'm' || stream[16] != 'e' || stream[17] != 'o' || stream[18] != 'u' || stream[19] != 't'
                     })() || !LDKF.isNativeFunction(window.clearTimeout)) throw 1
                 } catch (error) { LDKF.throwError(LDKI.browserIncompatibilityErrorMessage + ": The 'clearTimeout' function should not be altered or must be native to this development environment.") }
+
+                // {`getComputedStyle`}
+                try {
+                    if (typeof getComputedStyle != 'function' || (function() {
+                        // Initialization > (Native Code, Stream)
+                        var nativeCode = LDKF.string(window.getComputedStyle),
+                            stream = LDKF.removeCharString(LDKF.trimLeftString(nativeCode), ' ');
+
+                        // Return
+                        return stream[0] != 'f' || stream[1] != 'u' || stream[2] != 'n' || stream[3] != 'c' || stream[4] != 't' || stream[5] != 'i' || stream[6] != 'o' || stream[7] != 'n' ||
+                            stream[8] != 'g' || stream[9] != 'e' || stream[10] != 't' || stream[11] != 'C' || stream[12] != 'o' || stream[13] != 'm' || stream[14] != 'p' || stream[15] != 'u' || stream[16] != 't' || stream[17] != 'e' || stream[18] != 'd' || stream[19] != 'S' || stream[20] != 't' || stream[21] != 'y' || stream[22] != 'l' || stream[23] != 'e'
+                    })() || !LDKF.isNativeFunction(window.getComputedStyle)) throw 1
+                } catch (error) { LDKF.throwError(LDKI.browserIncompatibilityErrorMessage + ": The 'getComputedStyle' function should not be altered or must be native to this development environment.") }
 
                 // {`console`}
                 try { if (typeof console != 'object' || (LDKF.string(window.console) != '[object console]' && LDKF.string(window.console) != '[object Console]' && LDKF.string(window.console) != '[object Object]')) throw 1 }
@@ -2438,47 +3792,92 @@ window && (function Main(args) {
                             // Warn
                             LDKO.consoleWarn = LDKO.console.warn;
 
+                        // Get Computed Style
+                        LDKO.getComputedStyle = window.getComputedStyle;
+
                         // Function > Prototype
                             // Bind
                             LDKO.funcPrototypeBind = LDKO.funcPrototype.bind;
-
-                        // Descriptions
-                            // Window
-                                // Location
-                                LDKO.descriptions.windowLocation = LDKF.objectGetOwnPropertyDescriptor(window, 'location');
-
-                                // Navigator
-                                LDKO.descriptions.windowNavigator = LDKF.objectGetOwnPropertyDescriptor(window, 'navigator');
-
-                                // Performance
-                                LDKO.descriptions.windowPerformance = LDKF.objectGetOwnPropertyDescriptor(window, 'performance');
-
-                                // Screen
-                                LDKO.descriptions.windowScreen = LDKF.objectGetOwnPropertyDescriptor(window, 'screen');
 
                         // Math
                         LDKO.math = Math;
 
                         // Performance
-                        LDKO.performance = performance;
+                        LDKO.performance = performance.constructor;
                             // Prototype
-                            LDKO.performancePrototype = LDKO.performance.__proto__;
+                            LDKO.performancePrototype = LDKO.performance.prototype;
                                 // Now
                                 LDKO.performancePrototypeNow = LDKO.performancePrototype.now;
 
                     // Functions
-                        // Add Event
-                        LDKF.addEvent = function addEvent(node, type, listener, options) {};
+                        /* All Nodes
+                                --- NOTE ---
+                                    #Lapys: Return all descendant nodes of a node
+                                        in a descending hierarchy (direct children, ..., grandchildren).
+                        */
+                        LDKF.allNodes = function allNodes(node) {
+                            // Initialization > (Children, Iterator, Length, Descendants)
+                            var children = LDKF.get.nodePrototypeChildNodes(node),
+                                iterator = 0,
+                                length = LDKF.get.nodeListPrototypeLength(children),
+                                descendants = [];
 
-                        // All Nodes
-                        LDKF.allNodes = function allNodes(node) {};
+                            /* Loop
+                                    Index Descendants.
+
+                                > Update > Descendants
+                            */
+                            for (iterator; iterator != length; iterator += 1)
+                                descendants[descendants.length] = children[iterator];
+
+                            // Update > (Iterator, Length)
+                            iterator = 0;
+                            length = descendants.length;
+
+                            /* Function > Recur
+                                    --- NOTE ---
+                                        #Lapys: As long as descendant nodes are available,
+                                            re-iterate the current children`s children.
+                            */
+                            (function recur() {
+                                /* Loop
+                                        Index Descendants.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > (Descendant, Children (Iterator, Length))
+                                    var descendant = descendants[iterator],
+                                        children = LDKF.get.nodePrototypeChildNodes(descendant),
+                                        childrenIterator = 0,
+                                        childrenLength = LDKF.get.nodeListPrototypeLength(children);
+
+                                    /* Loop
+                                            Index Children.
+                                    */
+                                    for (childrenIterator; childrenIterator != childrenLength; childrenIterator += 1) {
+                                        // Initialization > Child
+                                        var child = children[childrenIterator];
+
+                                        // Update > Descendants
+                                        LDKF.isInArray(descendants, child) || (descendants[descendants.length] = child)
+                                    }
+                                }
+
+                                // Update > Length
+                                length = descendants.length;
+
+                                // Recur
+                                (iterator != length) && recur()
+                            })();
+
+                            // Return
+                            return descendants
+                        };
 
                         // Cancel Animation Frame
                         LDKF.cancelAnimationFrame = function cancelAnimationFrame(frame) {
-                            /* Logic
-                                    [if statement]
-                            */
-                            if (!LDKF.isVoid(frame)) {}
+                            // Logic > Return
+                            if (!LDKF.isVoid(frame))
+                                return LDKO.cancelAnimationFrame.call(window, frame)
                         };
 
                         // Clone Object
@@ -3850,6 +5249,53 @@ window && (function Main(args) {
                                     return params
                                 };
 
+                            // Node > Prototype
+                                // Child Nodes
+                                LDKF.get.nodePrototypeChildNodes = function nodePrototypeChildNodes() {
+                                    // Return
+                                    return LDKO.descriptions.nodePrototypeChildNodes.get.call(arguments[0])
+                                };
+
+                            // Node List > Prototype
+                                // Length
+                                LDKF.get.nodeListPrototypeLength = function nodeListPrototypeLength() {
+                                    // Return
+                                    return LDKO.descriptions.nodeListPrototypeLength.get.call(arguments[0])
+                                };
+
+                        /* Iterate Array
+                                --- NOTE ---
+                                    #Lapys: Iterate all numerical keys (and other specified keys) of an array.
+                        */
+                        LDKF.iterateArray = function iterateArray() {
+                            // Initialization > (Object, Callback, Test, Stop, Item, Iterations (Keys))
+                            var array = arguments[0],
+                                callback = arguments[1],
+                                test = arguments.length > 2 ? arguments[2] : (function() { return !0 }),
+                                stop = arguments[3];
+
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (arguments.length && LDKF.isConstructible(array) && LDKF.isArray(array)) {
+                                // Error
+                                LDKF.isFunction(callback) || LDKF.throwError('Second argument', ['must', 'a'], 'function');
+                                LDKF.isFunction(test) || LDKF.throwError('Third argument', ['must', 'a'], 'function');
+
+                                // ((LapysJS Development Kit > Functions) > Iterate Object) > Array
+                                LDKF.iterateObject(array, function(key) {
+                                    // Callback
+                                    (key == 'length') || callback.apply(array, arguments)
+                                }, function(key, value, description, iteratorObject) {
+                                    // Return
+                                    return array === iteratorObject && test.apply(array, arguments)
+                                }, stop)
+                            }
+
+                            // Return
+                            return array
+                        };
+
                         /* Iterate Object
                                 --- CODE ---
                                     #Lapys: iterateObject(object, callback, condition, stopOnConditionFail)
@@ -4030,11 +5476,107 @@ window && (function Main(args) {
                             return object
                         };
 
+                        /* Query Event Reference
+                                --- NOTE ---
+                                    #Lapys: Return a sequence of argument sets based on specified input.
+                        */
+                        LDKF.queryEventReference = function queryEventReference() {
+                            // Initialization > (Type, Listener, Options, Reference)
+                            var type = arguments[0],
+                                listener = arguments[1],
+                                options = arguments.length > 2 ? arguments[2] : {capture: !1, once: !1, passive: !1},
+                                reference = [];
+
+                            /* Logic
+                                    [if:else statement]
+                            */
+                            if (arguments.length > 1) {
+                                // Error
+                                LDKF.isArray(listener) || (LDKF.isFunction(listener) ? listener = [listener] : LDKF.throwError('queryEventReference', 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], ['listener function', 'a set of listener functions'])));
+
+                                // Update > (Options, Type)
+                                LDKF.isArray(options) || (options = [options]);
+                                LDKF.isArray(type) || (type = [LDKF.string(type)]);
+
+                                // Error
+                                (LDKF.filterArray(listener, function(value) { return LDKF.isFunction(value) }).length == listener.length) || LDKF.throwError('queryEventReference', 'argument', 'All listeners must be listener functions');
+
+                                // Update > (Options, Type)
+                                LDKF.buildArray(options, function(value) { return LDKF.isPureObject(value) ? (function(value) { try { return {capture: !!value.capture, once: !!value.once, passive: !!value.passive} } catch (error) {} return {capture: !1, once: !1, passive: !1} })(value) : {capture: !!value, once: !1, passive: !1} });
+                                LDKF.buildArray(type, function(value) { return LDKF.string(value) });
+
+                                // Initialization > (Iterator, () Length)
+                                var iterator = 0,
+                                    listenerLength = listener.length,
+                                    optionsLength = options.length,
+                                    typeLength = type.length;
+
+                                /* Logic
+                                        If
+                                            the arguments are of the same length.
+                                */
+                                if (optionsLength == listenerLength && typeLength == listenerLength && optionsLength == typeLength)
+                                    /* Loop
+                                            Index Reference.
+
+                                        > Update > Reference
+                                    */
+                                    for (iterator; iterator != typeLength; iterator += 1)
+                                        reference[reference.length] = {listener: listener[iterator], options: options[iterator], type: type[iterator]};
+
+                                else {
+                                    // Initialization > ((Listener, Options, Type) Iterator, Length)
+                                    var listenerIterator = -1, optionsIterator = -1, typeIterator = -1,
+                                        length = LDKF.max(listenerLength, optionsLength, typeLength);
+
+                                    // Update > (Listener, Options, Type) Length
+                                    listenerLength -= 1;
+                                    optionsLength -= 1;
+                                    typeLength -= 1;
+
+                                    /* Loop
+                                            Index Reference.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Update >
+                                            // (Listener, Options, Type) Iterator
+                                            listenerIterator += 1;
+                                            optionsIterator += 1;
+                                            typeIterator += 1;
+
+                                            // Reference
+                                            reference[reference.length] = {
+                                                listener: listenerIterator > listenerLength ? listener[listenerIterator = 0] : listener[listenerIterator],
+                                                options: optionsIterator > optionsLength ? options[optionsIterator = 0] : options[optionsIterator],
+                                                type: typeIterator > typeLength ? type[typeIterator = 0] : type[typeIterator]
+                                            }
+                                    }
+                                }
+
+                                // Return
+                                return reference
+                            }
+
+                            else
+                                // Error
+                                LDKF.throwError('queryEventReference', 'argument', [2, 0]);
+
+                            // Return
+                            return reference
+                        };
+
+                        /* Query Line
+                                --- CHECKPOINT ---
+                                --- NOTE ---
+                                    #Lapys: Built on a whim. Returns the current line that executes this method.
+                        */
+                        LDKF.queryLine = function queryLine() {};
+
                         /* Recur Object
                                 --- NOTE ---
                                     #Lapys: Recursively iterate through an object.
 
-                                --- UPDATE ---
+                                --- UPDATE REQUIRED ---
                                     #Lapys: The `parentPath` parameter should actually contain all ancestors of the indexed object.
                         */
                         LDKF.recurObject = function recurObject() {
@@ -4168,13 +5710,213 @@ window && (function Main(args) {
                             return object
                         };
 
-                    // Object
-                        /* Backups
+                        /* Recur Object Property
                                 --- NOTE ---
-                                    #Lapys: Index all LapysJS Development Kit Objects properties
-                                        and clone them as a backup using the `LDKF.cloneObject` method.
+                                    #Lapys: Recursively index the object until the specified property name given is found.
+
+                                --- WARN ---
+                                    #Lapys: This method may deadlock all JavaScript processing or be relatively slow if the searched for property is not found
+                                        and the object specified is large (e.g.: the global `window` object).
                         */
-                        LDKOB.array = LDKF.cloneObject(LDKO.array);
+                        LDKF.recurObjectProperty = function recurObjectProperty() {
+                            // Initialization > (Object, Name, Iterator, Length, Match (Found), Indexed)
+                            var object = arguments[0],
+                                name = arguments[1],
+                                iterator = 0,
+                                length = 0,
+                                match,
+                                matchFound = !1,
+                                indexed = [];
+
+                            // Function
+                                // Includes
+                                function includes(array, match) {
+                                    // Initialization > Iterator
+                                    var iterator = array.length;
+
+                                    /* Loop
+                                            Index Array.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Item
+                                        var item = array[iterator -= 1];
+
+                                        // Logic > Return
+                                        if (
+                                            LDKF.isSameSourceObject(match, item) ||
+                                            (LDKF.isNaN(match) && LDKF.isNaN(item))
+                                        )
+                                            return !0
+                                    }
+                                }
+
+                                // Match
+                                function match(object, key) {
+                                    // Error Handling > Return
+                                    try { return key in object }
+                                    catch (error) {}
+                                }
+
+                                // Found
+                                function found(object, key) {
+                                    // Initialization > Description
+                                    var description = LDKF.objectGetOwnPropertyDescriptor(object, key);
+
+                                    // Update > Match
+                                    match = new LapysJSObject({object: object, key: key})
+                                }
+
+                            /* Logic
+                                    [if:else statement]
+                            */
+                            if (match(object, name)) {
+                                // Found > Object
+                                found(object, name);
+
+                                // Update > Match Found
+                                matchFound = !0
+                            }
+
+                            else {
+                                // Update > Indexed
+                                indexed[indexed.length] = object;
+
+                                // ((LapysJS Development Kit > Functions) > Iterate Object) > Object
+                                LDKF.iterateObject(object, function(key, value) {
+                                    // Update > Indexed
+                                    indexed[indexed.length] = value
+                                })
+                            }
+
+                            /* Loop
+                                    [while statement]
+
+                                    --- NOTE ---
+                                        #Lapys:
+                                            - Recursively search for the specified property name.
+                                            - Benefit of using a `while` statement is that the call stack size can be ignored.
+                            */
+                            while (!matchFound && length !== indexed.length) {
+                                // Update > Length
+                                length = indexed.length;
+
+                                /* Loop
+                                        Index Indexed.
+                                */
+                                for (iterator; !matchFound && iterator != length; iterator += 1) {
+                                    // Initialization > Index
+                                    var index = indexed[iterator];
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (match(index, name)) {
+                                        // Found > Index
+                                        found(index, name);
+
+                                        // Update > Match Found
+                                        matchFound = !0
+                                    }
+
+                                    else {
+                                        // ((LapysJS Development Kit > Functions) > Iterate Object) > Index
+                                        LDKF.iterateObject(index, function(key, value) {
+                                            // Update > Indexed
+                                            includes(indexed, value) || (indexed[indexed.length] = value)
+                                        })
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return matchFound ? match : LDKF.error(LDKF.debugMessage('recurObjectProperty', 'argument', 'Could not index property'))
+                        };
+
+                        // Request Animation Frame
+                        LDKF.requestAnimationFrame = function requestAnimationFrame(frame) {
+                            // Logic > Return
+                            if (!LDKF.isVoid(frame))
+                                return LDKO.requestAnimationFrame.call(window, frame)
+                        };
+
+                        // Reset Array
+                        LDKF.resetArray = function resetArray(array) {
+                            // Initialization > Iterator
+                            var iterator = array.length;
+
+                            // Loop > Deletion
+                            while (iterator)
+                                delete array[iterator -= 1];
+
+                            // Modification > Array > Length
+                            array.length = 0;
+
+                            // Return
+                            return array
+                        };
+
+                        // Set
+                            // Element > Prototype
+                                // Inner HTML
+                                LDKF.set.elementPrototypeInnerHTML = function elementPrototypeInnerHTML() {
+                                    // Return
+                                    return LDKO.descriptions.elementPrototypeInnerHTML.set.call(arguments[0], arguments[1])
+                                };
+
+                        // Update Event Type
+                        LDKF.updateEventType = function updateEventType(type) {
+                            /* Logic
+                                    [switch:case:default statement]
+                            */
+                            switch (type) {
+                                // Predefined Events
+                                    // Animation
+                                    case '$animation': return ['animationend', 'animationiteration', 'animationstart']; break;
+
+                                    // Before
+                                    case '$before': return ['beforecopy', 'beforecut', 'beforepaste']; break;
+
+                                    // Can Play
+                                    case '$canplay': return ['canplay', 'canplaythrough']; break;
+
+                                    // Device
+                                    case '$device': return ['devicemotion', 'deviceorientation', 'deviceorientationabsolute']; break;
+
+                                    // Drag
+                                    case '$drag': return ['drag', 'dragend', 'dragenter', 'dragleave', 'dragover', 'dragstart']; break;
+
+                                    // Key
+                                    case '$key': return ['keydown', 'keypress', 'keyup']; break;
+
+                                    // Load
+                                    case '$load': return ['load', 'loadeddata', 'loadedmetadata', 'loadstart']; break;
+
+                                    // Message
+                                    case '$message': return ['message', 'messageerror']; break;
+
+                                    // Mouse
+                                    case '$mouse': return ['mousedown', 'mouseenter', 'mouseleave', 'mousemove', 'mouseout', 'mouseover', 'mouseup', 'mousewheel']; break;
+
+                                    // Page
+                                    case '$page': return ['pagehide', 'pageshow']; break;
+
+                                    // Play
+                                    case '$play': return ['play', 'playing']; break;
+
+                                    // Pointer
+                                    case '$pointer': return ['pointercancel', 'pointerdown', 'pointerenter', 'pointermove', 'pointerleave', 'pointerout', 'pointerover', 'pointerup']; break;
+
+                                    // Touch
+                                    case '$touch': return ['touchcancel', 'touchend', 'touchmove', 'touchstart']; break;
+
+                                // Custom Events
+                                    // Edit
+                                    case '$edit': return ['change', 'input']; break;
+
+                                // [Default]
+                                default: return [type]
+                            }
+                        };
 
                     // Random
                         // Random Number Generator
@@ -4258,24 +6000,6 @@ window && (function Main(args) {
                     // Processing Duration
                     LDKF.objectDefineProperty(LapysJS, 'processingDuration', {value: {}});
 
-            // {Initialization} Error Handling
-            try {
-                // Initialization > Start Timestamp
-                var startTimestamp = LDKF.performancePrototypeNow(LDKO.performance);
-
-                // Update > Current Phase
-                CURRENT_PHASE = 'initialization';
-
-                // Initialization
-                INIT();
-
-                // Modification > (LapysJS > Processing Duration) > Initialization
-                LapysJS.processingDuration.init = LDKF.performancePrototypeNow(LDKO.performance) - startTimestamp
-            } catch (error) {
-                // Error
-                LDKF.error('Error in installation process: ' + error.message)
-            }
-
             /* Error Handling
                     --- NOTE ---
                         #Lapys: Begin building the library, not just the LDK.
@@ -4283,7 +6007,7 @@ window && (function Main(args) {
                 // {Initialization}
                 try {
                     // Initialization > Start Timestamp
-                    var startTimestamp = LDKF.performancePrototypeNow(LDKO.performance);
+                    var startTimestamp = LDKF.performancePrototypeNow(LDKF.get.windowPerformance());
 
                     // Update > Current Phase
                     CURRENT_PHASE = 'initialization';
@@ -4292,16 +6016,16 @@ window && (function Main(args) {
                     INIT();
 
                     // Modification > (LapysJS > Processing Duration) > Initialization
-                    LapysJS.processingDuration.init = LDKF.performancePrototypeNow(LDKO.performance) - startTimestamp
+                    LapysJS.processingDuration.init = LDKF.performancePrototypeNow(LDKF.get.windowPerformance()) - startTimestamp
                 } catch (error) {
                     // Error
-                    LDKF.error('Error in installation process: ' + error.message)
+                    throw LDKF.error('Error in installation process: ' + error.message)
                 }
 
                 // {Update}
                 try {
                     // Initialization > Start Timestamp
-                    var startTimestamp = LDKF.performancePrototypeNow(LDKO.performance);
+                    var startTimestamp = LDKF.performancePrototypeNow(LDKF.get.windowPerformance());
 
                     // Update > Current Phase
                     CURRENT_PHASE = 'update';
@@ -4310,16 +6034,16 @@ window && (function Main(args) {
                     UPDATE();
 
                     // Modification > (LapysJS > Processing Duration) > Update
-                    LapysJS.processingDuration.update = LDKF.performancePrototypeNow(LDKO.performance) - startTimestamp
+                    LapysJS.processingDuration.update = LDKF.performancePrototypeNow(LDKF.get.windowPerformance()) - startTimestamp
                 } catch (error) {
                     // Error
-                    LDKF.error('Error in update process: ' + error.message)
+                    throw LDKF.error('Error in update process: ' + error.message)
                 }
 
                 // {Terminate}
                 try {
                     // Initialization > Start Timestamp
-                    var startTimestamp = LDKF.performancePrototypeNow(LDKO.performance);
+                    var startTimestamp = LDKF.performancePrototypeNow(LDKF.get.windowPerformance());
 
                     // Update > Current Phase
                     CURRENT_PHASE = 'termination';
@@ -4328,7 +6052,7 @@ window && (function Main(args) {
                     TERMINATE();
 
                     // Modification > (LapysJS > Processing Duration) > Terminate
-                    LapysJS.processingDuration.terminate = LDKF.performancePrototypeNow(LDKO.performance) - startTimestamp
+                    LapysJS.processingDuration.terminate = LDKF.performancePrototypeNow(LDKF.get.windowPerformance()) - startTimestamp
                 } catch (error) {
                     // Error
                     LDKF.error('Error in terminate process: ' + error.message)
