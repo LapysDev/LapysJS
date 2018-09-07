@@ -32,6 +32,7 @@
                 -- AudioNode
                 -- EventTarget
 
+            - Avoid returning values in `catch` blocks.
             - Must be compatible with 'modern' legacy browsers.
             - Prefix poly-filled properties & methods with the `$` character.
             - All external/ sourced script code must be credited to the author and poly-filled.
@@ -1366,11 +1367,219 @@ window && (function Main(args) {
                     return valid
                 },
 
-                /* Is Executable
-                        --- CHECKPOINT ---
-                            #Lapys: You know what must be done.
-                */
-                isExecutable: function isExecutable(data) {},
+                // Is Executable
+                isExecutable: function isExecutable(data) {
+                    // Initialization > (Evaluation, Test in Sandbox, Sandbox Properties, Length)
+                    var evaluation = {completed: !1, feedback: null, value: null},
+                        testInSandbox = !!arguments[1],
+                        sandboxProperties = arguments[2],
+                        length = arguments.length;
+
+                    /* Logic
+                            [if statement]
+                    */
+                    if (length) {
+                        // Initialization > Code
+                        var code = LDKF.string(data);
+
+                        /* Logic
+                                [if:else statement]
+                        */
+                        if (testInSandbox) {
+                            /* Initialization > Sandbox
+                                    --- NOTE ---
+                                        #Lapys: Try to hide the newly window via it`s features.
+                            */
+                            var sandbox = LDKF.windowOpen(window, 'about:blank', '', 'alwaysLowered=yes,alwaysRaised=no,chrome=yes,close=no,dialog=yes,fullscreen=no,left=0,height=1,menubar=no,outerWidth=0,resizable=no,scrollbars=no,status=no,titlebar=no,toolbar=no,top=0,width=1');
+
+                            // LapysJS Development Kit > Functions
+                                /* Blur, Focus, Stop
+                                        --- NOTE ---
+                                            #Lapys: Keep the current window in focus.
+                                */
+                                LDKF.windowBlur(sandbox);
+                                LDKF.windowFocus(window);
+                                LDKF.windowStop(sandbox);
+
+                            // Modification > Sandbox > Evaluation
+                            sandbox.evaluation = {completed: !1, feedback: null, value: !1};
+
+                            /* (LapysJS Development Kit > Functions) > Iterate Object > Sandbox Properties
+                                    --- NOTE ---
+                                        #Lapys: Add user-defined properties to the sandbox.
+                            */
+                            (length > 2) && LDKF.iterateObject(sandboxProperties, function(key, value, description) {
+                                // Modification > Sandbox > [Key]
+                                description && LDKF.objectDefineProperty(sandbox, key, description)
+                            }, function(key, value, description, iteratorObject) {
+                                // Return
+                                return iteratorObject === sandboxProperties
+                            }, !0);
+
+                            /* Logic
+                                    [if:else statement]
+                            */
+                            if (LDKF.isFunction(data)) {
+                                // Modification > Sandbox > Evaluation Test
+                                sandbox.evaluationTest = (function() { return data.call(sandbox) });
+
+                                // ((LapysJS Development Kit) > Functions) > Document Prototype Write > [Document]
+                                LDKF.documentPrototypeWrite(
+                                    // [Document]
+                                    LDKF.get.windowDocument(sandbox),
+
+                                    // Document
+                                    '<!DOCTYPE html>' +
+                                    '<html hidden>' +
+                                        '<head>' +
+                                            // Stylesheets
+                                                // Document Stylesheet
+                                                '<style media=all type=text/css>' +
+                                                    /* All
+                                                            --- NOTE ---
+                                                                #Lapys: Hide all the new window`s elements.
+                                                    */
+                                                    '* {' +
+                                                        'cursor: none !important;' +
+                                                        'display: none !important;' +
+                                                        'filter: opacity(0) !important;' +
+                                                        'opacity: 0 !important;' +
+                                                        'pointer-events: none !important;' +
+                                                        'touch-action: none !important;' +
+                                                        'user-drag: none !important;' +
+                                                        'user-select: none !important;' +
+                                                        'visibility: hidden !important' +
+                                                    '}' +
+                                                '</style>' +
+
+                                            // Scripts
+                                                // Document Script
+                                                '<script language=javascript type=text/javascript>' +
+                                                    // Error Handling
+                                                    'try {' +
+                                                        // Modification > Evaluation > (Feedback, Value)
+                                                        'evaluation.value = !0;' +
+                                                        'evaluation.feedback = window.evaluationTest()' +
+                                                    '} catch (error) {' +
+                                                        // Modification > Evaluation > (Feedback, Value)
+                                                        'evaluation.feedback = error;' +
+                                                        'evaluation.value = !1' +
+                                                    '}' +
+
+                                                    // Modification > Evaluation > Completed
+                                                    'evaluation.completed = !0' +
+                                                '</script>' +
+
+                                                // Document Script
+                                                '<script language=javascript type=text/javascript> window.close() </script>' +
+                                        '</head>' +
+                                    '</html>'
+                                )
+                            }
+
+                            else
+                                // ((LapysJS Development Kit) > Functions) > Document Prototype Write > [Document]
+                                LDKF.documentPrototypeWrite(
+                                    // [Document]
+                                    LDKF.get.windowDocument(sandbox),
+
+                                    // Document
+                                    '<!DOCTYPE html>' +
+                                    '<html hidden>' +
+                                        '<head>' +
+                                            // Stylesheets
+                                                // Document Stylesheet
+                                                '<style media=all type=text/css>' +
+                                                    /* All
+                                                            --- NOTE ---
+                                                                #Lapys: Hide all the new window`s elements.
+                                                    */
+                                                    '* {' +
+                                                        'cursor: none !important;' +
+                                                        'display: none !important;' +
+                                                        'filter: opacity(0) !important;' +
+                                                        'opacity: 0 !important;' +
+                                                        'pointer-events: none !important;' +
+                                                        'touch-action: none !important;' +
+                                                        'user-drag: none !important;' +
+                                                        'user-select: none !important;' +
+                                                        'visibility: hidden !important' +
+                                                    '}' +
+                                                '</style>' +
+
+                                            // Scripts
+                                                // Document Script
+                                                '<script language=javascript type=text/javascript>' +
+                                                    // Error Handling
+                                                    'try {' +
+                                                        // Modification > Evaluation > (Feedback, Value)
+                                                        'evaluation.feedback = null;' +
+                                                        'evaluation.value = !0;' +
+
+                                                        // (...)
+                                                        code +
+                                                    '} catch (error) {' +
+                                                        // Modification > Evaluation > (Feedback, Value)
+                                                        'evaluation.feedback = error;' +
+                                                        'evaluation.value = !1' +
+                                                    '}' +
+
+                                                    // Modification > Evaluation > Completed
+                                                    'evaluation.completed = !0' +
+                                                '</script>' +
+
+                                                // Document Script
+                                                '<script language=javascript type=text/javascript>' +
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    'if (!evaluation.completed) {' +
+                                                        // Error Handling
+                                                        'try {' +
+                                                            // Modification > Evaluation > (Feedback, Value)
+                                                            'evaluation.feedback = null;' +
+                                                            'evaluation.value = !0;' +
+
+                                                            // Execution
+                                                            "window.eval('" + LDKF.replaceCharString(code, "'", "\\'", 'all') + "')" +
+                                                        '} catch (error) {' +
+                                                            // Modification > Evaluation > (Feedback, Value)
+                                                            'evaluation.feedback = error;' +
+                                                            'evaluation.value = !1' +
+                                                        '}' +
+
+                                                        // Modification > Evaluation > Completed
+                                                        'evaluation.completed = !0' +
+                                                    '}' +
+                                                '</script>' +
+
+                                                // Document Script
+                                                '<script language=javascript type=text/javascript> window.close() </script>' +
+                                        '</head>' +
+                                    '</html>'
+                                );
+
+                            // Update > Evaluation
+                            evaluation = sandbox.evaluation
+                        }
+
+                        else
+                            // Error Handling
+                            try {
+                                // Execution
+                                LDKO.eval('(function(){' + code + '})');
+
+                                // Update > Evaluation
+                                evaluation = {completed: !0, feedback: null, value: !0}
+                            } catch (error) {
+                                // Update > Evaluation
+                                evaluation = {completed: !0, feedback: error, value: !1}
+                            }
+                    }
+
+                    // Return
+                    return evaluation
+                },
 
                 /* Is Finite
                         --- NOTE ---
@@ -1441,11 +1650,15 @@ window && (function Main(args) {
                     return !1
                 },
 
-                /* Is Input Element
-                        --- CHECKPOINT ---
-                            #Lapys: `<input>` or `<textarea>`
-                */
-                isInputElement: function isInputElement(arg) {},
+                // Is Input Element
+                isInputElement: function isInputElement(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && (arg.constructor === LDKO.htmlInputElement || arg.constructor === LDKO.htmlTextareaElement) }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
 
                 // Is In String
                 isInString: function isInString(string, match) {
@@ -1496,10 +1709,10 @@ window && (function Main(args) {
                     return !1
                 },
 
-                // Is Mobile Viewport --- CHECKPOINT ---
+                // Is Mobile Viewport
                 isMobileViewport: function isMobileViewport() {
                     // Return
-                    return
+                    return window.orientation > -1 || LDKO.descriptions.regexPrototypeTest.value.call(/Android|BB|BlackBerry|IEMobile|iPad|iPhone|iPod|Kindle|Opera Mini|PlayBook|Silk|webOS|Windows Phone/i, LDKF.get.navigatorPrototypeUserAgent(LDKF.get.windowNavigator()))
                 },
 
                 /* Is Not a Number
@@ -1810,7 +2023,14 @@ window && (function Main(args) {
                 },
 
                 // Is XML HTTP Request --- CHECKPOINT ---
-                isXmlHttpRequest: function isXmlHttpRequest(arg) {},
+                isXmlHttpRequest: function isXmlHttpRequest(arg) {
+                    // Error Handling > Return
+                    try { return typeof arg == 'object' && arg.constructor === LDKO.xmlHttpRequest }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
 
                 // Last Index Of String
                 lastIndexOfString: function lastIndexOfString(string, character) {
@@ -2020,13 +2240,13 @@ window && (function Main(args) {
 
                 /* Remove Character String
                         --- NOTE ---
-                            #Lapys: Remove a specified character from a string
+                            #Lapys: Remove a specified set of characters from a string
                                 a specified number of times.
                 */
                 removeCharString: function removeCharString() {
                     // Initialization > (Amount, Match, String)
                     var amount = arguments.length > 2 ? arguments[2] : 1,
-                        match = arguments[1],
+                        match = LapysJSDevelopmentKit.functions.string(arguments[1]),
                         string = LapysJSDevelopmentKit.functions.string(arguments[0]);
 
                     /* Logic
@@ -2041,12 +2261,151 @@ window && (function Main(args) {
                         /* Loop
                                 Iterate through String.
                         */
-                        for (iterator; iterator != length; iterator += 1) {
-                            // Initialization > Character
-                            var character = string[iterator];
+                        for (iterator; iterator < length; iterator += 1) {
+                            // Initialization > (Allow Stream, Character)
+                            var allowStream = !0,
+                                character = string[iterator];
 
-                            // Update > (Amount | Stream)
-                            amount && character == match ? amount -= 1 : stream += character
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (amount)
+                                /* Logic
+                                        [if:else if statement]
+                                */
+                                if (character == match) {
+                                    // Update > (Allow Stream, Amount)
+                                    allowStream = !1;
+                                    amount -= 1
+                                }
+
+                                else if (character == match[0]) {
+                                    // Initialization > (Match (Iterator, Length), Decremented Match Length)
+                                    var matchIterator = 0,
+                                        matchLength = match.length,
+                                        decrementedMatchLength = matchLength - 1;
+
+                                    /* Loop
+                                            Iterate through Match.
+                                    */
+                                    for (matchIterator; matchIterator != matchLength; matchIterator += 1)
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (string[iterator + matchIterator] != match[matchIterator]) {
+                                            // Update > Allow Stream
+                                            allowStream = !1;
+
+                                            // Break
+                                            break
+                                        }
+
+                                    /* Logic
+                                            [if statement]
+
+                                        > Update > (Amount, Character)
+                                    */
+                                    if (allowStream) {
+                                        amount -= 1;
+                                        character = string[iterator += matchLength]
+                                    }
+                                }
+
+                            // Update > Stream
+                            allowStream && character && (stream += character)
+                        }
+
+                        // Return
+                        return stream
+                    }
+
+                    // Return
+                    return string
+                },
+
+                // Replace Character String
+                replaceCharString: function replaceCharString() {
+                    // Initialization > (Amount, Replacement, Match, String)
+                    var amount = arguments.length > 3 ? arguments[3] : 1,
+                        replacement = arguments.length > 2 ? LapysJSDevelopmentKit.functions.string(arguments[2]) : '',
+                        match = LapysJSDevelopmentKit.functions.string(arguments[1]),
+                        string = LapysJSDevelopmentKit.functions.string(arguments[0]);
+
+                    /* Logic
+                            [if statement]
+                    */
+                    if (arguments.length && match) {
+                        // Initialization > (Iterator, Length, Stream)
+                        var iterator = 0,
+                            length = string.length,
+                            stream = '';
+
+                        /* Logic
+                                [switch:case statement]
+
+                            > Update > Amount
+                        */
+                        switch (amount) {
+                            // All
+                            case 'all': amount = length
+                        }
+
+                        /* Loop
+                                Iterate through String.
+                        */
+                        for (iterator; iterator < length; iterator += 1) {
+                            // Initialization > (Allow Stream, Character)
+                            var allowStream = !0,
+                                character = string[iterator];
+
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (amount)
+                                /* Logic
+                                        [if:else if statement]
+                                */
+                                if (character == match) {
+                                    // Update > (Allow Stream, Amount)
+                                    allowStream = !1;
+                                    amount -= 1
+                                }
+
+                                else if (character == match[0]) {
+                                    // Initialization > (Match (Iterator, Length), Decremented Match Length)
+                                    var matchIterator = 0,
+                                        matchLength = match.length,
+                                        decrementedMatchLength = matchLength - 1;
+
+                                    /* Loop
+                                            Iterate through Match.
+                                    */
+                                    for (matchIterator; matchIterator != matchLength; matchIterator += 1)
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (string[iterator + matchIterator] != match[matchIterator]) {
+                                            // Update > Allow Stream
+                                            allowStream = !1;
+
+                                            // Break
+                                            break
+                                        }
+
+                                    /* Logic
+                                            [if statement]
+
+                                        > Update > (Allow Stream, Amount, Iterator)
+                                    */
+                                    if (allowStream) {
+                                        allowStream = !1;
+                                        amount -= 1;
+                                        iterator += decrementedMatchLength
+                                    }
+                                }
+
+                            // Update > Stream
+                            character && (allowStream ? stream += character : stream += replacement)
                         }
 
                         // Return
@@ -2773,6 +3132,11 @@ window && (function Main(args) {
                     return errorObject
                 })(),
 
+                // Regular Expression
+                regex: / /.constructor,
+                    // Prototype
+                    regexPrototype: / /.__proto__,
+
                 /* Set Timeout
                         --- WARN ---
                             #Lapys: Here, we can only hope that the `clearTimeout` and `setTimeout` functions are native.
@@ -2781,6 +3145,7 @@ window && (function Main(args) {
 
                 // String
                 string: ''.constructor,
+                    // Prototype
                     stringPrototype: ''.__proto__,
 
                 // Type Error
@@ -2799,7 +3164,10 @@ window && (function Main(args) {
                 // Window
                 window: __proto__.constructor,
                     // Prototype
-                    windowPrototype: __proto__
+                    windowPrototype: __proto__,
+
+                // XML HTTP Request
+                xmlHttpRequest: window.XMLHttpRequest
             },
 
             /* Random
@@ -2833,10 +3201,6 @@ window && (function Main(args) {
                     --- NOTE ---
                         #Lapys: Functions required to add values to the LapysJS Development Kit.
             */
-                // Array > Prototype
-                    // Push
-                    LapysJSDevelopmentKit.functions.arrayPrototypePush = LapysJSDevelopmentKit.objects.arrayPrototype.push;
-
                 // Object
                     // Create
                     LapysJSDevelopmentKit.functions.objectCreate = LapysJSDevelopmentKit.objects.object.create;
@@ -2847,10 +3211,13 @@ window && (function Main(args) {
                     // Get Own Property Descriptor
                     LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor = LapysJSDevelopmentKit.objects.object.getOwnPropertyDescriptor;
 
-                    // Get Own Property Descriptor
-                    LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptors = LapysJSDevelopmentKit.objects.object.getOwnPropertyDescriptors;
+                    /* Get Own Property Descriptors
+                            --- NOTE ---
+                                #Lapys: Credit to MDN (https://gist.github.com/jhermsmeier/9a34b06a107bbf5d2c91)
+                    */
+                    LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptors = LapysJSDevelopmentKit.objects.object.getOwnPropertyDescriptors || function getOwnPropertyDescriptors(){var a=arguments[0],b=arguments[1],c='function'==typeof a.__lookupGetter__&&'function'==typeof a.__lookupSetter__,d=c?a.__lookupGetter__(b)||a.__lookupSetter__(b):null;return null==d?{configurable:!0,writable:!0,enumerable:!0,value:a[b]}:{configurable:!0,enumerable:!0,get:a.__lookupGetter__(b),set:a.__lookupSetter__(b)}};
 
-                    // Get Own Property Descriptor
+                    // Keys
                     LapysJSDevelopmentKit.functions.objectKeys = LapysJSDevelopmentKit.objects.object.keys;
 
                     // Prototype
@@ -2909,11 +3276,27 @@ window && (function Main(args) {
 
                 // Descriptions
                     // Window
-                        // Document
-                        LapysJSDevelopmentKit.objects.descriptions.windowDocument = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'document') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'document');
+                        // Blur
+                        LapysJSDevelopmentKit.objects.descriptions.windowBlur = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'blur');
 
-                        // Performance
-                        LapysJSDevelopmentKit.objects.descriptions.windowPerformance = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'performance') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'performance');
+                        // Focus
+                        LapysJSDevelopmentKit.objects.descriptions.windowFocus = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'focus');
+
+                        // Open
+                        LapysJSDevelopmentKit.objects.descriptions.windowOpen = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'open');
+
+                        // Stop
+                        LapysJSDevelopmentKit.objects.descriptions.windowStop = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'stop');
+
+                        // Prototype
+                            // Document
+                            LapysJSDevelopmentKit.objects.descriptions.windowDocument = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'document') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'document');
+
+                            // Navigator
+                            LapysJSDevelopmentKit.objects.descriptions.windowNavigator = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'navigator') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'navigator');
+
+                            // Performance
+                            LapysJSDevelopmentKit.objects.descriptions.windowPerformance = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'performance') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'performance');
 
                 /* Document > Prototype
                         --- NOTE ---
@@ -2963,7 +3346,7 @@ window && (function Main(args) {
                     LapysJSDevelopmentKit.objects.htmlDocumentPrototype = LapysJSDevelopmentKit.objects.htmlDocument.prototype;
 
                 // Descriptions
-                    // Document Prototype
+                    // Document > Prototype
                         // All
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeAll = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'all') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlDocumentPrototype, 'all');
 
@@ -2984,6 +3367,28 @@ window && (function Main(args) {
 
                         // Query Selector All
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelectorAll = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'querySelectorAll');
+
+                        // Ready State
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeReadyState = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'readyState');
+
+                        // Write
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeWrite = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'write');
+
+                // HTML Input Element
+                LapysJSDevelopmentKit.objects.htmlInputElement = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window), 'input').constructor;
+
+                // HTML Script Element
+                LapysJSDevelopmentKit.objects.htmlScriptElement = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window), 'script').constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.htmlScriptElementPrototype = LapysJSDevelopmentKit.objects.htmlScriptElement.prototype;
+
+                // HTML Textarea Element
+                LapysJSDevelopmentKit.objects.htmlTextareaElement = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window), 'textarea').constructor;
+
+                // Descriptions
+                    // HTML Script Element > Prototype
+                        // Source
+                        LapysJSDevelopmentKit.objects.descriptions.htmlScriptElementPrototypeSrc = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlScriptElementPrototype, 'src');
 
                 // Parameters
                 LapysJSDevelopmentKit.objects.parameter = function Parameter() {};
@@ -3027,11 +3432,18 @@ window && (function Main(args) {
                     };
 
                 // Get
-                    // Document
+                    // Document > Prototype
                         // All
                         LapysJSDevelopmentKit.functions.get.documentPrototypeAll = function documentPrototypeAll() {
                             // Return
                             return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeAll.get.call(arguments.length ? arguments[0] : LapysJSDevelopmentKit.functions.get.windowDocument())
+                        };
+
+                    // Navigator > Prototype
+                        // User Agent
+                        LapysJSDevelopmentKit.functions.get.navigatorPrototypeUserAgent = function navigatorPrototypeUserAgent() {
+                            // Return
+                            return LapysJSDevelopmentKit.objects.descriptions.navigatorPrototypeUserAgent.get.call(arguments.length ? arguments[0] : LapysJSDevelopmentKit.functions.get.windowNavigator())
                         };
 
                     // Window
@@ -3039,6 +3451,12 @@ window && (function Main(args) {
                         LapysJSDevelopmentKit.functions.get.windowDocument = function windowDocument() {
                             // Return
                             return LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(arguments.length ? arguments[0] : window)
+                        };
+
+                        // Navigator
+                        LapysJSDevelopmentKit.functions.get.windowNavigator = function windowNavigator() {
+                            // Return
+                            return LapysJSDevelopmentKit.objects.descriptions.windowNavigator.get.call(arguments.length ? arguments[0] : window)
                         };
 
                         // Performance
@@ -3078,6 +3496,12 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelectorAll.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
+                    // Write
+                    LapysJSDevelopmentKit.functions.documentPrototypeWrite = function documentPrototypeWrite() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeWrite.value.apply(arguments[0], LDKF.rendArray(arguments, 1))
+                    };
+
                 // Element > Prototype
                     // Get Attribute
                     LapysJSDevelopmentKit.functions.elementPrototypeGetAttribute = function elementPrototypeGetAttribute() {
@@ -3096,6 +3520,31 @@ window && (function Main(args) {
                     LapysJSDevelopmentKit.functions.performancePrototypeNow = function performancePrototypeNow() {
                         // Return
                         return LapysJSDevelopmentKit.objects.performancePrototypeNow.call(arguments[0])
+                    };
+
+                // Window
+                    // Blur
+                    LapysJSDevelopmentKit.functions.windowBlur = function windowBlur() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.windowBlur.value.call(arguments.length ? arguments[0] : window)
+                    };
+
+                    // Focus
+                    LapysJSDevelopmentKit.functions.windowFocus = function windowFocus() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.windowFocus.value.call(arguments.length ? arguments[0] : window)
+                    };
+
+                    // Open
+                    LapysJSDevelopmentKit.functions.windowOpen = function windowOpen() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.windowOpen.value.apply(arguments.length ? arguments[0] : window, LDKF.rendArray(arguments, 1))
+                    };
+
+                    // Stop
+                    LapysJSDevelopmentKit.functions.windowStop = function windowStop() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.windowStop.value.call(arguments.length ? arguments[0] : window)
                     };
 
             /* Objects
@@ -3250,10 +3699,21 @@ window && (function Main(args) {
                     return errorObject
                 })();
 
-                /* Descriptions */
+                /* Descriptions
+                        --- NOTE ---
+                            #Lapys: Define all other descriptions here.
+                */
                     // Element > Prototype
                         // Inner HTML
                         LapysJSDevelopmentKit.objects.descriptions.elementPrototypeInnerHTML = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.elementPrototype, 'innerHTML');
+
+                    // HTML All Collection > Prototype
+                        // Length
+                        LapysJSDevelopmentKit.objects.descriptions.htmlAllCollectionPrototypeLength = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlAllCollectionPrototype, 'length');
+
+                    // HTML Collection > Prototype
+                        // Length
+                        LapysJSDevelopmentKit.objects.descriptions.htmlCollectionPrototypeLength = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlCollectionPrototype, 'length');
 
                     // Node > Prototype
                         // Child Nodes
@@ -3262,6 +3722,14 @@ window && (function Main(args) {
                     // Node List > Prototype
                         // Length
                         LapysJSDevelopmentKit.objects.descriptions.nodeListPrototypeLength = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.nodeListPrototype, 'length');
+
+                    // Regular Expression > Prototype
+                        // Test
+                        LapysJSDevelopmentKit.objects.descriptions.regexPrototypeTest = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.regexPrototype, 'test');
+
+                    // String > Prototype
+                        // Match
+                        LapysJSDevelopmentKit.objects.descriptions.stringPrototypeMatch = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.stringPrototype, 'match');
 
             /* Random
                     --- NOTE ---
@@ -3561,23 +4029,6 @@ window && (function Main(args) {
                         writable: !1
                     });
 
-                    // Script --- CHECKPOINT ---
-                    LDKF.objectDefineProperty(LapysJS, 'script', {
-                        // Configurable
-                        configurable: !1,
-
-                        // Enumerable
-                        enumerable: !0,
-
-                        // Value
-                        value: (function() {
-
-                        })(),
-
-                        // Writable
-                        writable: !1
-                    });
-
                 // LapysJS Error
                 LDKF.objectDefineProperty(window, 'LapysJSError', {
                     // Configurable
@@ -3792,6 +4243,13 @@ window && (function Main(args) {
                             // Warn
                             LDKO.consoleWarn = LDKO.console.warn;
 
+                        // Descriptions
+                            /* Document > Prototype > Current Script
+                                    --- NOTE ---
+                                        #Lapys: Credit to GitHub (https://github.com/JamesMGreene/document.currentScript)
+                            */
+                            LDKO.descriptions.documentPrototypeCurrentScript = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'currentScript') || (function(){function b(i){if(i&&LDKF.isString(i)){var j=0,k=LDKF.get.htmlCollectionPrototypeLength(g);for(j;j!=k;j+=1){var l=g[j];if(LDKO.descriptions.htmlScriptElementPrototypeSrc.get.call(l)===i)return l}}}function c(){var k,i=0,j=LDKF.get.htmlCollectionPrototypeLength(g);for(i;i!=j;i+=1)if(!LDKO.descriptions.htmlScriptElementPrototypeSrc.get.call(g[i])){if(k)return;k=g[i]}return k}function d(i,j){var k,l,m,n=LDKF.isNumber(j);return j=n?j:LDKF.isNumber(e.skipStackDepth)?e.skipStackDepth:0,i&&LDKF.isString(i)&&(n?l=LDKO.descriptions.stringPrototypeMatch.value.call(i,/((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/):(l=LDKO.descriptions.stringPrototypeMatch.call(i,/^(?:|[^:@]*@|.+\)@(?=http[s]?|file)|.+?\s+(?: at |@)(?:[^:\(]+ )*[\(]?)((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/),!(l&&l[1])&&(l=LDKO.descriptions.stringPrototypeMatch.call(i,/\)@((?:http[s]?|file):\/\/[\/]?.+?\/[^:\)]*?)(?::\d+)(?::\d+)?/),l&&l[1]&&(k=l[1]))),l&&l[1]&&(0<j?(m=LDKF.rendString(i,LDKF.indexOfString(i,l[0])+l[0].length),k=d(m,j-1)):k=l[1])),k}function e(){var i=LDKF.get.htmlCollectionPrototypeLength(g);if(i){if(1==i)return g[0];if('readyState'in g[0])for(var j=i;j;)if('interactive'==g[j-=1].readyState)return g[j];if('loading'==LDKO.descriptions.documentPrototypeReadyState.get.call(LDKF.get.windowDocument()))return g[i-1];try{throw new LDKO.error}catch(m){var k=d(m.stack),l=b(k);l||k!=h||(l=c())}return l}}var f=LDKF.get.windowDocument(),g=LDKF.documentPrototypeGetElementsByTagName(LDKF.get.windowDocument(),'script'),h=location.href;return e.skipStackDepth=1,{configurable:!0,enumerable:!0,get:e}})();
+
                         // Get Computed Style
                         LDKO.getComputedStyle = window.getComputedStyle;
 
@@ -3799,8 +4257,14 @@ window && (function Main(args) {
                             // Bind
                             LDKO.funcPrototypeBind = LDKO.funcPrototype.bind;
 
-                        // Math
-                        LDKO.math = Math;
+                        // Navigator
+                        LDKO.navigator = navigator.constructor;
+                            // Prototype
+                            LDKO.navigatorPrototype = LDKO.navigator.prototype;
+
+                        // Descriptions
+                            // Navigator > Prototype > User Agent
+                            LapysJSDevelopmentKit.objects.descriptions.navigatorPrototypeUserAgent = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.navigatorPrototype, 'userAgent');
 
                         // Performance
                         LDKO.performance = performance.constructor;
@@ -4032,9 +4496,7 @@ window && (function Main(args) {
 
                                             // Return
                                             return clone
-                                        } catch (error) {
-                                            console.log(error);
-                                        }
+                                        } catch (error) {}
 
                                         // Error Handling > Return
                                         try { return clonePrototype(object) }
@@ -5249,6 +5711,20 @@ window && (function Main(args) {
                                     return params
                                 };
 
+                            // HTML All Collection > Prototype
+                                // Length
+                                LDKF.get.htmlAllCollectionPrototypeLength = function htmlAllCollectionPrototypeLength() {
+                                    // Return
+                                    return LDKO.descriptions.htmlAllCollectionPrototypeLength.get.call(arguments[0])
+                                };
+
+                            // HTML Collection > Prototype
+                                // Length
+                                LDKF.get.htmlCollectionPrototypeLength = function htmlCollectionPrototypeLength() {
+                                    // Return
+                                    return LDKO.descriptions.htmlCollectionPrototypeLength.get.call(arguments[0])
+                                };
+
                             // Node > Prototype
                                 // Child Nodes
                                 LDKF.get.nodePrototypeChildNodes = function nodePrototypeChildNodes() {
@@ -5568,7 +6044,7 @@ window && (function Main(args) {
                         /* Query Line
                                 --- CHECKPOINT ---
                                 --- NOTE ---
-                                    #Lapys: Built on a whim. Returns the current line that executes this method.
+                                    #Lapys: Built on a whim. Returns the source code of the current line that executes this method.
                         */
                         LDKF.queryLine = function queryLine() {};
 
@@ -5940,13 +6416,136 @@ window && (function Main(args) {
                             */
                             LDKRNG.generatedNumber = LDKRNG.generateRandomNumber();
 
+                // LapysJS
+                    // Script
+                    LDKF.objectDefineProperty(LapysJS, 'script', {
+                        // Configurable
+                        configurable: !1,
+
+                        // Enumerable
+                        enumerable: !0,
+
+                        // Value
+                        value: LDKO.descriptions.documentPrototypeCurrentScript.get.call(document),
+
+                        // Writable
+                        writable: !1
+                    });
+
             /* Function */
                 /* Initialization
+                        --- CHECKPOINT ---
                         --- NOTE ---
                             #Lapys: Begin installing the components of the Library,
                                 not just the LapysJS Development Kit.
                 */
-                function INIT() {}
+                function INIT() {
+                    /* Modification
+                            --- NOTE ---
+                                #Lapys: Install all other public methods & properties.
+                    */
+                        // Window
+                            // Absolute
+                            window.abs = function abs() { return LDKF.abs.apply(this, arguments) };
+
+                            // Application --- CHECKPOINT ---
+
+                            // Array
+                            window.array = function array(arg) {
+                                // Initialization > (Array, Iterator, Length)
+                                var array = [],
+                                    iterator = 0,
+                                    length = arguments.length;
+
+                                /* Loop
+                                        Index Arguments.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > Argument
+                                    var argument = arguments[iterator];
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayLike(argument)) {
+                                        // Initialization > Array-Like (Iterator, Length)
+                                        var arrayLikeIterator = 0, arrayLikeLength;
+
+                                        /* Logic
+                                                [if:else if statement]
+
+                                            > Update > Array-Like Length
+                                        */
+                                        if (LDKF.isArray(argument)) arrayLikeLength = argument.length;
+                                        else if (LDKF.isHTMLAllCollection(argument)) arrayLikeLength = LDKF.get.htmlAllCollectionPrototypeLength(argument);
+                                        else if (LDKF.isHTMLCollection(argument)) arrayLikeLength = LDKF.get.htmlCollectionPrototypeLength(argument);
+                                        else if (LDKF.isNodeList(argument)) arrayLikeLength = LDKF.get.nodeListPrototypeLength(argument);
+
+                                        /* Loop
+                                                [for statement]
+
+                                            > Update > Array
+                                        */
+                                        for (arrayLikeIterator; arrayLikeIterator != arrayLikeLength; arrayLikeIterator += 1)
+                                            array[array.length] = argument[arrayLikeIterator]
+                                    }
+
+                                    else
+                                        // Update > Array
+                                        array[array.length] = argument
+                                }
+
+                                // Return
+                                return array
+                            };
+
+                            // Boolean
+                            window.bool = function bool(arg) {
+                                // Initialization > (Iterator, Length, (False, Truth) Count)
+                                var iterator = 0,
+                                    length = arguments.length,
+                                    falseCount = 0,
+                                    truthCount = 0;
+
+                                /* Loop
+                                        Index Arguments.
+
+                                    > Update > (Truth, False) Count
+                                */
+                                for (iterator; iterator != length; iterator += 1)
+                                    arguments[iterator] ? truthCount += 1 : falseCount += 1;
+
+                                // Return
+                                return truthCount > falseCount
+                            };
+
+                            // Browser
+                            LDKF.objectDefineProperty(window, 'browser', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: (function() {
+                                    // Initialization > Browser
+                                    var browser = new (function Browser() {});
+
+                                    // ((LapysJS Development Kit > Functions) > Iterate Object) > ((LapysJS Development Kit > Random) > Browser)
+                                    LDKF.iterateObject(LDKR.browser, function(key, value, description) { LDKF.objectDefineProperty(browser, key, description) });
+
+                                    // Return
+                                    return browser
+                                })()
+                            });
+
+                            // Cancel On DOM Element Added --- CHECKPOINT ---
+                            LDKF.objectDefineProperty(window, 'cancelOnDOMElementAdded', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function cancelOnDOMElementAdded() {}
+                            })
+                }
 
                 /* Update
                         --- NOTE ---
@@ -5975,7 +6574,7 @@ window && (function Main(args) {
                             LDKF.clearTimeout(timeoutIndex -= 1);
 
                         // Console > (...)
-                        LDKF.consoleGroup('LapysJS (by ' + AUTHOR + ')');
+                        LDKF.consoleGroup('LapysJS | ' + LDKO.descriptions.htmlScriptElementPrototypeSrc.get.call(LapysJS.script) + ' (by ' + AUTHOR + ')');
                             LDKF.consoleLog('     LapysJS.processingDuration =', LapysJS.totalProcessingDuration);
                             LDKF.consoleLog('     LapysJS.ready =', !0);
                         LDKF.consoleGroupEnd()
