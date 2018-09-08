@@ -103,7 +103,7 @@ window && (function Main(args) {
                     LDKF.isNumber(number) || (number = LDKF.number(number));
 
                     // Return
-                    return number < -0 ? -number : number
+                    return number < 0 || LDKF.objectIs(number, -0)  ? -number : number
                 },
 
                 // Add Class To Element
@@ -1059,15 +1059,46 @@ window && (function Main(args) {
                 imul: function imul(a, b) {var c=(a>>>16)&0xFFFF,d=a&0xFFFF,e=(b>>>16)&0xFFFF,f=b&0xFFFF;return((d*f)+(((c*f+d*e)<<16)>>>0)|0)},
 
                 // Index Of String
-                indexOfString: function indexOfString(string, character) {
+                indexOfString: function indexOfString(string, match) {
                     // Initialization > (Iterator, Length)
                     var iterator = 0,
                         length = string.length;
 
-                    // Loop > Logic > Return
-                    for (iterator; iterator != length; iterator += 1)
-                        if (string[iterator] === character)
+                    /* Loop
+                            Iterate through String.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Character
+                        var character = string[iterator];
+
+                        /* Logic
+                                [if:else statement]
+                        */
+                        if (character == match)
+                            // Return
                             return iterator;
+
+                        else {
+                            // Initialization > Match (Iterator, Length)
+                            var matchIterator = 0,
+                                matchLength = match.length;
+
+                            /* Loop
+                                    Iterate through Match.
+                            */
+                            for (matchIterator; matchIterator != matchLength; matchIterator += 1)
+                                /* Logic
+                                        [if:else if statement]
+                                */
+                                if (string[iterator + matchIterator] != match[matchIterator])
+                                    // Break
+                                    break;
+
+                                else if (matchIterator == matchLength - 1)
+                                    // Return
+                                    return iterator
+                        }
+                    }
 
                     // Return
                     return -1
@@ -2022,7 +2053,7 @@ window && (function Main(args) {
                     return !1
                 },
 
-                // Is XML HTTP Request --- CHECKPOINT ---
+                // Is XML HTTP Request
                 isXmlHttpRequest: function isXmlHttpRequest(arg) {
                     // Error Handling > Return
                     try { return typeof arg == 'object' && arg.constructor === LDKO.xmlHttpRequest }
@@ -2033,14 +2064,46 @@ window && (function Main(args) {
                 },
 
                 // Last Index Of String
-                lastIndexOfString: function lastIndexOfString(string, character) {
+                lastIndexOfString: function lastIndexOfString(string, match) {
                     // Initialization > Iterator
                     var iterator = string.length;
 
                     // Loop > Logic > Return
-                    while (iterator)
-                        if (string[iterator -= 1] === character)
+                    while (iterator) {
+                        // Initialization > Character
+                        var character = string[iterator -= 1];
+
+                        /* Logic
+                                [if:else statement]
+                        */
+                        if (character == match)
+                            // Return
                             return iterator;
+
+                        else {
+                            // Initialization > Match (Iterator, Length)
+                            var matchIterator = match.length;
+
+                            /* Loop
+                                    Iterate through Match.
+                            */
+                            while (matchIterator) {
+                                // Update > Match Iterator
+                                matchIterator -= 1;
+
+                                /* Logic
+                                        [if:else if statement]
+                                */
+                                if (string[iterator + matchIterator] != match[matchIterator])
+                                    // Break
+                                    break;
+
+                                else if (!matchIterator)
+                                    // Return
+                                    return iterator
+                            }
+                        }
+                    }
 
                     // Return
                     return -1
@@ -3220,6 +3283,9 @@ window && (function Main(args) {
                     // Keys
                     LapysJSDevelopmentKit.functions.objectKeys = LapysJSDevelopmentKit.objects.object.keys;
 
+                    // Is
+                    LapysJSDevelopmentKit.functions.objectIs = LapysJSDevelopmentKit.objects.object.is;
+
                     // Prototype
                         // To String
                         LapysJSDevelopmentKit.functions.objectPrototypeToString = (function objectPrototypeToString() {
@@ -3747,6 +3813,56 @@ window && (function Main(args) {
 
                     // Return
                     return isValid
+                })();
+
+                /* Browser
+                        --- NOTE ---
+                            #Lapys: Browser-related information.
+                */
+                LapysJSDevelopmentKit.random.browser = (function() {
+                    // Browser
+                    var browser = {},
+                        define = LapysJSDevelopmentKit.functions.objectDefineProperty;
+
+                    // Modification > Browser
+                        // {Google} Chrome
+                        define(browser, 'chrome', {
+                            configurable: !0, enumerable: !0,
+                            get: function chrome() {return!!(LDKF.isObject(window.chrome)&&LDKF.isObject((window.chrome||hidden).webstore))}
+                        });
+
+                        // {Microsoft} Edge
+                        define(browser, 'edge', {
+                            configurable: !0, enumerable: !0,
+                            get: function edge() {return LDKF.isObject(window.msCredentials)}
+                        });
+
+                        // {Mozilla} Firefox
+                        define(browser, 'firefox', {
+                            configurable: !0, enumerable: !0,
+                            get: function firefox() {return LDKF.isObject(window.InstallTrigger)}
+                        });
+
+                        // {Microsoft} Internet Explorer
+                        define(browser, 'ie', {
+                            configurable: !0, enumerable: !0,
+                            get: function internetExplorer() {var a=LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LDKO.documentPrototype,'documentMode')||LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LDKO.documentPrototype,'documentMode');return LapysJSDevelopmentKit.functions.isNumber(LapysJSDevelopmentKit.functions.isVoid(a)?LapysJSDevelopmentKit.functions.get.windowDocument().documentMode:a.get.call(LapysJSDevelopmentKit.functions.get.windowDocument()))}
+                        });
+
+                        // Opera
+                        define(browser, 'opera', {
+                            configurable: !0, enumerable: !0,
+                            get: function opera() {return!!((!!window.opr&&!!window.opr.addons)||!!window.opera||LDKF.indexOfString(LDKF.get.navigatorPrototypeUserAgent(LDKF.get.windowNavigator()),'OPR/')!=-1)}
+                        });
+
+                        // Safari
+                        define(browser, 'safari', {
+                            configurable: !0, enumerable: !0,
+                            get: function safari() {return!!(LDKO.descriptions.regexPrototypeTest.value.call(/constructor/i,LDKO.htmlElement)||LDKF.objectPrototypeToString(!window.safari||window.safari.pushNotification)=='[object SafariRemoteNotification]')}
+                        });
+
+                    // Return
+                    return browser
                 })();
 
                 /* Max Timeout Counter
@@ -6434,7 +6550,6 @@ window && (function Main(args) {
 
             /* Function */
                 /* Initialization
-                        --- CHECKPOINT ---
                         --- NOTE ---
                             #Lapys: Begin installing the components of the Library,
                                 not just the LapysJS Development Kit.
@@ -6530,7 +6645,10 @@ window && (function Main(args) {
                                     var browser = new (function Browser() {});
 
                                     // ((LapysJS Development Kit > Functions) > Iterate Object) > ((LapysJS Development Kit > Random) > Browser)
-                                    LDKF.iterateObject(LDKR.browser, function(key, value, description) { LDKF.objectDefineProperty(browser, key, description) });
+                                    LDKF.iterateObject(LDKR.browser, function(key, value, description) {
+                                        // Modification > Browser > [Key]
+                                        LDKF.objectDefineProperty(browser, key, description)
+                                    }, function(key, value, description, iteratorObject) { return this === iteratorObject }, !0);
 
                                     // Return
                                     return browser
