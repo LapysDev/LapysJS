@@ -10,13 +10,33 @@
 window && (function Main(args) {
     /* Modification */
         // Application
+            // Color
+            app.color = '#0066FF';
+
+            // Height
+            app.height = 'device-height';
+
+            // Name
+            app.name = 'LapysJS';
+
+            // Robots
+            app.robots = 'index, no-follow';
+
+            // Width
+            app.width = 'device-width';
+
             // X UA Compatible
             app.xUACompatible = 'chrome=1, IE=Edge';
 
-            // Viewport
-                // Height
-                app.viewport.height = 'device-height';
+            // Services
+                // Apple
+                    // Mobile Web App Capable
+                    app.services.apple.mobileWebAppCapable = true;
 
+                    // Touch Fullscreen
+                    app.services.apple.touchFullscreen = true;
+
+            // Viewport
                 // Initial Scale
                 app.viewport.initialScale = 1;
 
@@ -34,9 +54,6 @@ window && (function Main(args) {
 
                 // User Scalable
                 app.viewport.userScalable = true;
-
-                // Width
-                app.viewport.width = 'device-width';
 
         // Document
             // Jumbotrons
