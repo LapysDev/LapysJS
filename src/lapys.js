@@ -3721,6 +3721,12 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.nodePrototypeAppendChild.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
+                    // Remove Child
+                    LapysJSDevelopmentKit.functions.nodePrototypeRemoveChild = function nodePrototypeRemoveChild() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.nodePrototypeRemoveChild.call(arguments[0])
+                    };
+
                 // Performance > Prototype
                     // Now
                     LapysJSDevelopmentKit.functions.performancePrototypeNow = function performancePrototypeNow() {
@@ -3845,6 +3851,9 @@ window && (function Main(args) {
                     LapysJSDevelopmentKit.objects.nodePrototype = LapysJSDevelopmentKit.objects.node.prototype || (LapysJSDevelopmentKit.objects.node = window.Node).prototype;
                         // Append Child
                         LapysJSDevelopmentKit.objects.nodePrototypeAppendChild = LapysJSDevelopmentKit.objects.nodePrototype.appendChild;
+
+                        // Remove Child
+                        LapysJSDevelopmentKit.objects.nodePrototypeRemoveChild = LapysJSDevelopmentKit.objects.nodePrototype.removeChild;
 
                 // Node List
                 LapysJSDevelopmentKit.objects.nodeList = LapysJSDevelopmentKit.functions.documentPrototypeQuerySelectorAll(LapysJSDevelopmentKit.functions.get.windowDocument(), '*').constructor;
@@ -6970,6 +6979,9 @@ window && (function Main(args) {
 
                                         // ((LapysJS Development Kit) > Functions) > Iterate Object > Properties
                                         LDKF.iterateObject(properties, function(key, value) {
+                                            // Update > Value
+                                            LDKF.isString(value) || (value = LDKF.string(value));
+
                                             // Logic > Modification > Meta > [Key]
                                             if (LDKF.isInArray(forceProperties, key))
                                                 LDKF.elementPrototypeSetAttribute(meta, key, value);
@@ -7528,7 +7540,7 @@ window && (function Main(args) {
                                     });
 
                                     // Connection
-                                    LDKF.objectDefineProperty(app, 'connection', {
+                                    LDKF.objectDefineProperty(prototype, 'connection', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7543,7 +7555,7 @@ window && (function Main(args) {
                                     });
 
                                     // Cookies
-                                    LDKF.objectDefineProperty(app, 'cookies', {
+                                    LDKF.objectDefineProperty(prototype, 'cookies', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7599,6 +7611,72 @@ window && (function Main(args) {
                                         }
                                     });
 
+                                    /* Custom
+                                            --- NOTE ---
+                                                #Lapys: Define and remove custom-defined `HTMLMetaElement` (`<meta>`) elements.
+                                    */
+                                    LDKF.objectDefineProperty(app, 'custom', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Value
+                                        value: (function() {
+                                            // Initialization > Custom
+                                            var custom = new (function Custom() {});
+
+                                            // Modification > Custom
+                                                // Remove
+                                                LDKF.objectDefineProperty(custom, 'remove', {
+                                                    // Value
+                                                    value: function remove() {
+                                                        // Initialization > Name
+                                                        var name = arguments[0];
+
+                                                        // Error
+                                                        arguments.length || LDKF.throwError('remove', 'argument', [1, 0]);
+
+                                                        // Initialization > Element
+                                                        var element = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), "meta[name='" + name + "'");
+
+                                                        // Logic > Error Handling
+                                                        if (element)
+                                                            try {
+                                                                // Deletion
+                                                                LDKF.nodePrototypeRemoveChild(element);
+
+                                                                // Return
+                                                                return !0
+                                                            } catch (error) {}
+
+                                                        // Return
+                                                        return !1
+                                                    }
+                                                });
+
+                                                // Set
+                                                LDKF.objectDefineProperty(custom, 'set', {
+                                                    // Value
+                                                    value: function set() {
+                                                        // Initialization > (Content, Name)
+                                                        var content = arguments.length > 1 ? arguments[1] : '',
+                                                            name = arguments[0];
+
+                                                        // Error
+                                                        arguments.length || LDKF.throwError('set', ['argument', 'required'], [1, 2]);
+
+                                                        // Return
+                                                        return setMetaElementContent("meta[name='" + LDKF.string(name) + "'", {content: content, name: name}, ['content'])
+                                                    }
+                                                });
+
+                                            // Return
+                                            return custom
+                                        })()
+                                    });
+
                                     // Description
                                     LDKF.objectDefineProperty(app, 'description', {
                                         // Configurable
@@ -7636,7 +7714,7 @@ window && (function Main(args) {
                                     });
 
                                     // Device Pixel Ratio
-                                    LDKF.objectDefineProperty(app, 'dpRatio', {
+                                    LDKF.objectDefineProperty(prototype, 'dpRatio', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7693,7 +7771,7 @@ window && (function Main(args) {
                                     });
 
                                     // Do Not Track
-                                    LDKF.objectDefineProperty(app, 'doNotTrack', {
+                                    LDKF.objectDefineProperty(prototype, 'doNotTrack', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7726,7 +7804,7 @@ window && (function Main(args) {
                                     });
 
                                     // Height
-                                    LDKF.objectDefineProperty(app, 'height', {
+                                    LDKF.objectDefineProperty(prototype, 'height', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7801,7 +7879,7 @@ window && (function Main(args) {
                                     });
 
                                     // Languages
-                                    LDKF.objectDefineProperty(app, 'langs', {
+                                    LDKF.objectDefineProperty(prototype, 'langs', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7813,9 +7891,12 @@ window && (function Main(args) {
                                     });
 
                                     // Name
-                                    LDKF.objectDefineProperty(app, 'name', {
+                                    LDKF.objectDefineProperty(prototype, 'name', {
                                         // Configurable
                                         configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
 
                                         // Get
                                         get: function name() {
@@ -7841,8 +7922,8 @@ window && (function Main(args) {
                                         }
                                     });
 
-                                    // Width
-                                    LDKF.objectDefineProperty(app, 'width', {
+                                    // Navigator
+                                    LDKF.objectDefineProperty(prototype, 'nav', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7850,20 +7931,327 @@ window && (function Main(args) {
                                         enumerable: !0,
 
                                         // Get
-                                        get: function width() {
+                                        get: function navigator() {
                                             // Return
-                                            return storage.viewport.width
-                                        },
-
-                                        // Set
-                                        set: function width() {
-                                            // Return
-                                            return storage.viewport.width = arguments[0]
+                                            return LDKF.get.windowNavigator()
                                         }
                                     });
 
-                                    // Viewport
-                                    LDKF.objectDefineProperty(app, 'viewport', {
+                                    // Online
+                                    LDKF.objectDefineProperty(prototype, 'online', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function online() {
+                                            // Return
+                                            return storage.online.get.call(LDKF.get.windowNavigator())
+                                        }
+                                    });
+
+                                    /* Open Graph */
+                                    LDKF.objectDefineProperty(prototype, 'openGraph', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Value
+                                        value: (function() {
+                                            // Initialization > Open Graph
+                                            var openGraph = new (function openGraph() {});
+
+                                            // Modification > Open Graph
+                                                // Audio
+                                                LDKF.objectDefineProperty(openGraph, 'audio', {
+                                                    // Configurable
+                                                    configurable: !0,
+
+                                                    // Enumerable
+                                                    enumerable: !0,
+
+                                                    // Get
+                                                    get: function audio() {
+                                                        // Return
+                                                        return getMetaElementContent("meta[name='og:audio']")
+                                                    },
+
+                                                    // Set
+                                                    set: function audio() {
+                                                        // Return
+                                                        return setMetaElementContent("meta[name='og:audio']", {content: arguments[0], name: 'og:audio'}, ['content'])
+                                                    }
+                                                });
+
+                                            // Return
+                                            return openGraph
+                                        })()
+                                    });
+
+                                    // Owner
+                                    LDKF.objectDefineProperty(app, 'owner', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function owner() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=owner')
+                                        },
+
+                                        // Set
+                                        set: function owner() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=owner', {content: arguments[0], name: 'owner'}, ['content'])
+                                        }
+                                    });
+
+                                    // Platform
+                                    LDKF.objectDefineProperty(prototype, 'platform', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function platform() {
+                                            // Return
+                                            return storage.platform.get.call(LDKF.get.windowNavigator())
+                                        }
+                                    });
+
+                                    // Plugins
+                                    LDKF.objectDefineProperty(prototype, 'plugins', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function plugins() {
+                                            // Return
+                                            return storage.plugins.get.call(LDKF.get.windowNavigator())
+                                        }
+                                    });
+
+                                    // Pragma
+                                    LDKF.objectDefineProperty(app, 'pragma', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function pragma() {
+                                            // Return
+                                            return getMetaElementContent('meta[http-equiv=Pragma], meta[http-equiv=pragma]')
+                                        },
+
+                                        // Set
+                                        set: function pragma() {
+                                            // Return
+                                            return setMetaElementContent('meta[http-equiv=Pragma], meta[http-equiv=pragma]', {content: arguments[0], 'http-equiv': 'Pragma'}, ['content'])
+                                        }
+                                    });
+
+                                    // Rating
+                                    LDKF.objectDefineProperty(app, 'rating', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function rating() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=rating')
+                                        },
+
+                                        // Set
+                                        set: function rating() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=rating', {content: arguments[0], name: 'rating'}, ['content'])
+                                        }
+                                    });
+
+                                    // Reply To
+                                    LDKF.objectDefineProperty(app, 'replyTo', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function replyTo() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=reply-to')
+                                        },
+
+                                        // Set
+                                        set: function replyTo() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=reply-to', {content: arguments[0], name: 'reply-to'}, ['content'])
+                                        }
+                                    });
+
+                                    // Revised
+                                    LDKF.objectDefineProperty(app, 'revised', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function revised() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=revised')
+                                        },
+
+                                        // Set
+                                        set: function revised() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=revised', {content: arguments[0], name: 'revised'}, ['content'])
+                                        }
+                                    });
+
+                                    // Revisit After
+                                    LDKF.objectDefineProperty(app, 'revisitAfter', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function revisitAfter() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=revisit-after')
+                                        },
+
+                                        // Set
+                                        set: function revisitAfter() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=revisit-after', {content: arguments[0], name: 'revisit-after'}, ['content'])
+                                        }
+                                    });
+
+                                    // Robots
+                                    LDKF.objectDefineProperty(app, 'robots', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function robots() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=robots')
+                                        },
+
+                                        // Set
+                                        set: function robots() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=robots', {content: arguments[0], name: 'robots'}, ['content'])
+                                        }
+                                    });
+
+                                    // Summary
+                                    LDKF.objectDefineProperty(app, 'summary', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function summary() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=summary')
+                                        },
+
+                                        // Set
+                                        set: function summary() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=summary', {content: arguments[0], name: 'summary'}, ['content'])
+                                        }
+                                    });
+
+                                    // Theme Color
+                                    LDKF.objectDefineProperty(app, 'themeColor', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function themeColor() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=theme-color')
+                                        },
+
+                                        // Set
+                                        set: function themeColor() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=theme-color', {content: arguments[0], name: 'theme-color'}, ['content'])
+                                        }
+                                    });
+
+                                    // Topic
+                                    LDKF.objectDefineProperty(app, 'topic', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function topic() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=topic')
+                                        },
+
+                                        // Set
+                                        set: function topic() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=topic', {content: arguments[0], name: 'topic'}, ['content'])
+                                        }
+                                    });
+
+                                    // Uniform Resource Locator
+                                    LDKF.objectDefineProperty(app, 'url', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Get
+                                        get: function url() {
+                                            // Return
+                                            return getMetaElementContent('meta[name=url')
+                                        },
+
+                                        // Set
+                                        set: function url() {
+                                            // Return
+                                            return setMetaElementContent('meta[name=url', {content: arguments[0], name: 'url'}, ['content'])
+                                        }
+                                    });
+
+                                    // User Agent
+                                    LDKF.objectDefineProperty(prototype, 'userAgent', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function userAgent() {
+                                            // Return
+                                            return storage.userAgent.get.call(LDKF.get.windowNavigator())
+                                        }
+                                    });
+
+                                    // Vendor
+                                    LDKF.objectDefineProperty(prototype, 'vendor', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function vendor() {
+                                            // Return
+                                            return storage.vendor.get.call(LDKF.get.windowNavigator())
+                                        }
+                                    });
+
+                                    /* Viewport */
+                                    LDKF.objectDefineProperty(prototype, 'viewport', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7972,7 +8360,7 @@ window && (function Main(args) {
                                     });
 
                                     // Viewport Element
-                                    LDKF.objectDefineProperty(app, 'viewportElement', {
+                                    LDKF.objectDefineProperty(prototype, 'viewportElement', {
                                         // Configurable
                                         configurable: !0,
 
@@ -7983,6 +8371,48 @@ window && (function Main(args) {
                                         get: function viewportElement() {
                                             // Return
                                             return LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), 'meta[name=viewport') || null
+                                        }
+                                    });
+
+                                    // Width
+                                    LDKF.objectDefineProperty(prototype, 'width', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function width() {
+                                            // Return
+                                            return storage.viewport.width
+                                        },
+
+                                        // Set
+                                        set: function width() {
+                                            // Return
+                                            return storage.viewport.width = arguments[0]
+                                        }
+                                    });
+
+                                    // X-UA Compatible
+                                    LDKF.objectDefineProperty(prototype, 'xUACompatible', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Get
+                                        get: function xUACompatible() {
+                                            // Return
+                                            return getMetaElementContent('meta[http-equiv=X-UA-Compatible')
+                                        },
+
+                                        // Set
+                                        set: function xUACompatible() {
+                                            // Return
+                                            return setMetaElementContent('meta[http-equiv=X-UA-Compatible', {content: arguments[0], 'http-equiv': 'X-UA-Compatible'}, ['content'])
                                         }
                                     });
 

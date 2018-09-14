@@ -9,6 +9,35 @@
 */
 window && (function Main(args) {
     /* Modification */
+        // Application
+            // X UA Compatible
+            app.xUACompatible = 'chrome=1, IE=Edge';
+
+            // Viewport
+                // Height
+                app.viewport.height = 'device-height';
+
+                // Initial Scale
+                app.viewport.initialScale = 1;
+
+                // Maximum Scale
+                app.viewport.maximumScale = 2;
+
+                // Minimal UI
+                app.viewport.minimalUI = true;
+
+                // Minimum Scale
+                app.viewport.minimumScale = 2;
+
+                // Target Density Pixels
+                app.viewport.targetDensityDPI = 96;
+
+                // User Scalable
+                app.viewport.userScalable = true;
+
+                // Width
+                app.viewport.width = 'device-width';
+
         // Document
             // Jumbotrons
             document.def('jumbotrons', {
