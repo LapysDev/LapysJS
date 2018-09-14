@@ -1,112 +1,68 @@
-/* Function > Main */
-(function Main(argc, argv) {
-    // Update > Argument Count
-    argc += argv.length;
+/** Function > Main
+    @author: Lapys Dev Team
+    @url: https://www.github.com/LapysDev/LapysJS
 
+    --- NOTE ---
+        #Lapys:
+            - Returns 1 if there`s an error, returns 0 otherwise.
+            - Over its years of development, the library is still a bare-bones version of what it could be and code could still be improved (innovative re-factoring).
+*/
+window && (function Main(args) {
     /* Modification */
-        // Location > URL
-        location.constructor.prototype.def('url', {
-            // Get
-            get: function getURL() {
-                // Initialization > URL
-                let url = {};
+        // Document
+            // Jumbotrons
+            document.def('jumbotrons', {
+                // Configurable
+                configurable: !0,
 
-                // Modification > URL
-                    // Origin
-                    url.def('origin', {get: function origin() { return location.origin }});
-
-                    // Path
-                    url.def('path', {get: function path() { return location.href }});
-
-                    // Query
-                    url.def('query', {get: function query() { return location.search }});
-
-                    // Type
-                    url.def('type', {get: function type() { return location.protocol }});
-
-                    // Value Of
-                    url.def('valueOf', {value: function valueOf() { return url.path }});
-
-                // Return
-                return url
-            },
-
-            // Set
-            set: function setURL(path) {
-                // Location > Assign > Path
-                location.assign(path)
-            }
-        });
-
-    /* Global Data */
-        // Author
-        var AUTHOR = 'Lapys Dev Team',
-
-        // Description
-        DESCRIPTION = 'LapysJS is a code library challenged/ designed to stand out from other code sources using native & simplistic means.',
-
-        // URL
-        URL = 'https://www.github.com/LapysDev/LapysJS',
-
-        // Version
-        VERSION = '0.0.1',
-
-        // Manager
-        Manager = def('MANAGER', {value: new (function Manager() {
-            // Initialization > Target
-            let that = this;
-
-            // Modification
-                // Dynamic Text
-                that.def('dynamicText', {value: (function dynamicText() {
-                    // Initialization > (Current URL, (URL) (Path, Address))
-                    let currentURL = location.url,
-                        urlPath = currentURL.path,
-                        urlAddress = getURLAddress(urlPath),
-                        url = null;
-
-                    function getURLAddress(url) {
-                        // (Loop > )Update > URL
-                        while (url.hasChar('&')) url = url.getBeforeChar('&', true);
-                        while (url.hasChar('?')) url = url.getBeforeChar('?', true);
-                        url.endsWith(/[^\w]/) && (url = url.getBeforeChar('/', true));
-
-                        // Return
-                        return url
-                    }
-
-                    // Logic > Update > URL
-                    if (
-                        urlPath == 'about:blank' ||
-                        urlAddress.endsWith(/index(.html|)/) ||
-                        urlAddress.endsWith('LapysJS') ||
-                        getURLAddress(currentURL.origin).endsWith('localhost')
-                    )
-                        url = '';
-
-                    else if (urlAddress.getBeforeChar('/', true).endsWith('pages'))
-                        url = '../../';
-
-                    // Return
-                    return url
-                })()});
-
-            // Return
-            return that
-        })});
+                // Get
+                get: function jumbotrons() { return $$('jumbotron-element, .jumbotron') }
+            });
 
     /* Functions */
         // On DOM Ready
         onDOMReady(function onDOMReady() {
+            // Modify DOM
+            (function modifyDOM() {
+                // Global Data
+                    // Control
+                    var control = $i('control');
 
-        })
-})(0, [
-    /* {Location}
-            --- NOTE ---
-                #Lapys: Location is a default argument value.
-    */
-    (function location(){try{return document.currentScript.src}catch(error){}return'*'})(),
+                // Function
+                    // Update Control
+                    LDKF.isHTMLElement(control) && (function updateControl() {
+                        // Initialization
+                        var controlContents = createDocumentFragment.html();
 
-    // {Parent Window}
-    (function parentWindow(){try{return window.parent}catch(error){}return null})()
-])
+                        // Modification > Control > Class
+                        control.addClass('col-grp');
+
+                        // Insertion
+                        control.insertChild(controlContents)
+                    })();
+
+                // Repeat
+                    // {Jumbotron}
+                    repeat(document.jumbotrons, function(key, value) {
+                        // Modification > Value > Class
+                        value.hasClass('jumbotron') || value.addClass('jumbotron')
+                    });
+
+                    // {Fixed Groups}
+                    repeat($$('.fixed-grp, .fixed-group'), function(key, value) {
+                        // Initialization > (Children, Length)
+                        var children = value.children,
+                            length = children.length;
+
+                        // Repeat
+                        repeat(children, function(key, value) {
+                            // Modification > Value > Class
+                            value.hasClass('grid-' + length) || value.addClass('grid-' + length)
+                        })
+                    })
+            })()
+        });
+
+    // Return
+    return 0
+})([])
