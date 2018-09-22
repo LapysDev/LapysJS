@@ -13089,6 +13089,7 @@
                                         // Function
                                             // Now
                                             function now() {
+                                                // Return
                                                 return LDKF.performanceNow()
                                             }
 

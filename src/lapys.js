@@ -8,9 +8,13 @@
         #Lapys:
             - Returns 1 if there`s an error, returns 0 otherwise.
 
+            - Could also be called MinimalistJS.
+
+            - Most of it`s modules are encased within functions.
+
             - The script is tested in Google Chrome first and made compatible with other browsers after.
 
-            - The library initializes with the idea of all pre-scripted code before it
+            - The library initializes with the idea of all pre-scripted code before it executes
                 being vulnerable and subject to unknown changes by the developer,
 
                 but it still trusts the developer to not tamper with natively-defined code before initialization
@@ -20,18 +24,12 @@
 
     --- RULES ---
         #Lapys:
-            - Invalid Keywords
-                -- await
-                -- class
-                -- const
-                -- let
-                -- with
-                -- ...
-                -- =>
+            - Invalid Keywords/ Operators:
+                -- await -- class -- const -- let -- with
+                -- ... -- =>
 
-            - Invalid Objects
-                -- AudioContext
-                -- AudioNode
+            - Invalid Objects:
+                -- AudioContext -- AudioNode
                 -- EventTarget
 
             - Avoid returning values in `catch` blocks.
@@ -88,6 +86,12 @@ window && (function Main(args) {
             */
             components: ['accordion', 'carousel', 'draggable', 'dropdown', 'dynamic-text', 'dynamic-time', 'marquee', 'table', 'toast', 'tooltip'],
 
+            /* Custom Elements
+                    --- NOTE ---
+                        #Lapys: Feature-based interfaces.
+            */
+            customElements: ['jumbotron-element'],
+
             /* Debug Mode
                     --- NOTE ---
                         #Lapys: Allow public access to the LDK.
@@ -117,7 +121,7 @@ window && (function Main(args) {
                     LDKF.isNumber(number) || (number = LDKF.number(number));
 
                     // Return
-                    return number < 0 || LDKF.objectIs(number, -0)  ? -number : number
+                    return LDKF.isNegativeNumber(number) ? -number : number
                 },
 
                 // Add Class To Element
@@ -171,6 +175,33 @@ window && (function Main(args) {
                     return LDKO.addEvent.call(node, LDKO.addEvent === LDKO.windowPrototype.attachEvent ? 'on' + LDKF.string(type) : type, listener, options || !1)
                 },
 
+                /* Alphabetize String
+                        --- NOTE ---
+                            #Lapys:
+                                - Remove all non-alphabet characters from a string.
+                                - One quirk of this function and it`s siblings is that it also removes white-spaces.
+                */
+                alphabetizeString: function alphabetizeString(string) {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = 0,
+                        length = string.length,
+                        stream = '';
+
+                    /* Loop
+                            Iterate through String.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Character
+                        var character = string[iterator];
+
+                        // Update > Stream
+                        LDKF.isAlphabet(character) && (stream += character)
+                    }
+
+                    // Return
+                    return stream
+                },
+
                 /* Build Array
                         --- NOTE ---
                             #Lapys: Update all an array`s numerically keyed items with a function.
@@ -193,6 +224,29 @@ window && (function Main(args) {
 
                     // Return
                     return array
+                },
+
+                // Camel String
+                camelString: function camelString(string) {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = 1,
+                        length = string.length,
+                        stream = LDKF.upperStringChar(string[0]);
+
+                    /* Loop
+                            Iterate through String.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > (Previous) Character
+                        var character = string[iterator],
+                            previousCharacter = string[iterator - 1];
+
+                        // Update > Stream
+                        stream += previousCharacter && LDKF.isAlphabet(character) && !LDKF.isAlphabet(previousCharacter) ? LDKF.upperStringChar(character) : character
+                    }
+
+                    // Return
+                    return stream
                 },
 
                 /* Character Code At String
@@ -320,7 +374,7 @@ window && (function Main(args) {
                 },
 
                 // Create Element
-                createElement: function createElement(tagName, selector, html) {
+                createElement: function createElement(tagName, selector, html, properties) {
                     // Initialization > Length
                     var length = arguments.length;
 
@@ -350,10 +404,16 @@ window && (function Main(args) {
                         var element = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), tagName);
 
                         // (LapysJS Development Kit > Functions) > Set Selector On Element > Element
-                        selector && LDKF.setSelectorOnElement(element, selector)
+                        selector && LDKF.setSelectorOnElement(element, selector);
 
                         // Modification > Element > Inner HTML
                         html && LDKF.set.elementPrototypeInnerHTML(element, html);
+
+                        // (LapysJS Development Kit > Functions) > Iterate Object > Properties
+                        properties && LDKF.iterateObject(LDKF.object(properties), function(key, value, description) {
+                            // Modification > Element > [Key]
+                            LDKF.objectDefineProperty(element, key, description)
+                        });
 
                         // Return
                         return element
@@ -530,6 +590,28 @@ window && (function Main(args) {
                     return LDKO.delEvent.call(node, LDKO.delEvent === LDKO.windowPrototype.dettachEvent ? 'on' + LDKF.string(type) : type, listener, options || !1)
                 },
 
+                // Digitize String
+                digitizeString: function digitizeString(string) {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = 0,
+                        length = string.length,
+                        stream = '';
+
+                    /* Loop
+                            Iterate through String.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Character
+                        var character = string[iterator];
+
+                        // Update > Stream
+                        LDKF.isDigit(character) && (stream += character)
+                    }
+
+                    // Return
+                    return stream
+                },
+
                 // Error
                 error: function error(message) {
                     // Initialization > Error Constructor
@@ -626,6 +708,9 @@ window && (function Main(args) {
                         // Deletion
                         delete LapysJS.tmp.LDKO;
 
+                        // Modification > (LapysJS Development Kit > Objects) > LapysJS Error
+                        LDKO.lapysJSError || (LDKO.lapysJSError = errorObject.constructor);
+
                         // Return
                         return errorObject
                     }
@@ -651,6 +736,9 @@ window && (function Main(args) {
                         // Modification > Error Object > (Constructor > Prototype)(> Constructor)
                         errorObject.__proto__ = Object.create(errorConstructor.prototype);
                         errorObject.__proto__.constructor = LapysJSError;
+
+                        // Modification > (LapysJS Development Kit > Objects) > LapysJS Error
+                        LDKO.lapysJSError || (LDKO.lapysJSError = errorObject.constructor);
 
                         // Return
                         return errorObject
@@ -1047,17 +1135,30 @@ window && (function Main(args) {
                         index = 0,
                         separator = arguments.length > 1 ? LDKF.string(arguments[1]) : ' ';
 
-                    /* Loop
-                            Iterate through String.
+                    /* Logic
+                            [if:else statement]
                     */
-                    for (iterator; iterator != length; iterator += 1) {
-                        // Initialization > Character
-                        var character = string[iterator];
+                    if (separator)
+                        /* Loop
+                                Iterate through String.
+                        */
+                        for (iterator; iterator != length; iterator += 1) {
+                            // Initialization > Character
+                            var character = string[iterator];
 
-                        // Update > (Array, Index)
-                        array[index] || (array[index] = '');
-                        (character == separator) || (array[index] += character);
-                        (character == separator) && (!index || array[index - 1]) && (index += 1)
+                            // Update > (Array, Index)
+                            array[index] || (array[index] = '');
+                            (character == separator) || (array[index] += character);
+                            (character == separator) && (!index || array[index - 1]) && (index += 1)
+                        }
+
+                    else {
+                        // Update > Index
+                        index = -1;
+
+                        // Loop > Update > Array
+                        for (iterator; iterator != length; iterator += 1)
+                            array[index += 1] = string[iterator]
                     }
 
                     // Return
@@ -1118,10 +1219,61 @@ window && (function Main(args) {
                     return -1
                 },
 
-                // Integer
+                /* Integer
+                        --- NOTE ---
+                            #Lapys:
+                                - The following cryptic hacks can be implemented as well.
+                                    -- ~~x -- x >> 0 -- x | 0 -- x & -1 -- x ^ 0
+                                        where x = number
+
+                                - This function should be able to handle larger numbers as well by stringifying them.
+                */
                 int: function integer(number) {
+                    // Initialization > Integer
+                    var int = LDKF.isNumber(number) ? number | 0 : (number = LDKF.number(number)) | 0;
+
+                    /* Logic
+                            [if statement]
+
+                            --- NOTE ---
+                                #Lapys: If the expected integer result is incorrect.
+                    */
+                    if (int < number - 1 || int > number + 1) {
+                        // Initialization > (String, Iterator, Length, (Allow) Stream)
+                        var allowStream = !0,
+                            string = LDKF.string(number),
+                            iterator = 0,
+                            length = string.length,
+                            stream = '';
+
+                        /* Loop
+                                Iterate through String.
+                        */
+                        for (iterator; iterator != length; iterator += 1) {
+                            // Initialization > Digit
+                            var digit = string[iterator];
+
+                            /* Logic
+                                    [if:else if statement]
+
+                                > Update > Allow Stream
+                            */
+                            if (digit == '.')
+                                allowStream = !1;
+
+                            else if (digit == 'e' || digit == 'f' || digit == 'F' || digit == 'x' || digit == '+' || digit == '-')
+                                allowStream = !0;
+
+                            // Update > Stream
+                            allowStream && (stream += digit)
+                        }
+
+                        // Return
+                        return +stream
+                    }
+
                     // Return
-                    return LDKF.isNumber(number) ? number | 0 : LDKF.number(number) | 0
+                    return int
                 },
 
                 /* Is Alphabet
@@ -1273,7 +1425,7 @@ window && (function Main(args) {
                 // Is Attribute
                 isAttr: function isAttr(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.attr }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.attr) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.attrPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1286,7 +1438,7 @@ window && (function Main(args) {
                 // Is Character Data
                 isCharacterData: function isCharacterData(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.characterData }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.characterData) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.characterDataPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1317,7 +1469,7 @@ window && (function Main(args) {
                 // Is Document
                 isDocument: function isDocument(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.document }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.document) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.documentPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1327,7 +1479,7 @@ window && (function Main(args) {
                 // Is Document Fragment
                 isDocumentFragment: function isDocumentFragment(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.documentFragment }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.documentFragment) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.documentFragmentPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1337,7 +1489,7 @@ window && (function Main(args) {
                 // Is Document Type
                 isDocumentType: function isDocumentType(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.documentType }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.documentType) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.documentTypePrototype) }
                     catch (error) {}
 
                     // Return
@@ -1347,7 +1499,7 @@ window && (function Main(args) {
                 // Is Element
                 isElement: function isElement(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.element }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.element) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.elementPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1367,6 +1519,7 @@ window && (function Main(args) {
                         if (
                             constructor == LDKO.domError || constructor == LDKO.domException ||
                             constructor == LDKO.error || constructor == LDKO.evalError ||
+                            constructor == LDKO.lapysJSError ||
                             constructor == LDKO.mediaError ||
                             constructor == LDKO.overconstrainedError ||
                             constructor == LDKO.rangeError || constructor == LDKO.referenceError ||
@@ -1410,6 +1563,12 @@ window && (function Main(args) {
 
                     // Return
                     return valid
+                },
+
+                // Is Even Number
+                isEvenNumber: function isEvenNumber(arg) {
+                    // Return
+                    return LDKF.isInteger(arg) && !(arg % 2)
                 },
 
                 // Is Executable
@@ -1644,7 +1803,7 @@ window && (function Main(args) {
                 // Is HTML All Collection
                 isHTMLAllCollection: function isHTMLAllCollection(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'undefined' && arg.constructor === LDKO.htmlAllCollection }
+                    try { return (typeof arg == 'undefined' && arg.constructor === LDKO.htmlAllCollection) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.htmlAllCollectionPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1654,7 +1813,7 @@ window && (function Main(args) {
                 // Is HTML Collection
                 isHTMLCollection: function isHTMLCollection(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.htmlCollection }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.htmlCollection) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.htmlCollectionPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1664,7 +1823,7 @@ window && (function Main(args) {
                 // Is HTML Document
                 isHTMLDocument: function isHTMLDocument(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.htmlDocument }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.htmlDocument) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.htmlDocumentPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1674,7 +1833,17 @@ window && (function Main(args) {
                 // Is HTML Element
                 isHTMLElement: function isHTMLElement(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.htmlElement }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.htmlElement) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.htmlElementPrototype) }
+                    catch (error) {}
+
+                    // Return
+                    return !1
+                },
+
+                // Is HTML Input Element
+                isHTMLInputElement: function isHTMLInputElement(arg) {
+                    // Error Handling > Return
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.htmlInputElement) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.htmlInputElementPrototype) }
                     catch (error) {}
 
                     // Return
@@ -1695,11 +1864,23 @@ window && (function Main(args) {
                     return !1
                 },
 
+                // Is Infinite
+                isInfinite: function isInfinite(arg) {
+                    // Return
+                    return !LDKF.isFinite(arg)
+                },
+
                 // Is Input Element
                 isInputElement: function isInputElement(arg) {
-                    // Error Handling > Return
-                    try { return typeof arg == 'object' && (arg.constructor === LDKO.htmlInputElement || arg.constructor === LDKO.htmlTextareaElement) }
-                    catch (error) {}
+                    // Error Handling
+                    try {
+                        // Initialization > Prototypes
+                        var prototypes = LDKF.getPrototypes(arg);
+
+                        // Return
+                        return (typeof arg == 'object' && (arg.constructor === LDKO.htmlInputElement || arg.constructor === LDKO.htmlTextareaElement)) ||
+                            (LDKF.isInArray(prototypes, LDKO.htmlInputElement) || LDKF.isInArray(prototypes, LDKO.htmlTextareaElement))
+                    } catch (error) {}
 
                     // Return
                     return !1
@@ -1754,7 +1935,16 @@ window && (function Main(args) {
                     return !1
                 },
 
-                // Is Mobile Viewport
+                // Is Integer
+                isInteger: function isInteger(arg) {
+                    // Return
+                    return LDKF.isNumber(arg) && (function(remainder) { return !remainder || remainder == 1 || remainder == -1 })(arg % 2)
+                },
+
+                /* Is Mobile Viewport
+                        --- UPDATE REQUIRED ---
+                            #Lapys: Browser sniffing can still be vulnerable.
+                */
                 isMobileViewport: function isMobileViewport() {
                     // Return
                     return window.orientation > -1 || LDKO.descriptions.regexPrototypeTest.value.call(/Android|BB|BlackBerry|IEMobile|iPad|iPhone|iPod|Kindle|Opera Mini|PlayBook|Silk|webOS|Windows Phone/i, LDKF.get.navigatorPrototypeUserAgent(LDKF.get.windowNavigator()))
@@ -1875,10 +2065,34 @@ window && (function Main(args) {
                     return !1
                 },
 
+                // Is Negative Infinity
+                isNegativeInfinity: function isNegativeInfinity(arg) {
+                    // Return
+                    return LDKF.isInfinite(arg) && LDKF.isNegativeNumber(arg)
+                },
+
+                // Is Negative Integer
+                isNegativeInteger: function isNegativeInteger(arg) {
+                    // Return
+                    return LDKF.isInteger(arg) && LDKF.isNegativeNumber(arg)
+                },
+
+                // Is Negative Number
+                isNegativeNumber: function isNegativeNumber(arg) {
+                    // Return
+                    return LDKF.isNumber(arg) && (arg < 0 || LDKF.isNegativeZero(arg))
+                },
+
+                // Is Negative Zero
+                isNegativeZero: function isNegativeZero(arg) {
+                    // Return
+                    return LDKF.objectIs(arg, -0)
+                },
+
                 // Is Node
                 isNode: function isNode(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.node }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.node) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.nodePrototype) }
                     catch (error) {}
 
                     // Return
@@ -1888,11 +2102,17 @@ window && (function Main(args) {
                 // Is Node List
                 isNodeList: function isNodeList(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.nodeList }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.nodeList) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.nodeListPrototype) }
                     catch (error) {}
 
                     // Return
                     return !1
+                },
+
+                // Is Non-Integer
+                isNonInteger: function isNonInteger(arg) {
+                    // Return
+                    return !LDKF.isInteger(arg)
                 },
 
                 // Is Null
@@ -1907,17 +2127,50 @@ window && (function Main(args) {
                     return LDKF.isConstructible(arg) && !LDKF.isArray(arg) && !LDKF.isBoolean(arg) && !LDKF.isFunction(arg) && !LDKF.isNumber(arg) && !LDKF.isRegex(arg) && !LDKF.isString(arg) && !LDKF.isSymbol(arg)
                 },
 
+                // Is Odd Number
+                isOddNumber: function isOddNumber(arg) {
+                    // Return
+                    return LDKF.isInteger(arg) && arg % 2
+                },
+
+                // Is Positive Infinity
+                isPositiveInfinity: function isPositiveInfinity(arg) {
+                    // Return
+                    return LDKF.isInfinite(arg) && LDKF.isPositiveNumber(arg)
+                },
+
+                // Is Positive Integer
+                isPositiveInteger: function isPositiveInteger(arg) {
+                    // Return
+                    return LDKF.isInteger(arg) && LDKF.isPositiveNumber(arg)
+                },
+
+                // Is Positive Number
+                isPositiveNumber: function isPositiveNumber(arg) {
+                    // Return
+                    return LDKF.isNumber(arg) && (arg > 0 || LDKF.isPositiveZero(arg))
+                },
+
+                // Is Positive Zero
+                isPositiveZero: function isPositiveZero(arg) {
+                    // Return
+                    return LDKF.objectIs(arg, 0)
+                },
+
                 // Is Processing Instruction
                 isProcessingInstruction: function isProcessingInstruction(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.processingInstruction }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.processingInstruction) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.processingInstructionPrototype) }
                     catch (error) {}
 
                     // Return
                     return !1
                 },
 
-                // Is Pure Object
+                /* Is Pure Object
+                        --- NOTE ---
+                            #Lapys: Is the object a construct of the `{}` syntax.
+                */
                 isPureObject: function isPureObject(arg) {
                     // Error Handling
                     try {
@@ -2060,7 +2313,7 @@ window && (function Main(args) {
                 // Is Window
                 isWindow: function isWindow(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.window }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.window) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.windowPrototype) }
                     catch (error) {}
 
                     // Return
@@ -2070,7 +2323,7 @@ window && (function Main(args) {
                 // Is XML HTTP Request
                 isXmlHttpRequest: function isXmlHttpRequest(arg) {
                     // Error Handling > Return
-                    try { return typeof arg == 'object' && arg.constructor === LDKO.xmlHttpRequest }
+                    try { return (typeof arg == 'object' && arg.constructor === LDKO.xmlHttpRequest) || LDKF.isInArray(LDKF.getPrototypes(arg), LDKO.xmlHttpRequestPrototype) }
                     catch (error) {}
 
                     // Return
@@ -2125,17 +2378,90 @@ window && (function Main(args) {
 
                 /* Lend Array
                         --- NOTE ---
-                            #Lapys: Same as `Array.prototype.push` with only 1 argument.
+                            #Lapys: Same as `Array.prototype.push` or `Array.prototype.unshift` with only 1 argument.
                 */
-                lendArray: function lendArray(array, item) {
+                lendArray: function lendArray(array, item, reverse) {
                     // Initialization > Length
                     var length;
 
                     // Update > Array
-                    array[(length = array.length += 1) - 1] = item;
+                    reverse ? (function(array) {
+                        // Update > Length
+                        length = (array.length += 1) - 1;
+
+                        // Loop > Update > (Length, Array)
+                        while (length) {
+                            length -= 1;
+                            array[length + 1] = array[length]
+                        }
+
+                        // Update > (Array, Length)
+                        array[0] = item;
+                        length = array.length;
+
+                        // Return
+                        return item
+                    })(array) : array[(length = array.length += 1) - 1] = item;
 
                     // Return
                     return length - 1
+                },
+
+                // Lower String
+                lowerString: function lowerString(string) {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = 0,
+                        length = string.length,
+                        stream = '';
+
+                    /* Loop
+                            Iterate through String.
+
+                        > Update > Stream
+                    */
+                    for (iterator; iterator != length; iterator += 1)
+                        stream += LDKF.lowerStringChar(string[iterator]);
+
+                    // Return
+                    return stream
+                },
+
+                // Lower String Character
+                lowerStringChar: function lowerStringChar(character) {
+                    /* Logic
+                            [switch:case:default statement]
+
+                        > Return
+                    */
+                    switch (character) {
+                        case 'A': return 'a'; break;
+                        case 'B': return 'b'; break;
+                        case 'C': return 'c'; break;
+                        case 'D': return 'd'; break;
+                        case 'E': return 'e'; break;
+                        case 'F': return 'f'; break;
+                        case 'G': return 'g'; break;
+                        case 'H': return 'h'; break;
+                        case 'I': return 'i'; break;
+                        case 'J': return 'j'; break;
+                        case 'K': return 'k'; break;
+                        case 'L': return 'l'; break;
+                        case 'M': return 'm'; break;
+                        case 'N': return 'n'; break;
+                        case 'O': return 'o'; break;
+                        case 'P': return 'p'; break;
+                        case 'Q': return 'q'; break;
+                        case 'R': return 'r'; break;
+                        case 'S': return 's'; break;
+                        case 'T': return 't'; break;
+                        case 'U': return 'u'; break;
+                        case 'V': return 'v'; break;
+                        case 'W': return 'w'; break;
+                        case 'X': return 'x'; break;
+                        case 'Y': return 'y'; break;
+                        case 'Z': return 'z'; break;
+                        default: return character
+                    }
                 },
 
                 // Maximum
@@ -2222,85 +2548,383 @@ window && (function Main(args) {
 
                 /* Power
                         --- NOTE ---
-                            #Lapys: Returns the integer exponent of a number.
+                            #Lapys: Returns the exponent of a number.
 
                         --- UPDATE REQUIRED ---
-                            #Lapys: Non-integer exponents should return safe numeral values.
+                            #Lapys: Should be more efficient in handling decimal exponents.
                 */
                 pow: function pow(base, exponent) {
-                    // Error
-                    LDKF.isSafeNumber(base) || LDKF.throwError('pow', 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'safe number'));
-                    LDKF.isSafeNumber(exponent) || LDKF.throwError('pow', 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'safe number'));
+                    /* Logic
+                            [if statement]
+                    */
+                    if (arguments.length) {
+                        /* Initialization > (Absolute Base, (Base, Exponent) Properties, Iterator, Result)
+                                --- NOTE ---
+                                    #Lapys: Used for speeding up the Error Handling check.
+                        */
+                        var absoluteBase = LDKF.abs(base),
+                            baseProperties = {
+                                // Is Finite
+                                isFinite: LDKF.isFinite(base),
 
-                    // Function
-                        // Power
-                        function pow(base, exponent) {
-                            // Initialization > Result
-                            var result = 1;
+                                // Is Not a Number
+                                isNaN: LDKF.isNaN(base),
+
+                                // Is Negative Infinity
+                                isNegativeInfinity: LDKF.isNegativeInfinity(base),
+
+                                // Is Negative Number
+                                isNegativeNumber: LDKF.isNegativeNumber(base),
+
+                                // Is Negative Zero
+                                isNegativeZero: LDKF.isNegativeZero(base),
+
+                                // Is Positive Infinity
+                                isPositiveInfinity: LDKF.isPositiveInfinity(base),
+
+                                // Is Positive Zero
+                                isPositiveZero: LDKF.isPositiveZero(base)
+                            }, exponentProperties = {
+                                // Is Even Number
+                                isEvenNumber: LDKF.isEvenNumber(exponent),
+
+                                // Is Finite
+                                isFinite: LDKF.isFinite(exponent),
+
+                                // Is Infinite
+                                isInfinite: LDKF.isInfinite(exponent),
+
+                                // Is Not a Number
+                                isNaN: LDKF.isNaN(exponent),
+
+                                // Is Negative Infinity
+                                isNegativeInfinity: LDKF.isNegativeInfinity(exponent),
+
+                                // Is Negative Integer
+                                isNegativeInteger: LDKF.isNegativeInteger(exponent),
+
+                                // Is Negative Number
+                                isNegativeNumber: LDKF.isNegativeNumber(exponent),
+
+                                // Is Non-Integer
+                                isNonInteger: LDKF.isNonInteger(exponent),
+
+                                // Is Odd Number
+                                isOddNumber: LDKF.isOddNumber(exponent),
+
+                                // Is Positive Infinity
+                                isPositiveInfinity: LDKF.isPositiveInfinity(exponent),
+
+                                // Is Positive Number
+                                isPositiveNumber: LDKF.isPositiveNumber(exponent)
+                            }, iterator = hidden.pow.length,
+                            result;
+
+                        /* Loop
+                                Index (Hidden > Power).
+
+                                --- NOTE ---
+                                    #Lapys: This may not necessarily be faster, but it keeps results more consistent.
+                        */
+                        while (iterator) {
+                            // Initialization > Former Result
+                            var formerResult = hidden.pow[iterator -= 1];
 
                             // Logic > Return
-                            if (exponent < 0)
-                                return 1 / pow(base, -exponent);
+                            if (LDKF.objectIs(formerResult.base, base) && LDKF.objectIs(formerResult.exponent, exponent))
+                                return formerResult.result
+                        }
+
+                        /* {Error Handling} Logic
+                                [if:else if statement]
+                        */
+                        if (
+                            (baseProperties.isPositiveZero && exponentProperties.isNegativeInteger && exponentProperties.isOddNumber) ||
+                            (!base && exponentProperties.isFinite && exponentProperties.isNegativeNumber && (exponentProperties.isEvenNumber || exponentProperties.isNonInteger)) ||
+                            (!base && exponentProperties.isNegativeInfinity)
+                        ) {
+                            // Warn
+                            LDKF.throwWarning('Pole error in floating-point operation');
+
+                            // Return
+                            return LDKO.infinity
+                        }
+
+                        else if (baseProperties.isNegativeZero && exponentProperties.isNegativeInteger && exponentProperties.isOddNumber) {
+                            // Warn
+                            LDKF.throwWarning('Pole error in floating-point operation');
+
+                            // Return
+                            return -LDKO.infinity
+                        }
+
+                        else if (!base && exponentProperties.isOddNumber && exponent.isPositiveNumber)
+                            // Return
+                            return LDKF.isNegativeZero(base) ? -0 : 0;
+
+                        else if (
+                            (!base && ((exponentProperties.isNonInteger && exponentProperties.isPositiveNumber) || (exponentProperties.isEvenNumber && exponentProperties.isPositiveNumber))) ||
+                            (absoluteBase > 1 && exponentProperties.isNegativeInfinity) ||
+                            (absoluteBase < 1 && exponentProperties.isPositiveInfinity) ||
+                            (baseProperties.isNegativeInfinity && (exponentProperties.isNegativeNumber || exponentProperties.isEvenNumber)) ||
+                            (baseProperties.isPositiveInfinity && exponentProperties.isNegativeNumber)
+                        )
+                            // Return
+                            return 0;
+
+                        else if (baseProperties.isNegativeInfinity && exponentProperties.isNegativeNumber && exponentProperties.isOddNumber)
+                            // Return
+                            return -0;
+
+                        else if (base == 1 || !exponent || (base == -1 && exponentProperties.isInfinite))
+                            // Return
+                            return 1;
+
+                        else if (baseProperties.isFinite && baseProperties.isNegativeNumber && exponentProperties.isFinite && exponentProperties.isNonInteger) {
+                            // Warn
+                            LDKF.throwWarning('Domain error in floating-point operation');
+
+                            // Return
+                            return LDKO.nan
+                        }
+
+                        else if (
+                            (absoluteBase < 1 && exponentProperties.isNegativeInfinity) ||
+                            (absoluteBase > 1 && exponentProperties.isPositiveInfinity) ||
+                            (baseProperties.isNegativeInfinity && (exponentProperties.isEvenNumber || exponentProperties.isPositiveNumber)) ||
+                            (baseProperties.isPositiveInfinity && exponentProperties.isPositiveNumber)
+                        )
+                            // Return
+                            return LDKO.infinity;
+
+                        else if (baseProperties.isNegativeInfinity && exponentProperties.isOddNumber && exponentProperties.isPositiveNumber)
+                            // Return
+                            return -LDKO.infinity;
+
+                        else if (baseProperties.isNaN || exponentProperties.isNaN)
+                            // Return
+                            return LDKO.nan;
+
+                        /* Update > Result
+                                --- NOTE ---
+                                    #Lapys: What`s going on here is a test of multiple `pow` algorithms
+                                        and returning the best result.
+                        */
+                        result = (function pow(base, exponent) {
+                            /* Initialization > (Denominator, Numerator, Limit, Previous (Denominator, Exponent))
+                                    --- NOTE ---
+                                        #Lapys: Denominator and numerator of the exponent.
+                            */
+                            var denominator = 1, numerator,
+                                limit = LDKO.numberMaxSafeInteger,
+                                previousDenominator, previousExponent;
 
                             /* Loop
                                     [while statement]
 
-                                > Update > (Result, Exponent, Base)
+                                    --- NOTE ---
+                                        #Lapys: Convert exponent to rational.
+
+                                > Update > (Previous) (Denominator, Exponent)
                             */
-                            while (exponent > 0) {
-                                (exponent & 1) && (result *= base);
-                                exponent >>= 1;
-                                base *= base
+                            while (
+                                denominator < limit && exponent < limit &&
+                                LDKF.isNonInteger(exponent)
+                            ) {
+                                previousDenominator = denominator;
+                                previousExponent = exponent;
+                                denominator *= 10;
+                                exponent *= 10
                             }
 
-                            // Return
-                            return result
-                        }
+                            /* Logic
+                                    [if:else statement]
 
-                        // Root
-                        function root(base, exponent) {
-                            // Initialization > ((Former) Result, EPS, Difference)
-                            var formerResult = LDKF.int(LDKF.random() * 10),
-                                eps = .001,
-                                difference = 2147483647,
-                                result;
-
-                            /* Loop
-                                    [while statement]
-
-                                > Update > ((Former) Result, Difference)
+                                    --- NOTE ---
+                                        #Lapys: Prevent infinitely recurring decimals (such as `1 / 3`) from
+                                            overflowing the result or synchronously bottle-necking the computation.
                             */
-                            while (difference > eps) {
-                                result = ((exponent - 1) * formerResult + base / pow(formerResult, exponent - 1)) / exponent;
-                                difference = LDKF.abs(result - formerResult);
-                                formerResult = result
+                            if (
+                                (denominator < limit && LDKF.isSafeNumber(denominator)) &&
+                                (exponent < limit && LDKF.isSafeNumber(exponent))
+                            ) {
+                                /* Update > Numerator
+                                        --- NOTE ---
+                                            #Lapys: Base ^ Exponent = Base ^ (Numerator / Denominator)
+                                */
+                                numerator = exponent;
+
+                                // Initialization > (...)
+                                var t_x = numerator,
+                                    t_y = denominator,
+                                    temp;
+
+                                /* Loop
+                                        [while statement]
+
+                                    > Update > (...)
+                                */
+                                while (t_y) {
+                                    temp = t_x % t_y;
+                                    t_x = t_y;
+                                    t_y = temp
+                                }
+
+                                /* Update > (Denominator, Numerator)
+                                        --- NOTE ---
+                                            #Lapys: Simplifying the Numerator ÷ Denominator expression to its lowest terms.
+                                */
+                                denominator /= t_x;
+                                numerator /= t_x;
+
+                                /* Initialization > ((Previous) Result, Tolerance, Base Raised by Numerator, Previous Result Raised by Denominator)
+                                        --- NOTE ---
+                                            #Lapys:
+                                                - Exponent = Base ^ (Numerator / Denominator)
+
+                                                - Rising both sides to the Denominator`s power.
+                                                    -- Base ^ Numerator = Exponent ^ Denominator
+
+                                                - Passing all terms to one side of the equation.
+                                                    -- (Base ^ Numerator) - (Exponent ^ Denominator) = 0
+
+                                                - Finding the root with Newton`s Method.
+                                */
+                                var result, previousResult = 1, tolerance = 1,
+                                    baseRaisedByNumerator = base,
+                                    previousResultRaisedByDenominator;
+
+                                /* Loop
+                                        [for statement]
+
+                                    > Update > Base Raised by Numerator
+                                */
+                                for (var iterator = 1; iterator < numerator; iterator += 1)
+                                    baseRaisedByNumerator *= base;
+
+                                /* Loop
+                                        [while statement]
+
+                                        --- NOTE ---
+                                            #Lapys: The level of tolerance determines how `precision` of the result.
+                                */
+                                while (tolerance > .001) {
+                                    // Update > Previous Result Raised by Denominator
+                                    previousResultRaisedByDenominator = previousResult;
+
+                                    /* Loop
+                                            [for statement]
+
+                                        > Update > Previous Result Raised by Denominator
+                                    */
+                                    for (var iterator = 1; iterator < denominator; iterator += 1)
+                                        previousResultRaisedByDenominator *= previousResult;
+
+                                    // Update > Result
+                                    result = previousResult - (previousResultRaisedByDenominator - baseRaisedByNumerator) / (denominator * (previousResultRaisedByDenominator / previousResult));
+
+                                    /* Update > Tolerance
+                                            --- NOTE ---
+                                                #Lapys: Newton`s Method iterations.
+                                    */
+                                    tolerance = ((result - previousResult) / previousResult) * 100;
+
+                                    // Update > (Tolerance, Previous Result)
+                                    (tolerance < 0) && (tolerance = -tolerance);
+                                    previousResult = result;
+                                }
+
+                                // Return
+                                return result
                             }
 
-                            // Return
-                            return result
-                        }
+                            else
+                                // Return
+                                return (function(base, exponent) {
+                                    // Initialization > (Return) Result
+                                    var result, returnResult;
 
-                    /* Logic
-                            [if:else if statement]
+                                    /* Error Handling
+                                            --- NOTE ---
+                                                #Lapys: Try to prevent the result from overflowing.
+                                    */
+                                    try {
+                                        // Function
+                                            // Power
+                                            function pow(base, exponent) {
+                                                /* Logic
+                                                        [if:else if:else statement]
+                                                */
+                                                    // {Null Base}
+                                                    if (!base)
+                                                        // Return
+                                                        return result = 0;
 
-                            --- NOTE ---
-                                #Lapys: The `root` function is still quirky with the results.
+                                                    // {Null Exponent}
+                                                    else if (!exponent)
+                                                        // Return
+                                                        return result = 1;
 
-                        > Return
-                    */
-                    if (LDKF.int(exponent) === exponent)
+                                                    // {Negative Exponent}
+                                                    else if (LDKF.isNegativeNumber(exponent))
+                                                        // Return
+                                                        return result = 1 / pow(base, exponent);
+
+                                                    // {Fractional Exponent}
+                                                    else if (exponent > 0 && exponent < 1)
+                                                        // Return
+                                                        return result = root(base, 1 / exponent);
+
+                                                    // {Fractional Exponent}
+                                                    else if (!(LDKF.int(exponent) % 2)) {
+                                                        // Initialization > Half Power
+                                                        var halfPower = pow(base, exponent / 2);
+
+                                                        // Return
+                                                        return result = halfPower * halfPower
+                                                    }
+
+                                                    // {Integer Exponent}
+                                                    else
+                                                        // Return
+                                                        return result = base * pow(base, exponent - 1)
+                                            }
+
+                                            // Root
+                                            function root(base, exponent) {
+                                                // Initialization > (Constant, Iterator, Matrix)
+                                                var constant = 6, iterator = 0,
+                                                    matrix = [1, 1, 1, 1, 1, 1];
+
+                                                // Loop > Update > Matrix
+                                                for (iterator; iterator < constant - 1; iterator += 1)
+                                                    matrix[iterator + 1] = (1 / exponent) * ((exponent - 1) * matrix[iterator] + base / pow(matrix[iterator], exponent - 1));
+
+                                                // Return
+                                                return result = matrix[constant - 1]
+                                            }
+
+                                        // Return
+                                        return pow(base, exponent)
+                                    } catch (error) {
+                                        // Update > Return Result
+                                        returnResult = error.constructor === LDKO.rangeError
+                                    }
+
+                                    // Return
+                                    return returnResult ? result : LDKO.nan
+                                })(base, exponent)
+                        })(base, exponent);
+
+                        // Update > (Result, Hidden > Power)
+                        LDKF.isSafeNumber(result) || (result = new LDKF.error('Result not computable in JavaScript only'));
+                        hidden.pow[iterator] = {base: base, exponent: exponent, result: result};
+
                         // Return
-                        return pow(base, exponent);
+                        return result
+                    }
 
-                    else if (LDKF.int(1 / exponent) === 1 / exponent)
-                        // Return
-                        return root(base, 1 / exponent);
-
-                    /* Return
-                            --- NOTE ---
-                                #Lapys: This is only returned for non-integer exponents
-                                    that are not rooted.
-                    */
+                    // Return
                     return LDKO.nan
                 },
 
@@ -2398,6 +3022,50 @@ window && (function Main(args) {
 
                     // Return
                     return string
+                },
+
+                /* Repeat
+                        --- NOTE ---
+                            #Lapys: A simple brute force repeat with no end,
+                                unlike the `iterate...` methods.
+                */
+                repeat: function repeat(callback, iterationCount) {
+                    /* Loop
+                            [while statement]
+                    */
+                    while (iterationCount) {
+                        // Callback
+                        callback.call(this, iterationCount);
+
+                        // Update > Iteration Count
+                        iterationCount -= 1
+                    }
+                },
+
+                // Repeat Asynchronously
+                repeatAsync: function repeatAsync(callback, iterationCount) {
+                    // Initialization > (Original Iteration Count, Request, Target)
+                    var originalIterationCount = iterationCount,
+                        request, that = this;
+
+                    // Function > Repeat
+                    (function repeat() {
+                        /* Logic
+                                [if:else statement]
+                        */
+                        if (iterationCount != -1) {
+                            // Callback
+                            (iterationCount == originalIterationCount) || callback.call(that, iterationCount);
+
+                            // Update > (Iteration Count, Request)
+                            iterationCount -= 1;
+                            request = LDKF.requestAnimationFrame(repeat)
+                        }
+
+                        else
+                            // Cancel Animation Frame > Request
+                            LDKF.cancelAnimationFrame(request)
+                    })()
                 },
 
                 // Replace Character String
@@ -2621,6 +3289,27 @@ window && (function Main(args) {
 
                     // Return
                     return ''
+                },
+
+                // Reverse Array
+                reverseArray: function reverseArray(array) {
+                    // Initialization > (Index, Iterator, Length, Reverse)
+                    var index = -1,
+                        iterator = array.length,
+                        length = iterator,
+                        reverse = [];
+
+                    // Loop > Update
+                        // Reverse
+                        while (iterator)
+                            reverse[index += 1] = array[iterator -= 1];
+
+                        // Array
+                        for (iterator; iterator != length; iterator += 1)
+                            array[iterator] = reverse[iterator];
+
+                    // Return
+                    return array
                 },
 
                 // Reverse String
@@ -2911,6 +3600,80 @@ window && (function Main(args) {
                     return 1 / (1 + LDKF.exp(-number))
                 },
 
+                // Sort Array
+                sortArray: function sortArray(array) {
+                    /* Initialization > (Copy, Length, Sorted)
+                            --- NOTE ---
+                                #Lapys: Make a shallow copy of the Array.
+                    */
+                    var copy = (function(array) {
+                        // Initialization > (Copy, Iterator, Length, Sorted)
+                        var copy = [],
+                            iterator = 0,
+                            length = array.length;
+
+                        // Loop > Update > Copy
+                        for (iterator; iterator != length; iterator += 1)
+                            copy[iterator] = array[iterator];
+
+                        // Return
+                        return copy
+                    })(array),
+                        iterator = 0,
+                        length = array.length,
+                        sorted = [];
+
+                    /* Function > Find Match
+                            --- NOTE ---
+                                #Lapys: Find the highest prioritized item in the array.
+                    */
+                    function findMatch(array) {
+                        /* Return
+                                --- UPDATE REQUIRED ---
+                                    #Lapys: For now, we return our value based on numbers.
+                        */
+                        return LDKF.max.apply(LDKF, array)
+                    }
+
+                    /* Loop
+                            [while statement]
+                    */
+                    while (sorted.length != length) {
+                        // Initialization > (Match, Iterator)
+                        var match = findMatch(copy),
+                            iterator = copy.length;
+
+                        /* Loop
+                                Index Copy.
+                        */
+                        while (iterator) {
+                            // Initialization > Item
+                            var item = copy[iterator -= 1];
+
+                            /* Logic
+                                    [if statement]
+
+                                > Update > (Sorted, Copy)
+                            */
+                            if (item === match) {
+                                sorted[sorted.length] = item;
+                                LDKF.removeItemArray(copy, item)
+                            }
+                        }
+                    }
+
+                    /* Loop
+                            Index Sorted.
+
+                        > Update > Array
+                    */
+                    for (iterator; iterator != length; iterator += 1)
+                        array[iterator] = sorted[iterator];
+
+                    // Return
+                    return array
+                },
+
                 // String
                 string: function string(arg) {
                     /* Logic
@@ -3153,6 +3916,63 @@ window && (function Main(args) {
 
                     // Return
                     return LDKF.trimLeftString.apply(LDKF, args)
+                },
+
+                // Upper String
+                upperString: function upperString(string) {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = 0,
+                        length = string.length,
+                        stream = '';
+
+                    /* Loop
+                            Iterate through String.
+
+                        > Update > Stream
+                    */
+                    for (iterator; iterator != length; iterator += 1)
+                        stream += LDKF.upperStringChar(string[iterator]);
+
+                    // Return
+                    return stream
+                },
+
+                // Upper String Character
+                upperStringChar: function upperStringChar(character) {
+                    /* Logic
+                            [switch:case:default statement]
+
+                        > Return
+                    */
+                    switch (character) {
+                        case 'a': return 'A'; break;
+                        case 'b': return 'B'; break;
+                        case 'c': return 'C'; break;
+                        case 'd': return 'D'; break;
+                        case 'e': return 'E'; break;
+                        case 'f': return 'F'; break;
+                        case 'g': return 'G'; break;
+                        case 'h': return 'H'; break;
+                        case 'i': return 'I'; break;
+                        case 'j': return 'J'; break;
+                        case 'k': return 'K'; break;
+                        case 'l': return 'L'; break;
+                        case 'm': return 'M'; break;
+                        case 'n': return 'N'; break;
+                        case 'o': return 'O'; break;
+                        case 'p': return 'P'; break;
+                        case 'q': return 'Q'; break;
+                        case 'r': return 'R'; break;
+                        case 's': return 'S'; break;
+                        case 't': return 'T'; break;
+                        case 'u': return 'U'; break;
+                        case 'v': return 'V'; break;
+                        case 'w': return 'W'; break;
+                        case 'x': return 'X'; break;
+                        case 'y': return 'Y'; break;
+                        case 'z': return 'Z'; break;
+                        default: return character
+                    }
                 }
             },
 
@@ -3185,14 +4005,30 @@ window && (function Main(args) {
                     // Prototype
                     arrayPrototype: [].__proto__,
 
+                // Boolean
+                boolean: (!0).constructor,
+                    // Prototype
+                    booleanPrototype: (!0).__proto__,
+
                 // Character Data
                 characterData: window.CharacterData,
+                    // Prototype
+                    characterDataPrototype: (window.CharacterData || {}).prototype,
 
                 /* Clear Timeout
                         --- WARN ---
                             #Lapys: Here, we can only hope that the `clearTimeout` and `setTimeout` functions are native.
                 */
                 clearTimeout: window.clearTimeout,
+
+                /* Custom Element Registry
+                        --- NOTE ---
+                            #Lapys: Querying & registering custom elements.
+                */
+                customElementRegistry: window.CustomElementRegistry,
+
+                // Custom Elements
+                customElements: window.customElements,
 
                 // Date
                 date: window.Date,
@@ -3204,6 +4040,8 @@ window && (function Main(args) {
 
                 // Document Type
                 documentType: window.DocumentType,
+                    // Prototype
+                    documentTypePrototype: (window.DocumentType || {}).prototype,
 
                 // DOM Error
                 domError: window.DOMError,
@@ -3246,6 +4084,9 @@ window && (function Main(args) {
 
                 // Number
                 number: .0.constructor,
+                    // Maximum Safe Integer
+                    numberMaxSafeInteger: .0.constructor.MAX_SAFE_INTEGER,
+
                     // Prototype
                     numberPrototype: .0.__proto__,
 
@@ -3259,6 +4100,15 @@ window && (function Main(args) {
 
                 // Processing Instruction
                 processingInstruction: window.ProcessingInstruction,
+                    // Prototype
+                    processingInstructionPrototype: (window.ProcessingInstruction || {}).prototype,
+
+                // Promise
+                promise: window.Promise,
+                    // Prototype
+                    promisePrototype: (window.Promise || {}).prototype,
+                        // Then
+                        promisePrototypeThen: ((window.Promise || {}).prototype || {}).then,
 
                 // Range Error
                 rangeError: (function rangeError() {
@@ -3308,8 +4158,13 @@ window && (function Main(args) {
                     windowPrototype: __proto__,
 
                 // XML HTTP Request
-                xmlHttpRequest: window.XMLHttpRequest
+                xmlHttpRequest: window.XMLHttpRequest,
+                    // Prototype
+                    xmlHttpRequest: (window.XMLHttpRequest || {}).prototype
             },
+
+            /* (Constructor > Prototype) */
+            __proto__: new (function LapysJSDevelopmentKit() {}),
 
             /* Random
                     --- NOTE ---
@@ -3389,8 +4244,11 @@ window && (function Main(args) {
                     // Keys
                     LapysJSDevelopmentKit.functions.objectKeys = LapysJSDevelopmentKit.objects.object.keys;
 
-                    // Is
-                    LapysJSDevelopmentKit.functions.objectIs = LapysJSDevelopmentKit.objects.object.is;
+                    /* Is
+                            --- NOTE ---
+                                #Lapys: Credit to MDN (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is#Polyfill)
+                    */
+                    LapysJSDevelopmentKit.functions.objectIs = LapysJSDevelopmentKit.objects.object.is || function is(a,b){return a===b?0!==a||1/a==1/b:a!==a&&b!==b};
 
                     // Prototype
                         // To String
@@ -3499,6 +4357,8 @@ window && (function Main(args) {
                         }
                     }
                 })();
+                    // Register Element
+                    LapysJSDevelopmentKit.objects.documentPrototypeRegisterElement = LapysJSDevelopmentKit.objects.documentPrototype.registerElement;
 
                 // Delete Event
                 LapysJSDevelopmentKit.objects.delEvent = (function() {
@@ -3559,11 +4419,26 @@ window && (function Main(args) {
                         // Create Element
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'createElement');
 
+                        // Create Range
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateRange = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'createRange');
+
                         // Document Element
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeDocumentElement = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'documentElement');
 
-                        // HTML Collection
+                        // Execute Command
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeExecCommand = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'execCommand');
+
+                        // Get Elements by Tag Name
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetElementsByTagName = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'getElementsByTagName');
+
+                        // Get Selection
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetSelection = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'getSelection');
+
+                        // Query Command Enabled
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQueryCommandEnabled = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'queryCommandEnabled');
+
+                        // Query Command Supported
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQueryCommandSupported = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'queryCommandSupported');
 
                         // Query Selector
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelector = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'querySelector');
@@ -3582,6 +4457,8 @@ window && (function Main(args) {
 
                 // HTML Input Element
                 LapysJSDevelopmentKit.objects.htmlInputElement = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window), 'input').constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.htmlInputElementPrototype = LapysJSDevelopmentKit.objects.htmlInputElement.prototype;
 
                 // HTML Meta Element
                 LapysJSDevelopmentKit.objects.htmlMetaElement = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window), 'meta').constructor;
@@ -3595,11 +4472,26 @@ window && (function Main(args) {
 
                 // HTML Textarea Element
                 LapysJSDevelopmentKit.objects.htmlTextareaElement = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window), 'textarea').constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.htmlTextareaElementPrototype = LapysJSDevelopmentKit.objects.htmlTextareaElement.prototype;
+                        // Blur
+                        LapysJSDevelopmentKit.objects.htmlTextareaElementPrototypeBlur = LapysJSDevelopmentKit.objects.htmlTextareaElementPrototype.blur;
+
+                        // Select
+                        LapysJSDevelopmentKit.objects.htmlTextareaElementPrototypeSelect = LapysJSDevelopmentKit.objects.htmlTextareaElementPrototype.select;
 
                 // Descriptions
+                    // HTML Input Element > Prototype
+                        // Value
+                        LapysJSDevelopmentKit.objects.descriptions.htmlInputElementPrototypeValue = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlInputElementPrototype, 'value');
+
                     // HTML Script Element > Prototype
                         // Source
                         LapysJSDevelopmentKit.objects.descriptions.htmlScriptElementPrototypeSrc = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlScriptElementPrototype, 'src');
+
+                    // HTML Textarea Element > Prototype
+                        // Value
+                        LapysJSDevelopmentKit.objects.descriptions.htmlTextareaElementPrototypeValue = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlTextareaElementPrototype, 'value');
 
                 /* Parameter
                         --- NOTE ---
@@ -3616,6 +4508,16 @@ window && (function Main(args) {
                 LapysJSDevelopmentKit.objects.parameterList = function ParameterList() {};
                     // Prototype
                     (LapysJSDevelopmentKit.objects.parameterListPrototype = LapysJSDevelopmentKit.objects.parameterList.prototype).__proto__ = LapysJSDevelopmentKit.objects.arrayPrototype;
+
+                // Range
+                LapysJSDevelopmentKit.objects.range = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateRange.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window)).constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.rangePrototype = LapysJSDevelopmentKit.objects.range.prototype;
+                        // Clone Contents
+                        LapysJSDevelopmentKit.objects.rangePrototypeCloneContents = LapysJSDevelopmentKit.objects.rangePrototype.cloneContents;
+
+                        // Select Node Contents
+                        LapysJSDevelopmentKit.objects.rangePrototypeSelectNodeContents = LapysJSDevelopmentKit.objects.rangePrototype.selectNodeContents;
 
                 // Request Animation Frame
                 LapysJSDevelopmentKit.objects.requestAnimationFrame = (function() {
@@ -3636,6 +4538,19 @@ window && (function Main(args) {
                             return method
                     }
                 })();
+
+                // Selection
+                LapysJSDevelopmentKit.objects.selection = LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetSelection.value.call(LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window)).constructor;
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.selectionPrototype = LapysJSDevelopmentKit.objects.selection.prototype;
+                        // Add Range
+                        LapysJSDevelopmentKit.objects.selectionPrototypeAddRange = LapysJSDevelopmentKit.objects.selectionPrototype.addRange;
+
+                        // Get Range At
+                        LapysJSDevelopmentKit.objects.selectionPrototypeGetRangeAt = LapysJSDevelopmentKit.objects.selectionPrototype.getRangeAt;
+
+                        // Remove All Ranges
+                        LapysJSDevelopmentKit.objects.selectionPrototypeRemoveAllRanges = LapysJSDevelopmentKit.objects.selectionPrototype.removeAllRanges;
 
             /* Functions
                     --- NOTE ---
@@ -3698,10 +4613,22 @@ window && (function Main(args) {
                         };
 
                 // Document > Prototype
+                    // Create Document Fragment
+                    LapysJSDevelopmentKit.functions.documentPrototypeCreateDocumentFragment = function documentPrototypeCreateDocumentFragment() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateDocumentFragment.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
                     // Create Element
                     LapysJSDevelopmentKit.functions.documentPrototypeCreateElement = function documentPrototypeCreateElement() {
                         // Return
                         return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateElement.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                    // Create Range
+                    LapysJSDevelopmentKit.functions.documentPrototypeCreateRange = function documentPrototypeCreateRange() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateRange.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
                     // Document Element
@@ -3710,10 +4637,34 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeDocumentElement.get.call(arguments[0])
                     };
 
+                    // Execute Command
+                    LapysJSDevelopmentKit.functions.documentPrototypeExecCommand = function documentPrototypeExecCommand() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeExecCommand.value.apply(arguments[0], LDKF.rendArray(arguments, 1))
+                    };
+
                     // Get Elements By Tag Name
                     LapysJSDevelopmentKit.functions.documentPrototypeGetElementsByTagName = function documentPrototypeGetElementsByTagName() {
                         // Return
                         return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetElementsByTagName.value.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                    // Get Selection
+                    LapysJSDevelopmentKit.functions.documentPrototypeGetSelection = function documentPrototypeGetSelection() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetSelection.value.call(arguments[0])
+                    };
+
+                    // Query Command Enabled
+                    LapysJSDevelopmentKit.functions.documentPrototypeQueryCommandEnabled = function documentPrototypeQueryCommandEnabled() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQueryCommandEnabled.value.apply(arguments[0], LDKF.rendArray(arguments, 1))
+                    };
+
+                    // Query Command Supported
+                    LapysJSDevelopmentKit.functions.documentPrototypeQueryCommandSupported = function documentPrototypeQueryCommandSupported() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQueryCommandSupported.value.apply(arguments[0], LDKF.rendArray(arguments, 1))
                     };
 
                     // Query Selector
@@ -3747,6 +4698,12 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.elementPrototypeHasAttribute.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
+                    // Query Selector
+                    LapysJSDevelopmentKit.functions.elementPrototypeQuerySelectorAll = function elementPrototypeQuerySelectorAll() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.elementPrototypeQuerySelectorAll.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
                     // Remove Attribute
                     LapysJSDevelopmentKit.functions.elementPrototypeRemoveAttribute = function elementPrototypeRemoveAttribute() {
                         // Return
@@ -3759,6 +4716,26 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.elementPrototypeSetAttribute.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
+                // HTML Element > Prototype
+                    // Focus
+                    LapysJSDevelopmentKit.functions.htmlElementPrototypeFocus = function htmlElementPrototypeFocus() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.htmlElementPrototypeFocus.call(arguments[0])
+                    };
+
+                // HTML Textarea Element > Prototype
+                    // Blur
+                    LapysJSDevelopmentKit.functions.htmlTextareaElementPrototypeBlur = function htmlTextareaElementPrototypeBlur() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.htmlTextareaElementPrototypeBlur.call(arguments[0])
+                    };
+
+                    // Select
+                    LapysJSDevelopmentKit.functions.htmlTextareaElementPrototypeSelect = function htmlTextareaElementPrototypeSelect() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.htmlTextareaElementPrototypeSelect.call(arguments[0])
+                    };
+
                 // Node > Prototype
                     // Append Child
                     LapysJSDevelopmentKit.functions.nodePrototypeAppendChild = function nodePrototypeAppendChild() {
@@ -3769,14 +4746,46 @@ window && (function Main(args) {
                     // Remove Child
                     LapysJSDevelopmentKit.functions.nodePrototypeRemoveChild = function nodePrototypeRemoveChild() {
                         // Return
-                        return LapysJSDevelopmentKit.objects.nodePrototypeRemoveChild.call(arguments[0])
+                        return LapysJSDevelopmentKit.objects.nodePrototypeRemoveChild.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
                 // Performance > Prototype
                     // Now
                     LapysJSDevelopmentKit.functions.performancePrototypeNow = function performancePrototypeNow() {
                         // Return
-                        return LapysJSDevelopmentKit.objects.performancePrototypeNow.call(arguments[0])
+                        return LapysJSDevelopmentKit.objects.performancePrototypeNow.call(arguments.length ? arguments[0] : LapysJSDevelopmentKit.functions.get.windowPerformance())
+                    };
+
+                // Range > Prototype
+                    // Clone Contents
+                    LapysJSDevelopmentKit.functions.rangePrototypeCloneContents = function rangePrototypeCloneContents() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.rangePrototypeCloneContents.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                    // Select Node Contents
+                    LapysJSDevelopmentKit.functions.rangePrototypeSelectNodeContents = function rangePrototypeSelectNodeContents() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.rangePrototypeSelectNodeContents.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                // Selection > Prototype
+                    // Add Range
+                    LapysJSDevelopmentKit.functions.selectionPrototypeAddRange = function selectionPrototypeAddRange() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.selectionPrototypeAddRange.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                    // Get Range At
+                    LapysJSDevelopmentKit.functions.selectionPrototypeGetRangeAt = function selectionPrototypeGetRangeAt() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.selectionPrototypeGetRangeAt.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
+                    // Remove All Ranges
+                    LapysJSDevelopmentKit.functions.selectionPrototypeRemoveAllRanges = function selectionPrototypeRemoveAllRanges() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.selectionPrototypeRemoveAllRanges.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
                 // Window
@@ -3823,6 +4832,8 @@ window && (function Main(args) {
                         window.DocumentFragment :
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateDocumentFragment.value.call(LapysJSDevelopmentKit.functions.get.windowDocument()).constructor
                 })();
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.documentFragmentPrototype = LapysJSDevelopmentKit.objects.documentFragment.prototype;
 
                 // DOM Exception
                 LapysJSDevelopmentKit.objects.domException = (function domException() {
@@ -3851,6 +4862,11 @@ window && (function Main(args) {
                 LapysJSDevelopmentKit.objects.htmlElement = LapysJSDevelopmentKit.functions.documentPrototypeDocumentElement(LapysJSDevelopmentKit.functions.get.windowDocument()).__proto__.__proto__.constructor;
                     // Prototype
                     LapysJSDevelopmentKit.objects.htmlElementPrototype = LapysJSDevelopmentKit.objects.htmlElement.prototype;
+                        // Click
+                        LapysJSDevelopmentKit.objects.htmlElementPrototypeClick = LapysJSDevelopmentKit.objects.htmlElementPrototype.click;
+
+                        // Focus
+                        LapysJSDevelopmentKit.objects.htmlElementPrototypeFocus = LapysJSDevelopmentKit.objects.htmlElementPrototype.focus;
 
                 // Element
                 LapysJSDevelopmentKit.objects.element = LapysJSDevelopmentKit.objects.htmlElement.__proto__;
@@ -3872,6 +4888,9 @@ window && (function Main(args) {
                             return !LapysJSDevelopmentKit.functions.isNull(LapysJSDevelopmentKit.objects.elementPrototypeGetAttribute.apply(this, arguments))
                         };
 
+                        // Query Selector All
+                        LapysJSDevelopmentKit.objects.elementPrototypeQuerySelectorAll = LapysJSDevelopmentKit.objects.elementPrototype.querySelectorAll;
+
                         // Remove Attribute
                         LapysJSDevelopmentKit.objects.elementPrototypeRemoveAttribute = LapysJSDevelopmentKit.objects.elementPrototype.removeAttribute;
 
@@ -3889,6 +4908,8 @@ window && (function Main(args) {
                     // Return
                     return LapysJSDevelopmentKit.objects.elementPrototypeGetAttributeNode.call(element, 'a').constructor
                 })();
+                    // Prototype
+                    LapysJSDevelopmentKit.objects.attrPrototype = LapysJSDevelopmentKit.objects.attr.prototype;
 
                 // Node
                 LapysJSDevelopmentKit.objects.node = LapysJSDevelopmentKit.objects.element.__proto__;
@@ -3980,9 +5001,25 @@ window && (function Main(args) {
                         // Length
                         LapysJSDevelopmentKit.objects.descriptions.htmlCollectionPrototypeLength = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlCollectionPrototype, 'length');
 
+                    // HTML Element > Prototype
+                        // Inner Text
+                        LapysJSDevelopmentKit.objects.descriptions.htmlElementPrototypeInnerText = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlElementPrototype, 'innerText');
+
+                        // On Click
+                        LapysJSDevelopmentKit.objects.descriptions.htmlElementPrototypeOnClick = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlElementPrototype, 'onclick');
+
+                        // Style
+                        LapysJSDevelopmentKit.objects.descriptions.htmlElementPrototypeStyle = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlElementPrototype, 'style');
+
                     // Node > Prototype
                         // Child Nodes
                         LapysJSDevelopmentKit.objects.descriptions.nodePrototypeChildNodes = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.nodePrototype, 'childNodes');
+
+                        // Parent Node
+                        LapysJSDevelopmentKit.objects.descriptions.nodeListPrototypeParentNode = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.nodePrototype, 'parentNode');
+
+                        // Text Content
+                        LapysJSDevelopmentKit.objects.descriptions.nodePrototypeTextContent = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.nodePrototype, 'textContent');
 
                     // Node List > Prototype
                         // Length
@@ -4120,6 +5157,50 @@ window && (function Main(args) {
                     return that
                 }));
 
+                /* Pseudo Number
+                        --- CHECKPOINT ---
+                            #Lapys: Basic operations must be functional.
+
+                        --- NOTE ---
+                            #Lapys:
+                                - Allows for much larger number of digits in a numeral.
+                                - Sacrifices speed for size.
+                */
+                LapysJSDevelopmentKit.random.pseudoNumber = function PseudoNumber(characteristics, mantissa) {
+                    // Initialization > Pseudo Number
+                    var pseudoNumber = this;
+
+                    // Modification > Pseudo Number
+                        /* Characteristics
+                                --- NOTE ---
+                                    #Lapys: Digits before the decimal point.
+                        */
+                        pseudoNumber.characteristics = arguments.length ? characteristics : '0';
+
+                        /* Mantissa
+                                --- NOTE ---
+                                    #Lapys: Digits after the decimal point.
+                        */
+                        pseudoNumber.mantissa = arguments.length > 1 ? mantissa : '0';
+
+                    // Return
+                    return pseudoNumber
+                };
+                    // Addition
+                    LapysJSDevelopmentKit.random.pseudoNumber.add = function add(pseudoNumberA, pseudoNumberB) {};
+
+                    // Divide
+                    LapysJSDevelopmentKit.random.pseudoNumber.div = function divide(pseudoNumberA, pseudoNumberB) {};
+
+                    // Exponentiate
+                    LapysJSDevelopmentKit.random.pseudoNumber.exp = function exponentiate(pseudoNumberA, pseudoNumberB) {};
+
+                    // Multiply
+                    LapysJSDevelopmentKit.random.pseudoNumber.mul = function multiply(pseudoNumberA, pseudoNumberB) {};
+
+                    // Subtraction
+                    LapysJSDevelopmentKit.random.pseudoNumber.sub = function subtract(pseudoNumberA, pseudoNumberB) {};
+
                 // Random Number Generator
                 LapysJSDevelopmentKit.random.RNG = {
                     /* Algorithms
@@ -4205,7 +5286,7 @@ window && (function Main(args) {
                                     - The features that these options affect also have an effect on the total processing time for the script.
                     */
                         // Allow App Features
-                        LDK.allowAppFeatures = !!LapysJS.allowAppFeatures;
+                        ('allowAppFeatures' in LapysJS) && (LDK.allowAppFeatures = !!LapysJS.allowAppFeatures);
 
                         // Components
                         LDKF.isArray(LapysJS.components) && (LDK.components = LapysJS.components);
@@ -4547,6 +5628,12 @@ window && (function Main(args) {
                     // Fullscreen Element
                     hidden.fullscreenElement = null;
 
+                    /* Power
+                            --- NOTE ---
+                                #Lapys: Cache all `LapysJSDevelopmentKit.functions.pow` results.
+                    */
+                    hidden.pow = [];
+
                     // Watch List
                     hidden.watchList = {
                         // On Element Added
@@ -4585,6 +5672,9 @@ window && (function Main(args) {
                     // Objects
                         // Console
                         LDKO.console = console;
+                            // Clear
+                            LDKO.consoleClear = LDKO.console.clear;
+
                             // Group
                             LDKO.consoleGroup = LDKO.console.group;
 
@@ -4629,6 +5719,17 @@ window && (function Main(args) {
                                 // Return
                                 return LDKF.objectGetOwnPropertyDescriptor(LDKO.locationPrototype, 'protocol')
                             })();
+
+                        // Math
+                        LDKO.math = Math;
+                            // Exponent
+                            LDKO.mathExp = LDKO.math.exp;
+
+                            // Logarithm
+                            LDKO.mathLog = LDKO.math.log;
+
+                            // Power
+                            LDKO.mathPow = LDKO.math.pow;
 
                         // Navigator
                         LDKO.navigator = navigator.constructor;
@@ -4938,6 +6039,12 @@ window && (function Main(args) {
 
                             // Error
                             LDKF.throwError("'cloneObject'", 'argument', [1, 0])
+                        };
+
+                        // Console Clear
+                        LDKF.consoleClear = function consoleClear() {
+                            // Return
+                            return LDKO.consoleClear.apply(LDKO.console, arguments)
                         };
 
                         // Console Group
@@ -6098,6 +7205,33 @@ window && (function Main(args) {
                                     return LDKO.descriptions.htmlCollectionPrototypeLength.get.call(arguments[0])
                                 };
 
+                            // HTML Element > Prototype
+                                // Inner Text
+                                LDKF.get.htmlElementPrototypeInnerText = function htmlElementPrototypeInnerText() {
+                                    // Return
+                                    return LDKO.descriptions.htmlElementPrototypeInnerText.get.call(arguments[0])
+                                };
+
+                                // Style
+                                LDKF.get.htmlElementPrototypeStyle = function htmlElementPrototypeStyle() {
+                                    // Return
+                                    return LDKO.descriptions.htmlElementPrototypeStyle.get.call(arguments[0])
+                                };
+
+                            // HTML Input Element > Prototype
+                                // Value
+                                LDKF.get.htmlInputElementPrototypeValue = function htmlInputElementPrototypeValue() {
+                                    // Return
+                                    return LDKO.descriptions.htmlInputElementPrototypeValue.get.call(arguments[0])
+                                };
+
+                            // HTML Textarea Element > Prototype
+                                // Value
+                                LDKF.get.htmlTextareaElementPrototypeValue = function htmlTextareaElementPrototypeValue() {
+                                    // Return
+                                    return LDKO.descriptions.htmlTextareaElementPrototypeValue.get.call(arguments[0])
+                                };
+
                             // Location
                                 // Protocol
                                 LDKF.get._locationProtocol = function _locationProtocol() {
@@ -6140,6 +7274,12 @@ window && (function Main(args) {
                                 LDKF.get.nodeListPrototypeLength = function nodeListPrototypeLength() {
                                     // Return
                                     return LDKO.descriptions.nodeListPrototypeLength.get.call(arguments[0])
+                                };
+
+                                // Parent Node
+                                LDKF.get.nodeListPrototypeParentNode = function nodeListPrototypeParentNode() {
+                                    // Return
+                                    return LDKO.descriptions.nodeListPrototypeParentNode.get.call(arguments[0])
                                 };
 
                         /* Iterate Array
@@ -6740,6 +7880,20 @@ window && (function Main(args) {
                                 LDKF.set.elementPrototypeInnerHTML = function elementPrototypeInnerHTML() {
                                     // Return
                                     return LDKO.descriptions.elementPrototypeInnerHTML.set.call(arguments[0], arguments[1])
+                                };
+
+                            // HTML Textarea Element > Prototype
+                                // Value
+                                LDKF.set.htmlTextareaElementPrototypeValue = function htmlTextareaElementPrototypeValue() {
+                                    // Return
+                                    return LDKO.descriptions.htmlTextareaElementPrototypeValue.set.call(arguments[0], arguments[1])
+                                };
+
+                            // Node > Prototype
+                                // Text Content
+                                LDKF.set.nodePrototypeTextContent = function nodePrototypeTextContent() {
+                                    // Return
+                                    return LDKO.descriptions.nodePrototypeTextContent.set.call(arguments[0], arguments[1])
                                 };
 
                             // Window
@@ -8034,7 +9188,7 @@ window && (function Main(args) {
                                                         if (element)
                                                             try {
                                                                 // Deletion
-                                                                LDKF.nodePrototypeRemoveChild(element);
+                                                                LDKF.nodePrototypeRemoveChild(LDKF.get.nodeListPrototypeParentNode(element), element);
 
                                                                 // Return
                                                                 return !0
@@ -9964,22 +11118,28 @@ window && (function Main(args) {
                                 })()
                             });
 
-                            // Cancel On DOM Element Added
+                            /* Cancel On DOM Element Added
+                                    --- NOTE ---
+                                        #Lapys: Returns `true` if the method successfully removed `EventObserver` from
+                                            their event-runtime queue, otherwise returns `false`
+                            */
                             LDKF.objectDefineProperty(window, 'cancelOnDOMElementAdded', {
                                 // Configurable
                                 configurable: !0,
 
                                 // Value
                                 value: LDKF.windowCancelOnDOMElementAdded = function cancelOnDOMElementAdded() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onElementAdded,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = LDKF.get.windowDocument(),
-                                            watchList = hidden.watchList.onElementAdded,
-                                            iterator = watchList.length;
+                                            node = LDKF.get.windowDocument();
 
                                         /* Loop
                                                 Index Watch List.
@@ -10002,8 +11162,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnDOMElementAdded', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) && (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On DOM Element Added > [Item > Callback]
+                                            cancelOnDOMElementAdded(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10014,15 +11205,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnDOMElementCountChange = function cancelOnDOMElementCountChange() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onElementCountChange,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = LDKF.get.windowDocument(),
-                                            watchList = hidden.watchList.onElementCountChange,
-                                            iterator = watchList.length;
+                                            node = LDKF.get.windowDocument();
 
                                         /* Loop
                                                 Index Watch List.
@@ -10045,8 +11238,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnDOMElementCountChange', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) && (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On DOM Element Count Change > [Item > Callback]
+                                            cancelOnDOMElementCountChange(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10057,15 +11281,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnDOMElementRemoved = function cancelOnDOMElementRemoved() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onElementRemoved,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = LDKF.get.windowDocument(),
-                                            watchList = hidden.watchList.onElementRemoved,
-                                            iterator = watchList.length;
+                                            node = LDKF.get.windowDocument();
 
                                         /* Loop
                                                 Index Watch List.
@@ -10088,8 +11314,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnDOMElementRemoved', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) && (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On DOM Element Removed > [Item > Callback]
+                                            cancelOnDOMElementRemoved(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10100,15 +11357,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnDOMHTMLChange = function cancelOnDOMHTMLChange() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onHTMLChange,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = LDKF.get.ancestorElement(),
-                                            watchList = hidden.watchList.onHTMLChange,
-                                            iterator = watchList.length;
+                                            node = LDKF.get.windowDocument();
 
                                         /* Loop
                                                 Index Watch List.
@@ -10131,8 +11390,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnDOMHTMLChange', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) && (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On DOM HTML Change > [Item > Callback]
+                                            cancelOnDOMHTMLChange(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10143,15 +11433,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnDOMNodeAdded = function cancelOnDOMNodeAdded() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onNodeAdded,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = LDKF.get.windowDocument(),
-                                            watchList = hidden.watchList.onNodeAdded,
-                                            iterator = watchList.length;
+                                            node = LDKF.get.windowDocument();
 
                                         /* Loop
                                                 Index Watch List.
@@ -10174,8 +11466,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnDOMNodeAdded', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) && (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On DOM Node Added > [Item > Callback]
+                                            cancelOnDOMNodeAdded(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10186,15 +11509,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnDOMNodeCountChange = function cancelOnDOMNodeCountChange() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onNodeCountChange,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = LDKF.get.windowDocument(),
-                                            watchList = hidden.watchList.onNodeCountChange,
-                                            iterator = watchList.length;
+                                            node = LDKF.get.windowDocument();
 
                                         /* Loop
                                                 Index Watch List.
@@ -10217,8 +11542,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnDOMNodeCountChange', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) && (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On DOM Node Count Change > [Item > Callback]
+                                            cancelOnDOMNodeCountChange(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10229,15 +11585,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnDOMNodeRemoved = function cancelOnDOMNodeRemoved() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onNodeRemoved,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = LDKF.get.windowDocument(),
-                                            watchList = hidden.watchList.onNodeRemoved,
-                                            iterator = watchList.length;
+                                            node = LDKF.get.windowDocument();
 
                                         /* Loop
                                                 Index Watch List.
@@ -10260,8 +11618,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnDOMNodeRemoved', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) && (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On DOM Node Removed > [Item > Callback]
+                                            cancelOnDOMNodeRemoved(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10272,15 +11661,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnElementAdded = function cancelOnElementAdded() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onElementAdded,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = arguments[1],
-                                            watchList = hidden.watchList.onElementAdded,
-                                            iterator = watchList.length;
+                                            node = arguments[1];
 
                                         /* Loop
                                                 Index Watch List.
@@ -10303,8 +11694,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnElementAdded', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) || (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On Element Added > [Item > Callback]
+                                            cancelOnElementAdded(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10315,15 +11737,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnElementCountChange = function cancelOnElementCountChange() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onElementCountChange,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = arguments[1],
-                                            watchList = hidden.watchList.onElementCountChange,
-                                            iterator = watchList.length;
+                                            node = arguments[1];
 
                                         /* Loop
                                                 Index Watch List.
@@ -10346,8 +11770,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnElementCountChange', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) || (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On Element Count Change > [Item > Callback]
+                                            cancelOnElementCountChange(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10358,15 +11813,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnElementRemoved = function cancelOnElementRemoved() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onElementRemoved,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = arguments[1],
-                                            watchList = hidden.watchList.onElementRemoved,
-                                            iterator = watchList.length;
+                                            node = arguments[1];
 
                                         /* Loop
                                                 Index Watch List.
@@ -10389,8 +11846,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnElementRemoved', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) || (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On Element Removed > [Item > Callback]
+                                            cancelOnElementRemoved(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10401,15 +11889,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnHTMLChange = function cancelOnHTMLChange() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onHTMLChange,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = arguments[1],
-                                            watchList = hidden.watchList.onHTMLChange,
-                                            iterator = watchList.length;
+                                            node = arguments[1];
 
                                         /* Loop
                                                 Index Watch List.
@@ -10432,8 +11922,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnHTMLChange', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) || (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On HTML Change > [Item > Callback]
+                                            cancelOnHTMLChange(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10444,15 +11965,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnNodeAdded = function cancelOnNodeAdded() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onNodeAdded,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = arguments[1],
-                                            watchList = hidden.watchList.onNodeAdded,
-                                            iterator = watchList.length;
+                                            node = arguments[1];
 
                                         /* Loop
                                                 Index Watch List.
@@ -10475,8 +11998,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnNodeAdded', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) || (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On Node Added > [Item > Callback]
+                                            cancelOnNodeAdded(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10487,15 +12041,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnNodeCountChange = function cancelOnNodeCountChange() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onNodeCountChange,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = arguments[1],
-                                            watchList = hidden.watchList.onNodeCountChange,
-                                            iterator = watchList.length;
+                                            node = arguments[1];
 
                                         /* Loop
                                                 Index Watch List.
@@ -10518,8 +12074,39 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnNodeCountChange', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) || (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On Node Count Change > [Item > Callback]
+                                            cancelOnNodeCountChange(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
@@ -10530,15 +12117,17 @@ window && (function Main(args) {
 
                                 // Value
                                 value: LDKF.windowCancelOnNodeRemoved = function cancelOnNodeRemoved() {
+                                    // Initialization > (Watch List, Iterator)
+                                    var watchList = hidden.watchList.onNodeRemoved,
+                                        iterator = watchList.length;
+
                                     /* Logic
-                                            [if statement]
+                                            [if:else statement]
                                     */
                                     if (arguments.length) {
-                                        // Initialization > (Callback, Node, Watch List, Iterator)
+                                        // Initialization > (Callback, Node)
                                         var callback = arguments[0],
-                                            node = arguments[1],
-                                            watchList = hidden.watchList.onNodeRemoved,
-                                            iterator = watchList.length;
+                                            node = arguments[1];
 
                                         /* Loop
                                                 Index Watch List.
@@ -10561,12 +12150,683 @@ window && (function Main(args) {
                                         return !1
                                     }
 
-                                    // Error
-                                    LDKF.throwError('cancelOnNodeRemoved', 'argument', [1, 0])
+                                    else {
+                                        // Initialization > (Array, Document)
+                                        var array = [],
+                                            document = LDKF.get.windowDocument();
+
+                                        /* Loop
+                                                Index Watch List.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = watchList[iterator -= 1];
+
+                                            // Update > Array
+                                            (item.node === document) || (array[array.length] = item)
+                                        }
+
+                                        // Initialization > Length
+                                        var length = iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Cancel On Node Removed > [Item > Callback]
+                                            cancelOnNodeRemoved(item.callback, item.node)
+                                        }
+
+                                        // Return
+                                        return !!length
+                                    }
                                 }
                             });
 
-                            // On DOM Element Added
+                            /* Chain
+                                    --- NOTE ---
+                                        #Lapys:
+                                            - Execute a list of functions in order.
+                                            - The key here is that each successive function is called only after the current one is completed.
+                            */
+                            window.chain = function chain() {
+                                // Initialization > (Callbacks, Iterator, Length)
+                                var callbacks = arguments,
+                                    iterator = callbacks.length,
+                                    length = iterator;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (length) {
+                                    // Loop > Error
+                                    while (iterator)
+                                        LDKF.isFunction(callbacks[iterator -= 1]) || LDKF.throwError('chain', 'argument', 'This function accepts functions only as arguments');
+
+                                    // Update > Length
+                                    (length % 2) && (length = LDKF.lendArray(callbacks, function() {}, !0));
+                                    length -= 1;
+
+                                    // Initialization > (Click Event Attacher, Current Return Value, Element, Execution Iteration Count, (Initial, Previous) Lapse, Promises)
+                                    var clickEventAttacher = LDKO.descriptions.htmlElementPrototypeOnClick.set,
+                                        currentReturnValue,
+                                        element = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'lapysjs-element'),
+                                        executionIterationCount = 0,
+                                        initialLapse = now(),
+                                        previousLapse = 0,
+                                        promises = LDKO.promise;
+
+                                    // Update > Promises
+                                    promises = LDKF.get.funcPrototypeName(promises) == 'Promise' && LDKF.isNativeFunction(promises);
+
+                                    // Function
+                                        // Now
+                                        function now() { return LDKF.performancePrototypeNow() }
+
+                                        // Set Click Event
+                                        function setClickEvent() { return clickEventAttacher.call(arguments[0], arguments[1]) }
+
+                                        // Update Lapse
+                                        function updateLapse() { return now() - initialLapse }
+
+                                        // Execute
+                                        (promises ?
+                                            function execute() {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (iterator < length + 2) {
+                                                    // Initialization > Callback (A, B)
+                                                    var callbackA = arguments[0],
+                                                        callbackB = arguments[1];
+
+                                                    // Update > Previous Lapse
+                                                    previousLapse = updateLapse() - previousLapse;
+
+                                                    // Promise
+                                                    LDKO.promisePrototypeThen.call(new LDKO.promise(function(resolve, reject) {
+                                                        // Callback A, Resolve, Reject
+                                                        callbackA(executionIterationCount ? previousLapse : 0);
+                                                        resolve(null);
+                                                        reject(null)
+                                                    }), function() {
+                                                        // Promise
+                                                        LDKO.promisePrototypeThen.call(new LDKO.promise(function(resolve, reject) {
+                                                            // Update > Current Return Value
+                                                            currentReturnValue = callbackB(updateLapse() - previousLapse);
+
+                                                            // Resolve, Reject
+                                                            resolve(null);
+                                                            reject(null)
+                                                        }), function() {
+                                                            // Update > Execution Iteration Count
+                                                            executionIterationCount += 1;
+
+                                                            // Execute
+                                                            execute(callbacks[iterator += 1], callbacks[iterator += 1])
+                                                        })
+                                                    })
+                                                }
+                                            } : function execute() {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (iterator < length + 2) {
+                                                    // Initialization
+                                                        // Callback (A, B)
+                                                        var callbackA = arguments[0],
+                                                            callbackB = arguments[1];
+
+                                                        // Called, Repeated, Request
+                                                        var called = !1,
+                                                            repeated = !1,
+                                                            request;
+
+                                                    // Update > Previous Lapse
+                                                    previousLapse = updateLapse() - previousLapse;
+
+                                                    // Callback A
+                                                    callbackA(executionIterationCount ? previousLapse : !0);
+
+                                                    // Function
+                                                        // Call
+                                                        function call() {
+                                                            // Update > (Called, Current Return Value)
+                                                            called = !0;
+                                                            currentReturnValue = callbackB(updateLapse() - previousLapse);
+
+                                                            // Set Click Event > Element
+                                                            setClickEvent(element, repeat);
+
+                                                            // Function > Repeat Click
+                                                            function repeatClick() {
+                                                                /* Logic
+                                                                        [if statement]
+                                                                */
+                                                                if (repeated)
+                                                                    // Cancel Animation Frame > Request
+                                                                    LDKF.cancelAnimationFrame(request);
+
+                                                                else {
+                                                                    // Element > Click
+                                                                    LDKO.htmlElementPrototypeClick.call(element);
+
+                                                                    // Update > Request
+                                                                    request = LDKF.requestAnimationFrame(repeatClick)
+                                                                }
+                                                            }
+
+                                                            // Repeat Click
+                                                            repeatClick()
+                                                        }
+
+                                                        // Call Click
+                                                        function callClick() {
+                                                            /* Logic
+                                                                    [if:else statement]
+                                                            */
+                                                            if (called)
+                                                                // Cancel Animation Frame > Request
+                                                                LDKF.cancelAnimationFrame(request);
+
+                                                            else {
+                                                                // Element > Click
+                                                                LDKO.htmlElementPrototypeClick.call(element);
+
+                                                                // Update > Request
+                                                                request = LDKF.requestAnimationFrame(callClick)
+                                                            }
+                                                        }
+
+                                                        // Repeat
+                                                        function repeat() {
+                                                            // Update > (Execution Iteration Count, Repeated)
+                                                            executionIterationCount += 1;
+                                                            repeated = !0;
+
+                                                            // Set Click Event | Execute
+                                                            iterator == length ?
+                                                                setClickEvent(element, null) :
+                                                                execute(callbacks[iterator += 1], callbacks[iterator += 1])
+                                                        }
+
+                                                    // Set Click Event > Element
+                                                    setClickEvent(element, call);
+
+                                                    // Call Click
+                                                    callClick()
+                                                }
+                                            }
+                                        )(callbacks[iterator = 0], callbacks[iterator += 1]);
+
+                                    // Return
+                                    return currentReturnValue
+                                }
+                            };
+
+                            /* Check
+                                    --- NOTE ---
+                                        #Lapys: Asynchronously check a condition and execute callbacks based on the result (like an asynchronous `while` statement).
+                                            - If the condition is false, keep checking the condition
+                                            - If the condition is true, terminate the sequence.
+                            */
+                            window.check = function check() {
+                                // Initialization > (Condition, Fail, Success, Length, Request)
+                                var condition = arguments[0],
+                                    fail = arguments[2] || null, failIsFunction,
+                                    success = arguments[1] || null, successIsFunction,
+                                    length = arguments.length,
+                                    request;
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (length) {
+                                    // Error
+                                    (failIsFunction = LDKF.isFunction(fail)) || LDKF.isNull(fail) || LDKF.throwError('check', 'argument', LDKF.debugMessage('Fail callback', ['must', 'be'], ['function', 'null']));
+                                    (successIsFunction = LDKF.isFunction(success)) || LDKF.isNull(success) || LDKF.throwError('check', 'argument', LDKF.debugMessage('Success callback', ['must', 'be'], ['function', 'null']));
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (failIsFunction || length == 2) {
+                                        // Function
+                                            // Test
+                                            function test() { return !!(LDKF.isFunction(condition) ? condition() : condition) }
+
+                                            // Check
+                                            (function check() {
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (test()) {
+                                                    // Success
+                                                    successIsFunction && success();
+
+                                                    // Cancel Animation Frame > Request
+                                                    LDKF.cancelAnimationFrame(request)
+                                                }
+
+                                                else {
+                                                    // Fail
+                                                    failIsFunction && fail();
+
+                                                    // Update > Request
+                                                    request = LDKF.requestAnimationFrame(check)
+                                                }
+                                            })()
+                                    }
+                                }
+                            };
+
+                            // Clear
+                            LDKF.objectDefineProperty(window, 'clear', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function clear() {
+                                    // Console > Clear
+                                    LDKF.consoleClear();
+
+                                    // Return
+                                    return clear
+                                },
+
+                                // Set
+                                set: function clear(data) {
+                                    // Modification > Window > Clear
+                                    LDKF.objectDefineProperty(window, 'clear', {
+                                        // Configurable
+                                        configurable: !0,
+
+                                        // Enumerable
+                                        enumerable: !0,
+
+                                        // Value
+                                        value: data,
+
+                                        // Writable
+                                        writable: !0
+                                    });
+
+                                    // Return
+                                    return data
+                                }
+                            });
+
+                            // Copy
+                            window.copy = function copy() {
+                                // Initialization > (Command, Data, Document, Input, Text)
+                                var command = 'copy',
+                                    data = arguments[0],
+                                    document = LDKF.get.windowDocument(),
+                                    input = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'textarea'),
+                                    text = '';
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length && document)
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.documentPrototypeQueryCommandEnabled(document, command) || LDKF.documentPrototypeQueryCommandSupported(document, command)) {
+                                        // Initialization > (Ancestor, Input Style)
+                                        var ancestor = LDKF.get.ancestorElement(),
+                                            inputStyle = LDKF.get.htmlElementPrototypeStyle(input);
+
+                                        /* Logic
+                                                [if:else if:else statement]
+
+                                            > Update > Text
+                                        */
+                                        if (LDKF.isInputElement(data))
+                                            text = LDKF.isHTMLInputElement(data) ? LDKF.get.htmlInputElementPrototypeValue(data) : LDKF.get.htmlTextareaElementPrototypeValue(data);
+
+                                        else if (LDKF.isHTMLElement(data))
+                                            text = LDKF.get.htmlElementPrototypeInnerText(data);
+
+                                        else
+                                            text = LDKF.string(data);
+
+                                        // Modification
+                                            // Input
+                                                // Text Content
+                                                LDKF.set.nodePrototypeTextContent(input, text);
+
+                                                // Value
+                                                LDKF.set.htmlTextareaElementPrototypeValue(input, text);
+
+                                            // Input Style
+                                                // Pointer Events
+                                                inputStyle.pointerEvents = 'none';
+
+                                                // Position
+                                                inputStyle.position = 'fixed';
+
+                                                // Opacity
+                                                inputStyle.opacity = 0;
+
+                                        // Insertion
+                                        LDKF.nodePrototypeAppendChild(ancestor, input);
+
+                                        // Input > Focus
+                                        LDKF.htmlElementPrototypeFocus(input);
+
+                                        // Initialization > (Selection, Range)
+                                        var selection = LDKF.documentPrototypeGetSelection(document),
+                                            range = LDKF.documentPrototypeCreateRange(document);
+
+                                        // Range > Select Node Contents > Input
+                                        LDKF.rangePrototypeSelectNodeContents(range, input);
+
+                                        // Selection
+                                            // Remove All Ranges
+                                            LDKF.selectionPrototypeRemoveAllRanges(selection);
+
+                                            // Add Range > Range
+                                            LDKF.selectionPrototypeAddRange(selection, range);
+
+                                            // [Range] > Clone Contents
+                                            LDKF.rangePrototypeCloneContents(LDKF.selectionPrototypeGetRangeAt(selection, 0));
+
+                                        // Input > Select
+                                        LDKF.htmlTextareaElementPrototypeSelect(input);
+
+                                        // Document > Execute Command > [Command]
+                                        LDKF.documentPrototypeExecCommand(document, command)
+
+                                        // Input > Blur
+                                        LDKF.htmlTextareaElementPrototypeBlur(input);
+
+                                        // (LapysJS Development Kit > Functions) > Set Timeout
+                                        LDKF.setTimeout(function() {
+                                            // Selection > Remove All Ranges
+                                            LDKF.selectionPrototypeRemoveAllRanges(selection);
+
+                                            // Deletion
+                                            LDKF.nodePrototypeRemoveChild(ancestor, input)
+                                        });
+
+                                        // Return
+                                        return LDKF.get.htmlTextareaElementPrototypeValue(input)
+                                    }
+
+                                    else {
+                                        // Warn
+                                        LDKF.throwWarning(command, 'argument', "Query command '" + command + "' not supported in this browser");
+
+                                        // Return
+                                        return null
+                                    }
+                            };
+
+                            // Create Document Fragment
+                            window.createDocumentFragment = LDKF.windowCreateDocumentFragment = function createDocumentFragment() {
+                                // Initialization > (Document (Fragment), Iterator, Length)
+                                var document = LDKF.get.windowDocument(),
+                                    documentFragment = LDKF.documentPrototypeCreateDocumentFragment(document),
+                                    iterator = 0,
+                                    length = arguments.length;
+
+                                /* Loop
+                                        Index Arguments.
+                                */
+                                for (iterator; iterator != length; iterator += 1) {
+                                    // Initialization > Content
+                                    var content = arguments[iterator];
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isNode(content))
+                                        // Insertion
+                                        LDKF.nodePrototypeAppendChild(documentFragment, content);
+
+                                    else {
+                                        // Initialization > Element
+                                        var element = LDKF.documentPrototypeCreateElement(document, 'body');
+
+                                        // Update > Content
+                                        content = LDKF.string(content);
+
+                                        // Modification > Element > (Text Content | Inner HTML)
+                                        this === LapysJSDevelopmentKit ?
+                                            LDKF.set.nodePrototypeTextContent(element, content) :
+                                            LDKF.set.elementPrototypeInnerHTML(element, content);
+
+                                        // Initialization > (Nodes) (Iterator, Length)
+                                        var nodes = LDKF.get.nodePrototypeChildNodes(element),
+                                            nodesIterator = 0,
+                                            nodesLength = nodes.length;
+
+                                        /* Loop
+                                                Index Nodes.
+
+                                            > Insertion
+                                        */
+                                        for (nodesIterator; nodesIterator != nodesLength; nodesIterator += 1)
+                                            LDKF.nodePrototypeAppendChild(documentFragment, nodes[nodesIterator])
+                                    }
+                                }
+
+                                // Return
+                                return documentFragment
+                            };
+                                /* HTML
+                                        --- NOTE ---
+                                            #Lapys: Considers all arguments as nodes.
+                                */
+                                LDKF.objectDefineProperty(window.createDocumentFragment, 'html', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function html() {
+                                        // Return
+                                        return LDKF.windowCreateDocumentFragment.apply(window, arguments)
+                                    }
+                                });
+
+                                /* Text
+                                        --- NOTE ---
+                                            #Lapys: Considers all arguments as text nodes.
+                                */
+                                LDKF.objectDefineProperty(window.createDocumentFragment, 'text', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Value
+                                    value: function text() {
+                                        // Return
+                                        return LDKF.windowCreateDocumentFragment.apply(LapysJSDevelopmentKit, arguments)
+                                    }
+                                });
+
+                            // Create Element
+                            window.createElement = LDKF.createElement;
+
+                            // Cube Root
+                            window.cbrt = function cbrt(number) {
+                                // Return
+                                return arguments.length ? LDKO.mathExp(LDKO.mathLog(number) / 3) || LDKO.mathPow(number, 1 / 3) : LDKO.nan
+                            };
+
+                            // Cut
+                            window.cut = function cut() {
+                                // Initialization > (Command, Data, Document, Input, Text)
+                                var command = 'cut',
+                                    data = arguments[0],
+                                    document = LDKF.get.windowDocument(),
+                                    input = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'textarea'),
+                                    text = '';
+
+                                /* Logic
+                                        [if statement]
+                                */
+                                if (arguments.length && document)
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.documentPrototypeQueryCommandEnabled(document, command) || LDKF.documentPrototypeQueryCommandSupported(document, command)) {
+                                        // Initialization > (Ancestor, Input Style)
+                                        var ancestor = LDKF.get.ancestorElement(),
+                                            inputStyle = LDKF.get.htmlElementPrototypeStyle(input);
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (ancestor === data)
+                                            LDKF.throwError(command, 'argument', 'Unable to remove argument node');
+
+                                        else if (LDKF.isHTMLElement(data)) {
+                                            // Initialization > Parent
+                                            var parent = LDKF.get.nodeListPrototypeParentNode(data);
+
+                                            // Update > Text
+                                            text = LDKF.isInputElement(data) ? (LDKF.isHTMLInputElement(data) ? LDKF.get.htmlInputElementPrototypeValue(data) : LDKF.get.htmlTextareaElementPrototypeValue(data)) : LDKF.get.htmlElementPrototypeInnerText(data);
+
+                                            // Error Handling
+                                            try {
+                                                // Insertion | Error
+                                                parent ? LDKF.nodePrototypeRemoveChild(parent, data) : LDKF.throwError(command, 'argument', 'Parent node from argument missing')
+                                            } catch (error) {
+                                                // Error
+                                                LDKF.throwError(command, 'argument', 'Unable to remove argument node')
+                                            }
+                                        }
+
+                                        else
+                                            // Update > Text
+                                            text = LDKF.string(data);
+
+                                        // Modification
+                                            // Input
+                                                // Text Content
+                                                LDKF.set.nodePrototypeTextContent(input, text);
+
+                                                // Value
+                                                LDKF.set.htmlTextareaElementPrototypeValue(input, text);
+
+                                            // Input Style
+                                                // Pointer Events
+                                                inputStyle.pointerEvents = 'none';
+
+                                                // Position
+                                                inputStyle.position = 'fixed';
+
+                                                // Opacity
+                                                inputStyle.opacity = 0;
+
+                                        // Insertion
+                                        LDKF.nodePrototypeAppendChild(ancestor, input);
+
+                                        // Input > Focus
+                                        LDKF.htmlElementPrototypeFocus(input);
+
+                                        // Initialization > (Selection, Range)
+                                        var selection = LDKF.documentPrototypeGetSelection(document),
+                                            range = LDKF.documentPrototypeCreateRange(document);
+
+                                        // Range > Select Node Contents > Input
+                                        LDKF.rangePrototypeSelectNodeContents(range, input);
+
+                                        // Selection
+                                            // Remove All Ranges
+                                            LDKF.selectionPrototypeRemoveAllRanges(selection);
+
+                                            // Add Range > Range
+                                            LDKF.selectionPrototypeAddRange(selection, range);
+
+                                            // [Range] > Clone Contents
+                                            LDKF.rangePrototypeCloneContents(LDKF.selectionPrototypeGetRangeAt(selection, 0));
+
+                                        // Input > Select
+                                        LDKF.htmlTextareaElementPrototypeSelect(input);
+
+                                        // Document > Execute Command > [Command]
+                                        LDKF.documentPrototypeExecCommand(document, command)
+
+                                        // Input > Blur
+                                        LDKF.htmlTextareaElementPrototypeBlur(input);
+
+                                        // (LapysJS Development Kit > Functions) > Set Timeout
+                                        LDKF.setTimeout(function() {
+                                            // Selection > Remove All Ranges
+                                            LDKF.selectionPrototypeRemoveAllRanges(selection);
+
+                                            // Deletion
+                                            LDKF.nodePrototypeRemoveChild(ancestor, input)
+                                        });
+
+                                        // Return
+                                        return LDKF.get.htmlTextareaElementPrototypeValue(input)
+                                    }
+
+                                    else {
+                                        // Warn
+                                        LDKF.throwWarning(command, 'argument', "Query command '" + command + "' not supported in this browser");
+
+                                        // Return
+                                        return null
+                                    }
+                            };
+
+                            /* Execute
+                                    --- NOTE ---
+                                        #Lapys: Twin function of `eval`, tests if an evaluation string is executable,
+                                            if the second argument is true, the string is tested on a sandbox window instead.
+                            */
+                            LDKF.objectDefineProperty(window, 'exec', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !1,
+
+                                // Value
+                                value: function exec(code, sandboxTesting) {
+                                    // Initialization > (Evaluation, Result, Prototype)
+                                    var evaluation = LDKF.isExecutable(code, !!sandboxTesting),
+                                        result = {completedEvaluation: evaluation.completed, feedback: evaluation.feedback, value: evaluation.value},
+                                        prototype = LDKF.objectCreate(LDKO.booleanPrototype);
+
+                                    // Modification > Prototype
+                                        // Value Of
+                                        LDKF.objectDefineProperty(prototype, 'valueOf', {
+                                            // Value
+                                            value: function valueOf() {
+                                                // Return
+                                                return evaluation.value
+                                            }
+                                        });
+
+                                        // (Constructor > Prototype)
+                                        result.__proto__ = prototype;
+
+                                    // Return
+                                    return result
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* On DOM Element Added
+                                    --- NOTE ---
+                                        #Lapys:
+                                            - This method and its siblings listen for DOM updates on an
+                                                asynchronous frame-by-frame basis and execute based on that.
+
+                                            - They do not execute based on their suggested names.
+
+                                            - In this case, adding x more DOM elements in a single JavaScript frame
+                                                will not execute this function x times, rather once on that single frame.
+                            */
                             LDKF.objectDefineProperty(window, 'onDOMElementAdded', {
                                 // Configurable
                                 configurable: !0,
@@ -10749,7 +13009,2508 @@ window && (function Main(args) {
                                     // Error
                                     LDKF.throwError('onDOMElementAdded', 'argument', [1, 0])
                                 }
-                            })
+                            });
+
+                            // On DOM Element Count Change
+                            LDKF.objectDefineProperty(window, 'onDOMElementCountChange', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onDOMElementCountChange() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[0],
+                                            callbackReference = callback,
+                                            node = LDKF.get.windowDocument();
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.throwError('onDOMElementCountChange', 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onDOMElementCountChange', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onElementCountChange[hidden.watchList.onElementCountChange.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On DOM Element Count Change > Callback Reference
+                                                LDKF.windowCancelOnDOMElementCountChange(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.get.htmlAllCollectionPrototypeLength(LDKF.get.documentPrototypeAll())
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onElementCountChange.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onElementCountChange[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result != formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onDOMElementCountChange', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On DOM Element Removed
+                            LDKF.objectDefineProperty(window, 'onDOMElementRemoved', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onDOMElementRemoved() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[0],
+                                            callbackReference = callback,
+                                            node = LDKF.get.windowDocument();
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.throwError('onDOMElementRemoved', 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onDOMElementRemoved', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onElementRemoved[hidden.watchList.onElementRemoved.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On DOM Element Removed > Callback Reference
+                                                LDKF.windowCancelOnDOMElementRemoved(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.get.htmlAllCollectionPrototypeLength(LDKF.get.documentPrototypeAll())
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onElementRemoved.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onElementRemoved[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result < formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onDOMElementRemoved', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On DOM HTML Change
+                            LDKF.objectDefineProperty(window, 'onDOMHTMLChange', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onDOMHTMLChange() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[0],
+                                            callbackReference = callback,
+                                            node = LDKF.get.windowDocument();
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.throwError('onDOMHTMLChange', 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onDOMHTMLChange', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onHTMLChange[hidden.watchList.onHTMLChange.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result (Node))
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0,
+                                            resultNode = LDKF.get.ancestorElement();
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On DOM Node Count Change > Callback Reference
+                                                LDKF.windowCancelOnDOMNodeCountChange(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Error Handling
+                                                try {
+                                                    // Update > Result Node
+                                                    resultNode || (resultNode = LDKF.get.ancestorElement());
+
+                                                    // Return
+                                                    return LDKO.descriptions.elementPrototypeInnerHTML.get.call(resultNode)
+                                                } catch (error) {}
+
+                                                // Return
+                                                return ''
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onHTMLChange.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onHTMLChange[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result != formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onDOMHTMLChange', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On DOM Node Added
+                            LDKF.objectDefineProperty(window, 'onDOMNodeAdded', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onDOMNodeAdded() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[0],
+                                            callbackReference = callback,
+                                            node = LDKF.get.windowDocument();
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.throwError('onDOMNodeAdded', 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onDOMNodeAdded', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onNodeAdded[hidden.watchList.onNodeAdded.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On DOM Node Added > Callback Reference
+                                                LDKF.windowCancelOnDOMNodeAdded(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.allNodes(LDKF.get.windowDocument()).length
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onNodeAdded.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onNodeAdded[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result > formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onDOMNodeAdded', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On DOM Node Count Change
+                            LDKF.objectDefineProperty(window, 'onDOMNodeCountChange', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onDOMNodeCountChange() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[0],
+                                            callbackReference = callback,
+                                            node = LDKF.get.windowDocument();
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.throwError('onDOMNodeCountChange', 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onDOMNodeCountChange', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onNodeCountChange[hidden.watchList.onNodeCountChange.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On DOM Node Count Change > Callback Reference
+                                                LDKF.windowCancelOnDOMNodeCountChange(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.allNodes(LDKF.get.windowDocument()).length
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onNodeCountChange.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onNodeCountChange[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result != formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onDOMNodeCountChange', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On DOM Node Removed
+                            LDKF.objectDefineProperty(window, 'onDOMNodeRemoved', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onDOMNodeRemoved() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[0],
+                                            callbackReference = callback,
+                                            node = LDKF.get.windowDocument();
+
+                                        // Error
+                                        LDKF.isFunction(callback) || LDKF.throwError('onDOMNodeRemoved', 'argument', LDKF.debugMessage('Argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onDOMNodeRemoved', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onNodeRemoved[hidden.watchList.onNodeRemoved.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On DOM Node Removed > Callback Reference
+                                                LDKF.windowCancelOnDOMNodeRemoved(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.allNodes(LDKF.get.windowDocument()).length
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onNodeRemoved.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onNodeRemoved[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result < formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onDOMNodeRemoved', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On Element Added
+                            LDKF.objectDefineProperty(window, 'onElementAdded', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onElementAdded() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[1],
+                                            callbackReference = callback,
+                                            node = arguments[0];
+
+                                        // Error
+                                        LDKF.isNode(node) || LDKF.throwError('onElementAdded', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'node'));
+                                        LDKF.isFunction(callback) || LDKF.throwError('onElementAdded', 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onElementAdded', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onElementAdded[hidden.watchList.onElementAdded.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On Element Added > Callback Reference
+                                                LDKF.windowCancelOnElementAdded(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.get.nodeListPrototypeLength(LDKF.elementPrototypeQuerySelectorAll(node, '*'))
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onElementAdded.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onElementAdded[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result > formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onElementAdded', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On Element Count Change
+                            LDKF.objectDefineProperty(window, 'onElementCountChange', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onElementCountChange() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[1],
+                                            callbackReference = callback,
+                                            node = arguments[0];
+
+                                        // Error
+                                        LDKF.isNode(node) || LDKF.throwError('onElementCountChange', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'node'));
+                                        LDKF.isFunction(callback) || LDKF.throwError('onElementCountChange', 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onElementCountChange', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onElementCountChange[hidden.watchList.onElementCountChange.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On Element Count Change > Callback Reference
+                                                LDKF.windowCancelOnElementCountChange(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.get.nodeListPrototypeLength(LDKF.elementPrototypeQuerySelectorAll(node, '*'))
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onElementCountChange.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onElementCountChange[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result != formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onElementCountChange', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On Element Removed
+                            LDKF.objectDefineProperty(window, 'onElementRemoved', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onElementRemoved() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[1],
+                                            callbackReference = callback,
+                                            node = arguments[0];
+
+                                        // Error
+                                        LDKF.isNode(node) || LDKF.throwError('onElementRemoved', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'node'));
+                                        LDKF.isFunction(callback) || LDKF.throwError('onElementRemoved', 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onElementRemoved', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onElementRemoved[hidden.watchList.onElementRemoved.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On Element Removed > Callback Reference
+                                                LDKF.windowCancelOnElementRemoved(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.get.nodeListPrototypeLength(LDKF.elementPrototypeQuerySelectorAll(node, '*'))
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onElementRemoved.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onElementRemoved[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result < formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onElementRemoved', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On HTML Change
+                            LDKF.objectDefineProperty(window, 'onHTMLChange', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onHTMLChange() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[1],
+                                            callbackReference = callback,
+                                            node = arguments[0];
+
+                                        // Error
+                                        LDKF.isNode(node) || LDKF.throwError('onElementAdded', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'node'));
+                                        LDKF.isFunction(callback) || LDKF.throwError('onHTMLChange', 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onHTMLChange', 'argument', 'Callback given has already been registered into the  Event watch list') :
+                                            hidden.watchList.onHTMLChange[hidden.watchList.onHTMLChange.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On Node Count Change > Callback Reference
+                                                LDKF.windowCancelOnNodeCountChange(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Error Handling
+                                                try { return node && LDKO.descriptions.elementPrototypeInnerHTML.get.call(node) }
+                                                catch (error) {}
+
+                                                // Return
+                                                return ''
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onHTMLChange.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onHTMLChange[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result != formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onHTMLChange', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On Node Added
+                            LDKF.objectDefineProperty(window, 'onNodeAdded', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onNodeAdded() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[1],
+                                            callbackReference = callback,
+                                            node = arguments[0];
+
+                                        // Error
+                                        LDKF.isNode(node) || LDKF.throwError('onNodeAdded', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'node'));
+                                        LDKF.isFunction(callback) || LDKF.throwError('onNodeAdded', 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onNodeAdded', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onNodeAdded[hidden.watchList.onNodeAdded.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On Node Added > Callback Reference
+                                                LDKF.windowCancelOnNodeAdded(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.allNodes(node)
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onNodeAdded.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onNodeAdded[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result > formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onNodeAdded', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On Node Count Change
+                            LDKF.objectDefineProperty(window, 'onNodeCountChange', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onNodeCountChange() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[1],
+                                            callbackReference = callback,
+                                            node = arguments[0];
+
+                                        // Error
+                                        LDKF.isNode(node) || LDKF.throwError('onNodeCountChange', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'node'));
+                                        LDKF.isFunction(callback) || LDKF.throwError('onNodeCountChange', 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onNodeCountChange', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onNodeCountChange[hidden.watchList.onNodeCountChange.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On Node Count Change > Callback Reference
+                                                LDKF.windowCancelOnNodeCountChange(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.allNodes(node)
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onNodeCountChange.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onNodeCountChange[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result != formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onNodeCountChange', 'argument', [1, 0])
+                                }
+                            });
+
+                            // On Node Removed
+                            LDKF.objectDefineProperty(window, 'onNodeRemoved', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function onNodeRemoved() {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Callback (Reference), Node)
+                                        var callback = arguments[1],
+                                            callbackReference = callback,
+                                            node = arguments[0];
+
+                                        // Error
+                                        LDKF.isNode(node) || LDKF.throwError('onNodeRemoved', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'node'));
+                                        LDKF.isFunction(callback) || LDKF.throwError('onNodeRemoved', 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'function'));
+
+                                        // Error | (Update > Watch List)
+                                        isRegistered() ?
+                                            LDKF.throwError('onNodeRemoved', 'argument', 'Callback given has already been registered into the DOM Event watch list') :
+                                            hidden.watchList.onNodeRemoved[hidden.watchList.onNodeRemoved.length] = {callback: callback, node: node};
+
+                                        // Initialization > (Event Observer, Former Result, Promises, Request, Result)
+                                        var eventObserver = new LDKO.eventObserver,
+                                            formerResult = getResult(),
+                                            promises, request,
+                                            result = 0;
+
+                                        // Modification > Event Observer > Then
+                                        eventObserver.then = function then(callback, delay) {
+                                            // Update > Delay
+                                            LDKF.isVoid(delay) && (delay = 0);
+
+                                            // Error Handling
+                                            try {
+                                                // Error
+                                                LDKF.isFunction(callback) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'function'));
+                                                (LDKF.isSafeNumber(delay) && delay > -1) || LDKF.throwError(['then', 'EventObserver'], 'argument', LDKF.debugMessage('Argument 1', ['must', 'a'], 'positive safe numeral'))
+                                            } catch (error) {
+                                                // (LapysJS Development Kit > Functions) > Window Cancel On Node Removed > Callback Reference
+                                                LDKF.windowCancelOnNodeRemoved(callbackReference);
+
+                                                // Error
+                                                throw error
+                                            }
+
+                                            // Update > Promises
+                                            promises || (promises = []);
+                                            promises[promises.length] = {callback: callback, delay: delay};
+
+                                            // Return
+                                            return eventObserver
+                                        };
+
+                                        // Function
+                                            // Get Result
+                                            function getResult() {
+                                                // Return
+                                                return LDKF.allNodes(node)
+                                            }
+
+                                            // Is Registered
+                                            function isRegistered() {
+                                                // Initialization > Iterator
+                                                var iterator = hidden.watchList.onNodeRemoved.length;
+
+                                                /* Loop
+                                                        Index the Watch List.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = hidden.watchList.onNodeRemoved[iterator -= 1];
+
+                                                    // Logic > Return
+                                                    if (item.callback === callback && item.node === node)
+                                                        return !0
+                                                }
+                                            }
+
+                                            // Event Loop
+                                            (function eventLoop() {
+                                                // Function > Event Condition
+                                                function eventCondition() {
+                                                    // Return
+                                                    return result < formerResult
+                                                }
+
+                                                // Update > Result
+                                                result = getResult();
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (eventCondition()) {
+                                                    // Callback
+                                                    callback.call(node);
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (promises) {
+                                                        // Initialization > (Iterator, Length, Promise Request, Promises Status)
+                                                        var iterator = 0,
+                                                            length = promises.length,
+                                                            promiseRequest,
+                                                            promisesStatus = [];
+
+                                                        // Function > Fulfill Promise
+                                                        (function fulfillPromise() {
+                                                            /* Logic
+                                                                    [if statement]
+                                                            */
+                                                            if (iterator != length)
+                                                                /* Logic
+                                                                        [if:else statement]
+                                                                */
+                                                                if (promisesStatus[iterator] != 'pending') {
+                                                                    // Initialization > (Promise, Callback, Delay)
+                                                                    var promise = promises[iterator],
+                                                                        callback = promise.callback,
+                                                                        delay = promise.delay;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (delay) {
+                                                                        // Initialization > Timeout
+                                                                        var timeout;
+
+                                                                        // Update > Timeout
+                                                                        timeout = LDKF.setTimeout(function() {
+                                                                            // Update > (Promises Status, Iterator)
+                                                                            promisesStatus[iterator] = 'kept';
+                                                                            iterator += 1;
+
+                                                                            // Callback
+                                                                            callback.call(node);
+
+                                                                            // Clear Timeout > Timeout
+                                                                            LDKF.clearTimeout(timeout)
+                                                                        }, delay);
+
+                                                                        // Update > Promises Status
+                                                                        promisesStatus[iterator] = 'pending'
+                                                                    }
+
+                                                                    else {
+                                                                        // Update > (Promises Status, Iterator)
+                                                                        promisesStatus[iterator] = 'kept';
+                                                                        iterator += 1;
+
+                                                                        // Callback
+                                                                        callback.call(node)
+                                                                    }
+                                                                }
+
+                                                            // (Cancel Animation Frame > Fulfill Promise) | (Update > Promise Request)
+                                                            iterator == length ?
+                                                                LDKF.cancelAnimationFrame(fulfillPromise) :
+                                                                promiseRequest = LDKF.requestAnimationFrame(fulfillPromise)
+                                                        })()
+                                                    }
+
+                                                    // Update > Former Result
+                                                    formerResult = result
+                                                }
+
+                                                // Update > Former Result
+                                                (formerResult === result) || (formerResult = result);
+
+                                                // (Update > Request) | (Cancel Animation Frame > Request)
+                                                isRegistered() ? request = LDKF.requestAnimationFrame(eventLoop) : LDKF.cancelAnimationFrame(request)
+                                            })();
+
+                                        // Return
+                                        return eventObserver
+                                    }
+
+                                    // Error
+                                    LDKF.throwError('onNodeRemoved', 'argument', [1, 0])
+                                }
+                            });
+
+                            // Power
+                            window.pow = function pow(number, exponent) {
+                                // Return
+                                return arguments.length ? LDKO.mathExp(LDKO.mathLog(number) * exponent) || LDKO.mathPow(number, exponent) : LDKO.nan
+                            };
+
+                            // Register Element
+                            LDKF.objectDefineProperty(window, 'registerElement', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.windowRegisterElement = function registerElement(name, constructor) {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > (Custom Elements, Document)
+                                        var customElements = LDKO.customElements || hidden,
+                                            document = LDKF.get.windowDocument();
+
+                                        // Error Handling
+                                        try { LDKF.documentPrototypeCreateElement(document, name) }
+                                        catch (error) { (error.constructor === LDKO.domException) && LDKF.throwError('registerElement', 'argument', LDKF.debugMessage(name, ['must', 'a'], 'valid element name')) }
+
+                                        // Modification > (LapysJS > Temporary Data > (LapysJS Development Kit > Objects))
+                                        LapysJS.tmp.LDKO = LapysJSDevelopmentKit.objects;
+
+                                        // Update > (Constructor, Options)
+                                        (arguments.length > 1) || (constructor = LDKF.eval('(function() { return class HTML' + LDKF.alphabetizeString(LDKF.camelString(name)) + 'Element extends LapysJS.tmp.htmlElement {} })()'));
+                                        (arguments.length > 2) || (options = null);
+
+                                        // Deletion
+                                        delete LapysJS.tmp.LDKO;
+
+                                        // Error
+                                        LDKF.isClass(constructor) || LDKF.throwError('registerElement', 'argument', LDKF.debugMessage('registerElement', 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'class object')));
+                                        (constructor.__proto__ === LDKO.htmlElement) || LDKF.throwError('registerElement', 'argument', LDKF.debugMessage('Argument 0', ['must', 'a'], 'must extend to the `HTMLElement` constructor'));
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (LDKF.isObject(customElements) && customElements.constructor === LDKO.customElementRegistry)
+                                            // Custom Elements > Define > [Name]
+                                            LDKF.isNativeFunction(customElements.define) && customElements.define.call(customElements, name, constructor, options);
+
+                                        else if (LDKF.isNativeFunction(LDKO.documentPrototypeRegisterElement))
+                                            // Document > Register Element > [Name]
+                                            LDKO.documentPrototypeRegisterElement.call(document, name, constructor, options);
+
+                                        else
+                                            // Warn
+                                            LDKF.throwWarning('registerElement', 'argument', 'Custom elements are not supported within this browser')
+                                    }
+
+                                    // Return
+                                    return LDKR.classKeywordValid && LDKF.isNativeFunction(LDKO.customElementRegistry)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Root
+                            window.root = (Math.root = function root(number, exponent) {
+                                // Return
+                                return arguments.length ? LDKO.mathExp(LDKO.mathLog(number) * (1 / exponent)) || LDKO.mathPow(number, 1 / exponent) : LDKO.nan
+                            });
+
+                            // Square Root
+                            window.sqrt = function sqrt(number) {
+                                // Return
+                                return arguments.length ? LDKO.mathExp(LDKO.mathLog(number) / 2) || LDKO.mathPow(number, .5) : LDKO.nan
+                            }
                 }
 
                 /* Update
@@ -10781,7 +15542,16 @@ window && (function Main(args) {
                         // Console > (...)
                         LDKF.consoleGroup('LapysJS | ' + LDKO.descriptions.htmlScriptElementPrototypeSrc.get.call(LapysJS.script) + ' (by ' + AUTHOR + ')');
                             LDKF.consoleLog('     LapysJS.processingDuration =', LapysJS.totalProcessingDuration);
-                            LDKF.consoleLog('     LapysJS.ready =', !0);
+                            LDKF.consoleLog('     LapysJS.ready =', (function() {
+                                // Initialization > State
+                                var state = !0;
+
+                                // Modification > LapysJS > Ready
+                                LDKF.objectDefineProperty(LapysJS, 'ready', {value: state});
+
+                                // Return
+                                return state
+                            })());
                         LDKF.consoleGroupEnd()
                     })
                 }
@@ -10802,7 +15572,19 @@ window && (function Main(args) {
                     });
 
                     // Processing Duration
-                    LDKF.objectDefineProperty(LapysJS, 'processingDuration', {value: {}});
+                    LDKF.objectDefineProperty(LapysJS, 'processingDuration', {value: (function() {
+                        // Initialization > Processing Duration
+                        var processingDuration = {};
+
+                        // Modification > [Object] > Value Of
+                        (processingDuration.__proto__ = LDKF.objectCreate(LDKO.number.prototype)).valueOf = function valueOf() {
+                            // Return
+                            return LapysJS.totalProcessingDuration
+                        };
+
+                        // Return
+                        return processingDuration
+                    })()});
 
             /* Error Handling
                     --- NOTE ---
@@ -10811,7 +15593,7 @@ window && (function Main(args) {
                 // {Initialization}
                 try {
                     // Initialization > Start Timestamp
-                    var startTimestamp = LDKF.performancePrototypeNow(LDKF.get.windowPerformance());
+                    var startTimestamp = LDKF.performancePrototypeNow();
 
                     // Update > Current Phase
                     CURRENT_PHASE = 'initialization';
@@ -10820,7 +15602,7 @@ window && (function Main(args) {
                     INIT();
 
                     // Modification > (LapysJS > Processing Duration) > Initialization
-                    LapysJS.processingDuration.init = LDKF.performancePrototypeNow(LDKF.get.windowPerformance()) - startTimestamp
+                    LapysJS.processingDuration.init = LDKF.performancePrototypeNow() - startTimestamp
                 } catch (error) {
                     // Error
                     throw LDKF.error('Error in installation process: ' + error.message)
@@ -10829,7 +15611,7 @@ window && (function Main(args) {
                 // {Update}
                 try {
                     // Initialization > Start Timestamp
-                    var startTimestamp = LDKF.performancePrototypeNow(LDKF.get.windowPerformance());
+                    var startTimestamp = LDKF.performancePrototypeNow();
 
                     // Update > Current Phase
                     CURRENT_PHASE = 'update';
@@ -10838,7 +15620,7 @@ window && (function Main(args) {
                     UPDATE();
 
                     // Modification > (LapysJS > Processing Duration) > Update
-                    LapysJS.processingDuration.update = LDKF.performancePrototypeNow(LDKF.get.windowPerformance()) - startTimestamp
+                    LapysJS.processingDuration.update = LDKF.performancePrototypeNow() - startTimestamp
                 } catch (error) {
                     // Error
                     throw LDKF.error('Error in update process: ' + error.message)
@@ -10847,7 +15629,7 @@ window && (function Main(args) {
                 // {Terminate}
                 try {
                     // Initialization > Start Timestamp
-                    var startTimestamp = LDKF.performancePrototypeNow(LDKF.get.windowPerformance());
+                    var startTimestamp = LDKF.performancePrototypeNow();
 
                     // Update > Current Phase
                     CURRENT_PHASE = 'termination';
@@ -10856,7 +15638,7 @@ window && (function Main(args) {
                     TERMINATE();
 
                     // Modification > (LapysJS > Processing Duration) > Terminate
-                    LapysJS.processingDuration.terminate = LDKF.performancePrototypeNow(LDKF.get.windowPerformance()) - startTimestamp
+                    LapysJS.processingDuration.terminate = LDKF.performancePrototypeNow() - startTimestamp
                 } catch (error) {
                     // Error
                     LDKF.error('Error in terminate process: ' + error.message)
