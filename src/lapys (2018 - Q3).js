@@ -8996,7 +8996,7 @@
                                     // Permission
                                     notificationPermission: (function() {
                                         // Initialization > Method
-                                        let method = (LDKF.objectGetOwnPropertyDescriptor(LDKO.notification, 'permission') || {get: function() { return 'denied' }}).get
+                                        let method = (LDKF.objectGetOwnPropertyDescriptor(LDKO.notification, 'permission') || {get: function() { return 'denied' }}).get;
 
                                         // Return
                                         return function notificationPermission() { return method.call(LDKO.notification) }

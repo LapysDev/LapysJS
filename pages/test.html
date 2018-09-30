@@ -9,11 +9,38 @@
         <!-- LapysJS Stylesheet -->
         <link href=../src/lapys.css media=all rel=stylesheet type=text/css>
 
+        <!-- Document Stylesheet -->
+        <style media=all type=text/css>
+            /* DOM Elements > <body> */
+            body { transition: 1s ease-in-out 0s }
+
+            body,
+            body[theme=classic], body[theme=light] {
+                background-color: #F7F7F7;
+                color: #191919
+            }
+
+            body[theme=blue] {
+                background-color: #0055FF;
+                color: #FFFFFF
+            }
+
+            body[theme=dark] {
+                background-color: #333333;
+                color: #FFFFFF
+            }
+
+            body[theme=royal] {
+                background-color: #7F007F;
+                color: #FFFFFF
+            }
+        </style>
+
     <!-- Document Title -->
     <title> LapysJS | Debugging Room </title>
 </head>
 
-<body>
+<body theme=roulette>
     <!-- Main -->
     <main>
         <!-- Header -->
@@ -23,14 +50,37 @@
     <!-- Scripts -->
         <!-- Document Script -->
         <script type=text/javascript>
-            // Modification > Window > LapysJS
-            window.LapysJS = {
-                // Allow Application Features
-                allowAppFeatures: true,
+            // Initialization > Themes
+            var themes = ['blue', 'classic', 'dark', 'light', 'royal'];
 
-                // Debug Mode
-                debugMode: true
+            // Function > Set Theme
+            function setTheme() {
+                // Modification > [Element] > Theme
+                document.body.setAttribute('theme', themes[(themes.length * Math.random()) | 0])
             }
+            setTheme();
+
+            /* Set Interval > Set Theme
+                    --- NOTE ---
+                        #Lapys: Change the theme every 30 seconds.
+            */
+            (document.body.getAttribute('theme') == 'roulette') && setInterval(setTheme, 3e4);
+
+            // Modification
+                /* [Element] > Theme
+                        --- NOTE ---
+                            #Lapys: Set a random theme color (a monochrome screen could be unstimulating).
+                */
+                document.body.hasAttribute('theme') || document.body.setAttribute('theme', (function randomItem(themes) { return themes[(themes.length * Math.random()) | 0] })(themes));
+
+                // Window > LapysJS
+                window.LapysJS = {
+                    // Allow Application Features
+                    allowAppFeatures: true,
+
+                    // Debug Mode
+                    debugMode: true
+                }
         </script>
 
         <!-- LapysJS Script -->
