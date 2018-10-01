@@ -9584,7 +9584,10 @@ window && (function Main(args) {
                                         #Lapys: Not all documents on the world-wide web are made to be applications.
                             */
                             LDK.allowAppFeatures && (window.app = (function() {
-                                // Initialization > (Application, Prototype, Get Meta Element Content, (Get, Has, Set) Viewport Property, Storage)
+                                /* Initialization > (Application, Prototype, Get Meta Element Content, (Get, Has, Set, Style) Viewport Property, Storage)
+                                        --- NOTE ---
+                                            #Lapys: The Style Viewport Property function is based entirely on the `@viewport` CSS at-rule.
+                                */
                                 var application = new (function Application() {}),
                                     app = application,
                                     prototype = app.__proto__,
@@ -10501,6 +10504,8 @@ window && (function Main(args) {
                                             // Return
                                             return viewport
                                         })()
+                                    }, styleViewportProperty = function styleViewportProperty() {
+
                                     };
 
                                 // Modification > Application
