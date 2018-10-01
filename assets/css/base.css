@@ -1,0 +1,88 @@
+/* CSS At-Rules */
+    /* @keyframes */
+        /* Fade In */
+        @keyframes fadeIn {
+            0% { opacity: 0 }
+            to { opacity: 1 }
+        }
+
+        /* Fade In-Out */
+            /* Level 1 */
+            @keyframes fadeInOut1 {
+                0% { opacity: 0 }
+                25% { opacity: 1 }
+            }
+
+        /* Fade Out */
+        @keyframes fadeOut {
+            0% { opacity: 1 }
+            to { opacity: 0 }
+        }
+
+        /* Spin */
+        @keyframes spin {
+            0% { transform: rotate(0deg) }
+            to { transform: rotate(360deg) }
+        }
+
+/* DOM Elements */
+    /* All */
+    * { outline: 1px solid red }
+
+    /* <body> */
+    body,
+    body > * { z-index: 1 }
+
+/* Assets */
+    /* Spinner */
+    [role=spinner] { animation: spin 1s ease-in-out 0s infinite }
+
+    /* Text Underline */
+    .text-underline { text-decoration: underline }
+
+    /* Underline */
+    .underline {
+        border-bottom: 1px solid;
+        text-decoration: none
+    }
+
+/* Components */
+    /* Loading Screen */
+    loading-screen#loadingScreen {
+        animation: fadeInOut1 1s ease-in 0s;
+        background-color: rgba(255, 255, 255, .9875);
+        bottom: 0;
+        display: block;
+        height: 100%;
+        left: 0;
+        min-height: 100vh;
+        opacity: 1 !important;
+        pointer-events: all;
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 100%;
+        z-index: 16
+    }
+        /* Container */
+        loading-screen#loadingScreen > [role=container] {
+            height: 100%;
+            width: 100%
+        }
+            /* Loader Element */
+            loading-screen#loadingScreen > [role=container] > loader-element {
+                height: 50px;
+                width: 50px
+            }
+                /* Spinner */
+                loading-screen#loadingScreen > [role=container] > loader-element > [role=spinner] {
+                    border: 3px solid;
+                    border-radius: 50%;
+                    height: 100%;
+                    width: 100%
+                }
+
+            /* Content */
+            loading-screen#loadingScreen > [role=container] > [role=content] {
+                font-style: italic
+            }

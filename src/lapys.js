@@ -1164,6 +1164,27 @@ window && (function Main(args) {
                     return LDKO.getComputedStyle.call(window, element)
                 },
 
+                // Get Node Children from Child Nodes
+                getNodeChildrenFromChildNodes: function getNodeChildrenFromChildNodes(childNodes) {
+                    // Initialization > (Children, Iterator, Length)
+                    var children = [],
+                        iterator = 0, length = LDKF.get.nodeListPrototypeLength(childNodes);
+
+                    /* Loop
+                            Index Child Nodes.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Child Node
+                        var childNode = childNodes[iterator];
+
+                        // Update > Children
+                        LDKF.isElement(childNode) && (children[children.length] = childNode)
+                    }
+
+                    // Return
+                    return children
+                },
+
                 // Get Object Depth
                 getObjectDepth: function getObjectDepth(object) {
                     // Initialization > Depth
@@ -1525,7 +1546,7 @@ window && (function Main(args) {
                 // Is Array Object
                 isArrayObject: function isArrayObject(arg) {
                     // Return
-                    return LDKF.isConstructible(arg) && arg.constructor === LDKO.array
+                    return LDKF.isConstructible(arg) && (arg.constructor === LDKO.array || LDKF.string(arg) == '[object Arguments]')
                 },
 
                 /* Is Arrow Function
@@ -2151,6 +2172,18 @@ window && (function Main(args) {
                     return LDKF.isNumber(arg) && (LDKF.objectIs(arg % 1, 0) || LDKF.objectIs(arg % 1, -0))
                 },
 
+                // Is Iterable
+                isIterable: function isIterable(arg) {
+                    // Return
+                    return LDKF.isConstructible(arg) && LDKF.isNativeFunction(arg[LDKO.symbolIterator])
+                },
+
+                // Is Lower Case String Character
+                isLowerCaseStringChar: function isLowerCaseStringChar(character) {
+                    // Return
+                    return !!character && LDKF.isString(character) && !(character == 'A' || character == 'B' || character == 'C' || character == 'D' || character == 'E' || character == 'F' || character == 'G' || character == 'H' || character == 'I' || character == 'J' || character == 'K' || character == 'L' || character == 'M' || character == 'N' || character == 'O' || character == 'P' || character == 'Q' || character == 'R' || character == 'S' || character == 'T' || character == 'U' || character == 'V' || character == 'W' || character == 'X' || character == 'Y' || character == 'Z')
+                },
+
                 /* Is Mobile Viewport
                         --- UPDATE REQUIRED ---
                             #Lapys: Browser sniffing can still be vulnerable.
@@ -2548,7 +2581,7 @@ window && (function Main(args) {
                 // Is Strictly Array-Like
                 isStrictlyArrayLike: function isStrictlyArrayLike(arg) {
                     // Error Handling > Return
-                    try { return LDKF.isHTMLAllCollection(arg) || LDKF.isHTMLCollection(arg) || LDKF.isNodeList(arg) }
+                    try { return LDKF.isHTMLAllCollection(arg) || LDKF.isHTMLCollection(arg) || LDKF.isNodeList(arg) || (LDKF.string(arg) == '[object Arguments]') }
                     catch (error) {}
 
                     // Return
@@ -2560,6 +2593,12 @@ window && (function Main(args) {
 
                 // Is Symbol
                 isSymbol: function isSymbol(arg) { return typeof arg == 'symbol' },
+
+                // Is Upper Case String Character
+                isUpperCaseStringChar: function isUpperCaseStringChar(character) {
+                    // Return
+                    return !!character && LDKF.isString(character) && !(character == 'a' || character == 'b' || character == 'c' || character == 'd' || character == 'e' || character == 'f' || character == 'g' || character == 'h' || character == 'i' || character == 'j' || character == 'k' || character == 'l' || character == 'm' || character == 'n' || character == 'o' || character == 'p' || character == 'q' || character == 'r' || character == 's' || character == 't' || character == 'u' || character == 'v' || character == 'w' || character == 'x' || character == 'y' || character == 'z')
+                },
 
                 // Is Void
                 isVoid: function isVoid(arg) { return arguments.length ? arg === void 0 : !1 },
@@ -3962,6 +4001,8 @@ window && (function Main(args) {
 
                 // Symbol
                 symbol: window.Symbol,
+                    // Iterator
+                    symbolIterator: (window.Symbol || {}).iterator,
 
                 // Throw Error
                 throwError: function throwError() {
@@ -4647,6 +4688,9 @@ window && (function Main(args) {
                         // Focus
                         LapysJSDevelopmentKit.objects.descriptions.windowFocus = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'focus');
 
+                        // Get Computed Style
+                        LapysJSDevelopmentKit.objects.descriptions.windowGetComputedStyle = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'getComputedStyle') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LDKO.windowPrototype, 'getComputedStyle');
+
                         // Open
                         LapysJSDevelopmentKit.objects.descriptions.windowOpen = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'open');
 
@@ -4664,7 +4708,7 @@ window && (function Main(args) {
                             LapysJSDevelopmentKit.objects.descriptions.windowNavigator = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'navigator') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'navigator');
 
                             // Name
-                            LapysJSDevelopmentKit.objects.descriptions.windowName = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'name');
+                            LapysJSDevelopmentKit.objects.descriptions.windowName = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'name') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'name');
 
                             // Performance
                             LapysJSDevelopmentKit.objects.descriptions.windowPerformance = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'performance') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'performance');
@@ -5283,6 +5327,12 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.nodePrototypeAppendChild.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
                     };
 
+                    // Insert Before
+                    LapysJSDevelopmentKit.functions.nodePrototypeInsertBefore = function nodePrototypeInsertBefore() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.nodePrototypeInsertBefore.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
                     // Remove Child
                     LapysJSDevelopmentKit.functions.nodePrototypeRemoveChild = function nodePrototypeRemoveChild() {
                         // Return
@@ -5339,6 +5389,12 @@ window && (function Main(args) {
                     LapysJSDevelopmentKit.functions.windowFocus = function windowFocus() {
                         // Return
                         return LapysJSDevelopmentKit.objects.descriptions.windowFocus.value.call(arguments.length ? arguments[0] : window)
+                    };
+
+                    // Get Computed Style
+                    LapysJSDevelopmentKit.functions.windowGetComputedStyle = function windowGetComputedStyle() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.descriptions.windowGetComputedStyle.value.apply(arguments.length ? arguments[0] : window, LDKF.rendArray(arguments, 1))
                     };
 
                     // Open
@@ -6267,6 +6323,9 @@ window && (function Main(args) {
                         // Append Child
                         LapysJSDevelopmentKit.objects.nodePrototypeAppendChild = LapysJSDevelopmentKit.objects.nodePrototype.appendChild;
 
+                        // Insert Before
+                        LapysJSDevelopmentKit.objects.nodePrototypeInsertBefore = LapysJSDevelopmentKit.objects.nodePrototype.insertBefore;
+
                         // Remove Child
                         LapysJSDevelopmentKit.objects.nodePrototypeRemoveChild = LapysJSDevelopmentKit.objects.nodePrototype.removeChild;
 
@@ -7084,24 +7143,6 @@ window && (function Main(args) {
 
                         // Get Computed Style
                         LDKO.getComputedStyle = window.getComputedStyle;
-
-                        /* HTML Custom Element
-                                --- UPDATE REQUIRED ---
-                                    #Lapys: Is it possible to extend a function to another without the `class` keyword?
-                        */
-                        LDKO.htmlCustomElement = LDKR.classKeywordValid ? (function() {
-                            // Modification > (LapysJS > Temporary Data) > HTML Element
-                            LapysJS.tmp.htmlElement = LDKO.htmlElement;
-
-                            // Initialization > Constructor
-                            var constructor = LDKO.eval('(function(){ return class HTMLCustomElement extends LapysJS.tmp.htmlElement {} })()');
-
-                            // Deletion
-                            delete LapysJS.tmp.htmlElement;
-
-                            // Return
-                            return constructor
-                        })() : function HTMLCustomElement() {};
 
                         // Function > Prototype
                             // Bind
@@ -15162,7 +15203,7 @@ window && (function Main(args) {
                                     --- NOTE ---
                                         #Lapys: Spread a JavaScript value`s child properties on an object.
                             */
-                            window.obj = function object(arg) {
+                            window.object = function object(arg) {
                                 // Initialization > Object
                                 var object = {};
 
@@ -17924,14 +17965,34 @@ window && (function Main(args) {
                                 configurable: !0,
 
                                 // Value
-                                value: function random() {
+                                value: LDKF.windowRand = function random() {
                                     // Return
                                     return arguments.length ?
-                                        (arguments.length == 1 ?
-                                            arguments[0] + (LDKF.random() * 10 < 5 ? LDKF.random() : -LDKF.random()) :
-                                            LDKO.mathRandomBetween.apply(LDKO.math, arguments)
+                                        (LDKF.filterArray(arguments, function(item) { return LDKF.isNumber(item) }).length < arguments.length ?
+                                            arguments[LDKF.int(arguments.length * LDKF.random())] :
+                                            (arguments.length == 1 ?
+                                                arguments[0] + (LDKF.random() * 10 < 5 ? LDKF.random() : -LDKF.random()) :
+                                                LDKO.mathRandomBetween.apply(LDKO.math, arguments)
+                                            )
                                         ) :
                                         LDKF.random()
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Random Integer
+                            LDKF.objectDefineProperty(window, 'randint', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function randomInteger(range) {
+                                    // Return
+                                    return LDKF.isSafeNumber(range) ?
+                                        (LDKF.isPositiveNumber(range) ? LDKF.int(LDKO.mathRandomBetween(0, range)) : LDKF.int(LDKO.mathRandomBetween(range, 0))) :
+                                        LDKF.windowRand(range)
                                 },
 
                                 // Writable
@@ -17998,9 +18059,8 @@ window && (function Main(args) {
                                             [if statement]
                                     */
                                     if (arguments.length) {
-                                        // Update > (Name, Constructor, Options)
+                                        // Update > (Name, Options)
                                         name = LDKF.string(name);
-                                        (arguments.length > 1) || (constructor = LDKO.htmlCustomElement);
                                         options = LDKF.object(options);
 
                                         // Error Handling
@@ -18009,6 +18069,33 @@ window && (function Main(args) {
                                             // Error
                                             (error.constructor == LDKO.domException) && LDKF.throwError(['registerElement', 'Window'], 'argument', LDKF.debugMessage("'" + name + "'", ['must', 'a'], 'valid element name'));
                                             throw error
+                                        }
+
+                                        // Update > Constructor
+                                        if (arguments.length < 2) {
+                                            // Initialization > Constructor Name
+                                            var constructorName = 'HTML' + LDKF.alphabetizeString(LDKF.camelString(name)) + 'Element';
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKR.classKeywordValid) {
+                                                // Modification > (LapysJS > Temporary Data) > HTML Element
+                                                LapysJS.tmp.htmlElement = LDKO.htmlElement;
+
+                                                // Update > Constructor
+                                                constructor = LDKO.eval('(function() { return class ' + constructorName + ' extends LapysJS.tmp.htmlElement {} })()');
+
+                                                // Deletion
+                                                delete LapysJS.tmp.htmlElement
+                                            }
+
+                                            else
+                                                /* Update > Constructor
+                                                        --- NOTE ---
+                                                            #Lapys: Is there a way to extend a function to another without the `class` keyword.
+                                                */
+                                                constructor = LDKF.customFunction(constructorName)
                                         }
 
                                         /* Logic
@@ -18625,24 +18712,6 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            /* Spread
-                                    --- NOTE ---
-                                        #Lapys: In memory of spread operators (for legacy browsers).
-                            */
-                            window.spread = function spread(object, type) {
-                                // Update > Type
-                                (arguments.length > 1) || (type = 'array');
-
-                                /* Logic
-                                        [switch:case statement]
-                                */
-                                switch (type) {
-                                    case 'array':
-                                        LDKF.isIterable(object) || LDKF.throwError('spread', 'argument', LDKF.string(object) + ' is not iterable');
-                                        break;
-                                }
-                            };
-
                             /* Step
                                     --- NOTE ---
                                         #Lapys: Get an evenly split set of numbers between a range of two numbers e.g.:
@@ -18700,7 +18769,7 @@ window && (function Main(args) {
 
                                     else
                                         // Error
-                                        LDKF.throwError('step', 'argument', [2, 0]);
+                                        LDKF.throwError('step', 'argument', [3, 0]);
 
                                     // Return
                                     return list
@@ -19007,12 +19076,12 @@ window && (function Main(args) {
                                 writable: !0
                             })
 
-                        // Array > Prototype
-                            /* Add Element
+                        /* Array > Prototype */
+                            /* Add
                                     --- NOTE ---
                                         #Lapys: Could also use `Array.prototype.push.apply` which is must faster.
                             */
-                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'addElement', {
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'add', {
                                 // Configurable
                                 configurable: !0,
 
@@ -19034,8 +19103,8 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Add Element to Back
-                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'addElementToBack', {
+                            // Add To Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'addToBack', {
                                 // Configurable
                                 configurable: !0,
 
@@ -19057,8 +19126,8 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Add Element to Front
-                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'addElementToFront', {
+                            // Add To Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'addToFront', {
                                 // Configurable
                                 configurable: !0,
 
@@ -19074,6 +19143,46 @@ window && (function Main(args) {
 
                                     // Return
                                     return array
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Bloat
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'bloat', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function bloat(length) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Arguments
+                                        var args = LDKF.cloneArray(arguments);
+
+                                        // Update > (Arguments, Length)
+                                        args = LDKF.rendArray(args, -1);
+                                        length = arguments[arguments.length - 1];
+
+                                        // Error
+                                        LDKF.isSafeInteger(length) || LDKF.throwError(['bloat', 'Array'], 'argument', 'Invalid array length');
+
+                                        // Update > Length
+                                        length = LDKF.abs(length);
+
+                                        // Return
+                                        return LDKO.arrayPrototypePad.apply(LDKO.arrayPrototypePad.apply(array, LDKF.windowArray(args, -length)), LDKF.windowArray(args, length))
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
                                 },
 
                                 // Writable
@@ -19168,10 +19277,13 @@ window && (function Main(args) {
                                     */
                                     if (LDKF.isArrayObject(array)) {
                                         // Error
-                                        LDKF.isSafeInteger(length) || LDKF.throwError(['compact', 'Array'], 'argument', 'Invalid array length');
+                                        LDKF.isSafeInteger(length) || LDKF.throwError(['crush', 'Array'], 'argument', 'Invalid array length');
+
+                                        // Update > Length
+                                        length = LDKF.abs(length);
 
                                         // Return
-                                        return LDKO.arrayPrototypeCompact.call(LDKO.arrayPrototypeCompact.call(array, length), -length)
+                                        return LDKO.arrayPrototypeCompact.call(LDKO.arrayPrototypeCompact.call(array, -length), length)
                                     }
 
                                     else
@@ -19258,6 +19370,1741 @@ window && (function Main(args) {
 
                                 // Writable
                                 writable: !0
+                            });
+
+                            /* Distinct
+                                    --- NOTE ---
+                                        #Lapys: Returns non-duplicated items from an array.
+
+                                    --- WARN ---
+                                        #Lapys: Does not remove non-duplicated items (like `Array.prototype.removeDuplicated`)
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'distinct', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function distinct() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Distinct, Iterator, Length)
+                                        var distinctArray = [],
+                                            iterator = 0, length = array.length;
+
+                                        // ((LapysJS Development Kit > Functions) > Iterate Object) > Array
+                                        LDKF.iterateObject(array, function(key, value, description) {
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (key != 'length')
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.isSafeInteger(+LDKF.string(key))) {
+                                                    // Initialization > Value
+                                                    var value = array[key];
+
+                                                    // Update > Distinct Array
+                                                    LDKF.isInArray(distinctArray, value) || (distinctArray[distinctArray.length] = value)
+                                                }
+
+                                                else
+                                                    // Modification > Distinct Array > Key
+                                                    LDKF.objectDefineProperty(distinctArray, key, description)
+                                        }, function(key, value, description, iteratorObject) {
+                                            // Return
+                                            return iteratorObject === array
+                                        });
+
+                                        // Return
+                                        return distinctArray
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                }
+                            });
+
+                            /* Fill
+                                    --- NOTE ---
+                                        #Lapys: Change a range of entries in an array to a certain value.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'fill', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function fill(value, start, end) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Update > (Start, End)
+                                        (arguments.length < 2 || !LDKF.isSafeNumber(start)) && (start = 0);
+                                        (arguments.length < 3 || !LDKF.isSafeNumber(end)) && (end = array.length);
+                                        start = LDKF.int(start);
+                                        end = LDKF.int(end);
+
+                                        // Loop > Update > Array
+                                        for (start; start != end; start += 1)
+                                            array[start] = value;
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // First
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'first', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function first() {
+                                    // Return
+                                    return LDKF.isArrayObject(this) ? this[0] : this
+                                }
+                            });
+
+                            /* Flatten
+                                    --- NOTE ---
+                                        #Lapys: Spread out the items of an inner array into a given array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'flatten', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function flatten(depth) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Update > Depth
+                                        arguments.length || (depth = hidden);
+
+                                        // Error
+                                        (depth === hidden) || LDKF.isSafeInteger(depth) || LDKF.throwError(['flatten', 'Array'], 'argument', 'Invalid array depth');
+
+                                        /* Loop
+                                                [while statement]
+                                        */
+                                        while (depth > -1 && LDKF.filterArray(array, function(item) { return LDKF.isArrayObject(item) }).length) {
+                                            // Initialization > (Flattened Array, Iterator, Length)
+                                            var flattendArray = [],
+                                                iterator = 0,
+                                                length = array.length;
+
+                                            /* Loop
+                                                    Index Array.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Item
+                                                var item = array[iterator];
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.isArrayObject(item)) {
+                                                    // Initialization > Item (Iterator, Length)
+                                                    var itemIterator = 0,
+                                                        itemLength = item.length;
+
+                                                    // Loop > Update > Flattened Array
+                                                    for (itemIterator; itemIterator != itemLength; itemIterator += 1)
+                                                        flattendArray[flattendArray.length] = item[itemIterator]
+                                                }
+
+                                                else
+                                                    // Update > Flattened Array
+                                                    flattendArray[flattendArray.length] = item
+                                            }
+
+                                            // Update > (Array, Iterator, Length)
+                                            array.length = 0;
+                                            iterator = 0;
+                                            length = flattendArray.length;
+
+                                            // Loop > Update > Array
+                                            for (iterator; iterator != length; iterator += 1)
+                                                array[iterator] = flattendArray[iterator];
+
+                                            // Update > Depth
+                                            (depth === hidden) || (depth -= 1)
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Free
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'free', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function free() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Update > Array
+                                        LDKF.resetArray(array);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Frequency
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'frequency', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function frequency() {
+                                    // Return
+                                    return LDKF.isArrayObject(this) ? LDKF.getArrayFrequencies(this) : []
+                                },
+
+                                // Set
+                                set: function frequency(data) {
+                                    // Modification > Target > Frequency
+                                    LDKF.objectDefineProperty(this, 'frequency', {configurable: !0, enumerable: !0, value: data, writable: !0});
+
+                                    // Return
+                                    return data
+                                }
+                            });
+
+                            // Get Common --- CHECKPOINT ---
+                            // Get Duplicated --- CHECKPOINT ---
+                            // Get Falsy --- CHECKPOINT ---
+                            // Get Repeated --- CHECKPOINT ---
+                            // Get Truthy --- CHECKPOINT ---
+                            // Get Unique --- CHECKPOINT ---
+                            // Has --- CHECKPOINT ---
+                            // Indistinct --- CHECKPOINT ---
+
+                            // Last
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'last', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function last() {
+                                    // Return
+                                    return LDKF.isArrayObject(this) ? this[this.length - 1] : this
+                                }
+                            });
+
+                            /* Pad
+                                    --- NOTE ---
+                                        #Lapys: Add items or increase the length of an array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'pad', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypePad = function pad(length) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Arguments
+                                        var args = LDKF.cloneArray(arguments);
+
+                                        // Update > (Arguments, Length)
+                                        args.length -= 1;
+                                        length = arguments[arguments.length - 1];
+
+                                        // Error
+                                        LDKF.isSafeInteger(length) || LDKF.throwError(['pad', 'Array'], 'argument', 'Invalid array length');
+
+                                        // Initialization > (Arguments Length, Index, Iterator)
+                                        var argsLength = args.length,
+                                            index = 0,
+                                            iterator = 0;
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (length)
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (LDKF.isPositiveNumber(length))
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (argsLength)
+                                                    /* Loop
+                                                            [for statement]
+                                                    */
+                                                    for (iterator; iterator != length; iterator += 1) {
+                                                        // Update > (Array, Index)
+                                                        (index == argsLength) && (index = 0);
+                                                        array[array.length] = args[index];
+                                                        index += 1
+                                                    }
+
+                                                else
+                                                    // Update > Array
+                                                    array.length += length;
+
+                                            else {
+                                                // Update > Length
+                                                length = -length;
+
+                                                // Initialization > End (Array) Length
+                                                var endArray = [], arrayLength = array.length;
+
+                                                // Loop > Update > End Array
+                                                for (iterator = 0; iterator != arrayLength; iterator += 1)
+                                                    endArray[iterator] = array[iterator];
+
+                                                // Update > Array
+                                                array.length = 0;
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (argsLength)
+                                                    /* Loop
+                                                            [for statement]
+                                                    */
+                                                    for (iterator = 0; iterator != length; iterator += 1) {
+                                                        // Update > (Array, Index)
+                                                        (index == argsLength) && (index = 0);
+                                                        array[iterator] = args[index];
+                                                        index += 1
+                                                    }
+
+                                                else
+                                                    // Update > Array
+                                                    array.length = length;
+
+                                                // Update > Length
+                                                length = endArray.length;
+
+                                                // Loop > Update > Array
+                                                for (iterator = 0; iterator != length; iterator += 1)
+                                                    array[array.length] = endArray[iterator]
+                                            }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Random
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'random', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function random() {
+                                    // Return
+                                    return LDKF.isArrayObject(this) ? this[LDKF.int(this.length * LDKF.random())] : this
+                                }
+                            });
+
+                            // Randomize --- CHECKPOINT ---
+                            // Remove --- CHECKPOINT ---
+                            // Remove All --- CHECKPOINT ---
+                            // Remove Falsies --- CHECKPOINT ---
+                            // Remove Falsy --- CHECKPOINT ---
+                            // Remove Falsy From Back --- CHECKPOINT ---
+                            // Remove Falsy From Front --- CHECKPOINT ---
+                            // Remove From Back --- CHECKPOINT ---
+                            // Remove From Front --- CHECKPOINT ---
+                            // Remove Duplicated --- CHECKPOINT ---
+                            // Remove Duplicated From Back --- CHECKPOINT ---
+                            // Remove Duplicated From Front --- CHECKPOINT ---
+                            // Remove Duplicates --- CHECKPOINT ---
+                            // Remove Duplicates From Back --- CHECKPOINT ---
+                            // Remove Duplicates From Front --- CHECKPOINT ---
+                            // Remove Repeated --- CHECKPOINT ---
+                            // Remove Repeated From Back --- CHECKPOINT ---
+                            // Remove Repeated From Front --- CHECKPOINT ---
+                            // Remove Repeats --- CHECKPOINT ---
+                            // Remove Truthies --- CHECKPOINT ---
+                            // Remove Truthy --- CHECKPOINT ---
+                            // Remove Truthy From Back --- CHECKPOINT ---
+                            // Remove Truthy From Front --- CHECKPOINT ---
+                            // Repeat --- CHECKPOINT ---
+                            // Replace --- CHECKPOINT ---
+                            // Replace All --- CHECKPOINT ---
+                            // Replace Falsies --- CHECKPOINT ---
+                            // Replace Falsy --- CHECKPOINT ---
+                            // Replace Falsy From Back --- CHECKPOINT ---
+                            // Replace Falsy From Front --- CHECKPOINT ---
+                            // Replace From Back --- CHECKPOINT ---
+                            // Replace From Front --- CHECKPOINT ---
+                            // Replace Duplicated --- CHECKPOINT ---
+                            // Replace Duplicated From Back --- CHECKPOINT ---
+                            // Replace Duplicated From Front --- CHECKPOINT ---
+                            // Replace Duplicates --- CHECKPOINT ---
+                            // Replace Duplicates From Back --- CHECKPOINT ---
+                            // Replace Duplicates From Front --- CHECKPOINT ---
+                            // Replace Repeated --- CHECKPOINT ---
+                            // Replace Repeated From Back --- CHECKPOINT ---
+                            // Replace Repeated From Front --- CHECKPOINT ---
+                            // Replace Repeats --- CHECKPOINT ---
+                            // Replace Truthies --- CHECKPOINT ---
+                            // Replace Truthy --- CHECKPOINT ---
+                            // Replace Truthy From Back --- CHECKPOINT ---
+                            // Replace Truthy From Front --- CHECKPOINT ---
+                            /* Swap
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Swaps two members of an array via indexes.
+                            */
+                            /* Transform
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Update an array based on a filter matching function.
+                            */
+                            // Trim --- CHECKPOINT ---
+                            // Trim Left --- CHECKPOINT ---
+                            // Trim Right --- CHECKPOINT ---
+
+                        /* Boolean > Prototype */
+                        /* Document > Prototype */
+                        /* Document Fragment > Prototype */
+                        /* Element > Prototype */
+                        /* Error > Prototype */
+                        /* Function > Prototype */
+                        /* HTML Element > Prototype */
+                            // Add Class
+                            LDKO.htmlElementPrototype.addClass = function addClass(className) {
+                                // Initialization > Element
+                                var element = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isHTMLElement(element)) {
+                                    // Initialization > Arguments
+                                    var args = LDKF.buildArray(LDKF.cloneArray(arguments), function(item) { return LDKF.string(item) });
+
+                                    // Update > Arguments
+                                    LDKF.spliceArray(args, 0, element);
+
+                                    // Modification > Element > Class
+                                    LDKF.addClassToElement.apply(LDKF, args);
+
+                                    // Return
+                                    return LDKO.elementPrototypeGetAttributeNode.call(element, 'class')
+                                }
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
+
+                            /* Set CSS
+                                    --- CODE ---
+                                        #Lapys: Use cases:
+                                            - Default arguments:
+                                                -- setCSS(<name>, <randomizer-list (of values) | value>)
+
+                                            - Property-Value pairs: <array>
+                                                -- setCSS(
+                                                    [<name>, <randomizer-list (of values) | value>],
+                                                    [<name>, <randomizer-list (of values) | value>]
+                                                )
+
+                                            - Property-Value objects: <object>
+                                                -- setCSS(
+                                                    {<name>: <randomizer-list (of values) | value>},
+                                                    {<base-name>: {<assist-name>: <randomizer-list (of values) | value>}}
+                                                    {<base-name>: <randomizer-list (of property-value objects)>}
+                                                )
+
+                                            - randomizer-list: <array>
+                                                -- A random item in the array is chosen to be the <randomizer-list>`s <value>
+
+                                            - value: <number> | <string> | <stringify-able object>
+
+                                    --- NOTE ---
+                                        #Lapys: Size doesn`t matter...
+                            */
+                            LDKO.htmlElementPrototype.setCSS = function setCSS() {
+                                // Initialization > Element
+                                var element = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isHTMLElement(element)) {
+                                    /* Initialization > (Arguments, Iterator, Length, Computed Style, Default Value, Dummy, Metric, Priorities, Properties, Style (Array), Valid Properties, Vendors)
+                                            --- NOTE ---
+                                                #Lapys:
+                                                    - Arguments: Allow for updating the given arguments.
+                                                    - Iterator: For iterative purposes.
+                                                    - Length: For iterative purposes.
+                                                    - Computed Style: Collect the `CSSStyleDeclaration` object from the element.
+                                                    - Default Value: Deferred value for non-parsed & non-specified CSS property values.
+                                                    - Dummy: Dummy element`s `CSSStyleDeclaration` object for testing valid CSS property names given in the arguments.
+                                                    - Metric: Deferred metric for numeric CSS property values specified with numbers only.
+                                                    - Priorities: Various CSS keywords that are not necessarily applied as CSS property values when using `CSSStyleDeclaration` objects.
+                                                    - Style: Element style attribute (requested from the element and altered later)
+                                                    - Style Array: Array view (in pairs of CSS property name-value objects) of the element style attribute.
+                                                    - Valid Properties: Not all user-specified CSS properties and values are actually specified in the CSS specifications.
+                                                    - Vendors: Words in CSS property names that specify the name as a CSS vendor property.
+                                    */
+                                    var args = LDKF.cloneArray(arguments),
+                                        iterator = 0, length = args.length,
+                                        computedStyle = LDKF.windowGetComputedStyle(window, element),
+                                        defaultValue = 'initial',
+                                        dummy = LDKF.get.htmlElementPrototypeStyle(LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'a')),
+                                        metric = 'px',
+                                        priorities = ['!important'],
+                                        properties = [],
+                                        style = LDKF.elementPrototypeGetAttribute(element, 'style') || '',
+                                        styleArray = (function convertStyleToArrayArray(styleStream) {
+                                            // Initialization > (Allow (Stream) Lock, Style Array, Stream, Index, Iterator, Length)
+                                            var allowStream = !0, streamLock = '',
+                                                styleArray = [], stream = styleStream,
+                                                index = 0,
+                                                iterator = 0, length = stream.length;
+
+                                            /* Loop
+                                                    Iterate through Stream.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Character
+                                                var character = stream[iterator];
+
+                                                // Update > (Index, Style Array)
+                                                (allowStream && character == ';') && (index += 1);
+                                                styleArray[index] ? styleArray[index] += character : styleArray[index] = character;
+
+                                                /* Logic
+                                                        [if:else if statement]
+                                                */
+                                                if (allowStream) {
+                                                    /* Logic
+                                                            [if:else if statement]
+                                                    */
+                                                    if (character == '/' && stream[iterator + 1] == '*')
+                                                        // Update > Allow Stream
+                                                        allowStream = !1;
+
+                                                    else if (character == '"' || character == "'") {
+                                                        // Update > Allow (Stream) Lock
+                                                        allowStream = !1;
+                                                        streamLock = character
+                                                    }
+                                                }
+
+                                                else if (
+                                                    (character == '*' && stream[iterator + 1] == '/') ||
+                                                    ((character == '"' || character == "'") && streamLock == character)
+                                                ) {
+                                                    // Update > Allow (Stream) Lock
+                                                    allowStream = !0;
+                                                    streamLock = ''
+                                                }
+                                            }
+
+                                            // Update > (Iterator, Length)
+                                            iterator = 0;
+                                            length = styleArray.length;
+
+                                            /* Loop
+                                                    Index Style Array.
+
+                                                    --- NOTE ---
+                                                        #Lapys: Convert each CSS property into an array of name-value objects.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Property
+                                                var property = styleArray[iterator];
+
+                                                /* Loop > Update > Property
+                                                        --- NOTE ---
+                                                            #Lapys: CSS property names only contain alphabet and `-` characters.
+                                                */
+                                                while (property[0] == ' ' || property[0] == '\n' || property[0] == ';')
+                                                    property = LDKF.rendString(property, 1);
+
+                                                // Initialization > (Property (Iterator, Length), Is Value, Name, Value)
+                                                var propertyIterator = 0, propertyLength = property.length,
+                                                    isValue = !1,
+                                                    name = '', value = '';
+
+                                                /* Loop
+                                                        Iterate through Property.
+
+                                                        --- NOTE ---
+                                                            #Lapys: Split each Property into their respective name and value.
+                                                */
+                                                for (propertyIterator; propertyIterator != propertyLength; propertyIterator += 1) {
+                                                    // Initialization > Character
+                                                    var character = property[propertyIterator];
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (character == ':' && !isValue) {
+                                                        // Update > Is Value
+                                                        isValue = !0;
+
+                                                        // Continue
+                                                        continue
+                                                    }
+
+                                                    // Update > (Value, Name)
+                                                    isValue ? value += character : name += character
+                                                }
+
+                                                // Update > Style Array
+                                                styleArray[iterator] = {name: name, value: LDKF.trimString(value)}
+                                            }
+
+                                            // Return
+                                            return styleArray
+                                        })(style),
+                                        validProperties = [],
+                                        vendors = ['moz', 'ms', 'webkit'];
+
+                                    // Function
+                                        /* Add Property
+                                                --- NOTE ---
+                                                    #Lapys: Ass a new CSS property to the Style Array.
+                                        */
+                                        function addProperty(name, value) {
+                                            // Update > Style Array
+                                            styleArray[styleArray.length] = {name: name, value: value}
+                                        }
+
+                                        // Ends with String
+                                        function endsWithString(string, match) {
+                                            // Initialization > (Match) Iterator
+                                            var iterator = string.length,
+                                                matchIterator = match.length;
+
+                                            // Loop > Logic > Return
+                                            while (iterator && match && matchIterator && string)
+                                                if (string[iterator -= 1] != match[matchIterator -= 1])
+                                                    return !1;
+
+                                            // Return
+                                            return !0
+                                        }
+
+                                        /* Ends with CSS Style Priority String
+                                                --- NOTE ---
+                                                    #Lapys: Test if a property value is prioritized.
+                                        */
+                                        function endsWithCSSStylePriorityString(string) {
+                                            // Initialization > (Iterator, Length)
+                                            var iterator = 0, length = priorities.length;
+
+                                            // Loop > Logic > Return
+                                            for (iterator; iterator != length; iterator += 1)
+                                                if (!endsWithString(string, priorities[iterator]))
+                                                    return !1;
+
+                                            // Return
+                                            return !0
+                                        }
+
+                                        /* Has Name
+                                                --- NOTE ---
+                                                    #Lapys: Does a CSS property exist in the Style Array.
+                                        */
+                                        function hasName(name) {
+                                            // Initialization > Iterator
+                                            var iterator = styleArray.length;
+
+                                            /* Loop
+                                                    Index the Style Array.
+                                            */
+                                            while (iterator) {
+                                                // Initialization > Property
+                                                var property = styleArray[iterator -= 1];
+
+                                                // Logic > Return
+                                                if (property.name === name)
+                                                    return !0
+                                            }
+
+                                            // Return
+                                            return !1
+                                        }
+
+                                        /* Hyphenate String
+                                                --- NOTE ---
+                                                    #Lapys: Convert strings such as `backgroundColor` to `background-color`.
+                                                        This helps with bridging the gap between default CSS and JavaScript CSS property names.
+                                        */
+                                        function hyphenateString(string) {
+                                            // Initialization > (Iterator, Length, Stream)
+                                            var iterator = 0, length = string.length,
+                                                stream = '';
+
+                                            /* Loop
+                                                    Iterate through String.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Character
+                                                var character = string[iterator];
+
+                                                // Update > Stream
+                                                stream += LDKF.isAlphabet(character) && LDKF.isUpperCaseStringChar(character) ? '-' + LDKF.lowerStringChar(character) : character
+                                            }
+
+                                            // Return
+                                            return stream
+                                        }
+
+                                        /* Is Property Object
+                                                --- NOTE ---
+                                                    #Lapys: Check the --- CODE ---.
+                                        */
+                                        function isPropertyObject(arg) {
+                                            // Return
+                                            return LDKF.isPureObject(arg)
+                                        }
+
+                                        /* Is Property Pair
+                                                --- NOTE ---
+                                                    #Lapys: Check the --- CODE ---.
+                                        */
+                                        function isPropertyPair(arg) {
+                                            // Return
+                                            return LDKF.isArrayObject(arg) && (arg.length == 2) && isValidName(arg[0]) && isValidValue(arg[1])
+                                        }
+
+                                        /* Is Randomizer List
+                                                --- NOTE ---
+                                                    #Lapys: Check the --- CODE ---.
+                                        */
+                                        function isRandomizerList(arg) {
+                                            return LDKF.isArrayObject(arg) && !LDKF.filterArray(arg, function(item) { return LDKF.isArrayObject(item) }).length
+                                        }
+
+                                        /* Is Valid CSS Property Name
+                                                --- NOTE ---
+                                                    #Lapys: Test if a proposed CSS property name is specified within the CSS specifications
+                                                        by checking if the name is within a `CSSStyleDeclaration` object.
+                                        */
+                                        function isValidCSSPropertyName(arg) {
+                                            // Update > Argument
+                                            arg = splitString(LDKF.string(arg));
+
+                                            // Return
+                                            return arg in computedStyle
+                                        }
+
+                                        /* Is Valid Name
+                                                --- NOTE ---
+                                                    #Lapys: Is the proposed CSS property name valid for parsing?
+                                        */
+                                        function isValidName(arg) {
+                                            // Return
+                                            return LDKF.isString(arg)
+                                        }
+
+                                        /* Is Valid Value
+                                                --- NOTE ---
+                                                    #Lapys: Check the --- CODE ---.
+                                        */
+                                        function isValidValue(arg) {
+                                            // Return
+                                            return isRandomizerList(arg) || isValue(arg)
+                                        }
+
+                                        /* Is Value
+                                                --- NOTE ---
+                                                    #Lapys: Is the proposed CSS property value valid for parsing?
+                                        */
+                                        function isValue(arg) {
+                                            // Return
+                                            return LDKF.isConstructible(arg)
+                                        }
+
+                                        // Is Vendor Name
+                                        function isVendorName(name) {
+                                            // Initialization > (Iterator, Length)
+                                            var iterator = 0, length = vendors.length;
+
+                                            // Loop > Update > Name
+                                            while (name && (name[0] == ' ' || name[0] == '\n' || name[0] == '-'))
+                                                name = LDKF.rendString(name, 1);
+
+                                            // Loop > Logic > Return
+                                            for (iterator; iterator != length; iterator += 1)
+                                                if (startsWithString(name, vendors[iterator]))
+                                                    return !0;
+
+                                            // Return
+                                            return !1
+                                        }
+
+                                        /* Set Property
+                                                --- NOTE ---
+                                                    #Lapys: Update an existing property in the Style Array.
+                                        */
+                                        function setProperty(name, value) {
+                                            // Initialization > Iterator
+                                            var iterator = styleArray.length;
+
+                                            /* Loop
+                                                    Index the Style Array.
+                                            */
+                                            while (iterator) {
+                                                // Initialization > Property
+                                                var property = styleArray[iterator -= 1];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (property.name === name) {
+                                                    // Update > Style Array
+                                                    styleArray[iterator] = {name: name, value: value};
+
+                                                    // Break
+                                                    break
+                                                }
+                                            }
+                                        }
+
+                                        /* Split String
+                                                --- NOTE ---
+                                                    #Lapys: Convert strings such as `background-color` to `backgroundColor`.
+                                                        This helps with bridging the gap between default CSS and JavaScript CSS property names.
+                                        */
+                                        function splitString(string) {
+                                            // Initialization > (Iterator, Length, Stream)
+                                            var iterator = 0, length = string.length,
+                                                stream = '';
+
+                                            /* Loop
+                                                    Iterate through String.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Character
+                                                var character = string[iterator];
+
+                                                // Update > Stream
+                                                stream += character == '-' ? LDKF.upperStringChar(string[iterator += (function countHyphens(index) {
+                                                    // Initialization > Count
+                                                    var count = 0;
+
+                                                    /* Loop
+                                                            Iterate through String.
+                                                    */
+                                                    for (index; index != length; index += 1)
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (string[index] == '-')
+                                                            // Update > Count
+                                                            count += 1;
+
+                                                        else
+                                                            // Break
+                                                            break;
+
+                                                    // Return
+                                                    return count
+                                                })(iterator)]) : character
+                                            }
+
+                                            // Return
+                                            return stream
+                                        }
+
+                                        // Starts with String
+                                        function startsWithString(string, match) {
+                                            // Initialization > (Iterator, (Match) Length)
+                                            var iterator = 0, length = string.length,
+                                                matchLength = match.length;
+
+                                            // Loop > Logic > Return
+                                            for (iterator; iterator != length && iterator != matchLength; iterator += 1)
+                                                if (string[iterator] != match[iterator])
+                                                    return !1;
+
+                                            // Return
+                                            return !0
+                                        }
+
+                                        /* Update Value
+                                                --- NOTE ---
+                                                    #Lapys: Parse (depending on a set of conditions) a proposed CSS property value into a somewhat valid value.
+                                        */
+                                        function updateValue(value) {
+                                            // Return
+                                            return {
+                                                /* Based On
+                                                        --- WARN ---
+                                                            #Lapys: Proposed CSS property values can not be updated without having full information of the CSS property itself.
+                                                */
+                                                basedOn: function basedOn(name) {
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (LDKF.isBoolean(value)) {
+                                                        // Update > Name
+                                                        name = hyphenateString(name);
+
+                                                        /* Logic
+                                                                [if:else if:else statement]
+                                                        */
+                                                        if (
+                                                            name == 'backface-visibility' ||
+                                                            name == 'overflow' || name == 'overflow-x' || name == 'overflow-y' ||
+                                                            name == 'visibility' ||
+                                                            (endsWithString(name, 'visibility') && isVendorName(name))
+                                                        )
+                                                            // Update > Value
+                                                            value = value ? 'visible' : 'hidden';
+
+                                                        else if (
+                                                            name == 'background-color' || name == 'border-bottom-color' || name == 'border-color' || name == 'border-left-color' || name == 'border-right-color' || name == 'border-top-color' ||
+                                                            name == 'caret-color' || name == 'color' || name == 'column-rule-color' ||
+                                                            name == 'fill' || name == 'flood-color' ||
+                                                            name == 'lighting-color' ||
+                                                            name == 'outline-color' ||
+                                                            name == 'stop-color' ||
+                                                            name == 'text-decoration-color' ||
+                                                            (endsWithString(name, 'color') && isVendorName(name))
+                                                        )
+                                                            // Update > Value
+                                                            value = value ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)';
+
+                                                        else if (
+                                                            name == 'fill-opacity' ||
+                                                            name == 'opacity'
+                                                        )
+                                                            // Update > Value
+                                                            value = value ? '1' : '0';
+
+                                                        else if (!value) {
+                                                            /* Logic
+                                                                    [if:else if statement]
+
+                                                                > Update > Value
+                                                            */
+                                                            if (
+                                                                name == 'align-content' || name == 'align-items' || name == 'animation-fill-mode' ||
+                                                                name == 'background-blend-mode'
+                                                            )
+                                                                // Update > Value
+                                                                value = 'normal';
+
+                                                            else if (
+                                                                name == 'animation' || name == 'animation-fill-mode' || name == 'animation-name' ||
+                                                                name == 'background-image' || name == 'border' || name == 'border-bottom' || name == 'border-bottom-style' || name == 'border-image' || name == 'border-image-source' || name == 'border-left' || name == 'border-left-style' || name == 'border-right' || name == 'border-right-style' || name == 'border-top' || name == 'border-top-style' || name == 'box-shadow' ||
+                                                                name == 'clear' || name == 'clip-path' || name == 'column-rule-style' || name == 'column-span' || name == 'contain' || name == 'content' || name == 'counterIncrement' || name == 'counterReset' ||
+                                                                name == 'd' || name == 'display' ||
+                                                                name == 'filter' || name == 'float' ||
+                                                                name == 'grid' ||
+                                                                name == 'list-style' || name == 'list-style-image' ||
+                                                                name == 'marker' || name == 'marker-end' || name == 'marker-mid' || name == 'marker-start' || name == 'mask' || name == 'max-block-size' || name == 'max-height' || name == 'max-inline-size' || name == 'max-width' ||
+                                                                name == 'offset' || name == 'offset-path' || name == 'outline' || name == 'outline-style' ||
+                                                                name == 'perspective' || name == 'pointer-events' ||
+                                                                name == 'resize' ||
+                                                                name == 'shape-outside' || name == 'speak' || name == 'stroke' || name == 'stroke-dasharray' || name == 'stroke-dashoffset' ||
+                                                                name == 'text-combine-upright' || name == 'text-decoration' || name == 'text-decoration-line' || name == 'text-shadow' || name == 'text-transform' || name == 'transform' || name == 'transition' ||
+                                                                name == 'vector-effect'
+                                                            )
+                                                                value = 'none';
+
+                                                            else if (
+                                                                name == 'animation-delay' || name == 'animation-duration' ||
+                                                                name == 'transition-delay' || name == 'transition-duration'
+                                                            )
+                                                                value = '0s';
+
+                                                            else if (
+                                                                name == 'animation-iteration-count' ||
+                                                                name == 'flex-grow' || name == 'flex-shrink' || name == 'font-kerning' ||
+                                                                name == 'order' || name == 'orphans' ||
+                                                                name == 'shape-image-threshold' || name == 'stroke-miter-limit' ||
+                                                                name == 'tab-size' ||
+                                                                name == 'widows' ||
+                                                                name == 'z-index'
+                                                            )
+                                                                value = '0';
+
+                                                            else if (name == 'animation-play-state')
+                                                                value = 'paused';
+
+                                                            else if (
+                                                                name == 'animation-timing-function' ||
+                                                                name == 'transition-timing-function'
+                                                            )
+                                                                value = 'linear';
+
+                                                            else if (name == 'background-attachment')
+                                                                value = 'scroll';
+
+                                                            else if (
+                                                                name == 'background-position' || name == 'border-spacing' ||
+                                                                name == 'object-position' ||
+                                                                name == 'perspective-origin' ||
+                                                                name == 'transform-origin'
+                                                            )
+                                                                value = '0px 0px';
+
+                                                            else if (
+                                                                name == 'border-bottom-style' || name == 'border-left-style' || name == 'border-right-style' || name == 'border-style' || name == 'border-top-style' ||
+                                                                name == 'text-decoration-style'
+                                                            )
+                                                                value = 'hidden';
+
+                                                            else if (
+                                                                name == 'background-position-x' || name == 'background-position-y' || name == 'baseline-shift' || name == 'block-size' || name == 'border-bottom-left-radius' || name == 'border-bottom-right-radius' || name == 'border-bottom-width' || name == 'border-image-outset' || name == 'border-image-width' || name == 'border-left-width' || name == 'border-radius' || name == 'border-right-width' || name == 'border-top-left-radius' || name == 'border-top-right-radius' || name == 'border-top-width' || name == 'border-width' || name == 'bottom' ||
+                                                                name == 'column-width' || name == 'cx' || name == 'cy' ||
+                                                                name == 'flex-basis' || name == 'font-size' ||
+                                                                name == 'height' ||
+                                                                name == 'inline-size' ||
+                                                                name == 'left' || name == 'letter-spacing' || name == 'line-height' ||
+                                                                name == 'margin' || name == 'margin-bottom' || name == 'margin-left' || name == 'margin-right' || name == 'margin-top' || name == 'max-block-size' || name == 'max-height' || name == 'max-width' || name == 'min-block-size' || name == 'min-height' || name == 'min-width' ||
+                                                                name == 'offset-distance' || name == 'outline-offset' || name == 'outline-width' ||
+                                                                name == 'padding' || name == 'padding-bottom' || name == 'padding-left' || name == 'padding-right' || name == 'padding-top' ||
+                                                                name == 'r' || name == 'right' || name == 'rx' || name == 'ry' ||
+                                                                name == 'shape-margin' || name == 'stroke-width' ||
+                                                                name == 'text-indent' || name == 'top' ||
+                                                                name == 'width' || name == 'word-spacing' ||
+                                                                name == 'x' ||
+                                                                name == 'y'
+                                                            )
+                                                                value = '0px';
+
+                                                            else if (name == 'background-repeat')
+                                                                value = 'no-repeat';
+
+                                                            else if (
+                                                                name == 'border-image-slice' ||
+                                                                name == 'font-stretch'
+                                                            )
+                                                                value = '0%';
+
+                                                            else if (name == 'direction')
+                                                                value = 'ltr';
+
+                                                            else if (name == 'flex-wrap')
+                                                                value = 'nowrap';
+
+                                                            else if (name == 'font-family')
+                                                                value = 'sans-serif';
+
+                                                            else if (name == 'offset-rotate')
+                                                                value = '0deg';
+
+                                                            else if (name == 'position')
+                                                                value = 'static';
+
+                                                            else if (name == 'quotes')
+                                                                value = '"“" "”" "‘" "’"';
+
+                                                            else if (!computedStyle[name])
+                                                                value = ''
+                                                        }
+
+                                                        else
+                                                            // Update > Value
+                                                            value = defaultValue
+                                                    }
+
+                                                    else if (LDKF.isSafeNumber(value))
+                                                        // Update > Value
+                                                        value += metric;
+
+                                                    else if (LDKF.isRegex(value))
+                                                        // Update > Value
+                                                        value = LDKF.get.regexPrototypeSource(value);
+
+                                                    else
+                                                        // Update > Value
+                                                        value = LDKF.string(value);
+
+                                                    // Return
+                                                    return value
+                                                },
+
+                                                // (Constructor > Prototype)
+                                                __proto__: LDKF.isConstructible(value) ? value.__proto__ : LDKO.objectPrototype,
+
+                                                // Value Of
+                                                valueOf: function valueOf() {
+                                                    // Return
+                                                    return value
+                                                }
+                                            }
+                                        }
+
+                                    /* Logic
+                                            [if:else if:else statement]
+                                    */
+                                    if (length == 1 && isValidName(args[0]))
+                                        // Update > Properties
+                                        properties[properties.length] = {
+                                            // Name
+                                            name: args[0],
+
+                                            // Value
+                                            value: defaultValue
+                                        };
+
+                                    else if (
+                                        !(isPropertyObject(args[0]) || isPropertyPair(args[0])) &&
+                                        (
+                                            (length == 2 && LDKF.isVoid(args[2])) ||
+                                            (length == 3 && LDKF.isString(args[2]))
+                                        )
+                                    ) {
+                                        // Update > (Arguments, Metric, Properties)
+                                        (length == 3) || (args[2] = metric);
+                                        metric = args[2];
+                                        properties[properties.length] = {
+                                            // Name
+                                            name: LDKF.string(args[0]),
+
+                                            // Value
+                                            value: updateValue(args[1]).basedOn(args[0])
+                                        }
+                                    }
+
+                                    else {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = args.length, length = iterator;
+
+                                        /* Loop
+                                                Index Arguments.
+
+                                                --- NOTE ---
+                                                    #Lapys: Verify the given arguments for parsing.
+                                                        Check the --- CODE ---.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Property
+                                            var property = args[iterator -= 1];
+
+                                            // Error
+                                            (!isPropertyPair(property) && !isPropertyObject(property)) && LDKF.throwError(['setCSS', 'HTMLElement'], 'argument', 'Only name-value paired arrays or name-value based objects are accepted as valid arguments')
+                                        }
+
+                                        /* Loop
+                                                Index Arguments.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Property
+                                            var property = args[iterator];
+
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                                // {Property Pair}
+                                                if (isPropertyPair(property)) {
+                                                    // Initialization > (Name, Value)
+                                                    var name = property[0],
+                                                        value = property[1];
+
+                                                    // Update > (Value, Properties)
+                                                    isRandomizerList(value) && (value = value[LDKF.int(value.length * LDKF.random())]);
+                                                    properties[properties.length] = {
+                                                        // Name
+                                                        name: name,
+
+                                                        // Value
+                                                        value: updateValue(value).basedOn(name)
+                                                    }
+                                                }
+
+                                                /* {Property Object}
+                                                        --- UPDATE REQUIRED ---
+                                                            #Lapys: Alternative method that can recur through the chains of property names
+                                                                past the maximum call stack size allocated by JavaScript i.e.:
+
+                                                                If a CSS property name had 'x' words (e.g.: `font-size` has more words than `font`)
+                                                                    in it and the max. call stack size was 'x', this method used here will break;
+                                                                Also, if all given CSS properties had more than 'x' words in it, the method will still break.
+                                                */
+                                                else {
+                                                    // Initialization > (Names, Values, Properties)
+                                                    var names = [], values = [],
+                                                        props = (function getNameChains(object, chain, chainIndex) {
+                                                            // Initialization > Properties Iterator
+                                                            var propsIterator = chainIndex;
+
+                                                            // ((LapysJS Development Kit > Functions) > Iterate Object) > Object
+                                                            LDKF.iterateObject(object, function(key, value) {
+                                                                // Update > Chains
+                                                                chain.props[chain.props.length] = {name: key, value: value}
+                                                            }, function(key, value, description, iteratorObject) {
+                                                                // Return
+                                                                return iteratorObject === object
+                                                            }, !0);
+
+                                                            // Initialization > Properties Length
+                                                            var propsLength = chain.props.length;
+
+                                                            // Loop > Get Name Chains > [Object]
+                                                            for (propsIterator; propsIterator != propsLength; propsIterator += 1)
+                                                                isPropertyObject(chain.props[propsIterator].value) && getNameChains(chain.props[propsIterator].value, chain.props[propsIterator] = {preName: chain.props[propsIterator].name, props: []}, chainIndex);
+
+                                                            // Return
+                                                            return chain
+                                                        })(property, {preName: '', props: []}, 0);
+
+                                                    // Function > Get Property Name- Value from Chain
+                                                    (function getPropertyNameValueFromChain(preName, props) {
+                                                        // Initialization > Properties (Iterator, Length)
+                                                        var propsIterator = 0, propsLength = props.length;
+
+                                                        /* Loop
+                                                                Index Properties.
+                                                        */
+                                                        for (propsIterator; propsIterator != propsLength; propsIterator += 1) {
+                                                            // Initialization > Property
+                                                            var prop = props[propsIterator];
+
+                                                            /* Logic
+                                                                    [if:else statement]
+                                                            */
+                                                            if (prop.preName)
+                                                                // Get Property Name-Value From Chain > [Name]
+                                                                getPropertyNameValueFromChain(preName ? preName + '-' + prop.preName : prop.preName, prop.props);
+
+                                                            else {
+                                                                // Update > (Names, Values)
+                                                                names[names.length] = preName ? preName + '-' + prop.name : prop.name;
+                                                                values[values.length] = prop.value
+                                                            }
+                                                        }
+                                                    })(props.preName, props.props);
+
+                                                    // Initialization > Properties (Iterator, Length)
+                                                    var propsIterator = 0, propsLength = (names || values).length;
+
+                                                    /* Loop
+                                                            Index Names & Values.
+                                                    */
+                                                    for (propsIterator; propsIterator != propsLength; propsIterator += 1) {
+                                                        // Initialization > (Name, Value)
+                                                        var name = names[propsIterator], value = values[propsIterator];
+
+                                                        // Update > Properties
+                                                        properties[properties.length] = {name: name, value: updateValue(value).basedOn(name)}
+                                                    }
+                                                }
+                                        }
+                                    }
+
+                                    // Update > (Iterator, Length)
+                                    iterator = 0;
+                                    length = properties.length;
+
+                                    /* Loop
+                                            Index Properties.
+
+                                            --- NOTE ---
+                                                #Lapys: Collect valid CSS properties only.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1)
+                                        // Update > Valid Properties
+                                        isValidCSSPropertyName(properties[iterator].name) && (validProperties[validProperties.length] = properties[iterator]);
+
+                                    // Update > (Iterator, Length)
+                                    iterator = 0;
+                                    length = validProperties.length;
+
+                                    /* Loop
+                                            Index Valid Properties.
+                                    */
+                                    for (iterator; iterator != length; iterator += 1) {
+                                        // Initialization > (Property, Name, (Former) Value)
+                                        var property = validProperties[iterator],
+                                            name = (property.name = hyphenateString(property.name)), value = property.value,
+                                            formerValue = dummy[name];
+
+                                        // Update > Dummy
+                                        dummy[name] = value;
+
+                                        /* Logic
+                                                [if statement]
+
+                                                --- NOTE ---
+                                                    #Lapys: If the Value ends with a CSS priority e.g.: `!important`
+                                                        then force it unto the element`s style attribute.
+                                        */
+                                        if (dummy[name] != formerValue || endsWithCSSStylePriorityString(value))
+                                            // (Set | Add) Property
+                                            hasName(name) ?
+                                                setProperty(name, value) :
+                                                addProperty(name, value)
+                                    }
+
+                                    // Update > (Style, Iterator, Length)
+                                    style = '';
+                                    iterator = 0;
+                                    length = styleArray.length;
+
+                                    /* Loop
+                                            Index the Style Array.
+
+                                        > Update > Style
+                                    */
+                                    for (iterator; iterator != length; iterator += 1)
+                                        style += styleArray[iterator].name + ': ' + styleArray[iterator].value + (iterator == length - 1 ? '' : '; ');
+
+                                    // Modification > Element > Style
+                                    LDKF.elementPrototypeSetAttribute(element, 'style', style);
+
+                                    // Return
+                                    return LDKO.elementPrototypeGetAttributeNode.call(element, 'style')
+                                }
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
+
+                        /* Node > Prototype */
+                            // Insert Child
+                            LDKO.nodePrototype.insertChild = function insertChild(node, index) {
+                                // Initialization > Parent
+                                var parent = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isNode(parent)) {
+                                    // Initialization > (Children, Length)
+                                    var children = LDKF.getNodeChildrenFromChildNodes(LDKF.get.nodePrototypeChildNodes(parent)),
+                                        length = children.length;
+
+                                    // Update > Index
+                                    (index === 'begin' || index === 'first') && (index = 0);
+                                    (arguments.length < 2 || index === 'end' || index === 'last') && (index = length - 1);
+
+                                    // Error
+                                    LDKF.isInteger(index) || LDKF.throwError(['insertChild', 'Node'], 'argument', LDKF.debugMessage('Given index', ['must', 'a'], 'integer'));
+
+                                    // Error
+                                    (index > length) && LDKF.throwError(['insertChild', 'Node'], 'argument', 'Given index must not overflow');
+                                    LDKF.isNegativeNumber(index) && (LDKF.isNegativeNumber(length - index) ?
+                                        LDKF.throwError(['insertChild', 'Node'], 'argument', 'Given index must not overflow') :
+                                        index = length - index
+                                    );
+
+                                    // Insertion
+                                    LDKF.nodePrototypeInsertBefore(parent, node, children[index])
+
+                                    // Return
+                                    return parent
+                                }
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
+
+                        /* Number > Prototype */
+                        /* Object > Prototype */
+                            // Define
+                            LDKF.objectDefineProperty(LDKO.objectPrototype, 'def', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !1,
+
+                                // Value
+                                value: function define(key, description, returnObject) {
+                                    // Initialization > Object
+                                    var object = this;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (arguments.length) {
+                                        // Initialization > Property Description
+                                        var propertyDescription = {};
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (LDKF.isObject(description)) {
+                                            /* Error Handling > Modification > Property Description > (Configurable, Enumerable)
+                                                    --- NOTE ---
+                                                        #Lapys: The reason for the `try...catch` statements is because the object passed is unknown;
+                                                            And thereby could be unpredictable.
+                                            */
+                                            try {
+                                                propertyDescription.configurable = !!description.configurable;
+                                                propertyDescription.enumerable = !!description.enumerable
+                                            } catch (error) {
+                                                propertyDescription.configurable = !0;
+                                                propertyDescription.enumerable = !0
+                                            }
+
+                                            /* Logic
+                                                    [if:else statement]
+
+                                                    --- NOTE ---
+                                                        #Lapys: Prioritize value-based descriptions over getter-and-setter-based ones.
+                                            */
+                                            if ((function() {
+                                                // Error Handling > Return
+                                                try { return !LDKF.isFunction(description.get) && !LDKF.isFunction(description.set) }
+                                                catch (error) {}
+
+                                                // Return
+                                                return !0
+                                            })()) {
+                                                // Modification > Property Description > (Value, Writable)
+                                                propertyDescription.value = description.value;
+                                                propertyDescription.writable = !!description.writable
+                                            }
+
+                                            else {
+                                                // Modification > Property Description > (Get, Set)
+                                                propertyDescription.get = description.get;
+                                                propertyDescription.set = description.set
+                                            }
+                                        }
+
+                                        else {
+                                            // Modification > Property Description > (Configurable, Enumerable, Value, Writable)
+                                            propertyDescription.configurable = !0;
+                                            propertyDescription.enumerable = !0;
+                                            propertyDescription.value = description;
+                                            propertyDescription.writable = !0
+                                        }
+
+                                        // Modification > Object > [Key]
+                                        LDKF.objectDefineProperty(object, key, propertyDescription);
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if ('value' in propertyDescription)
+                                            // Return
+                                            return returnObject ? object : propertyDescription.value;
+
+                                        else {
+                                            // Error Handling > Return
+                                            try { return returnObject ? object : propertyDescription.get.call(object) }
+                                            catch (error) {}
+
+                                            // Return
+                                            return returnObject ? object : null
+                                        }
+                                    }
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                        /* [Parent Node] > Prototype */
+                        /* String > Prototype */
+                            // HTML
+                            LDKF.objectDefineProperty(LDKO.stringPrototype, 'html', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Get
+                                get: function html() {
+                                    // Initialization > Stream
+                                    var stream = LDKF.string(this),
+                                        iterator = 0, length = stream.length;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (stream) {
+                                        // Initialization > (Attributes (Stream), Classes, ID, Inner HTML, Tag Name)
+                                        var attributes = [], attributesStream = '',
+                                            classes = '', id = '',
+                                            innerHTML = '',
+                                            tagName = '';
+
+                                        // Initialization > (Allow Stream, Is (Inner HTML, Tag Name), Selector Mode, Stream Lock)
+                                        var allowStream = !0,
+                                            isInnerHTML = !1,
+                                            isTagName = !0,
+                                            selectorMode = '',
+                                            streamLock = '';
+
+                                        /* Loop
+                                                Iterate through the Stream.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Character
+                                            var character = stream[iterator];
+
+                                            // Update > Is Tag Name
+                                            LDKF.isAlphabet(character) || LDKF.isDigit(character) || (character == '-') || (character == '*') || (isTagName = !1);
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (isTagName)
+                                                // Update > Tag Name
+                                                tagName += character;
+
+                                            else if (isInnerHTML)
+                                                // Update > Inner HTML
+                                                innerHTML += character;
+
+                                            else {
+                                                /* Logic
+                                                        [if:else if statement]
+                                                */
+                                                if (allowStream) {
+                                                    /* Logic
+                                                            --- NOTE ---
+                                                                #Lapys: Jump out of the selector stream.
+                                                    */
+                                                    if (character == ':') {
+                                                        // Update > Is Inner HTML
+                                                        isInnerHTML = !0;
+
+                                                        /* Continue
+                                                                --- NOTE ---
+                                                                    #Lapys: First use of this keyword!
+                                                        */
+                                                        continue
+                                                    }
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (character == '"' || character == "'") {
+                                                        // Update > Allow (Stream) Lock
+                                                        allowStream = !1;
+                                                        streamLock = character
+                                                    }
+
+                                                    // Update > Selector Mode
+                                                    character == '.' ?
+                                                        selectorMode = 'class' :
+                                                        (character == '#' ?
+                                                            selectorMode = 'id' :
+                                                            ((character == '[') && (selectorMode = 'attr'))
+                                                        )
+                                                }
+
+                                                else if ((character == '"' || character == "'") && streamLock == character) {
+                                                    // Update > Allow (Stream) Lock
+                                                    allowStream = !0;
+                                                    streamLock = ''
+                                                }
+
+                                                /* Logic
+                                                        [if:else if statement]
+                                                */
+                                                if (selectorMode == 'attr')
+                                                    // Update > Attributes Stream
+                                                    attributesStream += character;
+
+                                                else if (selectorMode == 'class')
+                                                    // Update > Classes
+                                                    classes += character;
+
+                                                else if (selectorMode == 'id')
+                                                    // Update > ID
+                                                    id += character
+                                            }
+                                        }
+
+                                        // Initialization > Index
+                                        var index = -1;
+
+                                        // Update > (Allow Stream, Iterator, Length, Stream Lock)
+                                        allowStream = !0;
+                                        iterator = 0;
+                                        length = attributesStream.length;
+                                        streamLock = '';
+
+                                        /* Loop
+                                                Iterate through Attributes Stream.
+                                        */
+                                        for (iterator = 0; iterator != length; iterator += 1) {
+                                            // Initialization > Character
+                                            var character = attributesStream[iterator];
+
+                                            /* Logic
+                                                    [if:else if statement]
+                                            */
+                                            if (allowStream) {
+                                                // Update > Index
+                                                (character == '[') && (index += 1);
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (character == '"' || character == "'") {
+                                                    // Update > Allow (Stream) Lock
+                                                    allowStream = !1;
+                                                    streamLock = character
+                                                }
+                                            }
+
+                                            else if ((character == '"' || character == "'") && streamLock == character) {
+                                                // Update > Allow (Stream) Lock
+                                                allowStream = !0;
+                                                streamLock = ''
+                                            }
+
+                                            // Update > Attributes
+                                            attributes[index] ? attributes[index] += character : attributes[index] = character
+                                        }
+
+                                        // Update > Tag Name
+                                        (LDKF.trimString(tagName) == '*') && (tagName = LDKR.tagNames[LDKF.int(LDKR.tagNames.length * LDKF.random())]);
+
+                                        // Initialization > Element
+                                        var element;
+
+                                        // Error Handling
+                                        try {
+                                            // Update > Element
+                                            element = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), tagName)
+                                        } catch (error) {
+                                            // Error
+                                            (error.constructor === LDKO.domException) && LDKF.throwError(['html', 'String'], 'argument', "Invalid tag name '" + tagName + "' given");
+                                            throw error
+                                        }
+
+                                        // Update > (Classes, ID)
+                                        classes = LDKF.joinStringToArray(LDKF.trimLeftString(classes, '.'), '.');
+                                        id = LDKF.joinStringToArray(LDKF.trimLeftString(id, '#'), '#')[0] || '';
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (attributes.length) {
+                                            // Update > (Iterator, Length)
+                                            iterator = 0;
+                                            length = attributes.length;
+
+                                            /* Loop
+                                                    Index Attributes.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > (Attribute (Iterator), Is Value, Name, Value)
+                                                var attribute = LDKF.trimRightString(LDKF.trimLeftString(attributes[iterator], '['), ']'),
+                                                    attributeIterator = 0, attributeLength = attribute.length,
+                                                    isValue = !1,
+                                                    name = '', value = '';
+
+                                                /* Loop
+                                                        Iterate through Attribute.
+                                                */
+                                                for (attributeIterator; attributeIterator != attributeLength; attributeIterator += 1) {
+                                                    // Initialization > Character
+                                                    var character = attribute[attributeIterator];
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (character == '=' && !isValue) {
+                                                        // Update > Is Value
+                                                        isValue = !0;
+
+                                                        // Continue
+                                                        continue
+                                                    }
+
+                                                    // Update > (Value, Name)
+                                                    isValue ?
+                                                        value += character :
+                                                        name += character
+                                                }
+
+                                                // Modification > Element > [Name]
+                                                LDKF.elementPrototypeSetAttribute(element, name, value)
+                                            }
+                                        }
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (classes.length) {
+                                            // Update > (Iterator, Length)
+                                            iterator = 0;
+                                            length = classes.length;
+
+                                            // Loop > Modification > Element > [Classes]
+                                            for (iterator; iterator != length; iterator += 1)
+                                                LDKF.addClassToElement(element, classes[iterator])
+                                        }
+
+                                        // Modification > Element > (ID, Inner HTML)
+                                        id && LDKF.elementPrototypeSetAttribute(element, 'id', id);
+                                        innerHTML && LDKF.set.elementPrototypeInnerHTML(element, innerHTML);
+
+                                        // Return
+                                        return element
+                                    }
+
+                                    else
+                                        // Error
+                                        LDKF.throwError(['html', 'String'], 'argument', 'Can not create element without local tag name')
+                                }
                             })
                 }
 
