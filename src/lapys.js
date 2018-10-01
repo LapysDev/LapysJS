@@ -7051,6 +7051,9 @@ window && (function Main(args) {
                     // Fullscreen Element
                     hidden.fullscreenElement = null;
 
+                    // IDs
+                    hidden.IDs = [];
+
                     /* Power
                             --- NOTE ---
                                 #Lapys: Cache all `LapysJSDevelopmentKit.functions.pow` results.
@@ -9548,6 +9551,11 @@ window && (function Main(args) {
                             */
                             LDKRNG.generatedNumber = LDKRNG.generateRandomNumber();
 
+                // Hidden
+                    // IDs
+                        // Viewport Style Element
+                        hidden.IDs.viewportStyleElement = LDKF.int(LDKF.random() * 1e15);
+
                 // LapysJS
                     // Script
                     LDKF.objectDefineProperty(LapysJS, 'script', {
@@ -9586,7 +9594,9 @@ window && (function Main(args) {
                             LDK.allowAppFeatures && (window.app = (function() {
                                 /* Initialization > (Application, Prototype, Get Meta Element Content, (Get, Has, Set, Style) Viewport Property, Storage)
                                         --- NOTE ---
-                                            #Lapys: The Style Viewport Property function is based entirely on the `@viewport` CSS at-rule.
+                                            #Lapys:
+                                                - The Style Viewport Property function is based entirely on the `@viewport` CSS at-rule.
+                                                - It should also be pointed out that at the basis of the Style Viewport Property is experimental (at the time of writing).
                                 */
                                 var application = new (function Application() {}),
                                     app = application,
@@ -9785,6 +9795,9 @@ window && (function Main(args) {
                                         var meta = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), 'meta[name=viewport'),
                                             property = arguments[0],
                                             value = arguments[1];
+
+                                        // Style Viewport Property
+                                        styleViewportProperty(property, value);
 
                                         // Logic > Update > Value
                                         switch (property) {
@@ -10505,7 +10518,102 @@ window && (function Main(args) {
                                             return viewport
                                         })()
                                     }, styleViewportProperty = function styleViewportProperty() {
+                                        // Initialization > (Property, Value, Viewport Style Element)
+                                        var property = convertViewportPropertyToCSSProperty(arguments[0])[0],
+                                            value = convertViewportPropertyToCSSProperty(arguments[1])[1],
+                                            viewportStyleElement = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), "style[id='" + hidden.IDs.viewportStyleElement + "'][role=viewport]");
 
+                                        // Function > Convert Viewport Property to CSS Property
+                                        function convertViewportPropertyToCSSProperty(property, value) {
+                                            /* Logic
+                                                    [switch:case:default statement]
+                                            */
+                                            switch (property) {
+                                                // Initial Scale
+                                                case 'initial-scale': return ['zoom', value]; break;
+                                                case 'maximum-scale': return ['max-zoom', value]; break;
+                                                case 'minimum-scale': return ['min-zoom', value]; break;
+                                                case 'user-scalable': return ['user-zoom', value == 'yes' ? 'zoom' : (value == 'no' ? 'fixed' : (value ? 'zoom' : 'fixed'))]; break;
+
+                                                /* [Default]
+                                                        --- NOTE ---
+                                                            #Lapys: Any other property (such as `height` and `width`).
+                                                */
+                                                default: return [property, value]
+                                            }
+                                        }
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (!viewportStyleElement) {
+                                            // Initialization > Head
+                                            var head = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), 'head');
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (!head) {
+                                                // Initialization > Ancestor
+                                                var ancestor = LDKF.get.ancestorElement();
+
+                                                // Insertion
+                                                LDKF.nodePrototypeAppendChild(ancestor, head = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'head'))
+                                            }
+
+                                            // Update > Viewport Style Element
+                                            viewportStyleElement = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'style');
+
+                                            // Modification > Viewport Style Element > (ID, Role)
+                                            LDKF.elementPrototypeSetAttribute(viewportStyleElement, 'id', hidden.IDs.viewportStyleElement);
+                                            LDKF.elementPrototypeSetAttribute(viewportStyleElement, 'role', 'viewport');
+
+                                            // Insertion
+                                            LDKF.nodePrototypeAppendChild(head, viewportStyleElement)
+                                        }
+
+                                        // Initialization > (Code, Iterator, Length, Viewport CSS At-Rule Syntax (Index))
+                                        var code = LDKF.get.elementPrototypeInnerHTML(viewportStyleElement),
+                                            iterator = 0, length = code.length,
+                                            viewportCSSAtRuleSyntax = '@viewport',
+                                            viewportCSSAtRuleSyntaxIndex = -1;
+
+                                        /* Loop
+                                                Iterate through Code.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Viewport CSS At-Rule Syntax (Iterator, Length)
+                                            var viewportCSSAtRuleSyntaxIterator = 0,
+                                                viewportCSSAtRuleSyntaxLength = viewportCSSAtRuleSyntax.length;
+
+                                            /* Loop
+                                                    Iterate through Viewport CSS At-Rule Syntax.
+                                            */
+                                            for (viewportCSSAtRuleSyntaxIterator; viewportCSSAtRuleSyntaxIterator != viewportCSSAtRuleSyntaxLength; viewportCSSAtRuleSyntaxIterator += 1)
+                                                /* Logic
+                                                        [if:else if statement]
+                                                */
+                                                if (code[iterator + viewportCSSAtRuleSyntaxIterator] != viewportCSSAtRuleSyntax[viewportCSSAtRuleSyntaxIterator])
+                                                    // Break
+                                                    break;
+
+                                                else if (viewportCSSAtRuleSyntaxIterator == viewportCSSAtRuleSyntaxLength - 1) {
+                                                    // Update >  Viewport CSS At-Rule Syntax Index
+                                                    viewportCSSAtRuleSyntaxIndex = iterator;
+
+                                                    // Break
+                                                    break
+                                                }
+                                        }
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (viewportCSSAtRuleSyntaxIndex == -1)
+                                            // Modification > Viewport Style Element > Inner HTML
+                                            LDKF.set.elementPrototypeInnerHTML(viewportStyleElement, '@viewport { ' + property + ': ' + value + ' }');
+
+                                        else {}
                                     };
 
                                 // Modification > Application

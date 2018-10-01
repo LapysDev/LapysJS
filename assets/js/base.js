@@ -107,7 +107,7 @@ window && (function Main(args) {
                     app.viewport.minimalUI = true;
 
                     // Minimum Scale
-                    app.viewport.minimumScale = 2;
+                    app.viewport.minimumScale = .1;
 
                     // Target Density Pixels
                     app.viewport.targetDensityDPI = 96;

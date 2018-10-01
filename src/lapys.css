@@ -5,11 +5,16 @@
     @url: https://github.com/LapysDev/LapysJS
 
     --- RULES ---
-        #lapys:
+        #Lapys:
             - Do not repeat CSS style declarations. You can use 'prettify.js' (or anything similar) to optimize the CSS code here.
             - Maximum of 6 digits with each numeral only.
             - Precise hexadecimal color values (3, 6, 9, A, C, F) only.
             - Any updates must be as minimalistic as possible.
+
+        --- WARN ---
+            #Lapys:
+                - The `<meta content='height=device-height, initial-scale=1.0, maximum-scale=2.0, minimal-ui, minimum-scale=0.1, user-scalable=yes, width=device-width' name=viewport target-densitydpi=96>` syntax or
+                    viewport meta element must be in the document that this CSS file is injected for the responsiveness of the library to be functional.
 */
 /* CSS At-Rules */
     /* Character-Set Encoding */
@@ -167,9 +172,9 @@
         flood-color: #000;
         flood-opacity: 1;
         font-feature-settings: inherit;
-        font-size: 1em;
         font-language-override: normal;
         font-kerning: auto;
+        font-size: 1em;
         font-size-adjust: none;
         font-synthesis: weight style;
         font-variant-alternates: normal;
@@ -298,12 +303,40 @@
         -webkit-writing-mode: horizontal-tb
     }
         /* @media */
-                /* Mobile (Small) --- CHECKPOINT --- */
-                @media only all
-                    and (max-width: 400px)
-                    and (min-width: 0px) {
-                        body { font-size: 20em }
-                }
+            /* Mobile (Small) */
+            @media only all
+                and (max-width: 320px)
+                and (min-width: 0px) { body { font-size: .5em } }
+
+            /* Mobile (Medium) */
+            @media only all
+                and (max-width: 375px)
+                and (min-width: 321px) { body { font-size: .666666em } }
+
+            /* Mobile (Large) */
+            @media only all
+                and (max-width: 420px)
+                and (min-width: 376px) { body { font-size: .833333em } }
+
+            /* Tablet */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 421px) { body { font-size: .999999em } }
+
+            /* Laptop */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { body { font-size: 1.16665em } }
+
+            /* Laptop (Large) */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { body { font-size: 1.33333em } }
+
+            /* 4K */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { body { font-size: 1.5em } }
 
     /* <button>, <input> */
     button,
@@ -317,6 +350,7 @@
         border-radius: 1.5px;
         box-shadow: 0 5px 3px 1px rgba(0, 0, 0, .05);
         color: #666;
+        font-size: inherit;
         font-weight: 400;
         margin: 3px;
         outline-color: transparent;
@@ -427,6 +461,41 @@
         font-size: 3.25em;
         margin: 1rem 0
     }
+        /* @media */
+            /* Mobile (Small) */
+            @media only all
+                and (max-width: 320px)
+                and (min-width: 0px) { h1 { font-size: 2.50075em } }
+
+            /* Mobile (Medium) */
+            @media only all
+                and (max-width: 375px)
+                and (min-width: 321px) { h1 { font-size: 2.91666em } }
+
+            /* Mobile (Large) */
+            @media only all
+                and (max-width: 425px)
+                and (min-width: 376px) { h1 { font-size: 3.33333em } }
+
+            /* Tablet */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 426px) { h1 { font-size: 3.75em } }
+
+            /* Laptop */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { h1 { font-size: 4.16666em } }
+
+            /* Laptop (Large) */
+            @media only all
+                and (max-width: 1440px)
+                and (min-width: 1025px) { h1 { font-size: 4.58333em } }
+
+            /* 4K */
+            @media only all
+                and (max-width: 2560px)
+                and (min-width: 1441px) { h1 { font-size: 5em } }
 
     /* <h1>, <h2>, <h3>, <h4>, <h5>, <h6> */
     h1, h2, h3, h4, h5, h6 {
@@ -482,36 +551,205 @@
         font-size: 2.875em;
         margin: .5rem 0
     }
+        /* @media */
+            /* Mobile (Small) */
+            @media only all
+                and (max-width: 320px)
+                and (min-width: 0px) { h2 { font-size: 2.21153em } }
+
+            /* Mobile (Medium) */
+            @media only all
+                and (max-width: 375px)
+                and (min-width: 321px) { h2 { font-size: 2.58565em } }
+
+            /* Mobile (Large) */
+            @media only all
+                and (max-width: 425px)
+                and (min-width: 376px) { h2 { font-size: 2.95977em } }
+
+            /* Tablet */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 426px) { h2 { font-size: 3.33389em } }
+
+            /* Laptop */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { h2 { font-size: 3.70801em } }
+
+            /* Laptop (Large) */
+            @media only all
+                and (max-width: 1440px)
+                and (min-width: 1025px) { h2 { font-size: 4.08213em } }
+
+            /* 4K */
+            @media only all
+                and (max-width: 2560px)
+                and (min-width: 1441px) { h2 { font-size: 4.45625em } }
 
     /* <h3> */
     h3 {
         font-size: 2.375em;
         margin: .25rem 0
     }
+        /* @media */
+            /* Mobile (Small) */
+            @media only all
+                and (max-width: 320px)
+                and (min-width: 0px) { h3 { font-size: 1.82692em } }
+
+            /* Mobile (Medium) */
+            @media only all
+                and (max-width: 375px)
+                and (min-width: 321px) { h3 { font-size: 2.13597em } }
+
+            /* Mobile (Large) */
+            @media only all
+                and (max-width: 425px)
+                and (min-width: 376px) { h3 { font-size: 2.44503em } }
+
+            /* Tablet */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 426px) { h3 { font-size: 2.75408em } }
+
+            /* Laptop */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { h3 { font-size: 3.06314em } }
+
+            /* Laptop (Large) */
+            @media only all
+                and (max-width: 1440px)
+                and (min-width: 1025px) { h3 { font-size: 3.37219em } }
+
+            /* 4K */
+            @media only all
+                and (max-width: 2560px)
+                and (min-width: 1441px) { h3 { font-size: 3.68125em } }
 
     /* <h4> */
     h4 {
-        font-size: 2em;
-        margin: .125rem 0
+        font-size: 1.9375em;
+        margin: .09375rem 0
     }
+        /* @media */
+            /* Mobile (Small) */
+            @media only all
+                and (max-width: 320px)
+                and (min-width: 0px) { h4 { font-size: 1.49038em } }
 
-    /* <h4> */
-    h4 {
-        font-size: 1.875em;
-        margin: .0625rem 0
-    }
+            /* Mobile (Medium) */
+            @media only all
+                and (max-width: 375px)
+                and (min-width: 321px) { h4 { font-size: 1.7425em } }
+
+            /* Mobile (Large) */
+            @media only all
+                and (max-width: 425px)
+                and (min-width: 376px) { h4 { font-size: 1.99463em } }
+
+            /* Tablet */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 426px) { h4 { font-size: 2.24675em } }
+
+            /* Laptop */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { h4 { font-size: 2.49887em } }
+
+            /* Laptop (Large) */
+            @media only all
+                and (max-width: 1440px)
+                and (min-width: 1025px) { h4 { font-size: 2.751em } }
+
+            /* 4K */
+            @media only all
+                and (max-width: 2560px)
+                and (min-width: 1441px) { h4 { font-size: 3em } }
 
     /* <h5> */
     h5 {
         font-size: 1.375em;
         margin: .03125rem 0
     }
+        /* @media */
+            /* Mobile (Small) */
+            @media only all
+                and (max-width: 320px)
+                and (min-width: 0px) { h5 { font-size: 1.05769em } }
+
+            /* Mobile (Medium) */
+            @media only all
+                and (max-width: 375px)
+                and (min-width: 321px) { h5 { font-size: 1.23661em } }
+
+            /* Mobile (Large) */
+            @media only all
+                and (max-width: 425px)
+                and (min-width: 376px) { h5 { font-size: 1.41554em } }
+
+            /* Tablet */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 426px) { h5 { font-size: 1.59447em } }
+
+            /* Laptop */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { h5 { font-size: 1.77339em } }
+
+            /* Laptop (Large) */
+            @media only all
+                and (max-width: 1440px)
+                and (min-width: 1025px) { h5 { font-size: 1.95232em } }
+
+            /* 4K */
+            @media only all
+                and (max-width: 2560px)
+                and (min-width: 1441px) { h5 { font-size: 2.13125em } }
 
     /* <h6> */
     h6 {
         font-size: 1em;
         margin: .015625rem 0
     }
+        /* @media */
+            /* Mobile (Small) */
+            @media only all
+                and (max-width: 320px)
+                and (min-width: 0px) { h6 { font-size: 0.769231em } }
+
+            /* Mobile (Medium) */
+            @media only all
+                and (max-width: 375px)
+                and (min-width: 321px) { h6 { font-size: 0.899359em } }
+
+            /* Mobile (Large) */
+            @media only all
+                and (max-width: 425px)
+                and (min-width: 376px) { h6 { font-size: 1.02948em } }
+
+            /* Tablet */
+            @media only all
+                and (max-width: 768px)
+                and (min-width: 426px) { h6 { font-size: 1.15961em } }
+
+            /* Laptop */
+            @media only all
+                and (max-width: 1024px)
+                and (min-width: 769px) { h6 { font-size: 1.28974em } }
+
+            /* Laptop (Large) */
+            @media only all
+                and (max-width: 1440px)
+                and (min-width: 1025px) { h6 { font-size: 1.41987em } }
+
+            /* 4K */
+            @media only all
+                and (max-width: 2560px)
+                and (min-width: 1441px) { h6 { font-size: 1.55em } }
 
     /* <hr> */
     hr {
