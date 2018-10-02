@@ -59,7 +59,7 @@ window && (function Main(args) {
                         --- NOTE ---
                             #Lapys: Theme color for the application.
                 */
-                app.color = '#0066FF';
+                app.color = '#06F';
 
                 /* Dynamic Title
                         --- NOTE ---
@@ -147,10 +147,19 @@ window && (function Main(args) {
                         "</div>";
 
                 // Style > Loading Screen > Opacity
-                LOADING_SCREEN.style.opacity = 0;
+                LOADING_SCREEN.setCSS('opacity', 0);
 
                 // Insertion
-                // BODY.insertChild(LOADING_SCREEN)
+                BODY.insertChild(LOADING_SCREEN);
+
+                // On DOM Ready > Remove Loading Screen
+                false && onDOMReady(function removeLoadingScreen() {
+                    // Timeout > Pause Removal
+                    timeout(function pauseRemoval() {
+                        // Style > Loading Screen > Animation
+                        LOADING_SCREEN.setCSS('animation', LOADING_SCREEN.getCSS('animation').replace(LOADING_SCREEN.getCSS('animation-name'), 'fadeOut'))
+                    }, LOADING_SCREEN.getTransitionLength())
+                })
             })()
     }
 

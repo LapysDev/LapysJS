@@ -349,6 +349,117 @@ window && (function Main(args) {
                     return LapysJSDevelopmentKit.objects.clearTimeout.apply(window, arguments)
                 },
 
+                /* Convert CSS To Property Array
+                        --- NOTE ---
+                            #Lapys: Convert CSS code within an HTML element`s `style` attribute to style array.
+                */
+                convertCSSToPropertyArray: function convertCSSToPropertyArray(styleStream) {
+                    // Initialization > (Style Array, Index, Allow (Stream) Lock, Iterator, Length)
+                    var styleArray = [],
+                        index = 0,
+                        allowSteam = !0, streamLock = '',
+                        iterator = 0, length = styleStream.length;
+
+                    /* Loop
+                            Iterate through Style Stream.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Character
+                        var character = styleStream[iterator];
+
+                        /* Logic
+                                [if:else if statement]
+                        */
+                        if (allowSteam) {
+                            /* Logic
+                                    [if:else statement]
+                            */
+                            if (
+                                (character == '/' && styleStream[iterator + 1] == '*') ||
+                                (character == '"' || character == "'")
+                            ) {
+                                // Update > Allow (Stream) Lock
+                                allowSteam = !1;
+                                streamLock = character;
+
+                                // Continue
+                                continue
+                            }
+
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (character == ';') {
+                                // Update > Index
+                                index += 1;
+
+                                // Continue
+                                continue
+                            }
+                        }
+
+                        else if (
+                            (character == '*' && styleStream[iterator + 1] == '/') ||
+                            (character == '"' || character == "'") && (streamLock == character)
+                        ) {
+                            // Update > Allow (Stream) Lock
+                            allowSteam = !0;
+                            streamLock = '';
+
+                            // Continue
+                            continue
+                        }
+
+                        // Update > Style Array
+                        styleArray[index] ? styleArray[index] += character : styleArray[index] = character
+                    }
+
+                    // Initialization > Is Value
+                    var isValue = !1;
+
+                    // Update > Length
+                    length = styleArray.length;
+
+                    /* Loop
+                            Index Style Array.
+                    */
+                    for (iterator = 0; iterator != length; iterator += 1) {
+                        // Initialization > (Property (Iterator), Name, Value, Is Value)
+                        var property = styleArray[iterator],
+                            propertyIterator = 0, propertyLength = property.length,
+                            name = '', value = '',
+                            isValue = !1;
+
+                        /* Loop
+                                Iterate through Property.
+                        */
+                        for (propertyIterator; propertyIterator != propertyLength; propertyIterator += 1) {
+                            // Initialization > Character
+                            var character = property[propertyIterator];
+
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (character == ':' && !isValue) {
+                                // Update > Is Value
+                                isValue = !0;
+
+                                // Continue
+                                continue
+                            }
+
+                            // Update > (Value | Name)
+                            isValue ? value += character : name += character
+                        }
+
+                        // Update > Style Array
+                        styleArray[iterator] = {name: LDKF.trimString(name), value: LDKF.trimString(value)}
+                    }
+
+                    // Return
+                    return styleArray
+                },
+
                 /* Copy in Array
                         --- NOTE ---
                             #Lapys: Detect if an array has a duplicate item.
@@ -1338,6 +1449,31 @@ window && (function Main(args) {
                         else if (character == '\\' || character == '^' || character == '$' || character == '*' || character == '+' || character == '?' || character == '.' || character == '(' || character == ':' || character == '=' || character == '!' || character == '|' || character == '{' || character == ',' || character == '[')
                             // Update > Stream
                             LDKF.isInArray(stream, character) || (stream[stream.length] = character)
+                    }
+
+                    // Return
+                    return stream
+                },
+
+                /* Hyphenate String
+                        --- NOTE ---
+                            #Lapys: Convert strings such as `backgroundColor` to `background-color`.
+                                This helps with bridging the gap between default CSS and JavaScript CSS property names.
+                */
+                hyphenateString: function hyphenateString(string) {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = 0, length = string.length,
+                        stream = '';
+
+                    /* Loop
+                            Iterate through String.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Character
+                        var character = string[iterator];
+
+                        // Update > Stream
+                        stream += LDKF.isAlphabet(character) && LDKF.isUpperCaseStringChar(character) ? '-' + LDKF.lowerStringChar(character) : character
                     }
 
                     // Return
@@ -3967,6 +4103,52 @@ window && (function Main(args) {
 
                     // Return
                     return array
+                },
+
+                /* Split String
+                        --- NOTE ---
+                            #Lapys: Convert strings such as `background-color` to `backgroundColor`.
+                                This helps with bridging the gap between default CSS and JavaScript CSS property names.
+                */
+                splitHyphenatedWithUppercaseCharString: function splitHyphenatedWithUppercaseCharString(string) {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = 0, length = string.length,
+                        stream = '';
+
+                    /* Loop
+                            Iterate through String.
+                    */
+                    for (iterator; iterator != length; iterator += 1) {
+                        // Initialization > Character
+                        var character = string[iterator];
+
+                        // Update > Stream
+                        stream += character == '-' ? LDKF.upperStringChar(string[iterator += (function countHyphens(index) {
+                            // Initialization > Count
+                            var count = 0;
+
+                            /* Loop
+                                    Iterate through String.
+                            */
+                            for (index; index != length; index += 1)
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (string[index] == '-')
+                                    // Update > Count
+                                    count += 1;
+
+                                else
+                                    // Break
+                                    break;
+
+                            // Return
+                            return count
+                        })(iterator)]) : character
+                    }
+
+                    // Return
+                    return stream
                 },
 
                 // String
@@ -10518,102 +10700,229 @@ window && (function Main(args) {
                                             return viewport
                                         })()
                                     }, styleViewportProperty = function styleViewportProperty() {
-                                        // Initialization > (Property, Value, Viewport Style Element)
-                                        var property = convertViewportPropertyToCSSProperty(arguments[0])[0],
-                                            value = convertViewportPropertyToCSSProperty(arguments[1])[1],
+                                        // Initialization > (Property, Value, Converted Property-Value, Viewport Style Element)
+                                        var property = arguments[0], value = arguments[1],
                                             viewportStyleElement = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), "style[id='" + hidden.IDs.viewportStyleElement + "'][role=viewport]");
-
-                                        // Function > Convert Viewport Property to CSS Property
-                                        function convertViewportPropertyToCSSProperty(property, value) {
-                                            /* Logic
-                                                    [switch:case:default statement]
-                                            */
-                                            switch (property) {
-                                                // Initial Scale
-                                                case 'initial-scale': return ['zoom', value]; break;
-                                                case 'maximum-scale': return ['max-zoom', value]; break;
-                                                case 'minimum-scale': return ['min-zoom', value]; break;
-                                                case 'user-scalable': return ['user-zoom', value == 'yes' ? 'zoom' : (value == 'no' ? 'fixed' : (value ? 'zoom' : 'fixed'))]; break;
-
-                                                /* [Default]
-                                                        --- NOTE ---
-                                                            #Lapys: Any other property (such as `height` and `width`).
-                                                */
-                                                default: return [property, value]
-                                            }
-                                        }
 
                                         /* Logic
                                                 [if statement]
                                         */
-                                        if (!viewportStyleElement) {
-                                            // Initialization > Head
-                                            var head = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), 'head');
+                                        if (property != 'minimal-ui') {
+                                            // Initialization > Converted Property Value
+                                            var convertedPropertyValue = convertViewportPropertyToCSSProperty(property, value);
+
+                                            // Update > (Property, Value)
+                                            property = convertedPropertyValue[0];
+                                            value = convertedPropertyValue[1];
+
+                                            // Function > Convert Viewport Property to CSS Property
+                                            function convertViewportPropertyToCSSProperty(property, value) {
+                                                /* Logic
+                                                        [switch:case:default statement]
+                                                */
+                                                switch (property) {
+                                                    // Initial Scale
+                                                    case 'initial-scale': return ['zoom', value]; break;
+                                                    case 'maximum-scale': return ['max-zoom', value]; break;
+                                                    case 'minimum-scale': return ['min-zoom', value]; break;
+                                                    case 'user-scalable': return ['user-zoom', value == 'yes' ? 'zoom' : (value == 'no' ? 'fixed' : (value ? 'zoom' : 'fixed'))]; break;
+
+                                                    /* [Default]
+                                                            --- NOTE ---
+                                                                #Lapys: Any other property (such as `height` and `width`).
+                                                    */
+                                                    default: return [property, value]
+                                                }
+                                            }
 
                                             /* Logic
                                                     [if statement]
                                             */
-                                            if (!head) {
-                                                // Initialization > Ancestor
-                                                var ancestor = LDKF.get.ancestorElement();
+                                            if (!viewportStyleElement) {
+                                                // Initialization > Head
+                                                var head = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), 'head');
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (!head) {
+                                                    // Initialization > Ancestor
+                                                    var ancestor = LDKF.get.ancestorElement();
+
+                                                    // Insertion
+                                                    LDKF.nodePrototypeAppendChild(ancestor, head = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'head'))
+                                                }
+
+                                                // Update > Viewport Style Element
+                                                viewportStyleElement = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'style');
+
+                                                // Modification > Viewport Style Element > (ID, Role)
+                                                LDKF.elementPrototypeSetAttribute(viewportStyleElement, 'id', hidden.IDs.viewportStyleElement);
+                                                LDKF.elementPrototypeSetAttribute(viewportStyleElement, 'role', 'viewport');
 
                                                 // Insertion
-                                                LDKF.nodePrototypeAppendChild(ancestor, head = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'head'))
+                                                LDKF.nodePrototypeAppendChild(head, viewportStyleElement)
                                             }
 
-                                            // Update > Viewport Style Element
-                                            viewportStyleElement = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'style');
-
-                                            // Modification > Viewport Style Element > (ID, Role)
-                                            LDKF.elementPrototypeSetAttribute(viewportStyleElement, 'id', hidden.IDs.viewportStyleElement);
-                                            LDKF.elementPrototypeSetAttribute(viewportStyleElement, 'role', 'viewport');
-
-                                            // Insertion
-                                            LDKF.nodePrototypeAppendChild(head, viewportStyleElement)
-                                        }
-
-                                        // Initialization > (Code, Iterator, Length, Viewport CSS At-Rule Syntax (Index))
-                                        var code = LDKF.get.elementPrototypeInnerHTML(viewportStyleElement),
-                                            iterator = 0, length = code.length,
-                                            viewportCSSAtRuleSyntax = '@viewport',
-                                            viewportCSSAtRuleSyntaxIndex = -1;
-
-                                        /* Loop
-                                                Iterate through Code.
-                                        */
-                                        for (iterator; iterator != length; iterator += 1) {
-                                            // Initialization > Viewport CSS At-Rule Syntax (Iterator, Length)
-                                            var viewportCSSAtRuleSyntaxIterator = 0,
-                                                viewportCSSAtRuleSyntaxLength = viewportCSSAtRuleSyntax.length;
+                                            // Initialization > (Code, Iterator, Length, Viewport CSS At-Rule Syntax (Index))
+                                            var code = LDKF.get.elementPrototypeInnerHTML(viewportStyleElement),
+                                                iterator = 0, length = code.length,
+                                                viewportCSSAtRuleSyntax = '@viewport',
+                                                viewportCSSAtRuleSyntaxIndex = -1;
 
                                             /* Loop
-                                                    Iterate through Viewport CSS At-Rule Syntax.
+                                                    Iterate through Code.
                                             */
-                                            for (viewportCSSAtRuleSyntaxIterator; viewportCSSAtRuleSyntaxIterator != viewportCSSAtRuleSyntaxLength; viewportCSSAtRuleSyntaxIterator += 1)
-                                                /* Logic
-                                                        [if:else if statement]
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Viewport CSS At-Rule Syntax (Iterator, Length)
+                                                var viewportCSSAtRuleSyntaxIterator = 0,
+                                                    viewportCSSAtRuleSyntaxLength = viewportCSSAtRuleSyntax.length;
+
+                                                /* Loop
+                                                        Iterate through Viewport CSS At-Rule Syntax.
                                                 */
-                                                if (code[iterator + viewportCSSAtRuleSyntaxIterator] != viewportCSSAtRuleSyntax[viewportCSSAtRuleSyntaxIterator])
-                                                    // Break
-                                                    break;
+                                                for (viewportCSSAtRuleSyntaxIterator; viewportCSSAtRuleSyntaxIterator != viewportCSSAtRuleSyntaxLength; viewportCSSAtRuleSyntaxIterator += 1)
+                                                    /* Logic
+                                                            [if:else if statement]
+                                                    */
+                                                    if (code[iterator + viewportCSSAtRuleSyntaxIterator] != viewportCSSAtRuleSyntax[viewportCSSAtRuleSyntaxIterator])
+                                                        // Break
+                                                        break;
 
-                                                else if (viewportCSSAtRuleSyntaxIterator == viewportCSSAtRuleSyntaxLength - 1) {
-                                                    // Update >  Viewport CSS At-Rule Syntax Index
-                                                    viewportCSSAtRuleSyntaxIndex = iterator;
+                                                    else if (viewportCSSAtRuleSyntaxIterator == viewportCSSAtRuleSyntaxLength - 1) {
+                                                        // Update >  Viewport CSS At-Rule Syntax Index
+                                                        viewportCSSAtRuleSyntaxIndex = iterator;
 
-                                                    // Break
-                                                    break
+                                                        // Break
+                                                        break
+                                                    }
+                                            }
+
+                                            /* Logic
+                                                    [if:else statement]
+
+                                                    --- NOTE ---
+                                                        #Lapys: The reason the Viewport Style Element`s inner HTML content is not reset all the time is because
+                                                            the developer could add out-of-context code/ text to the element`s inner HTML.
+                                            */
+                                            if (viewportCSSAtRuleSyntaxIndex == -1)
+                                                // Modification > Viewport Style Element > Inner HTML
+                                                LDKF.set.elementPrototypeInnerHTML(viewportStyleElement, '@viewport { ' + property + ': ' + value + ' }');
+
+                                            else {
+                                                // Initialization > (Allow (Stream) Lock, Stream, Within Viewport Options)
+                                                var allowStream = !0, streamLock = '',
+                                                    stream = '',
+                                                    withinViewportOptions = !1;
+
+                                                // Update > Iterator
+                                                iterator = viewportCSSAtRuleSyntaxIndex + viewportCSSAtRuleSyntax.length;
+
+                                                /* Loop
+                                                        Iterate through Code.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Character
+                                                    var character = code[iterator];
+
+                                                    /* Logic
+                                                            [if:else statement]
+                                                    */
+                                                    if (withinViewportOptions) {
+                                                        // Logic > Break
+                                                        if (character == '}')
+                                                            break;
+
+                                                        // Update > Stream
+                                                        stream += character
+                                                    }
+
+                                                    else {
+                                                        /* Logic
+                                                                [if:else if statement]
+                                                        */
+                                                        if (allowStream) {
+                                                            /* Logic
+                                                                    [if:else if statement]
+                                                            */
+                                                            if (character == '/' && code[iterator + 1] == '*')
+                                                                // Update > Allow Stream
+                                                                allowStream = !1;
+
+                                                            else if (character == '"' || character == "'") {
+                                                                // Update > Allow (Stream) Lock
+                                                                allowStream = !0;
+                                                                streamLock = character
+                                                            }
+                                                        }
+
+                                                        else if (
+                                                            character == '*' && code[iterator] == '/' ||
+                                                            ((character == '"' || character == "'") && streamLock == character)
+                                                        ) {
+                                                            // Update > Allow (Stream) Lock
+                                                            allowStream = !0;
+                                                            streamLock = ''
+                                                        }
+
+                                                        // Update > Within Viewport Options
+                                                        allowStream && (character == '{') && (withinViewportOptions = !0)
+                                                    }
                                                 }
+
+                                                /* Initialization > (Viewport Style Element Style (Array), Has Style Property)
+                                                        --- NOTE ---
+                                                            #Lapys: It`s more convenient to work with CSS properties as JSON data.
+                                                */
+                                                var viewportStyleElementStyleArray = LDKF.convertCSSToPropertyArray(stream),
+                                                    viewportStyleElementStyle = '',
+                                                    hasStyleProperty = !1;
+
+                                                // Update > Iterator
+                                                iterator = viewportStyleElementStyleArray.length;
+
+                                                /* Loop
+                                                        Index Viewport Style Element Style Array.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Viewport Style Element Style Property
+                                                    var viewportStyleElementStyleProperty = viewportStyleElementStyleArray[iterator -= 1];
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (viewportStyleElementStyleProperty.name === property) {
+                                                        // Update > Has Style Property
+                                                        hasStyleProperty = !0;
+
+                                                        // Modification > Viewport Style Element Style Property > Value
+                                                        viewportStyleElementStyleProperty.value = value;
+
+                                                        // Break
+                                                        break
+                                                    }
+                                                }
+
+                                                // Update > (Viewport Style Element Style Array, Iterator, Length)
+                                                hasStyleProperty || (viewportStyleElementStyleArray[viewportStyleElementStyleArray.length] = {name: property, value: value});
+                                                iterator = 0;
+                                                length = viewportStyleElementStyleArray.length;
+
+                                                /* Loop
+                                                        Index Viewport Style Element Style Array.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Viewport Style Element Style Property
+                                                    var viewportStyleElementStyleProperty = viewportStyleElementStyleArray[iterator];
+
+                                                    // Update > Viewport Style Element Style
+                                                    viewportStyleElementStyle += viewportStyleElementStyleProperty.name + ': ' + viewportStyleElementStyleProperty.value + ';'
+                                                }
+
+                                                // Modification > Viewport Style Element > Inner HTML
+                                                LDKF.set.elementPrototypeInnerHTML(viewportStyleElement, '@viewport { ' + viewportStyleElementStyle + '}')
+                                            }
                                         }
-
-                                        /* Logic
-                                                [if:else statement]
-                                        */
-                                        if (viewportCSSAtRuleSyntaxIndex == -1)
-                                            // Modification > Viewport Style Element > Inner HTML
-                                            LDKF.set.elementPrototypeInnerHTML(viewportStyleElement, '@viewport { ' + property + ': ' + value + ' }');
-
-                                        else {}
                                     };
 
                                 // Modification > Application
@@ -12549,7 +12858,10 @@ window && (function Main(args) {
                                             return storage.viewport
                                         },
 
-                                        // Set
+                                        /* Set
+                                                --- NOTE ---
+                                                    #Lapys: Configure only the viewport-based `<meta>` element.
+                                        */
                                         set: function viewport(responsiveness) {
                                             // Initialization > Meta
                                             var meta = LDKF.documentPrototypeQuerySelector(LDKF.get.windowDocument(), 'meta[name=viewport');
@@ -19968,6 +20280,150 @@ window && (function Main(args) {
                                     throw new LDKO.typeError('Illegal invocation')
                             };
 
+                            // Get CSS
+                            LDKO.htmlElementPrototype.getCSS = function getCSS() {
+                                // Initialization > Element
+                                var element = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isHTMLElement(element)) {
+                                    // Initialization > (Style Attribute, (Array, Computed) Style, Length)
+                                    var styleAttribute = LDKF.elementPrototypeGetAttribute(element, 'style') || '',
+                                        arrayStyle = LDKF.convertCSSToPropertyArray(styleAttribute),
+                                        computedStyle = LDKF.windowGetComputedStyle(window, element),
+                                        length = arguments.length;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (length)
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (length == 1) {
+                                            // Initialization > (Iterator, Property Name)
+                                            var iterator = arrayStyle.length,
+                                                propertyName = LDKF.string(arguments[0]);
+
+                                            /* Loop
+                                                    Index Array Style.
+                                            */
+                                            while (iterator) {
+                                                // Initialization > Property
+                                                var property = arrayStyle[iterator -= 1];
+
+                                                // Logic > Return
+                                                if (property.name === LDKF.hyphenateString(propertyName))
+                                                    return property.value
+                                            }
+
+                                            // Return
+                                            return (propertyName = LDKF.splitHyphenatedWithUppercaseCharString(propertyName)) in computedStyle ? computedStyle[propertyName] : null
+                                        }
+
+                                        else {
+                                            // Initialization > (Iterator, Code)
+                                            var iterator = 0, code = '';
+
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Property (Name, Value)
+                                                var propertyName = LDKF.string(arguments[iterator]),
+                                                    propertyValue = getCSS.call(element, propertyName);
+
+                                                // Update > Code
+                                                propertyValue && (code += LDKF.hyphenateString(propertyName) + ': ' + propertyValue + (iterator == length - 1 ? '' : '; '))
+                                            }
+
+                                            // Return
+                                            return code
+                                        }
+
+                                    else
+                                        // Return
+                                        return styleAttribute || null
+                                }
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
+
+                            // Get Animation Length
+                            LDKO.htmlElementPrototype.getAnimationLength = function getAnimationLength(type) {
+                                // Initialization > Element
+                                var element = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isHTMLElement(element)) {
+                                    // Initialization > Animation (Delay, Duration)
+                                    var animationDelay = LDKO.htmlElementPrototype.getCSS.call(element, 'animation-delay'),
+                                        animationDuration = LDKO.htmlElementPrototype.getCSS.call(element, 'animation-duration');
+
+                                    // Update > Animation (Delay, Duration)
+                                    animationDelay = LDKF.number(LDKF.digitizeString(animationDelay)) * 1e3;
+                                    animationDuration = LDKF.number(LDKF.digitizeString(animationDuration)) * 1e3;
+
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (type === 'delay')
+                                        // Return
+                                        return animationDelay;
+
+                                    else if (type === 'duration')
+                                        // Return
+                                        return animationDuration;
+
+                                    // Return
+                                    return animationDelay + animationDuration
+                                }
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
+
+                            // Get Transition Length
+                            LDKO.htmlElementPrototype.getTransitionLength = function getTransitionLength(type) {
+                                // Initialization > Element
+                                var element = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isHTMLElement(element)) {
+                                    // Initialization > Transition (Delay, Duration)
+                                    var transitionDelay = LDKO.htmlElementPrototype.getCSS.call(element, 'transition-delay'),
+                                        transitionDuration = LDKO.htmlElementPrototype.getCSS.call(element, 'transition-duration');
+
+                                    // Update > Transition (Delay, Duration)
+                                    transitionDelay = LDKF.number(LDKF.digitizeString(transitionDelay)) * 1e3;
+                                    transitionDuration = LDKF.number(LDKF.digitizeString(transitionDuration)) * 1e3;
+
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (type === 'delay')
+                                        // Return
+                                        return transitionDelay;
+
+                                    else if (type === 'duration')
+                                        // Return
+                                        return transitionDuration;
+
+                                    // Return
+                                    return transitionDelay + transitionDuration
+                                }
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
+
                             /* Set CSS
                                     --- CODE ---
                                         #Lapys: Use cases:
@@ -20028,110 +20484,7 @@ window && (function Main(args) {
                                         priorities = ['!important'],
                                         properties = [],
                                         style = LDKF.elementPrototypeGetAttribute(element, 'style') || '',
-                                        styleArray = (function convertStyleToArrayArray(styleStream) {
-                                            // Initialization > (Allow (Stream) Lock, Style Array, Stream, Index, Iterator, Length)
-                                            var allowStream = !0, streamLock = '',
-                                                styleArray = [], stream = styleStream,
-                                                index = 0,
-                                                iterator = 0, length = stream.length;
-
-                                            /* Loop
-                                                    Iterate through Stream.
-                                            */
-                                            for (iterator; iterator != length; iterator += 1) {
-                                                // Initialization > Character
-                                                var character = stream[iterator];
-
-                                                // Update > (Index, Style Array)
-                                                (allowStream && character == ';') && (index += 1);
-                                                styleArray[index] ? styleArray[index] += character : styleArray[index] = character;
-
-                                                /* Logic
-                                                        [if:else if statement]
-                                                */
-                                                if (allowStream) {
-                                                    /* Logic
-                                                            [if:else if statement]
-                                                    */
-                                                    if (character == '/' && stream[iterator + 1] == '*')
-                                                        // Update > Allow Stream
-                                                        allowStream = !1;
-
-                                                    else if (character == '"' || character == "'") {
-                                                        // Update > Allow (Stream) Lock
-                                                        allowStream = !1;
-                                                        streamLock = character
-                                                    }
-                                                }
-
-                                                else if (
-                                                    (character == '*' && stream[iterator + 1] == '/') ||
-                                                    ((character == '"' || character == "'") && streamLock == character)
-                                                ) {
-                                                    // Update > Allow (Stream) Lock
-                                                    allowStream = !0;
-                                                    streamLock = ''
-                                                }
-                                            }
-
-                                            // Update > (Iterator, Length)
-                                            iterator = 0;
-                                            length = styleArray.length;
-
-                                            /* Loop
-                                                    Index Style Array.
-
-                                                    --- NOTE ---
-                                                        #Lapys: Convert each CSS property into an array of name-value objects.
-                                            */
-                                            for (iterator; iterator != length; iterator += 1) {
-                                                // Initialization > Property
-                                                var property = styleArray[iterator];
-
-                                                /* Loop > Update > Property
-                                                        --- NOTE ---
-                                                            #Lapys: CSS property names only contain alphabet and `-` characters.
-                                                */
-                                                while (property[0] == ' ' || property[0] == '\n' || property[0] == ';')
-                                                    property = LDKF.rendString(property, 1);
-
-                                                // Initialization > (Property (Iterator, Length), Is Value, Name, Value)
-                                                var propertyIterator = 0, propertyLength = property.length,
-                                                    isValue = !1,
-                                                    name = '', value = '';
-
-                                                /* Loop
-                                                        Iterate through Property.
-
-                                                        --- NOTE ---
-                                                            #Lapys: Split each Property into their respective name and value.
-                                                */
-                                                for (propertyIterator; propertyIterator != propertyLength; propertyIterator += 1) {
-                                                    // Initialization > Character
-                                                    var character = property[propertyIterator];
-
-                                                    /* Logic
-                                                            [if statement]
-                                                    */
-                                                    if (character == ':' && !isValue) {
-                                                        // Update > Is Value
-                                                        isValue = !0;
-
-                                                        // Continue
-                                                        continue
-                                                    }
-
-                                                    // Update > (Value, Name)
-                                                    isValue ? value += character : name += character
-                                                }
-
-                                                // Update > Style Array
-                                                styleArray[iterator] = {name: name, value: LDKF.trimString(value)}
-                                            }
-
-                                            // Return
-                                            return styleArray
-                                        })(style),
+                                        styleArray = LDKF.convertCSSToPropertyArray(style),
                                         validProperties = [],
                                         vendors = ['moz', 'ms', 'webkit'];
 
@@ -20201,31 +20554,6 @@ window && (function Main(args) {
                                             return !1
                                         }
 
-                                        /* Hyphenate String
-                                                --- NOTE ---
-                                                    #Lapys: Convert strings such as `backgroundColor` to `background-color`.
-                                                        This helps with bridging the gap between default CSS and JavaScript CSS property names.
-                                        */
-                                        function hyphenateString(string) {
-                                            // Initialization > (Iterator, Length, Stream)
-                                            var iterator = 0, length = string.length,
-                                                stream = '';
-
-                                            /* Loop
-                                                    Iterate through String.
-                                            */
-                                            for (iterator; iterator != length; iterator += 1) {
-                                                // Initialization > Character
-                                                var character = string[iterator];
-
-                                                // Update > Stream
-                                                stream += LDKF.isAlphabet(character) && LDKF.isUpperCaseStringChar(character) ? '-' + LDKF.lowerStringChar(character) : character
-                                            }
-
-                                            // Return
-                                            return stream
-                                        }
-
                                         /* Is Property Object
                                                 --- NOTE ---
                                                     #Lapys: Check the --- CODE ---.
@@ -20259,7 +20587,7 @@ window && (function Main(args) {
                                         */
                                         function isValidCSSPropertyName(arg) {
                                             // Update > Argument
-                                            arg = splitString(LDKF.string(arg));
+                                            arg = LDKF.splitHyphenatedWithUppercaseCharString(LDKF.string(arg));
 
                                             // Return
                                             return arg in computedStyle
@@ -20338,52 +20666,6 @@ window && (function Main(args) {
                                             }
                                         }
 
-                                        /* Split String
-                                                --- NOTE ---
-                                                    #Lapys: Convert strings such as `background-color` to `backgroundColor`.
-                                                        This helps with bridging the gap between default CSS and JavaScript CSS property names.
-                                        */
-                                        function splitString(string) {
-                                            // Initialization > (Iterator, Length, Stream)
-                                            var iterator = 0, length = string.length,
-                                                stream = '';
-
-                                            /* Loop
-                                                    Iterate through String.
-                                            */
-                                            for (iterator; iterator != length; iterator += 1) {
-                                                // Initialization > Character
-                                                var character = string[iterator];
-
-                                                // Update > Stream
-                                                stream += character == '-' ? LDKF.upperStringChar(string[iterator += (function countHyphens(index) {
-                                                    // Initialization > Count
-                                                    var count = 0;
-
-                                                    /* Loop
-                                                            Iterate through String.
-                                                    */
-                                                    for (index; index != length; index += 1)
-                                                        /* Logic
-                                                                [if:else statement]
-                                                        */
-                                                        if (string[index] == '-')
-                                                            // Update > Count
-                                                            count += 1;
-
-                                                        else
-                                                            // Break
-                                                            break;
-
-                                                    // Return
-                                                    return count
-                                                })(iterator)]) : character
-                                            }
-
-                                            // Return
-                                            return stream
-                                        }
-
                                         // Starts with String
                                         function startsWithString(string, match) {
                                             // Initialization > (Iterator, (Match) Length)
@@ -20416,7 +20698,7 @@ window && (function Main(args) {
                                                     */
                                                     if (LDKF.isBoolean(value)) {
                                                         // Update > Name
-                                                        name = hyphenateString(name);
+                                                        name = LDKF.hyphenateString(name);
 
                                                         /* Logic
                                                                 [if:else if:else statement]
@@ -20788,7 +21070,7 @@ window && (function Main(args) {
                                     for (iterator; iterator != length; iterator += 1) {
                                         // Initialization > (Property, Name, (Former) Value)
                                         var property = validProperties[iterator],
-                                            name = (property.name = hyphenateString(property.name)), value = property.value,
+                                            name = (property.name = LDKF.hyphenateString(property.name)), value = property.value,
                                             formerValue = dummy[name];
 
                                         // Update > Dummy

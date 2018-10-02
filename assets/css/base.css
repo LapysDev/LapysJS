@@ -5,10 +5,8 @@
             0% { opacity: 0 }
             to { opacity: 1 }
         }
-
-        /* Fade In-Out */
             /* Level 1 */
-            @keyframes fadeInOut1 {
+            @keyframes fadeIn1 {
                 0% { opacity: 0 }
                 25% { opacity: 1 }
             }
@@ -26,10 +24,9 @@
         }
 
 /* DOM Elements */
-    /* All */
-    * { outline: 1px solid red }
-
     /* <body> */
+    body { overflow-x: hidden }
+
     body,
     body > * { z-index: 1 }
 
@@ -49,7 +46,7 @@
 /* Components */
     /* Loading Screen */
     loading-screen#loadingScreen {
-        animation: fadeInOut1 1s ease-in 0s;
+        animation: fadeIn1 1s ease-in 0s;
         background-color: rgba(255, 255, 255, .9875);
         bottom: 0;
         display: block;
@@ -74,9 +71,15 @@
                 height: 50px;
                 width: 50px
             }
+                /* Loading Bar */
+                loading-screen#loadingScreen > [role=container] > loader-element > [role=spinner] {
+
+                }
+
                 /* Spinner */
                 loading-screen#loadingScreen > [role=container] > loader-element > [role=spinner] {
-                    border: 3px solid;
+                    border: 5px solid;
+                    border-top-color: #06F;
                     border-radius: 50%;
                     height: 100%;
                     width: 100%
