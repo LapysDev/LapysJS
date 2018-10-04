@@ -17,7 +17,14 @@
 
             - Most of it`s modules are encased within functions.
 
-            - The script is tested in Google Chrome first and made compatible with other browsers after.
+            - The script is tested in Google Chrome first and made compatible with the following browsers after:
+                -- Google Chrome
+                -- Internet Explorer
+                -- Microsoft Edge
+                -- Mozilla Firefox
+                -- Opera
+                -- Safari
+                -- Tor
 
             - The library initializes with the idea of all pre-scripted code before it executes
                 being vulnerable and subject to unknown changes by the developer,
@@ -5097,7 +5104,7 @@ window && (function Main(args) {
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetElementsByTagName = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'getElementsByTagName');
 
                         // Get Selection
-                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetSelection = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'getSelection');
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeGetSelection = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'getSelection') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlDocumentPrototype, 'getSelection');
 
                         // Query Command Enabled
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQueryCommandEnabled = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'queryCommandEnabled');
