@@ -45,11 +45,16 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
+            - Development tests in the following browsers:
+                -- Opera
+                -- Tor
+
             - Support for the following browsers:
                 -- Internet Explorer 9
                 -- Internet Explorer 8
                 -- Internet Explorer 7
-                -- Opera Browser
+                -- Safari
+                -- UC Browser
 
             - The following code should not be subject to editing by the developer before script execution:
                 -- `Object.create` method.
@@ -4591,7 +4596,7 @@ window && (function Main(args) {
                 // Date
                 date: window.Date,
                     // Prototype
-                    datePrototype: window.Date.prototype,
+                    datePrototype: (window.Date || {}).prototype,
 
                 // Descriptions
                 descriptions: {},
@@ -4907,6 +4912,9 @@ window && (function Main(args) {
                     // Get Milliseconds
                     LapysJSDevelopmentKit.objects.datePrototypeGetMilliseconds = LapysJSDevelopmentKit.objects.datePrototype.getMilliseconds;
 
+                    // Get Time
+                    LapysJSDevelopmentKit.objects.datePrototypeGetTime = LapysJSDevelopmentKit.objects.datePrototype.getTime;
+
                 // Descriptions
                     // Notification
                         // Permission
@@ -4962,7 +4970,7 @@ window && (function Main(args) {
                         // Prototype
                             // Document
                             LapysJSDevelopmentKit.objects.descriptions.windowDocument = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'document') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'document');
-                                ('get' in LapysJSDevelopmentKit.objects.descriptions.windowDocument) || (LapysJSDevelopmentKit.objects.descriptions.windowDocument.get = function document() { return LapysJSDevelopmentKit.objects.descriptions.windowDocument.value });
+                                ('get' in LapysJSDevelopmentKit.objects.descriptions.windowDocument) || (LapysJSDevelopmentKit.objects.descriptions.windowDocument.get = function document() { return window.document });
 
                             // Navigator
                             LapysJSDevelopmentKit.objects.descriptions.windowNavigator = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'navigator') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'navigator');
@@ -4971,7 +4979,7 @@ window && (function Main(args) {
                             LapysJSDevelopmentKit.objects.descriptions.windowName = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'name') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'name');
 
                             // Performance
-                            LapysJSDevelopmentKit.objects.descriptions.windowPerformance = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'performance') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'performance');
+                            LapysJSDevelopmentKit.objects.descriptions.windowPerformance = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'performance') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'performance') || {get: function() { return window.performance}};
 
                 /* Document > Prototype
                         --- NOTE ---
@@ -5064,7 +5072,7 @@ window && (function Main(args) {
                 // Descriptions
                     // Document > Prototype
                         // All
-                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeAll = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'all') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlDocumentPrototype, 'all');
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeAll = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'all') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlDocumentPrototype, 'all') || {get: function() { return window.document.all }};
 
                         // Create Document Fragment
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateDocumentFragment = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'createDocumentFragment');
@@ -5076,7 +5084,7 @@ window && (function Main(args) {
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeCreateRange = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'createRange');
 
                         // Document Element
-                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeDocumentElement = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'documentElement');
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeDocumentElement = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'documentElement') || {get: function() { return window.document.documentElement }};
 
                         // Execute Command
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeExecCommand = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'execCommand');
@@ -5100,7 +5108,7 @@ window && (function Main(args) {
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeQuerySelectorAll = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'querySelectorAll');
 
                         // Ready State
-                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeReadyState = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'readyState');
+                        LapysJSDevelopmentKit.objects.descriptions.documentPrototypeReadyState = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'readyState') || {get: function() { return document.readyState }};
 
                         // Title
                         LapysJSDevelopmentKit.objects.descriptions.documentPrototypeTitle = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.documentPrototype, 'title');
@@ -5151,7 +5159,7 @@ window && (function Main(args) {
 
                     // HTML Script Element > Prototype
                         // Source
-                        LapysJSDevelopmentKit.objects.descriptions.htmlScriptElementPrototypeSrc = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlScriptElementPrototype, 'src');
+                        LapysJSDevelopmentKit.objects.descriptions.htmlScriptElementPrototypeSrc = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlScriptElementPrototype, 'src') || {get: function() { return this.src }};
 
                     // HTML Textarea Element > Prototype
                         // Value
@@ -7368,8 +7376,28 @@ window && (function Main(args) {
                 catch (error) { LDKF.throwError(LDKI.browserIncompatibilityErrorMessage + ": The 'navigator' object should not be altered or must be native to this development environment.") }
 
                 // {`performance`}
-                try { if (typeof performance != 'object' || LDKF.string(window.performance) != '[object Performance]') throw 1 }
-                catch (error) { LDKF.throwError(LDKI.browserIncompatibilityErrorMessage + ": The 'performance' object should not be altered or must be native to this development environment.") }
+                try {
+                    if (typeof performance == 'undefined')
+                        /* Modification > Window > Performance
+                                --- NOTE ---
+                                    #Lapys: Create a dummy object for legacy browsers.
+                        */
+                        window.performance = new (function Performance() {
+                            // Initialization > Target
+                            var that = this;
+
+                            // Modification > Target
+                                // Now
+                                that.now = function now() { return LDKO.date ? LDKO.datePrototypeGetTime.call(new LDKO.date) : new window.Date().getTime() };
+
+                            // Return
+                            return that
+                        })();
+
+                    else if (typeof performance != 'object' || LDKF.string(window.performance) != '[object Performance]')
+                        // Error
+                        throw 1
+                } catch (error) { LDKF.throwError(LDKI.browserIncompatibilityErrorMessage + ": The 'performance' object should not be altered or must be native to this development environment.") }
 
                 // {`screen`}
                 try { if (typeof screen != 'object' || LDKF.string(window.screen) != '[object Screen]') throw 1 }
@@ -7574,7 +7602,7 @@ window && (function Main(args) {
                             // Prototype
                             LDKO.performancePrototype = LDKO.performance.prototype;
                                 // Now
-                                LDKO.performancePrototypeNow = LDKO.performancePrototype.now;
+                                LDKO.performancePrototypeNow = LDKO.performancePrototype.now || performance.now;
 
                     // Functions
                         /* All Nodes
@@ -21295,6 +21323,9 @@ window && (function Main(args) {
                             };
 
                             /* Write
+                                    --- CHECKPOINT ---
+                                        #Lapys: The way the `innerHTML` property is updated needs attention.
+
                                     --- UPDATE REQUIRED ---
                                         #Lapys: Not much to fine-tune but if the function`s features & variables could be made more legible...
 
