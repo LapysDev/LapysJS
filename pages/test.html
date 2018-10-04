@@ -5,9 +5,6 @@
         <!-- Character Encoding Set -->
         <meta charset=utf-8>
 
-        <!-- Viewport -->
-        <meta content='height=device-height, initial-scale=1.0, maximum-scale=2.0, minimal-ui, minimum-scale=0.1, user-scalable=yes, width=device-width' name=viewport target-densitydpi=96>
-
     <!-- Stylesheets -->
         <!-- LapysJS Stylesheet -->
         <link href=../src/lapys.css media=all rel=stylesheet type=text/css>
@@ -15,7 +12,10 @@
         <!-- Document Stylesheet -->
         <style media=all type=text/css>
             /* DOM Elements > <body> */
-            body { transition: 1s ease-in-out 0s }
+            body {
+                transition: 1s ease-in-out 0s;
+                transition-property: background-color, color
+            }
 
             body,
             body[theme=classic], body[theme=light] {

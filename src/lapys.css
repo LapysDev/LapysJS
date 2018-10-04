@@ -1040,11 +1040,10 @@
         .jumbotron {
             background-color: rgba(0, 0, 0, .1);
             background-size: 100%;
-            font-size: 3.5rem;
-            height: 42.5vh;
+            font-size: 125%;
             justify-content: space-around;
             margin: 0;
-            min-height: 50%
+            min-height: 42.5vh
         }
 
         .carousel > [role~=button-container] > button,
@@ -1056,8 +1055,8 @@
                     and (max-width: 320px)
                     and (min-width: 0px) {
                         .jumbotron {
-                            height: 32.6923vh;
-                            font-size: 1rem
+                            font-size: 110%;
+                            min-height: 32.6923vh
                         }
                     }
 
@@ -1066,8 +1065,8 @@
                     and (max-width: 375px)
                     and (min-width: 321px) {
                         .jumbotron {
-                            height: 38.2227vh;
-                            font-size: 1.66665rem
+                            font-size: 112.5%;
+                            min-height: 38.2227vh
                         }
                     }
 
@@ -1076,8 +1075,8 @@
                     and (max-width: 425px)
                     and (min-width: 376px) {
                         .jumbotron {
-                            height: 43.7532vh;
-                            font-size: 2.33333rem
+                            font-size: 115%;
+                            min-height: 43.7532vh
                         }
                     }
 
@@ -1086,8 +1085,8 @@
                     and (max-width: 768px)
                     and (min-width: 426px) {
                         .jumbotron {
-                            height: 49.2836vh;
-                            font-size: 2.99996rem
+                            font-size: 117.5%;
+                            min-height: 49.2836vh
                         }
                     }
 
@@ -1096,8 +1095,8 @@
                     and (max-width: 1024px)
                     and (min-width: 769px) {
                         .jumbotron {
-                            height: 54.8141vh;
-                            font-size: 3.66666rem
+                            font-size: 120%;
+                            min-height: 54.8141vh
                         }
                     }
 
@@ -1106,8 +1105,8 @@
                     and (max-width: 1440px)
                     and (min-width: 1025px) {
                         .jumbotron {
-                            height: 60.3445vh;
-                            font-size: 4.33333rem
+                            font-size: 122.5%;
+                            min-height: 60.3445vh
                         }
                     }
 
@@ -1116,13 +1115,12 @@
                     and (max-width: 2560px)
                     and (min-width: 1441px) {
                         .jumbotron {
-                            height: 65.875vh;
-                            font-size: 5rem
+                            font-size: 125%;
+                            min-height: 65.875vh
                         }
                     }
 
             /* All */
-            .jumbotron > * { font-size: 75% }
                 /* States */
                     /* First Child */
                     .jumbotron > :first-child {
@@ -1139,7 +1137,7 @@
                 /* Header */
                 .jumbotron > [role~=header],
                 .jumbotron > hgroup > h1 {
-                    font-size: 125%;
+                    font-size: 250%;
                     font-weight: 500;
                     margin-bottom: 0;
                     padding-bottom: 0
@@ -1148,7 +1146,7 @@
                 /* Sub Header */
                 .jumbotron > [role~=subheader],
                 .jumbotron > hgroup > h2 {
-                    font-size: 90%;
+                    font-size: 225%;
                     font-weight: 300;
                     margin-top: 0;
                     padding-top: 0
@@ -1162,6 +1160,18 @@
             }
                 /* All */
                 .jumbotron > hgroup + * { font-weight: 400 }
+
+                /* <h3> */
+                .jumbotron > hgroup > h3 { font-size: 200% }
+
+                /* <h4> */
+                .jumbotron > hgroup > h4 { font-size: 175% }
+
+                /* <h5> */
+                .jumbotron > hgroup > h5 { font-size: 150% }
+
+                /* <h6> */
+                .jumbotron > hgroup > h6 { font-size: 125% }
 
         /* Tooltip */
         .tooltip-card {

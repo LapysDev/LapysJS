@@ -11,6 +11,15 @@ window && (function Main(args) {
     */
     if (typeof LapysJS == 'object') {
         /* Global Data */
+            /* False
+                    --- NOTE ---
+                        #Lapys: I like my constants capitalized...
+            */
+            def('FALSE', {value: false});
+
+            // True
+            def('TRUE', {value: true});
+
             // Body
             def('BODY', {value: document.body});
 
@@ -33,7 +42,7 @@ window && (function Main(args) {
                     // Return
                     return loaderElement
                 }
-            })(), !0);
+            })());
 
             // Loading Screen
             def('LoadingScreen', (function() {
@@ -48,7 +57,7 @@ window && (function Main(args) {
                     // Return
                     return loadingScreen
                 }
-            })(), !0);
+            })());
 
         /* Modification */
             /* Application
@@ -61,11 +70,17 @@ window && (function Main(args) {
                 */
                 app.color = '#06F';
 
+                /* Dynamic Styling
+                        --- NOTE ---
+                            #Lapys: Allow for CSS calculations to be done in JavaScript via certain CSS selectors.
+                */
+                app.dynamicStyling = TRUE;
+
                 /* Dynamic Title
                         --- NOTE ---
                             #Lapys: The document title is predicted from the current URL address.
                 */
-                app.dynamicTitle = !0;
+                app.dynamicTitle = TRUE;
 
                 // Height
                 app.height = 'device-height';
@@ -74,7 +89,7 @@ window && (function Main(args) {
                         --- NOTE ---
                             #Lapys: Should the loading screen be injected into the current document?
                 */
-                app.loadingScreen = !0;
+                app.loadingScreen = FALSE;
 
                 // Name
                 app.name = 'LapysJS';
@@ -91,10 +106,10 @@ window && (function Main(args) {
                 // Services
                     // Apple
                         // Mobile Web App Capable
-                        app.services.apple.mobileWebAppCapable = true;
+                        app.services.apple.mobileWebAppCapable = TRUE;
 
                         // Touch Fullscreen
-                        app.services.apple.touchFullscreen = true;
+                        app.services.apple.touchFullscreen = TRUE;
 
                 // Viewport
                     // Initial Scale
@@ -104,7 +119,7 @@ window && (function Main(args) {
                     app.viewport.maximumScale = 2;
 
                     // Minimal UI
-                    app.viewport.minimalUI = true;
+                    app.viewport.minimalUI = TRUE;
 
                     // Minimum Scale
                     app.viewport.minimumScale = .1;
@@ -113,7 +128,10 @@ window && (function Main(args) {
                     app.viewport.targetDensityDPI = 96;
 
                     // User Scalable
-                    app.viewport.userScalable = true;
+                    app.viewport.userScalable = TRUE;
+
+                // Watch for Dynamic Styles
+                app.watchForDynamicStyles = FALSE;
 
         /* Function */
             // Inject Loading Screen
@@ -144,23 +162,89 @@ window && (function Main(args) {
 
                             // Content
                             "<p role=content> Building the page </p>" +
-                        "</div>";
+                        "</div>" +
 
-                // Style > Loading Screen > Opacity
-                LOADING_SCREEN.setCSS('opacity', 0);
+                        /* Document Style
+                                --- NOTE ---
+                                    #Lapys: This coerces a smooth transition back to the current document after the loader is done.
+                        */
+                        "<style> body > * { opacity: 0 } </style>";
 
                 // Insertion
                 BODY.insertChild(LOADING_SCREEN);
 
                 // On DOM Ready > Remove Loading Screen
-                false && onDOMReady(function removeLoadingScreen() {
+                onDOMReady(function removeLoadingScreen() {
+                    // Initialization > Loading Screen : Animation Length
+                    var LOADING_SCREEN_ANIMATION_LENGTH = LOADING_SCREEN.getAnimationLength();
+
                     // Timeout > Pause Removal
                     timeout(function pauseRemoval() {
                         // Style > Loading Screen > Animation
-                        LOADING_SCREEN.setCSS('animation', LOADING_SCREEN.getCSS('animation').replace(LOADING_SCREEN.getCSS('animation-name'), 'fadeOut'))
-                    }, LOADING_SCREEN.getTransitionLength())
+                        LOADING_SCREEN.setCSS('animation', LOADING_SCREEN.getCSS('animation').replace(LOADING_SCREEN.getCSS('animation-name'), 'fadeOut'));
+
+                        // Timeout
+                        timeout(function() {
+                            // Deletion
+                            LOADING_SCREEN.remove()
+                        }, LOADING_SCREEN_ANIMATION_LENGTH)
+                    }, LOADING_SCREEN_ANIMATION_LENGTH)
                 })
-            })()
+            })();
+
+            // On DOM Ready
+            onDOMReady(function() {
+                // On DOM Element Added
+                    // Style DOM Elements
+                    function styleDOMElements() {
+                        // Initialization > Fixed Groups
+                        var fixedGroups = $$('.fixed-group, .fixed-grp', 'list');
+
+                        // Repeat
+                            // Fixed Groups
+                            repeat(fixedGroups, function(key, value) {
+                                // Initialization > Fixed Group (Children) (Length)
+                                var fixedGroup = value,
+                                    fixedGroupChildren = fixedGroup.children,
+                                    fixedGroupChildrenLength = fixedGroupChildren.length;
+
+                                // Repeat > Fixed Group Children
+                                repeat(fixedGroupChildren, function(key, value) {
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (!isNaN(+key)) {
+                                        // Initialization > Fixed Group Child
+                                        var fixedGroupChild = value;
+
+                                        // (Modification > Fixed Group Child > Class) | (Style > Fixed Group Child)
+                                        fixedGroupChildrenLength < 13 ?
+                                            fixedGroupChild.addClass('grid-' + fixedGroupChildrenLength) :
+                                            fixedGroupChild.setCSS({
+                                                // Flex
+                                                flex: {
+                                                    // Basis
+                                                    basis: 100 / fixedGroupChildrenLength
+                                                },
+
+                                                // Height
+                                                height: 100 / fixedGroupChildrenLength,
+
+                                                // Minimum Height
+                                                minHeight: 100 / fixedGroupChildrenLength,
+
+                                                // Minimum Width
+                                                minWidth: 100 / fixedGroupChildrenLength,
+
+                                                // Width
+                                                width: 100 / fixedGroupChildrenLength
+                                            }, '%')
+                                    }
+                                })
+                            })
+                    }; styleDOMElements();
+                    app.dynamicStyling && onDOMElementAdded(styleDOMElements)
+            })
     }
 
     else {

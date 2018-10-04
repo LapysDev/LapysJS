@@ -257,6 +257,12 @@ window && (function Main(args) {
                     return stream
                 },
 
+                // Ceiling
+                ceil: function ceil(number) {
+                    // Return
+                    return LDKF.int(number) + 1
+                },
+
                 /* Character Code At String
                         --- NOTE ---
                             #Lapys:
@@ -2986,6 +2992,56 @@ window && (function Main(args) {
                 // Object
                 object: ({}).constructor,
 
+                /* Parse Asynchronous Frames (In Seconds)
+                        --- NOTE ---
+                            #Lapys:
+                                - Execute a callback for each approximated second for the total number of seconds specified.
+                                - The method is relatively accurate when compared to JavaScript`s `setTieout` function.
+                */
+                parseAsynchronousFramesInSeconds: function parseAsynchronousFramesInSeconds(callback, length) {
+                    // Initialization > (Animation Frame Interval (In Seconds), Interval, Request, Seconds, End Callback)
+                    var animationFrameIntervalInSeconds = LDKR.animationFrameIntervalInSeconds,
+                        interval = 0, request, seconds = 0,
+                        endCallback = (function() {});
+
+                    // Update > Length
+                    length += animationFrameIntervalInSeconds;
+
+                    // Function > Request Frame
+                    (function requestFrame() {
+                        /* Logic
+                                [if statement]
+                        */
+                        if (seconds < length) {
+                            /* Callback
+                                    --- NOTE ---
+                                        #Lapys: Fudge the numbers a bit (because the Seconds variable is barely ever an integer).
+                            */
+                            seconds | 0 > interval ?
+                                callback(interval += 1) :
+                                callback(seconds);
+
+                            // Update > (Seconds, Request)
+                            seconds += animationFrameIntervalInSeconds;
+                            request = LDKF.requestAnimationFrame(requestFrame)
+                        }
+
+                        else {
+                            // End Callback
+                            endCallback(length);
+
+                            // Cancel Animation Frame > Request
+                            LDKF.cancelAnimationFrame(request)
+                        }
+                    })();
+
+                    /* Return
+                            --- NOTE ---
+                                #Lapys: Because promises are cool...
+                    */
+                    return {then: function then(callback) { endCallback = callback }}
+                },
+
                 /* Power
                         --- NOTE ---
                             #Lapys: Returns the exponent of a number.
@@ -4691,6 +4747,9 @@ window && (function Main(args) {
                         #Lapys: Container for miscellaneous but useful data.
             */
             random: {
+                // Animation Frame Interval (In Seconds)
+                animationFrameIntervalInSeconds: 1 / 60,
+
                 /* Call Stack Size
                         --- NOTE ---
                             #Lapys: Keep track of functions that could potentially be overloaded.
@@ -4871,7 +4930,7 @@ window && (function Main(args) {
                         LapysJSDevelopmentKit.objects.descriptions.windowFocus = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'focus');
 
                         // Get Computed Style
-                        LapysJSDevelopmentKit.objects.descriptions.windowGetComputedStyle = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'getComputedStyle') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LDKO.windowPrototype, 'getComputedStyle');
+                        LapysJSDevelopmentKit.objects.descriptions.windowGetComputedStyle = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'getComputedStyle') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'getComputedStyle');
 
                         // Open
                         LapysJSDevelopmentKit.objects.descriptions.windowOpen = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'open');
@@ -4971,6 +5030,17 @@ window && (function Main(args) {
                 LapysJSDevelopmentKit.objects.htmlDocument = LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(window).constructor;
                     // Prototype
                     LapysJSDevelopmentKit.objects.htmlDocumentPrototype = LapysJSDevelopmentKit.objects.htmlDocument.prototype;
+                        // Add Event Listener
+                        LapysJSDevelopmentKit.objects.htmlDocumentPrototypeAddEventListener = LapysJSDevelopmentKit.objects.htmlDocumentPrototype.addEventListener;
+
+                        // Attach Event
+                        LapysJSDevelopmentKit.objects.htmlDocumentPrototypeAttachEvent = LapysJSDevelopmentKit.objects.htmlDocumentPrototype.attachEvent;
+
+                        // Detach Event
+                        LapysJSDevelopmentKit.objects.htmlDocumentPrototypeDetachEvent = LapysJSDevelopmentKit.objects.htmlDocumentPrototype.detachEvent;
+
+                        // Remove Event Listener
+                        LapysJSDevelopmentKit.objects.htmlDocumentPrototypeRemoveEventListener = LapysJSDevelopmentKit.objects.htmlDocumentPrototype.removeEventListener;
 
                 // Descriptions
                     // Document > Prototype
@@ -5444,6 +5514,13 @@ window && (function Main(args) {
                         return LapysJSDevelopmentKit.objects.descriptions.documentPrototypeWrite.value.apply(arguments[0], LDKF.rendArray(arguments, 1))
                     };
 
+                // Document Fragment > Prototype
+                    // Query Selector All
+                    LapysJSDevelopmentKit.functions.documentFragmentPrototypeQuerySelectorAll = function documentFragmentPrototypeQuerySelectorAll() {
+                        // Return
+                        return LapysJSDevelopmentKit.objects.documentFragmentPrototypeQuerySelectorAll.apply(arguments[0], LapysJSDevelopmentKit.functions.rendArray(arguments, 1))
+                    };
+
                 // Element > Prototype
                     // Get Attribute
                     LapysJSDevelopmentKit.functions.elementPrototypeGetAttribute = function elementPrototypeGetAttribute() {
@@ -5612,6 +5689,8 @@ window && (function Main(args) {
                 })();
                     // Prototype
                     LapysJSDevelopmentKit.objects.documentFragmentPrototype = LapysJSDevelopmentKit.objects.documentFragment.prototype;
+                        // Query Selector All
+                        LapysJSDevelopmentKit.objects.documentFragmentPrototypeQuerySelectorAll = LapysJSDevelopmentKit.objects.documentFragmentPrototype.querySelectorAll;
 
                 // DOM Exception
                 LapysJSDevelopmentKit.objects.domException = (function domException() {
@@ -6010,6 +6089,9 @@ window && (function Main(args) {
                         /* Download
                                 --- NOTE ---
                                     #Lapys: Load a newly created file object onto the local machine.
+
+                                --- UPDATE REQUIRED ---
+                                    #Lapys: Should be functional in legacy browsers.
                         */
                         LapysJSDevelopmentKit.functions.objectDefineProperty(fileManager, 'download', {
                             // Configurable
@@ -6939,28 +7021,54 @@ window && (function Main(args) {
                     // Value
                     value: new (function LapysJS() {
                         // Initialization > (Target, Prototype)
-                        let that = this,
-                            proto;
+                        let that = this, proto;
 
                         // Modification
                             // Target
                                 // (Constructor > Prototype)
                                 LDKF.objectDefineProperty(that, '__proto__', {value: proto = new (function LapysJS() {})});
 
+                                // Ready
+                                LDKF.objectDefineProperty(that, 'ready', {
+                                    // Configurable
+                                    configurable: !1,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Value
+                                    value: !1,
+
+                                    // Writable
+                                    writable: !0
+                                });
+
                                 // Temporary Data
-                                LDKF.objectDefineProperty(that, 'tmp', {value: {
-                                    // Function Arrays
-                                    functionArrays: [],
+                                LDKF.objectDefineProperty(that, 'tmp', {
+                                    // Configurable
+                                    configurable: !1,
 
-                                    // Native Methods
-                                    nativeMethods: [],
+                                    // Enumerable
+                                    enumerable: !1,
 
-                                    // Private Methods
-                                    privateMethods: {
-                                        // String
-                                        string: LDKF.string
-                                    }
-                                }});
+                                    // Value
+                                    value: {
+                                        // Function Arrays
+                                        functionArrays: [],
+
+                                        // Native Methods
+                                        nativeMethods: [],
+
+                                        // Private Methods
+                                        privateMethods: {
+                                            // String
+                                            string: LDKF.string
+                                        }
+                                    },
+
+                                    // Writable
+                                    writable: !1
+                                });
 
                             // Prototype
                                 // Constructor > Name
@@ -7081,10 +7189,52 @@ window && (function Main(args) {
                     writable: !0
                 });
 
+                /* LapysJS Node List
+                        --- NOTE ---
+                            #Lapys: Represents lists of nodes returned by various LapysJS features.
+                */
+                LDKF.objectDefineProperty(window, 'LapysJSNodeList', {
+                    // Configurable
+                    configurable: !0,
+
+                    // Enumerable
+                    enumerable: !1,
+
+                    // Value
+                    value: LDKO.lapysJSNodeList = (function() {
+                        // Initialization > Constructor
+                        var constructor = function LapysJSNodeList() {};
+
+                        // Return
+                        return function LapysJSNodeList() {
+                            // Initialization > Target
+                            var that = this;
+
+                            /* Logic
+                                    [if:else statement]
+                            */
+                            if (that === LapysJSDevelopmentKit) {
+                                // Initialization > Node List
+                                var nodeList = LDKF.customArray(constructor, arguments);
+
+                                // Return
+                                return nodeList
+                            }
+
+                            else
+                                // Error
+                                throw new LDKO.typeError('Illegal constructor')
+                        }
+                    })(),
+
+                    // Writable
+                    writable: !0
+                });
+
                 /* LapysJS Object
                         --- NOTE ---
                             #Lapys: Any value that is a LapysJS object lets the developer know
-                                the object is a substitute value for another value that could not be parsed.
+                                the object is a substitute value for another value that could not be parsed in JavaScript or otherwise.
                 */
                 LDKF.objectDefineProperty(window, 'LapysJSObject', {
                     // Configurable
@@ -7766,12 +7916,12 @@ window && (function Main(args) {
                             */
                             if (arguments.length) {
                                 // Error
-                                LDKF.isString(name) || LDKF.throwError('customObject', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'string'));
+                                LDKF.isFunction(name) || LDKF.isString(name) || LDKF.throwError('customObject', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], ['function', 'string']));
 
                                 /* Logic
                                         [if statement]
                                 */
-                                if (name)
+                                if (name && LDKF.isString(name))
                                     // Error
                                     try { LDKO.eval('(function ' + name + '() {})') }
                                     catch (error) { LDKF.throwError('customArray', 'argument', LDKF.debugMessage("'" + name + "'", ['must', 'a'], 'valid object name')) }
@@ -7782,7 +7932,7 @@ window && (function Main(args) {
                                 /* Logic
                                         [if statement]
                                 */
-                                if (LDKF.isArray(items) && items.length) {
+                                if (LDKF.isArrayObject(items) && items.length) {
                                     // Initialization > (Iterator, Length)
                                     var iterator = 0,
                                         length = items.length;
@@ -8133,21 +8283,31 @@ window && (function Main(args) {
                             */
                             if (arguments.length) {
                                 // Error
-                                LDKF.isString(name) || LDKF.throwError('customObject', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], 'string'));
+                                LDKF.isFunction(name) || LDKF.isString(name) || LDKF.throwError('customObject', 'argument', LDKF.debugMessage('First argument', ['must', 'a'], ['function', 'string']));
 
                                 /* Logic
                                         [if statement]
-
-                                    > Error Handling
                                 */
                                 if (name)
-                                    try {
-                                        // Update > Object
-                                        object = LDKO.eval('(function() { return new (function ' + name + '() {}) })()')
-                                    } catch (error) {
-                                        // Error
-                                        LDKF.throwError('customObject', 'argument', LDKF.debugMessage("'" + name + "'", ['must', 'a'], 'valid object name'))
-                                    }
+                                    /* Logic
+                                            [if:else if statement]
+
+                                        > Error Handling
+                                    */
+                                    if (LDKF.isFunction(name))
+                                        try {
+                                            // Update > Object
+                                            object = new name
+                                        } catch (error) {}
+
+                                    else if (LDKF.isString(name))
+                                        try {
+                                            // Update > Object
+                                            object = LDKO.eval('(function() { return new (function ' + name + '() {}) })()')
+                                        } catch (error) {
+                                            // Error
+                                            LDKF.throwError('customObject', 'argument', LDKF.debugMessage("'" + name + "'", ['must', 'a'], 'valid object name'))
+                                        }
 
                                 // Modification > Object > (Constructor > Prototype)
                                 (arguments.length > 2) && (object.__proto__ = LDKF.objectCreate(prototype));
@@ -8881,14 +9041,14 @@ window && (function Main(args) {
                                 // Length
                                 LDKF.get.htmlAllCollectionPrototypeLength = function htmlAllCollectionPrototypeLength() {
                                     // Return
-                                    return LDKO.descriptions.htmlAllCollectionPrototypeLength.get.call(arguments[0])
+                                    return (LDKO.descriptions.htmlAllCollectionPrototypeLength || {get: function() { return this.length }}).get.call(arguments[0])
                                 };
 
                             // HTML Collection > Prototype
                                 // Length
                                 LDKF.get.htmlCollectionPrototypeLength = function htmlCollectionPrototypeLength() {
                                     // Return
-                                    return LDKO.descriptions.htmlCollectionPrototypeLength.get.call(arguments[0])
+                                    return (LDKO.descriptions.htmlCollectionPrototypeLength || {get: function() { return this.length }}).get.call(arguments[0])
                                 };
 
                             // HTML Element > Prototype
@@ -9017,7 +9177,7 @@ window && (function Main(args) {
                                 // Length
                                 LDKF.get.nodeListPrototypeLength = function nodeListPrototypeLength() {
                                     // Return
-                                    return LDKO.descriptions.nodeListPrototypeLength.get.call(arguments[0])
+                                    return (LDKO.descriptions.nodeListPrototypeLength || {get: function() { return this.length }}).get.call(arguments[0])
                                 };
 
                                 // Parent Node
@@ -17005,8 +17165,8 @@ window && (function Main(args) {
 
                                                     // Event > Document > (DOM Content Loaded | On Ready State Change)
                                                     LDKO.delEvent === LDKO.windowPrototype.removeEventListener ?
-                                                        LDKO.windowPrototype.removeEventListener.call(document, 'DOMContentLoaded', invokeCallback) :
-                                                        LDKO.windowPrototype.detachEvent.call(document, 'onreadystatechange', invokeCallback)
+                                                        LDKO.htmlDocumentPrototypeRemoveEventListener.call(document, 'DOMContentLoaded', invokeCallback) :
+                                                        LDKO.htmlDocumentPrototypeDetachEvent.call(document, 'onreadystatechange', invokeCallback)
                                                 }
                                             }
 
@@ -17015,8 +17175,8 @@ window && (function Main(args) {
                                                     #Lapys: The most common method of detecting if all DOM content has been properly loaded.
                                         */
                                         LDKO.addEvent === LDKO.windowPrototype.addEventListener ?
-                                            LDKO.windowPrototype.addEventListener.call(LDKF.get.windowDocument(), 'DOMContentLoaded', invokeCallback) :
-                                            LDKO.windowPrototype.attachEvent.call(LDKF.get.windowDocument(), 'onreadystatechange', invokeCallback);
+                                            LDKO.htmlDocumentPrototypeAddEventListener.call(LDKF.get.windowDocument(), 'DOMContentLoaded', invokeCallback) :
+                                            LDKO.htmlDocumentPrototypeAttachEvent.call(LDKF.get.windowDocument(), 'onreadystatechange', invokeCallback);
 
                                         /* Function > Check Is Ready
                                                 --- NOTE ---
@@ -18732,7 +18892,7 @@ window && (function Main(args) {
                                                         --- NOTE ---
                                                             #Lapys: Index its numeric keys and other non-default properties.
                                                 */
-                                                if (LDKF.isArray(object) || LDKF.isString(object)) {
+                                                if (LDKF.isArrayLike(object) || LDKF.isArrayObject(object) || LDKF.isString(object)) {
                                                     // Initialization > Sequence
                                                     var sequence = [];
 
@@ -21115,6 +21275,388 @@ window && (function Main(args) {
                                     throw new LDKO.typeError('Illegal invocation')
                             };
 
+                            /* Write
+                                    --- UPDATE REQUIRED ---
+                                        #Lapys: Not much to fine-tune but if the function`s features & variables could be made more legible...
+
+                                    --- WARN ---
+                                        #Lapys:
+                                            - Built for text-based elements only.
+                                            - The text within the HTML element is considered as HTML content and not just raw text, so some of the text manipulations may seem
+                                                to function incorrectly, when otherwise that is not the case.
+                            */
+                            LDKO.htmlElementPrototype.write = LDKF.htmlElementPrototypeWrite = (function() {
+                                /* Initialization > Write (Stream)
+                                        --- NOTE ---
+                                            #Lapys:
+                                                - `WriteStream` objects are made for chaining multiple `write` methods e.g.: `<HTMLElement>.write(...).with(...)`
+                                                - `WriteInstructions` are object that specify how data in a stream is manipulated toward an element`s text content.
+                                                - Are there any other prominent Write Methods other than 'clear' and 'type'?
+                                */
+                                var write = function write() {
+                                    // Initialization > Element
+                                    var element = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isHTMLElement(element)) {
+                                        // Initialization > (Length, Watch List, Write (Methods, Modes, Stream))
+                                        var length = arguments.length,
+                                            watchList = hidden.watchList.writtenElements,
+                                            writeMethods = {
+                                                /* Quick Text Clear
+                                                        --- NOTE ---
+                                                            #Lapys: Clear the current text content of the element.
+                                                */
+                                                quickTextClear: function quickTextClear() {
+                                                    // Modification
+                                                        // Element > Inner HTML
+                                                        LDKF.set.elementPrototypeInnerHTML(element, '');
+
+                                                        // Write Stream > Write Instruction Executed
+                                                        LDKF.objectDefineProperty(writeStream, 'writeInstructionExecuted', {value: !0})
+                                                },
+
+                                                /* Quick Text Insert
+                                                        --- NOTE ---
+                                                            #Lapys: Append text-like data onto the element.
+                                                */
+                                                quickTextInsert: function quickTextInsert(data) {
+                                                    // Update > Data
+                                                    data = LDKF.string(data);
+
+                                                    // Modification
+                                                        // Element > Inner HTML
+                                                        LDKF.isInArray(watchList, element) ?
+                                                            LDKF.set.elementPrototypeInnerHTML(element, LDKF.get.elementPrototypeInnerHTML(element) + LDKF.string(data)) :
+                                                            LDKF.set.elementPrototypeInnerHTML(element, LDKF.string(data));
+
+                                                        // Write Stream > Write Instruction Executed
+                                                        LDKF.objectDefineProperty(writeStream, 'writeInstructionExecuted', {value: !0})
+                                                },
+
+                                                // Text Clear
+                                                textClear: function textClear(duration) {
+                                                    // Initialization > Stream
+                                                    var stream = LDKF.get.elementPrototypeInnerHTML(element);
+
+                                                    // Update > Duration
+                                                    duration /= 1e3;
+
+                                                    // Initialization > (Animation Frame Interval (In Seconds), (Initial) Clear Interval, Is Below Frame Interval, Stream Rend Length)
+                                                    var animationFrameIntervalInSeconds = LDKR.animationFrameIntervalInSeconds,
+                                                        clearInterval = duration / stream.length,
+                                                        initialClearInterval = clearInterval,
+                                                        isBelowFrameInterval = clearInterval < animationFrameIntervalInSeconds,
+                                                        streamRendLength = isBelowFrameInterval ? (function() {
+                                                            // Initialization > Iterator
+                                                            var iterator = 1;
+
+                                                            // Loop > Update > Iterator
+                                                            while ((clearInterval * ((100 + iterator) / 100)) < animationFrameIntervalInSeconds)
+                                                                iterator += 1;
+
+                                                            // Return
+                                                            return LDKF.ceil((100 + iterator) / 100)
+                                                        })() : 1;
+
+                                                    // Function > Rend Stream
+                                                    function rendStream() {
+                                                        // Modification > Element > Inner HTML
+                                                        LDKF.set.elementPrototypeInnerHTML(element, stream = LDKF.rendString(stream, -streamRendLength))
+                                                    }
+
+                                                    /* (LapysJS Development Kit > Functions) > Parse Asynchronous Frames (In Seconds)
+                                                            --- NOTE ---
+                                                                #Lapys: The calculations are precise enough to work with only
+                                                                    the Rend Stream function but for guaranteed consistency in clearing
+                                                                    the text stream, we use the Quick Text Clear method at the end of
+                                                                    the clearing animation.
+                                                    */
+                                                    LDKF.parseAsynchronousFramesInSeconds(function(seconds) {
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (seconds > clearInterval) {
+                                                            // Rend Stream
+                                                            rendStream();
+
+                                                            // Update > Clear Interval
+                                                            clearInterval += initialClearInterval
+                                                        }
+                                                    }, duration).then(function() {
+                                                        // Write Methods > Quick Text Clear
+                                                        writeMethods.quickTextClear();
+
+                                                        // Modification > Write Stream > Write Instruction Executed
+                                                        LDKF.objectDefineProperty(writeStream, 'writeInstructionExecuted', {value: !0})
+                                                    })
+                                                },
+
+                                                // Text Insert
+                                                textInsert: function textInsert(formerData, data, duration) {
+                                                    // Initialization > Current (Stream) Iterator
+                                                    var currentStream = '',
+                                                        stream = LDKF.string(data),
+                                                        streamIterator = 0;
+
+                                                    // Update > (Duration, Former Data)
+                                                    duration /= 1e3;
+                                                    formerData = LDKF.string(formerData);
+
+                                                    // Initialization > (Animation Frame Interval (In Seconds), (Initial) Insert Interval, Is Below Frame Interval, Stream Lend Length)
+                                                    var animationFrameIntervalInSeconds = LDKR.animationFrameIntervalInSeconds,
+                                                        insertInterval = duration / (formerData || data).length,
+                                                        initialInsertInterval = insertInterval,
+                                                        isBelowFrameInterval = insertInterval < animationFrameIntervalInSeconds,
+                                                        streamLendLength = isBelowFrameInterval ? (function() {
+                                                            // Initialization > Iterator
+                                                            var iterator = 1;
+
+                                                            // Loop > Update > Iterator
+                                                            while ((insertInterval * ((100 + iterator) / 100)) < animationFrameIntervalInSeconds)
+                                                                iterator += 1;
+
+                                                            // Return
+                                                            return debug(LDKF.ceil((100 + iterator) / 100))
+                                                        })() : 1;
+
+                                                    // Function > Lend Stream
+                                                    function lendStream() {
+                                                        // Initialization > Iterator
+                                                        var iterator = streamLendLength;
+
+                                                        /* Loop
+                                                                [while statement]
+                                                        */
+                                                        while (iterator && stream[streamIterator]) {
+                                                            // Modification > Element > Inner HTML
+                                                            LDKF.set.elementPrototypeInnerHTML(element, formerData + (currentStream += stream[streamIterator]));
+
+                                                            // Update > Stream (Iterator)
+                                                            iterator -= 1;
+                                                            streamIterator += 1
+                                                        }
+                                                    }
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (!LDKF.isInArray(watchList, element)) {
+                                                        // Modification > Element > Inner HTML
+                                                        LDKF.set.elementPrototypeInnerHTML(element, '');
+
+                                                        // Update > Former Data
+                                                        formerData = ''
+                                                    }
+
+                                                    // (LapysJS Development Kit > Functions) > Parse Asynchronous Frames (In Seconds)
+                                                    LDKF.parseAsynchronousFramesInSeconds(function(seconds) {
+                                                        /* Logic
+                                                                [if statement]
+                                                        */
+                                                        if (seconds > insertInterval) {
+                                                            // Lend Stream
+                                                            lendStream();
+
+                                                            // Update > Insert Interval
+                                                            insertInterval += initialInsertInterval
+                                                        }
+                                                    }, duration).then(function() {
+                                                        // Lend Stream
+                                                        lendStream();
+
+                                                        // Modification > Write Stream > Write Instruction Executed
+                                                        LDKF.objectDefineProperty(writeStream, 'writeInstructionExecuted', {value: !0})
+                                                    })
+                                                }
+                                            }, writeModes = ['clear', 'type'],
+                                            writeStream = new WriteStream(element);
+
+                                        // Function
+                                            // Is Write Instruction Object
+                                            function isWriteInstructionObject(arg) {
+                                                // Return
+                                                return LDKF.isPureObject(arg) && 'mode' in arg && LDKF.isInArray(writeModes, arg.mode)
+                                            }
+
+                                            // Update Write Instruction Object
+                                            function updateWriteInstructionObject(instructionObject) {
+                                                // Update > Instruction Object
+                                                instructionObject = LDKF.object(instructionObject);
+
+                                                // Modification > Instruction Object > Duration
+                                                (
+                                                    !('duration' in instructionObject) ||
+                                                    !LDKF.isSafeNumber(instructionObject.duration)
+                                                ) && (instructionObject.duration = 0);
+
+                                                // Return
+                                                return instructionObject
+                                            }
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (length == 1)
+                                            /* Logic
+                                                    [if:else statement]
+                                            */
+                                            if (isWriteInstructionObject(arguments[0])) {
+                                                // Initialization > Instruction Object
+                                                var instructionObject = updateWriteInstructionObject(arguments[0]);
+
+                                                /* Logic
+                                                        [switch:case:default statement]
+                                                */
+                                                switch (instructionObject.mode) {
+                                                    // Clear
+                                                    case 'clear':
+                                                        // Write Methods > (Text Clear | Quick Text Clear)
+                                                        instructionObject.duration ? writeMethods.textClear(instructionObject.duration) : writeMethods.quickTextClear();
+
+                                                        // Break
+                                                        break;
+
+                                                    // [Default]
+                                                    default: LDKF.throwError(['write', 'HTMLElement'], 'argument', 'Write instruction requires stream content')
+                                                }
+                                            }
+
+                                            else
+                                                // Write Methods > Quick Text Insert
+                                                writeMethods.quickTextInsert(arguments[0]);
+
+                                        else {
+                                            // Initialization > (Instruction Object, Stream)
+                                            var instructionObject = updateWriteInstructionObject(arguments[1]),
+                                                stream = LDKF.string(arguments[0]);
+
+                                            // Error
+                                            isWriteInstructionObject(instructionObject) || LDKF.throwError(['write', 'HTMLElement'], 'argument', LDKF.debugMessage(instructionObject, ['must', 'a'], 'valid write instruction'));
+
+                                            /* Logic
+                                                    [switch:case statement]
+                                            */
+                                            switch (instructionObject.mode) {
+                                                // Clear
+                                                case 'clear':
+                                                    // Write Methods > (Text Clear | Quick Text Clear)
+                                                    instructionObject.duration ? writeMethods.textClear(instructionObject.duration) : writeMethods.quickTextClear();
+
+                                                    // Break
+                                                    break;
+
+                                                // Type
+                                                case 'type':
+                                                    // Write Methods > (Text Insert | Quick Text Insert)
+                                                    instructionObject.duration ? writeMethods.textInsert(LDKF.get.elementPrototypeInnerHTML(element), stream, instructionObject.duration) : writeMethods.quickTextInsert()
+                                            }
+                                        }
+
+                                        // Update > Watch List
+                                        watchList[watchList.length] = element;
+
+                                        // Return
+                                        return writeStream
+                                    }
+
+                                    else
+                                        // Error
+                                        throw new LDKO.typeError('Illegal invocation')
+                                }, WriteStream = (function(streamTarget) {
+                                    // Initialization > Write Stream
+                                    var writeStream = new (function WriteStream() {});
+
+                                    // Modification > Write Stream
+                                        // Set Target
+                                        LDKF.objectDefineProperty(writeStream, 'setStreamTarget', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Value
+                                            value: function streamTarget(target) {
+                                                // Update > Stream Target
+                                                LDKF.isHTMLElement(target) && (streamTarget = target)
+                                            }
+                                        });
+
+                                        // Target
+                                        LDKF.objectDefineProperty(writeStream, 'target', {
+                                            // Configurable
+                                            configurable: !1,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function target() {
+                                                // Return
+                                                return streamTarget
+                                            }
+                                        });
+
+                                        // With
+                                        LDKF.objectDefineProperty(writeStream, 'with', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Value
+                                            value: function With() {
+                                                // Initialization > (Arguments, Request)
+                                                var args = arguments,
+                                                    request;
+
+                                                // Function > Request Write
+                                                (function requestWrite() {
+                                                    /* Logic
+                                                            [if:else statement]
+                                                    */
+                                                    if (writeStream.writeInstructionExecuted) {
+                                                        // Write
+                                                        write.apply(writeStream.target, args);
+
+                                                        // Cancel Animation Frame
+                                                        LDKF.cancelAnimationFrame(request)
+                                                    }
+
+                                                    else
+                                                        // Update > Request
+                                                        request = LDKF.requestAnimationFrame(requestWrite)
+                                                })()
+
+                                                // Return
+                                                return writeStream
+                                            },
+
+                                            // Writable
+                                            writable: !0
+                                        });
+
+                                        // Write Instruction Executed
+                                        LDKF.objectDefineProperty(writeStream, 'writeInstructionExecuted', {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Value
+                                            value: !1,
+
+                                            // Writable
+                                            writable: !1
+                                        });
+
+                                    // Return
+                                    return writeStream
+                                });
+
+                                // Return
+                                return write
+                            })();
+
                         /* Node > Prototype */
                             // Insert Child
                             LDKO.nodePrototype.insertChild = function insertChild(node, index) {
@@ -21148,6 +21690,31 @@ window && (function Main(args) {
 
                                     // Return
                                     return parent
+                                }
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
+
+                            /* Remove
+                                    --- NOTE ---
+                                        #Lapys: Unified method for removing nodes from the current document.
+                                            Built mainly for legacy browsers.
+                            */
+                            LDKO.nodePrototype.remove = function remove() {
+                                // Initialization > Node
+                                var node = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isNode(node)) {
+                                    // Initialization > Parent
+                                    var parent = LDKF.get.nodeListPrototypeParentNode(node);
+
+                                    // Deletion
+                                    parent && LDKF.nodePrototypeRemoveChild(parent, node)
                                 }
 
                                 else
@@ -21254,6 +21821,141 @@ window && (function Main(args) {
                             });
 
                         /* [Parent Node] > Prototype */
+                        (function() {
+                            // Initialization > (Prototypes, Iterator)
+                            var prototypes = [LDKO.documentPrototype, LDKO.documentFragmentPrototype, LDKO.elementPrototype],
+                                iterator = prototypes.length;
+
+                            /* Loop
+                                    Index Prototypes.
+                            */
+                            while (iterator) {
+                                // Initialization > Prototype
+                                var prototype = prototypes[iterator -= 1];
+
+                                // Modification > Prototype
+                                    // $$
+                                    prototype.$$ = LDKO.window$$ = window.$$ = function $$(selector, modifier) {
+                                        // Initialization > Target
+                                        var that = this;
+
+                                        // Update > Modifier
+                                        modifier = LDKF.rendArray(arguments, 1);
+                                        selector = LDKF.string(selector);
+
+                                        // Initialization > Node (List)
+                                        var nodeList, list = [];
+
+                                        // Error Handling
+                                        try {
+                                            /* Logic
+                                                    [if:else if statement]
+
+                                                > Update > Node List
+                                            */
+                                            if (LDKF.isDocument(that) || LDKF.isWindow(that))
+                                                nodeList = LDKF.documentPrototypeQuerySelectorAll(LDKF.get.windowDocument(window), selector);
+
+                                            else if (LDKF.isDocumentFragment(that))
+                                                nodeList = LDKF.documentFragmentPrototypeQuerySelectorAll(that, selector);
+
+                                            else if (LDKF.isElement(that))
+                                                nodeList = LDKF.elementPrototypeQuerySelectorAll(that, selector)
+                                        } catch (error) {
+                                            // Error
+                                            (error.constructor === LDKO.domException) && LDKF.throwError('$$', 'argument', "Invalid selector argument: '" + selector + "'");
+                                            throw error
+                                        }
+
+                                        // Initialization
+                                            // Node List Length
+                                            var nodeListLength = LDKF.get.nodeListPrototypeLength(nodeList);
+
+                                            // Iterator, Length
+                                            var iterator = 0, length = modifier.length;
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (length) {
+                                            // Initialization > Update List
+                                            var updateList = !0;
+
+                                            /* Loop
+                                                    Index Modifier.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Item
+                                                var item = modifier[iterator];
+
+                                                /* Logic
+                                                        [if:else if:else statement]
+                                                */
+                                                if (LDKF.isSafeInteger(item))
+                                                    // Update > List
+                                                    list[list.length] = nodeList[item] || null;
+
+                                                else if (item == 'first')
+                                                    // Update > List
+                                                    list[list.length] = nodeList[0] || null;
+
+                                                else if (item == 'last')
+                                                    // Update > List
+                                                    list[list.length] = nodeList[nodeListLength - 1] || null;
+
+                                                else if (item == 'list') {
+                                                    // Initialization > Node List Iterator
+                                                    var nodeListIterator = 0;
+
+                                                    // Loop > Update > List
+                                                    for (nodeListIterator; nodeListIterator != nodeListLength; nodeListIterator += 1)
+                                                        list[list.length] = nodeList[nodeListIterator];
+
+                                                    // Update > Update List
+                                                    updateList = !1
+                                                }
+
+                                                else
+                                                    // Error
+                                                    LDKF.throwError('$$', 'argument', LDKF.debugMessage(item, ['must', 'a'], 'valid modifier'))
+                                            }
+
+                                            // Update > List
+                                            updateList && (length == 1) && (list = list[0])
+                                        }
+
+                                        else if (nodeListLength)
+                                            // Update > List
+                                            list = nodeListLength == 1 ? nodeList[0] : LDKF.cloneArray(nodeList);
+
+                                        else
+                                            // Update > List
+                                            list = null;
+
+                                        // Return
+                                        return LDKF.isArray(list) ? LDKO.lapysJSNodeList.apply(LDK, list) : list
+                                    }
+
+                                    // $a --- CHECKPOINT ---
+                                    // $1 --- CHECKPOINT ---
+                                    // $2 --- CHECKPOINT ---
+                                    // $3 --- CHECKPOINT ---
+                                    // $4 --- CHECKPOINT ---
+                                    // $5 --- CHECKPOINT ---
+                                    // $c --- CHECKPOINT ---
+                                    // $d --- CHECKPOINT ---
+                                    // $i --- CHECKPOINT ---
+                                    // $n --- CHECKPOINT ---
+                                    // $n1 --- CHECKPOINT ---
+                                    // $n2 --- CHECKPOINT ---
+                                    // $n3 --- CHECKPOINT ---
+                                    // $n4 --- CHECKPOINT ---
+                                    // $ns --- CHECKPOINT ---
+                                    // $ps --- CHECKPOINT ---
+                                    // $t --- CHECKPOINT ---
+                            }
+                        })();
+
                         /* String > Prototype */
                             // HTML
                             LDKF.objectDefineProperty(LDKO.stringPrototype, 'html', {
@@ -21537,7 +22239,7 @@ window && (function Main(args) {
                                 var state = !0;
 
                                 // Modification > LapysJS > Ready
-                                LDKF.objectDefineProperty(LapysJS, 'ready', {value: state});
+                                LapysJS.ready = state;
 
                                 // Return
                                 return state

@@ -28,7 +28,10 @@
     body { overflow-x: hidden }
 
     body,
-    body > * { z-index: 1 }
+    body > * {
+        transition: opacity .3s ease-in-out 0s;
+        z-index: 1
+    }
 
 /* Assets */
     /* Spinner */
