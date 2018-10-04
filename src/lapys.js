@@ -2349,8 +2349,12 @@ window && (function Main(args) {
                             #Lapys: Browser sniffing can still be vulnerable.
                 */
                 isMobileViewport: function isMobileViewport() {
+                    // Initialization > (Window Object, Orientation)
+                    var windowObject = arguments.length ? arguments[0] : window,
+                        orientation = windowObject.orientation;
+
                     // Return
-                    return window.orientation > -1 || LDKO.descriptions.regexPrototypeTest.value.call(/Android|BB|BlackBerry|IEMobile|iPad|iPhone|iPod|Kindle|Opera Mini|PlayBook|Silk|webOS|Windows Phone/i, LDKF.get.navigatorPrototypeUserAgent(LDKF.get.windowNavigator()))
+                    return (!orientation || orientation == 90 || orientation == 180) || LDKO.descriptions.regexPrototypeTest.value.call(/Android|BB|BlackBerry|IEMobile|iPad|iPhone|iPod|Kindle|Opera Mini|PlayBook|Silk|webOS|Windows Phone/i, LDKF.get.navigatorPrototypeUserAgent(LDKF.get.windowNavigator(windowObject)))
                 },
 
                 /* Is Not a Number
