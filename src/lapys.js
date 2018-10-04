@@ -45,6 +45,11 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
+            - Support for the following browsers:
+                -- Internet Explorer 9
+                -- Internet Explorer 8
+                -- Internet Explorer 7
+
             - The following code should not be subject to editing by the developer before script execution:
                 -- `Object.create` method.
                 -- `Object.defineProperty` method.
@@ -53,6 +58,13 @@
                 -- `Object.keys` method.
 */
 window && (function Main(args) {
+    /* Polyfill > (Constructor > Prototype)
+            --- NOTE ---
+                #Lapys: Try to polyfill the `__proto__` if the development environment does not implement it.
+    */
+    try { '__proto__'in{}||Object.defineProperty(Object.prototype,'__proto__',{configurable:!1,enumerable:!1,get:function(){try{return LDKO.objectGetPrototypeOf(this)}catch(b){}return Object.getPrototypeOf(this)},set:function(b){var c=this;try{try{return LDKO.objectSetPrototypeOf(c,b)}catch(e){}return Object.setPrototypeOf(c,b)}catch(e){for(var d in b)try{object[d]=b[d]}catch(f){}}return c}}) }
+    catch (error) {}
+
     /* Global Data */
         // Author
         var AUTHOR = 'Lapys Dev Team',
@@ -2991,6 +3003,11 @@ window && (function Main(args) {
 
                 // Object
                 object: ({}).constructor,
+                    // Get Prototype Of
+                    objectGetPrototypeOf: ({}).constructor.getPrototypeOf,
+
+                    // Set Prototype Of
+                    objectSetPrototypeOf: ({}).constructor.setPrototypeOf,
 
                 /* Parse Asynchronous Frames (In Seconds)
                         --- NOTE ---
@@ -6809,7 +6826,7 @@ window && (function Main(args) {
                 */
                 LapysJSDevelopmentKit.functions.objectDefineProperty(LapysJSDevelopmentKit.random, 'maxTimeoutCounter', new (function Object() {
                     // Initialization > (Target, Counter)
-                    let that = this,
+                    var that = this,
                         counter = 0;
 
                     // Modification > Target
@@ -7021,7 +7038,7 @@ window && (function Main(args) {
                     // Value
                     value: new (function LapysJS() {
                         // Initialization > (Target, Prototype)
-                        let that = this, proto;
+                        var that = this, proto;
 
                         // Modification
                             // Target

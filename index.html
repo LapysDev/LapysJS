@@ -41,8 +41,8 @@
 
     <!-- Main -->
     <main>
-        <!-- Introduction -->
-        <section class='center flex jumbotron reverse' id=introduction>
+    <!-- Introduction -->
+        <jumbotron-element class='center flex jumbotron reverse' id=introduction>
             <!-- Header Container -->
             <hgroup role=header-container>
                 <!-- Header -->
@@ -53,32 +53,26 @@
             </hgroup>
 
             <!-- Introduction Navigation -->
-            <nav class='col-grp fixed-grp' role=introduction-navigation>
-                <!-- Documentation/ Learn
-                            --- CHECKPOINT ---
-                                #Lapys: Obviously this doesn't check for events like blurring & focusing the window, or touch events.
-                -->
-                <div class=col-1
-                    onmouseenter='this.write({duration: 250, mode: "clear"}).with(" Learn ", {duration: 250, mode: "type"})'
-                    onmouseleave='this.write({duration: 250, mode: "clear"}).with(" Documentation ", {duration: 250, mode: "type"})'
-                > Documentation </div>
+            <nav class='col-grp fixed-grp m-row-grp' role=introduction-navigation>
+                <!-- Documentation/ Learn -->
+                <div class='col-1 m-grid-1'> Documentation | Learn </div>
 
                 <!-- CSS -->
-                <div class=col-1> CSS </div>
+                <div class='col-1 m-grid-1'> CSS </div>
 
                 <!-- JavaScript -->
-                <div class=col-1> JavaScript </div>
+                <div class='col-1 m-grid-1'> JavaScript </div>
 
                 <!-- Projects -->
-                <div class=col-1> Projects </div>
+                <div class='col-1 m-grid-1'> Projects </div>
 
                 <!-- Themes -->
-                <div class=col-1> Themes </div>
+                <div class='col-1 m-grid-1'> Themes </div>
 
                 <!-- Story -->
-                <div class=col-1> Story </div>
+                <div class='col-1 m-grid-1'> Story </div>
             </nav>
-        </section>
+        </jumbotron-element>
 
         <!-- Introduction -->
         <section class=flat-section id=introduction>
