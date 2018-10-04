@@ -49,6 +49,7 @@
                 -- Internet Explorer 9
                 -- Internet Explorer 8
                 -- Internet Explorer 7
+                -- Opera Browser
 
             - The following code should not be subject to editing by the developer before script execution:
                 -- `Object.create` method.
@@ -4961,6 +4962,7 @@ window && (function Main(args) {
                         // Prototype
                             // Document
                             LapysJSDevelopmentKit.objects.descriptions.windowDocument = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'document') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'document');
+                                ('get' in LapysJSDevelopmentKit.objects.descriptions.windowDocument) || (LapysJSDevelopmentKit.objects.descriptions.windowDocument.get = function document() { return LapysJSDevelopmentKit.objects.descriptions.windowDocument.value });
 
                             // Navigator
                             LapysJSDevelopmentKit.objects.descriptions.windowNavigator = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'navigator') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'navigator');
