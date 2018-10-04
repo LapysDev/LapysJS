@@ -297,8 +297,11 @@
                 and (min-width: 1441px) { h6 { font-size: .75em } }
 
 /* Assets */
+    /* Interactive */
+    [role~=interactive] { cursor: pointer !important }
+
     /* Spinner */
-    [role=spinner] { animation: spin 1s ease-in-out 0s infinite }
+    [role~=spinner] { animation: spin 1s ease-in-out 0s infinite }
 
     /* Text Underline */
     .text-underline { text-decoration: underline }
@@ -328,17 +331,17 @@
         z-index: 16
     }
         /* Container */
-        loading-screen#loadingScreen > [role=container] {
+        loading-screen#loadingScreen > [role~=container] {
             height: 100%;
             width: 100%
         }
             /* Loader Element */
-            loading-screen#loadingScreen > [role=container] > loader-element {
+            loading-screen#loadingScreen > [role~=container] > loader-element {
                 height: 50px;
                 width: 50px
             }
                 /* Spinner */
-                loading-screen#loadingScreen > [role=container] > loader-element > [role=spinner] {
+                loading-screen#loadingScreen > [role~=container] > loader-element > [role~=spinner] {
                     border: 5px solid;
                     border-top-color: #06F;
                     border-radius: 50%;
@@ -347,4 +350,4 @@
                 }
 
             /* Content */
-            loading-screen#loadingScreen > [role=container] > [role=content] { font-style: italic }
+            loading-screen#loadingScreen > [role~=container] > [role~=content] { font-style: italic }

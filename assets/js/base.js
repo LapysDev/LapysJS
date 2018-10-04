@@ -194,6 +194,35 @@ window && (function Main(args) {
 
             // On DOM Ready
             onDOMReady(function() {
+                // Initialization > Dynamic Cursor Style Element
+                var DYNAMIC_CURSOR_STYLE_ELEMENT = 'style[media=all][type=text/css]'.html;
+
+                // Modification
+                    // Dynamic Cursor Style Element > Inner HTML
+                    DYNAMIC_CURSOR_STYLE_ELEMENT.innerHTML = '* { cursor: none }';
+
+                // Function
+                    // Restore Cursor
+                    function restoreCursor() {
+                        /* Logic
+                                [if statement]
+                        */
+                        if (DYNAMIC_CURSOR_STYLE_ELEMENT.innerHTML) {
+                            // Modification > Dynamic Cursor Style Element > Inner HTML
+                            DYNAMIC_CURSOR_STYLE_ELEMENT.innerHTML = '';
+
+                            // Timeout > Modification > Dynamic Cursor Style Element > Inner HTML
+                            timeout(function() { DYNAMIC_CURSOR_STYLE_ELEMENT.innerHTML = '* { cursor: none }' }, 2e3)
+                        }
+                    } restoreCursor();
+
+                // Event
+                    // Window > Mouse Move
+                    addEventListener('mousemove', restoreCursor);
+
+                // Insertion
+                HEAD.insertChild(DYNAMIC_CURSOR_STYLE_ELEMENT);
+
                 // On DOM Element Added
                     // Register Custom Elements
                     function registerCustomElements() {
@@ -230,50 +259,40 @@ window && (function Main(args) {
 
                         // Repeat
                             // Fixed Groups
-                            repeat(fixedGroups, function(key, value) {
-                                /* Logic
-                                        [if statement]
-                                */
-                                if (!isNaN(+key)) {
-                                    // Initialization > Fixed Group (Children) (Length)
-                                    var fixedGroup = value,
-                                        fixedGroupChildren = fixedGroup.children,
-                                        fixedGroupChildrenLength = fixedGroupChildren.length;
+                            repeat(array(fixedGroups), function(key, value) {
+                                // Initialization > Fixed Group (Children) (Length)
+                                var fixedGroup = value,
+                                    fixedGroupChildren = fixedGroup.children,
+                                    fixedGroupChildrenLength = fixedGroupChildren.length;
 
-                                    // Repeat > Fixed Group Children
-                                    repeat(fixedGroupChildren, function(key, value) {
-                                        /* Logic
-                                                [if statement]
-                                        */
-                                        if (!isNaN(+key)) {
-                                            // Initialization > Fixed Group Child
-                                            var fixedGroupChild = value;
+                                // Repeat > Fixed Group Children
+                                repeat(array(fixedGroupChildren), function(key, value) {
+                                    // Initialization > Fixed Group Child
+                                    var fixedGroupChild = value;
 
-                                            // (Modification > Fixed Group Child > Class) | (Style > Fixed Group Child)
-                                            fixedGroupChildrenLength < 13 ?
-                                                fixedGroupChild.addClass('grid-' + fixedGroupChildrenLength) :
-                                                fixedGroupChild.setCSS({
-                                                    // Flex
-                                                    flex: {
-                                                        // Basis
-                                                        basis: 100 / fixedGroupChildrenLength
-                                                    },
+                                    // (Modification > Fixed Group Child > Class) | (Style > Fixed Group Child)
+                                    fixedGroupChildrenLength < 13 ?
+                                        fixedGroupChild.addClass('grid-' + fixedGroupChildrenLength) :
+                                        fixedGroupChild.setCSS({
+                                            // Flex
+                                            flex: {
+                                                // Basis
+                                                basis: 100 / fixedGroupChildrenLength
+                                            },
 
-                                                    // Height
-                                                    height: 100 / fixedGroupChildrenLength,
+                                            // Height
+                                            height: 100 / fixedGroupChildrenLength,
 
-                                                    // Minimum Height
-                                                    minHeight: 100 / fixedGroupChildrenLength,
+                                            // Minimum Height
+                                            minHeight: 100 / fixedGroupChildrenLength,
 
-                                                    // Minimum Width
-                                                    minWidth: 100 / fixedGroupChildrenLength,
+                                            // Minimum Width
+                                            minWidth: 100 / fixedGroupChildrenLength,
 
-                                                    // Width
-                                                    width: 100 / fixedGroupChildrenLength
-                                                }, '%')
-                                        }
-                                    })
-                                }
+                                            // Width
+                                            width: 100 / fixedGroupChildrenLength
+                                        }, '%')
+                                })
                             })
                     }; styleDOMElements();
                     app.dynamicStyling && onDOMElementAdded(styleDOMElements)

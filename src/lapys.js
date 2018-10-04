@@ -21719,6 +21719,9 @@ window && (function Main(args) {
                             })();
 
                         /* Node > Prototype */
+                            // Add Event --- CHECKPOINT ---
+                            LDKO.nodePrototype.addEvent = function addEvent(type, listener, options) {};
+
                             // Insert Child
                             LDKO.nodePrototype.insertChild = function insertChild(node, index) {
                                 // Initialization > Parent

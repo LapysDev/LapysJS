@@ -41,36 +41,47 @@
 
     <!-- Main -->
     <main>
-    <!-- Introduction -->
-        <jumbotron-element class='center flex jumbotron reverse' id=introduction>
+        <!-- Landing -->
+        <jumbotron-element class='center flex jumbotron reverse' id=landing>
+            <!-- Reflection -->
+            <div role=reflection> </div>
+
             <!-- Header Container -->
-            <hgroup role=header-container>
+            <hgroup class='center col-1 flex min-grid-h-2 reverse' role=header-container>
                 <!-- Header -->
-                <h1 role=header> LapysJS </h1>
+                <h1 role=header script=h1.write(app.name)> </h1>
 
                 <!-- Sub Header -->
                 <h2 role=subheader> It&rsquo;s an idea, not a library </h2>
             </hgroup>
 
             <!-- Introduction Navigation -->
-            <nav class='col-grp fixed-grp m-row-grp' role=introduction-navigation>
+            <nav class='col-grp col-1 fixed-grp m-row-grp' role=introduction-navigation script="
+                repeat(array(nav.children), function(key, value) {
+                    value.onmouseleave = function focusOnly() { $$('jumbotron-element#landing').removeAttributeEntry('role', 'focus-only') }
+                    value.onmouseover = function focusOnly() { $$('jumbotron-element#landing').addAttributeEntry('role', 'focus-only') }
+                })
+            ">
                 <!-- Documentation/ Learn -->
-                <div class='col-1 m-grid-1'> Documentation | Learn </div>
+                <div class='col-1 m-grid-1'
+                    onmouseleave="this.write({duration: 250, mode: 'clear'}).with(' Documentation ', {duration: 250, mode: 'type'})"
+                    onmouseover="this.write({duration: 250, mode: 'clear'}).with(' Learn ', {duration: 250, mode: 'type'})"
+                    role='dynamic interactive'> Documentation </div>
 
                 <!-- CSS -->
-                <div class='col-1 m-grid-1'> CSS </div>
+                <div class='col-1 m-grid-1' role=interactive> CSS </div>
 
                 <!-- JavaScript -->
-                <div class='col-1 m-grid-1'> JavaScript </div>
+                <div class='col-1 m-grid-1' role=interactive> JavaScript </div>
 
                 <!-- Projects -->
-                <div class='col-1 m-grid-1'> Projects </div>
+                <div class='col-1 m-grid-1' role=interactive> Projects </div>
 
                 <!-- Themes -->
-                <div class='col-1 m-grid-1'> Themes </div>
+                <div class='col-1 m-grid-1' role=interactive> Themes </div>
 
                 <!-- Story -->
-                <div class='col-1 m-grid-1'> Story </div>
+                <div class='col-1 m-grid-1' role=interactive> Story </div>
             </nav>
         </jumbotron-element>
 

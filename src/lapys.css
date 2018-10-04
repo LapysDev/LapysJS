@@ -16289,7 +16289,7 @@
 
                         /* Mobile (Large) */
                         @media only all
-                            and (max-width: 420px)
+                            and (max-width: 425px)
                             and (min-width: 376px) {
                                 .m-col-group, .ml-col-group,
                                 .m-col-grp, .ml-col-grp,
@@ -16320,7 +16320,7 @@
                         /* Tablet */
                         @media only all
                             and (max-width: 768px)
-                            and (min-width: 421px) {
+                            and (min-width: 426px) {
                                 .t-col-group,
                                 .t-col-grp,
                                 .t-column-group, {
