@@ -4832,6 +4832,55 @@ window && (function Main(args) {
                     return debug
                 })(),
 
+                // Event Reference
+                eventReference: function EventReference(eventProperties) {
+                    // Initialization > Event Reference
+                    var eventReference = new (function EventReference() {});
+
+                    // ((LapysJS Development Kit > Functions) > Iterate Object) > Event Properties
+                    LDKF.iterateObject(eventProperties, function(key, value, description) {
+                        // Modification > Event Reference > [Key]
+                        LDKF.objectDefineProperty(eventReference, key, description)
+                    }, function(key, value, description, iteratorObject) {
+                        // Return
+                        return eventProperties === iteratorObject
+                    });
+
+                    // Return
+                    return eventReference
+                },
+
+                // Event Reference List
+                eventReferenceList: function EventReferenceList(eventReferences) {
+                    // Initialization > Event Reference List
+                    var eventReferenceList = new (function EventReferenceList() {});
+
+                    // Modification > Event Reference List
+                        // (Constructor > Prototype)
+                        eventReferenceList.__proto__ = LDKO.arrayPrototype;
+
+                        // Length
+                        eventReferenceList.length = 0;
+
+                    /* Logic
+                            [if statement]
+                    */
+                    if (arguments.length && eventReferences) {
+                        // Update > Event References
+                        eventReferences = LDKF.windowArray(eventReferences);
+
+                        // Initialization > (Iterator, Length)
+                        var iterator = 0, length = eventReferences.length;
+
+                        // Loop > Update > Event Reference List
+                        for (iterator; iterator != length; iterator += 1)
+                            LDKF.lendArray(eventReferenceList, eventReferences[iterator])
+                    }
+
+                    // Return
+                    return eventReferenceList
+                },
+
                 // Intervals
                 intervals: [],
 
@@ -22427,7 +22476,8 @@ window && (function Main(args) {
                                             [if:else statement]
                                     */
                                     if (arguments.length > 1) {
-                                        var eventReference
+                                        var eventReferenceList = new LDKR.eventReferenceList;
+
                                         // Update > (Listener, Options, Type)
                                         LDKF.isArray(listener) || LDKF.isFunction(listener) ?
                                             (listener = LDKF.isFunction(listener) ? [listener] : (function() {
@@ -22468,9 +22518,9 @@ window && (function Main(args) {
 
                                         while (iterator) {
                                             iterator -= 1;
-                                            hidden.eventReferenceList[hidden.eventReferenceList.length] = {
-                                                listener: listener[iterator], options: options[iterator], type: type[iterator]
-                                            }
+                                            var eventReference = {listener: listener[iterator], options: options[iterator], type: type[iterator]};
+                                            hidden.eventReferenceList[hidden.eventReferenceList.length] = eventReference;
+                                            LDKF.lendArray(eventReferenceList, new LDKR.eventReference(eventReference))
                                         }
 
                                         for (iterator; iterator != length; iterator += 1) {
@@ -22496,7 +22546,7 @@ window && (function Main(args) {
                                         }
 
                                         // Return
-                                        return eventReference
+                                        return eventReferenceList
                                     }
 
                                     else
