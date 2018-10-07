@@ -6,6 +6,9 @@
 
     --- CHECKPOINT ---
         #Lapys:
+            - `Array.prototype.repeat`
+            - `String.prototype.fill`
+            - `String.prototype.repeat`
             - `Function.prototype.invoke` combines `apply` and `call` to run a function and silently fail it if there are any errors.
             - `Object.prototype.recur` recursively searches for an object property and returns a resulting match.
 
@@ -4751,6 +4754,11 @@ window && (function Main(args) {
                 window: __proto__.constructor,
                     // Prototype
                     windowPrototype: __proto__,
+                        // Add Event Listener
+                        windowPrototypeAddEventListener: __proto__.addEventListener,
+
+                        // Remove Event Listener
+                        windowPrototypeRemoveEventListener: __proto__.removeEventListener,
 
                 // {Cross-Domain Request} X Domain Request
                 xDomainRequest: window.XDomainRequest,
@@ -17222,7 +17230,7 @@ window && (function Main(args) {
                                                     callback.call(document);
 
                                                     // Event > Document > (DOM Content Loaded | On Ready State Change)
-                                                    LDKO.delEvent === LDKO.windowPrototype.removeEventListener ?
+                                                    LDKO.delEvent === LDKO.windowPrototypeRemoveEventListener ?
                                                         LDKO.htmlDocumentPrototypeRemoveEventListener.call(document, 'DOMContentLoaded', invokeCallback) :
                                                         LDKO.htmlDocumentPrototypeDetachEvent.call(document, 'onreadystatechange', invokeCallback)
                                                 }
@@ -17232,7 +17240,7 @@ window && (function Main(args) {
                                                 --- NOTE ---
                                                     #Lapys: The most common method of detecting if all DOM content has been properly loaded.
                                         */
-                                        LDKO.addEvent === LDKO.windowPrototype.addEventListener ?
+                                        LDKO.addEvent === LDKO.windowPrototypeAddEventListener ?
                                             LDKO.htmlDocumentPrototypeAddEventListener.call(LDKF.get.windowDocument(), 'DOMContentLoaded', invokeCallback) :
                                             LDKO.htmlDocumentPrototypeAttachEvent.call(LDKF.get.windowDocument(), 'onreadystatechange', invokeCallback);
 
@@ -18634,7 +18642,7 @@ window && (function Main(args) {
                                 value: function randomInteger(range) {
                                     // Return
                                     return LDKF.isSafeNumber(range) ?
-                                        (LDKF.isPositiveNumber(range) ? LDKF.int(LDKO.mathRandomBetween(0, range)) : LDKF.int(LDKO.mathRandomBetween(range, 0))) :
+                                        (range ? (LDKF.isPositiveNumber(range) ? LDKF.int(LDKO.mathRandomBetween(0, range)) : LDKF.int(LDKO.mathRandomBetween(range, 0))) : 0) :
                                         LDKF.windowRand(range)
                                 },
 
@@ -20035,9 +20043,8 @@ window && (function Main(args) {
                                             [if:else statement]
                                     */
                                     if (LDKF.isArrayObject(array)) {
-                                        // Initialization > (Distinct, Iterator, Length)
-                                        var distinctArray = [],
-                                            iterator = 0, length = array.length;
+                                        // Initialization > Distinct Array
+                                        var distinctArray = [];
 
                                         // ((LapysJS Development Kit > Functions) > Iterate Object) > Array
                                         LDKF.iterateObject(array, function(key, value, description) {
@@ -20122,7 +20129,7 @@ window && (function Main(args) {
                                 // Get
                                 get: function first() {
                                     // Return
-                                    return LDKF.isArrayObject(this) ? this[0] : this
+                                    return LDKF.isArrayObject(this) ? this[0] : []
                                 }
                             });
 
@@ -20152,7 +20159,7 @@ window && (function Main(args) {
                                         /* Loop
                                                 [while statement]
                                         */
-                                        while (depth > -1 && LDKF.filterArray(array, function(item) { return LDKF.isArrayObject(item) }).length) {
+                                        while ((depth > -1 || depth === hidden) && LDKF.filterArray(array, function(item) { return LDKF.isArrayObject(item) }).length) {
                                             // Initialization > (Flattened Array, Iterator, Length)
                                             var flattendArray = [],
                                                 iterator = 0,
@@ -20260,14 +20267,309 @@ window && (function Main(args) {
                                 }
                             });
 
-                            // Get Common --- CHECKPOINT ---
-                            // Get Duplicated --- CHECKPOINT ---
-                            // Get Falsy --- CHECKPOINT ---
-                            // Get Repeated --- CHECKPOINT ---
-                            // Get Truthy --- CHECKPOINT ---
-                            // Get Unique --- CHECKPOINT ---
-                            // Has --- CHECKPOINT ---
-                            // Indistinct --- CHECKPOINT ---
+                            /* Get Common
+                                    --- NOTE ---
+                                        #Lapys: Get the most common elements in an array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'getCommon', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function getCommon() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Frequency Match, Iterator, Length, Matches)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            frequencyMatch = LDKF.max.apply(LDKF, LDKF.buildArray(LDKF.cloneArray(frequencies), function(item) { return item.frequency })),
+                                            iterator = 0,
+                                            length = frequencies.length,
+                                            matches = [];
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator];
+
+                                            // Update > Matches
+                                            (frequency.frequency == frequencyMatch) && (matches[matches.length] = frequency.item)
+                                        }
+
+                                        // Return
+                                        return matches
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Get Duplicated
+                                    --- NOTE ---
+                                        #Lapys: Get duplicated elements from an array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'getDuplicated', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function getDuplicated() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator, Length, Matches)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = 0,
+                                            length = frequencies.length,
+                                            matches = [];
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator];
+
+                                            // Update > Matches
+                                            (frequency.frequency == 1) || (matches[matches.length] = frequency.item)
+                                        }
+
+                                        // Return
+                                        return matches
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Get Falsy
+                                    --- NOTE ---
+                                        #Lapys: Get falsy elements from an array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'getFalsy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function getFalsy() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length, Matches)
+                                        var iterator = 0,
+                                            length = array.length,
+                                            matches = [];
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Item
+                                            var item = array[iterator];
+
+                                            // Update > Matches
+                                            item || LDKF.isInArray(matches, item) || (matches[matches.length] = item)
+                                        }
+
+                                        // Return
+                                        return matches
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Get Repeated
+                                    --- NOTE ---
+                                        #Lapys: Get repeated elements from an array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'getRepeated', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function getRepeated() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator, Length, Matches)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = 0,
+                                            length = frequencies.length,
+                                            matches = [];
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator];
+
+                                            // Update > Matches
+                                            (frequency.frequency == 1) || (matches[matches.length] = frequency.item)
+                                        }
+
+                                        // Return
+                                        return matches
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Get Truthy
+                                    --- NOTE ---
+                                        #Lapys: Get truthy elements from an array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'getTruthy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function getTruthy() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length, Matches)
+                                        var iterator = 0,
+                                            length = array.length,
+                                            matches = [];
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Item
+                                            var item = array[iterator];
+
+                                            // Update > Matches
+                                            item && (LDKF.isInArray(matches, item) || (matches[matches.length] = item))
+                                        }
+
+                                        // Return
+                                        return matches
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Get Unique
+                                    --- NOTE ---
+                                        #Lapys: Get the least common elements in an array.
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'getUnique', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function getUnique() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Frequency Match, Iterator, Length, Matches)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            frequencyMatch = LDKF.min.apply(LDKF, LDKF.buildArray(LDKF.cloneArray(frequencies), function(item) { return item.frequency })),
+                                            iterator = 0,
+                                            length = frequencies.length,
+                                            matches = [];
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator];
+
+                                            // Update > Matches
+                                            (frequency.frequency == frequencyMatch) && (matches[matches.length] = frequency.item)
+                                        }
+
+                                        // Return
+                                        return matches
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Has
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'has', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function has(item) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    // Logic > Return
+                                    if (LDKF.isArrayObject(array))
+                                        return arguments.length ? LDKF.isInArray(this, item) : !1;
+
+                                    // Return
+                                    return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
 
                             // Last
                             LDKF.objectDefineProperty(LDKO.arrayPrototype, 'last', {
@@ -20277,7 +20579,7 @@ window && (function Main(args) {
                                 // Get
                                 get: function last() {
                                     // Return
-                                    return LDKF.isArrayObject(this) ? this[this.length - 1] : this
+                                    return LDKF.isArrayObject(this) ? this[this.length - 1] : []
                                 }
                             });
 
@@ -20404,15 +20706,410 @@ window && (function Main(args) {
                                 }
                             });
 
-                            // Randomize --- CHECKPOINT ---
-                            // Remove --- CHECKPOINT ---
-                            // Remove All --- CHECKPOINT ---
-                            // Remove Falsies --- CHECKPOINT ---
-                            // Remove Falsy --- CHECKPOINT ---
-                            // Remove Falsy From Back --- CHECKPOINT ---
-                            // Remove Falsy From Front --- CHECKPOINT ---
-                            // Remove From Back --- CHECKPOINT ---
-                            // Remove From Front --- CHECKPOINT ---
+                            // Randomize
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'randomize', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function randomize() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length, Randomizer Set, Randomized Array)
+                                        var iterator = 0, length = array.length,
+                                            randomizerSet = LDKF.cloneArray(array),
+                                            randomizedArray = [];
+
+                                        // Function > Get Random Element
+                                        function getRandomElement() {
+                                            // Return
+                                            return randomizerSet[LDKF.int(randomizerSet.length * LDKF.random())]
+                                        }
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Random
+                                            var random = getRandomElement();
+
+                                            // Update > (Randomized Array, Randomizer Set)
+                                            randomizedArray[randomizedArray.length] = random;
+                                            LDKF.removeItemArray(randomizerSet, random)
+                                        }
+
+                                        // Update > (Array, Iterator)
+                                        LDKF.resetArray(array);
+                                        iterator = 0;
+
+                                        // Loop > Update > Array
+                                        for (iterator; iterator != length; iterator += 1)
+                                            array[iterator] = randomizedArray[iterator];
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'remove', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function remove() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = arguments.length;
+
+                                        // Loop > Update > Array
+                                        for (iterator; iterator != length; iterator += 1)
+                                            LDKF.removeItemArray(array, arguments[iterator]);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove All
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeAll', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeAll() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = arguments.length;
+
+                                        /* Loop
+                                                Index Arguments.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Argument
+                                            var argument = arguments[iterator];
+
+                                            // Loop > Update > Array
+                                            while (LDKF.isInArray(array, argument))
+                                                LDKF.removeItemArray(array, argument)
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Falsies
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFalsies', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeFalsies() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Argument
+                                            var item = array[iterator];
+
+                                            // Logic > Loop > Update > Array
+                                            if (!item)
+                                                while (LDKF.isInArray(array, item))
+                                                    LDKF.removeItemArray(array, item)
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Falsy
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFalsy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeFalsy() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Argument
+                                            var item = array[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (!item) {
+                                                // Update > Array
+                                                LDKF.removeItemArray(array, item);
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Falsy From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFalsyFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeFalsyFromBack() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Argument
+                                            var item = array[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (!item) {
+                                                // Update > Array
+                                                LDKF.removeItemArray(array, item);
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Falsy From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFalsyFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeFalsyFromFront() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = array.length;
+
+                                        // Update > Array
+                                        LDKF.reverseArray(array);
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Argument
+                                            var item = array[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (!item) {
+                                                // Update > Array
+                                                LDKF.removeItemArray(array, item);
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Update > Array
+                                        LDKF.reverseArray(array);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeFromBack() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = arguments.length;
+
+                                        // Loop > Update > Array
+                                        for (iterator; iterator != length; iterator += 1)
+                                            LDKF.removeItemArray(array, arguments[iterator]);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeFromFront() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = arguments.length;
+
+                                        // Update > Array
+                                        LDKF.reverseArray(array);
+
+                                        // Loop > Update > Array
+                                        for (iterator; iterator != length; iterator += 1)
+                                            LDKF.removeItemArray(array, arguments[iterator]);
+
+                                        // Update > Array
+                                        LDKF.reverseArray(array);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Remove Duplicated --- CHECKPOINT ---
                             // Remove Duplicated From Back --- CHECKPOINT ---
                             // Remove Duplicated From Front --- CHECKPOINT ---
@@ -21334,9 +22031,6 @@ window && (function Main(args) {
                             };
 
                             /* Write
-                                    --- CHECKPOINT ---
-                                        #Lapys: The way the `innerHTML` property is updated needs attention.
-
                                     --- UPDATE REQUIRED ---
                                         #Lapys: Not much to fine-tune but if the function`s features & variables could be made more legible...
 
@@ -21492,13 +22186,14 @@ window && (function Main(args) {
                                                                 [while statement]
                                                         */
                                                         while (iterator && stream[streamIterator]) {
-                                                            // Modification > Element > Inner HTML
-                                                            LDKF.set.elementPrototypeInnerHTML(element, formerData + (currentStream += stream[streamIterator]));
-
-                                                            // Update > Stream (Iterator)
+                                                            // Update > (Current Stream, Stream (Iterator))
+                                                            currentStream += stream[streamIterator];
                                                             iterator -= 1;
                                                             streamIterator += 1
                                                         }
+
+                                                        // Modification > Element > Inner HTML
+                                                        LDKF.set.elementPrototypeInnerHTML(element, formerData + currentStream)
                                                     }
 
                                                     /* Logic
@@ -21720,7 +22415,97 @@ window && (function Main(args) {
 
                         /* Node > Prototype */
                             // Add Event --- CHECKPOINT ---
-                            LDKO.nodePrototype.addEvent = function addEvent(type, listener, options) {};
+                            LDKO.nodePrototype.addEvent = window.addEvent = function addEvent(type, listener, options) {
+                                // Initialization > Node
+                                var node = this;
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (LDKF.isNode(node) || LDKF.isWindow(node))
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (arguments.length > 1) {
+                                        var eventReference
+                                        // Update > (Listener, Options, Type)
+                                        LDKF.isArray(listener) || LDKF.isFunction(listener) ?
+                                            (listener = LDKF.isFunction(listener) ? [listener] : (function() {
+                                                var iterator = listener.length;
+                                                while (iterator)
+                                                    LDKF.isFunction(listener[iterator -= 1]) || LDKF.throwError(['addEvent', 'Node'], 'argument', LDKF.debugMessage('Item in second argument', ['must', 'a'], 'event listener'));
+                                                return listener
+                                            })()) :
+                                            LDKF.throwError(['addEvent', 'Node'], 'argument', LDKF.debugMessage('Second argument', ['must', 'a'], 'event listener'));
+                                        options = arguments.length > 2 ?
+                                            (LDKF.isArray(options) ? LDKF.buildArray(LDKF.cloneArray(options), function(item) { return LDKF.isBoolean(item) ? {capture: !1, once: !1, passive: item} : LDKF.object(item) }) : {capture: !1, once: !1, passive: !!options}) :
+                                            [{capture: !1, once: !1, passive: !1}];
+                                        type = LDKF.isArray(type) ? LDKF.buildArray(LDKF.cloneArray(type), function(item) { return LDKF.string(item) }) : [LDKF.string(type)];
+
+                                        var listenerIterator = 0, listenerLength = listener.length,
+                                            optionsIterator = 0, optionsLength = options.length,
+                                            typeIterator = 0, typeLength = type.length,
+                                            length = LDKF.max(listenerLength, optionsLength, typeLength),
+                                            iterator = length;
+
+                                        while (listener.length < length) {
+                                            (listenerIterator > listenerLength) && (listenerIterator = 0);
+                                            listener[listener.length] = listener[listenerIterator];
+                                            listenerIterator += 1
+                                        }
+
+                                        while (options.length < length) {
+                                            (optionsIterator > optionsLength) && (optionsIterator = 0);
+                                            options[options.length] = options[optionsIterator];
+                                            optionsIterator += 1
+                                        }
+
+                                        while (type.length < length) {
+                                            (typeIterator > typeLength) && (typeIterator = 0);
+                                            type[type.length] = type[typeIterator];
+                                            typeIterator += 1
+                                        }
+
+                                        while (iterator) {
+                                            iterator -= 1;
+                                            hidden.eventReferenceList[hidden.eventReferenceList.length] = {
+                                                listener: listener[iterator], options: options[iterator], type: type[iterator]
+                                            }
+                                        }
+
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            var listenerItem = listener[iterator],
+                                                optionsItem = options[iterator],
+                                                typeItem = type[iterator];
+
+                                            /* Logic
+                                                    [if:else statement]
+
+                                                    --- NOTE ---
+                                                        #Lapys: Condition for a large set of JavaScript `EventTarget` objects for this event.
+
+                                                    > Event > Node > [Type Item]
+                                            */
+                                            if (LDKF.isHTMLDocument(node))
+                                                LDKO.addEvent === LDKO.windowPrototypeAddEventListener ?
+                                                    LDKO.htmlDocumentPrototypeAddEventListener.call(node, typeItem, listenerItem, optionsItem) :
+                                                    LDKO.htmlDocumentPrototypeAttachEvent.call(node, 'on' + typeItem, listenerItem, optionsItem);
+
+                                            else
+                                                LDKF.addEventToNode(node, typeItem, listenerItem, optionsItem)
+                                        }
+
+                                        // Return
+                                        return eventReference
+                                    }
+
+                                    else
+                                        LDKF.throwError(['addEvent', 'Node'], 'argument', [2, 0])
+
+                                else
+                                    // Error
+                                    throw new LDKO.typeError('Illegal invocation')
+                            };
 
                             // Insert Child
                             LDKO.nodePrototype.insertChild = function insertChild(node, index) {
