@@ -1295,24 +1295,102 @@ window && (function Main(args) {
                     return LDKO.getComputedStyle.call(window, element)
                 },
 
-                // Get Element Top Offset From Document
-                getElementTopOffsetFromDocument: function getElementTopOffsetFromDocument(element) {
-                    var parent, top = getOffset(element);
+                // Get Element Bottom Offset From Document
+                getElementBottomOffsetFromDocument: function getElementBottomOffsetFromDocument(element) {
+                    // Initialization > Computed Style
+                    var computedStyle = LDKF.windowGetComputedStyle(window, element);
 
+                    // Return
+                    return LDKF.getElementTopOffsetFromDocument(element) + LDKF.getElementHeight(element) +
+                        LDKF.number(LDKF.digitizeString(computedStyle.paddingBottom)) +
+                        LDKF.number(LDKF.digitizeString(computedStyle.paddingTop))
+                },
+
+                // Get Element Height
+                getElementHeight: function getElementHeight(element) {
+                    // Return
+                    return LDKF.elementPrototypeGetBoundingClientRect(element).height
+                },
+
+                // Get Element Left Offset From Document
+                getElementLeftOffsetFromDocument: function getElementLeftOffsetFromDocument(element) {
+                    // Initialization > (Parent, Left)
+                    var parent, left = getOffset(element);
+
+                    // Function > Get Offset
                     function getOffset(element) {
-                             return LDKF.elementPrototypeGetBoundingClientRect(element).top
+                        // Return
+                        return LDKF.elementPrototypeGetBoundingClientRect(element).left
                     }
 
+                    // Update > Parent
                     parent = LDKF.get.nodeListPrototypeParentNode(element);
 
+                    /* Loop
+                            [while statement]
+                    */
                     while (parent)
+                        /* Logic
+                                [if:else statement]
+                        */
                         if (LDKF.isElement(parent)) {
+                            // Update > (Left, Parent)
+                            left += getOffset(parent);
+                            parent = LDKF.get.nodeListPrototypeParentNode(parent)
+                        }
+
+                        else
+                            // Return
+                            return left
+                },
+
+                // Get Element Right Offset From Document
+                getElementRightOffsetFromDocument: function getElementRightOffsetFromDocument(element) {
+                    // Initialization > Computed Style
+                    var computedStyle = LDKF.windowGetComputedStyle(window, element);
+
+                    // Return
+                    return LDKF.getElementLeftOffsetFromDocument(element) + LDKF.getElementWidth(element) +
+                        LDKF.number(LDKF.digitizeString(computedStyle.paddingLeft)) +
+                        LDKF.number(LDKF.digitizeString(computedStyle.paddingRight))
+                },
+
+                // Get Element Top Offset From Document
+                getElementTopOffsetFromDocument: function getElementTopOffsetFromDocument(element) {
+                    // Initialization > (Parent, Top)
+                    var parent, top = getOffset(element);
+
+                    // Function > Get Offset
+                    function getOffset(element) {
+                        // Return
+                        return LDKF.elementPrototypeGetBoundingClientRect(element).top
+                    }
+
+                    // Update > Parent
+                    parent = LDKF.get.nodeListPrototypeParentNode(element);
+
+                    /* Loop
+                            [while statement]
+                    */
+                    while (parent)
+                        /* Logic
+                                [if:else statement]
+                        */
+                        if (LDKF.isElement(parent)) {
+                            // Update > (Top, Parent)
                             top += getOffset(parent);
                             parent = LDKF.get.nodeListPrototypeParentNode(parent)
                         }
 
                         else
+                            // Return
                             return top
+                },
+
+                // Get Element Width
+                getElementWidth: function getElementWidth(element) {
+                    // Return
+                    return LDKF.elementPrototypeGetBoundingClientRect(element).width
                 },
 
                 // Get Event Target
@@ -5337,6 +5415,12 @@ window && (function Main(args) {
                         // Get Computed Style
                         LapysJSDevelopmentKit.objects.descriptions.windowGetComputedStyle = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'getComputedStyle') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.windowPrototype, 'getComputedStyle');
 
+                        // Inner Height
+                        LapysJSDevelopmentKit.objects.descriptions.windowInnerHeight = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'innerHeight');
+
+                        // Inner Width
+                        LapysJSDevelopmentKit.objects.descriptions.windowInnerWidth = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'innerWidth');
+
                         // Open
                         LapysJSDevelopmentKit.objects.descriptions.windowOpen = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(window, 'open');
 
@@ -5659,6 +5743,18 @@ window && (function Main(args) {
                         LapysJSDevelopmentKit.functions.get.windowDocument = function windowDocument() {
                             // Return
                             return LapysJSDevelopmentKit.objects.descriptions.windowDocument.get.call(arguments.length ? arguments[0] : window)
+                        };
+
+                        // Inner Height
+                        LapysJSDevelopmentKit.functions.get.windowInnerHeight = function windowInnerHeight() {
+                            // Return
+                            return LapysJSDevelopmentKit.objects.descriptions.windowInnerHeight.get.call(arguments.length ? arguments[0] : window)
+                        };
+
+                        // Inner Width
+                        LapysJSDevelopmentKit.functions.get.windowInnerWidth = function windowInnerWidth() {
+                            // Return
+                            return LapysJSDevelopmentKit.objects.descriptions.windowInnerWidth.get.call(arguments.length ? arguments[0] : window)
                         };
 
                         // Name
@@ -7768,12 +7864,6 @@ window && (function Main(args) {
 
                         // Strictly Watched Elements
                         strictlyWatchedElements: [],
-
-                        // Titled Elements
-                        titledElements: [],
-
-                        // Tooltips
-                        tooltips: [],
 
                         // Written Elements
                         writtenElements: []
@@ -23840,7 +23930,10 @@ window && (function Main(args) {
                         /* Logic
                                 [if:else if statement]
                         */
-                            // {Tooltip}
+                            /* {Tooltip}
+                                    --- NOTE ---
+                                        #Lapys: Dynamic tooltip labels on DOM elements.
+                            */
                             if (LDKF.isInArray(LDKC, 'tooltip')) {
                                 // Register Element > <tooltip-element>
                                 LDKF.windowRegisterElement() && LDKF.windowRegisterElement('tooltip-element');
@@ -23869,27 +23962,69 @@ window && (function Main(args) {
                                     return tooltip
                                 }
 
-                                // On Ancestor Element Exists > Insert Tooltip Element --- CHECKPOINT ---
+                                // On Ancestor Element Exists > Insert Tooltip Element
                                 LDKF.onAncestorElementExists(LDKF.get.windowDocument(), function insertTooltipElement(ancestor) {
-                                    // Initialization > (Positions, Tooltip Element)
+                                    // Initialization > (Positions, Titled Element Tooltip Description, Titled Elements, Titles, Tooltip (Bonds, Element(s), Margin))
                                     var positions = ['bottom', 'center', 'left', 'right', 'top'],
-                                        tooltipElement = new Tooltip;
+                                        titledElementTooltipDescription = {
+                                            // Configurable
+                                            configurable: !0,
+
+                                            // Enumerable
+                                            enumerable: !1,
+
+                                            // Get
+                                            get: function tooltip() {
+                                                // Initialization > Element
+                                                var element = this;
+
+                                                /* Logic
+                                                        [if:else statement]
+                                                */
+                                                if (LDKF.isHTMLElement(element))
+                                                    // Return
+                                                    return getTooltipFromElement(element);
+
+                                                else
+                                                    // Error
+                                                    throw new LDKO.typeError('Illegal invocation')
+                                            }
+                                        }, titledElements = [],
+                                        titles = [],
+                                        tooltipBonds = [],
+                                        tooltipElement = new Tooltip,
+                                        tooltipElements = [],
+                                        tooltipMargin = 15;
 
                                     // Modification > Tooltip > ID
                                     LDKF.elementPrototypeSetAttribute(tooltipElement, 'id', 'tooltip');
 
                                     // Function
+                                        // Get Element Bottom
+                                        function getElementBottom(element) {
+                                            // Return
+                                            return LDKF.getElementBottomOffsetFromDocument(element)
+                                        }
+
                                         // Get Element Height
                                         function getElementHeight(element) {
                                             // Return
-                                            return LDKF.elementPrototypeGetBoundingClientRect(element).height
+                                            return LDKF.getElementHeight(element)
                                         }
 
+                                        // Get Element Left
                                         function getElementLeft(element) {
                                             // Return
                                             return LDKF.getElementLeftOffsetFromDocument(element)
                                         }
 
+                                        // Get Element Right
+                                        function getElementRight(element) {
+                                            // Return
+                                            return LDKF.getElementRightOffsetFromDocument(element)
+                                        }
+
+                                        // Get Element Top
                                         function getElementTop(element) {
                                             // Return
                                             return LDKF.getElementTopOffsetFromDocument(element)
@@ -23898,40 +24033,131 @@ window && (function Main(args) {
                                         // Get Element Width
                                         function getElementWidth(element) {
                                             // Return
-                                            return LDKF.elementPrototypeGetBoundingClientRect(element).width
+                                            return LDKF.getElementWidth(element)
                                         }
 
-                                        // Hide Tooltip
-                                        function hideTooltip(event) {
-                                            // Initialization > (Element, Watch List, Tooltips (Iterator))
-                                            var element = LDKF.getEventTarget(event),
-                                                watchList = hidden.watchList,
-                                                tooltips = watchList.tooltips,
-                                                tooltipsIterator = tooltips.length;
+                                        // Get Tooltip From Element
+                                        function getTooltipFromElement(element) {
+                                            // Initialization > Tooltip Bonds Iterator
+                                            var tooltipBondsIterator = tooltipBonds.length;
 
                                             /* Loop
-                                                    Index Tooltips.
+                                                    Index Tooltip Bonds.
                                             */
-                                            while (tooltipsIterator) {
+                                            while (tooltipBondsIterator) {
+                                                // Initialization > Tooltip Bond
+                                                var tooltipBond = tooltipBonds[tooltipBondsIterator -= 1];
+
+                                                // Logic > Return
+                                                if (tooltipBond.element === element)
+                                                    return tooltipBond.tooltip
+                                            }
+
+                                            // Return
+                                            return null
+                                        }
+
+                                        // Insert Tooltip
+                                        function insertTooltip(tooltip) {
+                                            // Insertion
+                                            LDKF.nodePrototypeAppendChild(ancestor, tooltip)
+                                        }
+
+                                        // Register Tooltip On Element
+                                        function registerTooltipOnElement(element) {
+                                            // Initialization > Tooltip
+                                            var tooltip = getTooltipFromElement(element);
+
+                                            // Logic > Return
+                                            if (tooltip) return tooltip;
+
+                                            // Update > Tooltip (Bonds)
+                                            tooltip = tooltipElements.length ? (function() {
                                                 // Initialization > Tooltip
-                                                var tooltip = tooltips[tooltipsIterator -= 1];
+                                                var tooltip = tooltipElements[tooltipElements.length] = new Tooltip;
+
+                                                // Insert Tooltip > Tooltip
+                                                insertTooltip(tooltip);
+
+                                                // Return
+                                                return tooltip
+                                            })() : tooltipElement;
+                                            tooltipBonds[tooltipBonds.length] = {element: element, tooltip: tooltip};
+
+                                            // Return
+                                            return tooltip
+                                        }
+
+                                        // Remove Tooltip From Element
+                                        function removeTooltipFromElement(event) {
+                                            // Initialization > (Element (Tooltip Description), Titles Iterator, Tooltip Bonds Iterator)
+                                            var element = LDKF.getEventTarget(event),
+                                                elementTooltipDescription = LDKF.objectGetOwnPropertyDescriptor(element, 'tooltip'),
+                                                titlesIterator = titles.length,
+                                                tooltipBondsIterator = tooltipBonds.length;
+
+                                            // Deletion
+                                            (
+                                                elementTooltipDescription.configurable == titledElementTooltipDescription.configurable &&
+                                                elementTooltipDescription.enumerable == titledElementTooltipDescription.enumerable &&
+                                                elementTooltipDescription.get == titledElementTooltipDescription.get &&
+                                                elementTooltipDescription.set == titledElementTooltipDescription.set &&
+                                                elementTooltipDescription.value == titledElementTooltipDescription.value &&
+                                                elementTooltipDescription.writable == titledElementTooltipDescription.writable
+                                            ) && (delete element.tooltip);
+
+                                            /* Loop
+                                                    Index Titles.
+                                            */
+                                            while (titlesIterator) {
+                                                // Initialization > Title
+                                                var title = titles[titlesIterator -= 1];
 
                                                 /* Logic
                                                         [if statement]
                                                 */
-                                                if (element === tooltip.boundTo) {
+                                                if (title.element === element) {
+                                                    // Modification > Element > Title
+                                                    LDKF.elementPrototypeSetAttribute(element, 'title', title.title);
+
+                                                    // Update > Titles
+                                                    LDKF.removeItemArray(titles, title);
+
+                                                    // Break
+                                                    break
+                                                }
+                                            }
+
+                                            /* Loop
+                                                    Index Tooltip Bonds.
+                                            */
+                                            while (tooltipBondsIterator) {
+                                                // Initialization > Tooltip Bond
+                                                var tooltipBond = tooltipBonds[tooltipBondsIterator -= 1];
+
+                                                // Logic > Return
+                                                if (tooltipBond.element === element) {
+                                                    // Initialization > Tooltip (Transition Length)
+                                                    var tooltip = tooltipBond.tooltip,
+                                                        tooltipTransitionLength = LDKO.htmlElementPrototypeGetTransitionLength.call(tooltip);
+
                                                     // Modification > Tooltip > (Class, State, Style)
                                                     LDKF.elementPrototypeRemoveAttribute(tooltip, 'class');
-                                                    LDKF.elementPrototypeRemoveAttribute(tooltip, 'state', 'hidden');
+                                                    LDKF.elementPrototypeSetAttribute(tooltip, 'state', 'hidden');
                                                     LDKF.elementPrototypeRemoveAttribute(tooltip, 'style');
 
                                                     // Set Timeout
                                                     LDKF.setTimeout(function() {
-                                                        // (Modification > Tooltip Element > Inner HTML) | Deletion
+                                                        // (Modification > Tooltip > Inner HTML) | Deletion
                                                         tooltip === tooltipElement ?
-                                                            LDKF.set.elementPrototypeInnerHTML(tooltipElement, '') :
-                                                            LDKF.nodePrototypeRemoveChild(ancestor, tooltip)
-                                                    }, LDKO.htmlElementPrototypeGetTransitionLength.call(tooltip));
+                                                            LDKF.set.elementPrototypeInnerHTML(tooltip, '') :
+                                                            LDKF.nodePrototypeRemoveChild(LDKF.get.nodeListPrototypeParentNode(tooltip) || ancestor, tooltip)
+                                                    }, tooltipTransitionLength);
+
+                                                    // Update > (Titled Elements, Tooltip (Bonds, Elements))
+                                                    LDKF.removeItemArray(titledElements, element, 1);
+                                                    LDKF.removeItemArray(tooltipBonds, tooltipBond, 1);
+                                                    LDKF.removeItemArray(tooltipElements, tooltip, 1);
 
                                                     // Break
                                                     break
@@ -23939,127 +24165,153 @@ window && (function Main(args) {
                                             }
 
                                             // Deletion
-                                            LDKF.removeEventFromNode(element, hideTooltip)
+                                            LDKF.removeEventFromNode(element, 'mouseleave', removeTooltipFromElement)
+                                        }
+
+                                        // Remove Tooltips From Document
+                                        function removeTooltipsFromDocument(document) {
+                                            // Update > Document
+                                            (!arguments.length && !LDKF.isHTMLDocument(document)) && (document = LDKF.get.windowDocument());
+
+                                            // Initialization > (Titles Iterator, Tooltip Bonds Iterator)
+                                            var titlesIterator = titles.length,
+                                                tooltipBondsIterator = tooltipBonds.length;
+
+                                            /* Loop
+                                                    Index Titles.
+                                            */
+                                            while (titlesIterator) {
+                                                // Initialization > Title
+                                                var title = titles[titlesIterator -= 1];
+
+                                                // Modification > (Title > Element) > Title
+                                                LDKF.elementPrototypeSetAttribute(title.element, 'title', title.title)
+                                            }
+
+                                            /* Loop
+                                                    Index Tooltip Bonds.
+                                            */
+                                            while (tooltipBondsIterator) {
+                                                // Initialization > (Tooltip Bond, Element)
+                                                var tooltipBond = tooltipBonds[tooltipBondsIterator -= 1],
+                                                    element = tooltipBond.element;
+
+                                                // Deletion
+                                                delete element.tooltip
+                                            }
+
+                                            // Update > (Titles, Titled Elements, Tooltip (Bonds, Elements))
+                                            titles = [];
+                                            titledElements = [];
+                                            tooltipBonds = [];
+                                            tooltipElements = []
                                         }
 
                                         // Show Tooltip
-                                        function showTooltip(tooltip, coordinates, properties) {
-                                            // Initialization > (Watch List, Titled Elements, Tooltips)
-                                            var watchList = hidden.watchList,
-                                                titledElements = watchList.titledElements,
-                                                tooltips = watchList.tooltips;
-
-                                            // Initialization > (Left, Top, Class List (Iterator), Element, Inner HTML, Style)
-                                            var left = coordinates.left, top = coordinates.top,
-                                                classList = LDKF.joinStringToArray(properties['class'], ' '),
-                                                classListIterator = classList.length,
+                                        function showTooltip(tooltip, position, properties) {
+                                            // Initialization > (Class List, Element, Inner HTML, Positions, Left, Top)
+                                            var classList = properties['class'],
                                                 element = properties.element,
                                                 innerHTML = properties.innerHTML,
-                                                position = LDKF.filterArray(LDKF.joinStringToArray(properties.position, ' '), function(item) {
+                                                positions = LDKF.filterArray(LDKF.joinStringToArray(properties.positions, ' '), function(item) {
                                                     // Return
-                                                    return item == 'bottom' || item == 'center' || item == 'left' || item == 'right' || item == 'top'
-                                                }), style = properties.style;
+                                                    return LDKF.isSafeNumber(LDKF.number(item)) || item == 'bottom' || item == 'center' || item == 'left' || item == 'right' || item == 'top'
+                                                }), left = position.left, top = position.top;
 
-                                            // Update > (Position, Top)
-                                            position.length = 2;
-                                            top -= getElementHeight(tooltip) * 1.5;
+                                            // Update > (Positions, Top)
+                                            positions.length = 2;
+                                            top -= getElementHeight(tooltip) - tooltipMargin;
 
                                             /* Logic
-                                                    [if:else if statement]
+                                                    [if statement]
                                             */
-                                            if (LDKF.isInArray(position, 'bottom')) {
-                                                // Update > Top
-                                                top = getElementHeight(element) + getElementTop(element);
+                                            if (!LDKF.isInArray(titledElements, element)) {
+                                                // Event > Element > Mouse Leave
+                                                LDKF.addEventToNode(element, 'mouseleave', removeTooltipFromElement);
 
-                                                /* Logic
-                                                        [if:else if statement]
-                                                */
-                                                if (LDKF.isInArray(position, 'left')) {}
-                                                else if (LDKF.isInArray(position, 'right')) {}
+                                                // Modification
+                                                    // Element > Tooltip
+                                                    LDKF.objectDefineProperty(element, 'tooltip', titledElementTooltipDescription);
+
+                                                    // Tooltip > State
+                                                    LDKF.elementPrototypeSetAttribute(tooltip, 'state', 'visible');
+
+                                                // Update > (Titled, Tooltip) Elements
+                                                titledElements[titledElements.length] = element;
+                                                tooltipElements[tooltipElements.length] = tooltip
                                             }
 
-                                            else if (LDKF.isInArray(position, 'center')) {
-                                                /* Logic
-                                                        [if:else if statement]
-                                                */
-                                                if (LDKF.isInArray(position, 'bottom')) {}
-                                                else if (LDKF.isInArray(position, 'left')) {}
-                                                else if (LDKF.isInArray(position, 'right')) {}
-                                                else if (LDKF.isInArray(position, 'top')) {}
+                                            /* {Center} Logic
+                                                    [if statement]
+                                            */
+                                            if (LDKF.isInArray(positions, 'center')) {
+                                                // Update > (Left, Top)
+                                                left = getElementRight(element) - ((LDKF.min(LDKF.get.windowInnerWidth(), getElementWidth(element)) - getElementWidth(tooltip)) / 2);
+                                                top = getElementBottom(element) - ((LDKF.min(LDKF.get.windowInnerHeight(), getElementHeight(element)) - getElementHeight(tooltip)) / 2)
                                             }
 
-                                            else if (LDKF.isInArray(position, 'top')) {
-                                                /* Logic
-                                                        [if:else if statement]
-                                                */
-                                                if (LDKF.isInArray(position, 'left')) {}
-                                                else if (LDKF.isInArray(position, 'right')) {}
-                                            }
+                                            // Update > (Left, Top, Titles)
+                                            LDKF.isInArray(positions, 'bottom') && (top = getElementBottom(element) + tooltipMargin);
+                                            LDKF.isInArray(positions, 'left') && (left = getElementLeft(element) - getElementWidth(tooltip) - tooltipMargin);
+                                            LDKF.isInArray(positions, 'right') && (left = getElementRight(element) + tooltipMargin);
+                                            LDKF.isInArray(positions, 'top') && (top = getElementTop(element) - getElementHeight(tooltip) - tooltipMargin);
+                                            LDKF.isSafeNumber(LDKF.number(positions[0])) && (left = positions[0]);
+                                            LDKF.isSafeNumber(LDKF.number(positions[1])) && (top = positions[1]);
+                                            LDKF.elementPrototypeHasAttribute(element, 'title') && (titles[titles.length] = {element: element, title: LDKF.elementPrototypeGetAttribute(element, 'title') || ''});
 
-                                            // Event > Element > Mouse Leave
-                                            LDKF.addEventToNode(element, 'mouseleave', hideTooltip);
+                                            // Modification
+                                                // Element > Title
+                                                LDKF.elementPrototypeRemoveAttribute(element, 'title');
 
-                                            // Modification > Tooltip
-                                                // Bound To
-                                                tooltip.boundTo = element;
+                                                // Tooltip
+                                                    // Class
+                                                    LDKF.elementPrototypeSetAttribute(tooltip, 'class', classList);
 
-                                                // Class > Loop
-                                                while (classListIterator) LDKF.addClassToElement(tooltip, LDKF.trimString(classList[classListIterator -= 1]));
+                                                    // Inner HTML
+                                                    LDKF.set.elementPrototypeInnerHTML(tooltip, innerHTML);
 
-                                                // Inner HTML
-                                                LDKF.set.elementPrototypeInnerHTML(tooltip, innerHTML);
-
-                                                // State
-                                                LDKF.elementPrototypeSetAttribute(tooltip, 'state', 'visible');
-
-                                                // Style
-                                                LDKF.elementPrototypeSetAttribute(tooltip, 'style', 'left: ' + left + 'px !important; top: ' + top + 'px !important;' + style);
-
-                                            // Update > (Titled Elements, Tooltips)
-                                            titledElements[titledElements.length] = element;
-                                            LDKF.isInArray(tooltips, tooltip) || (tooltips[tooltips.length] = tooltip)
+                                                    // Style
+                                                    LDKF.elementPrototypeSetAttribute(tooltip, 'style', 'left: ' + left + 'px !important; top: ' + top + 'px !important;' + properties.style)
                                         }
 
-                                    // Event > Window > Mouse Move
-                                    LDKF.addEventToNode(window, 'mousemove', function updateTooltip(event) {
-                                        // Initialization > Element
-                                        var element = LDKF.getEventTarget(event);
+                                    // Event > Window
+                                        // Blur
+                                        LDKF.addEventToNode(window, 'blur', removeTooltipsFromDocument);
 
-                                        // Show Tooltip
-                                        LDKF.isHTMLElement(element) && LDKF.elementPrototypeHasAttribute(element, 'tooltip') && showTooltip(
-                                            hidden.watchList.tooltips.length > 1 ? (function(tooltip) {
-                                                // Insertion
-                                                LDKF.nodePrototypeAppendChild(ancestor, tooltip);
+                                        // Mouse Move
+                                        LDKF.addEventToNode(window, 'mousemove', function updateTooltip(event) {
+                                            // Initialization > Element
+                                            var element = LDKF.getEventTarget(event);
 
-                                                // Return
-                                                return tooltip
-                                            })(new Tooltip) : tooltipElement, {
-                                                // Left
-                                                left: LDKF.getPageXFromEvent(event),
+                                            // Show Tooltip
+                                            LDKF.isHTMLElement(element) && LDKF.elementPrototypeHasAttribute(element, 'tooltip') && showTooltip(
+                                                registerTooltipOnElement(element), {
+                                                    // Left
+                                                    left: LDKF.getPageXFromEvent(event),
 
-                                                // Top
-                                                top: LDKF.getPageYFromEvent(event)
-                                            }, {
-                                                // Class
-                                                'class': LDKF.elementPrototypeGetAttribute(element, 'tooltip-class') || '',
+                                                    // Top
+                                                    top: LDKF.getPageYFromEvent(event)
+                                                }, {
+                                                    // Class
+                                                    'class': LDKF.elementPrototypeGetAttribute(element, 'tooltip-class') || '',
 
-                                                // Element
-                                                element: element,
+                                                    // Element
+                                                    element: element,
 
-                                                // Inner HTML
-                                                innerHTML: LDKF.elementPrototypeGetAttribute(element, 'tooltip') || '',
+                                                    // Inner HTML
+                                                    innerHTML: LDKF.elementPrototypeGetAttribute(element, 'tooltip') || '',
 
-                                                // Position
-                                                position: LDKF.elementPrototypeGetAttribute(element, 'tooltip-position') || '',
+                                                    // Position
+                                                    positions: LDKF.elementPrototypeGetAttribute(element, 'tooltip-position') || '',
 
-                                                // Style
-                                                style: LDKF.elementPrototypeGetAttribute(element, 'tooltip-style') || ''
-                                            }
-                                        )
-                                    });
+                                                    // Style
+                                                    style: LDKF.elementPrototypeGetAttribute(element, 'tooltip-style') || ''
+                                                }
+                                            )
+                                        });
 
-                                    // Insertion
-                                    LDKF.nodePrototypeAppendChild(ancestor, tooltipElement)
+                                    // Insert Tooltip > Tooltip Element
+                                    insertTooltip(tooltipElement)
                                 })
                             }
                     })()

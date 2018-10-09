@@ -375,8 +375,7 @@
     .button,
     .card,
     .dialog,
-    .message,
-    .tooltip-card { display: inline-block }
+    .message { display: inline-block }
 
     button,
     input[type=button],
@@ -799,6 +798,35 @@
     /* <sup> */
     sup { margin-top: -50% }
 
+    /* <tooltip-element> */
+    tooltip-element {
+            background-color: rgba(0, 0, 0, .965);
+            border: 1px solid rgba(255, 255, 255, .3);
+            color: #FFF;
+            left: 0;
+            margin: 0;
+            opacity: 0;
+            padding: 6.5px 10px;
+            position: fixed;
+            top: 0
+        }
+
+        tooltip-element[state=hidden] {
+            left: -100%;
+            opacity: 0;
+            pointer-events: none;
+            top: -100%;
+            transition: all 0s linear .3s,
+                opacity .3s linear 0s;
+            z-index: -1
+        }
+
+        tooltip-element[state=visible] {
+            opacity: 1;
+            transition: opacity .3s ease-in-out .3s;
+            z-index: 2147483646
+        }
+
 /* Assets */
     /* Accessibility */
         /* Screen Reader */
@@ -900,12 +928,10 @@
             }
 
         /* Card */
-        .card,
-        .tooltip-card { border-radius: 2.5px }
+        .card { border-radius: 2.5px }
 
         .card,
-        .dialog,
-        .tooltip-card {
+        .dialog {
             border: none;
             box-shadow: 0 3px 10px 0 rgba(0, 0, 0, .3);
             padding: 10px
@@ -1176,41 +1202,6 @@
                 /* <h6> */
                 .jumbotron > hgroup > h6 { font-size: 125% }
 
-        /* Tooltip */
-        .tooltip-card {
-            background-color: #121212;
-            box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
-            color: #FFF;
-            opacity: .9
-        }
-
-        tooltip-element {
-            background-color: rgba(0, 0, 0, .965);
-            border: 1px solid rgba(255, 255, 255, .3);
-            color: #FFF;
-            left: 0;
-            opacity: 0;
-            padding: 6.5px 10px;
-            position: fixed;
-            top: 0
-        }
-
-        tooltip-element[state=hidden] {
-            left: -100%;
-            opacity: 0;
-            pointer-events: none;
-            top: -100%;
-            transition: all 0s linear .3s,
-                opacity .3s linear 0s;
-            z-index: -1
-        }
-
-        tooltip-element[state=visible] {
-            opacity: 1;
-            transition: opacity .3s ease-in-out .3s;
-            z-index: 2147483646
-        }
-
     /* Features */
         /* Background */
             /* Color */
@@ -1266,8 +1257,7 @@
             .message > h3,
             .message > h4,
             .message > h5,
-            .message > h6,
-            .tooltip-card { cursor: default }
+            .message > h6 { cursor: default }
 
             /* Help */
             .cur-help,
@@ -2284,8 +2274,7 @@
                 input[type=submit],
                 .button,
                 .carousel > [role~=slide-container] > [role~=slide],
-                .sans-serif,
-                .tooltip-card { font-family: Raleway, 'Proxima Nova Soft', Ubuntu, Verdana, 'PT Sans', Titillium Web, 'Calibri Light', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Calibri, Arial, -webkit-body, -webkit-pictograph, sans-serif }
+                .sans-serif { font-family: Raleway, 'Proxima Nova Soft', Ubuntu, Verdana, 'PT Sans', Titillium Web, 'Calibri Light', -apple-system, system-ui, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Calibri, Arial, -webkit-body, -webkit-pictograph, sans-serif }
 
                 /* Serif */
                 .carousel > [role~=slide-container] > [role~=slide],
@@ -16902,8 +16891,7 @@
             #tooltip { user-select: none !important }
 
             /* Speak */
-            .no-speak,
-            .tooltip-card { speak: none !important }
+            .no-speak { speak: none !important }
 
             /* Style */
             .no-style { all: initial !important }
@@ -17434,7 +17422,6 @@
                     .card::selection,
                     .dropdown > [role~=header]::selection,
                     .no-select::selection,
-                    .tooltip-card::selection,
                     .transp-select::selection,
                     .transparent-select::selection {
                         background-color: rgba(0, 0, 0, 0);
