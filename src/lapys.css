@@ -1184,12 +1184,31 @@
             opacity: .9
         }
 
-        #tooltip {
+        tooltip-element {
+            background-color: rgba(0, 0, 0, .965);
             border: 1px solid rgba(255, 255, 255, .3);
+            color: #FFF;
             left: 0;
-            opacity: .9;
+            opacity: 0;
+            padding: 6.5px 10px;
             position: fixed;
             top: 0
+        }
+
+        tooltip-element[state=hidden] {
+            left: -100%;
+            opacity: 0;
+            pointer-events: none;
+            top: -100%;
+            transition: all 0s linear .3s,
+                opacity .3s linear 0s;
+            z-index: -1
+        }
+
+        tooltip-element[state=visible] {
+            opacity: 1;
+            transition: opacity .3s ease-in-out .3s;
+            z-index: 2147483646
         }
 
     /* Features */
@@ -1290,7 +1309,8 @@
             /* Level 5 */
             .dialog,
             .draggable:active,
-            .z-5 { z-index: 16 }
+            .z-5,
+            #tooltip { z-index: 16 }
 
         /* Display */
             /* Block */

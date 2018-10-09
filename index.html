@@ -26,7 +26,7 @@
             */
             window.LapysJS = {
                 // Components
-                components: []
+                components: ['tooltip']
             }
         </script>
 
@@ -58,15 +58,20 @@
             <!-- Introduction Navigation -->
             <nav class='col-grp col-1 fixed-grp m-row-grp' role=introduction-navigation script="
                 repeat(array(nav.children), function(key, value) {
-                    value.onmouseleave = function focusOnly() { $$('jumbotron-element#landing').removeAttributeEntry('role', 'focus-only') }
-                    value.onmouseover = function focusOnly() { $$('jumbotron-element#landing').addAttributeEntry('role', 'focus-only') }
+                    var child = value;
+                    child.addEvent('mouseleave', function blur() { $$('jumbotron-element#landing').removeAttributeEntry('role', 'focus-only') });
+                    child.addEvent('mouseover', function focus() { $$('jumbotron-element#landing').addAttributeEntry('role', 'focus-only') })
                 })
             ">
                 <!-- Documentation/ Learn -->
-                <div class='col-1 m-grid-1'
-                    onmouseleave="this.write({duration: 250, mode: 'clear'}).with(' Documentation ', {duration: 250, mode: 'type'})"
-                    onmouseover="this.write({duration: 250, mode: 'clear'}).with(' Learn ', {duration: 250, mode: 'type'})"
-                    role='dynamic interactive'> Documentation </div>
+                <div class='col-1 m-grid-1' role='dynamic interactive' script="
+                    function modify() { (div.innerHTML.trim() == 'Learn') || div.write({duration: 250, mode: 'clear'}).with(' Learn ', {duration: 250, mode: 'type'}) }
+                    function reset() { (div.innerHTML.trim() == 'Documentation') || div.write({duration: 250, mode: 'clear'}).with(' Documentation ', {duration: 250, mode: 'type'}) }
+
+                    addEvent('blur', reset);
+                    div.addEvent(['blur', 'mouseleave'], reset);
+                    div.addEvent(['focus', 'mouseover'], modify)
+                "> Documentation </div>
 
                 <!-- CSS -->
                 <div class='col-1 m-grid-1' role=interactive> CSS </div>

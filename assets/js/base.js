@@ -10,6 +10,10 @@ window && (function Main(args) {
                 #Lapys: Prerequisites for this script to function.
     */
     if (typeof LapysJS == 'object') {
+        // LapysJS
+            // Add Feature
+            LapysJS.addFeature('script-attribute');
+
         /* Global Data */
             /* False
                     --- NOTE ---
@@ -31,7 +35,7 @@ window && (function Main(args) {
 
             // Loader Element
             def('LoaderElement', (function() {
-                // Register Element
+                // Register Element > <loading-element>
                 ELEMENTS_REGISTRABLE && registerElement('loading-element');
 
                 // Return
@@ -46,7 +50,7 @@ window && (function Main(args) {
 
             // Loading Screen
             def('LoadingScreen', (function() {
-                // Register Element
+                // Register Element > <loading-screen>
                 ELEMENTS_REGISTRABLE && registerElement('loading-screen');
 
                 // Return
@@ -86,6 +90,9 @@ window && (function Main(args) {
                 app.height = 'device-height';
 
                 /* Loading Screen
+                        --- CHECKPOINT ---
+                            #Lapys: Don`t forget to set this to `TRUE`.
+
                         --- NOTE ---
                             #Lapys: Should the loading screen be injected into the current document?
                 */
@@ -214,16 +221,16 @@ window && (function Main(args) {
                             // Timeout > Modification > Dynamic Cursor Style Element > Inner HTML
                             timeout(function() { DYNAMIC_CURSOR_STYLE_ELEMENT.innerHTML = '* { cursor: none }' }, 2e3)
                         }
-                    } restoreCursor();
+                    }; restoreCursor();
 
                 // Event
-                    // Window > Mouse Move
-                    addEventListener('mousemove', restoreCursor);
+                    // Window > (Blur, Mouse Move)
+                    addEvent(['blur', 'mousemove'], restoreCursor);
 
                 // Insertion
                 HEAD.insertChild(DYNAMIC_CURSOR_STYLE_ELEMENT);
 
-                // On DOM Element Added
+                // Function
                     // Register Custom Elements
                     function registerCustomElements() {
                         /* Logic

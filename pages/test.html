@@ -47,7 +47,7 @@
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1> Debugging Room </h1>
+        <h1 title='Default Title!' tooltip='Custom Title!' tooltip-position='center'> Debugging Room </h1>
     </main>
 
     <!-- Scripts -->
@@ -68,21 +68,29 @@
             */
             (document.body.getAttribute('theme') == 'roulette') && setInterval(setTheme, 3e4);
 
-            // Modification
-                /* [Element] > Theme
-                        --- NOTE ---
-                            #Lapys: Set a random theme color (a monochrome screen could be unstimulating).
-                */
-                document.body.hasAttribute('theme') || document.body.setAttribute('theme', (function randomItem(themes) { return themes[(themes.length * Math.random()) | 0] })(themes));
+            /* Modification > [Element] > Theme
+                    --- NOTE ---
+                        #Lapys: Set a random theme color (a monochrome screen could be unstimulating).
+            */
+            document.body.hasAttribute('theme') || document.body.setAttribute('theme', (function randomItem(themes) { return themes[(themes.length * Math.random()) | 0] })(themes));
+        </script>
 
-                // Window > LapysJS
-                window.LapysJS = {
-                    // Allow Application Features
-                    allowAppFeatures: true,
+        <!-- Document Script -->
+        <script type=text/javascript>
+            // Modification > Window > LapysJS
+            window.LapysJS = {
+                // Allow Application Features
+                allowAppFeatures: true,
 
-                    // Debug Mode
-                    debugMode: true
-                }
+                // Components
+                components: ['tooltip'],
+
+                // Debug Mode
+                debugMode: true,
+
+                // Features
+                features: ['script-attribute']
+            }
         </script>
 
         <!-- LapysJS Script -->
