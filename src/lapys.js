@@ -3044,7 +3044,7 @@ window && (function Main(args) {
                         // Logic > Return
                         if (
                             LDKF.string(arg) == '[object Arguments]' ||
-                            constructor === LDKO.lapysJSNodeListConstructor
+                            (constructor === LDKO.array || constructor === LDKO.lapysJSNodeListConstructor)
                         )
                             return !0
                     }
@@ -5301,6 +5301,17 @@ window && (function Main(args) {
                             // Return
                             return function objectPrototypeToString() { return arguments.length ? method.call(arguments[0]) : '' }
                         })();
+
+                // Objects
+                    // Define Property
+                    LapysJSDevelopmentKit.functions.objectsDefineProperty = function objectsDefineProperty(objects, key, description) {
+                        // Initialization > (Iterator, Length)
+                        var iterator = 0, length = objects.length;
+
+                        // Loop > Modification > [Object] > [Key]
+                        for (iterator; iterator != length; iterator += 1)
+                            LDKF.objectDefineProperty(objects[iterator], key, description)
+                    };
 
             /* Objects
                     --- NOTE ---
@@ -23356,138 +23367,379 @@ window && (function Main(args) {
 
                         /* [Parent Node] > Prototype */
                         (function() {
-                            // Initialization > (Prototypes, Iterator)
-                            var prototypes = [LDKO.documentPrototype, LDKO.documentFragmentPrototype, LDKO.elementPrototype],
-                                iterator = prototypes.length;
-
-                            /* Loop
-                                    Index Prototypes.
+                            /* Initialization > Prototypes
+                                    --- NOTE ---
+                                        #Lapys: Not all prototype objects.
                             */
-                            while (iterator) {
-                                // Initialization > Prototype
-                                var prototype = prototypes[iterator -= 1];
+                            var prototypes = [LDKO.documentPrototype, LDKO.documentFragmentPrototype, LDKO.elementPrototype, window];
 
-                                // Modification > Prototype
-                                    // $$
-                                    prototype.$$ = LDKO.window$$ = window.$$ = function $$(selector, modifier) {
+                            // Function > Is Of Prototype
+                            function isOfPrototype(arg) {
+                                // Return
+                                return LDKF.isDocument(arg) || LDKF.isDocumentFragment(arg) || LDKF.isElement(arg) || LDKF.isWindow(arg)
+                            }
+
+                            // Modification > Prototypes
+                                // $$
+                                LDKF.objectsDefineProperty(prototypes, '$$', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Value
+                                    value: function $$(selector, modifier) {
                                         // Initialization > Target
                                         var that = this;
 
-                                        // Update > Modifier
-                                        modifier = LDKF.rendArray(arguments, 1);
-                                        selector = LDKF.string(selector);
-
-                                        // Initialization > Node (List)
-                                        var nodeList, list = [];
-
-                                        // Error Handling
-                                        try {
-                                            /* Logic
-                                                    [if:else if statement]
-
-                                                > Update > Node List
-                                            */
-                                            if (LDKF.isDocument(that) || LDKF.isWindow(that))
-                                                nodeList = LDKF.documentPrototypeQuerySelectorAll(LDKF.get.windowDocument(window), selector);
-
-                                            else if (LDKF.isDocumentFragment(that))
-                                                nodeList = LDKF.documentFragmentPrototypeQuerySelectorAll(that, selector);
-
-                                            else if (LDKF.isElement(that))
-                                                nodeList = LDKF.elementPrototypeQuerySelectorAll(that, selector)
-                                        } catch (error) {
-                                            // Error
-                                            (error.constructor === LDKO.domException) && LDKF.throwError('$$', 'argument', "Invalid selector argument: '" + selector + "'");
-                                            throw error
-                                        }
-
-                                        // Initialization
-                                            // Node List Length
-                                            var nodeListLength = LDKF.get.nodeListPrototypeLength(nodeList);
-
-                                            // Iterator, Length
-                                            var iterator = 0, length = modifier.length;
-
                                         /* Logic
-                                                [if:else if:else statement]
+                                                [if:else statement]
                                         */
-                                        if (length) {
-                                            // Initialization > Update List
-                                            var updateList = !0;
+                                        if (isOfPrototype(that)) {
+                                            // Update > Modifier
+                                            modifier = LDKF.rendArray(arguments, 1);
+                                            selector = LDKF.string(selector);
 
-                                            /* Loop
-                                                    Index Modifier.
-                                            */
-                                            for (iterator; iterator != length; iterator += 1) {
-                                                // Initialization > Item
-                                                var item = modifier[iterator];
+                                            // Initialization > Node (List)
+                                            var nodeList, list = [];
 
+                                            // Error Handling
+                                            try {
                                                 /* Logic
-                                                        [if:else if:else statement]
+                                                        [if:else if statement]
+
+                                                    > Update > Node List
                                                 */
-                                                if (LDKF.isSafeInteger(item))
-                                                    // Update > List
-                                                    list[list.length] = nodeList[item] || null;
+                                                if (LDKF.isDocument(that) || LDKF.isWindow(that))
+                                                    nodeList = LDKF.documentPrototypeQuerySelectorAll(LDKF.get.windowDocument(window), selector);
 
-                                                else if (item == 'first')
-                                                    // Update > List
-                                                    list[list.length] = nodeList[0] || null;
+                                                else if (LDKF.isDocumentFragment(that))
+                                                    nodeList = LDKF.documentFragmentPrototypeQuerySelectorAll(that, selector);
 
-                                                else if (item == 'last')
-                                                    // Update > List
-                                                    list[list.length] = nodeList[nodeListLength - 1] || null;
-
-                                                else if (item == 'list') {
-                                                    // Initialization > Node List Iterator
-                                                    var nodeListIterator = 0;
-
-                                                    // Loop > Update > List
-                                                    for (nodeListIterator; nodeListIterator != nodeListLength; nodeListIterator += 1)
-                                                        list[list.length] = nodeList[nodeListIterator];
-
-                                                    // Update > Update List
-                                                    updateList = !1
-                                                }
-
-                                                else
-                                                    // Error
-                                                    LDKF.throwError('$$', 'argument', LDKF.debugMessage(item, ['must', 'a'], 'valid modifier'))
+                                                else if (LDKF.isElement(that))
+                                                    nodeList = LDKF.elementPrototypeQuerySelectorAll(that, selector)
+                                            } catch (error) {
+                                                // Error
+                                                (error.constructor === LDKO.domException) && LDKF.throwError('$$', 'argument', "Invalid selector argument: '" + selector + "'");
+                                                throw error
                                             }
 
-                                            // Update > List
-                                            updateList && (length == 1) && (list = list[0])
+                                            // Initialization
+                                                // Node List Length
+                                                var nodeListLength = LDKF.get.nodeListPrototypeLength(nodeList);
+
+                                                // Iterator, Length
+                                                var iterator = 0, length = modifier.length;
+
+                                            /* Logic
+                                                    [if:else if:else statement]
+                                            */
+                                            if (length) {
+                                                // Initialization > Update List
+                                                var updateList = !0;
+
+                                                /* Loop
+                                                        Index Modifier.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Item
+                                                    var item = modifier[iterator];
+
+                                                    /* Logic
+                                                            [if:else if:else statement]
+                                                    */
+                                                    if (LDKF.isSafeInteger(item))
+                                                        // Update > List
+                                                        list[list.length] = nodeList[item] || null;
+
+                                                    else if (item == 'first')
+                                                        // Update > List
+                                                        list[list.length] = nodeList[0] || null;
+
+                                                    else if (item == 'last')
+                                                        // Update > List
+                                                        list[list.length] = nodeList[nodeListLength - 1] || null;
+
+                                                    else if (item == 'list') {
+                                                        // Initialization > Node List Iterator
+                                                        var nodeListIterator = 0;
+
+                                                        // Loop > Update > List
+                                                        for (nodeListIterator; nodeListIterator != nodeListLength; nodeListIterator += 1)
+                                                            list[list.length] = nodeList[nodeListIterator];
+
+                                                        // Update > Update List
+                                                        updateList = !1
+                                                    }
+
+                                                    else
+                                                        // Error
+                                                        LDKF.throwError('$$', 'argument', LDKF.debugMessage(item, ['must', 'a'], 'valid modifier'))
+                                                }
+
+                                                // Update > List
+                                                updateList && (length == 1) && (list = list[0])
+                                            }
+
+                                            else if (nodeListLength)
+                                                // Update > List
+                                                list = nodeListLength == 1 ? nodeList[0] : LDKF.cloneArray(nodeList);
+
+                                            else
+                                                // Update > List
+                                                list = null;
+
+                                            // Return
+                                            return LDKF.isArray(list) ? LDKO.lapysJSNodeList.apply(LDK, list) : list
                                         }
 
-                                        else if (nodeListLength)
-                                            // Update > List
-                                            list = nodeListLength == 1 ? nodeList[0] : LDKF.cloneArray(nodeList);
+                                        else
+                                            // Error
+                                            throw new LDKO.typeError('Illegal invocation')
+                                    },
+
+                                    // Writable
+                                    writable: !0
+                                });
+
+                                // $a
+                                LDKF.objectsDefineProperty(prototypes, '$a', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Get
+                                    get: function $a() {
+                                        // Initialization > Target
+                                        var that = this;
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (isOfPrototype(that))
+                                            // Error Handling
+                                            try {
+                                                // Return
+                                                return LDKO.window$$.call(that, '*', 'list')
+                                            } catch (error) {
+                                                // Error
+                                                throw new LDKF.error(LDKF.replaceCharString(error.message, '$$', '$a', 1))
+                                            }
 
                                         else
-                                            // Update > List
-                                            list = null;
+                                            // Error
+                                            throw new LDKO.typeError('Illegal invocation')
+                                    },
+                                });
 
-                                        // Return
-                                        return LDKF.isArray(list) ? LDKO.lapysJSNodeList.apply(LDK, list) : list
+                                /* $A
+                                        --- NOTE ---
+                                            #Lapys: This is the only `$`-based function that works with non-elements.
+                                */
+                                LDKF.objectsDefineProperty(prototypes, '$A', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Get
+                                    get: function $A() {
+                                        // Initialization > Target
+                                        var that = this;
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (isOfPrototype(that)) {
+                                            // Update > Target
+                                            LDKF.isWindow(that) && (that = LDKF.get.windowDocument(that));
+
+                                            // Return
+                                            return LDKF.allNodes(that)
+                                        }
+
+                                        else
+                                            // Error
+                                            throw new LDKO.typeError('Illegal invocation')
                                     }
+                                });
 
-                                    // $a --- CHECKPOINT ---
-                                    // $1 --- CHECKPOINT ---
-                                    // $2 --- CHECKPOINT ---
-                                    // $3 --- CHECKPOINT ---
-                                    // $4 --- CHECKPOINT ---
-                                    // $5 --- CHECKPOINT ---
-                                    // $c --- CHECKPOINT ---
-                                    // $d --- CHECKPOINT ---
-                                    // $i --- CHECKPOINT ---
-                                    // $n --- CHECKPOINT ---
-                                    // $n1 --- CHECKPOINT ---
-                                    // $n2 --- CHECKPOINT ---
-                                    // $n3 --- CHECKPOINT ---
-                                    // $n4 --- CHECKPOINT ---
-                                    // $ns --- CHECKPOINT ---
-                                    // $ps --- CHECKPOINT ---
-                                    // $t --- CHECKPOINT ---
-                            }
+                                // $1
+                                LDKF.objectsDefineProperty(prototypes, '$1', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Get
+                                    get: function $1() {
+                                        // Initialization > Target
+                                        var that = this;
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (isOfPrototype(that)) {
+                                            // Update > Target
+                                            LDKF.isWindow(that) && (that = LDKF.get.windowDocument(that));
+
+                                            // Initialization > (Child Nodes, Iterator, Length)
+                                            var childNodes = LDKF.get.nodePrototypeChildNodes(that),
+                                                iterator = 0,
+                                                length = LDKF.get.nodeListPrototypeLength(childNodes);
+
+                                            /* Loop
+                                                    Index Child Nodes.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Child Node
+                                                var childNode = childNodes[iterator];
+
+                                                // Logic > Return
+                                                if (LDKF.isElement(childNode))
+                                                    return childNode
+                                            }
+
+                                            // Return
+                                            return null
+                                        }
+
+                                        else
+                                            // Error
+                                            throw new LDKO.typeError('Illegal invocation')
+                                    }
+                                });
+
+                                // $2
+                                LDKF.objectsDefineProperty(prototypes, '$2', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Get
+                                    get: function $2() {
+                                        // Initialization > Target
+                                        var that = this;
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (isOfPrototype(that)) {
+                                            // Update > Target
+                                            LDKF.isWindow(that) && (that = LDKF.get.windowDocument(that));
+
+                                            // Initialization > (Child Nodes, Count, Match, Iterator, Length)
+                                            var childNodes = LDKF.get.nodePrototypeChildNodes(that),
+                                                count = 0, match = 2,
+                                                iterator = 0,
+                                                length = LDKF.get.nodeListPrototypeLength(childNodes);
+
+                                            /* Loop
+                                                    Index Child Nodes.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Child Node
+                                                var childNode = childNodes[iterator];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (LDKF.isElement(childNode)) {
+                                                    // Update > Count
+                                                    count += 1;
+
+                                                    // Logic > Return
+                                                    if (count == match)
+                                                        return childNode
+                                                }
+                                            }
+
+                                            // Return
+                                            return null
+                                        }
+
+                                        else
+                                            // Error
+                                            throw new LDKO.typeError('Illegal invocation')
+                                    }
+                                });
+
+                                // $3
+                                LDKF.objectsDefineProperty(prototypes, '$3', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Get
+                                    get: function $3() {
+                                        // Initialization > Target
+                                        var that = this;
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (isOfPrototype(that)) {
+                                            // Update > Target
+                                            LDKF.isWindow(that) && (that = LDKF.get.windowDocument(that));
+
+                                            // Initialization > (Child Nodes, Count, Match, Iterator, Length)
+                                            var childNodes = LDKF.get.nodePrototypeChildNodes(that),
+                                                count = 0, match = 3,
+                                                iterator = 0,
+                                                length = LDKF.get.nodeListPrototypeLength(childNodes);
+
+                                            /* Loop
+                                                    Index Child Nodes.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Child Node
+                                                var childNode = childNodes[iterator];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (LDKF.isElement(childNode)) {
+                                                    // Update > Count
+                                                    count += 1;
+
+                                                    // Logic > Return
+                                                    if (count == match)
+                                                        return childNode
+                                                }
+                                            }
+
+                                            // Return
+                                            return null
+                                        }
+
+                                        else
+                                            // Error
+                                            throw new LDKO.typeError('Illegal invocation')
+                                    }
+                                });
+
+                                // $4 --- CHECKPOINT ---
+                                // $5 --- CHECKPOINT ---
+                                // $c --- CHECKPOINT ---
+                                // $d --- CHECKPOINT ---
+                                // $i --- CHECKPOINT ---
+                                // $n --- CHECKPOINT ---
+                                // $n1 --- CHECKPOINT ---
+                                // $n2 --- CHECKPOINT ---
+                                // $n3 --- CHECKPOINT ---
+                                // $n4 --- CHECKPOINT ---
+                                // $ns --- CHECKPOINT ---
+                                // $ps --- CHECKPOINT ---
+                                // $t --- CHECKPOINT ---
                         })();
 
                         /* String > Prototype */
@@ -24255,8 +24507,8 @@ window && (function Main(args) {
                                             LDKF.isInArray(positions, 'left') && (left = getElementLeft(element) - getElementWidth(tooltip) - tooltipMargin);
                                             LDKF.isInArray(positions, 'right') && (left = getElementRight(element) + tooltipMargin);
                                             LDKF.isInArray(positions, 'top') && (top = getElementTop(element) - getElementHeight(tooltip) - tooltipMargin);
-                                            LDKF.isSafeNumber(LDKF.number(positions[0])) && (left = positions[0]);
-                                            LDKF.isSafeNumber(LDKF.number(positions[1])) && (top = positions[1]);
+                                            LDKF.isSafeNumber(LDKF.number(positions[0])) && (left = LDKF.number(positions[0]) + getElementLeft(element));
+                                            LDKF.isSafeNumber(LDKF.number(positions[1])) && (top = LDKF.number(positions[1]) + getElementTop(element));
                                             LDKF.elementPrototypeHasAttribute(element, 'title') && (titles[titles.length] = {element: element, title: LDKF.elementPrototypeGetAttribute(element, 'title') || ''});
 
                                             // Modification

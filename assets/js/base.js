@@ -266,7 +266,7 @@ window && (function Main(args) {
 
                         // Repeat
                             // Fixed Groups
-                            repeat(array(fixedGroups), function(key, value) {
+                            repeat(fixedGroups, function(key, value) {
                                 // Initialization > Fixed Group (Children) (Length)
                                 var fixedGroup = value,
                                     fixedGroupChildren = fixedGroup.children,
