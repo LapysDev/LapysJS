@@ -11,6 +11,7 @@
             - `String.prototype.repeat`
             - `Function.prototype.invoke` combines `apply` and `call` to run a function and silently fail it if there are any errors.
             - `Object.prototype.recur` recursively searches for an object property and returns a resulting match.
+            - Custom `HTMLScrollbarElement` functionality.
 
     --- NOTE ---
         #Lapys:
@@ -3969,6 +3970,9 @@ window && (function Main(args) {
                             case 'all': amount = length
                         }
 
+                        // Initialization > Index
+                        var index = 0;
+
                         // Function > Replace
                         function replace(string, index, replacement) {
                             // Initialization > (Iterator, Length, Stream)
@@ -3996,9 +4000,6 @@ window && (function Main(args) {
                             // Return
                             return stream
                         }
-
-                        // Initialization > Index
-                        var index = 0;
 
                         /* Loop
                                 [while statement]
@@ -7230,20 +7231,6 @@ window && (function Main(args) {
                     // Return
                     return pseudoNumber
                 };
-                    // Addition
-                    LapysJSDevelopmentKit.random.pseudoNumber.add = function add(pseudoNumberA, pseudoNumberB) {};
-
-                    // Divide
-                    LapysJSDevelopmentKit.random.pseudoNumber.div = function divide(pseudoNumberA, pseudoNumberB) {};
-
-                    // Exponentiate
-                    LapysJSDevelopmentKit.random.pseudoNumber.exp = function exponentiate(pseudoNumberA, pseudoNumberB) {};
-
-                    // Multiply
-                    LapysJSDevelopmentKit.random.pseudoNumber.mul = function multiply(pseudoNumberA, pseudoNumberB) {};
-
-                    // Subtraction
-                    LapysJSDevelopmentKit.random.pseudoNumber.sub = function subtract(pseudoNumberA, pseudoNumberB) {};
 
                 // Random Number Generator
                 LapysJSDevelopmentKit.random.RNG = {
@@ -23380,7 +23367,10 @@ window && (function Main(args) {
                             }
 
                             // Modification > Prototypes
-                                // $$
+                                /* $$
+                                        --- NOTE ---
+                                            #Lapys: Return a query selection of elements in the Target.
+                                */
                                 LDKF.objectsDefineProperty(prototypes, '$$', {
                                     // Configurable
                                     configurable: !0,
@@ -23503,7 +23493,10 @@ window && (function Main(args) {
                                     writable: !0
                                 });
 
-                                // $a
+                                /* $a
+                                        --- NOTE ---
+                                            #Lapys: Return all child elements of the Target.
+                                */
                                 LDKF.objectsDefineProperty(prototypes, '$a', {
                                     // Configurable
                                     configurable: !0,
@@ -23537,7 +23530,9 @@ window && (function Main(args) {
 
                                 /* $A
                                         --- NOTE ---
-                                            #Lapys: This is the only `$`-based function that works with non-elements.
+                                            #Lapys:
+                                                - This is the only `$`-based function that works with non-elements.
+                                                - Return all child nodes from the Target.
                                 */
                                 LDKF.objectsDefineProperty(prototypes, '$A', {
                                     // Configurable
@@ -23568,7 +23563,10 @@ window && (function Main(args) {
                                     }
                                 });
 
-                                // $1
+                                /* $1
+                                        --- NOTE ---
+                                            #Lapys: Return the first child element of the Target.
+                                */
                                 LDKF.objectsDefineProperty(prototypes, '$1', {
                                     // Configurable
                                     configurable: !0,
@@ -23615,7 +23613,10 @@ window && (function Main(args) {
                                     }
                                 });
 
-                                // $2
+                                /* $2
+                                        --- NOTE ---
+                                            #Lapys: Return the second child element of the Target.
+                                */
                                 LDKF.objectsDefineProperty(prototypes, '$2', {
                                     // Configurable
                                     configurable: !0,
@@ -23671,8 +23672,11 @@ window && (function Main(args) {
                                     }
                                 });
 
-                                // $3
-                                LDKF.objectsDefineProperty(prototypes, '$3', {
+                                /* $3
+                                        --- NOTE ---
+                                            #Lapys: Return the third child element of the Target.
+                                */
+                                LDKF.objectsDefineProperty(LDKF.rendArray(prototypes, -1), '$3', {
                                     // Configurable
                                     configurable: !0,
 
@@ -23727,7 +23731,65 @@ window && (function Main(args) {
                                     }
                                 });
 
-                                // $4 --- CHECKPOINT ---
+                                /* $4
+                                        --- NOTE ---
+                                            #Lapys: Return the fourth child element of the Target.
+                                */
+                                LDKF.objectsDefineProperty(LDKF.rendArray(prototypes, -1), '$4', {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Enumerable
+                                    enumerable: !0,
+
+                                    // Get
+                                    get: function $4() {
+                                        // Initialization > Target
+                                        var that = this;
+
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (isOfPrototype(that)) {
+                                            // Update > Target
+                                            LDKF.isWindow(that) && (that = LDKF.get.windowDocument(that));
+
+                                            // Initialization > (Child Nodes, Count, Match, Iterator, Length)
+                                            var childNodes = LDKF.get.nodePrototypeChildNodes(that),
+                                                count = 0, match = 4,
+                                                iterator = 0,
+                                                length = LDKF.get.nodeListPrototypeLength(childNodes);
+
+                                            /* Loop
+                                                    Index Child Nodes.
+                                            */
+                                            for (iterator; iterator != length; iterator += 1) {
+                                                // Initialization > Child Node
+                                                var childNode = childNodes[iterator];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (LDKF.isElement(childNode)) {
+                                                    // Update > Count
+                                                    count += 1;
+
+                                                    // Logic > Return
+                                                    if (count == match)
+                                                        return childNode
+                                                }
+                                            }
+
+                                            // Return
+                                            return null
+                                        }
+
+                                        else
+                                            // Error
+                                            throw new LDKO.typeError('Illegal invocation')
+                                    }
+                                });
+
                                 // $5 --- CHECKPOINT ---
                                 // $c --- CHECKPOINT ---
                                 // $d --- CHECKPOINT ---
