@@ -4,15 +4,6 @@
     @version: 0.0.4
     @url: https://www.github.com/LapysDev/LapysJS
 
-    --- CHECKPOINT ---
-        #Lapys:
-            - `Array.prototype.repeat`
-            - `String.prototype.fill`
-            - `String.prototype.repeat`
-            - `Function.prototype.invoke` combines `apply` and `call` to run a function and silently fail it if there are any errors.
-            - `Object.prototype.recur` recursively searches for an object property and returns a resulting match.
-            - Custom `HTMLScrollbarElement` functionality.
-
     --- NOTE ---
         #Lapys:
             - Returns 1 if there`s an error, returns 0 otherwise.
@@ -48,11 +39,12 @@
                 -- AudioContext -- AudioNode
                 -- EventTarget
 
+            - All external/ sourced script code must be credited to the author and poly-filled.
             - Avoid returning values in `catch` blocks.
             - Must be compatible with 'modern' legacy browsers.
             - Prefix poly-filled properties & methods with the `$` character.
             - Prefix substitute properties/ variables with the `_` character.
-            - All external/ sourced script code must be credited to the author and poly-filled.
+            - Use '\d' for digits in regular expressions.
 
     --- UPDATE REQUIRED ---
         #Lapys:
@@ -120,7 +112,7 @@ window && (function Main(args) {
                     --- NOTE ---
                         #Lapys: Dynamic interfaces.
             */
-            components: ['accordion', 'carousel', 'draggable', 'dropdown', 'dynamic-text', 'dynamic-time', 'marquee', 'table', 'toast', 'tooltip'],
+            components: ['accordion', 'carousel', 'draggable', 'dropdown', 'dynamic-text', 'dynamic-time', 'marquee', 'scrollbar', 'table', 'toast', 'tooltip'],
 
             /* Custom Elements
                     --- NOTE ---
@@ -1354,6 +1346,18 @@ window && (function Main(args) {
                     return LDKF.getElementLeftOffsetFromDocument(element) + LDKF.getElementWidth(element) +
                         LDKF.number(LDKF.digitizeString(computedStyle.paddingLeft)) +
                         LDKF.number(LDKF.digitizeString(computedStyle.paddingRight))
+                },
+
+                // Get Element Scroll Height
+                getElementScrollHeight: function getElementScrollHeight(element) {
+                    // Return
+                    return LDKO.descriptions.elementPrototypeScrollHeight.get.call(element)
+                },
+
+                // Get Element Scroll Width
+                getElementScrollWidth: function getElementScrollWidth(element) {
+                    // Return
+                    return LDKO.descriptions.elementPrototypeScrollWidth.get.call(element)
                 },
 
                 // Get Element Top Offset From Document
@@ -7032,6 +7036,12 @@ window && (function Main(args) {
                         // Inner HTML
                         LapysJSDevelopmentKit.objects.descriptions.elementPrototypeInnerHTML = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.elementPrototype, 'innerHTML') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlElementPrototype, 'innerHTML');
 
+                        // Scroll Height
+                        LapysJSDevelopmentKit.objects.descriptions.elementPrototypeScrollHeight = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.elementPrototype, 'scrollHeight');
+
+                        // Scroll Width
+                        LapysJSDevelopmentKit.objects.descriptions.elementPrototypeScrollWidth = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.elementPrototype, 'scrollWidth');
+
                         // Tag Name
                         LapysJSDevelopmentKit.objects.descriptions.elementPrototypeTagName = LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.elementPrototype, 'tagName') || LapysJSDevelopmentKit.functions.objectGetOwnPropertyDescriptor(LapysJSDevelopmentKit.objects.htmlElementPrototype, 'tagName');
 
@@ -7203,13 +7213,13 @@ window && (function Main(args) {
                 }));
 
                 /* Pseudo Number
-                        --- CHECKPOINT ---
-                            #Lapys: Basic operations must be functional.
-
                         --- NOTE ---
                             #Lapys:
-                                - Allows for much larger number of digits in a numeral.
+                                - Allows for much larger number of digits in a numeral by calculating with strings as digits.
                                 - Sacrifices speed for size.
+
+                        --- UPDATE REQUIRED ---
+                            #Lapys: Basic operations must be functional.
                 */
                 LapysJSDevelopmentKit.random.pseudoNumber = function PseudoNumber(characteristics, mantissa) {
                     // Initialization > Pseudo Number
@@ -19026,10 +19036,24 @@ window && (function Main(args) {
 
                                 // Value
                                 value: function randomInteger(range) {
-                                    // Return
-                                    return LDKF.isSafeNumber(range) ?
-                                        (range ? (LDKF.isPositiveNumber(range) ? LDKF.int(LDKO.mathRandomBetween(0, range)) : LDKF.int(LDKO.mathRandomBetween(range, 0))) : 0) :
-                                        LDKF.windowRand(range)
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (!arguments.length)
+                                        // Return
+                                        return LDKF.int(LDKO.mathRandomBetween(0, 10));
+
+                                    else {
+                                        // Initialization > (Start< Stop)
+                                        var start = arguments[0], stop = arguments[1];
+
+                                        // Update > (Start, Stop)
+                                        LDKF.isSafeNumber(start) || (start = 0);
+                                        LDKF.isSafeNumber(stop) || (stop = 0);
+
+                                        // Return
+                                        return LDKF.int(LDKO.mathRandomBetween(LDKF.min(start, stop), LDKF.max(start, stop)))
+                                    }
                                 },
 
                                 // Writable
@@ -21428,7 +21452,7 @@ window && (function Main(args) {
                                 configurable: !0,
 
                                 // Value
-                                value: function removeFromBack() {
+                                value: LDKF.arrayPrototypeRemoveFromBack = function removeFromBack() {
                                     // Initialization > Array
                                     var array = this;
 
@@ -21470,17 +21494,9 @@ window && (function Main(args) {
                                             [if:else statement]
                                     */
                                     if (LDKF.isArrayObject(array)) {
-                                        // Initialization > (Iterator, Length)
-                                        var iterator = 0, length = arguments.length;
-
                                         // Update > Array
                                         LDKF.reverseArray(array);
-
-                                        // Loop > Update > Array
-                                        for (iterator; iterator != length; iterator += 1)
-                                            LDKF.removeItemArray(array, arguments[iterator]);
-
-                                        // Update > Array
+                                        LDKF.arrayPrototypeRemoveFromBack.apply(array, arguments);
                                         LDKF.reverseArray(array);
 
                                         // Return
@@ -21496,8 +21512,63 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Remove Duplicated --- CHECKPOINT ---
+                            // Remove Duplicated
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicated', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeDuplicated() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator, Object)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = frequencies.length, object = {};
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            // Remove Item Array
+                                            (frequency.frequency == 1) || (function removeItemArray(match) {
+                                                // Initialization > (Array Iterator, Count)
+                                                var arrayIterator = array.length, count = 0;
+
+                                                // Loop > Update > (Array, Count)
+                                                while (arrayIterator) {
+                                                    (array[arrayIterator -= 1] === match) && (count += 1);
+                                                    (count == 2) && (array[arrayIterator] = object)
+                                                }
+                                            })(frequency.item)
+                                        }
+
+                                        // Update > Array
+                                        LDKF.removeItemArray(array, object, array.length);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Remove Duplicated From Back --- CHECKPOINT ---
+                            // LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicatedFromBack');
+
                             // Remove Duplicated From Front --- CHECKPOINT ---
                             // Remove Duplicates --- CHECKPOINT ---
                             // Remove Duplicates From Back --- CHECKPOINT ---
@@ -21553,6 +21624,8 @@ window && (function Main(args) {
                         /* Element > Prototype */
                         /* Error > Prototype */
                         /* Function > Prototype */
+                            // Invoke --- CHECKPOIN ---
+
                         /* HTML Element > Prototype */
                             // Add Attribute Entry
                             LDKO.htmlElementPrototype.addAttributeEntry = function addAttributeEntry(name, entry, separator) {
@@ -23352,6 +23425,8 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
+                            // Recur --- CHECKPOINT ---
+
                         /* [Parent Node] > Prototype */
                         (function() {
                             /* Initialization > Prototypes
@@ -24050,7 +24125,10 @@ window && (function Main(args) {
                                         // Error
                                         LDKF.throwError(['html', 'String'], 'argument', 'Can not create element without local tag name')
                                 }
-                            })
+                            });
+
+                            // Fill --- CHECKPOINT ---
+                            // Repeat --- CHECKPOINT ---
                 }
 
                 /* Update
@@ -24244,6 +24322,76 @@ window && (function Main(args) {
                         /* Logic
                                 [if:else if statement]
                         */
+                            /* {Accordion}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Drop menus with all dynamic content within the single base parent element.
+                            */
+                            if (LDKF.isInArray(LDKC, 'accordion')) {}
+
+                            /* {Carousel}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Hierarchy-based, inanimate carousel.
+                            */
+                            if (LDKF.isInArray(LDKC, 'carousel')) {}
+
+                            /* {Draggable}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys Input-based drag-and-drop element (Draggable element & 'dropzone' element).
+                            */
+                            if (LDKF.isInArray(LDKC, 'draggable')) {}
+
+                            /* {Dropdown}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Drop menus with the dynamic content interoperable with the base element.
+                            */
+                            if (LDKF.isInArray(LDKC, 'dropdown')) {}
+
+                            /* {Dynamic Text}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Text animation-and-modification-based elements.
+                            */
+                            if (LDKF.isInArray(LDKC, 'dynamic-text')) {}
+
+                            /* {Dynamic Time}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Output for JavaScript`s native `Date` object.
+                            */
+                            if (LDKF.isInArray(LDKC, 'dynamic-time')) {}
+
+                            /* {Marquee}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Scroll-independent Carousel.
+                            */
+                            if (LDKF.isInArray(LDKC, 'marquee')) {}
+
+                            /* {Scrollbar}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Dynamic scrollbar elements on DOM elements.
+                            */
+                            if (LDKF.isInArray(LDKC, 'scrollbar')) {}
+
+                            /* {Table}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Modular methods & properties for `HTMLTableElement` and table-based manipulations.
+                            */
+                            if (LDKF.isInArray(LDKC, 'table')) {}
+
+                            /* {Toast}
+                                    --- CHECKPOINT ---
+                                    --- NOTE ---
+                                        #Lapys: Dynamic toast label for the current document.
+                            */
+                            if (LDKF.isInArray(LDKC, 'toast')) {}
+
                             /* {Tooltip}
                                     --- NOTE ---
                                         #Lapys: Dynamic tooltip labels on DOM elements.
@@ -24251,6 +24399,15 @@ window && (function Main(args) {
                             if (LDKF.isInArray(LDKC, 'tooltip')) {
                                 // Register Element > <tooltip-element>
                                 LDKF.windowRegisterElement() && LDKF.windowRegisterElement('tooltip-element');
+
+                                // Function > Tooltip
+                                function Tooltip() {
+                                    // Initialization > Tooltip
+                                    var tooltip = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'tooltip-element');
+
+                                    // Return
+                                    return tooltip
+                                }
 
                                 // Modification > LapysJS Components > Tooltip
                                 LDKF.objectDefineProperty(LapysJSComponents, 'tooltip', {
@@ -24266,15 +24423,6 @@ window && (function Main(args) {
                                     // Writable
                                     writable: !1
                                 });
-
-                                // Function > Tooltip
-                                function Tooltip() {
-                                    // Initialization > Tooltip
-                                    var tooltip = LDKF.documentPrototypeCreateElement(LDKF.get.windowDocument(), 'tooltip-element');
-
-                                    // Return
-                                    return tooltip
-                                }
 
                                 // On Ancestor Element Exists > Insert Tooltip Element
                                 LDKF.onAncestorElementExists(LDKF.get.windowDocument(), function insertTooltipElement(ancestor) {
@@ -24532,6 +24680,9 @@ window && (function Main(args) {
                                                     return LDKF.isSafeNumber(LDKF.number(item)) || item == 'bottom' || item == 'center' || item == 'left' || item == 'right' || item == 'top'
                                                 }), left = position.left, top = position.top;
 
+                                            // Modification > Tooltip > Inner HTML
+                                            LDKF.set.elementPrototypeInnerHTML(tooltip, innerHTML);
+
                                             // Update > (Positions, Top)
                                             positions.length = 2;
                                             top -= getElementHeight(tooltip) - tooltipMargin;
@@ -24580,9 +24731,6 @@ window && (function Main(args) {
                                                 // Tooltip
                                                     // Class
                                                     LDKF.elementPrototypeSetAttribute(tooltip, 'class', classList);
-
-                                                    // Inner HTML
-                                                    LDKF.set.elementPrototypeInnerHTML(tooltip, innerHTML);
 
                                                     // Style
                                                     LDKF.elementPrototypeSetAttribute(tooltip, 'style', 'left: ' + left + 'px !important; top: ' + top + 'px !important;' + properties.style)
