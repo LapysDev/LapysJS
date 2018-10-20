@@ -8414,7 +8414,7 @@ window && (function Main(args) {
                         */
                         LDKF.customFunction = function customFunction() {
                             // Initialization > (Name, Length, Method)
-                            var name = LDKF.string(arguments[0]),
+                            var name = arguments[0],
                                 parameters = arguments[1],
                                 code = arguments[2],
                                 length = arguments.length,
@@ -8424,6 +8424,9 @@ window && (function Main(args) {
                                     [if:else statement]
                             */
                             if (length) {
+                                // Update > Name
+                                name = LDKF.isFunction(name) ? LDKF.get.funcPrototypeName(name) : LDKF.string(name);
+
                                 // Error Handling > Execution
                                 try { LDKO.eval('(function ' + name + '(){})') }
                                 catch (error) { LDKF.throwError('customFunction', 'argument', LDKF.debugMessage("'" + name + "'", ['must', 'a'], 'valid function name')) }
@@ -8449,11 +8452,31 @@ window && (function Main(args) {
                                 );
                                 (length > 2) && (
                                     code = LDKF.isFunction(code) ?
-                                        LDKF.get.funcPrototypeBody(code) :
-                                        (LDKF.isString(code) ?
-                                            code :
-                                            'return ' + LDKF.string(code)
-                                        )
+                                        (function(body) {
+                                            // Logic
+                                            if (!LDKF.isArrowFunction(code) && !LDKF.isClass(code)) {
+                                                // Loop
+                                                while (body[0] == ' ' || body[0] == '\n' || body[0] == '{') {
+                                                    // Update > Body
+                                                    body = LDKF.rendString(body, 1);
+
+                                                    // Logic > Break
+                                                    if (body[0] == '{') break
+                                                }
+
+                                                while (body[body.length - 1] == ' ' || body[body.length - 1] == '\n' || body[body.length - 1] == '}') {
+                                                    // Update > Body
+                                                    body = LDKF.rendString(body, -1);
+
+                                                    // Logic > Break
+                                                    if (body[body.length - 1] == '}') break
+                                                }
+                                            }
+
+                                            // Return
+                                            return body
+                                        })(LDKF.get.funcPrototypeBody(code)) :
+                                        (LDKF.isString(code) ? code : 'return ' + LDKF.string(code))
                                 );
 
                                 // Function > To Parameter Code
@@ -15476,8 +15499,24 @@ window && (function Main(args) {
 
                             // Function
                             window.func = function func(arg) {
-                                // Return
-                                return LDKF.customFunction.apply(LDKF, arguments)
+                                // Initialization > Length
+                                var length = arguments.length;
+
+                                // Logic > Return
+                                if (!length)
+                                    return (function() {});
+
+                                else if (length == 1)
+                                    return LDKF.customFunction('', '', arguments[0]);
+
+                                else if (length == 2)
+                                    return LDKF.customFunction('', arguments[0], arguments[1]);
+
+                                else if (length == 3)
+                                    return LDKF.customFunction(arguments[0], arguments[1], arguments[2]);
+
+                                else
+                                    return LDKF.customFunction(arguments[0], arguments[1], arguments[2], arguments[3])
                             };
 
                             /* Generate Key
@@ -20138,39 +20177,16 @@ window && (function Main(args) {
                             })
 
                         /* Array > Prototype */
-                            /* Add
+                            /* Add To Back
                                     --- NOTE ---
                                         #Lapys: Could also use `Array.prototype.push.apply` which is must faster.
                             */
-                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'add', {
-                                // Configurable
-                                configurable: !0,
-
-                                // Value
-                                value: function addElement() {
-                                    // Initialization > (Array, Iterator, Length)
-                                    var array = this,
-                                        iterator = 0, length = arguments.length;
-
-                                    // Loop > Update > Array
-                                    for (iterator; iterator != length; iterator += 1)
-                                        LDKF.lendArray(array, arguments[iterator]);
-
-                                    // Return
-                                    return array
-                                },
-
-                                // Writable
-                                writable: !0
-                            });
-
-                            // Add To Back
                             LDKF.objectDefineProperty(LDKO.arrayPrototype, 'addToBack', {
                                 // Configurable
                                 configurable: !0,
 
                                 // Value
-                                value: function addElementToBack() {
+                                value: LDKF.arrayPrototypeAddToBack = function addElementToBack() {
                                     // Initialization > (Array, Iterator)
                                     var array = this,
                                         iterator = arguments.length;
@@ -20205,6 +20221,18 @@ window && (function Main(args) {
                                     // Return
                                     return array
                                 },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Add
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'add', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.arrayPrototypeAddToBack,
 
                                 // Writable
                                 writable: !0
@@ -20513,6 +20541,19 @@ window && (function Main(args) {
                                         (arguments.length < 3 || !LDKF.isSafeNumber(end)) && (end = array.length);
                                         start = LDKF.int(start);
                                         end = LDKF.int(end);
+
+                                        // Logic
+                                        if (LDKF.isNegativeInteger(end)) {
+                                            // Update > End
+                                            end = array.length + end;
+                                            LDKF.isNegativeInteger(end) && (end = 0)
+                                        }
+
+                                        if (LDKF.isNegativeInteger(start)) {
+                                            // Update > Start
+                                            start = array.length + start;
+                                            LDKF.isNegativeInteger(start) && (start = 0)
+                                        }
 
                                         // Loop > Update > Array
                                         for (start; start != end; start += 1)
@@ -20981,6 +21022,169 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
+                            // Has Falsy
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'hasFalsy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function hasFalsy() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Iterator
+                                        var iterator = array.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (!array[iterator -= 1])
+                                                return !0;
+
+                                        // Return
+                                        return !1
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Has Duplicate
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'hasDuplicate', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function hasDuplicate() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Indexed, Iterator)
+                                        var indexed = [], iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Logic > Return
+                                            if (LDKF.isInArray(indexed, item))
+                                                return !0;
+
+                                            // Update > Indexed
+                                            indexed[indexed.length] = item
+                                        }
+
+                                        // Return
+                                        return !1
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            /* Has Repeat
+                                    --- NOTE ---
+                                        #Lapys: I know, repeated code...
+                            */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'hasRepeat', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function hasRepeat() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Indexed, Iterator)
+                                        var indexed = [], iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Logic > Return
+                                            if (LDKF.isInArray(indexed, item))
+                                                return !0;
+
+                                            // Update > Indexed
+                                            indexed[indexed.length] = item
+                                        }
+
+                                        // Return
+                                        return !1
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Has Truthy
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'hasTruthy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function hasTruthy() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Iterator
+                                        var iterator = array.length;
+
+                                        // Loop > Logic > Return
+                                        while (iterator)
+                                            if (array[iterator -= 1])
+                                                return !0;
+
+                                        // Return
+                                        return !1
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Last
                             LDKF.objectDefineProperty(LDKO.arrayPrototype, 'last', {
                                 // Configurable
@@ -21174,40 +21378,6 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Remove
-                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'remove', {
-                                // Configurable
-                                configurable: !0,
-
-                                // Value
-                                value: function remove() {
-                                    // Initialization > Array
-                                    var array = this;
-
-                                    /* Logic
-                                            [if:else statement]
-                                    */
-                                    if (LDKF.isArrayObject(array)) {
-                                        // Initialization > (Iterator, Length)
-                                        var iterator = 0, length = arguments.length;
-
-                                        // Loop > Update > Array
-                                        for (iterator; iterator != length; iterator += 1)
-                                            LDKF.removeItemArray(array, arguments[iterator]);
-
-                                        // Return
-                                        return array
-                                    }
-
-                                    else
-                                        // Return
-                                        return []
-                                },
-
-                                // Writable
-                                writable: !0
-                            });
-
                             // Remove All
                             LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeAll', {
                                 // Configurable
@@ -21293,62 +21463,13 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Remove Falsy
-                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFalsy', {
-                                // Configurable
-                                configurable: !0,
-
-                                // Value
-                                value: function removeFalsy() {
-                                    // Initialization > Array
-                                    var array = this;
-
-                                    /* Logic
-                                            [if:else statement]
-                                    */
-                                    if (LDKF.isArrayObject(array)) {
-                                        // Initialization > (Iterator, Length)
-                                        var iterator = 0, length = array.length;
-
-                                        /* Loop
-                                                Index Array.
-                                        */
-                                        for (iterator; iterator != length; iterator += 1) {
-                                            // Initialization > Argument
-                                            var item = array[iterator];
-
-                                            /* Logic
-                                                    [if statement]
-                                            */
-                                            if (!item) {
-                                                // Update > Array
-                                                LDKF.removeItemArray(array, item);
-
-                                                // Break
-                                                break
-                                            }
-                                        }
-
-                                        // Return
-                                        return array
-                                    }
-
-                                    else
-                                        // Return
-                                        return []
-                                },
-
-                                // Writable
-                                writable: !0
-                            });
-
                             // Remove Falsy From Back
                             LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFalsyFromBack', {
                                 // Configurable
                                 configurable: !0,
 
                                 // Value
-                                value: function removeFalsyFromBack() {
+                                value: LDKF.arrayPrototypeRemoveFalsyFromBack = function removeFalsyFromBack() {
                                     // Initialization > Array
                                     var array = this;
 
@@ -21446,6 +21567,18 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
+                            // Remove Falsy
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFalsy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.arrayPrototypeRemoveFalsyFromBack,
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Remove From Back
                             LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeFromBack', {
                                 // Configurable
@@ -21512,13 +21645,25 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Remove Duplicated
-                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicated', {
+                            // Remove
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'remove', {
                                 // Configurable
                                 configurable: !0,
 
                                 // Value
-                                value: function removeDuplicated() {
+                                value: LDKF.arrayPrototypeRemoveFromBack,
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Duplicated From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicatedFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.arrayPrototypeRemoveDuplicatedFromBack = function removeDuplicatedFromBack() {
                                     // Initialization > Array
                                     var array = this;
 
@@ -21526,9 +21671,9 @@ window && (function Main(args) {
                                             [if:else statement]
                                     */
                                     if (LDKF.isArrayObject(array)) {
-                                        // Initialization > (Frequencies, Iterator, Object)
+                                        // Initialization > (Frequencies, Iterator)
                                         var frequencies = LDKF.getArrayFrequencies(array),
-                                            iterator = frequencies.length, object = {};
+                                            iterator = frequencies.length;
 
                                         /* Loop
                                                 Index Frequencies.
@@ -21539,19 +21684,44 @@ window && (function Main(args) {
 
                                             // Remove Item Array
                                             (frequency.frequency == 1) || (function removeItemArray(match) {
-                                                // Initialization > (Array Iterator, Count)
-                                                var arrayIterator = array.length, count = 0;
+                                                // Initialization > (Iterator, Length, Match (Found, Iterator))
+                                                var iterator = 0, length = array.length,
+                                                    matchFound = !1,
+                                                    matchIterator = -1;
 
-                                                // Loop > Update > (Array, Count)
-                                                while (arrayIterator) {
-                                                    (array[arrayIterator -= 1] === match) && (count += 1);
-                                                    (count == 2) && (array[arrayIterator] = object)
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Item
+                                                    var item = array[iterator];
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (item === match)
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (matchFound) {
+                                                            // Update > Array
+                                                            LDKF.removeItemArray(array, item, 1);
+
+                                                            // Break
+                                                            break
+                                                        }
+
+                                                        else {
+                                                            // Update > (Array, Match Found)
+                                                            array[matchIterator = iterator] = {item: item};
+                                                            matchFound = !0
+                                                        }
                                                 }
+
+                                                // Update > Array
+                                                (matchIterator == -1) || (array[matchIterator] = array[matchIterator].item)
                                             })(frequency.item)
                                         }
-
-                                        // Update > Array
-                                        LDKF.removeItemArray(array, object, array.length);
 
                                         // Return
                                         return array
@@ -21566,54 +21736,227 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Remove Duplicated From Back --- CHECKPOINT ---
-                            // LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicatedFromBack');
+                            // Remove Duplicated From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicatedFromFront', {
+                                // Configurable
+                                configurable: !0,
 
-                            // Remove Duplicated From Front --- CHECKPOINT ---
-                            // Remove Duplicates --- CHECKPOINT ---
-                            // Remove Duplicates From Back --- CHECKPOINT ---
-                            // Remove Duplicates From Front --- CHECKPOINT ---
-                            // Remove Repeated --- CHECKPOINT ---
+                                // Value
+                                value: function removeDuplicatedFromFront() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Update > Array
+                                        LDKF.reverseArray(array);
+                                        LDKF.arrayPrototypeRemoveDuplicatedFromBack.call(array);
+                                        LDKF.reverseArray(array);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Duplicated
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicated', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.arrayPrototypeRemoveDuplicatedFromBack,
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Duplicates From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicatesFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.arrayPrototypeRemoveDuplicatesFromBack = function removeDuplicatesFromBack() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            // Remove Item Array
+                                            (frequency.frequency == 1) || (function removeItemArray(match) {
+                                                // Initialization > (Iterator, Length, Match (Found, Iterator))
+                                                var iterator = 0, length = array.length,
+                                                    matchFound = !1,
+                                                    matchIterator = -1;
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                for (iterator; iterator != length; iterator += 1) {
+                                                    // Initialization > Item
+                                                    var item = array[iterator];
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (item === match)
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (matchFound)
+                                                            // Update > Array
+                                                            LDKF.removeItemArray(array, item, 1);
+
+                                                        else {
+                                                            // Update > (Array, Match Found)
+                                                            array[matchIterator = iterator] = {item: item};
+                                                            matchFound = !0
+                                                        }
+                                                }
+
+                                                // Update > Array
+                                                (matchIterator == -1) || (array[matchIterator] = array[matchIterator].item)
+                                            })(frequency.item)
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Duplicates From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicatesFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function removeDuplicatesFromFront() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Update > Array
+                                        LDKF.reverseArray(array);
+                                        LDKF.arrayPrototypeRemoveDuplicatesFromBack.call(array);
+                                        LDKF.reverseArray(array);
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Remove Duplicates
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'removeDuplicates', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKF.arrayPrototypeRemoveDuplicatesFromBack,
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // Remove Repeated From Back --- CHECKPOINT ---
                             // Remove Repeated From Front --- CHECKPOINT ---
+                            // Remove Repeated --- CHECKPOINT ---
+
                             // Remove Repeats --- CHECKPOINT ---
+
                             // Remove Truthies --- CHECKPOINT ---
-                            // Remove Truthy --- CHECKPOINT ---
+
                             // Remove Truthy From Back --- CHECKPOINT ---
                             // Remove Truthy From Front --- CHECKPOINT ---
+                            // Remove Truthy --- CHECKPOINT ---
+
                             // Repeat --- CHECKPOINT ---
-                            // Replace --- CHECKPOINT ---
+
                             // Replace All --- CHECKPOINT ---
+
                             // Replace Falsies --- CHECKPOINT ---
-                            // Replace Falsy --- CHECKPOINT ---
+
                             // Replace Falsy From Back --- CHECKPOINT ---
                             // Replace Falsy From Front --- CHECKPOINT ---
+                            // Replace Falsy --- CHECKPOINT ---
+
                             // Replace From Back --- CHECKPOINT ---
                             // Replace From Front --- CHECKPOINT ---
-                            // Replace Duplicated --- CHECKPOINT ---
+                            // Replace --- CHECKPOINT ---
+
                             // Replace Duplicated From Back --- CHECKPOINT ---
                             // Replace Duplicated From Front --- CHECKPOINT ---
-                            // Replace Duplicates --- CHECKPOINT ---
+                            // Replace Duplicated --- CHECKPOINT ---
+
                             // Replace Duplicates From Back --- CHECKPOINT ---
                             // Replace Duplicates From Front --- CHECKPOINT ---
-                            // Replace Repeated --- CHECKPOINT ---
+                            // Replace Duplicates --- CHECKPOINT ---
+
                             // Replace Repeated From Back --- CHECKPOINT ---
                             // Replace Repeated From Front --- CHECKPOINT ---
+                            // Replace Repeated --- CHECKPOINT ---
+
                             // Replace Repeats --- CHECKPOINT ---
+
                             // Replace Truthies --- CHECKPOINT ---
-                            // Replace Truthy --- CHECKPOINT ---
+
                             // Replace Truthy From Back --- CHECKPOINT ---
                             // Replace Truthy From Front --- CHECKPOINT ---
+                            // Replace Truthy --- CHECKPOINT ---
+
                             /* Swap
                                     --- CHECKPOINT ---
                                     --- NOTE ---
                                         #Lapys: Swaps two members of an array via indexes.
                             */
+
                             /* Transform
                                     --- CHECKPOINT ---
                                     --- NOTE ---
                                         #Lapys: Update an array based on a filter matching function.
                             */
+
                             // Trim --- CHECKPOINT ---
                             // Trim Left --- CHECKPOINT ---
                             // Trim Right --- CHECKPOINT ---
