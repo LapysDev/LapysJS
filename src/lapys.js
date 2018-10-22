@@ -23957,6 +23957,104 @@ window && (function Main(args) {
                                 writable: !1
                             });
 
+                            // Are Equal
+                            LDKF.objectDefineProperty(LDKO.boolean, 'areEqual', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function areEqual(argA, argB) {
+                                    // Error Handling > Return
+                                    try { return argA === argB }
+                                    catch (error) {}
+
+                                    // Return
+                                    return !1
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Are Similar
+                            LDKF.objectDefineProperty(LDKO.boolean, 'areSimilar', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function areSimilar(argA, argB) {
+                                    // Error Handling > Return
+                                    try { return argA == argB }
+                                    catch (error) {}
+
+                                    // Return
+                                    return !1
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Is False
+                            LDKF.objectDefineProperty(LDKO.boolean, 'isFalse', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function isFalse(arg) {
+                                    // Return
+                                    return !LDKF.isConstructible(arg) || (!arg && LDKF.isBoolean(arg)) || (arg.constructor === LDKO.boolean && !arg.valueOf())
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Is Falsy
+                            LDKF.objectDefineProperty(LDKO.boolean, 'isFalsy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function isFalsy(arg) {
+                                    // Return
+                                    return !arg
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Is True
+                            LDKF.objectDefineProperty(LDKO.boolean, 'isTrue', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function isTrue(arg) {
+                                    // Return
+                                    return LDKF.isConstructible(arg) || (arg && LDKF.isBoolean(arg)) || (arg.constructor === LDKO.boolean && arg.valueOf())
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Is Truthy
+                            LDKF.objectDefineProperty(LDKO.boolean, 'isTruthy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function isTruthy(arg) {
+                                    // Return
+                                    return !!arg
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
                             // NAND
                             LDKF.objectDefineProperty(LDKO.boolean, 'NAND', {
                                 // Configurable
@@ -24064,11 +24162,22 @@ window && (function Main(args) {
                                     // Initialization > (Count, Iterator)
                                     var count = 0, iterator = arguments.length;
 
-                                    // Loop > Update > Count
-                                    while (iterator) arguments[iterator -= 1] && (count += 1);
+                                    // Loop
+                                    while (iterator) {
+                                        // Logic
+                                        if (arguments[iterator -= 1])
+                                            // Logic
+                                            if (count)
+                                                // Return
+                                                return 0;
+
+                                            else
+                                                // Update > Count
+                                                count = 1
+                                    }
 
                                     // Logic > Return
-                                    if (LDKO.booleanAND(count, count % 2)) return 1;
+                                    if (count == 1) return 1;
 
                                     // Return
                                     return 0
@@ -24079,6 +24188,24 @@ window && (function Main(args) {
                             });
 
                         /* Document > Prototype */
+                            // Favorite Icon --- CHECKPOINT ---
+                            LDKF.objectDefineProperty(LDKO.documentPrototype, 'favicon', (function() {
+                                // Initialization > Relationships
+                                var relationships = ['apple-touch-icon', 'icon', 'shortcut icon'];
+
+                                // Return
+                                return {
+                                    // Configurable
+                                    configurable: !0,
+
+                                    // Get
+                                    get: function favicon() {},
+
+                                    // Set
+                                    set: function favicon() {}
+                                }
+                            })());
+
                         /* Document Fragment > Prototype */
                         /* Element > Prototype */
                         /* Error > Prototype */
