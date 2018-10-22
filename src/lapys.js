@@ -23877,7 +23877,207 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                        /* Boolean > Prototype */
+                        /* Boolean
+                                --- NOTE ---
+                                    #Lapys: Is this needed?
+                        */
+                            // All Falsy
+                            LDKF.objectDefineProperty(LDKO.boolean, 'allFalsy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function allFalsy() {
+                                    // Initialization > Iterator
+                                    var iterator = arguments.length;
+
+                                    // Loop > Logic > Return
+                                    while (iterator)
+                                        if (arguments[iterator -= 1])
+                                            return !1;
+
+                                    // Logic > Return
+                                    if (!iterator)
+                                        return !0;
+
+                                    // Return
+                                    return !1
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // All Truthy
+                            LDKF.objectDefineProperty(LDKO.boolean, 'allTruthy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function allTruthy() {
+                                    // Initialization > Iterator
+                                    var iterator = arguments.length;
+
+                                    // Loop > Logic > Return
+                                    while (iterator)
+                                        if (!arguments[iterator -= 1])
+                                            return !1;
+
+                                    // Logic > Return
+                                    if (!iterator)
+                                        return !0;
+
+                                    // Return
+                                    return !1
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // AND
+                            LDKF.objectDefineProperty(LDKO.boolean, 'AND', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: LDKO.booleanAND = function AND(inputA, inputB) {
+                                    // Logic > Return
+                                    if (LDKO.booleanNOT(inputA)) return 0;
+                                    if (LDKO.booleanNOT(inputB)) return 0;
+
+                                    // Return
+                                    return 1
+                                },
+
+                                // Writable
+                                writable: !1
+                            });
+
+                            // NAND
+                            LDKF.objectDefineProperty(LDKO.boolean, 'NAND', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function NAND(inputA, inputB) {
+                                    // Return
+                                    return LDKO.booleanNOT(LDKO.booleanAND(inputA, inputB))
+                                },
+
+                                // Writable
+                                writable: !1
+                            });
+
+                            // NOR
+                            LDKF.objectDefineProperty(LDKO.boolean, 'NOR', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function NOR(inputA, inputB) {
+                                    // Return
+                                    return LDKO.booleanNOT(LDKO.booleanOR(inputA, inputB))
+                                },
+
+                                // Writable
+                                writable: !1
+                            });
+
+                            // NOT
+                            LDKF.objectDefineProperty(LDKO.boolean, 'NOT', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: LDKO.booleanNOT = function NOT(input) {
+                                    // Return
+                                    return input ? 0 : 1
+                                },
+
+                                // Writable
+                                writable: !1
+                            });
+
+                            // OR
+                            LDKF.objectDefineProperty(LDKO.boolean, 'OR', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: LDKO.booleanOR = function OR(inputA, inputB) {
+                                    // Logic > Return
+                                    if (inputA) return 1;
+                                    if (inputB) return 1;
+
+                                    // Return
+                                    return 0
+                                },
+
+                                // Writable
+                                writable: !1
+                            });
+
+                            // XNOR
+                            LDKF.objectDefineProperty(LDKO.boolean, 'XNOR', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: function XNOR(inputs) {
+                                    // Return
+                                    return LDKO.booleanNOT(LDKO.booleanXOR.apply(LDKO.boolean, argument))
+                                },
+
+                                // Writable
+                                writable: !1
+                            });
+
+                            // XOR
+                            LDKF.objectDefineProperty(LDKO.boolean, 'XOR', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Enumerable
+                                enumerable: !0,
+
+                                // Value
+                                value: LDKO.booleanXOR = function XOR(inputs) {
+                                    // Initialization > (Count, Iterator)
+                                    var count = 0, iterator = arguments.length;
+
+                                    // Loop > Update > Count
+                                    while (iterator) arguments[iterator -= 1] && (count += 1);
+
+                                    // Logic > Return
+                                    if (LDKO.booleanAND(count, count % 2)) return 1;
+
+                                    // Return
+                                    return 0
+                                },
+
+                                // Writable
+                                writable: !1
+                            });
+
                         /* Document > Prototype */
                         /* Document Fragment > Prototype */
                         /* Element > Prototype */
