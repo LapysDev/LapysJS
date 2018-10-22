@@ -20673,7 +20673,7 @@ window && (function Main(args) {
                                 configurable: !0,
 
                                 // Value
-                                value: function fill(value, start, end) {
+                                value: LDKO.arrayPrototypeFill = function fill(value, start, end) {
                                     // Initialization > Array
                                     var array = this;
 
@@ -22595,63 +22595,1287 @@ window && (function Main(args) {
                                 writable: !0
                             });
 
-                            // Replace All --- CHECKPOINT ---
+                            /* Replace All
+                                    --- NOTE ---
+                                        #Lapys: Oddly enough, replacing array items is faster
+                                            than removing them.
+                            */
                             LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceAll', {
                                 // Configurable
                                 configurable: !0,
 
                                 // Value
-                                value: function replaceAll() {},
+                                value: function replaceAll(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Length
+                                        var length = arguments.length;
+
+                                        /* Logic
+                                                [if:else if:else statement]
+                                        */
+                                        if (!length)
+                                            // Return
+                                            return array;
+
+                                        else if (length == 1) {
+                                            // Initialization > (Iterator, Match)
+                                            var iterator = array.length, match = arguments[0];
+
+                                            /* Loop
+                                                    Index Array.
+                                            */
+                                            while (iterator) {
+                                                // Initialization > Item
+                                                var item = array[iterator -= 1];
+
+                                                // Update > Array
+                                                (item === match) && (array[iterator] = void 0)
+                                            }
+
+                                            // Return
+                                            return array
+                                        }
+
+                                        else {
+                                            // Initialization > (Arguments, Iterator, Replacement)
+                                            var args = LDKF.cloneArray(arguments),
+                                                iterator = length - 1, replacement = args[iterator];
+
+                                            /* Loop
+                                                    Index Arguments.
+                                            */
+                                            while (iterator) {
+                                                // Initialization > (Array Iterator, Match)
+                                                var arrayIterator = array.length,
+                                                    match = args[iterator -= 1];
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                while (arrayIterator) {
+                                                    // Initialization > Item
+                                                    var item = array[arrayIterator -= 1];
+
+                                                    // Update > Array
+                                                    (item === match) && (array[arrayIterator] = replacement)
+                                                }
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
 
                                 // Writable
                                 writable: !0
                             });
 
-                            // Replace Falsies --- CHECKPOINT ---
+                            // Replace Falsies
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceFalsies', {
+                                // Configurable
+                                configurable: !0,
 
-                            // Replace Falsy From Back --- CHECKPOINT ---
-                            // Replace Falsy From Front --- CHECKPOINT ---
-                            // Replace Falsy --- CHECKPOINT ---
+                                // Value
+                                value: function replaceFalsies(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
 
-                            // Replace From Back --- CHECKPOINT ---
-                            // Replace From Front --- CHECKPOINT ---
-                            // Replace --- CHECKPOINT ---
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Iterator
+                                        var iterator = array.length;
 
-                            // Replace Duplicated From Back --- CHECKPOINT ---
-                            // Replace Duplicated From Front --- CHECKPOINT ---
-                            // Replace Duplicated --- CHECKPOINT ---
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
 
-                            // Replace Duplicates From Back --- CHECKPOINT ---
-                            // Replace Duplicates From Front --- CHECKPOINT ---
-                            // Replace Duplicates --- CHECKPOINT ---
+                                            // Update > Array
+                                            item || (array[iterator] = replacement)
+                                        }
 
-                            // Replace Repeated From Back --- CHECKPOINT ---
-                            // Replace Repeated From Front --- CHECKPOINT ---
-                            // Replace Repeated --- CHECKPOINT ---
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Falsy From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceFalsyFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeReplaceFalsyFromBack = function replaceFalsyFromBack(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Item
+                                            var item = array[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (!item) {
+                                                // Update > Array
+                                                array[iterator] = replacement;
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Falsy From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceFalsyFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceFalsyFromFront(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Iterator
+                                        var iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (!item) {
+                                                // Update > Array
+                                                array[iterator] = replacement;
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Falsy
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceFalsy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceFalsy(replacement) {
+                                    // Return
+                                    return LDKO.arrayPrototypeReplaceFalsyFromBack.call(this, replacement)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeReplaceFromBack = function replaceFromBack() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Length
+                                        var length = arguments.length;
+
+                                        // Logic > Return
+                                        if (!length)
+                                            return array;
+
+                                        // Initialization > Iterator
+                                        var iterator = length == 1 ? length : arguments.length - 1,
+                                            replacement = length == 1 ? void 0 : arguments[iterator];
+
+                                        /* Loop
+                                                Index Arguments.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > (Match, Array (Iterator, Length))
+                                            var match = arguments[iterator -= 1],
+                                                arrayIterator = 0,
+                                                arrayLength = array.length;
+
+                                            /* Loop
+                                                    Index Array Iterator.
+                                            */
+                                            for (arrayIterator; arrayIterator != arrayLength; arrayIterator += 1) {
+                                                // Initialization > Item
+                                                var item = array[arrayIterator];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (match === item) {
+                                                    // Update > Array
+                                                    array[arrayIterator] = replacement;
+
+                                                    // Break
+                                                    break
+                                                }
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceFromFront() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Length
+                                        var length = arguments.length;
+
+                                        // Logic > Return
+                                        if (!length)
+                                            return array;
+
+                                        // Initialization > Iterator
+                                        var iterator = length == 1 ? length : arguments.length - 1,
+                                            replacement = length == 1 ? void 0 : arguments[iterator];
+
+                                        /* Loop
+                                                Index Arguments.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > (Match, Array Iterator)
+                                            var match = arguments[iterator -= 1],
+                                                arrayIterator = array.length;
+
+                                            /* Loop
+                                                    Index Array Iterator.
+                                            */
+                                            while (arrayIterator) {
+                                                // Initialization > Item
+                                                var item = array[arrayIterator -= 1];
+
+                                                /* Logic
+                                                        [if statement]
+                                                */
+                                                if (match === item) {
+                                                    // Update > Array
+                                                    array[arrayIterator] = replacement;
+
+                                                    // Break
+                                                    break
+                                                }
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replace', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replace(replacement) {
+                                    // Return
+                                    return LDKO.arrayPrototypeReplaceFromBack.call(this, replacement)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Duplicated From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceDuplicatedFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeReplaceDuplicatedFromBack = function replaceDuplicatedFromBack(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies_R(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (frequency.frequency != 1) {
+                                                // Initialization > (Match, Length, Original Found)
+                                                var match = frequency.item, length = array.length,
+                                                    originalFound = !1;
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                for (iterator = 0; iterator != length; iterator += 1) {
+                                                    // Initialization > Item
+                                                    var item = array[iterator];
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (item === match)
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (originalFound) {
+                                                            // Update > Array
+                                                            array[iterator] = replacement;
+
+                                                            // Break
+                                                            break
+                                                        }
+
+                                                        else
+                                                            // Update > Original Found
+                                                            originalFound = !0
+                                                }
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Duplicated From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceDuplicatedFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceDuplicatedFromFront(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (frequency.frequency != 1) {
+                                                // Initialization > (Match, Iterator, Original Found)
+                                                var match = frequency.item, iterator = array.length,
+                                                    originalFound = !1;
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = array[iterator -= 1];
+
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (item === match)
+                                                        /* Logic
+                                                                [if:else statement]
+                                                        */
+                                                        if (originalFound) {
+                                                            // Update > Array
+                                                            array[iterator] = replacement;
+
+                                                            // Break
+                                                            break
+                                                        }
+
+                                                        else
+                                                            // Update > Original Found
+                                                            originalFound = !0
+                                                }
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Duplicated
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceDuplicated', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceDuplicated(replacement) {
+                                    // Return
+                                    return LDKO.arrayPrototypeReplaceDuplicatedFromBack.call(this, replacement)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Duplicates From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceDuplicatesFromBack', {
+                                //  Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeReplaceDuplicatesFromBack = function replaceDuplicatesFromBack(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies_R(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (frequency.frequency != 1) {
+                                                // Initialization > (Former Iterator, Match, Length, Original Found)
+                                                var formerIterator = iterator,
+                                                    match = frequency.item, length = array.length,
+                                                    originalFound = !1;
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                for (iterator = 0; iterator != length; iterator += 1) {
+                                                    // Initialization > Item
+                                                    var item = array[iterator];
+
+                                                    // Update > (Array, Original Found)
+                                                    (item === match) && (originalFound ? array[iterator] = replacement : originalFound = !0)
+                                                }
+
+                                                // Update > Iterator
+                                                iterator = formerIterator
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Duplicates From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceDuplicatesFromFront', {
+                                //  Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceDuplicatesFromFront(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index Frequencies.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (frequency.frequency != 1) {
+                                                // Initialization > (Former Iterator, Match, Length, Original Found)
+                                                var formerIterator = iterator,
+                                                    match = frequency.item, iterator = array.length,
+                                                    originalFound = !1;
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                while (iterator) {
+                                                    // Initialization > Item
+                                                    var item = array[iterator -= 1];
+
+                                                    // Update > (Array, Original Found)
+                                                    (item === match) && (originalFound ? array[iterator] = replacement : originalFound = !0)
+                                                }
+
+                                                // Update > Iterator
+                                                iterator = formerIterator
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Duplicates
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceDuplicates', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceDuplicates(replacement) {
+                                    // Return
+                                    return LDKO.arrayPrototypeReplaceDuplicatesFromBack.call(this, replacement)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Repeated From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceRepeatedFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeReplaceRepeatedFromBack = function replaceRepeatedFromBack(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies_R(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index Frequency.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (frequency.frequency != 1) {
+                                                // Initialization > (Array (Iterator, Length), Match)
+                                                var arrayIterator = 0, arrayLength = array.length,
+                                                    match = frequency.item;
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                for (arrayIterator; arrayIterator != arrayLength; arrayIterator += 1)
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (array[arrayIterator] === match) {
+                                                        // Update > Array
+                                                        array[arrayIterator] = replacement;
+
+                                                        // Break
+                                                        break
+                                                    }
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Repeated From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceRepeatedFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceRepeatedFromFront(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index Frequency.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (frequency.frequency != 1) {
+                                                // Initialization > (Array Iterator, Match)
+                                                var arrayIterator = array.length,
+                                                    match = frequency.item;
+
+                                                /* Loop
+                                                        Index Array.
+                                                */
+                                                while (arrayIterator)
+                                                    /* Logic
+                                                            [if statement]
+                                                    */
+                                                    if (array[arrayIterator -= 1] === match) {
+                                                        // Update > Array
+                                                        array[arrayIterator] = replacement;
+
+                                                        // Break
+                                                        break
+                                                    }
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Repeated
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceRepeated', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceRepeated(replacement) {
+                                    // Return
+                                    return LDKO.arrayPrototypeReplaceRepeatedFromBack.call(this, replacement)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
 
                             // Replace Repeats --- CHECKPOINT ---
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceRepeats', {
+                                // Configurable
+                                configurable: !0,
 
-                            // Replace Truthies --- CHECKPOINT ---
+                                // Value
+                                value: function replaceRepeats(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
 
-                            // Replace Truthy From Back --- CHECKPOINT ---
-                            // Replace Truthy From Front --- CHECKPOINT ---
-                            // Replace Truthy --- CHECKPOINT ---
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Frequencies, Iterator)
+                                        var frequencies = LDKF.getArrayFrequencies(array),
+                                            iterator = frequencies.length;
+
+                                        /* Loop
+                                                Index
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Frequency
+                                            var frequency = frequencies[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (frequency.frequency != 1) {
+                                                // Initialization > (Array Iterator, Match)
+                                                var arrayIterator = array.length,
+                                                    match = frequency.item;
+
+                                                // Loop > Update > Array
+                                                while (arrayIterator)
+                                                    (array[arrayIterator -= 1] === match) && (array[arrayIterator] = replacement)
+                                            }
+                                        }
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Truthies
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceTruthies', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceTruthies() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Iterator
+                                        var iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            // Update > Array
+                                            item && (array[iterator] = replacement)
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Truthy From Back
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceTruthyFromBack', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeReplaceTruthyFromBack = function replaceTruthyFromBack(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = 0, length = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        for (iterator; iterator != length; iterator += 1) {
+                                            // Initialization > Item
+                                            var item = array[iterator];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (item) {
+                                                // Update > Array
+                                                array[iterator] = replacement;
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Truthy From Front
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceTruthyFromFront', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceTruthyFromFront(replacement) {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > Iterator
+                                        var iterator = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Item
+                                            var item = array[iterator -= 1];
+
+                                            /* Logic
+                                                    [if statement]
+                                            */
+                                            if (item) {
+                                                // Update > Array
+                                                array[iterator] = replacement;
+
+                                                // Break
+                                                break
+                                            }
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Replace Truthy
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'replaceTruthy', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function replaceTruthy(replacement) {
+                                    // Return
+                                    return LDKO.arrayPrototypeReplaceTruthyFromBack.call(this, replacement)
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
 
                             /* Swap
-                                    --- CHECKPOINT ---
                                     --- NOTE ---
                                         #Lapys: Swaps two members of an array via indexes.
                             */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'swap', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function swap() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Iterator, Length)
+                                        var iterator = arguments.length, length = array.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator) {
+                                            // Initialization > Index
+                                            var index = arguments[iterator -= 1];
+
+                                            // Error
+                                            (!LDKF.isSafeInteger(index) || LDKF.isNegativeInteger(index)) && LDKF.throwError(index, ['must', 'a'], 'valid array length')
+                                        }
+
+                                        // Update > Iterator
+                                        iterator = arguments.length;
+
+                                        /* Loop
+                                                Index Array.
+                                        */
+                                        while (iterator != 1) {
+                                            // Initialization > ((Previous) Index, Temporary Data)
+                                            var index = arguments[iterator -= 1],
+                                                previousIndex = arguments[iterator - 1],
+                                                tmp = array[index];
+
+                                            // Update > Array
+                                            array[index] = array[previousIndex];
+                                            array[previousIndex] = tmp
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
 
                             /* Transform
-                                    --- CHECKPOINT ---
                                     --- NOTE ---
                                         #Lapys: Update an array based on a filter matching function.
                             */
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'transform', {
+                                // Configurable
+                                configurable: !0,
 
-                            // Trim --- CHECKPOINT ---
-                            // Trim Left --- CHECKPOINT ---
-                            // Trim Right --- CHECKPOINT ---
+                                // Value
+                                value: function transform() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Filtered, Iterator, Length)
+                                        var filtered = LDKF.filterArray.apply(LDKF, LDKF.spliceArray(LDKF.cloneArray(arguments), 0, array)),
+                                            iterator = 0, length = filtered.length;
+
+                                        // Update > Array
+                                        LDKF.resetArray(array);
+
+                                        // Loop > Update > Array
+                                        for (iterator; iterator != length; iterator += 1)
+                                            array[iterator] = filtered[iterator];
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Trim
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'trim', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: function trim() {
+                                    // Return
+                                    return LDKF.isArrayObject(this) ? LDKO.arrayPrototypeTrimLeft.apply(LDKO.arrayPrototypeTrimRight.apply(this, arguments), arguments) : []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Trim Left
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'trimLeft', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeTrimLeft = function trimLeft() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Arguments, Length, Match, Trimmed)
+                                        var args = arguments,
+                                            length = args.length,
+                                            match = length ? function match(item) {
+                                                // Initialization > Iterator
+                                                var iterator = length;
+
+                                                // Loop > Logic > Return
+                                                while (iterator)
+                                                    if (args[iterator -= 1] === item)
+                                                        return !0;
+                                            } : function match() { return LDKF.isVoid(arguments[0]) },
+                                            trimmed = array;
+
+                                        // Loop > Update > Trimmed
+                                        while (match(trimmed[0]) && trimmed.length)
+                                            trimmed = LDKF.rendArray(trimmed, 1);
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (array.length != (length = trimmed.length)) {
+                                            // Update > Array
+                                            LDKF.resetArray(array);
+
+                                            // Loop > Update > Array
+                                            while (length)
+                                                array[length -= 1] = trimmed[length]
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
+
+                            // Trim Right
+                            LDKF.objectDefineProperty(LDKO.arrayPrototype, 'trimRight', {
+                                // Configurable
+                                configurable: !0,
+
+                                // Value
+                                value: LDKO.arrayPrototypeTrimRight = function trimRight() {
+                                    // Initialization > Array
+                                    var array = this;
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (LDKF.isArrayObject(array)) {
+                                        // Initialization > (Arguments, Length, Match, Trimmed)
+                                        var args = arguments,
+                                            length = args.length,
+                                            match = length ? function match(item) {
+                                                // Initialization > Iterator
+                                                var iterator = length;
+
+                                                // Loop > Logic > Return
+                                                while (iterator)
+                                                    if (args[iterator -= 1] === item)
+                                                        return !0;
+                                            } : function match() { return LDKF.isVoid(arguments[0]) },
+                                            trimmed = array;
+
+                                        // Loop > Update > Trimmed
+                                        while (match(trimmed[trimmed.length - 1]) && trimmed.length)
+                                            trimmed = LDKF.rendArray(trimmed, -1);
+
+                                        /* Logic
+                                                [if statement]
+                                        */
+                                        if (array.length != (length = trimmed.length)) {
+                                            // Update > Array
+                                            LDKF.resetArray(array);
+
+                                            // Loop > Update > Array
+                                            while (length)
+                                                array[length -= 1] = trimmed[length]
+                                        }
+
+                                        // Return
+                                        return array
+                                    }
+
+                                    else
+                                        // Return
+                                        return []
+                                },
+
+                                // Writable
+                                writable: !0
+                            });
 
                         /* Boolean > Prototype */
                         /* Document > Prototype */
@@ -22659,7 +23883,7 @@ window && (function Main(args) {
                         /* Element > Prototype */
                         /* Error > Prototype */
                         /* Function > Prototype */
-                            // Invoke --- CHECKPOIN ---
+                            // Invoke --- CHECKPOINT ---
 
                         /* HTML Element > Prototype */
                             // Add Attribute Entry
