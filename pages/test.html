@@ -77,7 +77,7 @@
                     --- NOTE ---
                         #Lapys: Set a random theme color (a monochrome screen could be unstimulating).
             */
-            document.body.hasAttribute('theme') || document.body.setAttribute('theme', (function randomItem(themes) { return themes[(themes.length * Math.random()) | 0] })(themes));
+            document.body.hasAttribute('theme') || document.body.setAttribute('theme', (function randomItem(themes) { return themes[(themes.length * Math.random()) | 0] })(themes))
         </script>
 
         <!-- Document Script -->
@@ -87,14 +87,14 @@
                 // Allow Application Features
                 allowAppFeatures: true,
 
-                // Components
-                components: ['scrollbar', 'tooltip'],
-
                 // Debug Mode
                 debugMode: true,
 
-                // Features
-                features: ['script-attribute']
+                // Dynamic Elements
+                dynamicElements: ['scrollbar', 'tooltip'],
+
+                // Dynamic Features
+                dynamicFeatures: ['script-attribute']
             }
         </script>
 

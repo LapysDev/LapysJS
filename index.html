@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!--[if lt IE 7]> <html type="internet-explorer-7 internet-explorer-8 internet-explorer-9"> <![endif]-->
+<!--[if IE 7]>    <html type="internet-explorer-8 internet-explorer-9"> <![endif]-->
+<!--[if IE 8]>    <html class=internet-explorer-9> <![endif]-->
 <html>
 <head>
     <!-- Document Metadata -->
@@ -42,12 +45,12 @@
     <!-- Main -->
     <main>
         <!-- Landing -->
-        <jumbotron-element class='center flex jumbotron reverse' id=landing>
+        <jumbotron-element class="center flex jumbotron reverse" id=landing>
             <!-- Reflection -->
             <div role=reflection> </div>
 
             <!-- Header Container -->
-            <hgroup class='center col-1 flex min-grid-h-2 reverse' role=header-container>
+            <hgroup class="center col-1 flex min-grid-h-2 reverse" role=header-container>
                 <!-- Header -->
                 <h1 role=header script=h1.write(app.name)> </h1>
 
@@ -56,7 +59,7 @@
             </hgroup>
 
             <!-- Introduction Navigation -->
-            <nav class='col-grp col-1 fixed-grp m-row-grp' role=introduction-navigation script="
+            <nav class="col-grp col-1 fixed-grp m-row-grp" role=introduction-navigation script="
                 repeat(array(nav.children), function(key, value) {
                     var child = value;
                     child.addEvent('mouseleave', function blur() { $$('jumbotron-element#landing').removeAttributeEntry('role', 'focus-only') });
@@ -64,7 +67,7 @@
                 })
             ">
                 <!-- Documentation/ Learn -->
-                <div class='col-1 m-grid-1' role='dynamic interactive' script="
+                <div class="col-1 m-grid-1" role="dynamic interactive" script="
                     function modify() { (div.innerHTML.trim() == 'Learn') || div.write({duration: 250, mode: 'clear'}).with(' Learn ', {duration: 250, mode: 'type'}) }
                     function reset() { (div.innerHTML.trim() == 'Documentation') || div.write({duration: 250, mode: 'clear'}).with(' Documentation ', {duration: 250, mode: 'type'}) }
 
@@ -74,19 +77,19 @@
                 "> Documentation </div>
 
                 <!-- CSS -->
-                <div class='col-1 m-grid-1' role=interactive> CSS </div>
+                <div class="col-1 m-grid-1" role=interactive> CSS </div>
 
                 <!-- JavaScript -->
-                <div class='col-1 m-grid-1' role=interactive> JavaScript </div>
+                <div class="col-1 m-grid-1" role=interactive> JavaScript </div>
 
                 <!-- Projects -->
-                <div class='col-1 m-grid-1' role=interactive> Projects </div>
+                <div class="col-1 m-grid-1" role=interactive> Projects </div>
 
                 <!-- Themes -->
-                <div class='col-1 m-grid-1' role=interactive> Themes </div>
+                <div class="col-1 m-grid-1" role=interactive> Themes </div>
 
                 <!-- Story -->
-                <div class='col-1 m-grid-1' role=interactive> Story </div>
+                <div class="col-1 m-grid-1" role=interactive> Story </div>
             </nav>
         </jumbotron-element>
 
