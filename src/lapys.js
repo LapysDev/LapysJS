@@ -150,7 +150,7 @@
                                     } catch (error) {}
 
                                     // Logic
-                                    if (!isValidConstructor(constructor)) { /* Do something here... */ }
+                                    if (!isValidConstructor(constructor)) { /* Some code here... */ }
                                 }
 
                                 // Return
@@ -269,6 +269,276 @@
 
                         // Window
                         window: DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? GLOBAL : undefined
+                    },
+
+                    /* Global Regular Expression Patterns
+                            --- NOTE ---
+                                #Lapys: Reminiscent of the GREP (g/re/p) text editing program.
+                    */
+                    GREP: {
+                        // All
+                        '.': function all() { return !0 },
+
+                        // Alphabets
+                        "\\w": function alphabets(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, [
+                                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+                            ])
+                        },
+
+                        // Digits
+                        "\\d": function digits(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
+                        },
+
+                        // First
+                        '^': function first(string, match) {
+                            // Return
+                            return LDKF.stringPrototypeRange(string, 0, match.length) == match
+                        },
+
+                        // Last
+                        '$': function last(string, match) {
+                            // Return
+                            return LDKF.stringPrototypeRange(string, -match.length, -0) == match
+                        },
+
+                        /* Test Occurrence
+                                --- NOTE ---
+                                    #Lapys: Determine if a string has a character a certain amount of times.
+                        */
+                        test_occurrence: function test_occurrence(string, matches, start, stop) {
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (LDKF.isPositiveInteger(start) && LDKF.isPositiveInteger(stop)) {
+                                // Initialization
+                                    // Matches Length
+                                    var matchesLength = matches.length,
+
+                                    // Iterator, Length
+                                    iterator = string.length, length = iterator,
+
+                                    // Valid --- NOTE (Lapys) -> Store falsy/ truthy pattern tests as strings of 0's and 1's in this variable. If there is a 0, this gets changed to `false`.
+                                    valid = "";
+
+                                // Loop > Update > Matches
+                                while (matchesLength)
+                                    matches[matchesLength -= 1] = LDKF.stringPrototypeRepeat(matches[matchesLength], start);
+
+                                // Update > Matches Length
+                                matchesLength = matches.length;
+
+                                /* Logic
+                                        If
+                                            the String is non-empty.
+                                */
+                                if (length) {
+                                    /* Loop
+                                            Iterate through String.
+                                    */
+                                    while (iterator > 0) {
+                                        // Initialization > (Index, Length, Matches (Found, Iterator))
+                                        var index = length - (iterator -= 1) - 1,
+                                            matchesFound = !1,
+                                            matchesIterator = matchesLength;
+
+                                        /* Loop
+                                                Index Matches.
+                                        */
+                                        while (matchesIterator) {
+                                            // Initialization > (Match) (Found, Iterator, Length)
+                                            var match = matches[matchesIterator -= 1],
+                                                matchFound = !1,
+                                                matchIterator = match.length, matchLength = matchIterator;
+
+                                            /* Loop
+                                                    Iterate through Match.
+                                            */
+                                            while (matchIterator) {
+                                                // Initialization > Match Index
+                                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                                // Logic
+                                                if (string[index + matchIndex] != match[matchIndex])
+                                                    // Break
+                                                    break;
+
+                                                else if (!matchIterator) {
+                                                    // Update > (Iterator, Match Found, Valid)
+                                                    iterator -= matchLength - 1;
+                                                    matchFound = matchesFound = !0;
+                                                    valid += '1'
+                                                }
+                                            }
+
+                                            // Update > Valid
+                                            (!matchesFound && !matchesIterator) && (valid += '0')
+                                        }
+                                    }
+
+                                    // Update > Iterator
+                                    iterator = valid.length;
+
+                                    /* Loop
+                                            Iterate through Valid.
+                                    */
+                                    while (iterator)
+                                        // Logic
+                                        if (valid[iterator -= 1] == '0') {
+                                            // Update > Valid
+                                            valid = !1;
+
+                                            // Break
+                                            break
+                                        }
+
+                                        else if (!iterator)
+                                            // Update > Valid
+                                            valid = !0
+                                }
+
+                                else
+                                    /* Loop
+                                            Index Matches.
+
+                                            --- NOTE ---
+                                                #Lapys: Search the current Matches to see if there is a non-empty string amongst.
+                                    */
+                                    while (matchesLength)
+                                        /* Logic
+                                                [if:else if statement]
+                                        */
+                                        if (matches[matchesLength -= 1] == "") {
+                                            // Update > Valid
+                                            valid = !0;
+
+                                            // Break
+                                            break
+                                        }
+
+                                        else if (!matchesLength)
+                                            // Update > Valid
+                                            valid = !1;
+
+                                // Return
+                                return valid
+                            }
+                        },
+
+                        /* Test Pattern
+                                --- NOTE ---
+                                    #Lapys: Determine if a string is made up of only the Matches (patterns) given.
+                        */
+                        test_pattern: function test_pattern(string, matches) {
+                            // Initialization
+                                // Matches Length
+                                var matchesLength = matches.length,
+
+                                // Iterator, Length
+                                iterator = string.length, length = iterator,
+
+                                // Valid --- NOTE (Lapys) -> Store falsy/ truthy pattern tests as strings of 0's and 1's in this variable. If there is a 0, this gets changed to `false`.
+                                valid = "";
+
+                            /* Logic
+                                    If
+                                        the String is non-empty.
+                            */
+                            if (length) {
+                                /* Loop
+                                        Iterate through String.
+                                */
+                                while (iterator > 0) {
+                                    // Initialization > (Index, Length, Matches (Found, Iterator))
+                                    var index = length - (iterator -= 1) - 1,
+                                        matchesFound = !1,
+                                        matchesIterator = matchesLength;
+
+                                    /* Loop
+                                            Index Matches.
+                                    */
+                                    while (matchesIterator) {
+                                        // Initialization > (Match) (Found, Iterator, Length)
+                                        var match = matches[matchesIterator -= 1],
+                                            matchFound = !1,
+                                            matchIterator = match.length, matchLength = matchIterator;
+
+                                        /* Loop
+                                                Iterate through Match.
+                                        */
+                                        while (matchIterator) {
+                                            // Initialization > Match Index
+                                            var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                            // Logic
+                                            if (string[index + matchIndex] != match[matchIndex])
+                                                // Break
+                                                break;
+
+                                            else if (!matchIterator) {
+                                                // Update > (Iterator, Match Found, Valid)
+                                                iterator -= matchLength - 1;
+                                                matchFound = matchesFound = !0;
+                                                valid += '1'
+                                            }
+                                        }
+
+                                        // Update > Valid
+                                        (!matchesFound && !matchesIterator) && (valid += '0')
+                                    }
+                                }
+
+                                // Update > Iterator
+                                iterator = valid.length;
+
+                                /* Loop
+                                        Iterate through Valid.
+                                */
+                                while (iterator)
+                                    // Logic
+                                    if (valid[iterator -= 1] == '0') {
+                                        // Update > Valid
+                                        valid = !1;
+
+                                        // Break
+                                        break
+                                    }
+
+                                    else if (!iterator)
+                                        // Update > Valid
+                                        valid = !0
+                            }
+
+                            else
+                                /* Loop
+                                        Index Matches.
+
+                                        --- NOTE ---
+                                            #Lapys: Search the current Matches to see if there is a non-empty string amongst.
+                                */
+                                while (matchesLength)
+                                    /* Logic
+                                            [if:else if statement]
+                                    */
+                                    if (matches[matchesLength -= 1] == "") {
+                                        // Update > Valid
+                                        valid = !0;
+
+                                        // Break
+                                        break
+                                    }
+
+                                    else if (!matchesLength)
+                                        // Update > Valid
+                                        valid = !1;
+
+                            // Return
+                            return valid
+                        }
                     }
                 },
 
@@ -283,6 +553,7 @@
                     LDKOd = LDKO.descriptions,
                 LDKR = LDK.random,
                     LDKG = LDKR.globalObjects,
+                    LDKRg = LDKRg,
 
             // LapysJS --- NOTE (Lapys) -> The library's public access to the global environment.
             LapysJS = LDKF.objectPrototypeSetProperty(GLOBAL, "LapysJS", (function(LapysJS) {
@@ -309,7 +580,7 @@
                                     - The pseudo-LDK still defers to the same standards that govern the original LDK.
                                     - Values from the pseudo-LDK can also be transferred to the original LDK to prevent code duplication.
                         */
-                        $LDK = {
+                        var $LDK = {
                             // Functions
                             functions: {
                                 // Array
@@ -521,7 +792,11 @@
                 // Lapys Development Kit
                 LDKF.objectPrototypeSetProperties(GLOBAL, ["LapysDevelopmentKit", "LDK"], [LapysDevelopmentKit, LDK]);
                     // (...)
-                    LDKF.objectPrototypeSetProperties(GLOBAL, ["LDKF", "LDKFg", "LDKFs", "LDKG", "LDKI", "LDKO", "LDKOc", "LDKOd", "LDKR"], [LDKF, LDKFg, LDKFs, LDKG, LDKI, LDKO, LDKOc, LDKOd, LDKR])
+                    LDKF.objectPrototypeSetProperties(
+                        GLOBAL,
+                        ["LDKF", "LDKFg", "LDKFs", "LDKG", "LDKI", "LDKO", "LDKOc", "LDKOd", "LDKR", "LDKRg"],
+                        [LDKF, LDKFg, LDKFs, LDKG, LDKI, LDKO, LDKOc, LDKOd, LDKR, LDKRg]
+                    )
         }
 
         /* Modification */
@@ -1173,11 +1448,17 @@
                     // Is Negative Infinity
                     LDKF.isNegativeInfinity = function isNegativeInfinity(arg) { return LDKF.isNegativeNumber(arg) && LDKF.isInfinite(arg) };
 
+                    // Is Negative Integer
+                    LDKF.isNegativeInteger = function isNegativeInteger(arg) { return LDKF.isNegativeNumber(arg) && LDKF.isInteger(arg) };
+
                     // Is Negative Number
                     LDKF.isNegativeNumber = function isNegativeNumber(arg) { return LDKF.isNumber(arg) && (arg < 0 || LDKF.objectIs(arg, -0)) };
 
                     // Is Non-Constructible
                     LDKF.isNonConstructible = function isNonConstructible(arg)  { return LDKF.isNull(arg) || LDKF.isVoid(arg) };
+
+                    // Is Non-Integer
+                    LDKF.isNonInteger = function isNonInteger(arg)  { return !LDKF.isInteger(arg) };
 
                     // Is Null
                     LDKF.isNull = function isNull(arg) { return (!arg && arg === null && typeof arg == "object") };
@@ -1187,6 +1468,9 @@
 
                     // Is Positive Infinity
                     LDKF.isPositiveInfinity = function isPositiveInfinity(arg) { return LDKF.isPositiveNumber(arg) && LDKF.isInfinite(arg) };
+
+                    // Is Positive Integer
+                    LDKF.isPositiveInteger = function isPositiveInteger(arg) { return LDKF.isPositiveNumber(arg) && LDKF.isInteger(arg) };
 
                     // Is Positive Number
                     LDKF.isPositiveNumber = function isPositiveNumber(arg) { return LDKF.isNumber(arg) && (arg > 0 || LDKF.objectIs(arg, 0)) };
@@ -1460,6 +1744,19 @@
 
                     // Object Keys
                     LDKF.objectKeys = function objectKeys() { return LDKO.objectKeys.apply(this, arguments) };
+
+                    // Percentage
+                    LDKF.perc = function perc(number, base) {
+                        // Logic
+                        if (arguments.length == 1) {
+                            // Update > (Base, Number)
+                            base = number;
+                            number = 1
+                        }
+
+                        // Return
+                        return number * (base / 100)
+                    };
 
                     /* Recur Object
                             --- CHECKPOINT ---
@@ -1794,6 +2091,90 @@
                                 return stream
                             };
 
+                            // Explode
+                            LDKF.stringPrototypeExplode = function stringPrototypeExplode(string, separators) {
+                                // Update > Separators
+                                (arguments.length > 1) || (separators = [hidden]);
+                                LDKF.isArray(separators) || (separators = [separators]);
+
+                                // Initialization > (Array (Index), Iterator, Length, Separators, Stream)
+                                var array = [], arrayIndex = -1,
+                                    iterator = string.length, length = iterator,
+                                    separatorsLength = separators.length,
+                                    stream = "";
+
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (separators[0] === hidden && separatorsLength == 1)
+                                    /* Loop
+                                            Iterate through String.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Index
+                                        var index = length - (iterator -= 1) - 1;
+
+                                        // Update > Array
+                                        array[arrayIndex += 1] = string[index]
+                                    }
+
+                                else {
+                                    /* Loop
+                                            Iterate through String.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > (Index, Separated, Separators Iterator)
+                                        var index = length - (iterator -= 1) - 1,
+                                            separated = !1,
+                                            separatorsIterator = separatorsLength;
+
+                                        /* Loop
+                                                Index Separators.
+                                        */
+                                        while (separatorsIterator) {
+                                            // Initialization > (Separator) (Iterator, Length)
+                                            var separator = separators[separatorsLength - (separatorsIterator -= 1) - 1],
+                                                separatorIterator = separator.length, separatorLength = separatorIterator;
+
+                                            /* Loop
+                                                    Iterate through Separator.
+                                            */
+                                            while (separatorIterator) {
+                                                // Initialization > Separator Index
+                                                var separatorIndex = separatorLength - (separatorIterator -= 1) - 1;
+
+                                                /* Logic
+                                                        [if:else if statement]
+                                                */
+                                                if (string[index + separatorIndex] != separator[separatorIndex])
+                                                    // Break
+                                                    break;
+
+                                                else if (!separatorIterator) {
+                                                    // Update > (Array, Iterator, Separated, Stream)
+                                                    array[arrayIndex += 1] = stream;
+                                                    iterator -= separatorLength - 1;
+                                                    separated = !0;
+                                                    stream = ""
+                                                }
+                                            }
+
+                                            // Logic > Break
+                                            if (separated) break
+                                        }
+
+                                        // Update > Stream
+                                        separated || (stream += string[index])
+                                    }
+
+                                    // Update > Array
+                                    stream && (array[arrayIndex += 1] = stream)
+                                }
+
+                                // Return
+                                return array
+                            };
+
                             // Includes
                             LDKF.stringPrototypeIncludes = function stringPrototypeIncludes(string, match) {
                                 // Initialization > (Iterator, Length, Match Length, Stream)
@@ -1970,6 +2351,136 @@
 
                                 // Return
                                 return null
+                            };
+
+                            // Repeat
+                            LDKF.stringPrototypeRepeat = function stringPrototypeRepeat(string, amount) {
+                                // Initialization > Stream
+                                var stream = "";
+
+                                // Logic
+                                if (LDKF.isPositiveNumber(amount)) {
+                                    /* Logic
+                                            [if:else statement]
+
+                                            --- NOTE ---
+                                                #Lapys: Infinite to the local machine's (or the current environment's) limit.
+                                                    - 'Why..?'. I'll ask 'Why not?'
+
+                                            --- WARN ---
+                                                #Lapys: Executing this condition could be dangerous as under-the-hood code could be wasting memory on the local machine.
+                                    */
+                                    if (LDKF.isInfinite(amount)) {
+                                        // Warn
+                                        LDKF.throwWarning('Invalid count value');
+
+                                        // Update > Stream
+                                        stream += string;
+                                        stream = (function() {
+                                            // Initialization > (Condition, Test)
+                                            var condition = true, test = function test() { return condition };
+
+                                            // Function > End
+                                            function end() {
+                                                // Update > (Condition, Test)
+                                                condition = false;
+                                                test = null
+                                            }
+
+                                            // Error Handling
+                                            try {
+                                                // Loop > Update > Stream
+                                                while (test()) stream += stream
+                                            } catch (error) {
+                                                // Error Handling
+                                                try {
+                                                    // Initialization > String Stream
+                                                    var stringStream = string;
+
+                                                    // Loop
+                                                    while (test()) {
+                                                        // Update > (String) Stream
+                                                        stream += stringStream;
+                                                        stringStream += stringStream
+                                                    }
+                                                } catch (error) {
+                                                    // Error Handling
+                                                    try {
+                                                        // Initialization > String Stream
+                                                        var stringStream = string;
+
+                                                        // Loop
+                                                        while (test()) {
+                                                            // Update > (String) Stream
+                                                            stream += stringStream;
+                                                            stringStream += string
+                                                        }
+                                                    } catch (error) {
+                                                        // Error Handling
+                                                        try {
+                                                            // Loop
+                                                            while (test()) {
+                                                                // Initialization > (Iterator, Length)
+                                                                var iterator = string.length, length = iterator;
+
+                                                                // Loop > Update > Stream
+                                                                while (iterator > 0)
+                                                                    stream += string[length - (iterator -= 1) - 1]
+                                                            }
+                                                        } catch (error) {
+                                                            // End
+                                                            end()
+                                                        }
+                                                    }
+                                                }
+                                            }
+
+                                            // Return --- NOTE (Lapys) -> For my machine when developing this, it reached a string length of 1,073,741,799.
+                                            return stream
+                                        })()
+                                    }
+
+                                    else {
+                                        // Initialization > Integer Amount
+                                        var integerAmount = LDKF.int(amount);
+
+                                        // Loop
+                                        while (integerAmount) {
+                                            // Update > (Integer Amount, String)
+                                            integerAmount -= 1;
+                                            stream += string
+                                        }
+
+                                        // Logic
+                                        if (amount != (integerAmount = LDKF.int(amount))) {
+                                            // Update > Amount
+                                            amount -= integerAmount;
+
+                                            // Initialization > (Iterator, Amount Percentage, (Integer) String Iteration Count)
+                                            var iterator = -1,
+                                                amountPercentage = amount * 100,
+                                                stringIterationCount = LDKF.perc(string.length, amountPercentage),
+                                                integerStringIterationCount = LDKF.int(stringIterationCount);
+
+                                            // Loop
+                                            while (integerStringIterationCount) {
+                                                // Update > (Integer String Iteration Count, Stream)
+                                                integerStringIterationCount -= 1;
+                                                stream += string[iterator += 1]
+                                            }
+
+                                            // Update > Stream --- NOTE (Lapys) -> Handle the percentage mantissa.
+                                            (stringIterationCount - LDKF.int(stringIterationCount) > .5) && (stream += string[iterator += 1])
+                                        }
+                                    }
+                                }
+
+                                else
+                                    // Return
+                                    return null;
+
+                                // Return
+                                return stream
                             };
 
                             // Replace
@@ -2859,7 +3370,19 @@
                                     enumerable: !0,
 
                                     // Value
-                                    value: function setPropertyValue() {},
+                                    value: function setPropertyValue(property, value) {
+                                        // Update > Value
+                                        value = LDKF.stringPrototypeTrim(value);
+
+                                        // Modification > Target > (...)
+                                        that.fullValue = value;
+                                        that.priority = (function(value) {})(value);
+                                        that.property = property;
+                                        that.value = (function(value) {})(value);
+
+                                        // Return
+                                        return that.toCSSSyntax()
+                                    },
 
                                     // Writable
                                     writable: !1
@@ -2874,7 +3397,7 @@
                                     enumerable: !0,
 
                                     // Value
-                                    value: function toCSSSyntax() {},
+                                    value: function toCSSSyntax() { return that.property + ": " + that.fullValue },
 
                                     // Writable
                                     writable: !1
