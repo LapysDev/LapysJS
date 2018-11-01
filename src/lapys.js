@@ -256,6 +256,9 @@
 
                 // Random --- NOTE (Lapys) -> Private methods & properties.
                 random: {
+                    // Call Stack Size --- NOTE (Lapys) -> Keep a track of recursive functions.
+                    callStackSize: 0,
+
                     // Create Object --- NOTE (Lapys) -> Custom library objects.
                     createObject: {},
 
@@ -277,27 +280,113 @@
                     */
                     GREP: {
                         // All
-                        '.': function all() { return !0 },
-
-                        // Alphabets
-                        "\\w": function alphabets(string) {
+                        '.': function all(string) {
                             // Return
-                            return LDKRg.test_pattern(string, [
-                                'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
-                            ])
+                            return !LDKF.stringPrototypeIncludes(string, '\n')
+                        },
+
+                        // All Existing Occurrences
+                        '+': function all_existing_occurrences(string, matches, patterns) {
+                            // Return
+                            return LDKRg.test_occurrence(string, matches, patterns, 1, LDKO.infinity)
+                        },
+
+                        // All Occurrences
+                        '*': function all_occurrences(string, matches, patterns) {
+                            // Return
+                            return LDKRg.test_occurrence(string, matches, patterns, 0, LDKO.infinity)
+                        },
+
+                        // Alphanumerics
+                        "\\w": (function() {
+                            // Initialization > Method
+                            var method = function alphanumerics(string) {
+                                // Return
+                                return LDKRg["\\d"](string) || LDKRg.test_pattern(string,
+                                    LDKF.arrayPrototypeConcatenate([], method.additionalMatches, LDKRs.alphabets.lowercase, LDKRs.alphabets.uppercase)
+                                )
+                            };
+
+                            // Modification > Method > Additional Matches
+                            method.additionalMatches = ['_'];
+
+                            // Return
+                            return method
+                        })(),
+
+                        // Backspace
+                        "[\\b]": function backspace(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['\u0008'])
+                        },
+
+                        // Carriage Return
+                        "\\r": function carriage_return(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['\u000D'])
                         },
 
                         // Digits
-                        "\\d": function digits(string) {
+                        "\\d": (function() {
+                            // Initialization > Method
+                            var method = function digits(string) {
+                                // Return
+                                return LDKRg.test_pattern(string, LDKF.arrayPrototypeConcatenate([], method.additionalMatches, LDKRs.digits))
+                            };
+
+                            // Modification > Method > Additional Matches
+                            method.additionalMatches = [];
+
                             // Return
-                            return LDKRg.test_pattern(string, ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'])
-                        },
+                            return method
+                        })(),
 
                         // First
                         '^': function first(string, match) {
                             // Return
                             return LDKF.stringPrototypeRange(string, 0, match.length) == match
+                        },
+
+                        // Form Feed
+                        "\\f": function form_feed(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['\u000C'])
+                        },
+
+                        // Get Pattern Matches --- CHECKPOINT --- NOTE (Lapys) -> Simulate a quasi-form of JavaScript regular expressions.
+                        getPatternMatches: function getPatternMatches(string, pattern) {
+                            // Initialization > Matches
+                            var matches = [];
+
+                            // Functions
+                                // Expand Match List
+                                function expandMatchList(matchList) {
+                                    var iterator = matchList.length, length = iterator,
+                                        stream = "";
+
+                                    while (iterator) {
+                                        var index = length - (iterator -= 1) - 1;
+
+                                        if (matchList[index] == '-') {
+                                            var previousCharacter = matchList[index - 1],
+                                                nextCharacter = matchList[index + 1];
+
+                                            if (LDKF.stringPrototypeIsAlphanumeric(previousCharacter)) {
+                                                // Initialization > Alphanumerics --- CHECKPOINT ---
+                                                var alphanumerics = LDKF.arrayPrototypeSort(LDKF.arrayPrototypeConcatenate(
+                                                    [], LDKRg["\\d"].additionalMatches, LDKRg["\\w"].additionalMatches,
+                                                    LDKR.strings.alphabets.lowercase, LDKR.strings.alphabets.uppercase, LDKR.strings.digits
+                                                ))
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Is Match List
+                                function isMatchList(arg) {}
+
+                            // Return
+                            return matches
                         },
 
                         // Last
@@ -306,128 +395,251 @@
                             return LDKF.stringPrototypeRange(string, -match.length, -0) == match
                         },
 
+                        // Line Feed
+                        "\\n": function line_feed(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['\u000A'])
+                        },
+
+                        // Look-Ahead
+                        "?=": function look_ahead(string, matches, patterns) {
+                            // Initialization > (Matches (Iterator, Length), Patterns Length, Index, Look-Ahead Matches)
+                            var matchesIterator = matches.length, matchesLength = matchesIterator,
+                                patternsLength = patterns.length,
+                                index = -1,
+                                lookAheadMatches = [];
+
+                            /* Loop
+                                    Index Matches.
+                            */
+                            while (matchesIterator) {
+                                // Initialization > (Match, Patterns Iterator)
+                                var match = matches[matchesIterator -= 1],
+                                    patternsIterator = patternsLength;
+
+                                // Loop > Update > Look-Ahead Matches
+                                while (patternsIterator)
+                                    lookAheadMatches[index += 1] = match + patterns[patternsIterator -= 1]
+                            }
+
+                            // Return
+                            return LDKRg.test_pattern(string, lookAheadMatches)
+                        },
+
+                        // Negative Alphanumerics
+                        "\\W": function negative_alphanumerics(string) {
+                            // Return
+                            return !LDKRg["\\w"](string)
+                        },
+
+                        // Negative Digits
+                        "\\D": function negative_digits(string) {
+                            // Return
+                            return !LDKRg["\\d"](string)
+                        },
+
+                        // Negative Look-Ahead
+                        "?!": function negative_look_ahead(string, matches, patterns) {
+                            // Return
+                            return LDKRg.test_pattern(string, matches) && !LDKRg["?="](string, matches, patterns)
+                        },
+
+                        // Negative White Space
+                        "\\S": function negative_whitespace(string) {
+                            // Return
+                            return !LDKRg["\\s"](string)
+                        },
+
+                        // Null Character
+                        "\\0": function null_character(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['\x00'])
+                        },
+
+                        // Null-Single Occurrences
+                        '?': function null_single_occurrences(string, matches, patterns) {
+                            // Return
+                            return LDKRg.test_occurrence(string, matches, patterns, 0, 1)
+                        },
+
+                        // Tab
+                        "\\t": function tab(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['\u0009'])
+                        },
+
+                        // Test Control Character --- CHECKPOINT (Lapys) -> Regular expression `\cX`
+                        test_control_character: function test_control_character(string) {},
+
+                        // Test Null Pattern
+                        test_null_pattern: function test_null_pattern(matches) {
+                            // Initialization > Matches Iterator
+                            var matchesIterator = matches.length, valid;
+
+                            /* Loop
+                                    Index Matches.
+
+                                    --- NOTE ---
+                                        #Lapys: Search the current Matches to see if there is a non-empty string amongst.
+                            */
+                            while (matchesIterator)
+                                // Logic > Return
+                                if (matches[matchesIterator -= 1] === "")
+                                    return !0;
+
+                            // Return
+                            return !1
+                        },
+
                         /* Test Occurrence
                                 --- NOTE ---
                                     #Lapys: Determine if a string has a character a certain amount of times.
                         */
-                        test_occurrence: function test_occurrence(string, matches, start, stop) {
+                        test_occurrence: function test_occurrence(string, matches, patterns, start, stop) {
                             /* Logic
                                     [if statement]
                             */
-                            if (LDKF.isPositiveInteger(start) && LDKF.isPositiveInteger(stop)) {
-                                // Initialization
-                                    // Matches Length
-                                    var matchesLength = matches.length,
+                            if (start < stop + 1 && LDKF.isPositiveInteger(start) && (LDKF.isPositiveInteger(stop) || LDKF.isPositiveInfinity(stop))) {
+                                // Update > Stop
+                                LDKF.isPositiveInfinity(stop) && (stop = string.length);
 
-                                    // Iterator, Length
-                                    iterator = string.length, length = iterator,
+                                // Initialization > (Matches (Iterator, Length), Occurrence (Iterator, Matches))
+                                var matchesIterator = matches.length, matchesLength = matchesIterator,
+                                    occurrenceIterator = -1,
+                                    occurrenceMatches = [];
 
-                                    // Valid --- NOTE (Lapys) -> Store falsy/ truthy pattern tests as strings of 0's and 1's in this variable. If there is a 0, this gets changed to `false`.
-                                    valid = "";
-
-                                // Loop > Update > Matches
-                                while (matchesLength)
-                                    matches[matchesLength -= 1] = LDKF.stringPrototypeRepeat(matches[matchesLength], start);
-
-                                // Update > Matches Length
-                                matchesLength = matches.length;
-
-                                /* Logic
-                                        If
-                                            the String is non-empty.
+                                /* Loop
+                                        Index Matches.
                                 */
-                                if (length) {
+                                while (matchesIterator) {
+                                    // Initialization > (Match, Patterns Iterator)
+                                    var match = matches[matchesIterator -= 1],
+                                        patternsIterator = patterns.length;
+
                                     /* Loop
-                                            Iterate through String.
+                                            Index Patterns.
                                     */
-                                    while (iterator > 0) {
-                                        // Initialization > (Index, Length, Matches (Found, Iterator))
-                                        var index = length - (iterator -= 1) - 1,
-                                            matchesFound = !1,
-                                            matchesIterator = matchesLength;
+                                    while (patternsIterator) {
+                                        // Initialization > (Pattern, Match (Iterator, Length))
+                                        var pattern = patterns[patternsIterator -= 1],
+                                            matchIterator = match.length, matchLength = matchIterator;
 
                                         /* Loop
-                                                Index Matches.
+                                                Iterate through Match.
                                         */
-                                        while (matchesIterator) {
-                                            // Initialization > (Match) (Found, Iterator, Length)
-                                            var match = matches[matchesIterator -= 1],
-                                                matchFound = !1,
-                                                matchIterator = match.length, matchLength = matchIterator;
+                                        while (matchIterator) {
+                                            // Initialization > (Match Index, Pattern (Iterator, Length))
+                                            var matchIndex = matchLength - (matchIterator -= 1) - 1,
+                                                patternIterator = pattern.length, patternLength = patternIterator;
 
                                             /* Loop
-                                                    Iterate through Match.
+                                                    Iterate through Pattern.
                                             */
-                                            while (matchIterator) {
-                                                // Initialization > Match Index
-                                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
+                                            while (patternIterator) {
+                                                // Initialization > Pattern Index
+                                                var patternIndex = patternLength - (patternIterator -= 1) - 1;
 
-                                                // Logic
-                                                if (string[index + matchIndex] != match[matchIndex])
+                                                /* Logic
+                                                        [if:else if statement]
+                                                */
+                                                if (match[matchIndex + patternIndex] != pattern[patternIndex])
                                                     // Break
                                                     break;
 
-                                                else if (!matchIterator) {
-                                                    // Update > (Iterator, Match Found, Valid)
-                                                    iterator -= matchLength - 1;
-                                                    matchFound = matchesFound = !0;
-                                                    valid += '1'
+                                                else if (!patternIterator) {
+                                                    // Update > Match Iterator
+                                                    matchIterator -= patternLength - 1;
+
+                                                    // Function > Update Occurrence Match
+                                                    (function updateOccurrenceMatch(string, index, repeat, start, stop) {
+                                                        // Update > Stop
+                                                        stop += 1;
+
+                                                        /* Loop
+                                                                [while statement]
+                                                        */
+                                                        while (start != stop) {
+                                                            // Initialization > (Iterator, Stream, String (Iterator, Length))
+                                                            var iterator = start,
+                                                                stream = "",
+                                                                stringIterator = string.length, stringLength = stringIterator;
+
+                                                            /* Logic
+                                                                    [if:else statement]
+                                                            */
+                                                            if (iterator)
+                                                                /* Loop
+                                                                        Iterate through String.
+                                                                */
+                                                                while (stringIterator > 0) {
+                                                                    // Initialization > String Index
+                                                                    var stringIndex = stringLength - (stringIterator -= 1) - 1;
+
+                                                                    /* Logic
+                                                                            [if:else statement]
+                                                                    */
+                                                                    if (index == stringIndex)
+                                                                        // Loop
+                                                                        while (iterator) {
+                                                                            // Update > (Iterator, Stream, String Iterator)
+                                                                            iterator -= 1;
+                                                                            stream += repeat;
+                                                                            stringIterator -= repeat.length - 1
+                                                                        }
+
+                                                                    else
+                                                                        // Update > Stream
+                                                                        stream += string[stringIndex]
+                                                                }
+
+                                                            else
+                                                                // Update > Stream
+                                                                stream = LDKF.stringPrototypeRange(string, 0, index) + LDKF.stringPrototypeRange(string, index + repeat.length, -0);
+
+                                                            // Update > (Occurrence Matches, Start)
+                                                            occurrenceMatches[occurrenceIterator += 1] = stream;
+                                                            start += 1
+                                                        }
+                                                    })(match, matchIndex, pattern, start, stop)
                                                 }
                                             }
-
-                                            // Update > Valid
-                                            (!matchesFound && !matchesIterator) && (valid += '0')
                                         }
                                     }
+                                }
 
-                                    // Update > Iterator
-                                    iterator = valid.length;
+                                /* Logic
+                                        [if:else statement]
+                                */
+                                if (start == stop) {
+                                    // Initialization > Amount
+                                    var amount = start || stop;
 
                                     /* Loop
-                                            Iterate through Valid.
+                                            Index Matches.
                                     */
-                                    while (iterator)
-                                        // Logic
-                                        if (valid[iterator -= 1] == '0') {
-                                            // Update > Valid
-                                            valid = !1;
-
-                                            // Break
-                                            break
-                                        }
-
-                                        else if (!iterator)
-                                            // Update > Valid
-                                            valid = !0
+                                    while (matchesLength) {
+                                        // Update > Matches (Length)
+                                        matchesLength -= 1;
+                                        matches[matchesLength] = LDKF.stringPrototypeRepeat(matches[matchesLength], amount)
+                                    }
                                 }
 
                                 else
-                                    /* Loop
-                                            Index Matches.
-
-                                            --- NOTE ---
-                                                #Lapys: Search the current Matches to see if there is a non-empty string amongst.
-                                    */
-                                    while (matchesLength)
-                                        /* Logic
-                                                [if:else if statement]
-                                        */
-                                        if (matches[matchesLength -= 1] == "") {
-                                            // Update > Valid
-                                            valid = !0;
-
-                                            // Break
-                                            break
-                                        }
-
-                                        else if (!matchesLength)
-                                            // Update > Valid
-                                            valid = !1;
+                                    // Update > Matches
+                                    LDKF.arrayPrototypeConcatenate(matches, occurrenceMatches);
 
                                 // Return
-                                return valid
+                                return LDKRg.test_pattern(string, matches)
                             }
+
+                            // Return
+                            return !1
                         },
+                            // Test Specific Occurrence
+                            test_specific_occurrence: function test_specific_occurrence(string, matches, patterns, occurrence) {
+                                // Return
+                                return LDKRg.test_occurrence(string, matches, patterns, occurrence, occurrence)
+                            },
 
                         /* Test Pattern
                                 --- NOTE ---
@@ -443,6 +655,9 @@
 
                                 // Valid --- NOTE (Lapys) -> Store falsy/ truthy pattern tests as strings of 0's and 1's in this variable. If there is a 0, this gets changed to `false`.
                                 valid = "";
+
+                            // Logic > Return
+                            if (!matchesLength) return null;
 
                             /* Logic
                                     If
@@ -514,31 +729,55 @@
                             }
 
                             else
-                                /* Loop
-                                        Index Matches.
-
-                                        --- NOTE ---
-                                            #Lapys: Search the current Matches to see if there is a non-empty string amongst.
-                                */
-                                while (matchesLength)
-                                    /* Logic
-                                            [if:else if statement]
-                                    */
-                                    if (matches[matchesLength -= 1] == "") {
-                                        // Update > Valid
-                                        valid = !0;
-
-                                        // Break
-                                        break
-                                    }
-
-                                    else if (!matchesLength)
-                                        // Update > Valid
-                                        valid = !1;
+                                // Return
+                                return LDKRg.test_null_pattern(matches);
 
                             // Return
                             return valid
+                        },
+
+                        // Vertical Tab
+                        "\\v": function vertical_tab(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, ['\u000B'])
+                        },
+
+                        // White Space
+                        "\\s": function whitespace(string) {
+                            // Return
+                            return LDKRg.test_pattern(string, [
+                                ' ', '\f', '\n', '\r', '\t', '\v', '\u00a0', '\u1680',
+                                '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006', '\u2007', '\u2008', '\u2009',
+                                '\u200a', '\u2028', '\u2029', '\u202f', '\u205f', '\u3000', '\ufeff'
+                            ])
                         }
+                    },
+
+                    // Limits --- NOTE (Lapys) -> Best to know the limits of some JavaScript features.
+                    limits: {
+                        // Array Length
+                        arrayLength: null,
+
+                        // Call Stack Size
+                        callStackSize: (function(){var size=0;try{(function a(){size+=1;a()})()}catch(error){}return size})(),
+
+                        // String Length
+                        stringLength: null
+                    },
+
+                    // Strings --- NOTE (Lapys) -> Generic string collections.
+                    strings: {
+                        // Alphabets
+                        alphabets: {
+                            // Lowercase
+                            lowercase: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+
+                            // Uppercase
+                            uppercase: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+                        },
+
+                        // Digits
+                        digits: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
                     }
                 },
 
@@ -553,7 +792,8 @@
                     LDKOd = LDKO.descriptions,
                 LDKR = LDK.random,
                     LDKG = LDKR.globalObjects,
-                    LDKRg = LDKRg,
+                    LDKRg = LDKR.GREP,
+                    LDKRs = LDKR.strings,
 
             // LapysJS --- NOTE (Lapys) -> The library's public access to the global environment.
             LapysJS = LDKF.objectPrototypeSetProperty(GLOBAL, "LapysJS", (function(LapysJS) {
@@ -794,8 +1034,8 @@
                     // (...)
                     LDKF.objectPrototypeSetProperties(
                         GLOBAL,
-                        ["LDKF", "LDKFg", "LDKFs", "LDKG", "LDKI", "LDKO", "LDKOc", "LDKOd", "LDKR", "LDKRg"],
-                        [LDKF, LDKFg, LDKFs, LDKG, LDKI, LDKO, LDKOc, LDKOd, LDKR, LDKRg]
+                        ["LDKF", "LDKFg", "LDKFs", "LDKG", "LDKI", "LDKO", "LDKOc", "LDKOd", "LDKR", "LDKRg", "LDKRs"],
+                        [LDKF, LDKFg, LDKFs, LDKG, LDKI, LDKO, LDKOc, LDKOd, LDKR, LDKRg, LDKRs]
                     )
         }
 
@@ -962,6 +1202,32 @@
                                 return array
                             };
 
+                            // Concatenate
+                            LDKF.arrayPrototypeConcatenate = function arrayPrototypeConcatenate(array, concatenation) {
+                                // Modification > (Lapys Development Kit > Random) > Call Stack Size
+                                LDKR.callStackSize += 1;
+
+                                // Logic
+                                if (LDKR.callStackSize != LDKR.limits.callStackSize) {
+                                    // Initialization > (Iterator, Length, Index)
+                                    var iterator = concatenation.length, length = iterator,
+                                        index = array.length - 1;
+
+                                    // Loop > Update > Array
+                                    while (iterator)
+                                        array[index += 1] = concatenation[length - (iterator -= 1) - 1];
+
+                                    // Update > Array
+                                    (arguments.length > 2) && LDKF.arrayPrototypeConcatenate.apply(LDKF, LDKF.arrayPrototypeAddToBack(LDKF.arrayPrototypeRange(arguments, 2, -0), array))
+                                }
+
+                                // Modification > (Lapys Development Kit > Random) > Call Stack Size
+                                LDKR.callStackSize = 0;
+
+                                // Return
+                                return array
+                            };
+
                             // Implode --- NOTE (Lapys) -> Implode an array into a string.
                             LDKF.arrayPrototypeImplode = function arrayPrototypeImplode(array, separator) {
                                 // Initialization > (Iterator, Length, Stream)
@@ -979,18 +1245,43 @@
                                 return stream
                             };
 
-                            // Includes --- NOTE (Lapys) -> Any algorithm faster than a linear search is welcome.
+                            // Includes
                             LDKF.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, item) {
+                                // Return
+                                return LDKF.arrayPrototypeLastIndex(array, item) != -1
+                            };
+
+                            // Index
+                            LDKF.arrayPrototypeIndex = function arrayPrototypeIndex(array, item) {
+                                // Initialization > (Iterator, Length)
+                                var iterator = array.length, length = iterator;
+
+                                // Loop > Logic > Return
+                                while (iterator) {
+                                    // Initialization > Index
+                                    var index = length - (iterator -= 1) - 1;
+
+                                    // Logic > Return
+                                    if (LDKF.objectPrototypeIsEqualTo(array[index], item))
+                                        return index
+                                }
+
+                                // Return
+                                return -1
+                            };
+
+                            // Last Index
+                            LDKF.arrayPrototypeLastIndex = function arrayPrototypeLastIndex(array, item) {
                                 // Initialization > Iterator
                                 var iterator = array.length;
 
                                 // Loop > Logic > Return
                                 while (iterator)
                                     if (LDKF.objectPrototypeIsEqualTo(array[iterator -= 1], item))
-                                        return !0;
+                                        return iterator;
 
                                 // Return
-                                return !1
+                                return -1
                             };
 
                             // Range
@@ -1060,6 +1351,18 @@
                                 // Return
                                 return array
                             };
+
+                            /* Sort
+                                    --- NOTE ---
+                                        #Lapys: Sorting priorities ->
+                                            - Uppercase alphabets
+                                            - '_' characters
+                                            - Lowercase alphabets
+                                            - Numeral Digits
+                                            - Miscellaneous ->
+                                                --  !"#$%&'()*+,-./:;<=>?@[\]^_`{}~
+                                                -- Miscellaneous
+                            */
 
                     // Ceiling
                     LDKF.ceil = function ceil(arg) { return LDKF.isInteger(LDKF.isNumber(arg) ? arg : arg = LDKF.number(arg)) ? arg : LDKF.floor(arg) + 1 };
@@ -2208,21 +2511,13 @@
                             };
 
                             // Is Alphabet
-                            LDKF.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(character) {
-                                // Return
-                                return character == 'a' || character == 'A' || character == 'b' || character == 'B' || character == 'c' || character == 'C' ||
-                                    character == 'd' || character == 'D' || character == 'e' || character == 'E' || character == 'f' || character == 'F' ||
-                                    character == 'g' || character == 'G' || character == 'h' || character == 'H' || character == 'i' || character == 'I' ||
-                                    character == 'j' || character == 'J' || character == 'k' || character == 'K' || character == 'l' || character == 'L' ||
-                                    character == 'm' || character == 'M' || character == 'n' || character == 'N' || character == 'o' || character == 'O' ||
-                                    character == 'p' || character == 'P' || character == 'q' || character == 'Q' || character == 'r' || character == 'R' ||
-                                    character == 's' || character == 'S' || character == 't' || character == 'T' || character == 'u' || character == 'U' ||
-                                    character == 'v' || character == 'V' || character == 'w' || character == 'W' || character == 'x' || character == 'X' ||
-                                    character == 'y' || character == 'Y' || character == 'z' || character == 'Z'
-                            };
+                            LDKF.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(character) { return LDKF.arrayPrototypeIncludes(LDKRs.alphabets.lowercase, character) || LDKF.arrayPrototypeIncludes(LDKRs.alphabets.uppercase, character) };
+
+                            // Is Alphanumeric --- NOTE (Lapys) -> Inclusive conditioning.
+                            LDKF.stringPrototypeIsAlphanumeric = function stringPrototypeIsAlphanumeric(character) { return LDKF.stringPrototypeIsAlphabet(character) || LDKF.stringPrototypeIsDigit(character) };
 
                             // Is Digit
-                            LDKF.stringPrototypeIsDigit = function stringPrototypeIsDigit(character) { return character === '0' || character === '1' || character === '2' || character === '3' || character === '4' || character === '5' || character === '6' || character === '7' || character === '8' || character === '9' };
+                            LDKF.stringPrototypeIsDigit = function stringPrototypeIsDigit(character) { return LDKF.arrayPrototypeIncludes(LDKRs.digits) };
 
                             // Is Variable Character
                             LDKF.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(character) {
@@ -2290,18 +2585,15 @@
 
                             // Lower Character
                             LDKF.stringPrototypeLowerCharacter = function stringPrototypeLowerCharacter(character) {
+                                // Initialization > Index
+                                var index;
+
                                 // Logic > Return
-                                switch (character) {
-                                    case 'A': return 'a'; break; case 'B': return 'b'; break; case 'C': return 'c'; break;
-                                    case 'D': return 'd'; break; case 'E': return 'e'; break; case 'F': return 'f'; break;
-                                    case 'G': return 'g'; break; case 'H': return 'h'; break; case 'I': return 'i'; break;
-                                    case 'J': return 'j'; break; case 'K': return 'k'; break; case 'L': return 'l'; break;
-                                    case 'M': return 'm'; break; case 'N': return 'n'; break; case 'O': return 'o'; break;
-                                    case 'P': return 'p'; break; case 'Q': return 'q'; break; case 'R': return 'r'; break;
-                                    case 'S': return 's'; break; case 'T': return 't'; break; case 'U': return 'u'; break;
-                                    case 'V': return 'v'; break; case 'W': return 'w'; break; case 'X': return 'x'; break;
-                                    case 'Y': return 'y'; break; case 'Z': return 'z'; break; default: return character
-                                }
+                                if ((index = LDKF.arrayPrototypeIndex(LDKRs.alphabets.uppercase, character)) != -1)
+                                    return LDKRs.alphabets.lowercase[index];
+
+                                // Return
+                                return character
                             };
 
                             // Range --- NOTE (Lapys) -> Return a sub-string within certain indexes of a string.
@@ -2340,9 +2632,12 @@
                                         // Update > Stop
                                         (stop > length) && (stop = length);
 
+                                        // Update > (Start, Stop)
+                                        start -= 1; stop -= 1;
+
                                         // Loop > Update > Stream
-                                        for (start; start != stop; start += 1)
-                                            stream += string[start]
+                                        while (start != stop)
+                                            stream += string[start += 1]
                                     }
 
                                     // Return
@@ -2653,18 +2948,15 @@
 
                             // Upper Character
                             LDKF.stringPrototypeUpperCharacter = function stringPrototypeUpperCharacter(character) {
+                                // Initialization > Index
+                                var index;
+
                                 // Logic > Return
-                                switch (character) {
-                                    case 'a': return 'A'; break; case 'b': return 'B'; break; case 'c': return 'C'; break;
-                                    case 'd': return 'D'; break; case 'e': return 'E'; break; case 'f': return 'F'; break;
-                                    case 'g': return 'G'; break; case 'h': return 'H'; break; case 'i': return 'I'; break;
-                                    case 'j': return 'J'; break; case 'k': return 'K'; break; case 'l': return 'L'; break;
-                                    case 'm': return 'M'; break; case 'n': return 'N'; break; case 'o': return 'O'; break;
-                                    case 'p': return 'P'; break; case 'q': return 'Q'; break; case 'r': return 'R'; break;
-                                    case 's': return 'S'; break; case 't': return 'T'; break; case 'u': return 'U'; break;
-                                    case 'v': return 'V'; break; case 'w': return 'W'; break; case 'x': return 'X'; break;
-                                    case 'y': return 'Y'; break; case 'z': return 'Z'; break; default: return character
-                                }
+                                if ((index = LDKF.arrayPrototypeIndex(LDKRs.alphabets.lowercase, character)) != -1)
+                                    return LDKRs.alphabets.uppercase[index];
+
+                                // Return
+                                return character
                             };
 
                     /* To Debug Message
@@ -3374,7 +3666,7 @@
                                         // Update > Value
                                         value = LDKF.stringPrototypeTrim(value);
 
-                                        // Modification > Target > (...)
+                                        // Modification > Target > (...) --- CHECKPOINT ---
                                         that.fullValue = value;
                                         that.priority = (function(value) {})(value);
                                         that.property = property;
