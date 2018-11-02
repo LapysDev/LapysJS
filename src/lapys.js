@@ -57,14 +57,32 @@
             DESCRIPTION = "LapysJS is a minimalistic JavaScript library that incorporates native features only.",
 
             // Development Environment --- NOTE (Lapys) -> Different types of platforms that implement JavaScript.
-            DEVELOPMENT_ENVIRONMENT = args[0],
+            DEVELOPMENT_ENVIRONMENT = (function() {
+                // Initialization > (Development Environment, Iterator, Length)
+                var DEVELOPMENT_ENVIRONMENT = args[0], iterator = args.length, length = iterator;
+
+                // Loop --- NOTE (Lapys) -> Remove the Development Environment object from the script Arguments.
+                while (iterator) {
+                    // Initialization > Index
+                    var index = length - (iterator -= 1) - 1;
+
+                    // Update > Arguments
+                    args[index] = args[index + 1]
+                }
+
+                // Return
+                return DEVELOPMENT_ENVIRONMENT
+            })(),
                 // Is Browser
-                DEVELOPMENT_ENVIRONMENT_IS_BROWSER = DEVELOPMENT_ENVIRONMENT == "Browser",
+                DEVELOPMENT_ENVIRONMENT_IS_BROWSER = DEVELOPMENT_ENVIRONMENT.includes("Browser"),
 
                 // Is Node JS
-                DEVELOPMENT_ENVIRONMENT_IS_NODEJS = DEVELOPMENT_ENVIRONMENT == "NodeJS",
+                DEVELOPMENT_ENVIRONMENT_IS_NODEJS = DEVELOPMENT_ENVIRONMENT.includes("Node JS"),
 
-            // Library {Is} Pre-Installed --- NOTE (Lapys) -> May be changed sometime in the code.
+            // Global Main
+            GLOBAL_MAIN = GLOBAL.valueOf(),
+
+            // Library {Is} Pre-Installed --- NOTE (Lapys) -> This value may get updated in the code.
             LIBRARY_PREINSTALLED = !1,
 
             // Target --- NOTE (Lapys) -> The initial `this` pointer.
@@ -264,15 +282,6 @@
 
                     // Environment Features --- NOTE (Lapys) -> Specifics for the current standard of JavaScript being executed.
                     environmentFeatures: {},
-
-                    // Global Objects --- NOTE (Lapys) -> Different global objects for each kind of development environment.
-                    globalObjects: {
-                        // Global
-                        global: DEVELOPMENT_ENVIRONMENT_IS_NODEJS ? GLOBAL : undefined,
-
-                        // Window
-                        window: DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? GLOBAL : undefined
-                    },
 
                     /* Global Regular Expression Patterns
                             --- NOTE ---
@@ -781,7 +790,7 @@
                     }
                 },
 
-                // (Constructor > Prototype)
+                /* (Constructor > Prototype) */
                 __proto__: new function LapysDevelopmentKit() {}
             }, LDK = LapysDevelopmentKit,
                 LDKF = LDK.functions,
@@ -791,14 +800,13 @@
                     LDKOc = LDKO.custom,
                     LDKOd = LDKO.descriptions,
                 LDKR = LDK.random,
-                    LDKG = LDKR.globalObjects,
                     LDKRg = LDKR.GREP,
                     LDKRs = LDKR.strings,
 
             // LapysJS --- NOTE (Lapys) -> The library's public access to the global environment.
-            LapysJS = LDKF.objectPrototypeSetProperty(GLOBAL, "LapysJS", (function(LapysJS) {
+            LapysJS = LDKF.objectPrototypeSetProperty(GLOBAL_MAIN, "LapysJS", (function(LapysJS) {
                 // Logic --- NOTE (Lapys) -> Perform user-specified modifications to the library's features.
-                if (LDKF.objectPrototypeHasProperty(GLOBAL, "LapysJS")) {
+                if (LDKF.objectPrototypeHasProperty(GLOBAL_MAIN, "LapysJS")) {
                     // Initialization > LapysJS
                     var $LapysJS = (function($LapysJS) {
                         /* Update > Library {Is} Pre-Installed
@@ -809,7 +817,7 @@
 
                         // Return
                         return LIBRARY_PREINSTALLED ? {} : ($LapysJS || {})
-                    })(LDKF.objectPrototypeGetProperty(GLOBAL, "LapysJS"));
+                    })(LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "LapysJS"));
 
                     // Logic --- NOTE (Lapys) -> The library pretty much goes avoids an error state at this point.
                     if (!LIBRARY_PREINSTALLED) {
@@ -1020,7 +1028,7 @@
                     return that
                 },
 
-                // (Constructor > Prototype)
+                /* (Constructor > Prototype) */
                 __proto__: new function LapysJS() {}
             }));
 
@@ -1030,12 +1038,12 @@
         if (LDK.options.debugMode) {
             // Modification > Global
                 // Lapys Development Kit
-                LDKF.objectPrototypeSetProperties(GLOBAL, ["LapysDevelopmentKit", "LDK"], [LapysDevelopmentKit, LDK]);
+                LDKF.objectPrototypeSetProperties(GLOBAL_MAIN, ["LapysDevelopmentKit", "LDK"], [LapysDevelopmentKit, LDK]);
                     // (...)
                     LDKF.objectPrototypeSetProperties(
-                        GLOBAL,
-                        ["LDKF", "LDKFg", "LDKFs", "LDKG", "LDKI", "LDKO", "LDKOc", "LDKOd", "LDKR", "LDKRg", "LDKRs"],
-                        [LDKF, LDKFg, LDKFs, LDKG, LDKI, LDKO, LDKOc, LDKOd, LDKR, LDKRg, LDKRs]
+                        GLOBAL_MAIN,
+                        ["LDKF", "LDKFg", "LDKFs", "LDKI", "LDKO", "LDKOc", "LDKOd", "LDKR", "LDKRg", "LDKRs"],
+                        [LDKF, LDKFg, LDKFs, LDKI, LDKO, LDKOc, LDKOd, LDKR, LDKRg, LDKRs]
                     )
         }
 
@@ -1204,25 +1212,40 @@
 
                             // Concatenate
                             LDKF.arrayPrototypeConcatenate = function arrayPrototypeConcatenate(array, concatenation) {
-                                // Modification > (Lapys Development Kit > Random) > Call Stack Size
-                                LDKR.callStackSize += 1;
+                                // Initialization > (Iterator, Length, Index)
+                                var iterator = concatenation.length, length = iterator,
+                                    index = array.length - 1;
 
+                                // Loop > Update > Array
+                                while (iterator)
+                                    array[index += 1] = concatenation[length - (iterator -= 1) - 1];
+
+                                // Update > Array
+                                (arguments.length > 2) && LDKF.arrayPrototypeConcatenate.apply(LDKF, LDKF.arrayPrototypeAddToBack(LDKF.arrayPrototypeRange(arguments, 2, -0), array));
+
+                                // Return
+                                return array
+                            };
+
+                            // Cut Index
+                            LDKF.arrayPrototypeCutIndex = function arrayPrototypeCutIndex(array, match) {
                                 // Logic
-                                if (LDKR.callStackSize != LDKR.limits.callStackSize) {
-                                    // Initialization > (Iterator, Length, Index)
-                                    var iterator = concatenation.length, length = iterator,
-                                        index = array.length - 1;
+                                if (this === hidden || LDKF.isPositiveInteger(match)) {
+                                    // Initialization > (Length, Iterator)
+                                    var length = array.length, iterator = length - match;
 
-                                    // Loop > Update > Array
-                                    while (iterator)
-                                        array[index += 1] = concatenation[length - (iterator -= 1) - 1];
+                                    // Loop
+                                    while (iterator > 0) {
+                                        // Initialization > Index
+                                        var index = length - (iterator -= 1) - 1;
+
+                                        // Update > Array
+                                        array[index] = array[index + 1]
+                                    }
 
                                     // Update > Array
-                                    (arguments.length > 2) && LDKF.arrayPrototypeConcatenate.apply(LDKF, LDKF.arrayPrototypeAddToBack(LDKF.arrayPrototypeRange(arguments, 2, -0), array))
+                                    (match < length) && (array.length -= 1)
                                 }
-
-                                // Modification > (Lapys Development Kit > Random) > Call Stack Size
-                                LDKR.callStackSize = 0;
 
                                 // Return
                                 return array
@@ -1333,6 +1356,82 @@
                                 return null
                             };
 
+                            // Remove From Back
+                            LDKF.arrayPrototypeRemoveFromBack = function arrayPrototypeRemoveFromBack(array, items) {
+                                // Update > Items
+                                items = LDKF.arrayPrototypeRange(arguments, 1, -0);
+
+                                // Initialization > (Iterator, Length)
+                                var iterator = items.length, length = iterator;
+
+                                /* Loop
+                                        Index Items.
+                                */
+                                while (iterator) {
+                                    // Initialization > (Array (Iterator, Length), Item)
+                                    var arrayIterator = array.length, arrayLength = arrayIterator,
+                                        item = items[length - (iterator -= 1) - 1];
+
+                                    /* Loop
+                                            Index Array.
+                                    */
+                                    while (arrayIterator) {
+                                        // Initialization > Array Index
+                                        var arrayIndex = arrayLength - (arrayIterator -= 1) - 1;
+
+                                        // Logic
+                                        if (LDKF.objectPrototypeIsEqualTo(array[arrayIndex], item)) {
+                                            // Update > Array
+                                            LDKF.arrayPrototypeCutIndex.call(hidden, array, arrayIndex);
+
+                                            // Break
+                                            break
+                                        }
+                                    }
+                                }
+
+                                // Return
+                                return array
+                            };
+
+                            // Remove From Front
+                            LDKF.arrayPrototypeRemoveFromFront = function arrayPrototypeRemoveFromFront(array, items) {
+                                // Update > Items
+                                items = LDKF.arrayPrototypeRange(arguments, 1, -0);
+
+                                // Initialization > (Iterator, Length)
+                                var iterator = items.length, length = iterator;
+
+                                /* Loop
+                                        Index Items.
+                                */
+                                while (iterator) {
+                                    // Initialization > (Array Iterator, Item)
+                                    var arrayIterator = array.length,
+                                        item = items[length - (iterator -= 1) - 1];
+
+                                    /* Loop
+                                            Index Array.
+                                    */
+                                    while (arrayIterator) {
+                                        // Update > Array Iterator
+                                        arrayIterator -= 1;
+
+                                        // Logic
+                                        if (LDKF.objectPrototypeIsEqualTo(array[arrayIterator], item)) {
+                                            // Update > Array
+                                            LDKF.arrayPrototypeCutIndex.call(hidden, array, arrayIterator);
+
+                                            // Break
+                                            break
+                                        }
+                                    }
+                                }
+
+                                // Return
+                                return array
+                            };
+
                             // Reverse
                             LDKF.arrayPrototypeReverse = function arrayPrototypeReverse(array) {
                                 // Initialization > (Iterator, Length)
@@ -1363,6 +1462,200 @@
                                                 --  !"#$%&'()*+,-./:;<=>?@[\]^_`{}~
                                                 -- Miscellaneous
                             */
+                            LDKF.arrayPrototypeSort = function arrayPrototypeSort(array, sorter) {
+                                // Initialization
+                                    // Iterator, Length
+                                    var iterator = array.length, length = iterator,
+
+                                    // Priorities --- NOTE (Lapys) -> For basic non-string sorts, the Priorities variable will remain blank.
+                                    priorities = [],
+
+                                    // Un-sortable --- NOTE (Lapys) -> Store non-prioritized items (in order) here.
+                                    unsortable = [],
+
+                                    // Un-sortable Index
+                                    unsortableIndex = -1;
+
+                                // Function
+                                    // Set Priorities --- NOTE (Lapys) -> Once priorities are set, it can not be changed.
+                                    function setPriorities() {
+                                        // Update > Priorities --- NOTE (Lapys) -> In this order, which places uppercase alphabets as the highest priority.
+                                        priorities.length || (priorities = LDKF.arrayPrototypeConcatenate([],
+                                            LDKR.strings.alphabets.uppercase,
+                                            ['_'],
+                                            LDKR.strings.alphabets.lowercase,
+                                            LDKR.strings.digits,
+                                            [' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', ',', ' ', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '}', '~']
+                                        ));
+
+                                        // Return
+                                        return priorities
+                                    };
+
+                                    // Update Un-sortable
+                                    function updateUnsortable(item) {
+                                        // Update > (Un-sortable, Array) --- NOTE (Lapys) -> Non-sortable items are temporarily removed from the Array.
+                                        unsortable[unsortableIndex += 1] = item;
+                                        LDKF.arrayPrototypeRemoveFromBack(array, item)
+                                    }
+
+                                // Update > Sorter
+                                (arguments.length > 1) || (sorter = function sorter(currentItem, nextItem) {
+                                    // Logic
+                                    if (LDKF.isNumber(currentItem) && LDKF.isNumber(nextItem))
+                                        // Return
+                                        return currentItem > nextItem;
+
+                                    else {
+                                        // Update > (Current, Next) Item
+                                        currentItem = LDKF.string(currentItem);
+                                        nextItem = LDKF.string(nextItem);
+
+                                        // Logic
+                                        if (!currentItem || currentItem == nextItem)
+                                            // Return --- NOTE (Lapys) -> Do not swap similar items or empty items.
+                                            return !1;
+
+                                        // Logic
+                                        if (currentItem && !nextItem)
+                                            // Return --- NOTE (Lapys) -> Empty strings get the highest priority.
+                                            return !0;
+
+                                        // Set Priorities
+                                        setPriorities();
+
+                                        // Initialization > (Current, Next) Item (Iterator, Length)
+                                        var currentItemIterator = currentItem.length, currentItemLength = currentItemIterator,
+                                            nextItemIterator = nextItem.length, nextItemLength = nextItemIterator;
+
+                                        /* Logic
+                                                [if:else statement]
+
+                                                --- NOTE ---
+                                                    #Lapys: For some reason, testing the alternative condition
+                                                        with single-character strings fail.
+                                        */
+                                        if (nextItemLength == 1) {
+                                            // Initialization > (Current, Next) Item Priority
+                                            var currentItemPriority = LDKF.arrayPrototypeIndex(priorities, currentItem[0]),
+                                                nextItemPriority = LDKF.arrayPrototypeIndex(priorities, nextItem[0]);
+
+                                            // Logic > Return
+                                            if (currentItemPriority != nextItemPriority) return currentItemPriority > nextItemPriority
+
+                                            // Return
+                                            return !0
+                                        }
+
+                                        else {
+                                            /* Loop
+                                                    Iterate Current Item.
+                                            */
+                                            while (currentItemIterator) {
+                                                // Initialization > (Current, Next) Item Index
+                                                var currentItemIndex = currentItemLength - (currentItemIterator -= 1) - 1,
+                                                    nextItemIndex = nextItemLength - (nextItemIterator -= 1) - 1;
+
+                                                // Logic
+                                                if (currentItemIterator && !nextItemIterator)
+                                                    // Return --- NOTE (Lapys) -> Next Item is smaller than the Current Item
+                                                    return !0;
+
+                                                else {
+                                                    // Initialization > (Current, Next) Item Priority
+                                                    var currentItemPriority = LDKF.arrayPrototypeIndex(priorities, currentItem[currentItemIndex]),
+                                                        nextItemPriority = LDKF.arrayPrototypeIndex(priorities, nextItem[nextItemIndex]);
+
+                                                    // Logic > Return
+                                                    if (!currentItemIndex && currentItemPriority == -1) return hidden;
+                                                    if (currentItemPriority != nextItemPriority) return currentItemPriority > nextItemPriority
+                                                }
+                                            }
+
+                                            // Logic
+                                            if (nextItemIterator)
+                                                // Return --- NOTE (Lapys) -> Next Item is larger than the Current Item
+                                                return !1
+                                        }
+                                    }
+                                });
+
+                                /* Loop
+                                        Index Array.
+                                */
+                                while (iterator) {
+                                    // Initialization > ((Next) Index, Swapped)
+                                    var index = length - (iterator -= 1) - 1,
+                                        nextIndex = index + 1,
+                                        swapped = !1;
+
+                                    // Logic
+                                    if (index != -1 && nextIndex != length) {
+                                        // Initialization > (Item, Swap)
+                                        var item = array[index],
+                                            swap = sorter(item, array[nextIndex]);
+
+                                        // Logic
+                                        if (swap === hidden) {
+                                            // Update Un-sortable
+                                            updateUnsortable(item);
+
+                                            // Update > Iterator
+                                            iterator = (length = array.length)
+                                        }
+
+                                        else if (swap) {
+                                            // Update > (Array, Swapped)
+                                            LDKF.arrayPrototypeSwap(array, index, nextIndex);
+                                            swapped = !0
+                                        }
+                                    }
+
+                                    else if (index == length - 1) {
+                                        // Initialization > Item --- NOTE (Lapys) -> Test for the last item.
+                                        var item = array[index];
+
+                                        // Logic
+                                        if (!LDKF.isNumber(item) && !LDKRg.test_pattern(LDKF.string(array[index]), setPriorities())) {
+                                            // Update Un-sortable
+                                            updateUnsortable(array[index]);
+
+                                            // Update > Iterator
+                                            iterator = (length = array.length)
+                                        }
+                                    }
+
+                                    // Update > Iterator
+                                    swapped && (iterator += 2)
+                                }
+
+                                // Update > Length
+                                length -= 1;
+
+                                // Initialization > Un-sortable Length
+                                var unsortableLength = (unsortableIndex += 1);
+
+                                // Loop > Update > Array --- NOTE (Lapys) -> All unsorted items get re-appended back into the Array.
+                                while (unsortableIndex > 0)
+                                    array[length += 1] = unsortable[unsortableLength - (unsortableIndex -= 1) - 1];
+
+                                // Return
+                                return array
+                            };
+
+                            // Swap
+                            LDKF.arrayPrototypeSwap = function arrayPrototypeSwap(array, indexA, indexB) {
+                                // Initialization > Item
+                                var item = array[indexB];
+
+                                // Update > Array
+                                array[indexB] = array[indexA];
+                                array[indexA] = item;
+                                (arguments.length > 3) && LDKF.arrayPrototypeSwap.apply(LDKF, [array, indexB, arguments[3]]);
+
+                                // Return
+                                return array
+                            };
 
                     // Ceiling
                     LDKF.ceil = function ceil(arg) { return LDKF.isInteger(LDKF.isNumber(arg) ? arg : arg = LDKF.number(arg)) ? arg : LDKF.floor(arg) + 1 };
@@ -1375,7 +1668,7 @@
                             catch (error) {}
 
                             // Error Handling > Return
-                            try { return LDKO.consoleGroup.apply(GLOBAL, arguments) }
+                            try { return LDKO.consoleGroup.apply(GLOBAL_MAIN, arguments) }
                             catch (error) {}
 
                             // Return
@@ -1389,7 +1682,7 @@
                             catch (error) {}
 
                             // Error Handling > Return
-                            try { return LDKO.consoleGroupEnd.apply(GLOBAL, arguments) }
+                            try { return LDKO.consoleGroupEnd.apply(GLOBAL_MAIN, arguments) }
                             catch (error) {}
 
                             // Return
@@ -1403,7 +1696,7 @@
                             catch (error) {}
 
                             // Error Handling > Return
-                            try { return LDKO.consoleLog.apply(GLOBAL, arguments) }
+                            try { return LDKO.consoleLog.apply(GLOBAL_MAIN, arguments) }
                             catch (error) {}
 
                             // Error Handling > Return
@@ -1411,7 +1704,7 @@
                             catch (error) {}
 
                             // Error Handling > Return
-                            try { return console.log.apply(GLOBAL, arguments) }
+                            try { return console.log.apply(GLOBAL_MAIN, arguments) }
                             catch (error) {}
                         };
 
@@ -1422,7 +1715,7 @@
                             catch (error) {}
 
                             // Error Handling > Return
-                            try { return LDKO.consoleWarn.apply(GLOBAL, arguments) }
+                            try { return LDKO.consoleWarn.apply(GLOBAL_MAIN, arguments) }
                             catch (error) {}
 
                             // Return
@@ -1600,8 +1893,8 @@
                         return typeof arg == "function" || (function() {
                             // Logic > Return
                             if (
-                                LDKF.objectPrototypeHasProperty(GLOBAL, "ActiveXObject") && LDKF.objectPrototypeGetProperty(GLOBAL, "ActiveXObject") &&
-                                (function(arg) { return LDKF.isNativeFunction(arg) && LDKFg.functionPrototypeName(arg) == "ActiveXObject" })(LDKF.objectPrototypeGetProperty(GLOBAL, "ActiveXObject"))
+                                LDKF.objectPrototypeHasProperty(GLOBAL_MAIN, "ActiveXObject") && LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ActiveXObject") &&
+                                (function(arg) { return LDKF.isNativeFunction(arg) && LDKFg.functionPrototypeName(arg) == "ActiveXObject" })(LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ActiveXObject"))
                             ) return typeof arg == "object" && (function(source) {
                                 // Logic
                                 if (LDKF.isVoid(source))
@@ -2218,7 +2511,7 @@
                     // Set Interval
                     LDKF.setInterval = function setInterval(callback, delay) {
                         // Initialization > (Target, Timeout Identifier)
-                        var that = this, timeoutID = LDKO.setTimeout.call(GLOBAL, function() {
+                        var that = this, timeoutID = LDKO.setTimeout.call(GLOBAL_MAIN, function() {
                             // Callback
                             callback.call(that);
 
@@ -2233,12 +2526,12 @@
                     // Set Timeout
                     LDKF.setTimeout = function setTimeout(callback, delay) {
                         // Initialization > (Target, Timeout Identifier)
-                        var that = this, timeoutID = LDKO.setTimeout.call(GLOBAL, function() {
+                        var that = this, timeoutID = LDKO.setTimeout.call(GLOBAL_MAIN, function() {
                             // Callback
                             callback.call(that);
 
                             // Clear Timeout > Timeout Identifier
-                            LDKO.clearTimeout.call(GLOBAL, timeoutID)
+                            LDKO.clearTimeout.call(GLOBAL_MAIN, timeoutID)
                         }, delay);
 
                         // Return
@@ -3064,7 +3357,7 @@
                             // Error Handling
                             try {
                                 // Loop > Update > Variable Name
-                                while (LDKF.objectPrototypeHasProperty(GLOBAL, variableName))
+                                while (LDKF.objectPrototypeHasProperty(GLOBAL_MAIN, variableName))
                                     variableName += variableName;
 
                                 // Execution
@@ -3085,19 +3378,19 @@
                                             - What ambiguous, non-intrusive variable name could we use to invoke a reference error?
                                             - What if the variable reference name is pre-defined, and what if accessing it produces a fault that is not a reference error?
                             */
-                            var hasVariable = LDKF.objectPrototypeHasProperty(GLOBAL, "LAPYS_JS"),
-                                formerVariableValue = LDKF.objectPrototypeGetProperty(GLOBAL, "LAPYS_JS");
+                            var hasVariable = LDKF.objectPrototypeHasProperty(GLOBAL_MAIN, "LAPYS_JS"),
+                                formerVariableValue = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "LAPYS_JS");
 
                             /* Error Handling > Modification > Global > (...)
                                     --- NOTE ---
                                         #Lapys: In case the variable was pre-defined as a setter,
                                             and setting its value causes an error.
                             */
-                            try { LDKF.objectPrototypeSetProperty(GLOBAL, "LAPYS_JS", undefined) }
+                            try { LDKF.objectPrototypeSetProperty(GLOBAL_MAIN, "LAPYS_JS", undefined) }
                             catch (error) {}
 
                             // Deletion
-                            LDKF.objectPrototypeDeleteProperty(GLOBAL, "LAPYS_JS");
+                            LDKF.objectPrototypeDeleteProperty(GLOBAL_MAIN, "LAPYS_JS");
 
                             try {
                                 // (...) --- NOTE (Lapys) -> Hopefully, this causes the error.
@@ -3109,7 +3402,7 @@
                             } catch (error) {
                                 // Logic > Error Handling > Modification > Global > (...)
                                 if (hasVariable)
-                                    try { LDKF.objectPrototypeSetProperty(GLOBAL, "LAPYS_JS", formerVariableValue) }
+                                    try { LDKF.objectPrototypeSetProperty(GLOBAL_MAIN, "LAPYS_JS", formerVariableValue) }
                                     catch (error) {}
 
                                 // (...)
@@ -3179,7 +3472,7 @@
                         LDKF.arrayPrototypeAddToFront(args, DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? '\r' : '\n');
 
                         // Warn
-                        LDKF.consoleWarn.apply(GLOBAL, args);
+                        LDKF.consoleWarn.apply(GLOBAL_MAIN, args);
 
                         // Return
                         return LDKF.toDebugMessage(LDKF.stringPrototypeReplace(arguments.length ? LDKF.arrayPrototypeImplode(LDKF.arrayPrototypeBuild(args, function(item) { return LDKF.string(item) }), "") : "", '\n', "\n\t"));
@@ -3261,7 +3554,7 @@
 
                         // Window
                             // Document
-                            LDKFg.windowDocument = function windowDocument() { return LDKOd.windowDocument.get.call(arguments.length ? arguments[0] : LDKG.window) };
+                            LDKFg.windowDocument = function windowDocument() { return DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKOd.windowDocument.get.call(arguments.length ? arguments[0] : GLOBAL_MAIN) : null };
 
                     /* Set */
 
@@ -3277,7 +3570,7 @@
                     // Decode URI Component
                     LDKO.decodeURIComponent = (function() {
                         // Initialization > Decode URI Component
-                        var decodeURIComponent = LDKF.objectPrototypeGetProperty(GLOBAL, "decodeURIComponent");
+                        var decodeURIComponent = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "decodeURIComponent");
 
                         // Logic > (...)
                         if (LDKF.isNativeFunction(decodeURIComponent) && LDKFg.functionPrototypeName(decodeURIComponent) == "decodeURIComponent") return decodeURIComponent;
@@ -3290,7 +3583,7 @@
                     */
                     LDKO.eval = (function() {
                         // Initialization > Eval
-                        var $eval = LDKF.objectPrototypeGetProperty(GLOBAL, "eval");
+                        var $eval = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "eval");
 
                         // Logic > (...)
                         if (LDKF.isNativeFunction($eval) && (function(name) { return !name || name == "eval" })(LDKFg.functionPrototypeName($eval))) return $eval;
@@ -3456,7 +3749,7 @@
                     // Clear Interval
                     LDKO.clearInterval = LDKO.clearTimeout = (function() {
                         // Initialization > Clear Timeout
-                        var clearTimeout = LDKF.objectPrototypeGetProperty(GLOBAL, "clearTimeout");
+                        var clearTimeout = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "clearTimeout");
 
                         // Logic > (...)
                         if (
@@ -3479,7 +3772,7 @@
                     // Console
                     LDKO.console = (function() {
                         // Initialization > Console
-                        var console = LDKF.objectPrototypeGetProperty(GLOBAL, "console");
+                        var console = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "console");
 
                         // Logic > (...)
                         if (
@@ -3552,7 +3845,7 @@
                         /* Logic
                                 [if statement]
                         */
-                        if (that !== GLOBAL) {
+                        if (that !== GLOBAL_MAIN) {
                             // Modification > Target --- CHECKPOINT ---
                                 // Add To Back
                                 LDKF.objectDefineProperty(that, "addToBack", {
@@ -3777,7 +4070,7 @@
                     // DOM Error
                     LDKO.domError = (function() {
                         // Initialization > DOM Error
-                        var domError = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMError");
+                        var domError = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DOMError");
 
                         // Logic > Return
                         if (LDKFg.functionPrototypeName(domError) == "DOMError" && LDKF.isNativeFunction(domError))
@@ -3799,7 +4092,7 @@
                                     // Logic > Error
                                     if (LDKFg.functionPrototypeName(errorObject) == "Error" && LDKF.isNativeFunction(errorObject)) return errorObject;
                                     else LDKF.throwError("`Error` constructor" + LDKI.errorMessages.native_to_environment)
-                                })(LDKF.objectPrototypeGetProperty(GLOBAL, "Error"));
+                                })(LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "Error"));
                         }
 
                         // Return
@@ -3809,7 +4102,7 @@
                     // Evaluation Error
                     LDKO.evalError = (function() {
                         // Initialization > Evaluation Error
-                        var evalError = LDKF.objectPrototypeGetProperty(GLOBAL, "EvalError");
+                        var evalError = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "EvalError");
 
                         // Logic > Return
                         if (LDKFg.functionPrototypeName(evalError) == "EvalError" && LDKF.isNativeFunction(evalError))
@@ -3851,7 +4144,7 @@
                     // Media Error
                     LDKO.mediaError = (function() {
                         // Initialization > Media Error
-                        var mediaError = LDKF.objectPrototypeGetProperty(GLOBAL, "MediaError");
+                        var mediaError = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "MediaError");
 
                         // Logic > Return
                         if (LDKFg.functionPrototypeName(mediaError) == "MediaError" && LDKF.isNativeFunction(mediaError))
@@ -4037,7 +4330,7 @@
                     // Over-constrained Error
                     LDKO.overconstrainedError = (function() {
                         // Initialization > Over-constrained Error
-                        var overconstrainedError = LDKF.objectPrototypeGetProperty(GLOBAL, "OverconstrainedError");
+                        var overconstrainedError = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "OverconstrainedError");
 
                         // Logic > Return
                         if (LDKFg.functionPrototypeName(overconstrainedError) == "OverconstrainedError" && LDKF.isNativeFunction(overconstrainedError))
@@ -4076,7 +4369,7 @@
                     // Set Timeout
                     LDKO.setTimeout = (function() {
                         // Initialization > Set Timeout
-                        var setTimeout = LDKF.objectPrototypeGetProperty(GLOBAL, "setTimeout");
+                        var setTimeout = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "setTimeout");
 
                         // Logic > (...)
                         if (
@@ -4097,9 +4390,9 @@
                     // Symbol
                     LDKO.symbol = (function() {
                         // Logic
-                        if (LDKF.objectPrototypeHasProperty(GLOBAL, "Symbol")) {
+                        if (LDKF.objectPrototypeHasProperty(GLOBAL_MAIN, "Symbol")) {
                             // Initialization > Symbol
-                            var symbol = LDKF.objectPrototypeGetProperty(GLOBAL, "Symbol");
+                            var symbol = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "Symbol");
 
                             // Logic > (...)
                             if (LDKFg.functionPrototypeName(symbol) == "Symbol" && LDKF.isNativeFunction(symbol)) return symbol;
@@ -4134,7 +4427,7 @@
                     })();
 
                     // Window
-                    LDKO.window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKF.objectPrototypeGetConstructor(GLOBAL) : undefined;
+                    LDKO.window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKF.objectPrototypeGetConstructor(GLOBAL_MAIN) : undefined;
                         // Prototype
                         LDKO.windowPrototype = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKO.window.prototype : undefined;
 
@@ -4143,11 +4436,11 @@
                             // Document
                             LDKOd.windowDocument = (function(descriptor) {
                                 // Modification > Descriptor > Get
-                                descriptor && (LDKF.objectPrototypeHasProperty(descriptor, "get") || (descriptor.get = function document() { return LDKG.window.document }));
+                                descriptor && (LDKF.objectPrototypeHasProperty(descriptor, "get") || (descriptor.get = function document() { return GLOBAL_MAIN.document }));
 
                                 // Return
                                 return descriptor
-                            })(LDKF.objectGetOwnPropertyDescriptor(LDKG.window || {}, "document") || LDKF.objectGetOwnPropertyDescriptor(LDKO.windowPrototype || {}, "document"));
+                            })(LDKF.objectGetOwnPropertyDescriptor(GLOBAL_MAIN || {}, "document") || LDKF.objectGetOwnPropertyDescriptor(LDKO.windowPrototype || {}, "document"));
 
                     // Document
                     LDKO.document = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? (function() {
@@ -4244,7 +4537,7 @@
 
                             else {
                                 // Initialization > DOM Exception
-                                var domException = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMException");
+                                var domException = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DOMException");
 
                                 // Logic > Return
                                 if (LDKFg.functionPrototypeName(domException) == "DOMException" && LDKF.isNativeFunction(domException))
@@ -4274,7 +4567,7 @@
         }
 
         /* {Environment Specifications} Logic
-                [if:else if:else statement]
+                [if:else if statement]
 
                 --- CHECKPOINT ---
                 --- NOTE ---
@@ -4285,7 +4578,7 @@
 
         else if (DEVELOPMENT_ENVIRONMENT_IS_NODEJS) {}
 
-        else {
+        else if (DEVELOPMENT_ENVIRONMENT.environments) {
             // Warn
             LDKF.throwWarning("Library could not detect the current development environment");
         }
@@ -4293,55 +4586,170 @@
         // Return
         return 0
     }).apply(this, (function() {
+        // Initialization > (Arguments, Development Environment, Global)
+        var args = [], DEVELOPMENT_ENVIRONMENT = {
+            // Add
+            add: function add(environment) {
+                // Initialization > Environments
+                var environments =  DEVELOPMENT_ENVIRONMENT.environments;
+
+                // Update > Environments
+                DEVELOPMENT_ENVIRONMENT.includes(environment) || (environments[environments.length] = environment)
+            },
+
+            // Environments
+            environments: [],
+
+            // Includes
+            includes: function includes(environment) {
+                // Initialization > (Environments, Iterator)
+                var environments = DEVELOPMENT_ENVIRONMENT.environments,
+                    iterator = environments.length;
+
+                // Loop > Logic > Return
+                while (iterator)
+                    if (environments[iterator -= 1] === environment)
+                        return !0;
+
+                // Return
+                return !1
+            },
+
+            /* (Constructor > Prototype) */
+            __proto__: new function DevelopmentEnvironment() {}
+        }, GLOBAL = {
+            // Add
+            add: function add(arg, referenceName) {
+                // Modification > Global > Objects
+                GLOBAL.objects[referenceName] = arg
+            },
+
+            // Define
+            define: function define(arg, referenceName) {
+                // Logic > Modification > Global > (Defined) Main > Argument
+                if (!GLOBAL.definedMain) {
+                    GLOBAL.definedMain = !0;
+                    GLOBAL.main = arg
+                }
+
+                // Global > Add
+                GLOBAL.add(arg, referenceName)
+            },
+
+            // Defined Main
+            definedMain: !1,
+
+            // Main --- NOTE (Lapys) -> The commonly referenced global object.
+            main: null,
+
+            // Objects --- NOTE (Lapys) -> Some development environments may contain multiple global objects.
+            objects: {},
+
+            /* Value Of */
+            valueOf: function valueOf() { return GLOBAL.main },
+
+            /* (Constructor > Prototype) */
+            __proto__: new function Global() {}
+        };
+
         /* Logic
                 [if:else if:else statement]
 
                 --- NOTE ---
                     #Lapys: Get the global object and return the current development environment as well.
         */
-        if (typeof global != "undefined") {
-            // Initialization > (Arguments, Argument Value, Iterator, Length)
-            var args = [global, ["NodeJS"]], argv = (function() {
-                // Error Handling
-                try {
-                    // Initialization > Process
-                    var process = global.process;
+            // {Browser}
+            if (typeof window != "undefined") {
+                // Development Environment > Add > (...)
+                DEVELOPMENT_ENVIRONMENT.add("Browser");
 
-                    /* Logic
-                            [if statement]
-                    */
-                    if (
-                        typeof process == "object" && process + "" == "[object process]" &&
-                        typeof process.__proto__ == "object"
-                    ) {
-                        // Initialization > Argument Value
-                        var argv = process.argv;
+                // Global > Define > (...)
+                GLOBAL.define(window, "window");
 
-                        // Logic > Return
-                        if (
-                            typeof argv == "object" && !!argv &&
-                            argv.constructor === [].constructor
-                        ) return argv
-                    }
-                } catch (error) {}
+                // {Electron JS}
+                if (
+                    "process" in window && (function() {
+                        // Error Handling
+                        try {
+                            // Initialization > Process
+                            var process;
 
-                // Return
-                return []
-            })(), iterator = argv.length, length = iterator;
+                            // Logic > Return
+                            if (process = window.process)
+                                return "type" in process && process.type && "versions" && process && typeof process.versions["electron"] == "string"
+                        } catch (error) {}
+                    })()
+                ) DEVELOPMENT_ENVIRONMENT.add("Electron JS")
+            }
 
-            // Loop > Update > Arguments
-            while (iterator)
-                args[1][args[1].length] = argv[length - (iterator -= 1) - 1];
+            // {Node JS}
+            if (
+                typeof global != "undefined" && typeof module != "undefined" && (function() {
+                    // Error Handling
+                    try {
+                        // Logic
+                        return global + "" == "[object global]" && global.constructor === ({}).constructor &&
+                            typeof module.exports == "object" && module.exports + "" == "[object Object]"
+                    } catch (error) {}
+                })()
+            ) {
+                // Development Environment > Add > (...)
+                DEVELOPMENT_ENVIRONMENT.add("Node JS");
 
-            // Return
-            return args;
+                // Global > (...)
+                GLOBAL.define(global, "global");
+                GLOBAL.add(module, "module");
+
+                // Update > Arguments
+                args[1] = [DEVELOPMENT_ENVIRONMENT];
+
+                /* Initialization > (Argument Value, Iterator, Length, Index)
+                        --- NOTE ---
+                            #Lapys: Update the Arguments array.
+                */
+                var argv = (function() {
+                    // Error Handling
+                    try {
+                        // Logic
+                        if ("process" in global) {
+                            // Initialization > Process
+                            var process = global.process;
+
+                            /* Logic
+                                    [if statement]
+                            */
+                            if (
+                                "argv" in process &&
+                                typeof process == "object" && process + "" == "[object process]" &&
+                                typeof process.__proto__ == "object"
+                            ) {
+                                // Initialization > Argument Value
+                                var argv = process.argv;
+
+                                // Logic > Return
+                                if (
+                                    typeof argv == "object" && !!argv &&
+                                    argv.constructor === [].constructor
+                                ) return argv
+                            }
+                        }
+                    } catch (error) {}
+
+                    // Return
+                    return []
+                })(), iterator = argv.length, length = iterator, index = args[1].length - 1;
+
+                // Loop > Update > Arguments
+                while (iterator)
+                    args[1][index += 1] = argv[length - (iterator -= 1) - 1]
+            }
+
+        // Logic > Update > Arguments
+        if (!args.length || !args[0]) {
+            args[0] = GLOBAL;
+            (args.length > 1) || (args[1] = [DEVELOPMENT_ENVIRONMENT])
         }
 
-        else if (typeof window != "undefined")
-            // Return
-            return [window, ["Browser"]];
-
-        else
-            // Return
-            return [null, [void 0]]
+        // Return
+        return args
     })());
