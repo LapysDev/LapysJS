@@ -381,7 +381,7 @@
                                                 nextCharacter = matchList[index + 1];
 
                                             if (LDKF.stringPrototypeIsAlphanumeric(previousCharacter)) {
-                                                // Initialization > Alphanumerics --- CHECKPOINT ---
+                                                // Initialization > Alphanumerics
                                                 var alphanumerics = LDKF.arrayPrototypeSort(LDKF.arrayPrototypeConcatenate(
                                                     [], LDKRg["\\d"].additionalMatches, LDKRg["\\w"].additionalMatches,
                                                     LDKR.strings.alphabets.lowercase, LDKR.strings.alphabets.uppercase, LDKR.strings.digits
