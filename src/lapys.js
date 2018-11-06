@@ -274,9 +274,6 @@
 
                 // Random --- NOTE (Lapys) -> Private methods & properties.
                 random: {
-                    // Call Stack Size --- NOTE (Lapys) -> Keep a track of recursive functions.
-                    callStackSize: 0,
-
                     // Create Object --- NOTE (Lapys) -> Custom library objects.
                     createObject: {},
 
@@ -762,18 +759,6 @@
                         }
                     },
 
-                    // Limits --- NOTE (Lapys) -> Best to know the limits of some JavaScript features.
-                    limits: {
-                        // Array Length
-                        arrayLength: null,
-
-                        // Call Stack Size
-                        callStackSize: (function(){var size=0;try{(function a(){size+=1;a()})()}catch(error){}return size})(),
-
-                        // String Length
-                        stringLength: null
-                    },
-
                     // Strings --- NOTE (Lapys) -> Generic string collections.
                     strings: {
                         // Alphabets
@@ -958,10 +943,13 @@
                     var that = this;
 
                     // Modification > Target
-                        // Cache
+                        // Cache --- NOTE (Lapys) -> Contains items recorded by the library.
                         that.cache = {
                             // Exponents
-                            exponents: []
+                            exponents: [],
+
+                            // Timeouts
+                            timeouts: []
                         };
 
                         // Document Object Model
@@ -1660,6 +1648,12 @@
                     // Ceiling
                     LDKF.ceil = function ceil(arg) { return LDKF.isInteger(LDKF.isNumber(arg) ? arg : arg = LDKF.number(arg)) ? arg : LDKF.floor(arg) + 1 };
 
+                    // Clear Interval --- CHECKPOINT ---
+                    LDKF.clearInterval = function clearInterval(timeoutID) {};
+
+                    // Clear Timeout
+                    LDKF.clearTimeout = function clearTimeout(timeoutID) { return LDKO.clearTimeout.call(GLOBAL_MAIN, timeoutID) };
+
                     // Console
                         // Group
                         LDKF.consoleGroup = function consoleGroup() {
@@ -1820,7 +1814,7 @@
                         LDKF.isNumber(arg) || (arg = LDKF.number(arg));
 
                         // Return
-                        return arg - (arg % 1)
+                        return arg - LDKF.number('.' + LDKF.string(LDKFg.numberPrototypeMantissa(arg)))
                     };
 
                     // Is Array
@@ -2075,7 +2069,7 @@
                     LDKF.isSafeInteger = function isSafeInteger(arg) { return LDKF.isInteger(arg) && LDKF.isSafeNumber(arg) };
 
                     // Is Safe Number
-                    LDKF.isSafeNumber = function isSafeNumber(arg) { return LDKF.isFinite(arg) && !LDKF.isNaN(arg) };
+                    LDKF.isSafeNumber = function isSafeNumber(arg) { return LDKF.isFinite(arg) && !LDKF.isNaN(arg) && arg >= -LDKO.numberMaxSafeInteger && arg <= LDKO.numberMaxSafeInteger };
 
                     // Is Strictly Array-Like --- CHECKPOINT ---
 
@@ -2354,6 +2348,132 @@
                         return number * (base / 100)
                     };
 
+                    // Pseudo Number
+                        // Prototype
+                            // Add
+                            LDKF.pseudoNumberPrototypeAdd = function pseudoNumberPrototypeAdd() {
+                                // Initialization > ((Pseudo Number), (A, B) (String))
+                                var pseudoNumber = new LDKOc.pseudoNumber,
+                                    pseudoNumberA = arguments[0].clone(),
+                                    pseudoNumberAString = pseudoNumberA.toString(),
+                                    pseudoNumberB = arguments[1].clone(),
+                                    pseudoNumberBString = pseudoNumberB.toString();
+
+                                // Logic
+                                if (pseudoNumberBString.length > pseudoNumberAString.length) {
+                                    // Initialization > Temporary Data
+                                    var tmp = pseudoNumberA;
+
+                                    // Update > Pseudo Number (A, B) String
+                                    pseudoNumberAString = (pseudoNumberA = pseudoNumberB).toString();
+                                    pseudoNumberBString = (pseudoNumberB = tmp).toString()
+                                }
+
+                                /* Loop
+                                        Iterate through Pseudo Number (A | B) String.
+
+                                        --- NOTE ---
+                                            #Lapys: Parse the pseudo number strings for calculations.
+                                */
+                                while (pseudoNumberAString.length != pseudoNumberBString.length) {
+                                    // Loop
+                                    while (pseudoNumberA.characteristics.length != pseudoNumberB.characteristics.length) {
+                                        // Modification > Pseudo Number B > Characteristics
+                                        pseudoNumberB.characteristics = '0' + pseudoNumberB.characteristics;
+
+                                        // Update > Pseudo Number B String
+                                        pseudoNumberBString = pseudoNumberB.toString()
+                                    }
+
+                                    // Loop
+                                    while (
+                                        pseudoNumberA.characteristics.length == pseudoNumberB.characteristics.length &&
+                                        pseudoNumberA.mantissa.length != pseudoNumberB.mantissa.length
+                                    ) {
+                                        // Modification > Pseudo Number B > Mantissa
+                                        pseudoNumberB.mantissa += '0';
+
+                                        // Update > Pseudo Number B String
+                                        pseudoNumberBString = pseudoNumberB.toString()
+                                    }
+                                }
+
+                                // Initialization > (Carried Value, (In) Characteristics, Mantissa, Pseudo Number (A, B) String Iterator)
+                                var carriedValue = 0,
+                                    characteristics = "", mantissa = "",
+                                    inCharacteristics = !1,
+                                    pseudoNumberAStringIterator = pseudoNumberAString.length,
+                                    pseudoNumberBStringIterator = pseudoNumberBString.length, pseudoNumberBStringLength = pseudoNumberBStringIterator;
+
+                                /* Loop
+                                        Iterate through Pseudo Number A String.
+                                */
+                                while (pseudoNumberAStringIterator) {
+                                    // Initialization > (Keep Carried Value, Pseudo Number (A, B) Digit)
+                                    var keepCarriedValue = !1,
+                                        pseudoNumberADigit = pseudoNumberAString[pseudoNumberAStringIterator -= 1],
+                                        pseudoNumberBDigit = pseudoNumberBString[pseudoNumberBStringIterator -= 1];
+
+                                    // Initialization > Pseudo Number Digit
+                                    var pseudoNumberDigit = LDKF.string(carriedValue + LDKF.number(pseudoNumberADigit) + LDKF.number(pseudoNumberBDigit));
+
+                                    /* Logic
+                                            [if statement]
+                                    */
+                                    if (pseudoNumberDigit > 9) {
+                                        // Update > (Keep) Carried Value
+                                        carriedValue = LDKF.number(LDKF.stringPrototypeRange(pseudoNumberDigit, 0, -1));
+                                        keepCarriedValue = !0
+                                    }
+
+                                    /* Logic
+                                            [if:else statement]
+                                    */
+                                    if (inCharacteristics)
+                                        // Update > Characteristics
+                                        characteristics = pseudoNumberDigit[pseudoNumberDigit.length - 1] + characteristics;
+
+                                    else {
+                                        /* Logic
+                                                [if:else statement]
+                                        */
+                                        if (pseudoNumberADigit == '.' || pseudoNumberBDigit == '.') {
+                                            // Update > (Keep Carried Value, In Characteristics)
+                                            keepCarriedValue = !0;
+                                            inCharacteristics = !0
+                                        }
+
+                                        else
+                                            // Update > Mantissa
+                                            mantissa = pseudoNumberDigit[pseudoNumberDigit.length - 1] + mantissa
+                                    }
+
+                                    // Logic
+                                    if (!pseudoNumberAStringIterator || !pseudoNumberBStringIterator) {
+                                        // Update > Characteristics
+                                        characteristics = carriedValue + characteristics;
+
+                                        // Break
+                                        break
+                                    }
+
+                                    // Update > Carried Value
+                                    keepCarriedValue || (carriedValue = 0)
+                                }
+
+                                // Return
+                                return characteristics + '.' + mantissa
+                            };
+
+                            // Divide --- CHECKPOINT ---
+                            LDKF.pseudoNumberPrototypeDivide = function pseudoNumberPrototypeDivide() {};
+
+                            // Multiply --- CHECKPOINT ---
+                            LDKF.pseudoNumberPrototypeMultiply = function pseudoNumberPrototypeMultiply() {};
+
+                            // Subtract --- CHECKPOINT ---
+                            LDKF.pseudoNumberPrototypeSubtract = function pseudoNumberPrototypeSubtract() {};
+
                     /* Recur Object
                             --- CHECKPOINT ---
                             --- NOTE ---
@@ -2508,20 +2628,8 @@
                     */
                     LDKF.searchObject = function searchObject(object, iteration, condition, isStrict) {};
 
-                    // Set Interval
-                    LDKF.setInterval = function setInterval(callback, delay) {
-                        // Initialization > (Target, Timeout Identifier)
-                        var that = this, timeoutID = LDKO.setTimeout.call(GLOBAL_MAIN, function() {
-                            // Callback
-                            callback.call(that);
-
-                            // Set Interval
-                            LDKF.setInterval.call(that, callback, delay)
-                        }, delay);
-
-                        // Return
-                        return timeoutID
-                    };
+                    // Set Interval --- CHECKPOINT ---
+                    LDKF.setInterval = function setInterval(callback, delay) {};
 
                     // Set Timeout
                     LDKF.setTimeout = function setTimeout(callback, delay) {
@@ -3552,6 +3660,48 @@
                                     return type
                                 };
 
+                        // Number
+                            // Prototype
+                                // Mantissa --- NOTE (Lapys) -> Use of the `%` operator becomes inefficient toward some numeric values (e.g.: 3.2 % 1).
+                                LDKFg.numberPrototypeMantissa = function numberPrototypeMantissa(number) {
+                                    // Update > Number
+                                    number = LDKF.string(number);
+
+                                    // Initialization > ((Allow) Stream, Iterator, Length)
+                                    var allowStream = !1,
+                                        iterator = number.length, length = iterator,
+                                        stream = "";
+
+                                    /* Loop
+                                            Iterate through Number.
+                                    */
+                                    while (iterator) {
+                                        // Initialization > Index
+                                        var index = length - (iterator -= 1) - 1;
+
+                                        // Logic
+                                        if (number[index] == '.')
+                                            // Logic
+                                            if (allowStream)
+                                                // Break
+                                                break;
+
+                                            else {
+                                                // Update > Allow Stream
+                                                allowStream = !0;
+
+                                                // Continue
+                                                continue
+                                            }
+
+                                        // Update > Stream
+                                        allowStream && (stream += number[index])
+                                    }
+
+                                    // Return
+                                    return LDKF.number(stream)
+                                };
+
                         // Window
                             // Document
                             LDKFg.windowDocument = function windowDocument() { return DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKOd.windowDocument.get.call(arguments.length ? arguments[0] : GLOBAL_MAIN) : null };
@@ -4060,11 +4210,109 @@
 
                         // LapysJS Node List
                         LDKOc.lapysJSNodeList = function LapysJSNodeList(items) {
-                            // Initialization > Arguments
-                            var args = arguments;
+                            // Return
+                            return LDKR.createObject.array(LDKO.lapysJSNodeList, arguments)
+                        };
+
+                        // Pseudo Number
+                        LDKOc.pseudoNumber = function PseudoNumber(characteristics, mantissa) {
+                            // Initialization > Pseudo Number
+                            var pseudoNumber = new LDKO.pseudoNumber;
+
+                            // Logic
+                            if (LDKF.isConstructible(characteristics) && characteristics.constructor === LDKO.pseudoNumber) {
+                                // Modification > Pseudo Number > (Characteristics, Mantissa)
+                                pseudoNumber.characteristics = characteristics.characteristics;
+                                pseudoNumber.mantissa = characteristics.mantissa
+                            }
+
+                            else if (arguments.length) {
+                                // Initialization > (Mantissa Given, (Characteristics, Mantissa) Number)
+                                var mantissaGiven = arguments.length > 1,
+                                    characteristicsNumber = LDKF.number(characteristics) || 0,
+                                    mantissaNumber = mantissaGiven ? LDKF.number(mantissa) || 0 : 0;
+
+                                // Logic
+                                if (LDKF.isSafeNumber(characteristicsNumber) && LDKF.isSafeNumber(mantissaNumber)) {
+                                    // Update > (Characteristics, Mantissa)
+                                    characteristics = characteristicsNumber;
+                                    mantissa = mantissaNumber;
+
+                                    // Modification > Pseudo Number > Mantissa
+                                    pseudoNumber.mantissa = 0;
+
+                                    // Logic
+                                    if (LDKF.isInteger(characteristics))
+                                        // Modification > Pseudo Number > Characteristics
+                                        pseudoNumber.characteristics = LDKF.string(characteristics);
+
+                                    else {
+                                        // Modification > Pseudo Number > Characteristics
+                                        pseudoNumber.characteristics = LDKF.string(LDKF.int(characteristics));
+
+                                        // Update > Characteristics
+                                        characteristics = LDKFg.numberPrototypeMantissa(characteristics);
+
+                                        // Loop > Update > Characteristics
+                                        while (LDKF.isNonInteger(characteristics))
+                                            characteristics *= 10;
+
+                                        // Modification > Pseudo Number > Mantissa
+                                        pseudoNumber.mantissa = characteristics
+                                    }
+
+                                    // Logic
+                                    if (LDKF.isInteger(mantissa))
+                                        // Modification > Pseudo Number > Mantissa
+                                        pseudoNumber.mantissa += mantissa;
+
+                                    else {
+                                        // Loop > Update > Mantissa
+                                        while (LDKF.isNonInteger(mantissa))
+                                            mantissa *= 10;
+
+                                        // Modification > Pseudo Number > Mantissa
+                                        pseudoNumber.mantissa += mantissa
+                                    }
+
+                                    // Modification > Pseudo Number > Mantissa
+                                    pseudoNumber.mantissa = LDKF.string(pseudoNumber.mantissa)
+                                }
+
+                                else {
+                                    // Modification > Pseudo Number > (Characteristics, Mantissa)
+                                    pseudoNumber.characteristics = characteristics;
+                                    pseudoNumber.mantissa = mantissaGiven ? mantissa : '0'
+                                }
+                            }
+
+                            else {
+                                // Modification > Pseudo Number > (Characteristics, Mantissa)
+                                pseudoNumber.characteristics = '0';
+                                pseudoNumber.mantissa = '0'
+                            }
+
+                            // Modification > Pseudo Number
+                                // Clone
+                                LDKF.objectDefineProperty(pseudoNumber, "clone", {
+                                    // Value
+                                    value: function clone() { return new LDKOc.pseudoNumber(pseudoNumber.characteristics, pseudoNumber.mantissa) }
+                                });
+
+                                // To Number
+                                LDKF.objectDefineProperty(pseudoNumber, "toNumber", {
+                                    // Value
+                                    value: function toNumber() { return LDKF.number(pseudoNumber.toString()) }
+                                });
+
+                                // To String
+                                LDKF.objectDefineProperty(pseudoNumber, "toString", {
+                                    // Value
+                                    value: function toString() { return pseudoNumber.characteristics + '.' + pseudoNumber.mantissa }
+                                });
 
                             // Return
-                            return new function LapysJSNodeList() { return LDKR.createObject.array(LDKO.lapysJSNodeList, args) }
+                            return pseudoNumber
                         };
 
                     // DOM Error
@@ -4156,6 +4404,8 @@
 
                     // Number
                     LDKO.number = .0.constructor;
+                        // Maximum Safe Integer
+                        LDKO.numberMaxSafeInteger = 9007199254740991;
 
                     // Object
                     LDKO.object = ({}).constructor;
@@ -4336,6 +4586,9 @@
                         if (LDKFg.functionPrototypeName(overconstrainedError) == "OverconstrainedError" && LDKF.isNativeFunction(overconstrainedError))
                             return overconstrainedError
                     })();
+
+                    // Pseudo-Number
+                    LDKO.pseudoNumber = function PseudoNumber() {};
 
                     // Range Error
                     LDKO.rangeError = (function() {
