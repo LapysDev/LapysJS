@@ -58,30 +58,6 @@
     <!-- Scripts -->
         <!-- Document Script -->
         <script type=text/javascript>
-            // Initialization > Themes
-            var themes = ['blue', 'classic', 'dark', 'light', 'royal'];
-
-            // Function > Set Theme
-            function setTheme() {
-                // Modification > [Element] > Theme
-                document.body.setAttribute('theme', themes[(themes.length * Math.random()) | 0])
-            } setTheme();
-
-            /* Set Interval > Set Theme
-                    --- NOTE ---
-                        #Lapys: Change the theme every 30 seconds.
-            */
-            (document.body.getAttribute('theme') == 'roulette') && setInterval(setTheme, 3e4);
-
-            /* Modification > [Element] > Theme
-                    --- NOTE ---
-                        #Lapys: Set a random theme color (a monochrome screen could be unstimulating).
-            */
-            document.body.hasAttribute('theme') || document.body.setAttribute('theme', (function randomItem(themes) { return themes[(themes.length * Math.random()) | 0] })(themes))
-        </script>
-
-        <!-- Document Script -->
-        <script type=text/javascript>
             // Modification > Window > LapysJS
             window.LapysJS = {
                 // Allow Application Features
@@ -99,6 +75,7 @@
         </script>
 
         <!-- LapysJS Script -->
+        <!-- <script features=script-attribute src='../src/lapys (2018 - Q4).v2.js' type=text/javascript> </script> -->
         <script features=script-attribute src=../src/lapys.js type=text/javascript> </script>
 </body>
 </html>

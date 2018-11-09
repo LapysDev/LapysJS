@@ -23789,7 +23789,7 @@
                                                         // Loop > Logic > Return
                                                         while (iterator)
                                                             if (args[iterator -= 1] === item)
-                                                                return !0;
+                                                                return !0
                                                     } : function match() { return LDKF.isVoid(arguments[0]) },
                                                     trimmed = array;
 
@@ -23846,7 +23846,7 @@
                                                         // Loop > Logic > Return
                                                         while (iterator)
                                                             if (args[iterator -= 1] === item)
-                                                                return !0;
+                                                                return !0
                                                     } : function match() { return LDKF.isVoid(arguments[0]) },
                                                     trimmed = array;
 
