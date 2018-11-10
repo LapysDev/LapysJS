@@ -11,8 +11,6 @@
             - Supported development environments:
                 -- Google Chrome (browser)
                 -- Internet Explorer (browser)
-                    --- Internet Explorer 5
-                    --- Internet Explorer 7
                     --- Internet Explorer 8
                     --- Internet Explorer 9
                     --- Internet Explorer 10
@@ -21,7 +19,9 @@
                 -- Mozilla Firefox (browser)
                 -- Node (development environment)
                 -- Opera (browser)
+                -- Safari (browser)
                 -- Tor (browser)
+                -- UC Browser (browser) --- NOTE (Lapys) -> Untested...
             - The library tries to be as independent of mutable native code as developers/ users could override key features necessary for scripting.
                 -- 'Native' in the sense of JavaScript built-in & non-primitive methods, objects, properties & values,
                     all other vanilla features are allowed (such as control structures, language-specific keywords, primitive values and so on).
@@ -29,10 +29,10 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
-            - Target development environments:
+            - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
                 -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
-                -- Safari (browser)
-                -- UC Browser (browser) --- NOTE (Lapys) -> Untested...
+                --- Internet Explorer 5 --- NOTE (Lapys) -> Freezes for non-apparent reasons.
+                --- Internet Explorer 7 --- NOTE (Lapys) -> Freezes for non-apparent reasons.
                 -- others...
 */
 (function() {
@@ -1188,13 +1188,139 @@
                             // Is True
                             LDKF.booleanPrototypeIsTrue = function booleanPrototypeIsTrue(boolean) { return !!boolean };
 
-                    // Error
+                    // Error --- CHECKPOINT ---
+                    LDKF.error = function error(message, stack) {
+                        throw new Error(message)
+                    };
+                        // Prototype
+                            // Set Message
+                            LDKF.errorPrototypeSetMessage = function errorPrototypeSetMessage(error, message) {
+                                // Modification > Error > (Description, Message)
+                                LDKF.objectPrototypeSetProperty(error, "description", message);
+                                LDKF.objectPrototypeSetProperty(error, "message", message);
+
+                                // Return
+                                return message
+                            };
+
+                    // Evaluate
+                    LDKF.eval = function eval(source) {
+                        // Error Handling > Return
+                        try { return LDKO.eval.call(this, source) }
+                        catch (error) {}
+
+                        // Return
+                        return LDKO.eval.call(GLOBAL_MAIN, source)
+                    };
+
+                    // Fallback Error
+                    LDKF.fallbackError = function fallbackError(message) { throw LDKF.string(message) };
+
                     // Function
                         // Prototype
                             // Is Arrow
+                            LDKF.functionPrototypeIsArrow = function functionPrototypeIsArrow(method) {
+                                // Initialization > Type
+                                var type = LDKFG.functionPrototypeType(method);
+
+                                // Return
+                                return type && type[0] == 'a' && type[1] == 'r' && type[2] == 'r' && type[3] == 'o' && type[4] == 'w'
+                            };
+                                // Is Arrow Native
+                                LDKF.functionPrototypeIsArrowNative = function functionPrototypeIsArrowNative(method) { return LDKF.functionPrototypeIsArrow(method) && LDKF.functionPrototypeIsNative(method) };
+
                             // Is Class
+                            LDKF.functionPrototypeIsClass = function functionPrototypeIsClass(method) {
+                                // Initialization > Type
+                                var type = LDKFG.functionPrototypeType(method);
+
+                                // Return
+                                return type && type[0] == 'c' && type[1] == 'l' && type[2] == 'a' && type[3] == 's' && type[4] == 's'
+                            };
+                                // Is Class Native
+                                LDKF.functionPrototypeIsClassNative = function functionPrototypeIsClassNative(method) { return LDKF.functionPrototypeIsClass(method) && LDKF.functionPrototypeIsNative(method) };
+
                             // Is Default
+                            LDKF.functionPrototypeIsDefault = function functionPrototypeIsDefault(method) {
+                                // Initialization > Type
+                                var type = LDKFG.functionPrototypeType(method);
+
+                                // Return
+                                return type && type[0] == 'd' && type[1] == 'e' && type[2] == 'f' && type[3] == 'a' && type[4] == 'u' && type[5] == 'l' && type[6] == 't'
+                            };
+                                // Is Default Native
+                                LDKF.functionPrototypeIsDefaultNative = function functionPrototypeIsDefaultNative(method) { return LDKF.functionPrototypeIsDefault(method) && LDKF.functionPrototypeIsNative(method) };
+
                             // Is Native
+                            LDKF.functionPrototypeIsNative = function functionPrototypeIsNative(method) {
+                                // Initialization > (Allow Stream, Iterator, Length, Matches (Length), Source, Stream-Lock)
+                                var allowStream = TRUE,
+                                    matches = ["[Command Line API]", "[native code]"],
+                                    matchesLength = matches.length,
+                                    source = LDKFG.functionPrototypeSourceCode(method),
+                                    iterator = source.length, length = iterator,
+                                    streamLock = null,
+                                    type = LDKFG.functionPrototypeType.call(LDKF.functionPrototypeIsNative, method);
+
+                                // Logic > Return
+                                if (LDKF.isFunction(method) && !(type == "arrow" || type == "class" || type == "default"))
+                                    return TRUE;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > (Index, (Next) Character)
+                                    var index = length - (iterator -= 1) - 1,
+                                        character = source[index], nextCharacter = source[index + 1];
+
+                                    // Logic
+                                    if (allowStream) {
+                                        // Logic
+                                        if (character == '/' && nextCharacter == '*')
+                                            // Update > Allow Stream
+                                            allowStream = FALSE;
+
+                                        else if (character == '\'' || character == '"') {
+                                            // Update > (Allow Stream, Stream-Lock)
+                                            allowStream = FALSE;
+                                            streamLock = character
+                                        }
+
+                                        // Initialization > Matches Iterator
+                                        var matchesIterator = matchesLength;
+
+                                        // Loop
+                                        while (matchesIterator) {
+                                            // Initialization > (Match) (Iterator, Length)
+                                            var match = matches[matchesIterator -= 1],
+                                                matchIterator = match.length, matchLength = matchIterator;
+
+                                            // Loop
+                                            while (matchIterator) {
+                                                // Initialization > Match Index
+                                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                                // Logic > (...)
+                                                if (source[index + matchIndex] != match[matchIndex]) break;
+                                                else if (!matchIterator) return TRUE
+                                            }
+                                        }
+                                    }
+
+                                    else if (character == '*' && nextCharacter == '/')
+                                        // Update > Allow Stream
+                                        allowStream = TRUE;
+
+                                    else if (character == '\'' || character == '"' || character == streamLock) {
+                                        // Update > (Allow Stream, Stream-Lock)
+                                        allowStream = TRUE;
+                                        streamLock = null
+                                    }
+                                }
+
+                                // Return
+                                return FALSE
+                            };
+
                     // Integer
                     LDKF.int = function int(arg) {
                         // Update > Number
@@ -1206,16 +1332,42 @@
 
                     /* Is */
                         // Array
+                        LDKF.isArray = function isArray(arg) {
+                            // Error Handling > Return
+                            try { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKFG.objectPrototypeConstructor(arg) === LDKO.array && LDKF.isNull(arg.__proto__.__proto__.__proto__) }
+                            catch (error) {}
+
+                            // Error Handling > Return
+                            try { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKFG.objectPrototypeConstructor(arg) === LDKO.array }
+                            catch (error) {}
+
+                            // Return
+                            return FALSE
+                        };
+
                         // Array-Like
                         // Array Object
+
                         // Boolean
                         LDKF.isBoolean = function isBoolean(arg) { return typeof arg == "boolean" };
 
                         // Constructible
                         LDKF.isConstructible = function isConstructible(arg) { return !LDKF.isNonConstructible(arg) };
 
-                        // Function --- CHECKPOINT ---
-                        LDKF.isFunction = function isFunction(arg) { return typeof arg == "function" };
+                        // Function
+                        LDKF.isFunction = function isFunction(arg) {
+                            // Return
+                            return typeof arg == "function" || (function() {
+                                // Logic > Return
+                                if (
+                                    LDKF.objectPrototypeHasProperty(GLOBAL_MAIN, "ActiveXObject") &&
+                                    (function(method) { return method && LDKF.functionPrototypeIsNative(method) && LDKFG.functionPrototypeName(method) == "ActiveXObject" })(LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ActiveXObject"))
+                                ) return typeof arg == "object" && LDKF.functionPrototypeIsDefault(arg);
+
+                                // Return
+                                return FALSE
+                            })()
+                        };
 
                         // Non-Constructible
                         LDKF.isNonConstructible = function isNonConstructible(arg) { return LDKF.isNull(arg) || LDKF.isVoid(arg) };
@@ -1325,15 +1477,27 @@
                             LDKF.numberPrototypeIsSafeInteger = function numberPrototypeIsSafeInteger(number) { return LDKF.numberPrototypeIsSafe(number) && LDKF.numberPrototypeIsInteger(number) };
 
                     // Object
+                        // Define Property
+                        LDKF.objectDefineProperty = function objectDefineProperty() { try { return LDKO.objectDefineProperty.apply(this, arguments) } catch (error) {} };
+
                         // Is
                         LDKF.objectIs = function objectIs(argA, argB) { return argA === argB ? 0 !== argA || 1 / argA == 1 / argB: argA !== argA && argB !==argB };
 
                         // Prototype
                             // Delete Property
+                            LDKF.objectPrototypeDeleteProperty = function objectPrototypeDeleteProperty(object, key) { try { return delete object[key] } catch (error) {}  };
+
                             // Get Property
+                            LDKF.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, key) { try { return object[key] } catch (error) {} };
+
                             // Get Property Description
+
                             // Has Property
+                            LDKF.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, key) { try { return key in object } catch (error) {} };
+
                             // Set Property
+                            LDKF.objectPrototypeSetProperty = function objectPrototypeSetProperty(object, key, value) { try { return object[key] = value } catch (error) {} };
+
                             // Set Property Description
 
                     // Percent
@@ -1387,16 +1551,319 @@
                     };
                         // Prototype
                             // Concatenate
+                            LDKF.stringPrototypeConcatenate = function stringPrototypeConcatenate(string, concatenationString) {
+                                // Initialization > (Iterator, Length)
+                                var iterator = arguments.length, length = iterator;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Index
+                                    var index = length - (iterator -= 1) - 1;
+
+                                    // Update > String
+                                    index && (string += LDKF.string(arguments[index]))
+                                }
+
+                                // Return
+                                return string
+                            };
+
                             // Cut
+                            LDKF.stringPrototypeCut = function stringPrototypeCut(string, amount) {
+                                // Initialization > Target
+                                var that = this;
+
+                                // Function > Is Private Call
+                                function IS_PRIVATE_CALL() { return that === LDKF.stringPrototypeCutIndex || that === LDKF.stringPrototypeTrimLeft || that === LDKF.stringPrototypeTrimRight }
+
+                                // Logic
+                                if (IS_PRIVATE_CALL() || (amount && LDKF.numberPrototypeIsInteger(amount))) {
+                                    // Initialization > (Length, Stream)
+                                    var length = string.length, stream = "";
+
+                                    // Logic
+                                    if (that === LDKF.stringPrototypeTrimLeft || LDKF.numberPrototypeIsNegative(amount)) {
+                                        // Update > Amount
+                                        amount = -amount - 1;
+
+                                        // Logic
+                                        if (amount > length)
+                                            // Update > String
+                                            string = "";
+
+                                        else {
+                                            // Update > Length
+                                            length -= 1;
+
+                                            // Loop > Update > Stream
+                                            while (amount != length)
+                                                stream += string[amount += 1];
+
+                                            // Update > String
+                                            string = stream
+                                        }
+                                    }
+
+                                    else
+                                        // Logic
+                                        if (amount > length)
+                                            // Update > String
+                                            string = "";
+
+                                        else {
+                                            // Initialization > Iterator
+                                            var iterator = -1;
+
+                                            // Update > Amount
+                                            amount = length - amount - 1;
+
+                                            // Loop > Update > Stream
+                                            while (amount != iterator)
+                                                stream += string[iterator += 1];
+
+                                            // Update > String
+                                            string = stream
+                                        }
+                                }
+
+                                // Return
+                                return string
+                            };
+
                             // Cut Index
+                            LDKF.stringPrototypeCutIndex = function stringPrototypeCutIndex(string, index) {
+                                // Initialization > (Iterator, String (Length))
+                                var iterator = arguments.length, length = iterator,
+                                    stringLength = string.length;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Arguments Index
+                                    var argumentsIndex = length - (iterator -= 1) - 1;
+
+                                    // Logic
+                                    if (argumentsIndex) {
+                                        // Initialization > String Index
+                                        var stringIndex = arguments[argumentsIndex];
+
+                                        // Logic
+                                        if (!stringIndex) {
+                                            // Update > String (Length)
+                                            string = LDKF.stringPrototypeCut.call(LDKF.stringPrototypeCutIndex, string, -1);
+                                            stringLength -= 1;
+                                        }
+
+                                        else if (stringIndex == stringLength - 1) {
+                                            // Update > String (Length)
+                                            string = LDKF.stringPrototypeCut.call(LDKF.stringPrototypeCutIndex, string, 1);
+                                            stringLength -= 1
+                                        }
+
+                                        else if (LDKF.withinFoci(stringIndex, 0, stringLength)) {
+                                            // Initialization > (Stream, String Iterator)
+                                            var stream = "", stringIterator = stringLength;
+
+                                            // Loop
+                                            while (stringIterator) {
+                                                // Initialization > String Index
+                                                var $stringIndex = stringLength - (stringIterator -= 1) - 1;
+
+                                                // Update > Stream
+                                                (stringIndex == $stringIndex) || (stream += string[$stringIndex])
+                                            }
+
+                                            // Update > String (Length)
+                                            string = stream;
+                                            stringLength -= 1
+                                        }
+                                    }
+                                }
+
+                                // Return
+                                return string
+                            };
+
                             // Includes
+                            LDKF.stringPrototypeIncludes = function stringPrototypeIncludes(string, match) {
+                            };
+
                             // Index
+                            LDKF.stringPrototypeIndex = function stringPrototypeIndex(string, match) {
+                                // Initialization > (Iterator, Match (Length))
+                                var iterator = string.length, length = iterator,
+                                    matchLength = match.length;
+
+                                // Update > Match
+                                match = LDKF.string(match);
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > (Index, Match Iterator)
+                                    var index = length - (iterator -= 1) - 1,
+                                        matchIterator = matchLength;
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Initialization > Match Index
+                                        var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                        // Logic > (...)
+                                        if (string[index + matchIndex] != match[matchIndex]) break;
+                                        else if (!matchIterator) return index
+                                    }
+                                }
+
+                                // Return
+                                return -1
+                            };
+
                             // Insert Index
+                            LDKF.stringPrototypeInsertIndex = function stringPrototypeInsertIndex(string, insertion, index) {
+                                // Initialization > (Iterator, (Insertion, String) (Length))
+                                var iterator = arguments.length, length = iterator,
+                                    insertionLength = (insertion = LDKF.string(insertion)).length,
+                                    stringLength = string.length;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Arguments Index
+                                    var argumentsIndex = length - (iterator -= 1) - 1;
+
+                                    // Logic
+                                    if (argumentsIndex > 1) {
+                                        // Initialization > (Stream, String (Index (Found), Iterator))
+                                        var stream = "",
+                                            stringIndex = arguments[argumentsIndex],
+                                            stringIndexFound = FALSE,
+                                            stringIterator = stringLength;
+
+                                        // Loop
+                                        while (stringIterator) {
+                                            // Initialization > (String Index, Character)
+                                            var $stringIndex = stringLength - (stringIterator -= 1) - 1,
+                                                character = string[$stringIndex];
+
+                                            // Logic
+                                            if (stringIndex == $stringIndex) {
+                                                // Update > (Stream, String Index Found)
+                                                stream += character + insertion;
+                                                stringIndexFound = TRUE
+                                            }
+
+                                            else
+                                                // Update > Stream
+                                                stream += character
+                                        }
+
+                                        // Update > String (Length)
+                                        stringIndexFound && (stringLength += insertionLength);
+                                        string = stream
+                                    }
+                                }
+
+                                // Return
+                                return string
+                            };
+
                             // Is Alphabet
+                            LDKF.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) {
+                                // Initialization > (Alphabets, Iterator, Length)
+                                var alphabets = LDKMs.get_alphabets(),
+                                    iterator = string.length, length = iterator;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Character
+                                    var character = string[iterator -= 1];
+
+                                    // Logic > Return
+                                    if (!(LDKF.arrayPrototypeIncludes(alphabets, character)))
+                                        return FALSE
+                                }
+
+                                // Return
+                                return !!length
+                            };
+
                             // Is Digit
+                            LDKF.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) {
+                                // Initialization > (Iterator, Length)
+                                var iterator = string.length, length = iterator;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Character
+                                    var character = string[iterator -= 1];
+
+                                    // Logic > Return
+                                    if (!(LDKF.arrayPrototypeIncludes(LDKMs.digits, character)))
+                                        return FALSE
+                                }
+
+                                // Return
+                                return !!length
+                            };
+
                             // Is Lowercase
                             // Is Uppercase
+                            // Is Variable Name
+                            LDKF.stringPrototypeIsVariableName = function stringPrototypeIsVariableName(string) {
+                                // Initialization > (Iterator, Length)
+                                var iterator = string.length, length = iterator;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Character
+                                    var character = string[iterator -= 1];
+
+                                    // Logic > Return
+                                    if (!(
+                                        character == '$' || character == '_' ||
+                                        LDKF.stringPrototypeIsAlphabet(character) || (iterator && LDKF.stringPrototypeIsDigit(character)) ||
+                                        (function() { try { LDKO.eval("var " + character); return TRUE } catch (error) {} })()
+                                    )) return FALSE
+                                }
+
+                                // Return
+                                return !!length
+                            };
+
                             // Last Index
+                            LDKF.stringPrototypeLastIndex = function stringPrototypeLastIndex(string, match) {
+                                // Initialization > (Iterator, Match (Length))
+                                var iterator = string.length, length = iterator,
+                                    matchLength = match.length;
+
+                                // Update > Match
+                                match = LDKF.string(match);
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Match Iterator
+                                    var matchIterator = matchLength;
+
+                                    // Update > Iterator
+                                    iterator -= 1;
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Update > Match Iterator
+                                        matchIterator -= 1;
+
+                                        // Logic > (...)
+                                        if (string[iterator - (matchLength - matchIterator - 1)] != match[matchIterator]) break;
+                                        else if (!matchIterator) return iterator - (matchLength - 1)
+                                    }
+                                }
+
+                                // Return
+                                return -1
+                            };
+
+                            // Pad
+                            // Pad Left
+                            // Pad Right
+
                             // Range
                             // Remove
                                 // All
@@ -1415,8 +1882,105 @@
                             // Shallow Clone
                             // Split
                             // Trim
+                            LDKF.stringPrototypeTrim = function stringPrototypeTrim(string, match) { return arguments.length > 1 ? LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string, match), match) : LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string)) };
+
                             // Trim Left
+                            LDKF.stringPrototypeTrimLeft = function stringPrototypeTrimLeft(string, match) {
+                                // Initialization > (Iterator, String (Length))
+                                var stringLength = string.length,
+                                    iterator = arguments.length, length = iterator;
+
+                                // Logic
+                                if (iterator > 1)
+                                    // Loop
+                                    while (iterator && stringLength) {
+                                        // Initialization > Arguments Match
+                                        var argumentsMatch = arguments[iterator -= 1];
+
+                                        // Logic
+                                        if (iterator) {
+                                            // Initialization > (Index, Arguments Match Length, Former String Length)
+                                            var index = -1, argumentsMatchLength = argumentsMatch.length,
+                                                formerStringLength = stringLength;
+
+                                            // Loop
+                                            while (index != argumentsMatchLength) {
+                                                // Update > Index
+                                                index += 1;
+
+                                                // Logic
+                                                if (string[index] != argumentsMatch[index])
+                                                    // [Break]
+                                                    break;
+
+                                                else {
+                                                    // Update > String (Length)
+                                                    string = LDKF.stringPrototypeCut(string, -argumentsMatchLength);
+                                                    stringLength -= argumentsMatchLength
+                                                }
+                                            }
+
+                                            // Update > Iterator
+                                            (stringLength == formerStringLength) || (iterator = length)
+                                        }
+                                    }
+
+                                else
+                                    // Update > String
+                                    string = LDKF.stringPrototypeTrimLeft(string, ' ', '\n');
+
+                                // Return
+                                return string
+                            };
+
                             // Trim Right
+                            LDKF.stringPrototypeTrimRight = function stringPrototypeTrimRight(string, match) {
+                                // Initialization > (Iterator, String (Length))
+                                var stringLength = string.length,
+                                    iterator = arguments.length, length = iterator;
+
+                                // Logic
+                                if (iterator > 1)
+                                    // Loop
+                                    while (iterator && stringLength) {
+                                        // Initialization > Arguments Match
+                                        var argumentsMatch = arguments[iterator -= 1];
+
+                                        // Logic
+                                        if (iterator) {
+                                            // Initialization > (Index, Arguments Match Length, Former String Length)
+                                            var index = 0, argumentsMatchLength = argumentsMatch.length,
+                                                formerStringLength = stringLength;
+
+                                            // Loop
+                                            while (index != argumentsMatchLength) {
+                                                // Update > Index
+                                                index += 1;
+
+                                                // Logic
+                                                if (string[stringLength - index] != argumentsMatch[argumentsMatchLength - index])
+                                                    // [Break]
+                                                    break;
+
+                                                else {
+                                                    // Update > String (Length)
+                                                    string = LDKF.stringPrototypeCut(string, argumentsMatchLength);
+                                                    stringLength -= argumentsMatchLength
+                                                }
+                                            }
+
+                                            // Update > Iterator
+                                            (stringLength == formerStringLength) || (iterator = length)
+                                        }
+                                    }
+
+                                else
+                                    // Update > String
+                                    string = LDKF.stringPrototypeTrimLeft(string, ' ', '\n');
+
+                                // Return
+                                return string
+                            };
 
                     // To Debug Message
                     LDKF.toDebugMessage = function toDebugMessage(message) {
@@ -1429,6 +1993,57 @@
                         // Return
                         return LDKId.prefix + message + (LDKF.stringPrototypeIsAlphabet(messageLastCharacter) || LDKF.stringPrototypeIsDigit(messageLastCharacter) ? '.' : "") + LDKId.suffix
                     };
+
+                    // Throw Internal Error
+                    LDKF.throwInternalError = function throwInternalError(message) {
+                        // Update > Message
+                        arguments.length || (message = "");
+
+                        // Error Handling > (...)
+                        try { (function InternalError(){InternalError()})() }
+                        catch (error) {
+                            // (...)
+                            LDKF.errorPrototypeSetMessage(error, message);
+
+                            // Error
+                            throw error
+                        }
+                    };
+
+                    // Throw DOM Error
+                    // Throw Error
+                    // Throw Evaluation Error
+                    // Throw Internal Error
+                    // Throw Media Error
+                    // Throw Media Key Error
+                    // {MSMediaKeyError} Throw Microsoft Media Key Error
+                    // Throw Media Stream Error
+                    // Throw Over-Constrained Error
+                    // Throw Range Error
+                    LDKF.throwRangeError = function throwRangeError(message) {
+                        // Update > Message
+                        arguments.length || (message = "");
+
+                        // Error Handling > (...)
+                        try { (function RangeError(){RangeError()})() }
+                        catch (error) {
+                            // Logic > Error
+                            if (LDKFG.objectPrototypeConstructor(error) !== LDKO.rangeError)
+                                throw new LDKO.rangeError(message);
+
+                            // (...)
+                            LDKF.errorPrototypeSetMessage(error, message);
+
+                            // Error
+                            throw error
+                        }
+                    };
+
+                    // Throw Reference Error
+                    // Throw Syntax Error
+                    // Throw Type Error
+                    // Throw URI Error
+                    // Throw Webkit Speech Recognition Error
 
                     // Warn
 
@@ -1481,8 +2096,72 @@
                         // Function
                             // Prototype
                                 // Name
+                                LDKFG.functionPrototypeName = function functionPrototypeName(method) {
+                                    // Initialization > Name
+                                    var name = "";
+
+                                    // Function > Get Name
+                                    function getName(index) {
+                                        // Initialization > (Source, Iterator, Length, Stream)
+                                        var source = LDKFG.functionPrototypeSourceCode(method),
+                                            iterator = index, length = source.length,
+                                            stream = "";
+
+                                        // Loop > Update > Iterator
+                                        while ((source[iterator] == ' ' || source[iterator] == '\n') && iterator != length)
+                                            iterator += 1;
+
+                                        // Loop
+                                        while (iterator != length && LDKF.stringPrototypeIsVariableName(source[iterator])) {
+                                            // Update > (Stream, Iterator)
+                                            stream += source[iterator];
+                                            iterator += 1
+                                        }
+
+                                        // Return
+                                        return stream
+                                    }
+
+                                    // Logic
+                                    if (LDKF.functionPrototypeIsClass(method)) name = getName(5);
+                                    else if (LDKF.functionPrototypeIsDefault(method)) name = getName(8);
+
+                                    // Return
+                                    return name
+                                };
+
                                 // Source Code
+                                LDKFG.functionPrototypeSourceCode = function functionPrototypeSourceCode(method) { return LDKF.stringPrototypeTrim(LDKF.string(method) || "") };
+
                                 // Type
+                                LDKFG.functionPrototypeType = function functionPrototypeType(method) {
+                                    // Initialization > (Method Is Native, Source, Type)
+                                    var methodIsNative = this === LDKF.functionPrototypeIsNative ? FALSE : LDKF.functionPrototypeIsNative(method),
+                                        source = LDKFG.functionPrototypeSourceCode(method),
+                                        type = "";
+
+                                    // Logic
+                                    if (source) {
+                                        // Initialization > Stream
+                                        var stream = source[0] + source[1] + source[2] + source[3] + source[4];
+
+                                        // Logic > Update > Type
+                                        if (stream == "class") type = methodIsNative ? "class-native" : "class";
+                                        else if (stream + source[5] + source[6] + source[7] == "function") type = methodIsNative ? "default-native" : "default";
+                                        else if (
+                                            (source[0] == '(' || LDKF.stringPrototypeIsVariableName(source[0])) &&
+                                            LDKF.stringPrototypeIncludes(source, "=>")
+                                        ) type = methodIsNative ? "arrow-native" : "arrow";
+                                        else type = null
+                                    }
+
+                                    else
+                                        // Update > Type
+                                        type = null;
+
+                                    // Return
+                                    return type
+                                };
 
                         // Object
                             // Prototype
@@ -1503,17 +2182,33 @@
                                     return constructor
                                 };
 
+                                // Prototype
+                                LDKFG.objectPrototypePrototype = function objectPrototypePrototype(object) {
+                                    // Initialization > Prototype
+                                    var prototype;
+
+                                    // Error Handling > (...)
+                                    try { prototype = object.prototype }
+                                    catch (error) { prototype = null }
+
+                                    // Return
+                                    return prototype
+                                };
+
                                 // {(Constructor > Prototype)}
                                 LDKFG.objectPrototype__Proto__ = function objectPrototype__Proto__(object) {
                                     // Initialization > (...)
                                     var __proto__;
 
                                     // Error Handling > (...)
-                                    try { __proto__ = object.__proto__ }
-                                    catch (error) {
+                                    try {
+                                        // Logic > (...)
+                                        if (LDKF.objectPrototypeHasProperty(object, "__proto__")) __proto__ = object.__proto__;
+                                        else throw {}
+                                    } catch (error) {
                                         // Error Handling > Update > (...)
-                                        try { __proto__ = LDKO.objectGetPrototypeOf(object) }
-                                        catch (error) { __proto__ = null }
+                                        try { __proto__ = LDKF.isFunction(LDKO.objectGetPrototypeOf) ? LDKO.objectGetPrototypeOf(object) : LDKFG.objectPrototypePrototype(LDKFG.objectPrototypeConstructor(object)) }
+                                        catch (error) {}
                                     }
 
                                     // Return
@@ -1530,7 +2225,57 @@
                         // Suffix
                         LDKId.suffix = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? '\r' : '\n';
 
+                    // Error Messages
+                        // JavaScript Engine Support Suffix
+                        LDKIE.javaScriptEngineSupportSuffix = " must be supported by this JavaScript engine"
+
+                        // Native to Environment Suffix
+                        LDKIE.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
+
+                // Miscellaneous
+                    // Strings
+                        // {Get} Alphabets
+                        LDKMs.get_alphabets = function get_alphabets() { return LDKF.arrayPrototypeShallowConcatenate(LDKMs.uppercaseAlphabets, LDKMs.lowercaseAlphabets) };
+
                 // Objects
+                    // Array
+                    LDKO.array = LDKFG.objectPrototypeConstructor([]);
+
+                    // Error
+                    LDKO.error = (function() {
+                        // Initialization > Error Object
+                        var errorObject;
+
+                        // Error Handling > (...)
+                        try { hidden.hidden() }
+                        catch (error) {
+                            // Update > Error Object
+                            errorObject = LDKFG.objectPrototype__Proto__(error);
+                            errorObject = errorObject ? LDKFG.objectPrototypeConstructor(LDKFG.objectPrototype__Proto__(errorObject)) :
+                                (function() {
+                                    // Initialization > Method
+                                    var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "Error");
+
+                                    // Logic > Error
+                                    if (LDKFG.functionPrototypeName(method) == "Error" && LDKF.functionPrototypeIsNative(method)) return method;
+                                    else LDKF.error("`Error` constructor" + LDKI.errorMessages.native_to_environment)
+                                })()
+                        }
+
+                        // Return
+                        return errorObject
+                    })();
+
+                    // Evaluate
+                    LDKO.eval = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "eval");
+
+                        // Logic > (...)
+                        if (LDKFG.functionPrototypeName(method) == "eval" && LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`eval` function" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
                     // Number
                     LDKO.number = LDKFG.objectPrototypeConstructor(0);
                         // Maximum Safe Integer --- NOTE (Lapys) -> Fortunately, this value is independent of the JavaScript environment.
@@ -1538,11 +2283,51 @@
 
                     // Object
                     LDKO.object = LDKFG.objectPrototypeConstructor({});
+                        // Define Property
+                        LDKO.objectDefineProperty = (function() {
+                            // Logic
+                            if (LDKF.objectPrototypeHasProperty(LDKO.object, "defineProperty")) {
+                                // Initialization > Method
+                                var method = LDKF.objectPrototypeGetProperty(LDKO.object, "defineProperty");
+
+                                // Logic > (...)
+                                if (LDKFG.functionPrototypeName(method) == "defineProperty" && LDKF.functionPrototypeIsNative(method)) return method;
+                                else LDKF.error("`Object.defineProperty` method" + LDKIE.nativeToEnvironmentSuffix)
+                            }
+
+                            else
+                                // Error
+                                LDKF.error("`Object.defineProperty` method" + LDKIE.javaScriptEngineSupportSuffix)
+                        })();
+
+                        // Get Own Property Descriptor
+                        LDKO.objectGetOwnPropertyDescriptor = (function() {
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyDescriptor");
+
+                            // Logic > (...)
+                            if (LDKFG.functionPrototypeName(method) == "getOwnPropertyDescriptor" && LDKF.functionPrototypeIsNative(method)) return method;
+                            else LDKF.error("`Object.getOwnPropertyDescriptor` method" + LDKIE.nativeToEnvironmentSuffix)
+                        })();
+
                         // Get Prototype Of
                         LDKO.objectGetPrototypeOf = (function() {
-                            // Return
-                            return LDKO.object.getPrototypeOf
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getPrototypeOf");
+
+                            // Logic > Return
+                            if (LDKFG.functionPrototypeName(method) == "getPrototypeOf" && LDKF.functionPrototypeIsNative(method)) return method
                         })();
+
+                    // Range Error
+                    LDKO.rangeError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "RangeError");
+
+                        // Logic > (...)
+                        if ((LDKFG.functionPrototypeName(method) || "RangeError") == "RangeError" || LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`RangeError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
 
                     // String
                     LDKO.string = LDKFG.objectPrototypeConstructor("");
@@ -1559,6 +2344,6 @@
         console.log(LDK);
         GLOBAL_MAIN.LDK = LDK;
         GLOBAL_MAIN.LDKF = LDKF;
-        GLOBAL_MAIN.LDKO = LDKO;
+        GLOBAL_MAIN.LDKO = LDKO
     })(DEVELOPMENT_ENVIRONMENT, GLOBAL, args)
 })()

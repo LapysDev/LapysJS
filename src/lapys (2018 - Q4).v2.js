@@ -1029,7 +1029,7 @@
 
                     // Error Messages
                         // Native to Environment
-                        LDKI.errorMessages.native_to_environment = " must be native to this development environment to install the library"
+                        LDKI.errorMessages.native_to_environment = " must be native to this development environment to install the library";
 
                 /* Function --- NOTE (Lapys) -> Mathematical methods such as `abs` and `ceil` are not prefixed. */
                     // Absolute
@@ -1835,7 +1835,7 @@
 
                                 // Return
                                 return message
-                            }
+                            };
 
                     // Floor
                     LDKF.floor = function floor(arg) { return LDKF.isInteger(LDKF.isNumber(arg) ? arg : arg = LDKF.number(arg)) ? arg : LDKF.int(arg) };
