@@ -405,12 +405,12 @@
                                 var that = this;
 
                                 // Function > Is Private Call
-                                function IS_PRIVATE_CALL() { return that === LDKF.arrayPrototypeCutIndex || that === LDKF.arrayPrototypeShift }
+                                function IS_PRIVATE_CALL() { return that === LDKF.arrayPrototypeCutIndex || that === LDKF.arrayPrototypeShift || that === LDKF.arrayPrototypeTrimLeft || that === LDKF.arrayPrototypeTrimRight }
 
                                 // Logic
                                 if (IS_PRIVATE_CALL() || (amount && LDKF.numberPrototypeIsInteger(amount)))
                                     // Logic
-                                    if (that === LDKF.arrayPrototypeShift || LDKF.numberPrototypeIsNegative(amount)) {
+                                    if (that === LDKF.arrayPrototypeShift || that === LDKF.arrayPrototypeTrimLeft || LDKF.numberPrototypeIsNegative(amount)) {
                                         // Initialization > Length
                                         var length = array.length;
 
@@ -491,6 +491,82 @@
 
                                 // Update > Array
                                 array.length = arrayLength + 1;
+
+                                // Return
+                                return array
+                            };
+
+                            // Filter Left
+                            LDKF.arrayPrototypeFilterLeft = function arrayPrototypeFilterLeft(array, match) {
+                                // Initialization > (Iterator, Array (Length))
+                                var arrayLength = array.length,
+                                    iterator = arguments.length, length = iterator;
+
+                                // Logic
+                                if (iterator > 1)
+                                    // Loop
+                                    while (arrayLength && iterator) {
+                                        // Initialization > Arguments Match
+                                        var argumentsMatch = arguments[iterator -= 1];
+
+                                        // Logic
+                                        if (iterator) {
+                                            // Initialization > Former Array Length
+                                            var formerArrayLength = arrayLength;
+
+                                            // Loop
+                                            while (arrayLength && argumentsMatch.call(array, 0, array[0])) {
+                                                // Update > Array (Length)
+                                                LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimLeft, array, -1);
+                                                arrayLength -= 1
+                                            }
+
+                                            // Update > Iterator
+                                            (arrayLength == formerArrayLength) || (iterator = length)
+                                        }
+                                    }
+
+                                else
+                                    // Update > Array
+                                    LDKF.arrayPrototypeFilterLeft(array, function() { return LDKF.isVoid(arguments[1]) });
+
+                                // Return
+                                return array
+                            };
+
+                            // Filter Right
+                            LDKF.arrayPrototypeFilterRight = function arrayPrototypeFilterRight(array, match) {
+                                // Initialization > (Iterator, Array (Length))
+                                var arrayLength = array.length,
+                                    iterator = arguments.length, length = iterator;
+
+                                // Logic
+                                if (iterator > 1)
+                                    // Loop
+                                    while (arrayLength && iterator) {
+                                        // Initialization > Arguments Match
+                                        var argumentsMatch = arguments[iterator -= 1];
+
+                                        // Logic
+                                        if (iterator) {
+                                            // Initialization > Former Array Length
+                                            var formerArrayLength = arrayLength;
+
+                                            // Loop
+                                            while (arrayLength && argumentsMatch.call(array, arrayLength - 1, array[arrayLength - 1])) {
+                                                // Update > Array (Length)
+                                                LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimRight, array, 1);
+                                                arrayLength -= 1
+                                            }
+
+                                            // Update > Iterator
+                                            (arrayLength == formerArrayLength) || (iterator = length)
+                                        }
+                                    }
+
+                                else
+                                    // Update > Array
+                                    LDKF.arrayPrototypeFilterRight(array, function() { return LDKF.isVoid(arguments[1]) });
 
                                 // Return
                                 return array
@@ -670,18 +746,264 @@
                                 return range
                             };
 
-                            // Remove --- CHECKPOINT ---
+                            // Remove
                                 // All
+                                LDKF.arrayPrototypeRemoveAll = function arrayPrototypeRemoveAll(array, item) {
+                                    // Initialization > (Iterator, Length)
+                                    var iterator = arguments.length, length = iterator;
+
+                                    // Loop
+                                    while (iterator) {
+                                        // Initialization > (Index, Arguments Item)
+                                        var index = length - (iterator -= 1) - 1,
+                                            argumentsItem = arguments[index];
+
+                                        // Logic
+                                        if (index) {
+                                            // Initialization > Arguments Item Index
+                                            var argumentsItemIndex = LDKF.arrayPrototypeLastIndex(array, argumentsItem);
+
+                                            // Loop
+                                            while (argumentsItemIndex != -1) {
+                                                // Update > (Array, Arguments Item Index)
+                                                LDKF.arrayPrototypeCutIndex(array, argumentsItemIndex);
+                                                argumentsItemIndex = LDKF.arrayPrototypeLastIndex(array, argumentsItem)
+                                            }
+                                        }
+                                    }
+
+                                    // Return
+                                    return array
+                                };
+
                                 // From Back
+                                LDKF.arrayPrototypeRemoveFromBack = function arrayPrototypeRemoveFromBack(array, item) {
+                                    // Initialization > (Iterator, Length)
+                                    var iterator = arguments.length, length = iterator;
+
+                                    // Loop
+                                    while (iterator) {
+                                        // Initialization > (Index, Arguments Item)
+                                        var index = length - (iterator -= 1) - 1,
+                                            argumentsItem = arguments[index];
+
+                                        // Logic
+                                        if (index) {
+                                            // Initialization > Arguments Item Index
+                                            var argumentsItemIndex;
+
+                                            // Update > Array
+                                            ((argumentsItemIndex = LDKF.arrayPrototypeIndex(array, argumentsItem)) == -1) || LDKF.arrayPrototypeCutIndex(array, argumentsItemIndex)
+                                        }
+                                    }
+
+                                    // Return
+                                    return array
+                                };
+
                                 // From Front
+                                LDKF.arrayPrototypeRemoveFromFront = function arrayPrototypeRemoveFromFront(array, item) {
+                                    // Initialization > (Iterator, Length)
+                                    var iterator = arguments.length, length = iterator;
+
+                                    // Loop
+                                    while (iterator) {
+                                        // Initialization > (Index, Arguments Item)
+                                        var index = length - (iterator -= 1) - 1,
+                                            argumentsItem = arguments[index];
+
+                                        // Logic
+                                        if (index) {
+                                            // Initialization > Arguments Item Index
+                                            var argumentsItemIndex;
+
+                                            // Update > Array
+                                            ((argumentsItemIndex = LDKF.arrayPrototypeLastIndex(array, argumentsItem)) == -1) || LDKF.arrayPrototypeCutIndex(array, argumentsItemIndex)
+                                        }
+                                    }
+
+                                    // Return
+                                    return array
+                                };
 
                             // Repeat
+                            LDKF.arrayPrototypeRepeat = function arrayPrototypeRepeat(array, amount) {
+                                // Update > (Amount, Array)
+                                (arguments.length > 1) || (amount = 1);
+                                array = LDKF.arrayPrototypeShallowClone(array);
+
+                                // Initialization > Repeat (Length)
+                                var repeat = [], repeatLength = -1;
+
+                                // Logic
+                                if (LDKF.numberPrototypeIsPositive(amount)) {
+                                    // Logic
+                                    if (LDKF.numberPrototypeIsSafe(amount)) {
+                                        // Initialization > Length
+                                        var length = array.length;
+
+                                        // Loop
+                                        while (amount >= 1) {
+                                            // Initialization > Iterator
+                                            var iterator = length;
+
+                                            // Loop > Update > Repeat
+                                            while (iterator)
+                                                repeat[repeatLength += 1] = array[length - (iterator -= 1) - 1];
+
+                                            // Update > Amount
+                                            amount -= 1
+                                        }
+
+                                        // Logic
+                                        if (amount) {
+                                            // Initialization > Index
+                                            var index = -1;
+
+                                            // Update > Amount
+                                            amount = LDKF.perc(length, LDKF.int(amount * 100));
+
+                                            // Loop
+                                            while (amount >= 1) {
+                                                // Update > (Repeat, Amount)
+                                                repeat[repeatLength += 1] = array[index += 1];
+                                                amount -= 1
+                                            }
+
+                                            // Update > Repeat
+                                            (amount > .5) && (repeat[repeatLength += 1] = array[index += 1])
+                                        }
+                                    }
+                                }
+
+                                else
+                                    // Warn
+                                    LDKF.error("Invalid count value");
+
+                                // Return
+                                return repeat
+                            };
+
                             // Replace
                                 // All
+                                LDKF.arrayPrototypeReplaceAll = function arrayPrototypeReplaceAll(array, item, substitute) {
+                                    // Initialization > (Iterator, Length, Replacement)
+                                    var iterator = arguments.length, length = iterator,
+                                        replacement = arguments[iterator - 1];
+
+                                    // Logic
+                                    if (iterator > 2)
+                                        // Loop
+                                        while (iterator) {
+                                            // Initialization > (Index, Arguments Item)
+                                            var index = length - (iterator -= 1) - 1,
+                                                argumentsItem = arguments[index];
+
+                                            // Logic
+                                            if (index && iterator) {
+                                                // Initialization > Arguments Item (Former) Index
+                                                var argumentsItemFormerIndex,
+                                                    argumentsItemIndex = LDKF.arrayPrototypeLastIndex(array, argumentsItem);
+
+                                                // Loop
+                                                while (argumentsItemIndex != -1 && argumentsItemIndex != argumentsItemFormerIndex) {
+                                                    // Update > (Array, Arguments Item Index)
+                                                    array[argumentsItemFormerIndex = argumentsItemIndex] = replacement;
+                                                    argumentsItemIndex = LDKF.arrayPrototypeLastIndex(array, argumentsItem)
+                                                }
+                                            }
+                                        }
+
+                                    else
+                                        // Update > Array
+                                        LDKF.arrayPrototypeRemoveAll.apply(LDKF.arrayPrototypeReplaceAll, arguments);
+
+                                    // Return
+                                    return array
+                                };
+
                                 // From Back
+                                LDKF.arrayPrototypeReplaceFromBack = function arrayPrototypeReplaceFromBack(array, item, substitute) {
+                                    // Initialization > (Iterator, Length, Replacement)
+                                    var iterator = arguments.length, length = iterator,
+                                        replacement = arguments[iterator - 1];
+
+                                    // Logic
+                                    if (iterator > 2)
+                                        // Loop
+                                        while (iterator) {
+                                            // Initialization > (Index, Arguments Item)
+                                            var index = length - (iterator -= 1) - 1,
+                                                argumentsItem = arguments[index];
+
+                                            // Logic
+                                            if (index) {
+                                                // Initialization > Arguments Item Index
+                                                var argumentsItemIndex;
+
+                                                // Update > Array
+                                                ((argumentsItemIndex = LDKF.arrayPrototypeIndex(array, argumentsItem)) == -1) || (array[argumentsItemIndex] = replacement)
+                                            }
+                                        }
+
+                                    else
+                                        // Update > Array
+                                        LDKF.arrayPrototypeRemoveFromBack.apply(LDKF.arrayPrototypeReplaceFromBack, arguments);
+
+                                    // Return
+                                    return array
+                                };
+
                                 // From Front
+                                LDKF.arrayPrototypeReplaceFromFront = function arrayPrototypeReplaceFromFront(array, item, substitute) {
+                                    // Initialization > (Iterator, Length, Replacement)
+                                    var iterator = arguments.length, length = iterator,
+                                        replacement = arguments[iterator - 1];
+
+                                    // Logic
+                                    if (iterator > 2)
+                                        // Loop
+                                        while (iterator) {
+                                            // Initialization > (Index, Arguments Item)
+                                            var index = length - (iterator -= 1) - 1,
+                                                argumentsItem = arguments[index];
+
+                                            // Logic
+                                            if (index) {
+                                                // Initialization > Arguments Item Index
+                                                var argumentsItemIndex;
+
+                                                // Update > Array
+                                                ((argumentsItemIndex = LDKF.arrayPrototypeLastIndex(array, argumentsItem)) == -1) || (array[argumentsItemIndex] = replacement)
+                                            }
+                                        }
+
+                                    else
+                                        // Update > Array
+                                        LDKF.arrayPrototypeRemoveFromFront.apply(LDKF.arrayPrototypeReplaceFromFront, arguments);
+
+                                    // Return
+                                    return array
+                                };
 
                             // Reverse
+                            LDKF.arrayPrototypeReverse = function arrayPrototypeReverse(array) {
+                                // Initialization > (Iterator, Length)
+                                var iterator = -1, length = array.length;
+
+                                // Loop
+                                while (iterator < length - 1) {
+                                    // Initialization > Item
+                                    var item = array[iterator += 1];
+
+                                    // Update > Array
+                                    array[iterator] = array[length -= 1];
+                                    array[length] = item
+                                }
+
+                                // Return
+                                return array
+                            };
 
                             // Shallow Clone
                             LDKF.arrayPrototypeShallowClone = function arrayPrototypeShallowClone(array) {
@@ -774,8 +1096,89 @@
                             };
 
                             // Trim
+                            LDKF.arrayPrototypeTrim = function arrayPrototypeTrim(array, match) {
+                                // Update > Array
+                                LDKF.arrayPrototypeTrimLeft.apply(LDKF.arrayPrototypeTrim, arguments);
+
+                                // Return
+                                return LDKF.arrayPrototypeTrimRight.apply(LDKF.arrayPrototypeTrim, arguments)
+                            };
+
                             // Trim Left
+                            LDKF.arrayPrototypeTrimLeft = function arrayPrototypeTrimLeft(array, match) {
+                                // Initialization > (Iterator, Array (Length))
+                                var arrayLength = array.length,
+                                    iterator = arguments.length, length = iterator;
+
+                                // Logic
+                                if (iterator > 1)
+                                    // Loop
+                                    while (arrayLength && iterator) {
+                                        // Initialization > Arguments Match
+                                        var argumentsMatch = arguments[iterator -= 1];
+
+                                        // Logic
+                                        if (iterator) {
+                                            // Initialization > Former Array Length
+                                            var formerArrayLength = arrayLength;
+
+                                            // Loop
+                                            while (arrayLength && array[0] === argumentsMatch) {
+                                                // Update > Array (Length)
+                                                LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimLeft, array, -1);
+                                                arrayLength -= 1
+                                            }
+
+                                            // Update > Iterator
+                                            (arrayLength == formerArrayLength) || (iterator = length)
+                                        }
+                                    }
+
+                                else
+                                    // Update > Array
+                                    LDKF.arrayPrototypeFilterLeft(array, function() { return LDKF.isVoid(arguments[1]) });
+
+                                // Return
+                                return array
+                            };
+
                             // Trim Right
+                            LDKF.arrayPrototypeTrimRight = function arrayPrototypeTrimRight(array, match) {
+                                // Initialization > (Iterator, Array (Length))
+                                var arrayLength = array.length,
+                                    iterator = arguments.length, length = iterator;
+
+                                // Logic
+                                if (iterator > 1)
+                                    // Loop
+                                    while (arrayLength && iterator) {
+                                        // Initialization > Arguments Match
+                                        var argumentsMatch = arguments[iterator -= 1];
+
+                                        // Logic
+                                        if (iterator) {
+                                            // Initialization > Former Array Length
+                                            var formerArrayLength = arrayLength;
+
+                                            // Loop
+                                            while (arrayLength && array[arrayLength - 1] === argumentsMatch) {
+                                                // Update > Array (Length)
+                                                LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimRight, array, 1);
+                                                arrayLength -= 1
+                                            }
+
+                                            // Update > Iterator
+                                            (arrayLength == formerArrayLength) || (iterator = length)
+                                        }
+                                    }
+
+                                else
+                                    // Update > Array
+                                    LDKF.arrayPrototypeFilterRight(array, function() { return LDKF.isVoid(arguments[1]) });
+
+                                // Return
+                                return array
+                            };
 
                     // Boolean
                         // Prototype
@@ -932,6 +1335,20 @@
                             // Has Property
                             // Set Property
                             // Set Property Description
+
+                    // Percent
+                    LDKF.perc = function perc(number, base) {
+                        // Logic
+                        if (arguments.length == 1) {
+                            // Update > (Base, Number)
+                            base = number;
+                            number = 1
+                        }
+
+                        // Return
+                        return number * (base / 100)
+                    };
+
                     // Recur Object
                     // Repeat
 
