@@ -1224,7 +1224,7 @@
                                 var type = LDKFG.functionPrototypeType(method);
 
                                 // Return
-                                return type && type[0] == 'a' && type[1] == 'r' && type[2] == 'r' && type[3] == 'o' && type[4] == 'w'
+                                return !!(type && type[0] == 'a' && type[1] == 'r' && type[2] == 'r' && type[3] == 'o' && type[4] == 'w')
                             };
                                 // Is Arrow Native
                                 LDKF.functionPrototypeIsArrowNative = function functionPrototypeIsArrowNative(method) { return LDKF.functionPrototypeIsArrow(method) && LDKF.functionPrototypeIsNative(method) };
@@ -1235,7 +1235,7 @@
                                 var type = LDKFG.functionPrototypeType(method);
 
                                 // Return
-                                return type && type[0] == 'c' && type[1] == 'l' && type[2] == 'a' && type[3] == 's' && type[4] == 's'
+                                return !!(type && type[0] == 'c' && type[1] == 'l' && type[2] == 'a' && type[3] == 's' && type[4] == 's')
                             };
                                 // Is Class Native
                                 LDKF.functionPrototypeIsClassNative = function functionPrototypeIsClassNative(method) { return LDKF.functionPrototypeIsClass(method) && LDKF.functionPrototypeIsNative(method) };
@@ -1246,7 +1246,7 @@
                                 var type = LDKFG.functionPrototypeType(method);
 
                                 // Return
-                                return type && type[0] == 'd' && type[1] == 'e' && type[2] == 'f' && type[3] == 'a' && type[4] == 'u' && type[5] == 'l' && type[6] == 't'
+                                return !!(type && type[0] == 'd' && type[1] == 'e' && type[2] == 'f' && type[3] == 'a' && type[4] == 'u' && type[5] == 'l' && type[6] == 't')
                             };
                                 // Is Default Native
                                 LDKF.functionPrototypeIsDefaultNative = function functionPrototypeIsDefaultNative(method) { return LDKF.functionPrototypeIsDefault(method) && LDKF.functionPrototypeIsNative(method) };
@@ -1260,7 +1260,7 @@
                                     source = LDKFG.functionPrototypeSourceCode(method),
                                     iterator = source.length, length = iterator,
                                     streamLock = null,
-                                    type = LDKFG.functionPrototypeType.call(LDKF.functionPrototypeIsNative, method);
+                                    type = this === LDKFG.functionPrototypeType ? null : LDKFG.functionPrototypeType.call(LDKF.functionPrototypeIsNative, method);
 
                                 // Logic > Return
                                 if (LDKF.isFunction(method) && !(type == "arrow" || type == "class" || type == "default"))
@@ -1395,7 +1395,7 @@
                     LDKF.number = function number(arg) {
                         // Logic > (...)
                         if (!arguments.length) return 0;
-                        else {
+                        else if (!LDKF.isNumber(arg)) {
                             // Function > To Number From String
                             function toNumberFromString(arg) { return LDKO.number(LDKF.string(arg)) }
 
@@ -1499,6 +1499,9 @@
                             LDKF.objectPrototypeSetProperty = function objectPrototypeSetProperty(object, key, value) { try { return object[key] = value } catch (error) {} };
 
                             // Set Property Description
+
+                            // To String
+                            LDKF.objectPrototypeToString = function objectPrototypeToString(object) { return LDKO.objectPrototypeToString.call(object) };
 
                     // Percent
                     LDKF.perc = function perc(number, base) {
@@ -1882,9 +1885,22 @@
                             // Shallow Clone
                             // Split
                             // Trim
-                            LDKF.stringPrototypeTrim = function stringPrototypeTrim(string, match) { return arguments.length > 1 ? LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string, match), match) : LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string)) };
+                            LDKF.stringPrototypeTrim = function stringPrototypeTrim(string, match) {
+                                // Logic
+                                if (arguments.length > 1) {
+                                    // Update > (...)
+                                    arguments[0] = string = LDKF.stringPrototypeTrimLeft.apply(LDKF.stringPrototypeTrim, arguments);
 
-                            // Trim Left
+                                    // Return
+                                    return LDKF.stringPrototypeTrimRight.apply(LDKF.stringPrototypeTrim, arguments)
+                                }
+
+                                else
+                                    // Return
+                                    return LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string))
+                            };
+
+                            // Trim Left --- CHECKPOINT ---
                             LDKF.stringPrototypeTrimLeft = function stringPrototypeTrimLeft(string, match) {
                                 // Initialization > (Iterator, String (Length))
                                 var stringLength = string.length,
@@ -1915,7 +1931,8 @@
 
                                                 else {
                                                     // Update > String (Length)
-                                                    string = LDKF.stringPrototypeCut(string, -argumentsMatchLength);
+                                                    console.log(1);
+                                                    string = LDKF.stringPrototypeCut.call(LDKF.stringPrototypeTrimLeft, string, -argumentsMatchLength);
                                                     stringLength -= argumentsMatchLength
                                                 }
                                             }
@@ -1964,7 +1981,7 @@
 
                                                 else {
                                                     // Update > String (Length)
-                                                    string = LDKF.stringPrototypeCut(string, argumentsMatchLength);
+                                                    string = LDKF.stringPrototypeCut.call(LDKF.stringPrototypeTrimRight, string, argumentsMatchLength);
                                                     stringLength -= argumentsMatchLength
                                                 }
                                             }
@@ -1994,6 +2011,9 @@
                         return LDKId.prefix + message + (LDKF.stringPrototypeIsAlphabet(messageLastCharacter) || LDKF.stringPrototypeIsDigit(messageLastCharacter) ? '.' : "") + LDKId.suffix
                     };
 
+                    // Throw DOM Error
+                    LDKF.throwDOMError = function throwDOMError(message) { throw new LDKO.domError(arguments.length ? message : "") };
+
                     // Throw Internal Error
                     LDKF.throwInternalError = function throwInternalError(message) {
                         // Update > Message
@@ -2010,7 +2030,7 @@
                         }
                     };
 
-                    // Throw DOM Error
+                    // Throw DOM Exception --- CHECKPOINT ---
                     // Throw Error
                     // Throw Evaluation Error
                     // Throw Internal Error
@@ -2136,7 +2156,7 @@
                                 // Type
                                 LDKFG.functionPrototypeType = function functionPrototypeType(method) {
                                     // Initialization > (Method Is Native, Source, Type)
-                                    var methodIsNative = this === LDKF.functionPrototypeIsNative ? FALSE : LDKF.functionPrototypeIsNative(method),
+                                    var methodIsNative = this === LDKF.functionPrototypeIsNative ? FALSE : LDKF.functionPrototypeIsNative.call(LDKFG.functionPrototypeType, method),
                                         source = LDKFG.functionPrototypeSourceCode(method),
                                         type = "";
 
@@ -2318,6 +2338,28 @@
                             // Logic > Return
                             if (LDKFG.functionPrototypeName(method) == "getPrototypeOf" && LDKF.functionPrototypeIsNative(method)) return method
                         })();
+
+                        // Prototype
+                        LDKO.objectPrototype = LDKFG.objectPrototypePrototype(LDKO.object);
+                            // To String
+                            LDKO.objectPrototypeToString = (function() {
+                                // Initialization > Method
+                                var method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "toString");
+
+                                // Logic > (...)
+                                if (LDKFG.functionPrototypeName(method) == "toString" && LDKF.functionPrototypeIsNative(method)) return method;
+                                else LDKF.error("`Object.prototype.toString` method" + LDKIE.nativeToEnvironmentSuffix)
+                            })();
+
+                    // DOM Error
+                    LDKO.domError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DOMError");
+
+                        // Logic > (...)
+                        if ((LDKFG.functionPrototypeName(method) || "DOMError") == "DOMError" && (LDKF.objectPrototypeToString(method) == "[object DOMError]" || LDKF.functionPrototypeIsNative(method))) return method;
+                        else LDKF.error("`DOMError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
 
                     // Range Error
                     LDKO.rangeError = (function() {
