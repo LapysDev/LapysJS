@@ -312,6 +312,17 @@
 
                         // LapysJS Error
                         lapysJSError: function LapysJSError(message, stack) {},
+                            // Completion Error
+                            lapysJSCompletionError: function LapysJSCompletionError(message, stack) {},
+
+                            // Initialization Error
+                            lapysJSInitializationError: function LapysJSInitializationError(message, stack) {},
+
+                            // Installation Error
+                            lapysJSInstallationError: function LapysJSInstallationError(message, stack) {},
+
+                            // Update Error
+                            lapysJSUpdateError: function LapysJSUpdateError(message, stack) {},
 
                         // LapysJS Node List
                         lapysJSNodeList: function LapysJSNodeList() {},
@@ -2263,6 +2274,10 @@
                                     return __proto__
                                 };
 
+                        // Window
+                            // Document
+                            LDKFG.windowDocument = function windowDocument(window) { return LDKOD.windowDocument.get.call(arguments.length ? window : LDKO.$window) };
+
                     /* Set */
 
                 // Information
@@ -2274,6 +2289,9 @@
                         LDKId.suffix = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? '\r' : '\n';
 
                     // Error Messages
+                        // Compatible with Library Suffix
+                        LDKIE.compatibleWithLibrarySuffix = " is not compatible with this library";
+
                         // JavaScript Engine Support Suffix
                         LDKIE.javaScriptEngineSupportSuffix = " must be supported by this JavaScript engine"
 
@@ -2338,9 +2356,23 @@
                                 // Initialization > Method
                                 var method = LDKF.objectPrototypeGetProperty(LDKO.object, "defineProperty");
 
-                                // Logic > (...)
-                                if (LDKFG.functionPrototypeName(method) == "defineProperty" && LDKF.functionPrototypeIsNative(method)) return method;
-                                else LDKF.error("`Object.defineProperty` method" + LDKIE.nativeToEnvironmentSuffix)
+                                // Logic
+                                if (LDKFG.functionPrototypeName(method) == "defineProperty" && LDKF.functionPrototypeIsNative(method)) {
+                                    // Initialization > Is Valid
+                                    var isValid = TRUE;
+
+                                    // Error Handling > (...)
+                                    try { method({}, "", {}) }
+                                    catch (error) { isValid = FALSE }
+
+                                    // Logic > (...)
+                                    if (isValid) return method;
+                                    else LDKF.error("`Object.defineProperty` method" + LDKIE.compatibleWithLibrarySuffix)
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error("`Object.defineProperty` method" + LDKIE.nativeToEnvironmentSuffix)
                             }
 
                             else
@@ -2353,9 +2385,23 @@
                             // Initialization > Method
                             var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyDescriptor");
 
-                            // Logic > (...)
-                            if (LDKFG.functionPrototypeName(method) == "getOwnPropertyDescriptor" && LDKF.functionPrototypeIsNative(method)) return method;
-                            else LDKF.error("`Object.getOwnPropertyDescriptor` method" + LDKIE.nativeToEnvironmentSuffix)
+                            // Logic
+                            if (LDKFG.functionPrototypeName(method) == "getOwnPropertyDescriptor" && LDKF.functionPrototypeIsNative(method)) {
+                                // Initialization > Is Valid
+                                var isValid = TRUE;
+
+                                // Error Handling > (...)
+                                try { method({}, "") }
+                                catch (error) { isValid = FALSE }
+
+                                // Logic > (...)
+                                if (isValid) return method;
+                                else LDKF.error("`Object.getOwnPropertyDescriptor` method" + LDKIE.compatibleWithLibrarySuffix)
+                            }
+
+                            else
+                                // Error
+                                LDKF.error("`Object.getOwnPropertyDescriptor` method" + LDKIE.nativeToEnvironmentSuffix)
                         })();
 
                         // Get Prototype Of
@@ -2404,14 +2450,21 @@
                     LDKO.string = LDKFG.objectPrototypeConstructor("");
 
                     // Window
-                    LDKO.window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? GLOBAL_MAIN : undefined;
+                    LDKO.$window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? GLOBAL_MAIN : undefined;
+                    LDKO.window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKFG.objectPrototypeConstructor(LDKO.$window) : undefined;
                         // Prototype
                         LDKO.windowPrototype = LDKFG.objectPrototypePrototype(LDKO.window);
 
                     /* Descriptions */
                         // Window
                             // Document
-                            LDKOD.windowDocument = (function() {})();
+                            LDKOD.windowDocument = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? (function(descriptor) {
+                                // Modification > Descriptor > Get
+                                (descriptor && !LDKF.objectPrototypeHasProperty(descriptor, "get")) && (descriptor.get = LDKF.objectPrototypeHasProperty(descriptor, "value") ? function document() { return descriptor.value } : function document() { return LDKF.objectPrototypeGetProperty(LDKO.$window, "document") });
+
+                                // Return
+                                return descriptor
+                            })(LDKF.objectGetOwnPropertyDescriptor(LDKO.$window, "document") || LDKF.objectGetOwnPropertyDescriptor(LDKO.windowPrototype, "document")) : undefined;
 
                             // LDKOd.windowDocument = (function(descriptor) {
                             //     // Modification > Descriptor > Get
@@ -2430,16 +2483,6 @@
                 // Apply
                 // Call
 
-        ({
-            configurable: true,
-            enumerable: Object.prototype.propertyIsEnumerable,
-            get: undefined,
-            set: undefined,
-            value: OBJECT[KEY],
-            writable: true
-        });
-        var a = {hello: true};
-        console.log(LDKF.objectGetOwnPropertyDescriptor(a, "hello"));
         console.log(LDK);
         GLOBAL_MAIN.LDK = LDK;
         GLOBAL_MAIN.LDKF = LDKF;
