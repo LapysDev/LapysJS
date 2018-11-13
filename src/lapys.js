@@ -8,20 +8,21 @@
         #Lapys:
             - Modules are encased as functions.
             - Successful integration returns a 0, otherwise a 1.
-            - Supported development environments:
+            - Supported development environments (in order priority):
                 -- Google Chrome (browser)
+                -- Safari (browser)
+                -- UC Browser (browser)
+                -- Mozilla Firefox (browser)
+                -- Opera (browser)
                 -- Internet Explorer (browser)
                     --- Internet Explorer 8
                     --- Internet Explorer 9
                     --- Internet Explorer 10
                     --- Internet Explorer 11
                 -- Microsoft Edge (browser)
-                -- Mozilla Firefox (browser)
+                -- Android (browser)
                 -- Node (development environment)
-                -- Opera (browser)
-                -- Safari (browser)
                 -- Tor (browser)
-                -- UC Browser (browser) --- NOTE (Lapys) -> Untested...
             - The library tries to be as independent of mutable native code as developers/ users could override key features necessary for scripting.
                 -- 'Native' in the sense of JavaScript built-in & non-primitive methods, objects, properties & values,
                     all other vanilla features are allowed (such as control structures, language-specific keywords, primitive values and so on).
@@ -30,9 +31,11 @@
     --- UPDATE REQUIRED ---
         #Lapys:
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
+                -- Internet Explorer (browser)
+                    --- Internet Explorer 5 --- NOTE (Lapys) -> Freezes indefinitely for non-apparent reasons.
+                    --- Internet Explorer 7 --- NOTE (Lapys) -> Freezes indefinitely for non-apparent reasons.
+                -- Samsung Internet --- NOTE (Lapys) -> Untested...
                 -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
-                --- Internet Explorer 5 --- NOTE (Lapys) -> Freezes for non-apparent reasons.
-                --- Internet Explorer 7 --- NOTE (Lapys) -> Freezes for non-apparent reasons.
                 -- others...
 */
 (function() {
@@ -1485,6 +1488,12 @@
                         // Define Property
                         LDKF.objectDefineProperty = function objectDefineProperty() { try { return LDKO.objectDefineProperty.apply(this, arguments) } catch (error) {} };
 
+                        // Get Own Property Descriptor
+                        LDKF.objectGetOwnPropertyDescriptor = function objectGetOwnPropertyDescriptor() { return LDKO.objectGetOwnPropertyDescriptor.apply(this, arguments) };
+
+                        // Get Prototype Of
+                        LDKF.objectGetPrototypeOf = function objectGetPrototypeOf() { return LDKO.objectGetPrototypeOf.apply(this, arguments) };
+
                         // Is
                         LDKF.objectIs = function objectIs(argA, argB) { return argA === argB ? 0 !== argA || 1 / argA == 1 / argB: argA !== argA && argB !==argB };
 
@@ -2246,7 +2255,7 @@
                                         else throw {}
                                     } catch (error) {
                                         // Error Handling > Update > (...)
-                                        try { __proto__ = LDKF.isFunction(LDKO.objectGetPrototypeOf) ? LDKO.objectGetPrototypeOf(object) : LDKFG.objectPrototypePrototype(LDKFG.objectPrototypeConstructor(object)) }
+                                        try { __proto__ = LDKF.isFunction(LDKO.objectGetPrototypeOf) ? LDKF.objectGetPrototypeOf(object) : LDKFG.objectPrototypePrototype(LDKFG.objectPrototypeConstructor(object)) }
                                         catch (error) {}
                                     }
 
@@ -2376,9 +2385,9 @@
                         var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DOMError");
 
                         // Logic > (...)
-                        console.log(LDKFG.functionPrototypeName(method) || "DOMError");
-                        if ((LDKFG.functionPrototypeName(method) || "DOMError") == "DOMError" && (LDKF.objectPrototypeToString(method) == "[object DOMError]" || LDKF.functionPrototypeIsNative(method))) return method;
-                        else LDKF.error("`DOMError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                        if (!LDKF.isVoid(method))
+                            if ((LDKFG.functionPrototypeName(method) || "DOMError") == "DOMError" && (LDKF.objectPrototypeToString(method) == "[object DOMError]" || LDKF.functionPrototypeIsNative(method))) return method;
+                            else LDKF.error("`DOMError` constructor" + LDKIE.nativeToEnvironmentSuffix)
                     })();
 
                     // Range Error
@@ -2394,6 +2403,24 @@
                     // String
                     LDKO.string = LDKFG.objectPrototypeConstructor("");
 
+                    // Window
+                    LDKO.window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? GLOBAL_MAIN : undefined;
+                        // Prototype
+                        LDKO.windowPrototype = LDKFG.objectPrototypePrototype(LDKO.window);
+
+                    /* Descriptions */
+                        // Window
+                            // Document
+                            LDKOD.windowDocument = (function() {})();
+
+                            // LDKOd.windowDocument = (function(descriptor) {
+                            //     // Modification > Descriptor > Get
+                            //     descriptor && (LDKF.objectPrototypeHasProperty(descriptor, "get") || (descriptor.get = function document() { return GLOBAL_MAIN.document }));
+
+                            //     // Return
+                            //     return descriptor
+                            // })(LDKF.objectGetOwnPropertyDescriptor(GLOBAL_MAIN || {}, "document") || LDKF.objectGetOwnPropertyDescriptor(LDKO.windowPrototype || {}, "document"));
+
             // LapysJS
 
             // Error > Prototype
@@ -2403,6 +2430,16 @@
                 // Apply
                 // Call
 
+        ({
+            configurable: true,
+            enumerable: Object.prototype.propertyIsEnumerable,
+            get: undefined,
+            set: undefined,
+            value: OBJECT[KEY],
+            writable: true
+        });
+        var a = {hello: true};
+        console.log(LDKF.objectGetOwnPropertyDescriptor(a, "hello"));
         console.log(LDK);
         GLOBAL_MAIN.LDK = LDK;
         GLOBAL_MAIN.LDKF = LDKF;
