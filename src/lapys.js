@@ -503,32 +503,33 @@
                                     iterator = arguments.length, length = iterator;
 
                                 // Logic
-                                if (iterator > 1)
-                                    // Loop
-                                    while (arrayLength && iterator) {
-                                        // Initialization > Arguments Match
-                                        var argumentsMatch = arguments[iterator -= 1];
+                                if (iterator < 2) {
+                                    // Update > (Iterator, Match)
+                                    iterator = 2;
+                                    match = function match() { return LDKF.isVoid(arguments[1]) }
+                                }
 
-                                        // Logic
-                                        if (iterator) {
-                                            // Initialization > Former Array Length
-                                            var formerArrayLength = arrayLength;
+                                // Loop
+                                while (arrayLength && iterator) {
+                                    // Initialization > Arguments Match
+                                    var argumentsMatch = arguments[iterator -= 1];
 
-                                            // Loop
-                                            while (arrayLength && argumentsMatch.call(array, 0, array[0])) {
-                                                // Update > Array (Length)
-                                                LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimLeft, array, -1);
-                                                arrayLength -= 1
-                                            }
+                                    // Logic
+                                    if (iterator) {
+                                        // Initialization > Former Array Length
+                                        var formerArrayLength = arrayLength;
 
-                                            // Update > Iterator
-                                            (arrayLength == formerArrayLength) || (iterator = length)
+                                        // Loop
+                                        while (arrayLength && argumentsMatch.call(array, 0, array[0])) {
+                                            // Update > Array (Length)
+                                            LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimLeft, array, -1);
+                                            arrayLength -= 1
                                         }
-                                    }
 
-                                else
-                                    // Update > Array
-                                    LDKF.arrayPrototypeFilterLeft(array, function() { return LDKF.isVoid(arguments[1]) });
+                                        // Update > Iterator
+                                        (arrayLength == formerArrayLength) || (iterator = length)
+                                    }
+                                }
 
                                 // Return
                                 return array
@@ -541,32 +542,33 @@
                                     iterator = arguments.length, length = iterator;
 
                                 // Logic
-                                if (iterator > 1)
-                                    // Loop
-                                    while (arrayLength && iterator) {
-                                        // Initialization > Arguments Match
-                                        var argumentsMatch = arguments[iterator -= 1];
+                                if (iterator < 2) {
+                                    // Update > (Iterator, Match)
+                                    iterator = 2;
+                                    match = function match() { return LDKF.isVoid(arguments[1]) }
+                                }
 
-                                        // Logic
-                                        if (iterator) {
-                                            // Initialization > Former Array Length
-                                            var formerArrayLength = arrayLength;
+                                // Loop
+                                while (arrayLength && iterator) {
+                                    // Initialization > Arguments Match
+                                    var argumentsMatch = arguments[iterator -= 1];
 
-                                            // Loop
-                                            while (arrayLength && argumentsMatch.call(array, arrayLength - 1, array[arrayLength - 1])) {
-                                                // Update > Array (Length)
-                                                LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimRight, array, 1);
-                                                arrayLength -= 1
-                                            }
+                                    // Logic
+                                    if (iterator) {
+                                        // Initialization > Former Array Length
+                                        var formerArrayLength = arrayLength;
 
-                                            // Update > Iterator
-                                            (arrayLength == formerArrayLength) || (iterator = length)
+                                        // Loop
+                                        while (arrayLength && argumentsMatch.call(array, arrayLength - 1, array[arrayLength - 1])) {
+                                            // Update > Array (Length)
+                                            LDKF.arrayPrototypeCut.call(LDKF.arrayPrototypeTrimRight, array, 1);
+                                            arrayLength -= 1
                                         }
-                                    }
 
-                                else
-                                    // Update > Array
-                                    LDKF.arrayPrototypeFilterRight(array, function() { return LDKF.isVoid(arguments[1]) });
+                                        // Update > Iterator
+                                        (arrayLength == formerArrayLength) || (iterator = length)
+                                    }
+                                }
 
                                 // Return
                                 return array
@@ -1263,8 +1265,10 @@
                                     type = this === LDKFG.functionPrototypeType ? null : LDKFG.functionPrototypeType.call(LDKF.functionPrototypeIsNative, method);
 
                                 // Logic > Return
-                                if (LDKF.isFunction(method) && !(type == "arrow" || type == "class" || type == "default"))
-                                    return TRUE;
+                                if (
+                                    (this === LDKF.isFunction || this === LDKFG.functionPrototypeType ? TRUE : LDKF.isFunction(method)) &&
+                                    !(type == "arrow" || type == "class" || type == "default")
+                                ) return TRUE;
 
                                 // Loop
                                 while (iterator) {
@@ -1361,8 +1365,8 @@
                                 // Logic > Return
                                 if (
                                     LDKF.objectPrototypeHasProperty(GLOBAL_MAIN, "ActiveXObject") &&
-                                    (function(method) { return method && LDKF.functionPrototypeIsNative(method) && LDKFG.functionPrototypeName(method) == "ActiveXObject" })(LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ActiveXObject"))
-                                ) return typeof arg == "object" && LDKF.functionPrototypeIsDefault(arg);
+                                    (function(method) { return method && LDKF.functionPrototypeIsNative.call(LDKF.isFunction, method) && LDKFG.functionPrototypeName(method) == "ActiveXObject" })(LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ActiveXObject"))
+                                ) return typeof arg == "object" && LDKF.functionPrototypeIsDefault(arg)
 
                                 // Return
                                 return FALSE
@@ -1395,7 +1399,8 @@
                     LDKF.number = function number(arg) {
                         // Logic > (...)
                         if (!arguments.length) return 0;
-                        else if (!LDKF.isNumber(arg)) {
+                        else if (LDKF.isNumber(arg)) return arg - 0;
+                        else {
                             // Function > To Number From String
                             function toNumberFromString(arg) { return LDKO.number(LDKF.string(arg)) }
 
@@ -1900,103 +1905,117 @@
                                     return LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string))
                             };
 
-                            // Trim Left --- CHECKPOINT ---
+                            // Trim Left
                             LDKF.stringPrototypeTrimLeft = function stringPrototypeTrimLeft(string, match) {
-                                // Initialization > (Iterator, String (Length))
-                                var stringLength = string.length,
-                                    iterator = arguments.length, length = iterator;
+                                // Initialization > (Iterator, Length, Index, Stream (Iterator), String Length)
+                                var iterator = arguments.length, length = iterator,
+                                    index = 0,
+                                    stream = "",
+                                    streamIterator = 0, stringLength = string.length;
 
                                 // Logic
-                                if (iterator > 1)
-                                    // Loop
-                                    while (iterator && stringLength) {
-                                        // Initialization > Arguments Match
-                                        var argumentsMatch = arguments[iterator -= 1];
+                                if (iterator < 2) {
+                                    // Update > (Arguments, Iterator)
+                                    arguments[1] = ' ';
+                                    arguments[2] = '\n';
+                                    iterator = 3
+                                }
 
-                                        // Logic
-                                        if (iterator) {
-                                            // Initialization > (Index, Arguments Match Length, Former String Length)
-                                            var index = -1, argumentsMatchLength = argumentsMatch.length,
-                                                formerStringLength = stringLength;
+                                // Loop
+                                while (iterator && index != stringLength) {
+                                    // Initialization > Arguments Match
+                                    var argumentsMatch = arguments[iterator -= 1];
 
-                                            // Loop
-                                            while (index != argumentsMatchLength) {
-                                                // Update > Index
-                                                index += 1;
+                                    // Logic
+                                    if (iterator) {
+                                        // Initialization > Arguments Match (Iterator, Length)
+                                        var argumentsMatchIterator = argumentsMatch.length, argumentsMatchLength = argumentsMatchIterator;
 
-                                                // Logic
-                                                if (string[index] != argumentsMatch[index])
-                                                    // [Break]
-                                                    break;
+                                        // Loop
+                                        while (argumentsMatchIterator) {
+                                            // Initialization > Arguments Match Index
+                                            var argumentsMatchIndex = argumentsMatchLength - (argumentsMatchIterator -= 1) - 1;
 
-                                                else {
-                                                    // Update > String (Length)
-                                                    console.log(1);
-                                                    string = LDKF.stringPrototypeCut.call(LDKF.stringPrototypeTrimLeft, string, -argumentsMatchLength);
-                                                    stringLength -= argumentsMatchLength
-                                                }
+                                            // Logic
+                                            if (string[index + argumentsMatchIndex] != argumentsMatch[argumentsMatchIndex])
+                                                // Break
+                                                break;
+
+                                            else if (!argumentsMatchIterator) {
+                                                // Update > (Index, Stream Iterator)
+                                                index += argumentsMatchLength;
+                                                streamIterator += argumentsMatchLength
                                             }
-
-                                            // Update > Iterator
-                                            (stringLength == formerStringLength) || (iterator = length)
                                         }
                                     }
+                                }
 
-                                else
-                                    // Update > String
-                                    string = LDKF.stringPrototypeTrimLeft(string, ' ', '\n');
+                                // Update > (Stream Iterator, String Length)
+                                streamIterator -= 1;
+                                stringLength -= 1;
+
+                                // Loop > Update > Stream
+                                while (streamIterator != stringLength)
+                                    stream += string[streamIterator += 1];
 
                                 // Return
-                                return string
+                                return stream
                             };
 
                             // Trim Right
                             LDKF.stringPrototypeTrimRight = function stringPrototypeTrimRight(string, match) {
-                                // Initialization > (Iterator, String (Length))
-                                var stringLength = string.length,
-                                    iterator = arguments.length, length = iterator;
+                                // Initialization > (Iterator, String (Length), Index, (Stream) (Iterator, Length))
+                                var iterator = arguments.length, length = iterator,
+                                    index = 0,
+                                    stream = "",
+                                    stringLength = string.length,
+                                    streamIterator = -1, streamLength = stringLength;
 
                                 // Logic
-                                if (iterator > 1)
-                                    // Loop
-                                    while (iterator && stringLength) {
-                                        // Initialization > Arguments Match
-                                        var argumentsMatch = arguments[iterator -= 1];
+                                if (iterator < 2) {
+                                    // Update > (Arguments, Iterator)
+                                    arguments[1] = ' ';
+                                    arguments[2] = '\n';
+                                    iterator = 3
+                                }
 
-                                        // Logic
-                                        if (iterator) {
-                                            // Initialization > (Index, Arguments Match Length, Former String Length)
-                                            var index = 0, argumentsMatchLength = argumentsMatch.length,
-                                                formerStringLength = stringLength;
+                                // Loop
+                                while (iterator && index != stringLength) {
+                                    // Initialization > Arguments Match
+                                    var argumentsMatch = arguments[iterator -= 1];
 
-                                            // Loop
-                                            while (index != argumentsMatchLength) {
-                                                // Update > Index
-                                                index += 1;
+                                    // Logic
+                                    if (iterator) {
+                                        // Initialization > Arguments Match (Iterator, Length)
+                                        var argumentsMatchIterator = argumentsMatch.length, argumentsMatchLength = argumentsMatchIterator;
 
-                                                // Logic
-                                                if (string[stringLength - index] != argumentsMatch[argumentsMatchLength - index])
-                                                    // [Break]
-                                                    break;
+                                        // Loop
+                                        while (argumentsMatchIterator) {
+                                            // Initialization > Arguments Match Index
+                                            var argumentsMatchIndex = argumentsMatchLength - (argumentsMatchIterator -= 1) - 1;
 
-                                                else {
-                                                    // Update > String (Length)
-                                                    string = LDKF.stringPrototypeCut.call(LDKF.stringPrototypeTrimRight, string, argumentsMatchLength);
-                                                    stringLength -= argumentsMatchLength
-                                                }
+                                            // Logic
+                                            if (string[(stringLength - index - 1) - argumentsMatchIterator] != argumentsMatch[argumentsMatchIndex])
+                                                // Break
+                                                break;
+
+                                            else if (!argumentsMatchIterator) {
+                                                index += argumentsMatchIterator;
+                                                streamLength -= argumentsMatchLength
                                             }
-
-                                            // Update > Iterator
-                                            (stringLength == formerStringLength) || (iterator = length)
                                         }
                                     }
+                                }
 
-                                else
-                                    // Update > String
-                                    string = LDKF.stringPrototypeTrimLeft(string, ' ', '\n');
+                                // Update > Stream Length
+                                streamLength -= 1;
+
+                                // Loop > Update > Stream
+                                while (streamIterator != streamLength)
+                                    stream += string[streamIterator += 1];
 
                                 // Return
-                                return string
+                                return stream
                             };
 
                     // To Debug Message
@@ -2357,6 +2376,7 @@
                         var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DOMError");
 
                         // Logic > (...)
+                        console.log(LDKFG.functionPrototypeName(method) || "DOMError");
                         if ((LDKFG.functionPrototypeName(method) || "DOMError") == "DOMError" && (LDKF.objectPrototypeToString(method) == "[object DOMError]" || LDKF.functionPrototypeIsNative(method))) return method;
                         else LDKF.error("`DOMError` constructor" + LDKIE.nativeToEnvironmentSuffix)
                     })();
