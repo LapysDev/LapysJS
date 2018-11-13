@@ -15,7 +15,6 @@
                 -- Mozilla Firefox (browser)
                 -- Opera (browser)
                 -- Internet Explorer (browser)
-                    --- Internet Explorer 8
                     --- Internet Explorer 9
                     --- Internet Explorer 10
                     --- Internet Explorer 11
@@ -34,6 +33,7 @@
                 -- Internet Explorer (browser)
                     --- Internet Explorer 5 --- NOTE (Lapys) -> Freezes indefinitely for non-apparent reasons.
                     --- Internet Explorer 7 --- NOTE (Lapys) -> Freezes indefinitely for non-apparent reasons.
+                    --- Internet Explorer 8 --- NOTE (Lapys) -> Missing modern JavaScript feature.
                 -- Samsung Internet --- NOTE (Lapys) -> Untested...
                 -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
                 -- others...
@@ -2274,6 +2274,23 @@
                                     return __proto__
                                 };
 
+                                // {(Constructor > Prototype)} Tree
+                                LDKFG.objectPrototype__Proto__Tree = function objectPrototype__Proto__Tree(object) {
+                                    // Initialization > ((Constructor > Prototype), Tree (Index))
+                                    var __proto__ = LDKFG.objectPrototype__Proto__(object),
+                                        tree = [], treeIndex = -1;
+
+                                    // Loop
+                                    while (!LDKF.isNull(__proto__)) {
+                                        // Update > (Tree, (Constructor > Prototype))
+                                        tree[treeIndex += 1] = __proto__;
+                                        __proto__ = LDKFG.objectPrototype__Proto__(__proto__)
+                                    }
+
+                                    // Return
+                                    return tree
+                                };
+
                         // Window
                             // Document
                             LDKFG.windowDocument = function windowDocument(window) { return LDKOD.windowDocument.get.call(arguments.length ? window : LDKO.$window) };
@@ -2449,7 +2466,7 @@
                     // String
                     LDKO.string = LDKFG.objectPrototypeConstructor("");
 
-                    // Window
+                    // Window --- NOTE (Lapys) -> The first step into the Graphical User-Interface in JavaScript.
                     LDKO.$window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? GLOBAL_MAIN : undefined;
                     LDKO.window = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKFG.objectPrototypeConstructor(LDKO.$window) : undefined;
                         // Prototype
@@ -2466,13 +2483,31 @@
                                 return descriptor
                             })(LDKF.objectGetOwnPropertyDescriptor(LDKO.$window, "document") || LDKF.objectGetOwnPropertyDescriptor(LDKO.windowPrototype, "document")) : undefined;
 
-                            // LDKOd.windowDocument = (function(descriptor) {
-                            //     // Modification > Descriptor > Get
-                            //     descriptor && (LDKF.objectPrototypeHasProperty(descriptor, "get") || (descriptor.get = function document() { return GLOBAL_MAIN.document }));
+                    // Document
+                    LDKO.document = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? (function(descriptor) {
+                        // Initialization > ((Constructor > Prototype) Tree, Iterator)
+                        var __proto__Tree = LDKFG.objectPrototype__Proto__Tree(LDKFG.windowDocument()),
+                            iterator = __proto__Tree.length;
 
-                            //     // Return
-                            //     return descriptor
-                            // })(LDKF.objectGetOwnPropertyDescriptor(GLOBAL_MAIN || {}, "document") || LDKF.objectGetOwnPropertyDescriptor(LDKO.windowPrototype || {}, "document"));
+                        // Loop
+                        while (iterator) {
+                            // Initialization > (Constructor > Prototype) (String)
+                            var __proto__ = __proto__Tree[iterator -= 1],
+                                __proto__String = LDKF.string(__proto__);
+
+                            // Logic > Return
+                            if (__proto__String == "[object Document]" || __proto__String == "[object DocumentPrototype]")
+                                return LDKFG.objectPrototypeConstructor(LDKO.documentPrototype = __proto__)
+                        }
+                    })() : undefined;
+
+                    // HTML Document
+                    LDKO.htmlDocument = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKFG.objectPrototypeConstructor(LDKFG.windowDocument()) : undefined;
+                        // Prototype
+                        LDKO.htmlDocumentPrototype = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKO.htmlDocument.prototype : undefined;
+
+                    /* Descriptions */
+                        // Document > Prototype --- CHECKPOINT ---
 
             // LapysJS
 
