@@ -321,7 +321,7 @@
                             // Installation Error
                             lapysJSInstallationError: function LapysJSInstallationError(message, stack) {},
 
-                            // Update Error
+                            // {Asynchronous} Update Error
                             lapysJSUpdateError: function LapysJSUpdateError(message, stack) {},
 
                         // LapysJS Node List
@@ -331,7 +331,7 @@
                         pseudoNumber: function PseudoNumber(characteristics, mantissa) {},
 
                         // Safe Number
-                        safeNumber: function SafeNumber() {},
+                        safeNumber: function SafeNumber(number) {},
 
                         // (Constructor > Prototype)
                         __proto__: new function Custom() {}
@@ -366,7 +366,7 @@
 
         /* Modification */
             /* Lapys Development Kit */
-                // Function
+                // Functions
                     // Absolute
                     LDKF.abs = function abs(arg) { return LDKF.numberPrototypeIsPositive(LDKF.isNumber(arg) ? arg : arg = LDKF.number(arg)) ? arg : -arg };
 
@@ -1204,6 +1204,11 @@
                             // Is True
                             LDKF.booleanPrototypeIsTrue = function booleanPrototypeIsTrue(boolean) { return !!boolean };
 
+                    // Document
+                        // Prototype
+                            // Query Selector
+                            LDKF.documentPrototypeQuerySelector = function documentPrototypeQuerySelector(document, selectors) { return LDKOD.documentPrototypeQuerySelector.value.apply(document, LDKF.arrayPrototypeCut(arguments, -1)) };
+
                     // Error --- CHECKPOINT ---
                     LDKF.error = function error(message, stack) {
                         throw new Error(message)
@@ -1211,9 +1216,27 @@
                         // Prototype
                             // Set Message
                             LDKF.errorPrototypeSetMessage = function errorPrototypeSetMessage(error, message) {
-                                // Modification > Error > (Description, Message)
-                                LDKF.objectPrototypeSetProperty(error, "description", message);
-                                LDKF.objectPrototypeSetProperty(error, "message", message);
+                                // Initialization > Former Message
+                                var formerMessage = {
+                                    // Description
+                                    description: LDKF.objectPrototypeHasProperty(error, "description") ? LDKF.objectPrototypeGetProperty(error, "description") : hidden,
+
+                                    // Message
+                                    message: LDKF.objectPrototypeHasProperty(error, "message") ? LDKF.objectPrototypeGetProperty(error, "message") : hidden
+                                };
+
+                                // Modification > Error
+                                    // Description > (...)
+                                    if (formerMessage["description"] !== hidden) {
+                                        LDKF.objectPrototypeSetProperty(error, "description", message);
+                                        (formerMessage["description"] === message) || LDKF.objectDefineProperty(error, "description", {configurable: !0, enumerable: !0, value: message, writable: !0})
+                                    }
+
+                                    // Message > (...)
+                                    if (formerMessage["message"] !== hidden) {
+                                        LDKF.objectPrototypeSetProperty(error, "message", message);
+                                        (formerMessage["message"] === message) || LDKF.objectDefineProperty(error, "message", {configurable: !0, enumerable: !0, value: message, writable: !0});
+                                    }
 
                                 // Return
                                 return message
@@ -1796,7 +1819,7 @@
                             // Is Alphabet
                             LDKF.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) {
                                 // Initialization > (Alphabets, Iterator, Length)
-                                var alphabets = LDKMs.get_alphabets(),
+                                var alphabets = LDKF.arrayPrototypeShallowConcatenate(LDKMs.uppercaseAlphabets, LDKMs.lowercaseAlphabets),
                                     iterator = string.length, length = iterator;
 
                                 // Loop
@@ -2053,13 +2076,13 @@
                     // Throw DOM Error
                     LDKF.throwDOMError = function throwDOMError(message) { throw new LDKO.domError(arguments.length ? message : "") };
 
-                    // Throw Internal Error
-                    LDKF.throwInternalError = function throwInternalError(message) {
+                    // Throw DOM Exception
+                    LDKF.throwDOMException = function throwDOMException(message) {
                         // Update > Message
                         arguments.length || (message = "");
 
-                        // Error Handling > (...)
-                        try { (function InternalError(){InternalError()})() }
+                        // Error Handling
+                        try { LDKF.documentPrototypeQuerySelector(LDKFG.windowDocument(), "") }
                         catch (error) {
                             // (...)
                             LDKF.errorPrototypeSetMessage(error, message);
@@ -2069,15 +2092,57 @@
                         }
                     };
 
-                    // Throw DOM Exception --- CHECKPOINT ---
                     // Throw Error
+                    LDKF.throwError = function throwError(message) { throw new LDKO.error(arguments.length ? message : "") };
+
                     // Throw Evaluation Error
+                    LDKF.throwEvalError = function throwEvalError(message) { throw new LDKO.evalError(arguments.length ? message : "") };
+
                     // Throw Internal Error
+                    LDKF.throwInternalError = function throwInternalError(message) {
+                        // Update > Message
+                        arguments.length || (message = "");
+
+                        // Error Handling > (...)
+                        try { (function InternalError(){InternalError()})() }
+                        catch (error) {
+                            // Logic > Error
+                            if (LDKFG.functionPrototypeName(LDKFG.objectPrototypeConstructor(error)) != "InternalError")
+                                throw undefined;
+
+                            // (...)
+                            LDKF.errorPrototypeSetMessage(error, message);
+
+                            // Error
+                            throw error
+                        }
+                    };
+
                     // Throw Media Error
-                    // Throw Media Key Error
-                    // {MSMediaKeyError} Throw Microsoft Media Key Error
+                    LDKF.throwMediaError = function throwMediaError(message) { throw new LDKO.mediaError(arguments.length ? message : "") };
+
+                    // Throw Media Key Error --- CHECKPOINT (Lapys) -> Why does this error not throw properly?
+                    LDKF.throwMediaKeyError = function throwMediaKeyError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.mediaKeyError)) throw undefined;
+                        else throw new LDKO.mediaKeyError(arguments.length ? message : "")
+                    };
+
+                    // Throw Microsoft Media Key Error
+                    LDKF.throwMSmediaKeyError = function throwMSmediaKeyError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.MSmediaKeyError)) throw undefined;
+                        else throw new LDKO.MSmediaKeyError(arguments.length ? message : "")
+                    };
+
                     // Throw Media Stream Error
-                    // Throw Over-Constrained Error
+                    LDKF.throwMediaStreamError = function throwMediaStreamError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.mediaStreamError)) throw undefined;
+                        else throw new LDKO.mediaStreamError(arguments.length ? message : "")
+                    };
+
+                    // Throw Over-Constrained Error --- CHECKPOINT ---
                     // Throw Range Error
                     LDKF.throwRangeError = function throwRangeError(message) {
                         // Update > Message
@@ -2315,11 +2380,6 @@
                         // Native to Environment Suffix
                         LDKIE.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
 
-                // Miscellaneous
-                    // Strings
-                        // {Get} Alphabets
-                        LDKMs.get_alphabets = function get_alphabets() { return LDKF.arrayPrototypeShallowConcatenate(LDKMs.uppercaseAlphabets, LDKMs.lowercaseAlphabets) };
-
                 // Objects
                     // Array
                     LDKO.array = LDKFG.objectPrototypeConstructor([]);
@@ -2453,6 +2513,53 @@
                             else LDKF.error("`DOMError` constructor" + LDKIE.nativeToEnvironmentSuffix)
                     })();
 
+                    // Evaluation Error
+                    LDKO.evalError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "EvalError");
+
+                        // Logic > (...)
+                        if ((LDKFG.functionPrototypeName(method) || "EvalError") == "EvalError" || LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`EvalError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // Media Error
+                    LDKO.mediaError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "MediaError");
+
+                        // Logic > (...)
+                        if ((LDKFG.functionPrototypeName(method) || "MediaError") == "MediaError" || LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`MediaError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // Media Key Error
+                    LDKO.mediaKeyError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "MediaKeyError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "MediaKeyError") == "MediaKeyError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Microsoft Media Key Error
+                    LDKO.MSmediaKeyError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "MSMediaKeyError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "MSMediaKeyError") == "MSMediaKeyError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Media Stream Error
+                    LDKO.mediaStreamError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "MediaStreamError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "MediaStreamError") == "MediaStreamError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
                     // Range Error
                     LDKO.rangeError = (function() {
                         // Initialization > Method
@@ -2507,7 +2614,9 @@
                         LDKO.htmlDocumentPrototype = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKO.htmlDocument.prototype : undefined;
 
                     /* Descriptions */
-                        // Document > Prototype --- CHECKPOINT ---
+                        // Document > Prototype
+                            // Query Selector
+                            LDKOD.documentPrototypeQuerySelector = DEVELOPMENT_ENVIRONMENT_IS_BROWSER ? LDKF.objectGetOwnPropertyDescriptor(LDKO.documentPrototype, "querySelector") : undefined;
 
             // LapysJS
 
