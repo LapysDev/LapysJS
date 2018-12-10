@@ -22,7 +22,7 @@
                 -- Android (browser)
                 -- Node (development environment)
                 -- Tor (browser)
-            - The library tries to be as independent of mutable native code as developers/ users could override key features necessary for scripting.
+            - The LapysJS library tries to be as independent of mutable native code as developers/ users could override key features necessary for scripting.
                 -- 'Native' in the sense of JavaScript built-in & non-primitive methods, objects, properties & values,
                     all other vanilla features are allowed (such as control structures, language-specific keywords, primitive values and so on).
             - Over its years of development, the library is still a bare-bones version of what it could be (and code could definitely be re-factored).
@@ -1467,7 +1467,7 @@
                             // Is Finite
                             LDKF.numberPrototypeIsFinite = function numberPrototypeIsFinite(number) { return !LDKF.numberPrototypeIsInfinite(number) };
 
-                            // Is Infinite --- NOTE (Lapys) -> In the JavaScript sense.
+                            // Is Infinite --- NOTE (Lapys) -> Inaccurate with non-safe numbers.
                             LDKF.numberPrototypeIsInfinite = function numberPrototypeIsInfinite(number) {
                                 // Update > Number
                                 number = LDKF.abs(number);
@@ -2073,6 +2073,48 @@
                         return LDKId.prefix + message + (LDKF.stringPrototypeIsAlphabet(messageLastCharacter) || LDKF.stringPrototypeIsDigit(messageLastCharacter) ? '.' : "") + LDKId.suffix
                     };
 
+                    // Throw Abort Error
+                    LDKF.throwAbortError = function throwAbortError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.abortError)) throw undefined;
+                        else throw new LDKO.abortError(arguments.length ? message : "")
+                    };
+
+                    // Throw Constraint Error
+                    LDKF.throwConstraintError = function throwConstraintError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.constraintError)) throw undefined;
+                        else throw new LDKO.constraintError(arguments.length ? message : "")
+                    };
+
+                    // Throw Constraint Not Satisfied Error
+                    LDKF.throwConstraintNotSatisfiedError = function throwConstraintNotSatisfiedError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.constraintNotSatisfiedError)) throw undefined;
+                        else throw new LDKO.constraintNotSatisfiedError(arguments.length ? message : "")
+                    };
+
+                    // Throw Data Error
+                    LDKF.throwDataError = function throwDataError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.dataError)) throw undefined;
+                        else throw new LDKO.dataError(arguments.length ? message : "")
+                    };
+
+                    // Throw Data Clone Error
+                    LDKF.throwDataCloneError = function throwDataCloneError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.dataCloneError)) throw undefined;
+                        else throw new LDKO.dataCloneError(arguments.length ? message : "")
+                    };
+
+                    // Throw Devices Not Found Error
+                    LDKF.throwDevicesNotFoundError = function throwDevicesNotFoundError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.devicesNotFoundError)) throw undefined;
+                        else throw new LDKO.devicesNotFoundError(arguments.length ? message : "")
+                    };
+
                     // Throw DOM Error
                     LDKF.throwDOMError = function throwDOMError(message) { throw new LDKO.domError(arguments.length ? message : "") };
 
@@ -2092,11 +2134,32 @@
                         }
                     };
 
+                    // Throw Encoding Error
+                    LDKF.throwEncodingError = function throwEncodingError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.encodingError)) throw undefined;
+                        else throw new LDKO.encodingError(arguments.length ? message : "")
+                    };
+
                     // Throw Error
                     LDKF.throwError = function throwError(message) { throw new LDKO.error(arguments.length ? message : "") };
 
                     // Throw Evaluation Error
                     LDKF.throwEvalError = function throwEvalError(message) { throw new LDKO.evalError(arguments.length ? message : "") };
+
+                    // Throw Hierarchy Request Error
+                    LDKF.throwHierarchyRequestError = function throwHierarchyRequestError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.hierarchyRequestError)) throw undefined;
+                        else throw new LDKO.hierarchyRequestError(arguments.length ? message : "")
+                    };
+
+                    // Throw Index Size Error
+                    LDKF.throwIndexSizeError = function throwIndexSizeError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.indexSizeError)) throw undefined;
+                        else throw new LDKO.indexSizeError(arguments.length ? message : "")
+                    };
 
                     // Throw Internal Error
                     LDKF.throwInternalError = function throwInternalError(message) {
@@ -2118,10 +2181,45 @@
                         }
                     };
 
+                    // Throw Invalid Access Error
+                    LDKF.throwInvalidAccessError = function throwInvalidAccessError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.invalidAccessError)) throw undefined;
+                        else throw new LDKO.invalidAccessError(arguments.length ? message : "")
+                    };
+
+                    // Throw Invalid Character Error
+                    LDKF.throwInvalidCharacterError = function throwInvalidCharacterError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.invalidCharacterError)) throw undefined;
+                        else throw new LDKO.invalidCharacterError(arguments.length ? message : "")
+                    };
+
+                    // Throw Invalid Modification Error
+                    LDKF.throwInvalidModificationError = function throwInvalidModificationError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.invalidModificationError)) throw undefined;
+                        else throw new LDKO.invalidModificationError(arguments.length ? message : "")
+                    };
+
+                    // Throw Invalid Node Type Error
+                    LDKF.throwInvalidNodeTypeError = function throwInvalidNodeTypeError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.invalidNodeTypeError)) throw undefined;
+                        else throw new LDKO.invalidNodeTypeError(arguments.length ? message : "")
+                    };
+
+                    // Throw Invalid State Error
+                    LDKF.throwInvalidStateError = function throwInvalidStateError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.invalidStateError)) throw undefined;
+                        else throw new LDKO.invalidStateError(arguments.length ? message : "")
+                    };
+
                     // Throw Media Error
                     LDKF.throwMediaError = function throwMediaError(message) { throw new LDKO.mediaError(arguments.length ? message : "") };
 
-                    // Throw Media Key Error --- CHECKPOINT (Lapys) -> Why does this error not throw properly?
+                    // Throw Media Key Error
                     LDKF.throwMediaKeyError = function throwMediaKeyError(message) {
                         // Logic > Error
                         if (LDKF.isVoid(LDKO.mediaKeyError)) throw undefined;
@@ -2142,7 +2240,90 @@
                         else throw new LDKO.mediaStreamError(arguments.length ? message : "")
                     };
 
-                    // Throw Over-Constrained Error --- CHECKPOINT ---
+                    // Throw Namespace Error
+                    LDKF.throwNamespaceError = function throwNamespaceError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.namespaceError)) throw undefined;
+                        else throw new LDKO.namespaceError(arguments.length ? message : "")
+                    };
+
+                    // Throw Navigator User Media Error
+                    LDKF.throwNavigatorUserMediaError = function throwNavigatorUserMediaError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.navigatorUserMediaError)) throw undefined;
+                        else throw new LDKO.navigatorUserMediaError(arguments.length ? message : "")
+                    };
+
+                    // Throw Network Error
+                    LDKF.throwNetworkError = function throwNetworkError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.networkError)) throw undefined;
+                        else throw new LDKO.networkError(arguments.length ? message : "")
+                    };
+
+                    // Throw No Modification Allowed Error
+                    LDKF.throwNoModificationAllowedError = function throwNoModificationAllowedError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.noModificationAllowedError)) throw undefined;
+                        else throw new LDKO.noModificationAllowedError(arguments.length ? message : "")
+                    };
+
+                    // Throw Not Allowed Error
+                    LDKF.throwNotAllowedError = function throwNotAllowedError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.notAllowedError)) throw undefined;
+                        else throw new LDKO.notAllowedError(arguments.length ? message : "")
+                    };
+
+                    // Throw Not Found Error
+                    LDKF.throwNotFoundError = function throwNotFoundError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.notFoundError)) throw undefined;
+                        else throw new LDKO.notFoundError(arguments.length ? message : "")
+                    };
+
+                    // Throw Not Readable Error
+                    LDKF.throwNotReadableError = function throwNotReadableError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.notReadableError)) throw undefined;
+                        else throw new LDKO.notReadableError(arguments.length ? message : "")
+                    };
+
+                    // Throw Not Supported Error
+                    LDKF.throwNotSupportedError = function throwNotSupportedError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.notSupportedError)) throw undefined;
+                        else throw new LDKO.notSupportedError(arguments.length ? message : "")
+                    };
+
+                    // Throw Operation Error
+                    LDKF.throwOperationError = function throwOperationError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.operationError)) throw undefined;
+                        else throw new LDKO.operationError(arguments.length ? message : "")
+                    };
+
+                    // Throw Over-Constrained Error
+                    LDKF.throwOverConstrainedError = function throwOverConstrainedError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.overconstrainedError)) throw undefined;
+                        else throw new LDKO.overconstrainedError("", arguments.length ? message : "")
+                    };
+
+                    // Throw Permission Denied Error
+                    LDKF.throwPermissionDeniedError = function throwPermissionDeniedError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.permissionDeniedError)) throw undefined;
+                        else throw new LDKO.permissionDeniedError(arguments.length ? message : "")
+                    };
+
+                    // Throw Quota Exceeded Error
+                    LDKF.throwQuotaExceededError = function throwQuotaExceededError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.quotaExceededError)) throw undefined;
+                        else throw new LDKO.quotaExceededError(arguments.length ? message : "")
+                    };
+
                     // Throw Range Error
                     LDKF.throwRangeError = function throwRangeError(message) {
                         // Update > Message
@@ -2163,13 +2344,96 @@
                         }
                     };
 
-                    // Throw Reference Error
-                    // Throw Syntax Error
-                    // Throw Type Error
-                    // Throw URI Error
-                    // Throw Webkit Speech Recognition Error
+                    // Throw Read-Only Error
+                    LDKF.throwReadOnlyError = function throwReadOnlyError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.readOnlyError)) throw undefined;
+                        else throw new LDKO.readOnlyError(arguments.length ? message : "")
+                    };
 
-                    // Warn
+                    // Throw Reference Error --- CHECKPOINT ---
+                    // Throw Security Error
+                    LDKF.throwSecurityError = function throwSecurityError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.securityError)) throw undefined;
+                        else throw new LDKO.securityError(arguments.length ? message : "")
+                    };
+
+                    // Throw Speech Recognition Error
+                    LDKF.throwSpeechRecognitionError = function throwSpeechRecognitionError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.speechRecognitionError)) throw undefined;
+                        else throw new LDKO.speechRecognitionError(arguments.length ? message : "")
+                    };
+
+                    // Throw Syntax Error
+                    // Throw Track Start Error
+                    LDKF.throwTrackStartError = function throwTrackStartError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.trackStartError)) throw undefined;
+                        else throw new LDKO.trackStartError(arguments.length ? message : "")
+                    };
+
+                    // Throw Timeout Error
+                    LDKF.throwTimeoutError = function throwTimeoutError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.timeoutError)) throw undefined;
+                        else throw new LDKO.timeoutError(arguments.length ? message : "")
+                    };
+
+                    // Throw Transaction Inactive Error
+                    LDKF.throwTransactionInactiveError = function throwTransactionInactiveError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.transactionInactiveError)) throw undefined;
+                        else throw new LDKO.transactionInactiveError(arguments.length ? message : "")
+                    };
+
+                    // Throw Type Error
+                    // Throw Type Mismatch Error
+                    LDKF.throwTypeMismatchError = function throwTypeMismatchError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.typeMismatchError)) throw undefined;
+                        else throw new LDKO.typeMismatchError(arguments.length ? message : "")
+                    };
+
+                    // Throw Unknown Error
+                    LDKF.throwUnknownError = function throwUnknownError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.unknownError)) throw undefined;
+                        else throw new LDKO.unknownError(arguments.length ? message : "")
+                    };
+
+                    // Throw URI Error
+
+                    // Throw URL Mismatch Error
+                    LDKF.throwURLMismatchError = function throwURLMismatchError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.urlMismatchError)) throw undefined;
+                        else throw new LDKO.urlMismatchError(arguments.length ? message : "")
+                    };
+
+                    // Throw Version Error
+                    LDKF.throwVersionError = function throwVersionError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.versionError)) throw undefined;
+                        else throw new LDKO.versionError(arguments.length ? message : "")
+                    };
+
+                    // Throw Webkit Speech Recognition Error
+                    LDKF.throwWebkitSpeechRecognitionError = function throwWebkitSpeechRecognitionError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.webkitSpeechRecognitionError)) throw undefined;
+                        else throw new LDKO.webkitSpeechRecognitionError(arguments.length ? message : "")
+                    };
+
+                    // Throw Wrong Document Error
+                    LDKF.throwWrongDocumentError = function throwWrongDocumentError(message) {
+                        // Logic > Error
+                        if (LDKF.isVoid(LDKO.wrongDocumentError)) throw undefined;
+                        else throw new LDKO.wrongDocumentError(arguments.length ? message : "")
+                    };
+
+                    // Warn --- CHECKPOINT ---
 
                     // Within Foci --- NOTE (Lapys) -> Exclusive conditioning...
                     LDKF.withinFoci = function withinFoci(arg, focusA, focusB) {
@@ -2381,8 +2645,62 @@
                         LDKIE.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
 
                 // Objects
+                    // Abort Error
+                    LDKO.abortError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "AbortError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "AbortError") == "AbortError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
                     // Array
                     LDKO.array = LDKFG.objectPrototypeConstructor([]);
+
+                    // Constraint Error
+                    LDKO.constraintError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ConstraintError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "ConstraintError") == "ConstraintError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Constraint Not Satisfied Error
+                    LDKO.constraintNotSatisfiedError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ConstraintNotSatisfiedError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "ConstraintNotSatisfiedError") == "ConstraintNotSatisfiedError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Data Error
+                    LDKO.dataError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DataError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "DataError") == "DataError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Data Clone Error
+                    LDKO.dataCloneError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DataCloneError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "DataCloneError") == "DataCloneError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Devices Not Found Error
+                    LDKO.devicesNotFoundError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "DevicesNotFoundError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "DevicesNotFoundError") == "DevicesNotFoundError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
 
                     // Error
                     LDKO.error = (function() {
@@ -2513,6 +2831,15 @@
                             else LDKF.error("`DOMError` constructor" + LDKIE.nativeToEnvironmentSuffix)
                     })();
 
+                    // Encoding Error
+                    LDKO.encodingError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "EncodingError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "EncodingError") == "EncodingError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
                     // Evaluation Error
                     LDKO.evalError = (function() {
                         // Initialization > Method
@@ -2521,6 +2848,69 @@
                         // Logic > (...)
                         if ((LDKFG.functionPrototypeName(method) || "EvalError") == "EvalError" || LDKF.functionPrototypeIsNative(method)) return method;
                         else LDKF.error("`EvalError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // Hierarchy Request Error
+                    LDKO.hierarchyRequestError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "HierarchyRequestError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "HierarchyRequestError") == "HierarchyRequestError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Index Size Error
+                    LDKO.indexSizeError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "IndexSizeError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "IndexSizeError") == "IndexSizeError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Invalid Access Error
+                    LDKO.invalidAccessError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "InvalidAccessError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "InvalidAccessError") == "InvalidAccessError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Invalid Character Error
+                    LDKO.invalidCharacterError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "InvalidCharacterError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "InvalidCharacterError") == "InvalidCharacterError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Invalid Modification Error
+                    LDKO.invalidModificationError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "InvalidModificationError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "InvalidModificationError") == "InvalidModificationError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Invalid Node Type Error
+                    LDKO.invalidNodeTypeError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "InvalidNodeTypeError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "InvalidNodeTypeError") == "InvalidNodeTypeError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Invalid State Error
+                    LDKO.invalidStateError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "InvalidStateError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "InvalidStateError") == "InvalidStateError" || LDKF.functionPrototypeIsNative(method)) return method;
                     })();
 
                     // Media Error
@@ -2560,6 +2950,114 @@
                         if ((LDKFG.functionPrototypeName(method) || "MediaStreamError") == "MediaStreamError" || LDKF.functionPrototypeIsNative(method)) return method;
                     })();
 
+                    // Namespace Error
+                    LDKO.namespaceError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NamespaceError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NamespaceError") == "NamespaceError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Navigator User Media Error
+                    LDKO.navigatorUserMediaError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NavigatorUserMediaError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NavigatorUserMediaError") == "NavigatorUserMediaError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Network Error
+                    LDKO.networkError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NetworkError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NetworkError") == "NetworkError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // No Modification Allowed Error
+                    LDKO.noModificationAllowedError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NoModificationAllowedError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NoModificationAllowedError") == "NoModificationAllowedError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Not Allowed Error
+                    LDKO.notAllowedError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NotAllowedError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NotAllowedError") == "NotAllowedError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Not Found Error
+                    LDKO.notFoundError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NotFoundError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NotFoundError") == "NotFoundError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Not Readable Error
+                    LDKO.notReadableError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NotReadableError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NotReadableError") == "NotReadableError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Not Supported Error
+                    LDKO.notSupportedError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "NotSupportedError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "NotSupportedError") == "NotSupportedError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Operation Error
+                    LDKO.operationError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "OperationError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "OperationError") == "OperationError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Over-Constrained Error
+                    LDKO.overconstrainedError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "OverconstrainedError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "OverconstrainedError") == "OverconstrainedError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Permission Denied Error
+                    LDKO.permissionDeniedError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "PermissionDeniedError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "PermissionDeniedError") == "PermissionDeniedError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Quota Exceeded Error
+                    LDKO.quotaExceededError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "QuotaExceededError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "QuotaExceededError") == "QuotaExceededError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
                     // Range Error
                     LDKO.rangeError = (function() {
                         // Initialization > Method
@@ -2568,6 +3066,154 @@
                         // Logic > (...)
                         if ((LDKFG.functionPrototypeName(method) || "RangeError") == "RangeError" || LDKF.functionPrototypeIsNative(method)) return method;
                         else LDKF.error("`RangeError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // Read-Only Error
+                    LDKO.readOnlyError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ReadOnlyError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "ReadOnlyError") == "ReadOnlyError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Reference Error
+                    LDKO.referenceError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "ReferenceError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "ReferenceError") == "ReferenceError" || LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`ReferenceError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // Security Error
+                    LDKO.securityError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "SecurityError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "SecurityError") == "SecurityError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Speech Recognition Error
+                    LDKO.speechRecognitionError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "SpeechRecognitionError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "SpeechRecognitionError") == "SpeechRecognitionError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Syntax Error
+                    LDKO.syntaxError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "SyntaxError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "SyntaxError") == "SyntaxError" || LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`SyntaxError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // Track Start Error
+                    LDKO.trackStartError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "TrackStartError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "TrackStartError") == "TrackStartError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Timeout Error
+                    LDKO.timeoutError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "TimeoutError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "TimeoutError") == "TimeoutError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Transaction Inactive Error
+                    LDKO.transactionInactiveError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "TransactionInactiveError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "TransactionInactiveError") == "TransactionInactiveError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Type Error
+                    LDKO.typeError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "TypeError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "TypeError") == "TypeError" || LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`TypeError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // Type Mismatch Error
+                    LDKO.typeMismatchError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "TypeMismatchError ");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "TypeMismatchError ") == "TypeMismatchError " || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Unknown Error
+                    LDKO.unknownError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "UnknownError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "UnknownError") == "UnknownError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // URI Error
+                    LDKO.uriError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "URIError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "URIError") == "URIError" || LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`URIError` constructor" + LDKIE.nativeToEnvironmentSuffix)
+                    })();
+
+                    // URL Mismatch Error
+                    LDKO.urlMismatchError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "URLMismatchError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "URLMismatchError") == "URLMismatchError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Version Error
+                    LDKO.versionError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "VersionError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "VersionError") == "VersionError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Webkit Speech Recognition Error
+                    LDKO.webkitSpeechRecognitionError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "webkitSpeechRecognitionError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "webkitSpeechRecognitionError") == "webkitSpeechRecognitionError" || LDKF.functionPrototypeIsNative(method)) return method;
+                    })();
+
+                    // Wrong Document Error
+                    LDKO.wrongDocumentError = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(GLOBAL_MAIN, "WrongDocumentError");
+
+                        // Logic > Return
+                        if ((LDKFG.functionPrototypeName(method) || "WrongDocumentError") == "WrongDocumentError" || LDKF.functionPrototypeIsNative(method)) return method;
                     })();
 
                     // String
