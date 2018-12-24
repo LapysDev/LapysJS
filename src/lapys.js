@@ -619,13 +619,14 @@
                             stream = "",
                             syntaxType = LDKF.functionPrototypeGetSyntaxType(method);
 
-                        // Initialization > (Allow Stream, Body Is Indexed, Character, Iterator, Scope Lock, Stream, Stream Lock, Within Scope)
+                        // Initialization > (Allow Stream, Body Is Indexed, Character, Is Within Scope, Iterator, Scope Lock, Stream, Stream Lock)
                         var allowStream = true,
                             bodyIsIndexed = false,
-                            character, iterator = -1,
+                            character,
+                            isWithinScope = 0,
+                            iterator = -1,
                             scopeLock = null, scopeLockLevel = 0,
-                            stream = "", streamLock = null,
-                            withinScope = 0;
+                            stream = "", streamLock = null;
 
                         // Loop
                         while (!bodyIsIndexed) {
@@ -663,7 +664,7 @@
 
                                 // Logic --- NOTE (Lapys) -> Watch for the implicit local scope created by the non-local `extends` keyword and extended constructor.
                                 if (
-                                    syntaxType == "class" && !withinScope &&
+                                    syntaxType == "class" && !isWithinScope &&
                                     LDKF.stringPrototypeSlice(source, iterator, iterator + 7) == "extends" &&
                                     (function(iterator) {
                                         // Loop
@@ -674,14 +675,8 @@
                                                     // Return
                                                     return false;
 
-                                                // {} --- NOTE (Lapys) -> Implicit `extends` keyword scopes are only valid with `class` or `function` syntax-ed functions.
-                                                else if (
-                                                    source[iterator] != ' ' &&
-                                                    (
-                                                        (function(stream) { return "class " || "class\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 5)) ||
-                                                        (function(stream) { return "function " || "function(" || "function\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 8))
-                                                    )
-                                                )
+                                                // {}
+                                                else if (source[iterator] != ' ')
                                                     // Return
                                                     return true;
 
@@ -696,7 +691,7 @@
                                 }
 
                                 // Logic
-                                if (!withinScope)
+                                if (!isWithinScope)
                                     // Logic
                                     switch (syntaxType) {
                                         // Arrow
@@ -714,7 +709,7 @@
                                         // Class
                                         case "class":
                                             // Logic --- NOTE (Lapys) -> Due to the `extends` keyword, classes require scope detection.
-                                            if (character == '{' && LDKF.isNull(scopeLock) && !withinScope) {
+                                            if (character == '{' && LDKF.isNull(scopeLock) && !isWithinScope) {
                                                 // Update > (Body Is Indexed, Iterator)
                                                 bodyIsIndexed = true;
                                                 iterator -= 1
@@ -749,11 +744,11 @@
                                     }
 
                                 // {Scope Hierarchy Logic} Logic > Update > Within Scope
-                                if (character == '(' || character == '{' || character == '[') withinScope += 1;
-                                else if (character == ')' || character == '}' || character == ']') withinScope -= 1;
+                                if (character == '(' || character == '{' || character == '[') isWithinScope += 1;
+                                else if (character == ')' || character == '}' || character == ']') isWithinScope -= 1;
 
                                 // Scope Lock --- NOTE (Lapys) -> Detect the end of an extended constructor (and extended constructor chain (using the Scope Lock Level variable)).
-                                (character == '}' && scopeLock == "extends" && !withinScope) && ((scopeLockLevel -= 1) || (scopeLock = null))
+                                (character == '}' && scopeLock == "extends" && !isWithinScope) && ((scopeLockLevel -= 1) || (scopeLock = null))
                             }
 
                             else if (character == '\n' && streamLock == "//") {
@@ -791,26 +786,90 @@
                         return stream
                     };
 
-                    // Get Head --- CHECKPOINT ---
+                    // Get Head --- NOTE (Lapys) -> Mostly, the problem stems from implicit class extensions...
                     LapysDevelopmentKit.functions.functionPrototypeGetHead = function functionPrototypeGetHead(method) {
                         // Initialization > (Source, Stream, Syntax Type)
                         var source = LDKF.functionPrototypeToSourceString(method),
                             stream = "",
                             syntaxType = LDKF.functionPrototypeGetSyntaxType(method);
 
-                        // Logic
-                        switch (syntaxType) {
-                            // Arrow
-                            case "arrow": break;
+                        // Initialization > (Allow Stream, Body Is Indexed, Character, Is Within Scope, Iterator, Scope Lock, Stream, Stream Lock, Was Within Scope)
+                        var allowStream = true,
+                            bodyIsIndexed = false,
+                            character,
+                            isWithinScope = 0,
+                            iterator = -1,
+                            scopeLock = null,
+                            stream = "", streamLock = null,
+                            wasWithinScope = 1;
 
-                            // Class
-                            case "class": break;
+                        // Loop
+                        while (true) {
+                            // Update > Character
+                            character = source[iterator += 1];
 
-                            // Default
-                            case "default": break;
+                            // Logic
+                            if (allowStream) {
+                                // Logic
+                                if (character == '/' && source[iterator + 1] == '/') {
+                                    // Update > (Allow) Stream (Lock)
+                                    allowStream = false;
+                                    streamLock = "//"
+                                }
 
-                            // Generator
-                            case "generator":
+                                else if (character == '/' && source[iterator + 1] == '*')
+                                    // Update > Allow Stream
+                                    allowStream = false;
+
+                                else if (character == '\'' || character == '"') {
+                                    // Update > (Allow) Stream (Lock)
+                                    allowStream = false;
+                                    streamLock = character
+                                }
+
+                                // Update > Was Within Scope --- NOTE (Lapys) -> Implicit `extends` keyword scopes are only valid with `class` or `function` syntax-ed functions.
+                                (syntaxType == "class") && (
+                                    (function(stream) { return stream == "class " || stream == "class\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 6)) ||
+                                    (function(stream) { return stream == "function " || stream == "function(" || stream == "function\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 9))
+                                ) && (wasWithinScope -= 1);
+
+                                // Logic > [Break]
+                                if (
+                                    ((character == '=' && source[iterator + 1] == '>') && syntaxType == "arrow" && !isWithinScope) ||
+                                    (character == '{' && !isWithinScope && syntaxType == "class" && !wasWithinScope) ||
+                                    (character == '{' && !isWithinScope && (syntaxType == "default" || syntaxType == "generator"))
+                                ) break;
+
+                                // Logic
+                                if (character == '(' || character == '{' || character == '[') {
+                                    // Update > (Is, Was) Within Scope
+                                    isWithinScope += 1;
+                                    (syntaxType == "class") && (character == '{') && (wasWithinScope += 1)
+                                }
+
+                                else if (character == ')' || character == '}' || character == ']')
+                                    // Update > Is Within Scope
+                                    isWithinScope -= 1
+                            }
+
+                            else if (character == '\n' && streamLock == "//") {
+                                // Update > (Allow) Stream (Lock)
+                                allowStream = true;
+                                streamLock = null
+                            }
+
+                            else if (character == '*' && source[iterator + 1] == '/')
+                                // Update > Allow Stream
+                                allowStream = true;
+
+                            else if ((character == '\'' || character == '"') && streamLock == character) {
+                                // Update > (Allow) Stream (Lock)
+                                allowStream = true;
+                                streamLock = null
+                            }
+
+                            // Update > Stream
+                            stream += character
                         }
 
                         // Return
