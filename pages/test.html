@@ -9,73 +9,19 @@
         <!-- LapysJS Stylesheet -->
         <link href=../src/lapys.css media=all rel=stylesheet type=text/css>
 
-        <!-- Document Stylesheet -->
-        <style media=all type=text/css>
-            /* DOM Elements > <body> */
-            body {
-                transition: 1s ease-in-out 0s;
-                transition-property: background-color, color
-            }
-
-            body,
-            body[theme=classic], body[theme=light] {
-                background-color: #F7F7F7;
-                color: #191919
-            }
-
-            body[theme=blue] {
-                background-color: #0055FF;
-                color: #FFFFFF
-            }
-
-            body[theme=dark] {
-                background-color: #333333;
-                color: #FFFFFF
-            }
-
-            body[theme=royal] {
-                background-color: #7F007F;
-                color: #FFFFFF
-            }
-        </style>
-
     <!-- Document Title -->
-    <title> LapysJS | Debugging Room </title>
+    <title> LapysJS | Testing Room </title>
 </head>
 
 <body theme=roulette>
+    <!-- Scripts -->
+        <!-- LapysJS Script -->
+        <script features=script-attribute src=../src/lapys.js type=text/javascript> </script>
+
     <!-- Main -->
     <main>
         <!-- Header -->
-        <h1> Debugging Room </h1>
-
-        <div class=accordion>
-            <h1 role=header> Accordion Header </h1>
-            <p role=content> Accordion content </p>
-        </div>
+        <h1 role=header> Testing Room </h1>
     </main>
-
-    <!-- Scripts -->
-        <!-- Document Script -->
-        <script type=text/javascript>
-            // Modification > Window > LapysJS
-            window.LapysJS = {
-                // Allow Application Features
-                allowAppFeatures: true,
-
-                // Debug Mode
-                debugMode: true,
-
-                // Dynamic Elements
-                dynamicElements: ['scrollbar', 'tooltip'],
-
-                // Dynamic Features
-                dynamicFeatures: ['script-attribute']
-            }
-        </script>
-
-        <!-- LapysJS Script -->
-        <!-- <script features=script-attribute src='../src/lapys (2018 - Q4).v2.js' type=text/javascript> </script> -->
-        <script features=script-attribute src=../src/lapys.js type=text/javascript> </script>
 </body>
 </html>
