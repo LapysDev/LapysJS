@@ -507,9 +507,315 @@
                         return false
                     };
 
+                    // Index
+                    LapysDevelopmentKit.functions.stringPrototypeIndex = function stringPrototypeIndex(string, matches) {
+                        // Initialization > Length
+                        var length = LDKF.getArgumentsLength(arguments);
+
+                        // Logic
+                        if (length == 1)
+                            // Return
+                            return -1;
+
+                        else if (length == 2) {
+                            // Update > Matches
+                            LDKF.isArray(matches) || (matches = [matches]);
+
+                            // Initialization > (Indexes (Iterator), Length, (Matches) (Iterator, Length))
+                            var indexes = [], indexesIterator = -1,
+                                length = LDKF.stringPrototypeLength(string),
+                                matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
+
+                            // Loop
+                            while (matchesIterator) {
+                                // Initialization > (Match) (Iterator, Length)
+                                var match = matches[matchesIterator -= 1],
+                                    matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+
+                                // Logic
+                                if (matchLength)
+                                    // Logic
+                                    if (matchLength == 1) {
+                                        // Initialization > Iterator
+                                        var iterator = 0;
+
+                                        // Loop > Update > Iterator
+                                        while (iterator != length && string[iterator] != match)
+                                            iterator += 1;
+
+                                        // Logic > Update > Indexes
+                                        if (iterator == length) indexes[indexesIterator += 1] = -1;
+                                        else indexes[indexesIterator += 1] = iterator
+                                    }
+
+                                    else {
+                                        // Initialization > Iterator
+                                        var iterator = length;
+
+                                        // Loop
+                                        while (iterator) {
+                                            // Initialization > Index
+                                            var index = length - (iterator -= 1) - 1;
+
+                                            // Update > Match Iterator
+                                            matchIterator = matchLength;
+
+                                            // Loop
+                                            while (matchIterator) {
+                                                // Initialization > Match Index
+                                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                                // Logic
+                                                if (string[index + matchIndex] != match[matchIndex])
+                                                    // [Break]
+                                                    break;
+
+                                                else if (!matchIterator && string[index + matchIndex] == match[matchIndex])
+                                                    // Update > Indexes
+                                                    indexes[indexesIterator += 1] = index
+                                            }
+                                        }
+                                    }
+
+                                else
+                                    // Update > Indexes
+                                    indexes[indexesIterator += 1] = -1
+                            }
+
+                            // Update > (Index, Indexes Iterator)
+                            index = -1;
+                            indexesIterator += 1;
+
+                            // Loop
+                            while (indexesIterator) {
+                                // Update > Indexes Iterator
+                                indexesIterator -= 1;
+
+                                // Logic > Update > Index
+                                if (index < indexes[indexesIterator]) index = indexes[indexesIterator]
+                            }
+
+                            // Return
+                            return index
+                        }
+
+                        else {
+                            // Initialization > (Iterator, New Matches)
+                            var iterator = -1, newMatches = [];
+
+                            // Loop > Update > New Matches
+                            while (length != 1) newMatches[iterator += 1] = arguments[length -= 1];
+
+                            // Return
+                            return LDKF.stringPrototypeIndex(string, newMatches)
+                        }
+                    };
+
                 // Function > Prototype
-                    // Get Body --- CHECKPOINT ---
+                    // Get Body --- NOTE (Lapys) -> The function turned out huge because of the recursive nature of different function types (class extensions, function parameters and so on).
+                    LapysDevelopmentKit.functions.functionPrototypeGetBody = function functionPrototypeGetBody(method) {
+                        // Initialization > (Source, Stream, Syntax Type)
+                        var source = LDKF.functionPrototypeToSourceString(method),
+                            stream = "",
+                            syntaxType = LDKF.functionPrototypeGetSyntaxType(method);
+
+                        // Initialization > (Allow Stream, Body Is Indexed, Character, Iterator, Scope Lock, Stream, Stream Lock, Within Scope)
+                        var allowStream = true,
+                            bodyIsIndexed = false,
+                            character, iterator = -1,
+                            scopeLock = null, scopeLockLevel = 0,
+                            stream = "", streamLock = null,
+                            withinScope = 0;
+
+                        // Loop
+                        while (!bodyIsIndexed) {
+                            // Update > Character
+                            character = source[iterator += 1];
+
+                            // Logic
+                            if (allowStream) {
+                                // Logic
+                                if (character == '/' && source[iterator + 1] == '/') {
+                                    // Update > (Allow) Stream (Lock)
+                                    allowStream = false;
+                                    streamLock = "//";
+
+                                    // [Continue]
+                                    continue
+                                }
+
+                                else if (character == '/' && source[iterator + 1] == '*') {
+                                    // Update > Allow Stream
+                                    allowStream = false;
+
+                                    // [Continue]
+                                    continue
+                                }
+
+                                else if (character == '\'' || character == '"') {
+                                    // Update > (Allow) Stream (Lock)
+                                    allowStream = false;
+                                    streamLock = character;
+
+                                    // [Continue]
+                                    continue
+                                }
+
+                                // Logic --- NOTE (Lapys) -> Watch for the implicit local scope created by the non-local `extends` keyword and extended constructor.
+                                if (
+                                    syntaxType == "class" && !withinScope &&
+                                    LDKF.stringPrototypeSlice(source, iterator, iterator + 7) == "extends" &&
+                                    (function(iterator) {
+                                        // Loop
+                                        while (true) {
+                                            // {Loop Ending Logic} Logic
+                                                // {} --- NOTE (Lapys) -> Do not define extended & locally scoped constructors because they are handled validly (and implicitly) by the generic Scope Hierarchy Logic.
+                                                if (source[iterator] == '(')
+                                                    // Return
+                                                    return false;
+
+                                                // {} --- NOTE (Lapys) -> Implicit `extends` keyword scopes are only valid with `class` or `function` syntax-ed functions.
+                                                else if (
+                                                    source[iterator] != ' ' &&
+                                                    (
+                                                        (function(stream) { return "class " || "class\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 5)) ||
+                                                        (function(stream) { return "function " || "function(" || "function\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 8))
+                                                    )
+                                                )
+                                                    // Return
+                                                    return true;
+
+                                            // Update > Iterator --- NOTE (Lapys) -> Update the state of the Loop Ending Logic.
+                                            iterator += 1
+                                        }
+                                    })(iterator + 7)
+                                ) {
+                                    // Update > Scope Lock (Level)
+                                    scopeLock = "extends";
+                                    scopeLockLevel += 1
+                                }
+
+                                // Logic
+                                if (!withinScope)
+                                    // Logic
+                                    switch (syntaxType) {
+                                        // Arrow
+                                        case "arrow":
+                                            // Logic
+                                            if (character == '=' && source[iterator + 1] == '>') {
+                                                // Update > (Body Is Indexed, Iterator)
+                                                bodyIsIndexed = true;
+                                                iterator += 2
+                                            }
+
+                                            // [Break]
+                                            break;
+
+                                        // Class
+                                        case "class":
+                                            // Logic --- NOTE (Lapys) -> Due to the `extends` keyword, classes require scope detection.
+                                            if (character == '{' && LDKF.isNull(scopeLock) && !withinScope) {
+                                                // Update > (Body Is Indexed, Iterator)
+                                                bodyIsIndexed = true;
+                                                iterator -= 1
+                                            }
+
+                                            // [Break]
+                                            break;
+
+                                        // Default
+                                        case "default":
+                                            // Logic
+                                            if (character == '{') {
+                                                // Update > Body Is Indexed
+                                                bodyIsIndexed = true;
+                                                iterator -= 1
+                                            }
+
+                                            // [Break]
+                                            break;
+
+                                        // Generator
+                                        case "generator":
+                                            // Logic
+                                            if (character == '{') {
+                                                // Update > Body Is Indexed
+                                                bodyIsIndexed = true;
+                                                iterator -= 1
+                                            }
+
+                                            // [Break]
+                                            break
+                                    }
+
+                                // {Scope Hierarchy Logic} Logic > Update > Within Scope
+                                if (character == '(' || character == '{' || character == '[') withinScope += 1;
+                                else if (character == ')' || character == '}' || character == ']') withinScope -= 1;
+
+                                // Scope Lock --- NOTE (Lapys) -> Detect the end of an extended constructor (and extended constructor chain (using the Scope Lock Level variable)).
+                                (character == '}' && scopeLock == "extends" && !withinScope) && ((scopeLockLevel -= 1) || (scopeLock = null))
+                            }
+
+                            else if (character == '\n' && streamLock == "//") {
+                                // Update > (Allow) Stream (Lock)
+                                allowStream = true;
+                                streamLock = null;
+
+                                // [Continue]
+                                continue
+                            }
+
+                            else if (character == '*' && source[iterator + 1] == '/') {
+                                // Update > Allow Stream
+                                allowStream = true;
+
+                                // [Continue]
+                                continue
+                            }
+
+                            else if ((character == '\'' || character == '"') && character == streamLock) {
+                                // Update > (Allow) Stream (Lock)
+                                allowStream = true;
+                                streamLock = null;
+
+                                // [Continue]
+                                continue
+                            }
+                        }
+
+                        // Loop > Update > Stream
+                        while (character)
+                            (character = source[iterator += 1]) && (stream += character);
+
+                        // Return
+                        return stream
+                    };
+
                     // Get Head --- CHECKPOINT ---
+                    LapysDevelopmentKit.functions.functionPrototypeGetHead = function functionPrototypeGetHead(method) {
+                        // Initialization > (Source, Stream, Syntax Type)
+                        var source = LDKF.functionPrototypeToSourceString(method),
+                            stream = "",
+                            syntaxType = LDKF.functionPrototypeGetSyntaxType(method);
+
+                        // Logic
+                        switch (syntaxType) {
+                            // Arrow
+                            case "arrow": break;
+
+                            // Class
+                            case "class": break;
+
+                            // Default
+                            case "default": break;
+
+                            // Generator
+                            case "generator":
+                        }
+
+                        // Return
+                        return stream
+                    };
 
                     // Get Name
                     LapysDevelopmentKit.functions.functionPrototypeGetName = function functionPrototypeGetName(method) {
@@ -532,18 +838,57 @@
                                 var iterator = 6; while (LDKF.stringPrototypeIsAlphabet(source[iterator])) stream += source[(iterator += 1) - 1]; return stream;
                                 break;
 
+                            // Default
                             case "default":
                                 // (...)
                                 var iterator = 9; while (LDKF.stringPrototypeIsAlphabet(source[iterator])) stream += source[(iterator += 1) - 1]; return stream;
                                 break;
 
+                            // Generator
                             case "generator":
-                                // (...)
-                                var iterator = 9; while (LDKF.stringPrototypeIsAlphabet(source[iterator]) || (source[iterator] == ' ' || source[iterator] == '*')) { (source[iterator] == ' ' || source[iterator] == '*') || (stream += source[iterator]); iterator += 1 } return stream
+                                // Initialization > (Iterator, Character)
+                                var iterator = LDKF.stringPrototypeIndex(source, '*') + 1,
+                                    character = source[iterator];
+
+                                // Loop
+                                while (character == ' ' || LDKF.stringPrototypeIsAlphabet(character)) {
+                                    // Update > (Stream, Character)
+                                    (character == ' ') || (stream += character);
+                                    character = source[iterator += 1]
+                                }
+
+                                // Return
+                                return stream
                         }
 
                         // Return
                         return ""
+                    };
+
+                    // Get Parameters --- CHECKPOINT ---
+                    LapysDevelopmentKit.functions.functionPrototypeGetParameters = function functionPrototypeGetParameters(method) {
+                        // Initialization > (Source, Stream, Syntax Type)
+                        var source = LDKF.functionPrototypeToSourceString(method),
+                            stream = "",
+                            syntaxType = LDKF.functionPrototypeGetSyntaxType(method);
+
+                        // Logic
+                        switch (syntaxType) {
+                            // Arrow
+                            case "arrow": break;
+
+                            // Class
+                            case "class": break;
+
+                            // Default
+                            case "default": break;
+
+                            // Generator
+                            case "generator":
+                        }
+
+                        // Return
+                        return stream
                     };
 
                     // Get Syntax Type
@@ -775,33 +1120,40 @@
                             // Initialization > Matches (Iterator, Length)
                             var matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
 
-                            // Loop
-                            while (matchesIterator) {
-                                // Initialization > (Match) (Iterator, Length)
-                                var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
-                                    matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+                            // Logic
+                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
+                                // Logic > Loop > Update > Iterator
+                                if (matchesLength) while (string[iterator] == matches[0]) iterator += 1;
+                            }
 
+                            else
                                 // Loop
-                                while (matchIterator) {
-                                    // Update > Match Iterator
-                                    matchIterator -= 1;
+                                while (matchesIterator) {
+                                    // Initialization > (Match) (Iterator, Length)
+                                    var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
+                                        matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
 
-                                    // Logic
-                                    if (string[iterator + matchIterator] != match[matchIterator])
-                                        // [Break]
-                                        break;
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Update > Match Iterator
+                                        matchIterator -= 1;
 
-                                    else if (!matchIterator && string[0] == match[0]) {
-                                        // Update > (Iterator, Matches Iterator)
-                                        iterator += matchLength;
-                                        matchesIterator = matchesLength
+                                        // Logic
+                                        if (string[iterator + matchIterator] != match[matchIterator])
+                                            // [Break]
+                                            break;
+
+                                        else if (!matchIterator && string[iterator] == match[0]) {
+                                            // Update > (Iterator, Matches Iterator)
+                                            iterator += matchLength;
+                                            matchesIterator = matchesLength
+                                        }
                                     }
                                 }
-                            }
 
                             // Update > (Length, Stream)
                             length = LDKF.stringPrototypeLength(string) - 1;
-                            stream = iterator ? LDKF.stringPrototypeSlice(string, iterator, length) : string;
+                            stream = iterator ? LDKF.stringPrototypeSlice(string, iterator, -0) : string;
 
                             // Return
                             return stream
@@ -842,28 +1194,42 @@
                             // Update > Length
                             length = LDKF.stringPrototypeLength(string);
 
-                            while (matchesIterator) {
-                                // Initialization > (Match) (Iterator, Length)
-                                var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
-                                    matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+                            // Logic
+                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
+                                // Logic
+                                if (matchesLength) {
+                                    // Initialization > Index
+                                    var index = length - 1;
 
-                                // Loop
-                                while (matchIterator) {
-                                    // Update > Match Iterator
-                                    matchIterator -= 1;
-
-                                    // Logic
-                                    if (string[length - iterator - (matchLength - matchIterator - 1) - 1] != match[matchIterator])
-                                        // [Break]
-                                        break;
-
-                                    else if (!matchIterator && string[length - iterator - (matchLength - 1) - 1] == match[0]) {
-                                        // Update > (Iterator, Matches Iterator)
-                                        iterator += matchLength;
-                                        matchesIterator = matchesLength;
-                                    }
+                                    // Loop > Update > (Index, Iterator)
+                                    while (index && string[index] == matches[0]) { index -= 1; iterator += 1 }
                                 }
                             }
+
+                            else
+                                // Loop
+                                while (matchesIterator) {
+                                    // Initialization > (Match) (Iterator, Length)
+                                    var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
+                                        matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Update > Match Iterator
+                                        matchIterator -= 1;
+
+                                        // Logic
+                                        if (string[length - iterator - (matchLength - matchIterator - 1) - 1] != match[matchIterator])
+                                            // [Break]
+                                            break;
+
+                                        else if (!matchIterator && string[length - iterator - (matchLength - 1) - 1] == match[0]) {
+                                            // Update > (Iterator, Matches Iterator)
+                                            iterator += matchLength;
+                                            matchesIterator = matchesLength;
+                                        }
+                                    }
+                                }
 
                             // Update > Stream
                             stream = iterator ? LDKF.stringPrototypeSlice(string, 0, length - (iterator + 1) + 1) : string;
