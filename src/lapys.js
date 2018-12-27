@@ -6,17 +6,30 @@
 
     --- CODE ---
         #Lapys:
+            - Array.prototype.every
+            - Array.prototype.filter
+            - Array.prototype.forEach
+            - Array.prototype.includes
+            - Array.prototype.indexOf
+            - Array.prototype.lastIndexOf
+            - Array.prototype.map
+            - Array.prototype.reduce
+            - Array.prototype.reduceRight
+            - Array.prototype.some
             - check
             - copy
             - createAttr
             - createDocumentFragment
             - createElement
             - cut
+            - Date.prototype.now
+            - Date.prototype.toISOString
             - download
             - Element.prototype.momentumScrollIntoView
             - exec
             - file
             - freeInput
+            - Function.prototype.bind
             - interval
             - len
             - max
@@ -27,11 +40,19 @@
             - momentumScrollTo
             - now // Opposite of `once`
             - Object.concat
+            - Object.create
+            - Object.defineProperty
             - Object.free
             - Object.freeze
+            - Object.getOwnPropertyDescriptor
+            - Object.getOwnPropertyDescriptors
+            - Object.getOwnPropertyNames
             - Object.getOwnPropertyValues
+            - Object.getPrototypeOf
             - Object.keys
             - Object.melt
+            - Object.prototype.__proto__
+            - Object.setPrototypeOf
             - Object.values
             - once
             - onAttributeAdded
@@ -59,8 +80,12 @@
             - rands // Random Set
             - repeat
             - strictInput
+            - String.prototype.trim
+            - String.prototype.trimEnd
+            - String.prototype.trimLeft
+            - String.prototype.trimRight
+            - String.prototype.trimStart
             - timeout
-            - unonce
             - when
             - $a
             - $c
@@ -950,7 +975,19 @@
                     LapysDevelopmentKit.functions.functionPrototypeToSourceString = function functionPrototypeToSourceString(method) { return LDKF.stringPrototypeTrim(LDKF.toString(method) || "") };
 
             /* Constants */
-                // Is Browser --- UPDATE REQUIRED (Lapys) -> Test here should be improved.
+                // Has __Define__ Getter Property
+                LapysDevelopmentKit.constants.has__Define__GetterProperty = typeof __defineGetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__DefineGetter__ = __defineGetter__);
+
+                // Has __Define__ Setter Property
+                LapysDevelopmentKit.constants.has__Define__SetterProperty = typeof __defineSetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__DefineSetter__ = __defineSetter__);
+
+                // Has __Lookup__ Getter Property
+                LapysDevelopmentKit.constants.has__Lookup__GetterProperty = typeof __lookupGetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__LookupGetter__ = __lookupGetter__);
+
+                // Has __Lookup__ Setter Property
+                LapysDevelopmentKit.constants.has__Lookup__SetterProperty = typeof __lookupSetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__LookupSetter__ = __lookupSetter__);
+
+                // Is Browser Environment --- UPDATE REQUIRED (Lapys) -> Test here should be improved.
                 LapysDevelopmentKit.constants.isBrowserEnvironment = typeof window == "object" && LDKF.isConstructible(window);
 
                 // Is __Prototype__ Defined
@@ -999,6 +1036,91 @@
 
             /* Objects */
                 // Object
+                    // Define Property
+                    LapysDevelopmentKit.objects.objectDefineProperty = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (
+                            LDKF.objectPrototypeHasProperty(LDKO.object, "defineProperty") && (function() {
+                                // Initialization > Is Standard
+                                var isStandard = true;
+
+                                // Update > Method
+                                method = LDKF.objectPrototypeGetProperty(LDKO.object, "defineProperty");
+
+                                // Error Handling > (...)
+                                try { method({}, "", {}) }
+                                catch (error) { isStandard = false }
+
+                                // Return
+                                return isStandard
+                            })()
+                        )
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error("`Object.defineProperty` method" + LDKI.messages.error.nativeToEnvironmentSuffix);
+
+                        else
+                            // Return
+                            return function defineProperty(object, key, descriptor) {
+                                // Error Handling > Return
+                                try { return method(object, key, descriptor) }
+                                catch (error) {}
+
+                                // Modification > Object > [Key]
+                                (LDKC.has__Define__GetterProperty && LDKF.objectPrototypeHasProperty(descriptor, "get")) &&
+                                LDKO.objectPrototype__DefineGetter__.call(object, key, LDKF.objectPrototypeGetProperty(descriptor, "get"));
+
+                                (LDKC.has__Define__SetterProperty && LDKF.objectPrototypeHasProperty(descriptor, "set")) &&
+                                LDKO.objectPrototype__DefineSetter__.call(object, key, LDKF.objectPrototypeGetProperty(descriptor, "set"));
+
+                                LDKF.objectPrototypeHasProperty(descriptor, "value") &&
+                                LDKF.objectPrototypeSetProperty(object, key, LDKF.objectPrototypeGetProperty(descriptor, "value"));
+
+                                // Return
+                                return object
+                            };
+
+                        // Return
+                        return method
+                    })();
+
+                    // Get Own Property Descriptor
+                    LapysDevelopmentKit.objects.objectGetOwnPropertyDescriptor = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertyDescriptor")) {
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyDescriptor");
+
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error("`Object.getOwnPropertyDescriptor` method" + LDKI.messages.error.nativeToEnvironmentSuffix)
+                        }
+
+                        else
+                            // Update > Method
+                            method = function getOwnPropertyDescriptor(object, key) {
+                                // Initialization > (Getter, Setter, Has __Lookup__ Properties, Is Accessor)
+                                var getter, setter,
+                                    has__Lookup__Properties = LDKC.has__Lookup__GetterProperty && LDKC.has__Lookup__SetterProperty,
+                                    isAccessor = has__Lookup__Properties ?
+                                        (getter = LDKO.objects.objectPrototype__LookupGetter__.call(object, key)) ||
+                                        (setter = LDKO.objects.objectPrototype__LookupSetter__.call(object, key)) :
+                                        null;
+
+                                // Return
+                                return LDKF.isNull(isAccessor) ?
+                                    {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(object, key), writable: true} :
+                                    {configurable: true, enumerable: true, get: getter, set: setter}
+                            };
+
+                        // Return
+                        return method
+                    })();
+
                     // Get Own Property Names
                     LapysDevelopmentKit.objects.objectGetOwnPropertyNames = (function() {
                         // Initialization > Method
@@ -1145,6 +1267,12 @@
 
             /* Functions */
                 // Object
+                    // Define Property
+                    LapysDevelopmentKit.functions.objectDefineProperty = function objectDefineProperty(object, key, descriptor) { return LDKO.objectDefineProperty(object, key, descriptor) };
+
+                    // Get Own Property Descriptor
+                    LapysDevelopmentKit.functions.objectGetOwnPropertyDescriptor = function objectGetOwnPropertyDescriptor(object, propertyName) { return LDKO.objectGetOwnPropertyDescriptor(object, propertyName) };
+
                     // Get Own Property Names
                     LapysDevelopmentKit.functions.objectGetOwnPropertyNames = function objectGetOwnPropertyNames(object) { return LDKO.objectGetOwnPropertyNames(object) };
 
@@ -1171,8 +1299,7 @@
                             return __proto__
                         };
 
-                        // Set __Proto__ --- CHECKPOINT ---
-                        window.p =
+                        // Set __Proto__ --- WARN (NOTE) -> Accessors are not available in some environments.
                         LapysDevelopmentKit.functions.objectPrototypeSet__Proto__ = function objectPrototypeSet__Proto__(object, __proto__) {
                             // Error Handling
                             try {
@@ -1194,9 +1321,16 @@
                                             // Initialization > __Prototype__ Key
                                             var __proto__Key = __proto__Keys[length - (iterator -= 1) - 1];
 
-                                            // Error Handling > Modification > Object > __Prototype__ Key --- CHECKPOINT (Lapys) -> Getters & setters?
-                                            try { LDKF.objectPrototypeSetProperty(object, __proto__Key, __proto__[__proto__Key]) }
-                                            catch (error) {}
+                                            // Error Handling
+                                            try {
+                                                // Initialization > __Prototype__ Descriptor
+                                                var __proto__PropertyDescriptor = LDKF.objectGetOwnPropertyDescriptor(object, __proto__Key);
+
+                                                // Modification > Object > [__Prototype__ Key]
+                                                __proto__PropertyDescriptor && (LDKF.objectPrototypeHasProperty(__proto__PropertyDescriptor, "get") || LDKF.objectPrototypeHasProperty(__proto__PropertyDescriptor, "set")) ?
+                                                    LDKF.objectDefineProperty(object, __proto__Key, __proto__PropertyDescriptor) :
+                                                    LDKF.objectPrototypeSetProperty(object, __proto__Key, __proto__[__proto__Key])
+                                            } catch (error) {}
                                         }
                                     }
                             } catch (error) {}
@@ -1966,109 +2100,136 @@
                 // Abort Error
                 LapysDevelopmentKit.objects.abortError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "AbortError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AbortError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(method) || "AbortError") == "AbortError" && LDKF.functionPrototypeIsNative(method)) return method
+                    if ((LDKF.functionPrototypeGetName(constructor) || "AbortError") == "AbortError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
                 // Constraint Error
                 LapysDevelopmentKit.objects.constraintError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "ConstraintError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ConstraintError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(method) || "ConstraintError") == "ConstraintError" && LDKF.functionPrototypeIsNative(method)) return method
+                    if ((LDKF.functionPrototypeGetName(constructor) || "ConstraintError") == "ConstraintError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
                 // Constraint Not Satisfied Error
                 LapysDevelopmentKit.objects.constraintNotSatisfiedError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "ConstraintNotSatisfiedError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ConstraintNotSatisfiedError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(method) || "ConstraintNotSatisfiedError") == "ConstraintNotSatisfiedError" && LDKF.functionPrototypeIsNative(method)) return method
+                    if ((LDKF.functionPrototypeGetName(constructor) || "ConstraintNotSatisfiedError") == "ConstraintNotSatisfiedError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
                 // Data Error
                 LapysDevelopmentKit.objects.dataError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "DataError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DataError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(method) || "DataError") == "DataError" && LDKF.functionPrototypeIsNative(method)) return method
+                    if ((LDKF.functionPrototypeGetName(constructor) || "DataError") == "DataError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
                 // Data Clone Error
                 LapysDevelopmentKit.objects.dataCloneError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "DataCloneError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DataCloneError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(method) || "DataCloneError") == "DataCloneError" && LDKF.functionPrototypeIsNative(method)) return method
+                    if ((LDKF.functionPrototypeGetName(constructor) || "DataCloneError") == "DataCloneError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
                 // Devices Not Found Error
                 LapysDevelopmentKit.objects.devicesNotFoundError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "DevicesNotFoundError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DevicesNotFoundError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(method) || "DevicesNotFoundError") == "DevicesNotFoundError" && LDKF.functionPrototypeIsNative(method)) return method
+                    if ((LDKF.functionPrototypeGetName(constructor) || "DevicesNotFoundError") == "DevicesNotFoundError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
                 // DOM Error
                 LapysDevelopmentKit.objects.domError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMError");
 
                     // Logic
-                    if (!LDKF.isVoid(method))
+                    if (!LDKF.isVoid(constructor))
                         // Logic > (...)
-                        if ((LDKF.functionPrototypeGetName(method) || "DOMError") == "DOMError" && (LDKF.functionPrototypeToSourceString(method) == "[object DOMError]" || LDKF.functionPrototypeIsNative(method))) return method;
+                        if ((LDKF.functionPrototypeGetName(constructor) || "DOMError") == "DOMError" && (LDKF.functionPrototypeToSourceString(constructor) == "[object DOMError]" || LDKF.functionPrototypeIsNative(constructor))) return constructor;
                         else if (LDKC.isBrowserEnvironment) LDKF.error("`DOMError` constructor" + LDKI.messages.error.nativeToEnvironmentSuffix)
                 })();
 
                 // DOM Exception
                 LapysDevelopmentKit.objects.domException = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMException");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMException");
 
                     // Logic
-                    if (!LDKF.isVoid(method))
+                    if (!LDKF.isVoid(constructor))
                         // Logic > (...)
-                        if ((LDKF.functionPrototypeGetName(method) || "DOMException") == "DOMException" && (LDKF.functionPrototypeToSourceString(method) == "[object DOMException]" || LDKF.functionPrototypeIsNative(method))) return method;
+                        if ((LDKF.functionPrototypeGetName(constructor) || "DOMException") == "DOMException" && (LDKF.functionPrototypeToSourceString(constructor) == "[object DOMException]" || LDKF.functionPrototypeIsNative(constructor))) return constructor;
                         else if (LDKC.isBrowserEnvironment) LDKF.error("`DOMException` constructor" + LDKI.messages.error.nativeToEnvironmentSuffix)
                 })();
 
                 // Encoding Error
                 LapysDevelopmentKit.objects.encodingError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "EncodingError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "EncodingError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(method) || "EncodingError") == "EncodingError" && LDKF.functionPrototypeIsNative(method)) return method
+                    if ((LDKF.functionPrototypeGetName(constructor) || "EncodingError") == "EncodingError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // Error --- CHECKPOINT ---
+                // Error
                 LapysDevelopmentKit.objects.error = (function() {
-                    var object;
+                    // Initialization > (Is Standard, Object)
+                    var isStandard = true, constructor;
 
-                    try { undefined[""] }
-                    catch (error) { /*object = error.__proto__.__proto__.constructor*/ }
+                    // Function > Test
+                    function test() { return LDKF.functionPrototypeGetName(constructor) == "Error" || LDKF.functionPrototypeIsNative(constructor) }
 
-                    return object
+                    // Logic
+                    if (LDKC.is__Proto__Defined)
+                        // Error Handling
+                        try {
+                            // (...)
+                            undefined[""]
+                        } catch (error) {
+                            // Update > Object
+                            constructor = LDKF.objectPrototypeConstructor(LDKF.objectPrototypeGet__Proto__(LDKF.objectPrototypeGet__Proto__(error)));
+                            test() || (isStandard = false)
+                        }
+
+                    else
+                        // Update > Is Standard
+                        isStandard = false;
+
+                    // Logic
+                    if (!isStandard) {
+                        // Update > Object
+                        constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "Error");
+
+                        // Error
+                        test() || LDKF.error("`Error` constructor" + LDKI.messages.error.nativeToEnvironmentSuffix)
+                    }
+
+                    // Return
+                    return constructor
                 })();
 
                 // Evaluation Error
                 LapysDevelopmentKit.objects.evalError = (function() {
                     // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "EvalError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "EvalError");
 
                     // Logic
-                    if (!LDKF.isVoid(method))
+                    if (!LDKF.isVoid(constructor))
                         // Logic > (...)
-                        if ((LDKF.functionPrototypeGetName(method) || "EvalError") == "EvalError" && ((function(stream) { return stream == "EvalError" || stream == "[object Error]" })(LDKF.functionPrototypeToSourceString(method)) || LDKF.functionPrototypeIsNative(method))) return method;
+                        if ((LDKF.functionPrototypeGetName(constructor) || "EvalError") == "EvalError" && ((function(stream) { return stream == "EvalError" || stream == "[object Error]" })(LDKF.functionPrototypeToSourceString(constructor)) || LDKF.functionPrototypeIsNative(constructor))) return constructor;
                         else LDKF.error("`EvalError` constructor" + LDKI.messages.error.nativeToEnvironmentSuffix)
                 })();
 
@@ -2090,7 +2251,28 @@
                     if ((LDKF.functionPrototypeGetName(method) || "IndexSizeError") == "IndexSizeError" && LDKF.functionPrototypeIsNative(method)) return method
                 })();
 
-                // Internal Error --- CHECKPOINT ---
+                // Internal Error
+                LapysDevelopmentKit.objects.internalError = (function() {
+                    // Initialization > Method
+                    var method;
+
+                    // Error Handling > (...)
+                    try { (function InternalError(){InternalError()})() }
+                    catch (error) { method = error }
+
+                    // Logic
+                    if (LDKF.stringPrototypeIndex(LDKF.stringPrototypeTrimLeft(LDKF.toString(method)), "InternalError")) {
+                        // Update > Method
+                        method = LDKF.objectPrototypeGetProperty(GLOBAL, "InternalError");
+
+                        // Logic > Return
+                        if ((LDKF.functionPrototypeGetName(method) || "InternalError") == "InternalError" && LDKF.functionPrototypeIsNative(method)) return method;
+                        else return
+                    }
+
+                    // Return
+                    return method
+                })();
 
                 // Invalid Access Error
                 LapysDevelopmentKit.objects.invalidAccessError = (function() {
