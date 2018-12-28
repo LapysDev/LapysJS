@@ -447,6 +447,34 @@
                     // Native to Environment Suffix
                     LapysDevelopmentKit.information.messages.error.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
 
+            /* Objects */
+                // String > Prototype > Character At --- NOTE (Lapys) -> Specifically for legacy versions of the Internet Explorer web browser.
+                LapysDevelopmentKit.objects.stringPrototypeCharAt = (function() {
+                    // Initialization > Method
+                    var method = (function() {
+                        // Error Handling
+                        try { return "".constructor.prototype.charAt }
+                        catch (error) {}
+                    })();
+
+                    // Error Handling
+                    try {
+                        // Logic > (...)
+                        if (
+                            typeof method == "function" && (function(stream) {
+                                // Return
+                                return stream == "function charAt() { [native code] }" ||
+                                    stream == "function charAt() {\n    [native code]\n}" ||
+                                    stream == "\nfunction charAt() {\n    [native code]\n}\n"
+                            })(method + "")
+                        ) return method;
+                        else throw {}
+                    } catch (error) {
+                        // Logic > Error
+                        if (' '[0] != ' ') throw LDKF.error("`String.prototype.charAt` constructor" + LDKI.messages.error.nativeToEnvironmentSuffix)
+                    }
+                })();
+
             /* Functions */
                 // Error --- CHECKPOINT ---
                 LapysDevelopmentKit.functions.error = function error(message) { throw message };
@@ -490,8 +518,17 @@
                 LapysDevelopmentKit.functions.toString = function toString(arg) { try { return arg + "" } catch (error) {} return LDKO.string(arg) };
 
                 // String > Prototype
+                    // Character At
+                    LapysDevelopmentKit.functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) {
+                        // Logic > Return
+                        if (LDKF.getArgumentsLength(arguments) < 2) return undefined;
+
+                        // Return
+                        return string[index] || LDKO.stringPrototypeCharAt.call(string, index) || undefined
+                    };
+
                     // Length
-                    LapysDevelopmentKit.functions.stringPrototypeLength = function stringPrototypeLength(string) { var length = 0; while (!LDKF.isVoid(string[length])) length += 1; return length };
+                    LapysDevelopmentKit.functions.stringPrototypeLength = function stringPrototypeLength(string) { var length = 0; while (!LDKF.isVoid(LDKF.stringPrototypeCharacterAt(string, length))) length += 1; return length };
 
                     // Includes
                     LapysDevelopmentKit.functions.stringPrototypeIncludes = function stringPrototypeIncludes(string, match) {
