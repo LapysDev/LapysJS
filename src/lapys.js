@@ -116,6 +116,7 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
+            - `Function.prototype.apply` and `Function.prototype.call` should be non-configurable from initiation.
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
                 -- Internet Explorer (browser)
                     --- Internet Explorer 5 --- NOTE (Lapys) -> Freezes indefinitely for non-apparent reasons.
@@ -129,6 +130,12 @@
     /* Initialization */
         // Arguments --- NOTE (Lapys) -> The arguments received by the main sub-routine.
         var args = [],
+
+        // Author
+        AUTHOR = "Lapys",
+
+        // Description
+        DESCRIPTION = "LapysJS is an intuitive, minimalist web library for quick development.",
 
         // Lapys Development Kit
         LapysDevelopmentKit = {
@@ -145,7 +152,7 @@
             functions: {},
 
             // Information
-            information: {messages: {debugging: {}, "default": {}, error: {}}},
+            information: {messages: {debugging: {}, error: {}}},
 
             // Math
             math: {series: {}},
@@ -164,7 +171,13 @@
         STATE = 0,
 
         // Undefined --- NOTE (Lapys) -> Specify `undefined`.
-        undefined = void 0;
+        undefined = void 0,
+
+        // Uniform Resource Locator
+        URL = "https://www.github.com/LapysDev/LapysJS",
+
+        // Version
+        VERSION = "0.0.7";
 
     /* Definition */
         // Lapys Development Kit (...)
@@ -437,15 +450,34 @@
                     };
 
             /* Information */
-                // Error Messages
-                    // Compatible with Library Suffix
-                    LapysDevelopmentKit.information.messages.error.compatibleWithLibrarySuffix = " is not compatible with this library";
+                // Messages
+                    // Debugging
+                        // Prefix
+                        LapysDevelopmentKit.information.messages.debugging.prefix = "[LapysJS v" + VERSION + "] ->\n\t";
 
-                    // JavaScript Engine Support Suffix
-                    LapysDevelopmentKit.information.messages.error.javaScriptEngineSupportSuffix = " must be supported by this JavaScript engine";
+                        // Suffix
+                        LapysDevelopmentKit.information.messages.debugging.suffix = "\r";
 
-                    // Native to Environment Suffix
-                    LapysDevelopmentKit.information.messages.error.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
+                    // Error
+                        // Compatible with Library Suffix
+                        LapysDevelopmentKit.information.messages.error.compatibleWithLibrarySuffix = " is not compatible with this library";
+
+                        // JavaScript Engine Support Suffix
+                        LapysDevelopmentKit.information.messages.error.javaScriptEngineSupportSuffix = " must be supported by this JavaScript engine";
+
+                        // Native to Environment Suffix
+                        LapysDevelopmentKit.information.messages.error.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
+
+            /* Functions */
+                // Error
+                LapysDevelopmentKit.functions.error = function error(message) {
+                    // Logic > Error
+                    if (LDKF.objectPrototypeHasProperty(LDKD, "lapysJSError")) throw new LDKD.lapysJSError(LDKF.toDebugMessage.apply(LDKD, arguments));
+                    else throw LDKF.toDebugMessage.apply(LDKF, arguments)
+                };
+
+                // To Debug Message
+                LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(message) + LDKI.messages.debugging.suffix };
 
             /* Objects */
                 // String > Prototype > Character At --- NOTE (Lapys) -> Specifically for legacy versions of the Internet Explorer web browser.
@@ -476,9 +508,6 @@
                 })();
 
             /* Functions */
-                // Error --- CHECKPOINT ---
-                LapysDevelopmentKit.functions.error = function error(message) { throw message };
-
                 // Is Number
                 LapysDevelopmentKit.functions.isNumber = function isNumber(arg) { return typeof arg == "number" };
 
@@ -520,6 +549,9 @@
                 // String > Prototype
                     // Character At
                     LapysDevelopmentKit.functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) {
+                        // Logic > Error --- WARN (Lapys) -> Prevent erroneously using this method with a non-string.
+                        if (typeof string != "string") LDKF.error("First argument must be a string");
+
                         // Logic > Return
                         if (LDKF.getArgumentsLength(arguments) < 2) return undefined;
 
@@ -550,11 +582,11 @@
                                 var matchIndex = matchLength - (matchIterator -= 1) - 1;
 
                                 // Logic
-                                if (string[index + matchIndex] != match[matchIndex])
+                                if (LDKF.stringPrototypeCharacterAt(string, index + matchIndex) != LDKF.stringPrototypeCharacterAt(match, matchIndex))
                                     // [Break]
                                     break;
 
-                                else if (!matchIterator && string[index + matchIndex] == match[matchIndex])
+                                else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, index + matchIndex) == LDKF.stringPrototypeCharacterAt(match, matchIndex))
                                     // Return
                                     return true
                             }
@@ -586,7 +618,7 @@
                             // Loop
                             while (matchesIterator) {
                                 // Initialization > (Match) (Iterator, Length)
-                                var match = matches[matchesIterator -= 1],
+                                var match = LDKF.stringPrototypeCharacterAt(matches, matchesIterator -= 1),
                                     matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
 
                                 // Logic
@@ -597,7 +629,7 @@
                                         var iterator = 0;
 
                                         // Loop > Update > Iterator
-                                        while (iterator != length && string[iterator] != match)
+                                        while (iterator != length && LDKF.stringPrototypeCharacterAt(string, iterator) != match)
                                             iterator += 1;
 
                                         // Logic > Update > Indexes
@@ -623,11 +655,11 @@
                                                 var matchIndex = matchLength - (matchIterator -= 1) - 1;
 
                                                 // Logic
-                                                if (string[index + matchIndex] != match[matchIndex])
+                                                if (LDKF.stringPrototypeCharacterAt(string, index + matchIndex) != LDKF.stringPrototypeCharacterAt(match, matchIndex))
                                                     // [Break]
                                                     break;
 
-                                                else if (!matchIterator && string[index + matchIndex] == match[matchIndex])
+                                                else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, index + matchIndex) == LDKF.stringPrototypeCharacterAt(match, matchIndex))
                                                     // Update > Indexes
                                                     indexes[indexesIterator += 1] = index
                                             }
@@ -675,7 +707,7 @@
                     LapysDevelopmentKit.functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(character) { return character === '0' || character === '1' || character === '2' || character === '3' || character === '4' || character === '5' || character === '6' || character === '7' || character === '8' || character === '9' };
 
                     // Is Numeric
-                    LapysDevelopmentKit.functions.stringPrototypeIsNumeric = function stringPrototypeIsNumeric(string) { var iterator = LDKF.stringPrototypeLength(string); while (iterator) if (!LDKF.stringPrototypeIsDigit(string[iterator -= 1])) return false; return true };
+                    LapysDevelopmentKit.functions.stringPrototypeIsNumeric = function stringPrototypeIsNumeric(string) { var iterator = LDKF.stringPrototypeLength(string); while (iterator) if (!LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, iterator -= 1))) return false; return true };
 
                     // Slice
                     LapysDevelopmentKit.functions.stringPrototypeSlice = function stringPrototypeSlice(string, begin, end) {
@@ -708,7 +740,7 @@
                             end = series.point(end);
 
                         // Logic > Loop > Update > Stream
-                        if (begin < end) while (begin != end) stream += string[(begin += 1) - 1];
+                        if (begin < end) while (begin != end) stream += LDKF.stringPrototypeCharacterAt(string, (begin += 1) - 1);
 
                         // Return
                         return stream
@@ -774,7 +806,7 @@
                             // Logic
                             if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
                                 // Logic > Loop > Update > Iterator
-                                if (matchesLength) while (string[iterator] == matches[0]) iterator += 1;
+                                if (matchesLength) while (LDKF.stringPrototypeCharacterAt(string, iterator) == matches[0]) iterator += 1;
                             }
 
                             else
@@ -790,11 +822,11 @@
                                         matchIterator -= 1;
 
                                         // Logic
-                                        if (string[iterator + matchIterator] != match[matchIterator])
+                                        if (LDKF.stringPrototypeCharacterAt(string, iterator + matchIterator) != LDKF.stringPrototypeCharacterAt(match, matchIterator))
                                             // [Break]
                                             break;
 
-                                        else if (!matchIterator && string[iterator] == match[0]) {
+                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, iterator) == LDKF.stringPrototypeCharacterAt(match, 0)) {
                                             // Update > (Iterator, Matches Iterator)
                                             iterator += matchLength;
                                             matchesIterator = matchesLength
@@ -853,7 +885,7 @@
                                     var index = length - 1;
 
                                     // Loop > Update > (Index, Iterator)
-                                    while (index && string[index] == matches[0]) { index -= 1; iterator += 1 }
+                                    while (index && LDKF.stringPrototypeCharacterAt(string, index) == matches[0]) { index -= 1; iterator += 1 }
                                 }
                             }
 
@@ -870,11 +902,11 @@
                                         matchIterator -= 1;
 
                                         // Logic
-                                        if (string[length - iterator - (matchLength - matchIterator - 1) - 1] != match[matchIterator])
+                                        if (LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - matchIterator - 1) - 1) != LDKF.stringPrototypeCharacterAt(match, matchIterator))
                                             // [Break]
                                             break;
 
-                                        else if (!matchIterator && string[length - iterator - (matchLength - 1) - 1] == match[0]) {
+                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - 1) - 1) == LDKF.stringPrototypeCharacterAt(match, 0)) {
                                             // Update > (Iterator, Matches Iterator)
                                             iterator += matchLength;
                                             matchesIterator = matchesLength;
@@ -936,15 +968,15 @@
                         // Logic
                         if (source != "undefined")
                             // Logic > Return
-                            if (source[0] == 'c' && source[1] == 'l' && source[2] == 'a' && source[3] == 's' && source[4] == 's') return "class";
-                            else if (source[0] == 'f' && source[1] == 'u' && source[2] == 'n' && source[3] == 'c' && source[4] == 't' && source[5] == 'i' && source[6] == 'o' && source[7] == 'n') return (function() {
+                            if (LDKF.stringPrototypeCharacterAt(source, 0) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's') return "class";
+                            else if (LDKF.stringPrototypeCharacterAt(source, 0) == 'f' && LDKF.stringPrototypeCharacterAt(source, 1) == 'u' && LDKF.stringPrototypeCharacterAt(source, 2) == 'n' && LDKF.stringPrototypeCharacterAt(source, 3) == 'c' && LDKF.stringPrototypeCharacterAt(source, 4) == 't' && LDKF.stringPrototypeCharacterAt(source, 5) == 'i' && LDKF.stringPrototypeCharacterAt(source, 6) == 'o' && LDKF.stringPrototypeCharacterAt(source, 7) == 'n') return (function() {
                                 // Initialization > (Iterator, Length)
                                 var iterator = 7, length = LDKF.stringPrototypeLength(source);
 
                                 // Loop
                                 while (iterator != length) {
                                     // Initialization > Character
-                                    var character = source[iterator += 1];
+                                    var character = LDKF.stringPrototypeCharacterAt(source, iterator += 1);
 
                                     // Logic > Return
                                     if (character == '(') return false;
@@ -953,8 +985,8 @@
                             })() ? "generator" : "default";
                             else if (
                                 // NOTE (Lapys) -> Not all arrow functions begin with English characters.
-                                LDKF.stringPrototypeIsAlphabet(source[0]) ||
-                                source[0] == '_' || source[0] == '$' || source[0] == '(' ||
+                                LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, 0)) ||
+                                LDKF.stringPrototypeCharacterAt(source, 0) == '_' || LDKF.stringPrototypeCharacterAt(source, 0) == '$' || LDKF.stringPrototypeCharacterAt(source, 0) == '(' ||
                                 LDKF.stringPrototypeIncludes(source, "=>")
                             ) return "arrow";
 
@@ -979,12 +1011,12 @@
                         // Loop
                         while (iterator > 0) {
                             // Initialization > Character
-                            var character = source[length - (iterator -= 1) - 1];
+                            var character = LDKF.stringPrototypeCharacterAt(source, length - (iterator -= 1) - 1);
 
                             // Logic
                             if (allowStream) {
                                 // Logic
-                                if (character == '/' && source[length - iterator] == '/') {
+                                if (character == '/' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '/') {
                                     // Update > ((Allow) Stream (Lock), Iterator)
                                     allowStream = false;
                                     iterator -= 1;
@@ -994,7 +1026,7 @@
                                     continue
                                 }
 
-                                else if (character == '/' && source[length - iterator] == '*') {
+                                else if (character == '/' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '*') {
                                     // Update > (Allow Stream, Iterator)
                                     allowStream = false;
                                     iterator -= 1;
@@ -1023,7 +1055,7 @@
                                 streamLock = null
                             }
 
-                            else if (character == '*' && source[length - iterator] == '/') {
+                            else if (character == '*' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '/') {
                                 // Update > (Allow Stream, Iterator)
                                 allowStream = true;
                                 iterator -= 1;
@@ -1106,7 +1138,7 @@
 
             /* Functions */
                 // Object > Prototype
-                    // Has Own Property --- UPDATE REQUIRED (Lapys) -> Should not use the `Function.prototype.call` method.
+                    // Has Own Property
                     LapysDevelopmentKit.functions.objectPrototypeHasOwnProperty = function objectPrototypeHasOwnProperty(object, propertyName) { return LDKO.objectPrototypeHasOwnProperty.call(object, propertyName) };
 
             /* Objects */
@@ -1454,12 +1486,12 @@
                         // Loop
                         while (!bodyIsIndexed) {
                             // Update > Character
-                            character = source[iterator += 1];
+                            character = LDKF.stringPrototypeCharacterAt(source, iterator += 1);
 
                             // Logic
                             if (allowStream) {
                                 // Logic
-                                if (character == '/' && source[iterator + 1] == '/') {
+                                if (character == '/' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '/') {
                                     // Update > (Allow) Stream (Lock)
                                     allowStream = false;
                                     streamLock = "//";
@@ -1468,7 +1500,7 @@
                                     continue
                                 }
 
-                                else if (character == '/' && source[iterator + 1] == '*') {
+                                else if (character == '/' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '*') {
                                     // Update > Allow Stream
                                     allowStream = false;
 
@@ -1494,12 +1526,12 @@
                                         while (true) {
                                             // {Loop Ending Logic} Logic
                                                 // {} --- NOTE (Lapys) -> Do not define extended & locally scoped constructors because they are handled validly (and implicitly) by the generic Scope Hierarchy Logic.
-                                                if (source[iterator] == '(')
+                                                if (LDKF.stringPrototypeCharacterAt(source, iterator) == '(')
                                                     // Return
                                                     return false;
 
                                                 // {}
-                                                else if (source[iterator] != ' ')
+                                                else if (LDKF.stringPrototypeCharacterAt(source, iterator) != ' ')
                                                     // Return
                                                     return true;
 
@@ -1520,7 +1552,7 @@
                                         // Arrow
                                         case "arrow":
                                             // Logic
-                                            if (character == '=' && source[iterator + 1] == '>') {
+                                            if (character == '=' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '>') {
                                                 // Update > (Body Is Indexed, Iterator)
                                                 bodyIsIndexed = true;
                                                 iterator += 2
@@ -1583,7 +1615,7 @@
                                 continue
                             }
 
-                            else if (character == '*' && source[iterator + 1] == '/') {
+                            else if (character == '*' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '/') {
                                 // Update > Allow Stream
                                 allowStream = true;
 
@@ -1603,7 +1635,7 @@
 
                         // Loop > Update > Stream
                         while (character)
-                            (character = source[iterator += 1]) && (stream += character);
+                            (character = LDKF.stringPrototypeCharacterAt(source, iterator += 1)) && (stream += character);
 
                         // Return
                         return stream
@@ -1629,18 +1661,18 @@
                         // Loop
                         while (true) {
                             // Update > Character
-                            character = source[iterator += 1];
+                            character = LDKF.stringPrototypeCharacterAt(source, iterator += 1);
 
                             // Logic
                             if (allowStream) {
                                 // Logic
-                                if (character == '/' && source[iterator + 1] == '/') {
+                                if (character == '/' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '/') {
                                     // Update > (Allow) Stream (Lock)
                                     allowStream = false;
                                     streamLock = "//"
                                 }
 
-                                else if (character == '/' && source[iterator + 1] == '*')
+                                else if (character == '/' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '*')
                                     // Update > Allow Stream
                                     allowStream = false;
 
@@ -1658,7 +1690,7 @@
 
                                 // Logic > [Break]
                                 if (
-                                    ((character == '=' && source[iterator + 1] == '>') && syntaxType == "arrow" && !isWithinScope) ||
+                                    ((character == '=' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '>') && syntaxType == "arrow" && !isWithinScope) ||
                                     (character == '{' && !isWithinScope && syntaxType == "class" && !wasWithinScope) ||
                                     (character == '{' && !isWithinScope && (syntaxType == "default" || syntaxType == "generator"))
                                 ) break;
@@ -1681,7 +1713,7 @@
                                 streamLock = null
                             }
 
-                            else if (character == '*' && source[iterator + 1] == '/')
+                            else if (character == '*' && LDKF.stringPrototypeCharacterAt(source, iterator + 1) == '/')
                                 // Update > Allow Stream
                                 allowStream = true;
 
@@ -1700,6 +1732,7 @@
                     };
 
                     // Get Name
+                    window.getName =
                     LapysDevelopmentKit.functions.functionPrototypeGetName = function functionPrototypeGetName(method) {
                         // Initialization > (Source, Stream, Syntax Type)
                         var source = LDKF.functionPrototypeToSourceString(method),
@@ -1717,26 +1750,26 @@
                             // Class
                             case "class":
                                 // (...)
-                                var iterator = 6; while (LDKF.stringPrototypeIsAlphabet(source[iterator])) stream += source[(iterator += 1) - 1]; return stream;
+                                var iterator = 6; while (LDKF.stringPrototypeCharacterAt(source, iterator) == '_' || LDKF.stringPrototypeCharacterAt(source, iterator) == '$' || LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, iterator))) stream += LDKF.stringPrototypeCharacterAt(source, (iterator += 1) - 1); return stream;
                                 break;
 
                             // Default
                             case "default":
                                 // (...)
-                                var iterator = 9; while (LDKF.stringPrototypeIsAlphabet(source[iterator])) stream += source[(iterator += 1) - 1]; return stream;
+                                var iterator = 9; while (LDKF.stringPrototypeCharacterAt(source, iterator) == '_' || LDKF.stringPrototypeCharacterAt(source, iterator) == '$' || LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, iterator))) stream += LDKF.stringPrototypeCharacterAt(source, (iterator += 1) - 1); return stream;
                                 break;
 
                             // Generator
                             case "generator":
                                 // Initialization > (Iterator, Character)
                                 var iterator = LDKF.stringPrototypeIndex(source, '*') + 1,
-                                    character = source[iterator];
+                                    character = LDKF.stringPrototypeCharacterAt(source, iterator);
 
                                 // Loop
                                 while (character == ' ' || LDKF.stringPrototypeIsAlphabet(character)) {
                                     // Update > (Stream, Character)
                                     (character == ' ') || (stream += character);
-                                    character = source[iterator += 1]
+                                    character = LDKF.stringPrototypeCharacterAt(source, iterator += 1)
                                 }
 
                                 // Return
@@ -1768,7 +1801,7 @@
                                 // Loop
                                 while (iterator) {
                                     // Initialization > Character
-                                    var character = source[length - (iterator -= 1) - 1];
+                                    var character = LDKF.stringPrototypeCharacterAt(source, length - (iterator -= 1) - 1);
 
                                     // Logic > Update > Is Within Scope
                                     if (character == '(' || character == '{' || character == '[') isWithinScope += 1;
@@ -1804,7 +1837,7 @@
                         // Loop
                         while (iterator) {
                             // Update > Character
-                            character = head[length - (iterator -= 1) - 1];
+                            character = LDKF.stringPrototypeCharacterAt(head, length - (iterator -= 1) - 1);
 
                             // Logic > Update > Is Within Scope
                             if (character == '(' || character == '{' || character == '[') isWithinScope += 1;
@@ -1845,7 +1878,7 @@
                                     // Loop
                                     while (iterator != length) {
                                         // Initialization > Character
-                                        var character = parameter[iterator += 1];
+                                        var character = LDKF.stringPrototypeCharacterAt(parameter, iterator += 1);
 
                                         // Logic > [Break]
                                         if (character == '=') break;
@@ -1868,7 +1901,7 @@
                                     // Loop
                                     while (iterator != length) {
                                         // Initialization > Character
-                                        var character = parameter[iterator += 1];
+                                        var character = LDKF.stringPrototypeCharacterAt(parameter, iterator += 1);
 
                                         // Update > (Value | Allow Stream)
                                         allowStream ? value += character : ((character == '=') && (allowStream = true))
@@ -2005,7 +2038,7 @@
                                     "argv" in process &&
                                     typeof process == "object" && LDKF.toString(process) == "[object process]" &&
                                     typeof LDKF.objectPrototypeGet__Proto__(process) == "object"
-                                ) { var argv = process.argv; if (!!argv && typeof argv == "object" && LDKF.objectPrototypeConstructor(arg) === LDKF.objectPrototypeConstructor([])) return argv }
+                                ) { var argv = process.argv; if (!!argv && typeof argv == "object" && LDKF.isArray(argv)) return argv }
                             }
                         } catch (error) {}
 
@@ -2145,9 +2178,26 @@
                 };
 
             /* Objects */
+                // Evaluate
+                LapysDevelopmentKit.objects.eval = (function() {
+                    // Initialization > Method
+                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "eval");
+
+                    // Logic
+                    if (!LDKF.isVoid(method))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(method) == "eval" && LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error("`eval` function" + LDKI.messages.error.nativeToEnvironmentSuffix)
+                })();
+
+            /* Functions */
+                // Evaluate
+                LapysDevelopmentKit.functions.eval = function eval(source) { return LDKO.eval(source) };
+
+            /* Objects */
                 // Abort Error
                 LapysDevelopmentKit.objects.abortError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AbortError");
 
                     // Logic > Return
@@ -2156,7 +2206,7 @@
 
                 // Constraint Error
                 LapysDevelopmentKit.objects.constraintError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ConstraintError");
 
                     // Logic > Return
@@ -2165,7 +2215,7 @@
 
                 // Constraint Not Satisfied Error
                 LapysDevelopmentKit.objects.constraintNotSatisfiedError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ConstraintNotSatisfiedError");
 
                     // Logic > Return
@@ -2174,7 +2224,7 @@
 
                 // Data Error
                 LapysDevelopmentKit.objects.dataError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DataError");
 
                     // Logic > Return
@@ -2183,7 +2233,7 @@
 
                 // Data Clone Error
                 LapysDevelopmentKit.objects.dataCloneError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DataCloneError");
 
                     // Logic > Return
@@ -2192,7 +2242,7 @@
 
                 // Devices Not Found Error
                 LapysDevelopmentKit.objects.devicesNotFoundError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DevicesNotFoundError");
 
                     // Logic > Return
@@ -2201,7 +2251,7 @@
 
                 // DOM Error
                 LapysDevelopmentKit.objects.domError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMError");
 
                     // Logic
@@ -2213,7 +2263,7 @@
 
                 // DOM Exception
                 LapysDevelopmentKit.objects.domException = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "DOMException");
 
                     // Logic
@@ -2225,11 +2275,24 @@
 
                 // Encoding Error
                 LapysDevelopmentKit.objects.encodingError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "EncodingError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "EncodingError") == "EncodingError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
+                })();
+
+                // Type Error
+                LapysDevelopmentKit.objects.typeError = (function() {
+                    // Initialization > Constructor
+                    var constructor;
+
+                    // Error Handling > (...)
+                    try { undefined[""] }
+                    catch (error) { constructor = LDKF.objectPrototypeConstructor(error) }
+
+                    // Return
+                    return constructor
                 })();
 
                 // Error
@@ -2243,10 +2306,8 @@
                     // Logic
                     if (LDKC.is__Proto__Defined)
                         // Error Handling
-                        try {
-                            // (...)
-                            undefined[""]
-                        } catch (error) {
+                        try { throw new LDKO.typeError }
+                        catch (error) {
                             // Update > Object
                             constructor = LDKF.objectPrototypeConstructor(LDKF.objectPrototypeGet__Proto__(LDKF.objectPrototypeGet__Proto__(error)));
                             test() || (isStandard = false)
@@ -2268,10 +2329,12 @@
                     // Return
                     return constructor
                 })();
+                    // Prototype
+                    LapysDevelopmentKit.objects.errorPrototype = LDKF.objectPrototypeGet__Proto__(new LDKO.error);
 
                 // Evaluation Error
                 LapysDevelopmentKit.objects.evalError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "EvalError");
 
                     // Logic
@@ -2283,7 +2346,7 @@
 
                 // Hierarchy Request Error
                 LapysDevelopmentKit.objects.hierarchyRequestError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "HierarchyRequestError");
 
                     // Logic > Return
@@ -2292,16 +2355,16 @@
 
                 // Index Size Error
                 LapysDevelopmentKit.objects.indexSizeError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "IndexSizeError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "IndexSizeError") == "IndexSizeError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // Internal Error --- CHECKPOINT ---
+                // Internal Error
                 LapysDevelopmentKit.objects.internalError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor;
 
                     // Function > Test
@@ -2313,7 +2376,7 @@
 
                     // Logic
                     if (!test()) {
-                        // Update > Method
+                        // Update > Constructor
                         constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "InternalError");
 
                         // Logic > Return
@@ -2327,7 +2390,7 @@
 
                 // Invalid Access Error
                 LapysDevelopmentKit.objects.invalidAccessError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "InvalidAccessError");
 
                     // Logic > Return
@@ -2336,7 +2399,7 @@
 
                 // Invalid Character Error
                 LapysDevelopmentKit.objects.invalidCharacterError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "invalidCharacterError");
 
                     // Logic > Return
@@ -2345,7 +2408,7 @@
 
                 // Invalid Modification Error
                 LapysDevelopmentKit.objects.invalidModificationError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "InvalidModificationError");
 
                     // Logic > Return
@@ -2354,7 +2417,7 @@
 
                 // Invalid Node Type Error
                 LapysDevelopmentKit.objects.invalidNodeTypeError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "InvalidNodeTypeError");
 
                     // Logic > Return
@@ -2363,7 +2426,7 @@
 
                 // Invalid State Error
                 LapysDevelopmentKit.objects.invalidStateError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "InvalidStateError");
 
                     // Logic > Return
@@ -2372,7 +2435,7 @@
 
                 // Media Error
                 LapysDevelopmentKit.objects.mediaError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "MediaError");
 
                     // Logic
@@ -2384,7 +2447,7 @@
 
                 // Media Key Error
                 LapysDevelopmentKit.objects.mediaKeyError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "MediaKeyError");
 
                     // Logic > Return
@@ -2393,7 +2456,7 @@
 
                 // Media Stream Error
                 LapysDevelopmentKit.objects.mediaStreamError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "MediaStreamError");
 
                     // Logic > Return
@@ -2402,7 +2465,7 @@
 
                 // Microsoft Media Key Error
                 LapysDevelopmentKit.objects.msMediaKeyError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "MSMediaKeyError");
 
                     // Logic > Return
@@ -2411,7 +2474,7 @@
 
                 // Namespace Error
                 LapysDevelopmentKit.objects.namespaceError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NamespaceError");
 
                     // Logic > Return
@@ -2420,7 +2483,7 @@
 
                 // Navigator User Media Error
                 LapysDevelopmentKit.objects.navigatorUserMediaError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NavigatorUserMediaError");
 
                     // Logic > Return
@@ -2429,7 +2492,7 @@
 
                 // Network Error
                 LapysDevelopmentKit.objects.networkError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NetworkError");
 
                     // Logic > Return
@@ -2438,7 +2501,7 @@
 
                 // No Modification Allowed Error
                 LapysDevelopmentKit.objects.noModificationAllowedError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NoModificationAllowedError");
 
                     // Logic > Return
@@ -2447,7 +2510,7 @@
 
                 // Not Allowed Error
                 LapysDevelopmentKit.objects.notAllowedError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NotAllowedError");
 
                     // Logic > Return
@@ -2456,7 +2519,7 @@
 
                 // Not Found Error
                 LapysDevelopmentKit.objects.notFoundError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NotFoundError");
 
                     // Logic > Return
@@ -2465,7 +2528,7 @@
 
                 // Not Readable Error
                 LapysDevelopmentKit.objects.notReadableError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NotReadableError");
 
                     // Logic > Return
@@ -2474,7 +2537,7 @@
 
                 // Not Supported Error
                 LapysDevelopmentKit.objects.notSupportedError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "NotSupportedError");
 
                     // Logic > Return
@@ -2483,7 +2546,7 @@
 
                 // Operation Error
                 LapysDevelopmentKit.objects.operationError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "OperationError");
 
                     // Logic > Return
@@ -2493,7 +2556,7 @@
                 // Over-Constrained Error
                 // Permission Denied Error
                 LapysDevelopmentKit.objects.permissionDeniedError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "PermissionDeniedError");
 
                     // Logic > Return
@@ -2502,29 +2565,80 @@
 
                 // Quota Exceeded Error
                 LapysDevelopmentKit.objects.quotaExceededError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "QuotaExceededError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "QuotaExceededError") == "QuotaExceededError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // Range Error --- CHECKPOINT ---
+                // Range Error
+                LapysDevelopmentKit.objects.rangeError = (function() {
+                    // Initialization > Constructor
+                    var constructor;
+
+                    // Function > Test
+                    function test() { return (LDKF.functionPrototypeGetName(constructor) || "RangeError") == "RangeError" && LDKF.functionPrototypeIsNative(constructor) }
+
+                    // Error Handling > (...)
+                    try { (function RangeError(){RangeError()})() }
+                    catch (error) { constructor = LDKF.objectPrototypeConstructor(error) }
+
+                    // Logic
+                    if (!test()) {
+                        // Update > Constructor
+                        constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "RangeError");
+
+                        // Logic > Return
+                        if (test()) return constructor;
+                        else return
+                    }
+
+                    // Return
+                    return constructor
+                })();
 
                 // Read-Only Error
                 LapysDevelopmentKit.objects.readOnlyError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ReadOnlyError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "ReadOnlyError") == "ReadOnlyError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // Reference Error --- CHECKPOINT ---
+                // Reference Error
+                LapysDevelopmentKit.objects.referenceError = (function() {
+                    // Initialization > (Constructor, Variable Name)
+                    var constructor, variableName = 'a';
+
+                    // Function > Test
+                    function test() { return constructor !== LDKO.typeError && (LDKF.functionPrototypeGetName(constructor) || "ReferenceError") == "ReferenceError" && LDKF.functionPrototypeIsNative(constructor) }
+
+                    // Loop > Update > Variable Name
+                    while (LDKF.objectPrototypeHasProperty(GLOBAL, variableName)) variableName += 'a';
+
+                    // Error Handling > (...)
+                    try { LDKF.eval(variableName) }
+                    catch (error) { constructor = LDKF.objectPrototypeConstructor(error) }
+
+                    // Logic
+                    if (!test()) {
+                        // Update > Constructor
+                        constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ReferenceError");
+
+                        // Logic > Return
+                        if (test()) return constructor;
+                        else return
+                    }
+
+                    // Return
+                    return constructor
+                })();
 
                 // Security Error
                 LapysDevelopmentKit.objects.securityError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "SecurityError");
 
                     // Logic > Return
@@ -2533,17 +2647,29 @@
 
                 // Speech Recognition Error
                 LapysDevelopmentKit.objects.speechRecognitionError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "SpeechRecognitionError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "SpeechRecognitionError") == "SpeechRecognitionError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // Syntax Error --- CHECKPOINT ---
+                // Syntax Error
+                LapysDevelopmentKit.objects.syntaxError = (function() {
+                    // Initialization > Constructor
+                    var constructor;
+
+                    // Error Handling > (...)
+                    try { LDKF.eval('(') }
+                    catch (error) { constructor = LDKF.objectPrototypeConstructor(error) }
+
+                    // Return
+                    return constructor
+                })();
+
                 // Timeout Error
                 LapysDevelopmentKit.objects.timeoutError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "TimeoutError");
 
                     // Logic > Return
@@ -2552,7 +2678,7 @@
 
                 // Track Start Error
                 LapysDevelopmentKit.objects.trackStartError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "TrackStartError");
 
                     // Logic > Return
@@ -2561,17 +2687,16 @@
 
                 // Transaction Inactive Error
                 LapysDevelopmentKit.objects.transactionInactiveError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "TransactionInactiveError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "TransactionInactiveError") == "TransactionInactiveError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // Type Error --- CHECKPOINT ---
                 // Type Mismatch Error
                 LapysDevelopmentKit.objects.typeMismatchError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "TypeMismatchError");
 
                     // Logic > Return
@@ -2580,17 +2705,25 @@
 
                 // Unknown Error
                 LapysDevelopmentKit.objects.unknownError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "UnknownError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "UnknownError") == "UnknownError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // URL Error --- CHECKPOINT --
+                // URL Error
+                LapysDevelopmentKit.objects.evalError = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "URLError");
+
+                    // Logic > Return
+                    if ((LDKF.functionPrototypeGetName(constructor) || "URLError") == "URLError" && ((function(stream) { return stream == "URLError" || stream == "[object Error]" })(LDKF.functionPrototypeToSourceString(constructor)) || LDKF.functionPrototypeIsNative(constructor))) return constructor;
+                })();
+
                 // URL Mismatch Error
                 LapysDevelopmentKit.objects.urlMismatchError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "URLMismatchError");
 
                     // Logic > Return
@@ -2599,7 +2732,7 @@
 
                 // Version Error
                 LapysDevelopmentKit.objects.versionError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "VersionError");
 
                     // Logic > Return
@@ -2608,7 +2741,7 @@
 
                 // Webkit Speech Recognition Error
                 LapysDevelopmentKit.objects.webkitSpeechRecognitionError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "webkitSpeechRecognitionError");
 
                     // Logic > Return
@@ -2617,12 +2750,71 @@
 
                 // Wrong Document Error
                 LapysDevelopmentKit.objects.wrongDocumentError = (function() {
-                    // Initialization > Method
+                    // Initialization > Constructor
                     var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "WrongDocumentError");
 
                     // Logic > Return
                     if ((LDKF.functionPrototypeGetName(constructor) || "WrongDocumentError") == "WrongDocumentError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
+
+        /* Constants */
+            // Has Class Keyword
+            LapysDevelopmentKit.constants.hasClassKeyword = (function() {
+                // Initialization > Has Class Keyword
+                var hasClassKeyword = true;
+
+                // Error Handling > (...)
+                try { LDKO.eval("(class {})") }
+                catch (error) { hasClassKeyword = false }
+
+                // Return
+                return hasClassKeyword
+            })();
+
+        /* Data */
+            // LapysJS Error
+            window.LapysJSError =
+            LapysDevelopmentKit.data.lapysJSError = (function() {
+                // Initialization > Constructor
+                var constructor = LapysDevelopmentKit.constants.hasClassKeyword ?
+                    function LapysJSError(message, stack) {
+                        // Return
+                        return new (
+                            LDKO.eval("(function() {" +
+                                "return class LapysJSError extends Error {" +
+                                    "constructor(message, stack) {" +
+                                        "var length = arguments.length;" +
+                                        "(length ? (length == 1 ? super(message) : super(message, stack)) : super());" +
+                                        "Error.captureStackTrace(this, LapysJSError)" +
+                                    "}" +
+                                "}" +
+                            "})()")
+                        )
+                    } :
+                    function LapysJSError(message, stack) {
+                        // Initialization > (Constructor, LapysJS Error)
+                        var constructor = function LapysJSError() { return LDKO.error.apply(LDKO, arguments) }, lapysJSError;
+
+                        // Error Handling > Update > LapysJS Error
+                        try { lapysJSError = new constructor.apply(this, arguments) }
+                        catch (error) { lapysJSError = constructor.apply(this, arguments) }
+
+                        // Modification > LapysJS Error > __Prototype__
+                        LDKF.objectPrototypeSet__Proto__(lapysJSError, LDKO.errorPrototype);
+
+                        // Return
+                        return lapysJSError
+                    };
+
+                // Return
+                return function LapysJSError(message, stack) {
+                    // Initialization > Length
+                    var length = LDKF.getArgumentsLength(arguments);
+
+                    // Return
+                    return length ? (length == 1 ? new constructor(message) : new constructor(message, stack)) : new constructor
+                }
+            })();
 
     /* Function */
         // Initiate

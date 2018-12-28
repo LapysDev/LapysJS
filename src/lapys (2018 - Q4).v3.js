@@ -2486,7 +2486,7 @@
 
                         // Loop > Update > Variable Name
                         while (LDKF.objectPrototypeHasProperty(GLOBAL_MAIN[variableName]))
-                            variableName += ' ';
+                            variableName += 'a';
 
                         // Error Handling
                         try { LDKF.eval(variableName) }
