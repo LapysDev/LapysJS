@@ -2878,6 +2878,14 @@
                 })();
 
                 // Over-Constrained Error
+                LapysDevelopmentKit.objects.overConstrainedError = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "OverconstrainedError");
+
+                    // Logic > Return
+                    if ((LDKF.functionPrototypeGetName(constructor) || "OverconstrainedError") == "OverconstrainedError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
+                })();
+
                 // Permission Denied Error
                 LapysDevelopmentKit.objects.permissionDeniedError = (function() {
                     // Initialization > Constructor
@@ -3036,13 +3044,13 @@
                     if ((LDKF.functionPrototypeGetName(constructor) || "UnknownError") == "UnknownError" && LDKF.functionPrototypeIsNative(constructor)) return constructor
                 })();
 
-                // URL Error
-                LapysDevelopmentKit.objects.evalError = (function() {
+                // URI Error
+                LapysDevelopmentKit.objects.uriError = (function() {
                     // Initialization > Constructor
-                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "URLError");
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "URIError");
 
                     // Logic > Return
-                    if ((LDKF.functionPrototypeGetName(constructor) || "URLError") == "URLError" && ((function(stream) { return stream == "URLError" || stream == "[object Error]" })(LDKF.functionPrototypeToSourceString(constructor)) || LDKF.functionPrototypeIsNative(constructor))) return constructor;
+                    if ((LDKF.functionPrototypeGetName(constructor) || "URIError") == "URIError" && ((function(stream) { return stream == "URLError" || stream == "[object Error]" })(LDKF.functionPrototypeToSourceString(constructor)) || LDKF.functionPrototypeIsNative(constructor))) return constructor
                 })();
 
                 // URL Mismatch Error
@@ -3131,6 +3139,10 @@
                         // Capture Stack Trace
                         LapysJS.tmp.errorCaptureStackTrace = LDKO.errorCaptureStackTrace;
 
+                    // Function > Prototype
+                        // Is Native
+                        LapysJS.tmp.functionPrototypeIsNative = LDKF.functionPrototypeIsNative;
+
         /* Lapys Development Kit */
             /* Data */
                 // LapysJS Error
@@ -3142,7 +3154,7 @@
                                 "constructor(message, stack) {" +
                                     "var length = arguments.length;" +
                                     "(length ? (length == 1 ? super(message) : super(message, stack)) : super());" +
-                                    "LapysJS.tmp.errorCaptureStackTrace(this, LapysJSError)" +
+                                    "(typeof LapysJS.tmp.errorCaptureStackTrace == \"function\" && LapysJS.tmp.functionPrototypeIsNative(LapysJS.tmp.errorCaptureStackTrace)) && LapysJS.tmp.errorCaptureStackTrace(this, LapysJSError)" +
                                 "}" +
                             "}" +
                         "})()") :
@@ -3168,10 +3180,434 @@
                 // LapysJS Promise
                 // LapysJS Safe Number
 
+            /* Functions */
+                // Error > Prototype
+                    // Set Message
+                    LapysDevelopmentKit.functions.errorPrototypeSetMessage = function errorPrototypeSetMessage(error, message) {
+                        // Initialization > Former Message
+                        var formerMessage = {
+                            // Description
+                            description: LDKF.objectPrototypeHasProperty(error, "description") ? LDKF.objectPrototypeGetProperty(error, "description") : null,
+
+                            // Message
+                            message: LDKF.objectPrototypeHasProperty(error, "message") ? LDKF.objectPrototypeGetProperty(error, "message") : null
+                        };
+
+                        // Logic
+                        if (!LDKF.isNull(formerMessage.description)) {
+                            // Modification > Error > Description
+                            LDKF.objectPrototypeSetProperty(error, "description", message);
+                            (formerMessage.description === LDKF.objectPrototypeGetProperty(error, "description")) || LDKF.objectDefineProperty(error, "description", {configurable: true, enumerable: true, value: message, writable: true})
+                        }
+
+                        // Logic
+                        if (!LDKF.isNull(formerMessage.message)) {
+                            // Modification > Error > Message
+                            LDKF.objectPrototypeSetProperty(error, "message", message);
+                            (formerMessage.message === LDKF.objectPrototypeGetProperty(error, "message")) || LDKF.objectDefineProperty(error, "message", {configurable: true, enumerable: true, value: message, writable: true})
+                        }
+
+                        // Return
+                        return message
+                    };
+
+                // Throw Abort Error
+                LapysDevelopmentKit.functions.throwAbortError = function throwAbortError(message) {
+                    // Error Handling
+                    try { throw new LDKO.abortError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Constraint Error
+                LapysDevelopmentKit.functions.throwConstraintError = function throwConstraintError(message) {
+                    // Error Handling
+                    try { throw new LDKO.constraintError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Constraint Not Satisfied Error
+                LapysDevelopmentKit.functions.throwConstraintNotSatisfiedError = function throwConstraintNotSatisfiedError(message) {
+                    // Error Handling
+                    try { throw new LDKO.constraintNotSatisfiedError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Data Error
+                LapysDevelopmentKit.functions.throwDataError = function throwDataError(message) {
+                    // Error Handling
+                    try { throw new LDKO.dataError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Data Clone Error
+                LapysDevelopmentKit.functions.throwDataCloneError = function throwDataCloneError(message) {
+                    // Error Handling
+                    try { throw new LDKO.dataCloneError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Devices Not Found Error
+                LapysDevelopmentKit.functions.throwDevicesNotFoundError = function throwDevicesNotFoundError(message) {
+                    // Error Handling
+                    try { throw new LDKO.devicesNotFoundError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw DOM Error
+                LapysDevelopmentKit.functions.throwDOMError = function throwDOMError(message) {
+                    // Error Handling
+                    try { throw new LDKO.domError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw DOM Exception
+                LapysDevelopmentKit.functions.throwDOMException = function throwDOMException(message) {
+                    // Error Handling
+                    try { throw new LDKO.domException }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Encoding Error
+                LapysDevelopmentKit.functions.throwEncodingError = function throwEncodingError(message) {
+                    // Error Handling
+                    try { throw new LDKO.encodingError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Error
+                LapysDevelopmentKit.functions.throwError = function throwError(message) {
+                    // Error Handling
+                    try { throw new LDKO.error }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Evaluation Error
+                LapysDevelopmentKit.functions.throwEvalError = function throwEvalError(message) {
+                    // Error Handling
+                    try { throw new LDKO.evalError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Hierarchy Request Error
+                LapysDevelopmentKit.functions.throwHierarchyRequestError = function throwHierarchyRequestError(message) {
+                    // Error Handling
+                    try { throw new LDKO.hierarchyRequestError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Index Size Error
+                LapysDevelopmentKit.functions.throwIndexSizeError = function throwIndexSizeError(message) {
+                    // Error Handling
+                    try { throw new LDKO.indexSizeError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Internal Error
+                LapysDevelopmentKit.functions.throwInternalError = function throwInternalError(message) {
+                    // Error Handling
+                    try { throw new LDKO.internalError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Invalid Access Error
+                LapysDevelopmentKit.functions.throwInvalidAccessError = function throwInvalidAccessError(message) {
+                    // Error Handling
+                    try { throw new LDKO.invalidAccessError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Invalid Character Error
+                LapysDevelopmentKit.functions.throwInvalidCharacterError = function throwInvalidCharacterError(message) {
+                    // Error Handling
+                    try { throw new LDKO.invalidCharacterError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Invalid Modification Error
+                LapysDevelopmentKit.functions.throwInvalidModificationError = function throwInvalidModificationError(message) {
+                    // Error Handling
+                    try { throw new LDKO.invalidModificationError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Invalid Node Type Error
+                LapysDevelopmentKit.functions.throwInvalidNodeTypeError = function throwInvalidNodeTypeError(message) {
+                    // Error Handling
+                    try { throw new LDKO.invalidNodeTypeError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Invalid State Error
+                LapysDevelopmentKit.functions.throwInvalidStateError = function throwInvalidStateError(message) {
+                    // Error Handling
+                    try { throw new LDKO.invalidStateError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Media Error
+                LapysDevelopmentKit.functions.throwMediaError = function throwMediaError(message) {
+                    // Error Handling
+                    try { throw new LDKO.mediaError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Media Key Error
+                LapysDevelopmentKit.functions.throwMediaKeyError = function throwMediaKeyError(message) {
+                    // Error Handling
+                    try { throw new LDKO.mediaKeyError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Media Stream Error
+                LapysDevelopmentKit.functions.throwMediaStreamError = function throwMediaStreamError(message) {
+                    // Error Handling
+                    try { throw new LDKO.mediaStreamError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Microsoft Media Key Error
+                LapysDevelopmentKit.functions.throwMsMediaKeyError = function throwMsMediaKeyError(message) {
+                    // Error Handling
+                    try { throw new LDKO.msMediaKeyError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Namespace Error
+                LapysDevelopmentKit.functions.throwNamespaceError = function throwNamespaceError(message) {
+                    // Error Handling
+                    try { throw new LDKO.namespaceError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Navigator User Media Error
+                LapysDevelopmentKit.functions.throwNavigatorUserMediaError = function throwNavigatorUserMediaError(message) {
+                    // Error Handling
+                    try { throw new LDKO.navigatorUserMediaError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Network Error
+                LapysDevelopmentKit.functions.throwNetworkError = function throwNetworkError(message) {
+                    // Error Handling
+                    try { throw new LDKO.networkError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw No Modification Allowed Error
+                LapysDevelopmentKit.functions.throwNoModificationAllowedError = function throwNoModificationAllowedError(message) {
+                    // Error Handling
+                    try { throw new LDKO.noModificationAllowedError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Not Allowed Error
+                LapysDevelopmentKit.functions.throwNotAllowedError = function throwNotAllowedError(message) {
+                    // Error Handling
+                    try { throw new LDKO.notAllowedError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Not Found Error
+                LapysDevelopmentKit.functions.throwNotFoundError = function throwNotFoundError(message) {
+                    // Error Handling
+                    try { throw new LDKO.notFoundError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Not Readable Error
+                LapysDevelopmentKit.functions.throwNotReadableError = function throwNotReadableError(message) {
+                    // Error Handling
+                    try { throw new LDKO.notReadableError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Not Supported Error
+                LapysDevelopmentKit.functions.throwNotSupportedError = function throwNotSupportedError(message) {
+                    // Error Handling
+                    try { throw new LDKO.notReadableError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Operation Error
+                LapysDevelopmentKit.functions.throwOperationError = function throwOperationError(message) {
+                    // Error Handling
+                    try { throw new LDKO.operationError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Over-Constrained Error
+                LapysDevelopmentKit.functions.throwOverConstrainedError = function throwOverConstrainedError(message) {
+                    // Error Handling
+                    try { throw new LDKO.overConstrainedError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Permission Denied Error
+                LapysDevelopmentKit.functions.throwPermissionDeniedError = function throwPermissionDeniedError(message) {
+                    // Error Handling
+                    try { throw new LDKO.permissionDeniedError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Quota Exceeded Error
+                LapysDevelopmentKit.functions.throwQuotaExceededError = function throwQuotaExceededError(message) {
+                    // Error Handling
+                    try { throw new LDKO.quotaExceededError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Range Error
+                LapysDevelopmentKit.functions.throwRangeError = function throwRangeError(message) {
+                    // Error Handling
+                    try { throw new LDKO.rangeError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Read-Only Error
+                LapysDevelopmentKit.functions.throwReadOnlyError = function throwReadOnlyError(message) {
+                    // Error Handling
+                    try { throw new LDKO.readOnlyError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Range Error
+                LapysDevelopmentKit.functions.throwRangeError = function throwRangeError(message) {
+                    // Error Handling
+                    try { throw new LDKO.rangeError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Reference Error
+                LapysDevelopmentKit.functions.throwReferenceError = function throwReferenceError(message) {
+                    // Error Handling
+                    try { throw new LDKO.referenceError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Security Error
+                LapysDevelopmentKit.functions.throwSecurityError = function throwSecurityError(message) {
+                    // Error Handling
+                    try { throw new LDKO.securityError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Speech Recognition Error
+                LapysDevelopmentKit.functions.throwSpeechRecognitionError = function throwSpeechRecognitionError(message) {
+                    // Error Handling
+                    try { throw new LDKO.rangeError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Syntax Error
+                LapysDevelopmentKit.functions.throwSyntaxError = function throwSyntaxError(message) {
+                    // Error Handling
+                    try { throw new LDKO.syntaxError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Timeout Error
+                LapysDevelopmentKit.functions.throwTimeoutError = function throwTimeoutError(message) {
+                    // Error Handling
+                    try { throw new LDKO.timeoutError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Track Start Error
+                LapysDevelopmentKit.functions.throwTrackStartError = function throwTrackStartError(message) {
+                    // Error Handling
+                    try { throw new LDKO.trackStartError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Transaction Inactive Error
+                LapysDevelopmentKit.functions.throwTransactionInactiveError = function throwTransactionInactiveError(message) {
+                    // Error Handling
+                    try { throw new LDKO.transactionInactiveError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Type Error
+                LapysDevelopmentKit.functions.throwTypeError = function throwTypeError(message) {
+                    // Error Handling
+                    try { throw new LDKO.typeError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Type Mismatch Error
+                LapysDevelopmentKit.functions.throwTypeMismatchError = function throwTypeMismatchError(message) {
+                    // Error Handling
+                    try { throw new LDKO.typeMismatchError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Unknown Error
+                LapysDevelopmentKit.functions.throwUnknownError = function throwUnknownError(message) {
+                    // Error Handling
+                    try { throw new LDKO.unknownError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw URI Error
+                LapysDevelopmentKit.functions.throwURIError = function throwURIError(message) {
+                    // Error Handling
+                    try { throw new LDKO.uriError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw URL Mismatch Error
+                LapysDevelopmentKit.functions.throwURLMismatchError = function throwURLMismatchError(message) {
+                    // Error Handling
+                    try { throw new LDKO.rangeError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Version Error
+                LapysDevelopmentKit.functions.throwVersionError = function throwVersionError(message) {
+                    // Error Handling
+                    try { throw new LDKO.versionError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Webkit Speech Recognition Error
+                LapysDevelopmentKit.functions.throwWebkitSpeechRecognitionError = function throwWebkitSpeechRecognitionError(message) {
+                    // Error Handling
+                    try { throw new LDKO.webkitSpeechRecognitionError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
+                // Throw Wrong Document Error
+                LapysDevelopmentKit.functions.throwWrongDocumentError = function throwWrongDocumentError(message) {
+                    // Error Handling
+                    try { throw new LDKO.versionError }
+                    catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
+                };
+
             /* Objects */
                 // Analyser Node
+                LapysDevelopmentKit.objects.analyserNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AnalyserNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AnalyserNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AnalyserNode` constructor")
+                })();
+
                 // Animation Event
-                // Application Cache Error Event
+                LapysDevelopmentKit.objects.animationEvent = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AnimationEvent");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AnimationEvent" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AnimationEvent` constructor")
+                })();
+
+                // Application Cache Error Event --- CHECKPOINT ---
                 // Attribute
                 // Audio Buffer Source Node
                 // Audio Destination Node
