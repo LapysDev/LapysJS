@@ -913,7 +913,7 @@
                     };
 
                     // Is Alphabet
-                    LapysDevelopmentKit.functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(character) { return character == 'a' || character == 'A' || character == 'b' || character == 'B' || character == 'c' || character == 'C' || character == 'd' || character == 'D' || character == 'e' || character == 'E' || character == 'f' || character == 'F' || character == 'g' || character == 'G' || character == 'h' || character == 'H' || character == 'i' || character == 'I' || character == 'j' || character == 'J' || character == 'k' || character == 'K' || character == 'l' || character == 'L' || character == 'm' || character == 'M' || character == 'n' || character == 'N' || character == 'o' || character == 'O' || character == 'p' || character == 'P' || character == 'q' || character == 'Q' || character == 'r' || character == 'R' || character == 's' || character == 'S' || character == 't' || character == 'T' || character == 'u' || character ==' U' || character == 'v' || character == 'V' || character == 'w' || character == 'W' || character == 'x' || character == 'X' || character == 'y' || character == 'Y' || character == 'z' || character == 'Z' };
+                    LapysDevelopmentKit.functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(character) { return character == 'a' || character == 'A' || character == 'b' || character == 'B' || character == 'c' || character == 'C' || character == 'd' || character == 'D' || character == 'e' || character == 'E' || character == 'f' || character == 'F' || character == 'g' || character == 'G' || character == 'h' || character == 'H' || character == 'i' || character == 'I' || character == 'j' || character == 'J' || character == 'k' || character == 'K' || character == 'l' || character == 'L' || character == 'm' || character == 'M' || character == 'n' || character == 'N' || character == 'o' || character == 'O' || character == 'p' || character == 'P' || character == 'q' || character == 'Q' || character == 'r' || character == 'R' || character == 's' || character == 'S' || character == 't' || character == 'T' || character == 'u' || character == 'U' || character == 'v' || character == 'V' || character == 'w' || character == 'W' || character == 'x' || character == 'X' || character == 'y' || character == 'Y' || character == 'z' || character == 'Z' };
 
                     // Is Digit
                     LapysDevelopmentKit.functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(character) { return character === '0' || character === '1' || character === '2' || character === '3' || character === '4' || character === '5' || character === '6' || character === '7' || character === '8' || character === '9' };
@@ -2009,18 +2009,24 @@
                             case "arrow":
                                 // (...)
                                 return "";
+
+                                // [Break]
                                 break;
 
                             // Class
                             case "class":
                                 // (...)
                                 var iterator = 6; while (LDKF.stringPrototypeCharacterAt(source, iterator) == '_' || LDKF.stringPrototypeCharacterAt(source, iterator) == '$' || LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, iterator))) stream += LDKF.stringPrototypeCharacterAt(source, (iterator += 1) - 1); return stream;
+
+                                // [Break]
                                 break;
 
                             // Default
                             case "default":
                                 // (...)
                                 var iterator = 9; while (LDKF.stringPrototypeCharacterAt(source, iterator) == '_' || LDKF.stringPrototypeCharacterAt(source, iterator) == '$' || LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, iterator))) stream += LDKF.stringPrototypeCharacterAt(source, (iterator += 1) - 1); return stream;
+
+                                // [Break]
                                 break;
 
                             // Generator
@@ -3603,26 +3609,209 @@
                     // Logic
                     if (!LDKF.isVoid(constructor))
                         // Logic > (...)
-                        if (LDKF.functionPrototypeGetName(constructor) == "AnimationEvent" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        if ((LDKF.functionPrototypeGetName(constructor) || "AnimationEvent") == "AnimationEvent" && (LDKF.toString(constructor) == "[object AnimationEvent]" || LDKF.functionPrototypeIsNative(constructor))) return constructor;
                         else LDKF.error.nativeToEnvironment("`AnimationEvent` constructor")
                 })();
 
-                // Application Cache Error Event --- CHECKPOINT ---
+                // Application Cache Error Event
+                LapysDevelopmentKit.objects.applicationCacheErrorEvent = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ApplicationCacheErrorEvent");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "ApplicationCacheErrorEvent" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`ApplicationCacheErrorEvent` constructor")
+                })();
+
                 // Attribute
+                LapysDevelopmentKit.objects.attr = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "Attr");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (
+                            (LDKF.toString(constructor) == "[object Attr]" && typeof constructor == "object") ||
+                            (LDKF.functionPrototypeGetName(constructor) == "Attr" && LDKF.functionPrototypeIsNative(constructor))
+                        ) return constructor;
+                        else LDKF.error.nativeToEnvironment("`Attr` constructor")
+                })();
+
                 // Audio Buffer Source Node
+                LapysDevelopmentKit.objects.audioBufferSourceNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AudioBufferSourceNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AudioBufferSourceNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AudioBufferSourceNode` constructor")
+                })();
+
                 // Audio Destination Node
+                LapysDevelopmentKit.objects.audioDestinationNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AudioDestinationNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AudioDestinationNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AudioDestinationNode` constructor")
+                })();
+
                 // Audio Node
+                LapysDevelopmentKit.objects.audioNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AudioNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AudioNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AudioNode` constructor")
+                })();
+
                 // Audio Processing Event
+                LapysDevelopmentKit.objects.audioProcessingEvent = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AudioProcessingEvent");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AudioProcessingEvent" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AudioProcessingEvent` constructor")
+                })();
+
                 // Audio Scheduled Source Node
+                LapysDevelopmentKit.objects.audioScheduledSourceNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AudioScheduledSourceNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AudioScheduledSourceNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AudioScheduledSourceNode` constructor")
+                })();
+
                 // Audio Worklet Node
+                LapysDevelopmentKit.objects.audioWorkletNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "AudioWorkletNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "AudioWorkletNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`AudioWorkletNode` constructor")
+                })();
+
                 // Before Install Prompt Event
+                LapysDevelopmentKit.objects.beforeInstallPromptEvent = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "BeforeInstallPromptEvent");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "BeforeInstallPromptEvent" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`BeforeInstallPromptEvent` constructor")
+                })();
+
                 // Before Unload Event
+                LapysDevelopmentKit.objects.beforeUnloadEvent = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "BeforeUnloadEvent");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (
+                            (LDKF.toString(constructor) == "[object BeforeUnloadEvent]" && typeof constructor == "object") ||
+                            (LDKF.functionPrototypeGetName(constructor) == "BeforeUnloadEvent" && LDKF.functionPrototypeIsNative(constructor))
+                        ) return constructor;
+                        else LDKF.error.nativeToEnvironment("`BeforeUnloadEvent` constructor")
+                })();
+
                 // Bi-quad Filter Node
+                LapysDevelopmentKit.objects.biquadFilterNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "BiquadFilterNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "BiquadFilterNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`BiquadFilterNode` constructor")
+                })();
+
                 // Blob Event
+                LapysDevelopmentKit.objects.blobEvent = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "BlobEvent");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "BlobEvent" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`BlobEvent` constructor")
+                })();
+
                 // Character Data
+                LapysDevelopmentKit.objects.characterData = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "CharacterData");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (
+                            (LDKF.toString(constructor) == "[object CharacterData]" && typeof constructor == "object") ||
+                            (LDKF.functionPrototypeGetName(constructor) == "CharacterData" && LDKF.functionPrototypeIsNative(constructor))
+                        ) return constructor;
+                        else LDKF.error.nativeToEnvironment("`CharacterData` constructor")
+                })();
+
                 // Channel Merger Node
+                LapysDevelopmentKit.objects.characterMergerNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "CharacterMergerNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "CharacterMergerNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`CharacterMergerNode` constructor")
+                })();
+
                 // Channel Splitter Node
-                // Clear Timeout
+                LapysDevelopmentKit.objects.channelSplitterNode = (function() {
+                    // Initialization > Constructor
+                    var constructor = LDKF.objectPrototypeGetProperty(GLOBAL, "ChannelSplitterNode");
+
+                    // Logic
+                    if (!LDKF.isVoid(constructor))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(constructor) == "ChannelSplitterNode" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
+                        else LDKF.error.nativeToEnvironment("`ChannelSplitterNode` constructor")
+                })();
+
+                // Clear Timeout --- CHECKPOINT ---
+                LapysDevelopmentKit.objects.clearTimeout = (function() {
+                    // Initialization > Method
+                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "clearTimeout");
+
+                    // Logic > (...)
+                    if (LDKF.functionPrototypeGetName(method) == "clearTimeout" || LDKF.functionPrototypeIsNative(method)) return method;
+                    else LDKF.error.nativeToEnvironment("`clearTimeout` function")
+                })();
+
                 // Clipboard Event
                 // Close Event
                 // Composition Event
