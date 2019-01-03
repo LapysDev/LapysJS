@@ -12,12 +12,16 @@
                 - components
                     -- Accordion
                     -- Carousel
+                    -- Draggable
                     -- Dropdown
+                    -- Dynamic Text
+                    -- Dynamic Time
                     -- Marquee
                     -- Media
                         --- Audio
                         --- Video
                     -- Picture-in-Picture
+                    -- Scrollbar
                     -- Toast
                     -- Tooltip
                     -- Table
@@ -294,6 +298,18 @@
                         LapysDevelopmentKit.information.messages.error.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
 
             /* Test */
+                // Arguments to Console Stream
+                LapysDevelopmentKit.test.argumentsToConsoleStream = function argumentsToConsoleStream() {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = LDKF.getArgumentsLength(arguments), length = iterator, stream = "";
+
+                    // Loop > Update > Stream
+                    while (iterator) stream += LDKF.toString(arguments[length - (iterator -= 1) - 1]) + (iterator ? ' ' : "");
+
+                    // Return
+                    return stream
+                };
+
                 // Environment Vendor Is --- NOTE (Lapys) -> Test that the specified vendor is currently existing.
                 LapysDevelopmentKit.test.environmentVendorIs = function environmentVendorIs(vendor) {
                     // Initialization > Iterator
@@ -339,13 +355,22 @@
                         })()
                 };
 
+                // Is Constructible Object
+                LapysDevelopmentKit.test.isConstructibleObject = function isConstructibleObject(arg, constructor, prototype, STRICT) {
+                    // Return
+                    return (STRICT ? true : typeof arg == "object") && LDKF.isConstructible(arg) && (
+                        (LDKF.objectPrototypeConstructor(arg) === constructor && LDKF.objectPrototypePrototype(arg) === prototype) ||
+                        arg instanceof constructor
+                    )
+                };
+
                 // Is Native Constructor
                 LapysDevelopmentKit.test.isNativeConstructor = function isNativeConstructor(constructor, constructorName, STRICT) {
                     // Logic
                     if (!LDKF.isVoid(constructor))
                         // Logic > (...)
                         if (
-                            (STRICT ? (LDKF.toString(constructor) == "[object " + constructorName + ']' && typeof constructor == "object") : false) ||
+                            (STRICT ? ((function(stream) { return stream == "[object " + constructorName + ']' || stream == "[object " + constructorName + "Constructor]" })(LDKF.toString(constructor))  && typeof constructor == "object") : false) ||
                             (LDKF.functionPrototypeGetName(constructor) == constructorName && LDKF.functionPrototypeIsNative(constructor))
                         ) return true;
                         else LDKF.error.nativeToEnvironment('`' + constructorName + "` constructor");
@@ -369,6 +394,14 @@
                     return false
                 };
 
+                // Is Strictly Constructible Object
+                LapysDevelopmentKit.test.isStrictlyConstructibleObject = function isStrictlyConstructibleObject(arg, constructor, prototype, STRICT) {
+                    // Return
+                    return (STRICT ? true : typeof arg == "object") && LDKF.isConstructible(arg) && (
+                        (LDKF.objectPrototypeConstructor(arg) === constructor && LDKF.objectPrototypePrototype(arg) === prototype)
+                    )
+                };
+
                 // Throw Error --- WARN (Lapys) -> Defer to `LapysDevelopmentKit.functions.error` instead.
                 LapysDevelopmentKit.test.throwError = function throwError(message) { throw (LDKI.messages.debugging.prefix + message + LDKI.messages.debugging.suffix) };
 
@@ -376,6 +409,8 @@
                         --- NOTE ---
                             #Lapys: Crude version of `LapysDevelopmentKit.functions.functionPrototypeIsNative`
                                 for testing `Function.prototype.apply` and `Function.prototype.call` to be native methods.
+
+                                - Defer to `LapysDevelopmentKit.functions.functionPrototypeIsNative` instead.
                 */
                 LapysDevelopmentKit.test.methodIsStandard = function methodIsStandard(method, methodName, methodNameLength) {
                     // Initialization > (...) --- NOTE (Lapys) -> Constant error codes.
@@ -576,6 +611,12 @@
 
                     // Is Negative
                     LapysDevelopmentKit.functions.numberPrototypeIsNegative = function numberPrototypeIsNegative(number) { return number < 0 || LDKF.numberPrototypeIsNegativeZero(number) };
+
+                    // Is Negative Infinity
+                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeInfinity = function numberPrototypeIsNegativeInfinity(number) { return LDKF.numberPrototypeIsInfinite(number) && LDKF.numberPrototypeIsNegative(number) };
+
+                    // Is Negative Integer
+                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeInteger = function numberPrototypeIsNegativeInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsNegative(number) };
 
                     // Is Negative Zero
                     LapysDevelopmentKit.functions.numberPrototypeIsNegativeZero = function numberPrototypeIsNegativeZero(number) { return LDKF.objectIs(number, -0) };
@@ -1662,6 +1703,24 @@
                         return method
                     })();
 
+                    // Get Own Property Symbols
+                    LapysDevelopmentKit.objects.objectGetOwnPropertySymbols = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertySymbols")) {
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertySymbols");
+
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.getOwnPropertySymbols` method")
+                        }
+
+                        // Return
+                        return method
+                    })();
+
                     // Get Prototype Of --- CITE (Lapys) -> `https://gist.github.com/subtleGradient/1052392`.
                     LapysDevelopmentKit.objects.objectGetPrototypeOf = (function() {
                         // Initialization > Method
@@ -1795,6 +1854,9 @@
 
                     // Get Own Property Names
                     LapysDevelopmentKit.functions.objectGetOwnPropertyNames = function objectGetOwnPropertyNames(object) { return LDKO.objectGetOwnPropertyNames(object) };
+
+                    // Get Own Property Symbols
+                    LapysDevelopmentKit.functions.objectGetOwnPropertySymbols = function objectGetOwnPropertySymbols(object) { return LDKO.objectGetOwnPropertySymbols(object) };
 
                     // Get Prototype Of
                     LapysDevelopmentKit.functions.objectGetPrototypeOf = function objectGetPrototypeOf(object) { return LDKO.objectGetPrototypeOf(object) };
@@ -2535,12 +2597,16 @@
 
                 // Regular Expression
                 LapysDevelopmentKit.objects.regularExpression = LDKF.objectPrototypeConstructor(/ /);
+                    // Prototype
+                    LapysDevelopmentKit.objects.regularExpressionPrototype = LDKF.objectPrototypeGetProperty(LDKO.regularExpression, "prototype");
 
                 // String
                 LapysDevelopmentKit.objects.string = LDKF.objectPrototypeConstructor("");
 
                 // Symbol
                 LapysDevelopmentKit.objects.symbol = LDKF.objectPrototypeGetProperty(GLOBAL, "Symbol");
+                    // Prototype
+                    LapysDevelopmentKit.objects.symbolPrototype = LDKF.objectPrototypeGetProperty(LDKO.symbol, "prototype");
 
             /* Functions */
                 // Regular Expression
@@ -3101,105 +3167,433 @@
                         return message
                     };
 
-                // Is Attribute --- CHECKPOINT ---
+                // Is Active X Object
+                LapysDevelopmentKit.functions.isActiveXObject = function isActiveXObject(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.activeXObject, LDKO.activeXObjectPrototype) };
+
+                // Is Analyser Node
+                LapysDevelopmentKit.functions.isAnalyserNode = function isAnalyserNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.analyserNode, LDKO.analyserNodePrototype) };
+
+                // Is Animation Event
+                LapysDevelopmentKit.functions.isAnimationEvent = function isAnimationEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.animationEvent, LDKO.animationEventPrototype) };
+
+                // Is Animation Playback Event
+                LapysDevelopmentKit.functions.isAnimationPlaybackEvent = function isAnimationPlaybackEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.animationPlaybackEvent, LDKO.animationPlaybackEventPrototype) };
+
+                // Is Application Cache Error Event
+                LapysDevelopmentKit.functions.isApplicationCacheErrorEvent = function isApplicationCacheErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.applicationCacheErrorEvent, LDKO.applicationCacheErrorEventPrototype) };
+
+                // Is Attribute
+                LapysDevelopmentKit.functions.isAttribute = function isAttribute(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.attribute, LDKO.attributePrototype) };
+
+                // Is Audio Buffer Source Node
+                LapysDevelopmentKit.functions.isAudioBufferSourceNode = function isAudioBufferSourceNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.audioBufferSourceNode, LDKO.audioBufferSourceNodePrototype) };
+
+                // Is Audio Destination Node
+                LapysDevelopmentKit.functions.isAudioDestinationNode = function isAudioDestinationNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.audioDestinationNode, LDKO.audioDestinationNodePrototype) };
+
+                // Is Audio Node
+                LapysDevelopmentKit.functions.isAudioNode = function isAudioNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.audioNode, LDKO.audioNodePrototype) };
+
+                // Is Audio Processing Event
+                LapysDevelopmentKit.functions.isAudioProcessingEvent = function isAudioProcessingEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.audioProcessingEvent, LDKO.audioProcessingEventPrototype) };
+
+                // Is Audio Scheduled Source Node
+                LapysDevelopmentKit.functions.isAudioScheduledSourceNode = function isAudioScheduledSourceNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.audioScheduledSourceNode, LDKO.audioScheduledSourceNodePrototype) };
+
+                // Is Audio Worklet
+                LapysDevelopmentKit.functions.isAudioWorklet = function isAudioWorklet(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.audioWorklet, LDKO.audioWorkletPrototype) };
+
+                // Is Before Install Prompt Event
+                LapysDevelopmentKit.functions.isBeforeInstallPromptEvent = function isBeforeInstallPromptEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.beforeInstallPromptEvent, LDKO.beforeInstallPromptEventPrototype) };
+
+                // Is Before Unload Event
+                LapysDevelopmentKit.functions.isBeforeUnloadEvent = function isBeforeUnloadEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.beforeUnloadEvent, LDKO.beforeUnloadEventPrototype) };
+
+                // Is Bi-quad Filter Node
+                LapysDevelopmentKit.functions.isBiquadFilterNode = function isBiquadFilterNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.biquadFilterNode, LDKO.biquadFilterNodePrototype) };
+
+                // Is Blob Event
+                LapysDevelopmentKit.functions.isBlobEvent = function isBlobEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.blobEvent, LDKO.blobEventPrototype) };
+
+                // Is Channel Splitter Node
+                LapysDevelopmentKit.functions.isChannelSplitterNode = function isChannelSplitterNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.channelSplitterNode, LDKO.channelSplitterNodePrototype) };
+
+                // Is Character Merger Node
+                LapysDevelopmentKit.functions.isCharacterMergerNode = function isCharacterMergerNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.characterMergerNode, LDKO.characterMergerNodePrototype) };
+
+                // Is Clipboard Event
+                LapysDevelopmentKit.functions.isClipboardEvent = function isClipboardEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.clipboardEvent, LDKO.clipboardEventPrototype) };
+
+                // Is Close Event
+                LapysDevelopmentKit.functions.isCloseEvent = function isCloseEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.closeEvent, LDKO.closeEventPrototype) };
+
+                // Is Composition Event
+                LapysDevelopmentKit.functions.isCompositionEvent = function isCompositionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.compositionEvent, LDKO.compositionEventPrototype) };
+
+                // Is Constant Source Node
+                LapysDevelopmentKit.functions.isConstantSourceNode = function isConstantSourceNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.constantSourceNode, LDKO.constantSourceNodePrototype) };
+
+                // Is Convolver Node
+                LapysDevelopmentKit.functions.isConvolverNode = function isConvolverNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.convolverNode, LDKO.convolverNodePrototype) };
+
+                // Is Custom Event
+                LapysDevelopmentKit.functions.isCustomEvent = function isCustomEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.customEvent, LDKO.customEventPrototype) };
+
+                // Is Delay Node
+                LapysDevelopmentKit.functions.isDelayNode = function isDelayNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.delayNode, LDKO.delayNodePrototype) };
+
+                // Is Device Light Event
+                LapysDevelopmentKit.functions.isDeviceLightEvent = function isDeviceLightEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.deviceLightEvent, LDKO.deviceLightEventPrototype) };
+
+                // Is Device Motion Event
+                LapysDevelopmentKit.functions.isDeviceMotionEvent = function isDeviceMotionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.deviceMotionEvent, LDKO.deviceMotionEventPrototype) };
+
+                // Is Device Orientation Event
+                LapysDevelopmentKit.functions.isDeviceOrientationEvent = function isDeviceOrientationEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.deviceOrientationEvent, LDKO.deviceOrientationEventPrototype) };
 
                 // Is Document
-                LapysDevelopmentKit.functions.isDocument = function isDocument(arg) {
+                LapysDevelopmentKit.functions.isDocument = function isDocument(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.document, LDKO.documentPrototype) };
+
+                // Is Document-Like --- NOTE (Lapys) -> The first of confusingly named test methods.
+                LapysDevelopmentKit.functions.isDocumentLike = function isDocumentLike(arg) {
                     // Return
-                    return LDKF.isConstructible(arg) && (
-                        (LDKF.objectPrototypeConstructor(arg) === LDKO.document && LDKF.objectPrototypePrototype(arg) === LDKO.documentPrototype) ||
-                        arg instanceof LDKO.document
-                    )
+                    return LDKF.isDocument(arg) || LDKF.isHTMLDocument(arg) || LDKF.isXMLDocument(arg)
                 };
 
-                // Is Document-Like --- NOTE (Lapys) -> The first of confusing test methods.
-                LapysDevelopmentKit.functions.isDocumentLike = function isDocumentLike(arg) { return LDKF.isDocument(arg) || LDKF.isHTMLDocument(arg) || LDKF.isXMLDocument(arg) };
+                // Is Drag Event
+                LapysDevelopmentKit.functions.isDragEvent = function isDragEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.dragEvent, LDKO.dragEventPrototype) };
+
+                // Is Dynamics Compressor Node
+                LapysDevelopmentKit.functions.isDynamicsCompressorNode = function isDynamicsCompressorNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.dynamicsCompressorNode, LDKO.dynamicsCompressorNodePrototype) };
 
                 // Is Element
-                LapysDevelopmentKit.functions.isElement = function isElement(arg) {
-                    // Return
-                    return LDKF.isConstructible(arg) && (
-                        (LDKF.objectPrototypeConstructor(arg) === LDKO.element && LDKF.objectPrototypePrototype(arg) === LDKO.elementPrototype) ||
-                        arg instanceof LDKO.element
-                    )
-                };
+                LapysDevelopmentKit.functions.isElement = function isElement(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.element, LDKO.elementPrototype) };
 
                 // Is Element-Like
-                LapysDevelopmentKit.functions.isElementLike = function isElementLike(arg) { return LDKF.isElement(arg) || LDKF.isHTMLElement(arg) };
+                LapysDevelopmentKit.functions.isElementLike = function isElementLike(arg) {
+                    // Return
+                    return LDKF.isElement(arg) || LDKF.isHTMLElement(arg)
+                };
 
-                // Is Event --- CHECKPOINT ---
-                // Is Event Target --- CHECKPOINT (Lapys) -> or Document, EventTarget or Node
+                // Is Enter Picture-in-Picture Event
+                LapysDevelopmentKit.functions.isEnterPictureInPictureEvent = function isEnterPictureInPictureEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.enterPictureInPictureEvent, LDKO.enterPictureInPictureEventPrototype) };
+
+                // Is Error Event
+                LapysDevelopmentKit.functions.isErrorEvent = function isErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.errorEvent, LDKO.errorEventPrototype) };
+
+                // Is Event
+                LapysDevelopmentKit.functions.isEvent = function isEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.event, LDKO.eventPrototype) };
+
+                // Is Event-Like --- NOTE (Lapys) -> Oddly enough, `KeyEvent` is not an `Event`-based object.
+                LapysDevelopmentKit.functions.isEventLike = function isEventLike(arg) {
+                    // Return
+                    return LDKF.isAnimationEvent(arg) || LDKF.isAnimationPlaybackEvent(arg) || LDKF.isApplicationCacheErrorEvent(arg) || LDKF.isAudioProcessingEvent(arg) ||
+                        LDKF.isBeforeInstallPromptEvent(arg) || LDKF.isBeforeUnloadEvent(arg) || LDKF.isBlobEvent(arg) ||
+                        LDKF.isClipboardEvent(arg) || LDKF.isCloseEvent(arg) || LDKF.isCompositionEvent(arg) || LDKF.isCustomEvent(arg) ||
+                        LDKF.isDeviceLightEvent(arg) || LDKF.isDeviceMotionEvent(arg) || LDKF.isDeviceOrientationEvent(arg) || LDKF.isDragEvent(arg) ||
+                        LDKF.isEnterPictureInPictureEvent(arg) || LDKF.isErrorEvent(arg) ||
+                        LDKF.isFocusEvent(arg) || LDKF.isFontFaceSetLoadEvent(arg) ||
+                        LDKF.isGamepadEvent(arg) || LDKF.isHashChangeEvent(arg) ||
+                        LDKF.isIDBVersionChangeEvent(arg) || LDKF.isInputEvent(arg) ||
+                        LDKF.isKeyboardEvent(arg) ||
+                        LDKF.isMediaEncryptedEvent(arg) || LDKF.isMediaKeyMessageEvent(arg) || LDKF.isMediaQueryListEvent(arg) || LDKF.isMediaRecorderErrorEvent(arg) || LDKF.isMediaStreamErrorEvent(arg) || LDKF.isMediaStreamEvent(arg) || LDKF.isMediaStreamTrackEvent(arg) || LDKF.isMessageEvent(arg) || LDKF.isMIDIConnectionEvent(arg) || LDKF.isMIDIMessageEvent(arg) || LDKF.isMouseEvent(arg) || LDKF.isMouseScrollEvent(arg) || LDKF.isMouseWheelEvent(arg) || LDKF.isMSDCCEvent(arg) || LDKF.isMSDSHEvent(arg) || LDKF.isMSGestureEvent(arg) || LDKF.isMSManipulationEvent(arg) || LDKF.isMSMediaKeyMessageEvent(arg) || LDKF.isMSMediaKeyNeededEvent(arg) || LDKF.isMSQualityEvent(arg) || LDKF.isMSSiteModeEvent(arg) || LDKF.isMSVideoReceiversEvent(arg) || LDKF.isMutationEvent(arg) ||
+                        LDKF.isNotifyPaintEvent(arg) ||
+                        LDKF.isOfflineAudioCompletionEvent(arg) ||
+                        LDKF.isPageTransitionEvent(arg) || LDKF.isPaymentRequestUpdateEvent(arg) || LDKF.isPointerEvent(arg) || LDKF.isPopupBlockedEvent(arg) || LDKF.isPopStateEvent(arg) || LDKF.isPresentationConnectionAvailableEvent(arg) || LDKF.isPresentationConnectionCloseEvent(arg) || LDKF.isProgressEvent(arg) || LDKF.isPromiseRejectionEvent(arg) ||
+                        LDKF.isRTCDataChannelEvent(arg) || LDKF.isRTCDTMFToneChangeEvent(arg) || LDKF.isRTCDTLSTransportStateChangedEvent(arg) || LDKF.isRTCICECandidatePairChangedEvent(arg) || LDKF.isRTCICEGathererEvent(arg) || LDKF.isRTCICETransportStateChangedEvent(arg) || LDKF.isRTCPeerConnectionICEEvent(arg) || LDKF.isRTCSsrcConflictEvent(arg) || LDKF.isRTCTrackEvent(arg) ||
+                        LDKF.isScrollAreaEvent(arg) || LDKF.isSecurityPolicyViolationEvent(arg) || LDKF.isSensorErrorEvent(arg) || LDKF.isSpeechSynthesisErrorEvent(arg) || LDKF.isSpeechSynthesisEvent(arg) || LDKF.isStorageEvent(arg) || LDKF.isSVGZoomEvent(arg) ||
+                        LDKF.isTextEvent(arg) || LDKF.isTimeEvent(arg) || LDKF.isTouchEvent(arg) || LDKF.isTrackEvent(arg) || LDKF.isTransitionEvent(arg) ||
+                        LDKF.isUIEvent(arg) || LDKF.isUSBConnectionEvent(arg) ||
+                        LDKF.isVRDisplayEvent(arg) ||
+                        LDKF.isWebGLContextEvent(arg) || LDKF.isWebkitSpeechRecognitionEvent(arg) || LDKF.isWheelEvent(arg) ||
+                        LDKT.isStrictlyConstructibleObject(arg, LDKO.event, LDKO.eventPrototype)
+                };
+
+                // Is Event Source
+                LapysDevelopmentKit.functions.isEventSource = function isEventSource(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.eventSource, LDKO.eventSourcePrototype) };
+
+                // Is Event Target
+                LapysDevelopmentKit.functions.isEventTarget = function isEventTarget(arg) {
+                    // Return
+                    return LDKF.isAttribute(arg) || LDKF.isDocumentLike(arg) || LDKF.isEventSource(arg) || LDKF.isNode(arg) || LDKF.isXMLHTTPRequestEventTarget(arg) ||
+                        LDKT.isConstructibleObject(arg, LDKO.eventTarget, LDKO.eventTargetPrototype)
+                };
+
+                // Is Focus Event
+                LapysDevelopmentKit.functions.isFocusEvent = function isFocusEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.focusEvent, LDKO.focusEventPrototype) };
+
+                // Is Font Face Set Load Event
+                LapysDevelopmentKit.functions.isFontFaceSetLoadEvent = function isFontFaceSetLoadEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.fontFaceSetLoadEvent, LDKO.fontFaceSetLoadEventPrototype) };
+
+                // Is Gain Node
+                LapysDevelopmentKit.functions.isGainNode = function isGainNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.gainNode, LDKO.gainNodePrototype) };
+
+                // Is Gamepad Event
+                LapysDevelopmentKit.functions.isGamepadEvent = function isGamepadEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.gamepadEvent, LDKO.gamepadEventPrototype) };
+
+                // Is Hash Change Event
+                LapysDevelopmentKit.functions.isHashChangeEvent = function isHashChangeEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.hashChangeEvent, LDKO.hashChangeEventPrototype) };
 
                 // Is HTML Document
-                LapysDevelopmentKit.functions.isHTMLDocument = function isHTMLDocument(arg) {
-                    // Return
-                    return LDKF.isConstructible(arg) && (
-                        (LDKF.objectPrototypeConstructor(arg) === LDKO.htmlDocument && LDKF.objectPrototypePrototype(arg) === LDKO.htmlDocumentPrototype) ||
-                        arg instanceof LDKO.htmlDocument
-                    )
-                };
+                LapysDevelopmentKit.functions.isHTMLDocument = function isHTMLDocument(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.htmlDocument, LDKO.htmlDocumentPrototype) };
 
                 // Is HTML Element
-                LapysDevelopmentKit.functions.isHTMLElement = function isHTMLElement(arg) {
-                    // Return
-                    return LDKF.isConstructible(arg) && (
-                        (LDKF.objectPrototypeConstructor(arg) === LDKO.htmlElement && LDKF.objectPrototypePrototype(arg) === LDKO.htmlElementPrototype) ||
-                        arg instanceof LDKO.htmlElement
-                    )
-                };
+                LapysDevelopmentKit.functions.isHTMLElement = function isHTMLElement(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.htmlElement, LDKO.htmlElementPrototype) };
+
+                // Is IDB Version Change Event
+                LapysDevelopmentKit.functions.isIDBVersionChangeEvent = function isIDBVersionChangeEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.idbVersionChangeEvent, LDKO.idbVersionChangeEventPrototype) };
+
+                // Is IIR Filter Node
+                LapysDevelopmentKit.functions.isIIRFilterNode = function isIIRFilterNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.iirFilterNode, LDKO.iirFilterNodePrototype) };
+
+                // Is Input Event
+                LapysDevelopmentKit.functions.isInputEvent = function isInputEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.inputEvent, LDKO.inputEventPrototype) };
+
+                // Is JSON {Object}
+                LapysDevelopmentKit.functions.isJSON = function isJSON(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.object, LDKO.objectPrototype) };
+
+                // Is Keyboard Event
+                LapysDevelopmentKit.functions.isKeyboardEvent = function isKeyboardEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.keyboardEvent, LDKO.keyboardEventPrototype) };
+
+                // Is Media Element Audio Source Node
+                LapysDevelopmentKit.functions.isMediaElementAudioSourceNode = function isMediaElementAudioSourceNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaElementAudioSourceNode, LDKO.mediaElementAudioSourceNodePrototype) };
+
+                // Is Media Encrypted Event
+                LapysDevelopmentKit.functions.isMediaEncryptedEvent = function isMediaEncryptedEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaEncryptedEvent, LDKO.mediaEncryptedEventPrototype) };
+
+                // Is Media Key Message Event
+                LapysDevelopmentKit.functions.isMediaKeyMessageEvent = function isMediaKeyMessageEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaKeyMessageEvent, LDKO.mediaKeyMessageEventPrototype) };
+
+                // Is Media Query List Event
+                LapysDevelopmentKit.functions.isMediaQueryListEvent = function isMediaQueryListEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaQueryListEvent, LDKO.mediaQueryListEventPrototype) };
+
+                // Is Media Recorder Error Event
+                LapysDevelopmentKit.functions.isMediaRecorderErrorEvent = function isMediaRecorderErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaRecorderErrorEvent, LDKO.mediaRecorderErrorEventPrototype) };
+
+                // Is Media Stream Audio Destination Node
+                LapysDevelopmentKit.functions.isMediaStreamAudioDestinationNode = function isMediaStreamAudioDestinationNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaStreamAudioDestinationNode, LDKO.mediaStreamAudioDestinationNodePrototype) };
+
+                // Is Media Stream Audio Source Node
+                LapysDevelopmentKit.functions.isMediaStreamAudioSourceNode = function isMediaStreamAudioSourceNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaStreamAudioSourceNode, LDKO.mediaStreamAudioSourceNodePrototype) };
+
+                // Is Media Stream Error Event
+                LapysDevelopmentKit.functions.isMediaStreamErrorEvent = function isMediaStreamErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaStreamErrorEvent, LDKO.mediaStreamErrorEventPrototype) };
+
+                // Is Media Stream Event
+                LapysDevelopmentKit.functions.isMediaStreamEvent = function isMediaStreamEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaStreamEvent, LDKO.mediaStreamEventPrototype) };
+
+                // Is Media Stream Track Event
+                LapysDevelopmentKit.functions.isMediaStreamTrackEvent = function isMediaStreamTrackEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mediaStreamTrackEvent, LDKO.mediaStreamTrackEventPrototype) };
+
+                // Is Message Event
+                LapysDevelopmentKit.functions.isMessageEvent = function isMessageEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.messageEvent, LDKO.messageEventPrototype) };
+
+                // Is MIDI Connection Event
+                LapysDevelopmentKit.functions.isMIDIConnectionEvent = function isMIDIConnectionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.midiConnectionEvent, LDKO.midiConnectionEventPrototype) };
+
+                // Is MIDI Message Event
+                LapysDevelopmentKit.functions.isMIDIMessageEvent = function isMIDIMessageEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.midiMessageEvent, LDKO.midiMessageEventPrototype) };
+
+                // Is Mouse Event
+                LapysDevelopmentKit.functions.isMouseEvent = function isMouseEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mouseEvent, LDKO.mouseEventPrototype) };
+
+                // Is Mouse Scroll Event
+                LapysDevelopmentKit.functions.isMouseScrollEvent = function isMouseScrollEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mouseScrollEvent, LDKO.mouseScrollEventPrototype) };
+
+                // Is Mouse Wheel Event
+                LapysDevelopmentKit.functions.isMouseWheelEvent = function isMouseWheelEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mouseWheelEvent, LDKO.mouseWheelEventPrototype) };
+
+                // Is MS DCC Event
+                LapysDevelopmentKit.functions.isMSDCCEvent = function isMSDCCEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSDCCEvent, LDKO.MSDCCEventPrototype) };
+
+                // Is MS DSH Event
+                LapysDevelopmentKit.functions.isMSDSHEvent = function isMSDSHEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSDSHEvent, LDKO.MSDSHEventPrototype) };
+
+                // Is MS Gesture Event
+                LapysDevelopmentKit.functions.isMSGestureEvent = function isMSGestureEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSGestureEvent, LDKO.MSGestureEventPrototype) };
+
+                // Is MS Manipulation Event
+                LapysDevelopmentKit.functions.isMSManipulationEvent = function isMSManipulationEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSManipulationEvent, LDKO.MSManipulationEventPrototype) };
+
+                // Is MS Media Key Message Event
+                LapysDevelopmentKit.functions.isMSMediaKeyMessageEvent = function isMSMediaKeyMessageEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSMediaKeyMessageEvent, LDKO.MSMediaKeyMessageEventPrototype) };
+
+                // Is MS Media Key Needed Event
+                LapysDevelopmentKit.functions.isMSMediaKeyNeededEvent = function isMSMediaKeyNeededEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSMediaKeyNeededEvent, LDKO.MSMediaKeyNeededEventPrototype) };
+
+                // Is MS Quality Event
+                LapysDevelopmentKit.functions.isMSQualityEvent = function isMSQualityEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSQualityEvent, LDKO.MSQualityEventPrototype) };
+
+                // Is MS Site Mode Event
+                LapysDevelopmentKit.functions.isMSSiteModeEvent = function isMSSiteModeEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSSiteModeEvent, LDKO.MSSiteModeEventPrototype) };
+
+                // Is MS Video Receivers Event
+                LapysDevelopmentKit.functions.isMSVideoReceiversEvent = function isMSVideoReceiversEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.MSVideoReceiversEvent, LDKO.MSVideoReceiversEventPrototype) };
+
+                // Is Mutation Event
+                LapysDevelopmentKit.functions.isMutationEvent = function isMutationEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.mutationEvent, LDKO.mutationEventPrototype) };
 
                 // Is Node
                 LapysDevelopmentKit.functions.isNode = function isNode(arg) {
-                    // Initialization > (Constructor, Prototype)
-                    var constructor = LDKF.objectPrototypeConstructor(arg),
-                        prototype = LDKF.objectPrototypePrototype(arg);
-
                     // Return
-                    return LDKF.isConstructible(arg) && (
-                        LDKF.isDocumentLike(arg) || LDKF.isElementLike(arg) || (
-                            (constructor === LDKO.node && prototype === LDKO.nodePrototype) ||
-                            (constructor === LDKO.analyserNode && prototype === LDKO.analyserNodePrototype) ||
-                            (constructor === LDKO.audioBufferSourceNode && prototype === LDKO.audioBufferSourceNodePrototype) ||
-                            (constructor === LDKO.audioDestinationNode && prototype === LDKO.audioDestinationNodePrototype) ||
-                            (constructor === LDKO.audioNode && prototype === LDKO.audioNodePrototype) ||
-                            (constructor === LDKO.audioScheduledSourceNode && prototype === LDKO.audioScheduledSourceNodePrototype) ||
-                            (constructor === LDKO.audioWorklet && prototype === LDKO.audioWorkletPrototype) ||
-                            (constructor === LDKO.biquadFilterNode && prototype === LDKO.biquadFilterNodePrototype) ||
-                            (constructor === LDKO.channelSplitterNode && prototype === LDKO.channelSplitterNodePrototype) ||
-                            (constructor === LDKO.characterMergerNode && prototype === LDKO.characterMergerNodePrototype) ||
-                            (constructor === LDKO.constantSourceNode && prototype === LDKO.constantSourceNodePrototype) ||
-                            (constructor === LDKO.convolverNode && prototype === LDKO.convolverNodePrototype) ||
-                            (constructor === LDKO.delayNode && prototype === LDKO.delayNodePrototype) ||
-                            (constructor === LDKO.dynamicsCompressorNode && prototype === LDKO.dynamicsCompressorNodePrototype) ||
-                            (constructor === LDKO.gainNode && prototype === LDKO.gainNodePrototype) ||
-                            (constructor === LDKO.iIRFilterNode && prototype === LDKO.iIRFilterNodePrototype) ||
-                            (constructor === LDKO.mediaElementAudioSourceNode && prototype === LDKO.mediaElementAudioSourceNodePrototype) ||
-                            (constructor === LDKO.mediaStreamAudioDestinationNode && prototype === LDKO.mediaStreamAudioDestinationNodePrototype) ||
-                            (constructor === LDKO.mediaStreamAudioSourceNode && prototype === LDKO.mediaStreamAudioSourceNodePrototype) ||
-                            (constructor === LDKO.oscillatorNode && prototype === LDKO.oscillatorNodePrototype) ||
-                            (constructor === LDKO.pannerNode && prototype === LDKO.pannerNodePrototype) ||
-                            (constructor === LDKO.scriptProcessorNode && prototype === LDKO.scriptProcessorNodePrototype) ||
-                            (constructor === LDKO.stereoPannerNode && prototype === LDKO.stereoPannerNodePrototype) ||
-                            (constructor === LDKO.waveShaperNode && prototype === LDKO.waveShaperNodePrototype) ||
-                            arg instanceof LDKO.node
-                        )
-                    )
+                    return LDKF.isAnalyserNode(arg) || LDKF.isAttribute(arg) || LDKF.isAudioBufferSourceNode(arg) || LDKF.isAudioDestinationNode(arg) || LDKF.isAudioNode(arg) || LDKF.isAudioScheduledSourceNode(arg) || LDKF.isAudioWorklet(arg) ||
+                        LDKF.isBiquadFilterNode(arg) ||
+                        LDKF.isChannelSplitterNode(arg) || LDKF.isCharacterMergerNode(arg) || LDKF.isConstantSourceNode(arg) || LDKF.isConvolverNode(arg) ||
+                        LDKF.isDelayNode(arg) || LDKF.isDocumentLike(arg) || LDKF.isDynamicsCompressorNode(arg) ||
+                        LDKF.isElementLike(arg) ||
+                        LDKF.isGainNode(arg) ||
+                        LDKF.isIIRFilterNode(arg) ||
+                        LDKF.isMediaElementAudioSourceNode(arg) || LDKF.isMediaStreamAudioDestinationNode(arg) || LDKF.isMediaStreamAudioSourceNode(arg) ||
+                        LDKF.isOscillatorNode(arg) ||
+                        LDKF.isPannerNode(arg) ||
+                        LDKF.isScriptProcessorNode(arg) || LDKF.isStereoPannerNode(arg) ||
+                        LDKF.isWaveShaperNode(arg) ||
+                        LDKT.isConstructibleObject(arg, LDKO.node, LDKO.nodePrototype)
                 };
 
-                // Is JSON {Object} --- CHECKPOINT ---
-                // Is Regular Expression --- CHECKPOINT ---
-                // Is Symbol --- CHECKPOINT ---
+                // Is Notify Paint Event
+                LapysDevelopmentKit.functions.isNotifyPaintEvent = function isNotifyPaintEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.notifyPaintEvent, LDKO.notifyPaintEventPrototype) };
+
+                // Is Offline Audio Completion Event
+                LapysDevelopmentKit.functions.isOfflineAudioCompletionEvent = function isOfflineAudioCompletionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.offlineAudioCompletionEvent, LDKO.offlineAudioCompletionEventPrototype) };
+
+                // Is Oscillator Node
+                LapysDevelopmentKit.functions.isOscillatorNode = function isOscillatorNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.oscillatorNode, LDKO.oscillatorNodePrototype) };
+
+                // Is Page Transition Event
+                LapysDevelopmentKit.functions.isPageTransitionEvent = function isPageTransitionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.pageTransitionEvent, LDKO.pageTransitionEventPrototype) };
+
+                // Is Panner Node
+                LapysDevelopmentKit.functions.isPannerNode = function isPannerNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.pannerNode, LDKO.pannerNodePrototype) };
+
+                // Is Payment Request Update Event
+                LapysDevelopmentKit.functions.isPaymentRequestUpdateEvent = function isPaymentRequestUpdateEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.paymentRequestUpdateEvent, LDKO.paymentRequestUpdateEventPrototype) };
+
+                // Is Pointer Event
+                LapysDevelopmentKit.functions.isPointerEvent = function isPointerEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.pointerEvent, LDKO.pointerEventPrototype) };
+
+                // Is Pop-Up Blocked Event
+                LapysDevelopmentKit.functions.isPopupBlockedEvent = function isPopupBlockedEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.popUpBlockedEvent, LDKO.popUpBlockedEventPrototype) };
+
+                // Is Pop State Event
+                LapysDevelopmentKit.functions.isPopStateEvent = function isPopStateEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.popStateEvent, LDKO.popStateEventPrototype) };
+
+                // Is Presentation Connection Available Event
+                LapysDevelopmentKit.functions.isPresentationConnectionAvailableEvent = function isPresentationConnectionAvailableEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.presentationConnectionAvailableEvent, LDKO.presentationConnectionAvailableEventPrototype) };
+
+                // Is Presentation Connection Close Event
+                LapysDevelopmentKit.functions.isPresentationConnectionCloseEvent = function isPresentationConnectionCloseEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.presentationConnectionCloseEvent, LDKO.presentationConnectionCloseEventPrototype) };
+
+                // Is Progress Event
+                LapysDevelopmentKit.functions.isProgressEvent = function isProgressEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.progressEvent, LDKO.progressEventPrototype) };
+
+                // Is Promise Rejection Event
+                LapysDevelopmentKit.functions.isPromiseRejectionEvent = function isPromiseRejectionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.promiseRejectionEvent, LDKO.promiseRejectionEventPrototype) };
+
+                // Is Regular Expression
+                LapysDevelopmentKit.functions.isRegularExpression = function isRegularExpression(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.regularExpression, LDKO.regularExpressionPrototype) };
+
+                // Is RTC Data Channel Event
+                LapysDevelopmentKit.functions.isRTCDataChannelEvent = function isRTCDataChannelEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcDataChannelEvent, LDKO.rtcDataChannelEventPrototype) };
+
+                // Is RTC DTMF Tone Change Event
+                LapysDevelopmentKit.functions.isRTCDTMFToneChangeEvent = function isRTCDTMFToneChangeEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcDTMFToneChangeEvent, LDKO.rtcDTMFToneChangeEventPrototype) };
+
+                // Is RTC DTLS Transport State Changed Event
+                LapysDevelopmentKit.functions.isRTCDTLSTransportStateChangedEvent = function isRTCDTLSTransportStateChangedEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcDTLSTransportStateChangedEvent, LDKO.rtcDTLSTransportStateChangedEventPrototype) };
+
+                // Is RTC ICE Candidate Pair Changed Event
+                LapysDevelopmentKit.functions.isRTCICECandidatePairChangedEvent = function isRTCICECandidatePairChangedEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcICECandidatePairChangedEvent, LDKO.rtcICECandidatePairChangedEventPrototype) };
+
+                // Is RTC ICE Gatherer Event
+                LapysDevelopmentKit.functions.isRTCICEGathererEvent = function isRTCICEGathererEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcICEGathererEvent, LDKO.rtcICEGathererEventPrototype) };
+
+                // Is RTC ICE Transport State Changed Event
+                LapysDevelopmentKit.functions.isRTCICETransportStateChangedEvent = function isRTCICETransportStateChangedEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcICETransportStateChangedEvent, LDKO.rtcICETransportStateChangedEventPrototype) };
+
+                // Is RTC Peer Connection ICE Event
+                LapysDevelopmentKit.functions.isRTCPeerConnectionICEEvent = function isRTCPeerConnectionICEEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcPeerConnectionICEEvent, LDKO.rtcPeerConnectionICEEventPrototype) };
+
+                // Is RTC Source Conflict Event
+                LapysDevelopmentKit.functions.isRTCSsrcConflictEvent = function isRTCSsrcConflictEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcSsrcConflictEvent, LDKO.rtcSsrcConflictEventPrototype) };
+
+                // Is RTC Track Event
+                LapysDevelopmentKit.functions.isRTCTrackEvent = function isRTCTrackEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.rtcTrackEvent, LDKO.rtcTrackEventPrototype) };
+
+                // Is Script Processor Node
+                LapysDevelopmentKit.functions.isScriptProcessorNode = function isScriptProcessorNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.scriptProcessorNode, LDKO.scriptProcessorNodePrototype) };
+
+                // Is Scroll Area Event
+                LapysDevelopmentKit.functions.isScrollAreaEvent = function isScrollAreaEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.scrollAreaEvent, LDKO.scrollAreaEventPrototype) };
+
+                // Is Security Policy Violation Event
+                LapysDevelopmentKit.functions.isSecurityPolicyViolationEvent = function isSecurityPolicyViolationEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.securityPolicyViolationEvent, LDKO.securityPolicyViolationEventPrototype) };
+
+                // Is Sensor Error Event
+                LapysDevelopmentKit.functions.isSensorErrorEvent = function isSensorErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.sensorErrorEvent, LDKO.sensorErrorEventPrototype) };
+
+                // Is Speech Synthesis Error Event
+                LapysDevelopmentKit.functions.isSpeechSynthesisErrorEvent = function isSpeechSynthesisErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.speechSynthesisErrorEvent, LDKO.speechSynthesisErrorEventPrototype) };
+
+                // Is Speech Synthesis Event
+                LapysDevelopmentKit.functions.isSpeechSynthesisEvent = function isSpeechSynthesisEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.speechSynthesisEvent, LDKO.speechSynthesisEventPrototype) };
+
+                // Is Stereo Panner Node
+                LapysDevelopmentKit.functions.isStereoPannerNode = function isStereoPannerNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.stereoPannerNode, LDKO.stereoPannerNodePrototype) };
+
+                // Is Storage Event
+                LapysDevelopmentKit.functions.isStorageEvent = function isStorageEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.storageEvent, LDKO.storageEventPrototype) };
+
+                // Is SVG Zoom Event
+                LapysDevelopmentKit.functions.isSVGZoomEvent = function isSVGZoomEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.svgZoomEvent, LDKO.svgZoomEventPrototype) };
+
+                // Is Symbol
+                LapysDevelopmentKit.functions.isSymbol = function isSymbol(arg) { return typeof arg == "symbol" && LDKT.isStrictlyConstructibleObject(arg, LDKO.symbol, LDKO.symbolPrototype, STRICT = true) };
+
+                // Is Text Event
+                LapysDevelopmentKit.functions.isTextEvent = function isTextEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.textEvent, LDKO.textEventPrototype) };
+
+                // Is Time Event
+                LapysDevelopmentKit.functions.isTimeEvent = function isTimeEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.timeEvent, LDKO.timeEventPrototype) };
+
+                // Is Touch Event
+                LapysDevelopmentKit.functions.isTouchEvent = function isTouchEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.touchEvent, LDKO.touchEventPrototype) };
+
+                // Is Track Event
+                LapysDevelopmentKit.functions.isTrackEvent = function isTrackEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.trackEvent, LDKO.trackEventPrototype) };
+
+                // Is Transition Event
+                LapysDevelopmentKit.functions.isTransitionEvent = function isTransitionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.transitionEvent, LDKO.transitionEventPrototype) };
+
+                // Is UI Event
+                LapysDevelopmentKit.functions.isUIEvent = function isUIEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.uiEvent, LDKO.uiEventPrototype) };
+
+                // Is USB Connection Event
+                LapysDevelopmentKit.functions.isUSBConnectionEvent = function isUSBConnectionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.usbConnectionEvent, LDKO.usbConnectionEventPrototype) };
+
+                // Is VR Display Event
+                LapysDevelopmentKit.functions.isVRDisplayEvent = function isVRDisplayEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.vrDisplayEvent, LDKO.vrDisplayEventPrototype) };
+
+                // Is Wave Shaper Node
+                LapysDevelopmentKit.functions.isWaveShaperNode = function isWaveShaperNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.waveShaperNode, LDKO.waveShaperNodePrototype) };
+
+                // Is Web GL Context Event
+                LapysDevelopmentKit.functions.isWebGLContextEvent = function isWebGLContextEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.webGLContextEvent, LDKO.webGLContextEventPrototype) };
+
+                // Is Webkit Speech Recognition Event
+                LapysDevelopmentKit.functions.isWebkitSpeechRecognitionEvent = function isWebkitSpeechRecognitionEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.webkitSpeechRecognitionEvent, LDKO.webkitSpeechRecognitionEventPrototype) };
+
+                // Is Wheel Event
+                LapysDevelopmentKit.functions.isWheelEvent = function isWheelEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.wheelEvent, LDKO.wheelEventPrototype) };
+
+                // Is Window
+                LapysDevelopmentKit.functions.isWindow = function isWindow(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.window, LDKO.windowPrototype) };
 
                 // Is XML Document
-                LapysDevelopmentKit.functions.isXMLDocument = function isXMLDocument(arg) {
-                    // Return
-                    return LDKF.isConstructible(arg) && (
-                        (LDKF.objectPrototypeConstructor(arg) === LDKO.xmlDocument && LDKF.objectPrototypePrototype(arg) === LDKO.xmlDocumentPrototype) ||
-                        arg instanceof LDKO.xmlDocument
-                    )
-                };
+                LapysDevelopmentKit.functions.isXMLDocument = function isXMLDocument(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.xmlDocument, LDKO.xmlDocumentPrototype) };
 
-                // Is Window --- CHECKPOINT ---
+                // Is XML HTTP Request Event Target
+                LapysDevelopmentKit.functions.isXMLHTTPRequestEventTarget = function isXMLHTTPRequestEventTarget(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.xmlHTTPRequestEventTarget, LDKO.xmlHTTPRequestEventTargetPrototype) };
 
                 // Throw Abort Error
                 LapysDevelopmentKit.functions.throwAbortError = function throwAbortError(message) {
@@ -3572,7 +3966,11 @@
                     catch (error) { LDKF.errorPrototypeSetMessage(error, message); throw error; return error }
                 };
 
-            /* Constants, Objects */
+            /* Constants, Objects
+                    --- NOTE ---
+                        #Lapys: If the requested objects are not globally available via it's variable name,
+                            then use an alternative method to return said object.
+            */
                 // Active X Object
                 LapysDevelopmentKit.objects.activeXObject = LDKT.getObjectNativeConstructorByName(GLOBAL, "ActiveXObject");
                     // Prototype
@@ -3585,12 +3983,23 @@
 
                 // Animation Event
                 LapysDevelopmentKit.objects.animationEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "AnimationEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.animationEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.animationEvent, "prototype");
+
+                // Animation Playback Event
+                LapysDevelopmentKit.objects.animationPlaybackEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "AnimationPlaybackEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.animationPlaybackPrototype = LDKF.objectPrototypeGetProperty(LDKO.animationPlayback, "prototype");
 
                 // Application Cache Error Event
                 LapysDevelopmentKit.objects.applicationCacheErrorEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "ApplicationCacheErrorEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.applicationCacheErrorEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.applicationCacheErrorEvent, "prototype");
 
                 // Attribute
-                LapysDevelopmentKit.objects.attr = LDKT.getObjectNativeConstructorByName(GLOBAL, "Attr", STRICT = true);
+                LapysDevelopmentKit.objects.attribute = LDKT.getObjectNativeConstructorByName(GLOBAL, "Attr", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.attributePrototype = LDKF.objectPrototypeGetProperty(LDKO.attribute, "prototype");
 
                 // Audio Buffer Source Node
                 LapysDevelopmentKit.objects.audioBufferSourceNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "AudioBufferSourceNode");
@@ -3609,6 +4018,8 @@
 
                 // Audio Processing Event
                 LapysDevelopmentKit.objects.audioProcessingEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "AudioProcessingEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.audioProcessingEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.audioProcessingEvent, "prototype");
 
                 // Audio Scheduled Source Node
                 LapysDevelopmentKit.objects.audioScheduledSourceNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "AudioScheduledSourceNode");
@@ -3622,9 +4033,13 @@
 
                 // Before Install Prompt Event
                 LapysDevelopmentKit.objects.beforeInstallPromptEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "BeforeInstallPromptEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.beforeInstallPromptPrototype = LDKF.objectPrototypeGetProperty(LDKO.beforeInstallPrompt, "prototype");
 
                 // Before Unload Event
                 LapysDevelopmentKit.objects.beforeUnloadEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "BeforeUnloadEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.beforeUnloadEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.beforeUnloadEvent, "prototype");
 
                 // Bi-quad Filter Node
                 LapysDevelopmentKit.objects.biquadFilterNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "BiquadFilterNode");
@@ -3633,6 +4048,8 @@
 
                 // Blob Event
                 LapysDevelopmentKit.objects.blobEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "BlobEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.blobEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.blobEvent, "prototype");
 
                 // Channel Splitter Node
                 LapysDevelopmentKit.objects.channelSplitterNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "ChannelSplitterNode");
@@ -3663,12 +4080,18 @@
 
                 // Clipboard Event
                 LapysDevelopmentKit.objects.clipboardEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "ClipboardEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.clipboardEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.clipboardEvent, "prototype");
 
                 // Close Event
                 LapysDevelopmentKit.objects.closeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "CloseEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.closeEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.closeEvent, "prototype");
 
                 // Composition Event
                 LapysDevelopmentKit.objects.compositionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "CompositionEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.compositionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.compositionEvent, "prototype");
 
                 // Console --- NOTE (Lapys) -> The test for the `console` methods are similar to most other native constructor tests.
                 LapysDevelopmentKit.constants.console = (function() {
@@ -3704,7 +4127,7 @@
                     else LDKF.error.nativeToEnvironment("`console` object")
                 })();
                     // Group
-                    LapysDevelopmentKit.objects.consoleGroupEnd = (function() {
+                    LapysDevelopmentKit.objects.consoleGroup = (function() {
                         // Initialization > Method
                         var method = LDKF.objectPrototypeGetProperty(LDKC.console, "group");
 
@@ -3755,6 +4178,8 @@
 
                 // Custom Event
                 LapysDevelopmentKit.objects.customEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "CustomEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.customEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.customEvent, "prototype");
 
                 // Date
                 LapysDevelopmentKit.objects.date = LDKT.getObjectNativeConstructorByName(GLOBAL, "Date");
@@ -3764,11 +4189,20 @@
                     // Prototype
                     LapysDevelopmentKit.objects.delayNodePrototype = LDKF.objectPrototypeGetProperty(LDKO.delayNode, "prototype");
 
+                // Device Light Event
+                LapysDevelopmentKit.objects.deviceLightEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "DeviceLightEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.deviceLightEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.deviceLightEvent, "prototype");
+
                 // Device Motion Event
                 LapysDevelopmentKit.objects.deviceMotionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "DeviceMotionEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.deviceMotionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.deviceMotionEvent, "prototype");
 
                 // Device Orientation Event
                 LapysDevelopmentKit.objects.deviceOrientationEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "DeviceOrientationEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.deviceOrientationEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.deviceOrientationEvent, "prototype");
 
                 // Document --- NOTE (Lapys) -> The constant points to the document initiating this script.
                 LapysDevelopmentKit.objects.document = LDKT.getObjectNativeConstructorByName(GLOBAL, "Document", STRICT = true);
@@ -3781,7 +4215,13 @@
                     LapysDevelopmentKit.objects.htmlDocumentPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlDocument, "prototype");
 
                 // XML Document
-                LapysDevelopmentKit.objects.xmlDocument = LDKT.getObjectNativeConstructorByName(GLOBAL, "XMLDocument", STRICT = true);
+                LapysDevelopmentKit.objects.xmlDocument = (function() {
+                    // Error Handling > Return
+                    try { return LDKT.getObjectNativeConstructorByName(GLOBAL, "XMLDocument", STRICT = true) } catch (error) {}
+
+                    // Return
+                    return LDKT.getNativeConstructor(LDKF.objectPrototypeGetProperty(GLOBAL, "XMLDocument"), "Document", STRICT = true)
+                })();
                     // Prototype
                     LapysDevelopmentKit.objects.xmlDocumentPrototype = LDKF.objectPrototypeGetProperty(LDKO.xmlDocument, "prototype");
 
@@ -3812,6 +4252,8 @@
 
                 // Drag Event
                 LapysDevelopmentKit.objects.dragEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "DragEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.dragEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.dragEvent, "prototype");
 
                 // Dynamics Compressor Node
                 LapysDevelopmentKit.objects.dynamicsCompressorNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "DynamicsCompressorNode");
@@ -3825,24 +4267,41 @@
 
                 // Enter Picture-in-Picture Event
                 LapysDevelopmentKit.objects.enterPictureInPictureEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "EnterPictureInPictureEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.enterPictureInPictureEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.enterPictureInPictureEvent, "prototype");
 
                 // Error Event
                 LapysDevelopmentKit.objects.errorEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "ErrorEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.errorEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.errorEvent, "prototype");
 
                 // Event
                 LapysDevelopmentKit.objects.event = LDKT.getObjectNativeConstructorByName(GLOBAL, "Event", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.eventPrototype = LDKF.objectPrototypeGetProperty(LDKO.event, "prototype");
+
+                // Event Source
+                LapysDevelopmentKit.objects.eventSource = LDKT.getObjectNativeConstructorByName(GLOBAL, "EventSource", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.eventSourcePrototype = LDKF.objectPrototypeGetProperty(LDKO.eventSource, "prototype");
 
                 // Event Target
                 LapysDevelopmentKit.objects.eventTarget = LDKT.getObjectNativeConstructorByName(GLOBAL, "EventTarget");
+                    // Prototype
+                    LapysDevelopmentKit.objects.eventTargetPrototype = LDKF.objectPrototypeGetProperty(LDKO.eventTarget, "prototype");
 
                 // File
                 LapysDevelopmentKit.objects.file = LDKT.getObjectNativeConstructorByName(GLOBAL, "File", STRICT = true);
 
                 // Focus Event
                 LapysDevelopmentKit.objects.focusEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "FocusEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.focusEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.focusEvent, "prototype");
 
                 // Font Face Set Load Event
                 LapysDevelopmentKit.objects.fontFaceSetLoadEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "FontFaceSetLoadEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.fontFaceSetLoadEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.fontFaceSetLoadEvent, "prototype");
 
                 // Gain Node
                 LapysDevelopmentKit.objects.gainNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "GainNode");
@@ -3851,21 +4310,33 @@
 
                 // Gamepad Event
                 LapysDevelopmentKit.objects.gamepadEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "GamepadEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.gamepadEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.gamepadEvent, "prototype");
 
                 // Hash Change Event
-                LapysDevelopmentKit.objects.hashChangeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "HashChangeEvent");
+                LapysDevelopmentKit.objects.hashChangeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "HashChangeEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.hashChangeEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.hashChangeEvent, "prototype");
 
                 // HTML All Collection
                 LapysDevelopmentKit.objects.htmlAllCollection = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLAllCollection", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlAllCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlAllCollection, "prototype");
 
                 // HTML Audio Element
-                LapysDevelopmentKit.objects.htmlAudioCollection = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLAudioCollection", STRICT = true);
+                LapysDevelopmentKit.objects.htmlAudioElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLAudioElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlAudioElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlAudioElement, "prototype");
 
                 // HTML Body Element
                 LapysDevelopmentKit.objects.htmlBodyElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLBodyElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlBodyElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlBodyElement, "prototype");
 
                 // HTML Collection
                 LapysDevelopmentKit.objects.htmlCollection = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLCollection", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlCollection, "prototype");
 
                 // HTML Element
                 LapysDevelopmentKit.objects.htmlElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLElement", STRICT = true);
@@ -3874,80 +4345,124 @@
 
                 // HTML Head Element
                 LapysDevelopmentKit.objects.htmlHeadElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLHeadElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlHeadElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlHeadElement, "prototype");
 
                 // HTML Image Element
                 LapysDevelopmentKit.objects.htmlImageElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLImageElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlImageElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlImageElement, "prototype");
 
                 // HTML Input Element
                 LapysDevelopmentKit.objects.htmlInputElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLInputElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlInputElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlInputElement, "prototype");
 
                 // HTML Internal Frame Element
                 LapysDevelopmentKit.objects.htmlIFrameElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLIFrameElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlIFrameElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlIFrameElement, "prototype");
 
                 // HTML HTML Element
                 LapysDevelopmentKit.objects.htmlHtmlElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLHtmlElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlHtmlElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlHtmlElement, "prototype");
 
                 // HTML Table Element
                 LapysDevelopmentKit.objects.htmlTableElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTableElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTableElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTableElement, "prototype");
 
                 // HTML Table Caption Element
                 LapysDevelopmentKit.objects.htmlTableCaptionElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTableCaptionElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTableCaptionElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTableCaptionElement, "prototype");
 
                 // HTML Table Cell Element
                 LapysDevelopmentKit.objects.htmlTableCellElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTableCellElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTableCellElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTableCellElement, "prototype");
 
                 // HTML Table Column Element
                 LapysDevelopmentKit.objects.htmlTableColumnElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTableColumnElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTableColumnElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTableColumnElement, "prototype");
 
                 // HTML Table Row Element
                 LapysDevelopmentKit.objects.htmlTableRowElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTableRowElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTableRowElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTableRowElement, "prototype");
 
                 // HTML Table Section Element
                 LapysDevelopmentKit.objects.htmlTableSectionElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTableSectionElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTableSectionElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTableSectionElement, "prototype");
 
                 // HTML Textarea Element
                 LapysDevelopmentKit.objects.htmlTextAreaElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTextAreaElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTextAreaElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTextAreaElement, "prototype");
 
                 // HTML Time Element
                 LapysDevelopmentKit.objects.htmlTimeElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTimeElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTimeElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTimeElement, "prototype");
 
                 // HTML Title Element
                 LapysDevelopmentKit.objects.htmlTitleElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLTitleElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlTitleElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlTitleElement, "prototype");
 
                 // HTML Script Element
                 LapysDevelopmentKit.objects.htmlScriptElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLScriptElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlScriptElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlScriptElement, "prototype");
 
                 // HTML Style Element
                 LapysDevelopmentKit.objects.htmlStyleElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLStyleElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlStyleElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlStyleElement, "prototype");
 
                 // HTML Unknown Element
                 LapysDevelopmentKit.objects.htmlUnknownElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLUnknownElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlUnknownElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlUnknownElement, "prototype");
 
                 // HTML Video Element
                 LapysDevelopmentKit.objects.htmlVideoElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLVideoElement", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.htmlVideoElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlVideoElement, "prototype");
 
                 // IDB Version Change Event
-                LapysDevelopmentKit.objects.iDBVersionChangeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "IDBVersionChangeEvent", STRICT = true);
+                LapysDevelopmentKit.objects.idbVersionChangeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "IDBVersionChangeEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.idbVersionChangeEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.idbVersionChangeEvent, "prototype");
 
                 // IIR Filter Node
-                LapysDevelopmentKit.objects.iIRFilterNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "IIRFilterNode");
+                LapysDevelopmentKit.objects.iirFilterNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "IIRFilterNode");
                     // Prototype
-                    LapysDevelopmentKit.objects.iIRFilterNodePrototype = LDKF.objectPrototypeGetProperty(LDKO.iIRFilterNode, "prototype");
+                    LapysDevelopmentKit.objects.iirFilterNodePrototype = LDKF.objectPrototypeGetProperty(LDKO.iirFilterNode, "prototype");
 
                 // Image
                 LapysDevelopmentKit.objects.image = (function() {
                     // Error Handling > Return
-                    try { return LDKT.getObjectNativeConstructorByName(GLOBAL, "Image") } catch (error) {}
+                    try { return LDKT.getObjectNativeConstructorByName(GLOBAL, "Image", STRICT = true) } catch (error) {}
 
                     // Return
                     return LDKT.getNativeConstructor(LDKF.objectPrototypeGetProperty(GLOBAL, "Image"), "HTMLImageElement", STRICT = true)
                 })();
+                    // Prototype
+                    LapysDevelopmentKit.objects.imagePrototype = LDKF.objectPrototypeGetProperty(LDKO.image, "prototype");
 
                 // Input Event
                 LapysDevelopmentKit.objects.inputEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "InputEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.inputEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.inputEvent, "prototype");
 
                 // Keyboard Event
                 LapysDevelopmentKit.objects.keyboardEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "KeyboardEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.keyboardEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.keyboardEvent, "prototype");
 
                 // Math
                 LapysDevelopmentKit.constants.math = (function() {
@@ -3971,15 +4486,28 @@
 
                 // Media Encrypted Event
                 LapysDevelopmentKit.objects.mediaEncryptedEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaEncryptedEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaEncryptedEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaEncryptedEvent, "prototype");
 
                 // Media Key Message Event
                 LapysDevelopmentKit.objects.mediaKeyMessageEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaKeyMessageEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaKeyMessageEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaKeyMessageEvent, "prototype");
 
                 // Media List
                 LapysDevelopmentKit.objects.mediaList = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaList", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaListPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaList, "prototype");
 
                 // Media Query List Event
                 LapysDevelopmentKit.objects.mediaQueryListEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaQueryListEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaQueryListEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaQueryListEvent, "prototype");
+
+                // Media Recorder Error Event
+                LapysDevelopmentKit.objects.mediaRecorderErrorEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaRecorderErrorEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaRecorderErrorEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaRecorderErrorEvent, "prototype");
 
                 // Media Stream Audio Destination Node
                 LapysDevelopmentKit.objects.mediaStreamAudioDestinationNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaStreamAudioDestinationNode");
@@ -3991,29 +4519,100 @@
                     // Prototype
                     LapysDevelopmentKit.objects.mediaStreamAudioSourceNodePrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaStreamAudioSourceNode, "prototype");
 
+                // Media Stream Error Event
+                LapysDevelopmentKit.objects.mediaStreamErrorEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaStreamErrorEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaStreamErrorEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaStreamErrorEvent, "prototype");
+
                 // Media Stream Event
                 LapysDevelopmentKit.objects.mediaStreamEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaStreamEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaStreamEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaStreamEvent, "prototype");
 
                 // Media Stream Track Event
                 LapysDevelopmentKit.objects.mediaStreamTrackEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaStreamTrackEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mediaStreamTrackEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaStreamTrackEvent, "prototype");
 
                 // Message Event
                 LapysDevelopmentKit.objects.messageEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MessageEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.messageEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.messageEvent, "prototype");
 
                 // MIDI Connection Event
-                LapysDevelopmentKit.objects.mIDIConnectionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MIDIConnectionEvent");
+                LapysDevelopmentKit.objects.midiConnectionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MIDIConnectionEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.midiConnectionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.midiConnectionEvent, "prototype");
 
                 // MIDI Message Event
-                LapysDevelopmentKit.objects.mIDIMessageEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MIDIMessageEvent");
+                LapysDevelopmentKit.objects.midiMessageEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MIDIMessageEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.midiMessageEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.midiMessageEvent, "prototype");
 
                 // Mouse Event
                 LapysDevelopmentKit.objects.mouseEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MouseEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.mouseEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mouseEvent, "prototype");
+
+                // Mouse Scroll Event
+                LapysDevelopmentKit.objects.mouseScrollEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MouseScrollEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.mouseScrollEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mouseScrollEvent, "prototype");
 
                 // Mouse Wheel
                 LapysDevelopmentKit.objects.mouseWheelEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MouseWheelEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.mouseWheelEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mouseWheelEvent, "prototype");
+
+                // MS DCC Event
+                LapysDevelopmentKit.objects.MSDCCEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSDCCEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSDCCEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSDCCEvent, "prototype");
+
+                // MS DSH Event
+                LapysDevelopmentKit.objects.MSDSHEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSDSHEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSDSHEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSDSHEvent, "prototype");
+
+                // MS Gesture Event
+                LapysDevelopmentKit.objects.MSGestureEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSGestureEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSGestureEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSGestureEvent, "prototype");
+
+                // MS Manipulation Event
+                LapysDevelopmentKit.objects.MSManipulationEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSManipulationEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSManipulationEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSManipulationEvent, "prototype");
+
+                // MS Media Key Message Event
+                LapysDevelopmentKit.objects.MSMediaKeyMessageEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSMediaKeyMessageEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSMediaKeyMessageEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSMediaKeyMessageEvent, "prototype");
+
+                // MS Media Key Needed Event
+                LapysDevelopmentKit.objects.MSMediaKeyNeededEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSMediaKeyNeededEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSMediaKeyNeededEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSMediaKeyNeededEvent, "prototype");
+
+                // MS Quality Event
+                LapysDevelopmentKit.objects.MSQualityEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSQualityEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSQualityEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSQualityEvent, "prototype");
+
+                // MS Site Mode Event
+                LapysDevelopmentKit.objects.MSSiteModeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSSiteModeEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSSiteModeEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSSiteModeEvent, "prototype");
+
+                // MS Video Receivers Event
+                LapysDevelopmentKit.objects.MSVideoReceiversEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MSVideoReceiversEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.MSVideoReceiversEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.MSVideoReceiversEvent, "prototype");
 
                 // Mutation Event
-                LapysDevelopmentKit.objects.mutationEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MediaEncryptedEvent", STRICT = true);
+                LapysDevelopmentKit.objects.mutationEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MutationEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.mutationEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.mutationEvent, "prototype");
 
                 // Named Node Map
                 LapysDevelopmentKit.objects.namedNodeMap = LDKT.getObjectNativeConstructorByName(GLOBAL, "NamedNodeMap", STRICT = true);
@@ -4029,8 +4628,15 @@
                 // Notification
                 LapysDevelopmentKit.objects.notification = LDKT.getObjectNativeConstructorByName(GLOBAL, "Notification");
 
+                // Notify Paint Event
+                LapysDevelopmentKit.objects.notifyPaintEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "NotifiyPaintEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.notifyPaintEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.notifyPaintEvent, "prototype");
+
                 // Offline Audio Completion Event
                 LapysDevelopmentKit.objects.offlineAudioCompletionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "OfflineAudioCompletionEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.offlineAudioCompletionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.offlineAudioCompletionEvent, "prototype");
 
                 // Oscillator Node
                 LapysDevelopmentKit.objects.oscillatorNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "OscillatorNode");
@@ -4039,6 +4645,8 @@
 
                 // Page Transition Event
                 LapysDevelopmentKit.objects.pageTransitionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PageTransitionEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.pageTransitionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.pageTransitionEvent, "prototype");
 
                 // Panner Node
                 LapysDevelopmentKit.objects.pannerNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "PannerNode", STRICT = true);
@@ -4047,6 +4655,8 @@
 
                 // Payment Request Update Event
                 LapysDevelopmentKit.objects.paymentRequestUpdateEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PaymentRequestUpdateEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.paymentRequestUpdateEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.paymentRequestUpdateEvent, "prototype");
 
                 // Performance
                 LapysDevelopmentKit.objects.performance = LDKT.getObjectNativeConstructorByName(GLOBAL, "Performance", STRICT = true);
@@ -4072,21 +4682,38 @@
 
                 // Pointer Event
                 LapysDevelopmentKit.objects.pointerEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PointerEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.pointerEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.pointerEvent, "prototype");
+
+                // Pop-Up Blocked Event
+                LapysDevelopmentKit.objects.popUpBlockedEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PopUpBlockedEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.popUpBlockedEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.popUpBlockedEvent, "prototype");
 
                 // Pop State Event
                 LapysDevelopmentKit.objects.popStateEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PopStateEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.popStateEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.popStateEvent, "prototype");
 
                 // Presentation Connection Available Event
                 LapysDevelopmentKit.objects.presentationConnectionAvailableEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PresentationConnectionAvailableEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.presentationConnectionAvailableEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.presentationConnectionAvailableEvent, "prototype");
 
                 // Presentation Connection Close Event
                 LapysDevelopmentKit.objects.presentationConnectionCloseEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PresentationConnectionCloseEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.presentationConnectionCloseEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.presentationConnectionCloseEvent, "prototype");
 
                 // Progress Event
                 LapysDevelopmentKit.objects.progressEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "ProgressEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.progressEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.progressEvent, "prototype");
 
                 // Promise Rejection Event
                 LapysDevelopmentKit.objects.promiseRejectionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PromiseRejectionEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.promiseRejectionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.promiseRejectionEvent, "prototype");
 
                 // Radio Node List
                 LapysDevelopmentKit.objects.radioNodeList = LDKT.getObjectNativeConstructorByName(GLOBAL, "RadioNodeList");
@@ -4100,30 +4727,72 @@
                     LapysDevelopmentKit.objects.regularExpressionPrototype = LDKF.objectPrototypeGetProperty(LDKO.regularExpression, "prototype");
 
                 // RTC Data Channel Event
-                LapysDevelopmentKit.objects.rTCDataChannelEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCDataChannelEvent");
+                LapysDevelopmentKit.objects.rtcDataChannelEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCDataChannelEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcDataChannelEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcDataChannelEvent, "prototype");
 
                 // RTC DTMF Tone Change Event
-                LapysDevelopmentKit.objects.rTCDTMFToneChangeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCDTMFToneChangeEvent");
+                LapysDevelopmentKit.objects.rtcDTMFToneChangeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCDTMFToneChangeEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcDTMFToneChangeEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcDTMFToneChangeEvent, "prototype");
 
-                // RTC Peer Connection Ice Event
-                LapysDevelopmentKit.objects.rTCPeerConnectionIceEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCPeerConnectionIceEvent");
+                // RTC DTLS Transport State Changed Event
+                LapysDevelopmentKit.objects.rtcDTLSTransportStateChangedEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCDtlsTransportStateChangedEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcDTLSTransportStateChangedEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcDTLSTransportStateChangedEvent, "prototype");
+
+                // RTC ICE Candidate Pair Changed Event
+                LapysDevelopmentKit.objects.rtcICECandidatePairChangedEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCIceCandidatePairChangedEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcICECandidatePairChangedEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcICECandidatePairChangedEvent, "prototype");
+
+                // RTC ICE Gatherer Event
+                LapysDevelopmentKit.objects.rtcICEGathererEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCIceGathererEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcICEGathererEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcICEGathererEvent, "prototype");
+
+                // RTC ICE Transport State Changed Event
+                LapysDevelopmentKit.objects.rtcICETransportStateChangedEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCIceTransportStateChangedEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcICETransportStateChangedEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcICETransportStateChangedEvent, "prototype");
+
+                // RTC Peer Connection ICE Event
+                LapysDevelopmentKit.objects.rtcPeerConnectionICEEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCPeerConnectionIceEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcPeerConnectionICEEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcPeerConnectionICEEvent, "prototype");
+
+                // RTC Source Conflict Event
+                LapysDevelopmentKit.objects.rtcSsrcConflictEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCSsrcConflictEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcSsrcConflictEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcSsrcConflictEvent, "prototype");
 
                 // RTC Track Event
-                LapysDevelopmentKit.objects.rTCTrackEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCTrackEvent");
+                LapysDevelopmentKit.objects.rtcTrackEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "RTCTrackEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.rtcTrackEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.rtcTrackEvent, "prototype");
 
                 // Script Processor Node
                 LapysDevelopmentKit.objects.scriptProcessorNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "ScriptProcessorNode");
                     // Prototype
                     LapysDevelopmentKit.objects.scriptProcessorNodePrototype = LDKF.objectPrototypeGetProperty(LDKO.scriptProcessorNode, "prototype");
 
+                // Scroll Area Event
+                LapysDevelopmentKit.objects.scrollAreaEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "ScrollAreaEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.scrollAreaEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.scrollAreaEvent, "prototype");
+
                 // Security Policy Violation Event
                 LapysDevelopmentKit.objects.securityPolicyViolationEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "SecurityPolicyViolationEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.securityPolicyViolationEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.securityPolicyViolationEvent, "prototype");
 
                 // Selection
                 LapysDevelopmentKit.objects.selection = LDKT.getObjectNativeConstructorByName(GLOBAL, "Selection", STRICT = true);
 
                 // Sensor Error Event
                 LapysDevelopmentKit.objects.sensorErrorEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "SensorErrorEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.sensorErrorEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.sensorErrorEvent, "prototype");
 
                 // Set Timeout
                 LapysDevelopmentKit.objects.setTimeout = (function() {
@@ -4141,9 +4810,13 @@
 
                 // Speech Synthesis Error Event
                 LapysDevelopmentKit.objects.speechSynthesisErrorEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "SpeechSyntehsisErrorEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.speechSynthesisErrorEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.speechSynthesisErrorEvent, "prototype");
 
                 // Speech Synthesis Event
                 LapysDevelopmentKit.objects.speechSynthesisEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "SpeechSynthesisEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.speechSynthesisEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.speechSynthesisEvent, "prototype");
 
                 // Stereo Panner Node
                 LapysDevelopmentKit.objects.stereoPannerNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "StereoPannerNode");
@@ -4152,33 +4825,62 @@
 
                 // Storage Event
                 LapysDevelopmentKit.objects.storageEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "StorageEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.storageEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.storageEvent, "prototype");
+
+                // SVG Zoom Event
+                LapysDevelopmentKit.objects.svgZoomEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "SVGZoomEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.svgZoomEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgZoomEvent, "prototype");
 
                 // Text
                 LapysDevelopmentKit.objects.text = LDKT.getObjectNativeConstructorByName(GLOBAL, "Text", STRICT = true);
 
                 // Text Event
                 LapysDevelopmentKit.objects.textEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "TextEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.textEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.textEvent, "prototype");
+
+                // Time Event
+                LapysDevelopmentKit.objects.timeEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "TimeEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.timeEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.timeEvent, "prototype");
 
                 // Touch
                 LapysDevelopmentKit.objects.touch = LDKT.getObjectNativeConstructorByName(GLOBAL, "Touch");
 
                 // Touch Event
                 LapysDevelopmentKit.objects.touchEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "TouchEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.touchEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.touchEvent, "prototype");
 
                 // Track Event
                 LapysDevelopmentKit.objects.trackEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "TrackEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.trackEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.trackEvent, "prototype");
 
                 // Transition Event
                 LapysDevelopmentKit.objects.transitionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "TransitionEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.transitionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.transitionEvent, "prototype");
 
                 // UI Event
-                LapysDevelopmentKit.objects.uIEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "UIEvent", STRICT = true);
+                LapysDevelopmentKit.objects.uiEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "UIEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.uiEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.uiEvent, "prototype");
 
                 // URL
                 LapysDevelopmentKit.objects.url = LDKT.getObjectNativeConstructorByName(GLOBAL, "URL", STRICT = true);
 
                 // USB Connection Event
-                LapysDevelopmentKit.objects.uSBConnectionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "USBConnectionEvent");
+                LapysDevelopmentKit.objects.usbConnectionEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "USBConnectionEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.usbConnectionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.usbConnectionEvent, "prototype");
+
+                // VR Display Event
+                LapysDevelopmentKit.objects.vrDisplayEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "VRDisplayEvent");
+                    // Prototype
+                    LapysDevelopmentKit.objects.vrDisplayEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.vrDisplayEvent, "prototype");
 
                 // Wave Shaper Node
                 LapysDevelopmentKit.objects.waveShaperNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "WaveShaperNode");
@@ -4187,18 +4889,262 @@
 
                 // Web GL Context Event
                 LapysDevelopmentKit.objects.webGLContextEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "WebGLContextEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.webGLContextEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.webGLContextEvent, "prototype");
 
                 // Webkit Speech Recognition Event
                 LapysDevelopmentKit.objects.webkitSpeechRecognitionEvent = LDKT.getNativeConstructor(LDKF.objectPrototypeGetProperty(GLOBAL, "webkitSpeechRecognitionEvent"), "SpeechRecognitionEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.webkitSpeechRecognitionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.webkitSpeechRecognitionEvent, "prototype");
 
                 // Wheel Event
                 LapysDevelopmentKit.objects.wheelEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "WheelEvent", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.wheelEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.wheelEvent, "prototype");
 
                 // Window
                 LapysDevelopmentKit.objects.window = LDKT.getObjectNativeConstructorByName(GLOBAL, "Window", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.windowPrototype = LDKF.objectPrototypeGetProperty(LDKO.window, "prototype");
 
                 // XML HTTP Request Event Target
-                LapysDevelopmentKit.objects.xmlHttpRequestEventTarget = LDKT.getObjectNativeConstructorByName(GLOBAL, "XMLHttpRequestEventTarget", STRICT = true);
+                LapysDevelopmentKit.objects.xmlHTTPRequestEventTarget = LDKT.getObjectNativeConstructorByName(GLOBAL, "XMLHttpRequestEventTarget", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.xmlHTTPRequestEventTargetPrototype = LDKF.objectPrototypeGetProperty(LDKO.xmlHTTPRequestEventTarget, "prototype");
+
+            /* Functions */
+                // Array > Prototype
+                    // Includes
+                    LapysDevelopmentKit.functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element) {
+                        // Initialization > Iterator
+                        var iterator = LDKF.arrayPrototypeLength(array);
+
+                        // Loop > Logic > Return
+                        while (iterator) if (array[iterator -= 1] === element) return true;
+
+                        // Return
+                        return false
+                    };
+
+                    // Last Index
+                    LapysDevelopmentKit.functions.arrayPrototypeLastIndex = function arrayPrototypeLastIndex(array, element) {
+                        // Initialization > Iterator
+                        var iterator = LDKF.arrayPrototypeLength(array);
+
+                        // Loop > Logic > Return
+                        while (iterator) if (array[iterator -= 1] === element) return iterator;
+
+                        // Return
+                        return -1
+                    };
+
+                // Console
+                    // Group
+                    LapysDevelopmentKit.functions.consoleGroup = function consoleGroup() {
+                        // Error Handling > (...)
+                        try { LDKO.consoleGroup.apply(LDKC.console, arguments) }
+                        catch (error) { LDKO.consoleGroup(LDKT.argumentsToConsoleStream.apply(LDKT, arguments)) }
+                    };
+
+                    // Group End
+                    LapysDevelopmentKit.functions.consoleGroupEnd = function consoleGroupEnd() { LDKO.consoleGroupEnd() };
+
+                    // Log
+                    LapysDevelopmentKit.functions.consoleLog = function consoleLog() {
+                        // Error Handling > (...)
+                        try { LDKO.consoleLog.apply(LDKC.console, arguments) }
+                        catch (error) { LDKO.consoleLog(LDKT.argumentsToConsoleStream.apply(LDKT, arguments)) }
+                    };
+
+                    // Warn
+                    LapysDevelopmentKit.functions.consoleWarn = function consoleWarn() {
+                        // Error Handling > (...)
+                        try { LDKO.consoleWarn.apply(LDKC.console, arguments) }
+                        catch (error) { LDKO.consoleWarn(LDKT.argumentsToConsoleStream.apply(LDKT, arguments)) }
+                    };
+
+                // Object > Prototype
+                    // Iterate --- NOTE (Lapys) -> Index all properties of an object.
+                    LapysDevelopmentKit.functions.objectPrototypeIterate = function objectPrototypeIterate(object, callback) {
+                        // Initialization > (Key, (Property) (Names, Symbols) (Iterator, Length), Properties (Iterator, Length))
+                        var key,
+                            propertyNames = (function() { try { return LDKF.objectGetOwnPropertyNames(object) || [] } catch (error) {} })(),
+                            propertyNamesIterator = LDKF.arrayPrototypeLength(propertyNames), propertyNamesLength = propertyNamesIterator,
+                            propertySymbols = (function() { try { return LDKF.isFunction(LDKO.objectGetOwnPropertySymbols) ? LDKF.objectGetOwnPropertySymbols(object) : [] } catch (error) {} })(),
+                            propertySymbolsIterator = LDKF.arrayPrototypeLength(propertySymbols), propertySymbolsLength = propertySymbolsIterator,
+                            property, properties = [],
+                            propertiesIterator = 0, propertiesLength;
+
+                        // Function
+                            // Add To Properties
+                            function addToProperties(key, value, descriptor) {
+                                // Logic
+                                if (!isIncludedToProperties(key)) {
+                                    // Initialization > (Descriptor, Value)
+                                    var descriptor = LDKF.objectGetOwnPropertyDescriptor(object, key), value = LDKF.objectPrototypeGetProperty(object, key);
+
+                                    // Update > Properties (Iterator)
+                                    properties[propertiesIterator] = {key: key, value: value, descriptor: descriptor};
+                                    propertiesIterator += 1
+                                }
+                            }
+
+                            function isIncludedToProperties(key) {
+                                // Initialization > Iterator
+                                var iterator = propertiesIterator;
+
+                                // Loop > Logic > Return
+                                while (iterator) if (properties[iterator -= 1] === key) return true;
+
+                                // Return
+                                return false
+                            }
+
+                        // Loop > Add to Properties
+                        while (propertyNamesIterator) addToProperties(propertyNames[propertyNamesLength - (propertyNamesIterator -= 1) - 1]);
+                        while (propertySymbolsIterator) addToProperties(propertySymbols[propertySymbolsLength - (propertySymbolsIterator -= 1) - 1]);
+
+                        // Update > Properties Length
+                        propertiesLength = propertiesIterator;
+
+                        // Loop
+                        while (propertiesIterator) {
+                            // Update > Property
+                            property = properties[propertiesLength - (propertiesIterator -= 1) - 1];
+
+                            // Callback
+                            callback(property.key, property.value, property.descriptor);
+                        }
+
+                        // Return
+                        return object
+                    };
+
+                // String > Prototype
+                    // Is Lower
+                    LapysDevelopmentKit.functions.stringPrototypeIsLower = function stringPrototypeIsLower(character) { return !LDKF.arrayPrototypeIncludes(LDKC.string.uppercaseAlphabets, character) };
+
+                    // Replace
+                    LapysDevelopmentKit.functions.stringPrototypeReplace = function stringPrototypeReplace(string, matches, replacement) {
+                        // Initialization > Length
+                        var length = LDKF.getArgumentsLength(arguments);
+
+                        // Logic
+                        if (length > 2) {
+                            // Initialization > (Iterator, Stream)
+                            var iterator = LDKF.stringPrototypeLength(string), stream = "";
+
+                            // Update > (Length, Matches)
+                            length = iterator;
+                            LDKF.isArray(matches) || (matches = [matches]);
+
+                            // Initialization > (Matches Length, Replacement Is String)
+                            var matchesLength = LDKF.arrayPrototypeLength(matches),
+                                replacementIsString = LDKF.isString(replacement);
+
+                            // Loop
+                            while (iterator > 0) {
+                                // Initialization > (Index, Match Found, Matches Iterator)
+                                var index = length - (iterator -= 1) - 1,
+                                    matchFound = false,
+                                    matchesIterator = matchesLength;
+
+                                // Loop
+                                while (matchesIterator) {
+                                    // Initialization > Match (Iterator)
+                                    var match = matches[matchesLength - (matchesIterator -= 1) - 1],
+                                        matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Initialization > Match Index
+                                        var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(string, index + matchIndex) != LDKF.stringPrototypeCharacterAt(match, matchIndex))
+                                            // [Break]
+                                            break;
+
+                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, index + matchIndex) == LDKF.stringPrototypeCharacterAt(match, matchIndex)) {
+                                            // Initialization > Former Index
+                                            var formerIndex = index;
+
+                                            // Update > (Index, Match Found, Stream) --- NOTE (Lapys) -> If the replacement is not a string, it is assumed to be a mapping callback.
+                                            index = length - (iterator -= matchLength - 1) - 1;
+                                            matchFound = true;
+                                            stream += replacementIsString ? replacement : replacement(match, formerIndex, string);
+
+                                            // [Break]
+                                            break
+                                        }
+                                    }
+                                }
+
+                                // Update > Stream
+                                matchFound || (stream += LDKF.stringPrototypeCharacterAt(string, index))
+                            }
+
+                            // Return
+                            return stream
+                        }
+
+                        else if (length == 2)
+                            // Return
+                            return LDKF.stringPrototypeReplace(string, matches, "");
+
+                        else if (length == 1)
+                            // Return
+                            return string;
+
+                        else
+                            // Return
+                            return ""
+                    };
+
+                    // Remove
+                    LapysDevelopmentKit.functions.stringPrototypeRemove = function stringPrototypeRemove(string, matches, replacement) { return LDKF.stringPrototypeReplace(string, matches, "") };
+
+                    // Start
+                    LapysDevelopmentKit.functions.stringPrototypeStart = function stringPrototypeStart(string) {
+                        // Initialization > (Iterator, Stream)
+                        var iterator = LDKF.stringPrototypeLength(string), length = iterator,
+                            stream = "";
+
+                        // Loop
+                        while (iterator) {
+                            // Initialization > (Index, (Previous) Character)
+                            var index = length - (iterator -= 1) - 1,
+                                character = LDKF.stringPrototypeCharacterAt(string, index), previousCharacter = LDKF.stringPrototypeCharacterAt(string, index - 1);
+
+                            // Update > Stream
+                            stream += (
+                                LDKF.stringPrototypeIsLower(character) &&
+                                ((previousCharacter != '_' && !LDKF.stringPrototypeIsAlphabet(previousCharacter) && !LDKF.stringPrototypeIsDigit(previousCharacter)) || !~index)
+                            ) ? LDKF.stringPrototypeToUpper(character) : character
+                        }
+
+                        // Return
+                        return stream
+                    };
+
+                    // To Upper
+                    LapysDevelopmentKit.functions.stringPrototypeToUpper = function stringPrototypeToUpper(string) {
+                        // Initialization > (Iterator, Length, Stream)
+                        var iterator = LDKF.stringPrototypeLength(string), length = iterator,
+                            stream = "";
+
+                        // Loop
+                        while (iterator) {
+                            // Initialization > (Character< Index)
+                            var character = LDKF.stringPrototypeCharacterAt(string, length - (iterator -= 1) - 1), index = LDKF.arrayPrototypeLastIndex(LDKC.string.lowercaseAlphabets, character);
+
+                            // Update > Character
+                            stream += ~index ? LDKC.string.uppercaseAlphabets[index] : character
+                        }
+
+                        // Return
+                        return stream
+                    };
 
     /* Function */
         // Initiate
@@ -4208,7 +5154,19 @@
         function UPDATE() {}
 
         // Terminate
-        function TERMINATE() { console.log(LapysJS) }
+        function TERMINATE() {
+            // Console > Group
+            LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "...");
+                // ... > Iterate > LapysJS
+                LDKF.objectPrototypeIterate(LapysJS, function(key, value, descriptor) {
+                    // Console > Log
+                    LDKF.consoleLog(LDKF.stringPrototypeReplace(LDKF.stringPrototypeStart(key), LDKC.string.uppercaseAlphabets, function(match) { return ' ' + match }), '=', value)
+                });
+
+                // Console > Log
+                LDKF.consoleLog('\n');
+            LDKF.consoleGroupEnd()
+        }
 
     // Initiate
     try { STATE || INITIATE() } catch (error) { STATE = -1 }
