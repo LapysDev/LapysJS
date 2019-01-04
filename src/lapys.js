@@ -4,164 +4,6 @@
     @version: 0.0.7
     @url: https://www.github.com/LapysDev/LapysJS
 
-    --- CODE ---
-        #Lapys:
-            - LapysJS
-                - allowAppModel
-                - allowGlobalObjects
-                - components
-                    -- Accordion
-                    -- Carousel
-                    -- Draggable
-                    -- Dropdown
-                    -- Dynamic Text
-                    -- Dynamic Time
-                    -- Marquee
-                    -- Media
-                        --- Audio
-                        --- Video
-                    -- Pagination
-                    -- Picture-in-Picture
-                    -- Scrollbar
-                    -- Toast
-                    -- Tooltip
-                    -- Table
-
-                - debugMode
-                - features
-                    -- focus-attribute
-                    -- momentum-scrolling
-                    -- smooth-scrolling
-                    -- script-attribute
-
-                - lockPrototype
-                - lockAllPrototypes
-
-            - app
-            - array
-            - Array.prototype.every
-            - Array.prototype.filter
-            - Array.prototype.forEach
-            - Array.prototype.includes
-            - Array.prototype.indexOf
-            - Array.prototype.lastIndexOf
-            - Array.prototype.map
-            - Array.prototype.reduce
-            - Array.prototype.reduceRight
-            - Array.prototype.some
-            - bits
-                -- and
-                -- or
-                -- shiftLeft
-                -- shiftRight
-                -- twosComplement
-
-            - bool
-                -- and
-                -- nand
-                -- or
-                -- nor
-                -- xnor
-                -- xor
-                -- not
-                    --- <sibling-properties>
-
-            - browser
-            - check
-            - copy
-            - createAttr
-            - createDocumentFragment
-            - createElement
-            - cut
-            - Date.prototype.now
-            - Date.prototype.toISOString
-            - download
-            - Element.prototype.momentumScrollIntoView
-            - exec
-            - file
-            - float
-            - freeInput
-            - func
-            - Function.prototype.bind
-            - int
-            - interval
-            - len
-            - Math
-                -- <LapysDevelopmentKit.math>
-            - max
-            - maxg
-            - min
-            - ming
-            - momentumScrollBy
-            - momentumScrollTo
-            - now // Opposite of `once`
-            - num
-            - Object.concat
-            - Object.create
-            - Object.defineProperty
-            - Object.getOwnPropertyDescriptor
-            - Object.getOwnPropertyDescriptors
-            - Object.getOwnPropertyNames
-            - Object.getOwnPropertyValues
-            - Object.getPrototypeOf
-            - Object.keys
-            - Object.prototype.def
-            - Object.prototype.desc
-            - Object.prototype.free
-            - Object.prototype.freeze
-            - Object.prototype.import
-            - Object.prototype.keys
-            - Object.prototype.melt
-            - Object.prototype.__proto__
-            - Object.prototype.__protoChain__
-            - Object.prototype.undef
-            - Object.prototype.values
-            - Object.setPrototypeOf
-            - Object.values
-            - Object.watch
-            - once
-            - onAttributeAdded
-            - onAttributeChange
-            - onAttributeCountChange
-            - onAttributeRemoved
-            - onDOMChange
-            - onDOMNodeAdded
-            - onDOMNodeCountChange
-            - onDOMNodeRemoved
-            - onDOMReady
-            - onElementAdded
-            - onElementChange
-            - onElementCountChange
-            - onElementRemoved
-            - onNodeAdded
-            - onNodeCountChange
-            - onNodeRemoved
-            - onPropertyAdded
-            - onPropertyChange
-            - onPropertyCountChange
-            - onPropertyRemoved
-            - paste
-            - print
-            - rand
-            - rands // Random Set
-            - regex
-            - repeat
-            - str
-            - strictInput
-            - String.prototype.trim
-            - String.prototype.trimEnd
-            - String.prototype.trimLeft
-            - String.prototype.trimRight
-            - String.prototype.trimStart
-            - sym
-            - timeout
-            - when
-            - $a
-            - $c
-            - $i
-            - $$
-            - $t
-
     --- NOTE ---
         #Lapys:
             - Supported development environments (in order priority):
@@ -5176,8 +5018,36 @@
                     // Allow Application Model
                     // Allow Global Objects
                     // Components
+                        // Accordion
+                        // Carousel
+                        // Draggable
+                        // Dropdown
+                        // Dynamic Text
+                        // Marquee
+                        // Media
+                            // Audio
+                            // Video
+                        // Pagination
+                        // Picture-in-Picture
+                        // Scrollbar
+                        // Toast
+                        // Tooltip
+                        // Table
+
                     // Debug Mode
                     // Features
+                        // Attributes
+                            // Focus
+                            // Script
+
+                        // Scrollbar
+                        // Scrolling
+                            // Fixed Long-Scrolling
+                            // Long Scrolling
+                            // Momentum Scrolling
+                            // Smooth Scrolling
+                            // Snap Scrolling
+
                     // Lock All Prototypes
                     // Lock Prototype
 
@@ -5201,6 +5071,30 @@
                     // Momentum Scroll By
                     // Momentum Scroll into View
                     // Momentum Scroll To
+
+                // Function > Prototype
+                    // Bind
+                    // Then
+
+                // Object > Prototype
+                    // Define
+                    // Describe
+                    // Free
+                    // Freeze
+                    // Import
+                    // Keys
+                    // Melt
+                    // __Prototype__
+                    // __Prototype Chain__
+                    // Undefine
+                    // Values
+
+                // String > Prototype
+                    // Trim
+                    // Trim End
+                    // Trim Left
+                    // Trim Right
+                    // Trim Start
 
             /* Global */
                 // Application
@@ -5233,7 +5127,74 @@
                 // Execute
                 // File
                 // Float
+                // Free Input
+                // Function
+                // Integer
+                // Interval
+                // Length
+                // Mathematics
+                // Maximum
+                // {Get} Maximum {Object}
+                // Minimum
+                // {Get} Minimum {Object}
+                // Momentum Scroll By
+                // Momentum Scroll Into View
+                // Momentum Scroll To
+                // Now
+                // Number
+                // Object
+                    // Concatenate
+                    // Define Property
+                    // Get Own Property Descriptor
+                    // Get Own Property Descriptors
+                    // Get Own Property Names
+                    // Get Own Property Symbols
+                    // Get Own Property Values
+                    // Get Prototype Of
+                    // Keys
+                    // Set Prototype Of
+                    // Watch
+
+                // Once
+                // On Attribute Added
+                // On Attribute Change
+                // On Attribute Count Change
+                // On Attribute Removed
+                // On DOM Change
+                // On DOM Node Added
+                // On DOM Node Count Change
+                // On DOM Node Removed
+                // On DOM Ready
+                // On Element Added
+                // On Element Change
+                // On Element Count Change
+                // On Element Removed
+                // On Node Added
+                // On Node Count Change
+                // On Node Removed
+                // On Property Added
+                // On Property Change
+                // On Property Count Change
+                // On Property Removed
                 // Paste
+                // Print
+                // Random
+                // Random Set
+                // Regular Expression
+                // Repeat
+                // String
+                // Strict Input
+                // Symbol
+                // Timeout
+                // When
+                // $a
+                // $c
+                // $d
+                // $i
+                // $n
+                // $p
+                // $t
+                // $$
         }
 
         /* Update
