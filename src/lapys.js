@@ -20,6 +20,7 @@
                     -- Media
                         --- Audio
                         --- Video
+                    -- Pagination
                     -- Picture-in-Picture
                     -- Scrollbar
                     -- Toast
@@ -64,6 +65,7 @@
                 -- xor
                 -- not
                     --- <sibling-properties>
+
             - browser
             - check
             - copy
@@ -253,6 +255,14 @@
 
         // State --- NOTE (Lapys) -> A zero state means null errors.
         STATE = 0,
+            // Initiate Error
+            INIT_ERROR_STATE = -2,
+
+            // Update Error
+            UPDATE_ERROR_STATE = -3,
+
+            // Terminate Error
+            TERMINATE_ERROR_STATE = -4,
 
         // Undefined --- NOTE (Lapys) -> Specify `undefined`.
         undefined = void 0,
@@ -4912,6 +4922,12 @@
                     // Prototype
                     LapysDevelopmentKit.objects.xmlHTTPRequestEventTargetPrototype = LDKF.objectPrototypeGetProperty(LDKO.xmlHTTPRequestEventTarget, "prototype");
 
+            /* Data */
+                // Clock --- CHECKPOINT ---
+                    // Frame
+                    // Stop
+                    // Tick
+
             /* Functions */
                 // Array > Prototype
                     // Includes
@@ -5147,35 +5163,130 @@
                     };
 
     /* Function */
-        // Initiate
-        function INITIATE() {}
+        /* Initiate
+                --- NOTE ---
+                    #Lapys:
+                        - Update LapysJS.
+                        - Modify object prototypes.
+                        - Initiate global functions and objects.
+        */
+        function INITIATE() {
+            /* Modification */
+                /* LapysJS */
+                    // Allow Application Model
+                    // Allow Global Objects
+                    // Components
+                    // Debug Mode
+                    // Features
+                    // Lock All Prototypes
+                    // Lock Prototype
 
-        // Update
-        function UPDATE() {}
+                // Array > Prototype
+                    // Every
+                    // Filter
+                    // For Each
+                    // Includes
+                    // Index Of
+                    // Last Index Of
+                    // Map
+                    // Reduce
+                    // Reduce Right
+                    // Some
 
-        // Terminate
-        function TERMINATE() {
-            // Console > Group
-            LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "...");
-                // ... > Iterate > LapysJS
-                LDKF.objectPrototypeIterate(LapysJS, function(key, value, descriptor) {
-                    // Console > Log
-                    LDKF.consoleLog(LDKF.stringPrototypeReplace(LDKF.stringPrototypeStart(key), LDKC.string.uppercaseAlphabets, function(match) { return ' ' + match }), '=', value)
-                });
+                // Date > Prototype
+                    // Now
+                    // To ISO String
 
-                // Console > Log
-                LDKF.consoleLog('\n');
-            LDKF.consoleGroupEnd()
+                // Element > Prototype
+                    // Momentum Scroll By
+                    // Momentum Scroll into View
+                    // Momentum Scroll To
+
+            /* Global */
+                // Application
+                // Array
+                // Bits
+                    // AND
+                    // OR
+                    // Shift Left
+                    // Shift Right
+                    // Two's Complement
+
+                // Boolean
+                    // AND
+                    // NAND
+                    // NOR
+                    // NOT
+                    // OR
+                    // XNOR
+                    // XOR
+
+                // Browser
+                // Check
+                // Chain
+                // Copy
+                // Create Attribute
+                // Create Document Fragment
+                // Create Element
+                // Cut
+                // Download
+                // Execute
+                // File
+                // Float
+                // Paste
         }
 
+        /* Update
+                --- NOTE ---
+                    #Lapys:
+                        - Integrate components.
+                        - Integrate features.
+        */
+        function UPDATE() {}
+
+        /* Terminate
+                --- NOTE ---
+                    #Lapys:
+                        - ...
+        */
+        function TERMINATE() {}
+
     // Initiate
-    try { STATE || INITIATE() } catch (error) { STATE = -1 }
+    try { STATE || INITIATE() } catch (error) { STATE = INIT_ERROR_STATE }
 
     // Update
-    try { STATE || UPDATE() } catch (error) { STATE = -2 }
+    try { STATE || UPDATE() } catch (error) { STATE = UPDATE_ERROR_STATE }
 
     // Terminate
-    try { STATE || TERMINATE() } catch (error) { STATE = -3 }
+    try { STATE || TERMINATE() } catch (error) { STATE = TERMINATE_ERROR_STATE }
+
+    // Logic --- CHECKPOINT ---
+    switch (STATE) {
+        // Initiate Error
+        case INIT_ERROR_STATE:
+            LDKF.error(
+                "Error in `INIT` phase"
+            );
+            break;
+
+        // Update Error
+        case UPDATE_ERROR_STATE: break;
+
+        // Terminate Error
+        case TERMINATE_ERROR_STATE:
+    }
+
+    // {Console Messages} Console > Group --- CHECKPOINT ---
+    LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "...");
+        // ... > Iterate > LapysJS
+        LDKF.objectPrototypeIterate(LapysJS, function(key, value, descriptor) {
+            // Console > Log
+            LDKF.consoleLog(LDKF.stringPrototypeReplace(LDKF.stringPrototypeStart(key), LDKC.string.uppercaseAlphabets, function(match) { return ' ' + match }), '=', value)
+        });
+
+        // Console > Log
+        LDKF.consoleLog('\n');
+    LDKF.consoleGroupEnd();
 
     // Return
     return STATE
