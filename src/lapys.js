@@ -98,7 +98,7 @@
         // State --- NOTE (Lapys) -> A zero state means null errors.
         STATE = 0,
             // Initiate Error
-            INIT_ERROR_STATE = -2,
+            INITIATE_ERROR_STATE = -2,
 
             // Update Error
             UPDATE_ERROR_STATE = -3,
@@ -1740,6 +1740,15 @@
 
                     // Define Property
                     LapysDevelopmentKit.functions.objectDefineProperty = function objectDefineProperty(object, key, descriptor) { return LDKO.objectDefineProperty(object, key, descriptor) };
+                        // Constant
+                        LapysDevelopmentKit.functions.objectDefineConstantProperty = function objectDefineConstantProperty(object, key, descriptor) {
+                            // Modification > Descriptor > (Configurable, Writable)
+                            LDKF.objectDefineProperty(descriptor, "configurable", {enumerable: true, value: false});
+                            LDKF.objectPrototypeHasProperty(descriptor, "value") && LDKF.objectDefineProperty(descriptor, "writable", {enumerable: true, value: false});
+
+                            // Modification > Object > [Key]
+                            LDKF.objectDefineProperty(object, key, descriptor)
+                        };
 
                     // Get Own Property Descriptor
                     LapysDevelopmentKit.functions.objectGetOwnPropertyDescriptor = function objectGetOwnPropertyDescriptor(object, propertyName) { return LDKO.objectGetOwnPropertyDescriptor(object, propertyName) };
@@ -2460,6 +2469,8 @@
             /* Objects */
                 // Array
                 LapysDevelopmentKit.objects.array = LDKF.objectPrototypeConstructor([]);
+                    // Prototype
+                    LapysDevelopmentKit.objects.arrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.array, "prototype");
 
                 // Function
                 LapysDevelopmentKit.objects["function"] = LDKF.objectPrototypeConstructor(function() {});
@@ -2967,7 +2978,10 @@
                 (function(options) {
                     // Function
                         // Add Setting
-                        function addSetting(setting, type) {
+                        function addSetting(setting, type, DEFAULT) {
+                            // Initialization > Has Default
+                            var hasDEFAULT = LDKF.arrayPrototypeLength(arguments) > 2;
+
                             // Update > Type
                             type || (type = "boolean");
 
@@ -2986,7 +3000,7 @@
                                         case "string": return LDKF.toString(setting)
                                     }
                                 })(LDKF.objectPrototypeGetProperty(options, setting)) :
-                                (function() {
+                                (hasDEFAULT ? DEFAULT : (function() {
                                     // Logic > Return
                                     switch (type) {
                                         // Boolean
@@ -2998,32 +3012,35 @@
                                         // String
                                         case "string": return ""
                                     }
-                                })()
+                                })())
                         }
 
                         // Add Settings List
-                        function addSettingsList(setting) {
+                        function addSettingsList(setting, DEFAULT) {
+                            // Initialization > Has Default
+                            var hasDEFAULT = LDKF.arrayPrototypeLength(arguments) > 1;
+
                             // Modification > (Lapys Development Kit > Settings) > [Setting]
                             LDKS[setting] = LDKF.objectPrototypeHasProperty(options, setting) ?
-                                (function(settingList) { return LDKF.isArray(settingList) ? settingList : [] })(LDKF.objectPrototypeGetProperty(options, setting)) :
-                                []
+                                (function(settingList) { return LDKF.isArray(settingList) ? settingList : (hasDEFAULT ? DEFAULT : []) })(LDKF.objectPrototypeGetProperty(options, setting)) :
+                                (hasDEFAULT ? DEFAULT : [])
                         }
 
                     // Modification > Options
                         // Components
-                        addSettingsList("components");
+                        addSettingsList("components", ["accordion", "audio", "carousel", "drag-drop", "dropdown", "dynamic-text", "dynamic-time", "marquee", "pagination", "picture-in-picture", "scrollbar", "table", "toast", "tooltip", "video"]);
 
                         // Debug Mode
                         addSetting("debugMode", "boolean");
 
                         // Features
-                        addSettingsList("features");
+                        addSettingsList("features", ["fixed-long-scrolling", "focus-attribute", "momentum-scrolling", "long-scrolling", "script-attribute", "smooth-scrolling", "snap-scrolling"]);
 
-                        // Global
-                        addSettingsList("global");
+                        // Global --- NOTE (Lapys) -> The global setting is really just an excuse to allow for an option to processing time.
+                        addSettingsList("global", ["app", '$']);
 
                         // Prototypes
-                        addSettingsList("prototypes")
+                        addSettingsList("prototypes", ["Array", "Date", "Element", "Function", "Object", "String"])
                 })(LDKF.objectPrototypeHasProperty(GLOBAL, "LapysJS") ? LDKF.objectPrototypeGetProperty(GLOBAL, "LapysJS") : {});
 
                 // Modification > Global > LapysJS
@@ -3062,6 +3079,76 @@
 
         /* Lapys Development Kit */
             /* Data */
+                // Class Object --- CHECKPOINT --- CITE (Lapys) -> `https://babeljs.io/`.
+                LapysDevelopmentKit.data.classObject = (function() {
+                    // Function
+                        // Get Constructor
+                        function getConstructor(self, call) {
+                            // Error
+                            self || LDKF.throwReferenceError("Must call super constructor in derived class before accessing `this` or returning from derived constructor");
+
+                            // Return
+                            return call && (typeof call == "object" || LDKF.isFunction(call)) ? call : self
+                        }
+
+                        // Inherit --- NOTE (Lapys) -> Mimic the `extends` keyword.
+                        function inherit(derivedClass, baseClass) {
+                            // Modification > Derived Class > Prototype --- NOTE (Lapys) -> Extend the Derived Class toward the Base Class.
+                            LDKF.objectDefineConstantProperty(derivedClass, "prototype", {
+                                // Value
+                                value: (function(prototype) {
+                                    // Modification > Prototype > Constructor --- NOTE (Lapys) -> As vanilla JavaScript does.
+                                    LDKF.objectDefineProperty(prototype, "constructor", {
+                                        // Configurable
+                                        configurable: true,
+
+                                        // Enumerable
+                                        enumerable: false,
+
+                                        // Value
+                                        value: derivedClass,
+
+                                        // Writable
+                                        writable: true
+                                    });
+
+                                    // Return
+                                    return prototype
+                                })(LDKF.objectCreate(LDKF.objectPrototypeGetProperty(baseClass, "prototype")))
+                            });
+
+                            // Modification > Derived Class > (...) --- NOTE (Lapys) -> Directly set the prototype.
+                            baseClass && LDKF.objectPrototypeSet__Proto__(derivedClass, baseClass)
+                        }
+
+                        // Test
+                        function test(instance, constructor) { (instance instanceof constructor) || LDKF.throwTypeError("Class constructor a cannot be invoked without 'new'") }
+
+                    // Return
+                    return function ClassObject() {
+                        // Return
+                        return (function(baseClass) {
+                            // Initialization > Constructor
+                            var constructor = function derivedClass() {
+                                // Test
+                                test(this, constructor);
+
+                                // Initialization > Target
+                                var that = getConstructor(this, LDKF.objectPrototypePrototype(constructor).call(this)), returnValue;
+
+                                // Return
+                                return returnValue = this, getConstructor(that, baseClass)
+                            };
+
+                            // Inherit
+                            inherit(constructor, baseClass);
+
+                            // Return
+                            return constructor
+                        })(function baseClass() { test(this, baseClass) })
+                    }
+                })();
+
                 // LapysJS Error
                 LapysDevelopmentKit.data.lapysJSError = (function() {
                     // Initialization > Constructor
@@ -5476,7 +5563,7 @@
         /* Initiate
                 --- NOTE ---
                     #Lapys:
-                        - Update LapysJS.
+                        - Update the LapysJS objects.
                         - Modify object prototypes.
                         - Initiate global functions and objects.
         */
@@ -5484,31 +5571,33 @@
             /* Modification */
                 /* LapysJS */
                     // Components --- CHECKPOINT ---
+                    LDKF.objectDefineConstantProperty(LapysJS, "components", {value: new (function LapysJSComponents() {})});
                         // Accordion
                         // Carousel
-                        // Draggable
-                        // Dropdown
+                        // Drag & Drop
+                        // Dropdown --- NOTE (Lapys) -> Or drop menu.
                         // Dynamic Text
-                        // Marquee
+                        // Dynamic Time
+                        // Marquee --- NOTE (Lapys) -> Or roulette.
                         // Media
                             // Audio
                             // Video
                         // Pagination
                         // Picture-in-Picture
                         // Scrollbar
+                        // Table --- NOTE (Lapys) -> Or snack bar.
                         // Toast
                         // Tooltip
-                        // Table
 
                     // Debug Mode
-                    LapysJS.debugMode = LDKS.debugMode;
+                    LDKF.objectDefineConstantProperty(LapysJS, "debugMode", {value: LDKS.debugMode});
 
-                    // Features
+                    // Features --- CHECKPOINT ---
+                    LDKF.objectDefineConstantProperty(LapysJS, "features", {value: LDKS.features});
                         // Attributes
                             // Focus
                             // Script
 
-                        // Scrollbar
                         // Scrolling
                             // Fixed Long-Scrolling
                             // Long Scrolling
@@ -5516,11 +5605,55 @@
                             // Smooth Scrolling
                             // Snap Scrolling
 
-                    // Global
-                    // Prototypes
+                    // Processing Duration
+                    LDKF.objectDefineConstantProperty(LapysJS, "processingDuration", {value: new (function LapysJSProcessingDuration() {})});
+                        // Initiate
+                        LapysJS.processingDuration.initiate = 0;
 
-                // Array > Prototype
-                    // Every
+                        // Update
+                        LapysJS.processingDuration.update = 0;
+
+                        // Terminate
+                        LapysJS.processingDuration.terminate = 0;
+
+                        // Value Of
+                        LDKF.objectDefineConstantProperty(LDKF.objectPrototypePrototype(LapysJS.processingDuration), "valueOf", {
+                            // Value
+                            value: function valueOf() { return LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate }
+                        });
+
+                // Array > Prototypes
+                if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
+                    // Every --- CHECKPOINT ---
+                    LDKF.objectPrototypeHasProperty(LDKO.arrayPrototype, "every") || LDKF.objectDefineProperty(LDKO.arrayPrototype, "every", {
+                        // Configurable
+                        configurable: true,
+
+                        // Enumerable
+                        enumerable: false,
+
+                        // Value
+                        value: function every(callback) {
+                            // Initialization > Target
+                            var that = this;
+
+                            // Logic
+                            if (LDKF.isArray(that)) {
+                                // Initialization > Iterator
+                                var iterator = LDKF.arrayPrototypeLength(that);
+
+                                // Loop > Logic > Return
+                                while (iterator) if (!callback(that[iterator -= 1])) return false
+                            }
+
+                            // Return
+                            return true
+                        },
+
+                        // Writable
+                        writable: true
+                    });
+
                     // Filter
                     // For Each
                     // Includes
@@ -5529,7 +5662,9 @@
                     // Map
                     // Reduce
                     // Reduce Right
+                    // Reverse
                     // Some
+                }
 
                 // Date > Prototype
                     // Now
@@ -5567,7 +5702,7 @@
             /* Global */
                 // Application
                 // Array
-                // Bits
+                // Bits --- NOTE (Lapys) -> Experimental.
                     // AND
                     // OR
                     // Shift Left
@@ -5695,7 +5830,7 @@
         function TERMINATE() {}
 
     // Initiate
-    try { STATE || INITIATE() } catch (error) { STATE = INIT_ERROR_STATE }
+    try { STATE || INITIATE() } catch (error) { STATE = INITIATE_ERROR_STATE }
 
     // Update
     try { STATE || UPDATE() } catch (error) { STATE = UPDATE_ERROR_STATE }
@@ -5706,7 +5841,7 @@
     // Logic --- CHECKPOINT (Lapys) -> Proper error names and actual errors printed to the console.
     switch (STATE) {
         // Initiate Error
-        case INIT_ERROR_STATE:
+        case INITIATE_ERROR_STATE:
             LDKF.error("Error initializing library");
             break;
 
@@ -5722,13 +5857,9 @@
 
     // {Console Messages} Console > Group
     LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "...");
-        // (...) > Iterate > LapysJS
-        LDKF.objectPrototypeIterate(LapysJS, function(key, value, descriptor) {
-            // Console > Log
-            LDKF.consoleLog(LDKF.stringPrototypeReplaceAll(LDKF.stringPrototypeStart(key), LDKC.string.uppercaseAlphabets, function(match) { return ' ' + match }), '=', value)
-        });
-
         // Console > Log
+        LDKF.consoleLog("Debug Mode =", LapysJS.debugMode);
+        LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.valueOf());
         LDKF.consoleLog('\n');
     LDKF.consoleGroupEnd();
 
