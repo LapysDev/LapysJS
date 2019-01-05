@@ -721,7 +721,7 @@
                     else throw LDKF.toDebugMessage.apply(LDKF, arguments)
                 };
                     // Library Is Pre-Installed
-                    LapysDevelopmentKit.functions.error.libraryIsPreInstalled = function libraryIsPreInstalled() { return LDKF.error("Library is already installed") };
+                    LapysDevelopmentKit.functions.error.libraryIsPreInstalled = function libraryIsPreInstalled() { return LDKF.error("The library is already installed") };
 
                     // Native To Environment
                     LapysDevelopmentKit.functions.error.nativeToEnvironment = function nativeToEnvironment(feature) { return LDKF.error("The " + LDKF.toString(feature) + LDKI.messages.error.nativeToEnvironmentSuffix) };
@@ -1242,6 +1242,10 @@
                         if (LDKF.getArgumentsLength(arguments) === 3) return LDKF.objectPrototypeSetProperty(object, {name: property, value: value});
                         else try { return object[property.name] = property.value } catch (error) {}
                     };
+                        // Innumerable Variable
+                        LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty = function objectSetInnumerableVariableProperty(object, key, value) { LDKF.objectDefineProperty(object, key, {configurable: true, enumerable: false, value: value, writable: true}) };
+                            // When Property Is Void
+                            LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty.whenPropertyIsVoid = function whenPropertyIsVoid(object, key, value) { LDKF.objectPrototypeHasProperty(object, key) || LDKF.objectSetInnumerableVariableProperty(object, key, value) };
 
                 // Function > Prototype
                     // Get Syntax Type
@@ -2968,11 +2972,11 @@
         /* Global */
             /* LapysJS --- NOTE (Lapys) -> Initial test for if the library is pre-installed here. */
             (function() {
-                // Error --- CHECKPOINT (Lapys) -> Test if LapysJS is installed or not.
-                (function() {
+                // Error
+                (function(LapysJS) {
                     // Return
-                    return false
-                })() && LDKF.error.libraryIsPreInstalled();
+                    return typeof LapysJS == "object" && LDKF.isConstructible(LapysJS) && LDKF.toString(LapysJS) == "LapysJS v" + VERSION && LDKF.isVoid(LDKF.objectPrototypeGetProperty(LapysJS, "constructor"))
+                })(LDKF.objectPrototypeGetProperty(GLOBAL, "LapysJS")) && LDKF.error.libraryIsPreInstalled();
 
                 // (...) --- NOTE (Lapys) -> Update the Lapys Development Kit settings.
                 (function(options) {
@@ -3056,8 +3060,30 @@
                         // Function > LapysJS --- NOTE (Lapys) -> Constructor...
                         function LapysJS() {};
 
-                        // Modification > LapysJS > Prototype
-                        LapysJS.prototype = {tmp: {}};
+                        // Modification > LapysJS > Prototype --- NOTE (Lapys) -> Made a finicky as wanted, in this case: making the constructor and prototype `undefined`.
+                        LapysJS.prototype = (function() {
+                            // Initialization > Prototype
+                            var prototype = new ((function() {
+                                // Initialization > Constructor
+                                var constructor = function() {};
+
+                                // Modification > Constructor > Prototype
+                                constructor.prototype = {constructor: undefined};
+
+                                // Return
+                                return constructor
+                            })());
+
+                            // Modification > Prototype
+                                // Temporary
+                                prototype.tmp = {};
+
+                                // To String
+                                prototype.toString = function toString() { return "LapysJS v" + VERSION };
+
+                            // Return
+                            return prototype
+                        })();
 
                         // Return
                         return LapysJS
@@ -3079,7 +3105,7 @@
 
         /* Lapys Development Kit */
             /* Data */
-                // Class Object --- CHECKPOINT --- CITE (Lapys) -> `https://babeljs.io/`.
+                // Class Object --- CHECKPOINT --- NOTE (Lapys) -> Inspired by Babel.
                 LapysDevelopmentKit.data.classObject = (function() {
                     // Function
                         // Get Constructor
@@ -5624,37 +5650,25 @@
 
                 // Array > Prototypes
                 if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
-                    // Every --- CHECKPOINT ---
-                    LDKF.objectPrototypeHasProperty(LDKO.arrayPrototype, "every") || LDKF.objectDefineProperty(LDKO.arrayPrototype, "every", {
-                        // Configurable
-                        configurable: true,
+                    // Every
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "every", function every(callback) {
+                        // Initialization > Target
+                        var that = this;
 
-                        // Enumerable
-                        enumerable: false,
+                        // Logic
+                        if (LDKF.isArray(that)) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(that);
 
-                        // Value
-                        value: function every(callback) {
-                            // Initialization > Target
-                            var that = this;
+                            // Loop > Logic > Return
+                            while (iterator) if (!callback(that[iterator -= 1])) return false
+                        }
 
-                            // Logic
-                            if (LDKF.isArray(that)) {
-                                // Initialization > Iterator
-                                var iterator = LDKF.arrayPrototypeLength(that);
-
-                                // Loop > Logic > Return
-                                while (iterator) if (!callback(that[iterator -= 1])) return false
-                            }
-
-                            // Return
-                            return true
-                        },
-
-                        // Writable
-                        writable: true
+                        // Return
+                        return true
                     });
 
-                    // Filter
+                    // Filter --- CHECKPOINT ---
                     // For Each
                     // Includes
                     // Index Of
@@ -5859,7 +5873,7 @@
     LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "...");
         // Console > Log
         LDKF.consoleLog("Debug Mode =", LapysJS.debugMode);
-        LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.valueOf());
+        LDKF.consoleLog("Processing Duration =", (function(processingDuration) { return LDKF.isNumber(processingDuration) ? processingDuration : (LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate) })(LapysJS.processingDuration.valueOf()));
         LDKF.consoleLog('\n');
     LDKF.consoleGroupEnd();
 
