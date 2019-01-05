@@ -1227,6 +1227,15 @@
                     // Has Property
                     LapysDevelopmentKit.functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, propertyName) { try { return propertyName in object } catch (error) {} return false };
 
+                    // Set Properties
+                    LapysDevelopmentKit.functions.objectPrototypeSetProperties = function objectPrototypeSetProperties(object, properties) {
+                        // Initialization > Iterator
+                        var iterator = LDKF.arrayPrototypeLength(properties), length = iterator;
+
+                        // Loop > Modification > Object > (...)
+                        while (iterator) LDKF.objectPrototypeSetProperty(object, properties[length - (iterator -= 1) - 1])
+                    };
+
                     // Set Property
                     LapysDevelopmentKit.functions.objectPrototypeSetProperty = function objectPrototypeSetProperty(object, property, value) {
                         // Logic > (...)
@@ -2948,8 +2957,74 @@
         /* Global */
             /* LapysJS --- NOTE (Lapys) -> Initial test for if the library is pre-installed here. */
             (function() {
-                // Error
-                LDKF.objectPrototypeHasProperty(GLOBAL, "LapysJS") && LDKF.error.libraryIsPreInstalled();
+                // Error --- CHECKPOINT (Lapys) -> Test if LapysJS is installed or not.
+                (function() {
+                    // Return
+                    return false
+                })() && LDKF.error.libraryIsPreInstalled();
+
+                // (...) --- NOTE (Lapys) -> Update the Lapys Development Kit settings.
+                (function(options) {
+                    // Function
+                        // Add Setting
+                        function addSetting(setting, type) {
+                            // Update > Type
+                            type || (type = "boolean");
+
+                            // Modification > (Lapys Development Kit > Settings) > [Setting]
+                            LDKS[setting] = LDKF.objectPrototypeHasProperty(options, setting) ?
+                                (function(setting) {
+                                    // Logic > Return
+                                    switch (type) {
+                                        // Boolean
+                                        case "boolean": return !!setting; break;
+
+                                        // Number
+                                        case "number": return LDKF.toNumber(setting); break;
+
+                                        // String
+                                        case "string": return LDKF.toString(setting)
+                                    }
+                                })(LDKF.objectPrototypeGetProperty(options, setting)) :
+                                (function() {
+                                    // Logic > Return
+                                    switch (type) {
+                                        // Boolean
+                                        case "boolean": return false; break;
+
+                                        // Number
+                                        case "number": return 0; break;
+
+                                        // String
+                                        case "string": return ""
+                                    }
+                                })()
+                        }
+
+                        // Add Settings List
+                        function addSettingsList(setting) {
+                            // Modification > (Lapys Development Kit > Settings) > [Setting]
+                            LDKS[setting] = LDKF.objectPrototypeHasProperty(options, setting) ?
+                                (function(settingList) { return LDKF.isArray(settingList) ? settingList : [] })(LDKF.objectPrototypeGetProperty(options, setting)) :
+                                []
+                        }
+
+                    // Modification > Options
+                        // Components
+                        addSettingsList("components");
+
+                        // Debug Mode
+                        addSetting("debugMode", "boolean");
+
+                        // Features
+                        addSettingsList("features");
+
+                        // Global
+                        addSettingsList("global");
+
+                        // Prototypes
+                        addSettingsList("prototypes")
+                })(LDKF.objectPrototypeHasProperty(GLOBAL, "LapysJS") ? LDKF.objectPrototypeGetProperty(GLOBAL, "LapysJS") : {});
 
                 // Modification > Global > LapysJS
                 LDKF.objectDefineProperty(GLOBAL, "LapysJS", {
@@ -4933,8 +5008,11 @@
                 // Cancel Animation Frame
                 LapysDevelopmentKit.functions.cancelAnimationFrame = function cancelAnimationFrame(handle) { return LDKO.cancelAnimationFrame.call(GLOBAL, handle) };
 
+                // Clear Interval --- WARN (Lapys) -> Only for semantics, defer to `LapysDevelopmentKit.functions.clearTimeout` instead.
+                LapysDevelopmentKit.functions.clearInterval = function clearInterval(timeoutId) { return LDKF.clearTimeout(timeoutId) };
+
                 // Clear Timeout
-                LapysDevelopmentKit.functions.clearTimeout = function clearTimeout(timeout) {
+                LapysDevelopmentKit.functions.clearTimeout = function clearTimeout(timeoutId) {
                     // Initialization > Iterator
                     var iterator = LDKF.arrayPrototypeLength(LDKI.data.lists.timeouts);
 
@@ -4944,9 +5022,9 @@
                         var storedTimeout = LDKI.data.lists.timeouts[iterator -= 1];
 
                         // Logic
-                        if (timeout == storedTimeout.initialId) {
-                            // Update > (Timeout, Lapys Development Kit > Information > Data > Lists > Timeouts)
-                            timeout = storedTimeout.currentId;
+                        if (timeoutId == storedTimeout.initialId) {
+                            // Update > (Timeout ID, (Lapys Development Kit > Information > Data > Lists) > Timeouts)
+                            timeoutId = storedTimeout.currentId;
                             LDKI.data.lists.timeouts[iterator] = null;
 
                             // [Break]
@@ -4956,8 +5034,8 @@
 
                     // Return
                     return LDKO.clearTimeout.call === LDKO.functionPrototypeCall ?
-                        LDKO.clearTimeout.call(GLOBAL, timeout) :
-                        LDKO.clearTimeout(timeout)
+                        LDKO.clearTimeout.call(GLOBAL, timeoutId) :
+                        LDKO.clearTimeout(timeoutId)
                 };
 
                 // Console
@@ -5071,7 +5149,14 @@
                 };
 
                 // Set Timeout
-                LapysDevelopmentKit.functions.setTimeout = function setTimeout(method, delay) { return LDKO.setTimeout.call === LDKO.functionPrototypeCall ? LDKO.setTimeout.call(GLOBAL, method, delay) : LDKO.setTimeout(method, delay) };
+                LapysDevelopmentKit.functions.setTimeout = function setTimeout(method, delay) {
+                    // Initialization > Timeout (ID)
+                    var timeout = function() { method(); LDKF.clearTimeout(timeoutId) },
+                        timeoutId =  LDKO.setTimeout.call === LDKO.functionPrototypeCall ? LDKO.setTimeout.call(GLOBAL, timeout, delay) : LDKO.setTimeout(timeout, delay);
+
+                    // Return
+                    return timeoutId
+                };
 
                 // String > Prototype
                     // Character Code At
@@ -5203,7 +5288,7 @@
                     };
 
             /* Data */
-                // Clock --- CHECKPOINT ---
+                // Clock
                 LapysDevelopmentKit.data.clock = (function() {
                     // Initialization > Constructor
                     var constructor = function Clock() {
@@ -5398,9 +5483,7 @@
         function INITIATE() {
             /* Modification */
                 /* LapysJS */
-                    // Allow Application Model
-                    // Allow Global Objects
-                    // Components
+                    // Components --- CHECKPOINT ---
                         // Accordion
                         // Carousel
                         // Draggable
@@ -5418,6 +5501,8 @@
                         // Table
 
                     // Debug Mode
+                    LapysJS.debugMode = LDKS.debugMode;
+
                     // Features
                         // Attributes
                             // Focus
@@ -5431,8 +5516,8 @@
                             // Smooth Scrolling
                             // Snap Scrolling
 
-                    // Lock All Prototypes
-                    // Lock Prototype
+                    // Global
+                    // Prototypes
 
                 // Array > Prototype
                     // Every
@@ -5514,6 +5599,20 @@
                 // Function
                 // Integer
                 // Interval
+                // Lapys Development Kit
+                LapysJS.debugMode && LDKF.objectPrototypeSetProperties(GLOBAL, [
+                    {name: "LapysDevelopmentKit", value: LapysDevelopmentKit}, {name: "LDK", value: LapysDevelopmentKit},
+                    {name: "LDKC", value: LapysDevelopmentKit.constants},
+                    {name: "LDKD", value: LapysDevelopmentKit.data},
+                    {name: "LDKE", value: LapysDevelopmentKit.environment},
+                    {name: "LDKF", value: LapysDevelopmentKit.functions},
+                    {name: "LDKI", value: LapysDevelopmentKit.information},
+                    {name: "LDKM", value: LapysDevelopmentKit.math},
+                    {name: "LDKO", value: LapysDevelopmentKit.objects},
+                    {name: "LDKS", value: LapysDevelopmentKit.settings},
+                    {name: "LDKT", value: LapysDevelopmentKit.test}
+                ]);
+
                 // Length
                 // Mathematics
                 // Maximum
@@ -5604,24 +5703,24 @@
     // Terminate
     try { STATE || TERMINATE() } catch (error) { STATE = TERMINATE_ERROR_STATE }
 
-    // Logic --- CHECKPOINT ---
+    // Logic --- CHECKPOINT (Lapys) -> Proper error names and actual errors printed to the console.
     switch (STATE) {
         // Initiate Error
         case INIT_ERROR_STATE:
-            LDKF.error("Error in `INIT` phase");
+            LDKF.error("Error initializing library");
             break;
 
         // Update Error
         case UPDATE_ERROR_STATE:
-            LDKF.error("Error in `UPDATE` phase");
+            LDKF.error("Error integrating library runtime");
             break;
 
         // Terminate Error
         case TERMINATE_ERROR_STATE:
-            LDKF.error("Error in `TERMINATE` phase");
+            LDKF.error("Error completing library integration");
     }
 
-    // {Console Messages} Console > Group --- CHECKPOINT ---
+    // {Console Messages} Console > Group
     LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "...");
         // (...) > Iterate > LapysJS
         LDKF.objectPrototypeIterate(LapysJS, function(key, value, descriptor) {
@@ -5632,13 +5731,6 @@
         // Console > Log
         LDKF.consoleLog('\n');
     LDKF.consoleGroupEnd();
-
-    GLOBAL.LDK = LDK;
-    GLOBAL.LDKI = LDKI;
-    GLOBAL.LDKC = LDKC;
-    GLOBAL.LDKF = LDKF;
-    GLOBAL.LDKM = LDKM;
-    GLOBAL.LDKO = LDKO;
 
     // Return
     return STATE
