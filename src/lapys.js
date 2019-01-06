@@ -987,6 +987,21 @@
                     // Is Numeric
                     LapysDevelopmentKit.functions.stringPrototypeIsNumeric = function stringPrototypeIsNumeric(string) { var iterator = LDKF.stringPrototypeLength(string); while (iterator) if (!LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, iterator -= 1))) return false; return true };
 
+                    // Is Variable Character
+                    LapysDevelopmentKit.functions.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(character) {
+                        // Return
+                        return LDKF.arrayPrototypeIncludes(LDKC.string.variableCharacters, character) || (function() {
+                            // Initialization > Is Variable Character
+                            var isVariableCharacter = true;
+
+                            // Error Handling > (...)
+                            try { LDKF.eval("var " + character) } catch (error) { isVariableCharacter = false }
+
+                            // Return
+                            return isVariableCharacter
+                        })()
+                    };
+
                     // Slice
                     LapysDevelopmentKit.functions.stringPrototypeSlice = function stringPrototypeSlice(string, begin, end) {
                         // Initialization > ((Arguments) Length, Series, Stream)
@@ -2658,7 +2673,7 @@
 
             /* Functions */
                 // Evaluate
-                LapysDevelopmentKit.functions.eval = function eval(source) { return LDKO.eval(source) };
+                LapysDevelopmentKit.functions.eval = function evaluate(source) { return LDKO.eval(source) };
 
             /* Objects */
                 // Abort Error
@@ -2969,6 +2984,108 @@
                     return hasClassKeyword
                 })();
 
+            /* Functions */
+                // Create Function --- CHECKPOINT ---
+                LapysDevelopmentKit.functions.createFunction = function createFunction(name, options, body) {
+                    // Initialization > Length
+                    var length = LDKF.getArgumentsLength(arguments);
+
+                    // Logic
+                    if (!length)
+                        // Return
+                        return LDKF.eval("function() {}");
+
+                    else if (length == 1)
+                        // Return
+                        return LDKF.eval("function " + name + "() {}");
+
+                    else {
+                        var source = "";
+
+                        name = name ? LDKF.toString(name) : "";
+
+                        LDKF.isString(options) && (options = {params: [options]});
+                        LDKF.isArray(options) && (options = {params: options});
+                        LDKF.isJSON(options) ?
+                            (
+                                !LDKF.objectPrototypeHasProperty(options, "params") &&
+                                !LDKF.objectPrototypeHasProperty(options, "type")
+                            ) && LDKF.error("The second argument given must either have a `params` or `type` property") :
+                            LDKF.error("The second argument must be options for the function or parameters");
+
+                        var paramsCount, params = LDKF.objectPrototypeHasProperty(options, "params") ? (function(parameters) {
+                            // Update > Parameters
+                            LDKF.isString(parameters) && (parameters = LDKF.objectPrototypeSetProperty(options, "params", [parameters]));
+
+                            // Initialization > (Iterator, Length, Source) --- NOTE (Lapys) -> Parameters Count gets updated here.
+                            var iterator = paramsCount = LDKF.arrayPrototypeLength(parameters), length = iterator, source = "";
+
+                            while (iterator) {
+                                var parameter = parameters[length - (iterator -= 1) - 1];
+                                try { LDKF.eval("(function(" + parameter + ") {})") }
+                                catch (error) { LDKF.error("Function parameter `" + parameter + "` is syntactically invalid: '" + LDKF.errorPrototypeGetMessage(error) + '\'') }
+                                source += parameter + (iterator ? ", " : "")
+                            }
+                            return source
+                        })(LDKF.objectPrototypeGetProperty(options, "params")) : "",
+                            type = LDKF.objectPrototypeHasProperty(options, "type") ? LDKF.objectPrototypeGetProperty(options, "type") : "default";
+
+                        // Logic
+                        if (type == "arrow") {
+                            // Update > Source
+                            source += paramsCount == 1 && (function(parameter) {
+                                // Initialization > Iterator
+                                var iterator = -1;
+
+                                // Loop
+                                while (true) {
+                                    // Initialization > Character
+                                    var character = LDKF.stringPrototypeCharacterAt(parameter, iterator += 1);
+
+                                    // Logic > Return
+                                    if (!character) return true;
+                                    if (character != ' ' && !LDKF.stringPrototypeIsVariableCharacter(character)) return character != '='
+                                }
+                            })(params) ? "" : '(';
+
+                            // Update > Source
+                            source += (params ? (params + (LDKF.stringPrototypeCharacterAt(source, 0) ? ')' : "")) : "()") + " => ";
+
+                            // Logic
+                            if (length != 2) {
+                                // Error Handling
+                                try {
+                                    // Execution
+                                    LDKF.eval(source + body)
+                                } catch (error) {
+                                    // Initialization > Delimiter
+                                    var delimter = LDKF.stringPrototypeIncludes(body, '\n') ? '\n' : ' ';
+
+                                    // Update > Body
+                                    body = '{' + delimter + body + delimter + '}'
+                                }
+
+                                // Update > Source
+                                source += body
+                            }
+
+                            else
+                                // Update > Source
+                                source += "{}"
+                        }
+
+                        else if (type == "class") {
+                            // Update > Source --- CHECKPOINT ---
+                            source += "class" + (name ? ' ' + name + ' ' : "") + "{ constructor() {"
+                        }
+
+                        else {}
+
+                        // Return
+                        return source
+                    }
+                };
+
         /* Global */
             /* LapysJS --- NOTE (Lapys) -> Initial test for if the library is pre-installed here. */
             (function() {
@@ -3057,8 +3174,8 @@
 
                     // Value
                     value: new ((function() {
-                        // Function > LapysJS --- NOTE (Lapys) -> Constructor...
-                        function LapysJS() {};
+                        // Initialization > Constructor
+                        var constructor = LDKF.createFunction("LapysJS");
 
                         // Modification > LapysJS > Prototype --- NOTE (Lapys) -> Made a finicky as wanted, in this case: making the constructor and prototype `undefined`.
                         LapysJS.prototype = (function() {
@@ -3212,6 +3329,9 @@
 
             /* Functions */
                 // Error > Prototype
+                    // Get Message
+                    LapysDevelopmentKit.functions.errorPrototypeGetMessage = function errorPrototypeGetMessage(error) { return LDKF.objectPrototypeHasProperty(error, "message") ? LDKF.objectPrototypeGetProperty(error, "message") : (LDKF.objectPrototypeHasProperty(error, "description") ? LDKF.objectPrototypeGetProperty(error, "description") : null) };
+
                     // Set Message
                     LapysDevelopmentKit.functions.errorPrototypeSetMessage = function errorPrototypeSetMessage(error, message) {
                         // Initialization > Former Message
@@ -5650,7 +5770,8 @@
 
                 // Array > Prototypes
                 if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
-                    // Every
+                    // Add To Back --- CHECKPOINT ---
+                    // Every --- CHECKPOINT ---
                     LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "every", function every(callback) {
                         // Initialization > Target
                         var that = this;
@@ -5669,6 +5790,26 @@
                     });
 
                     // Filter --- CHECKPOINT ---
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "filter", function filter(callback) {
+                        // Initialization > Target
+                        var that = this;
+
+                        // Logic
+                        if (LDKF.isArray(that)) {
+                            var filter = [], index = -1, iterator = LDKF.arrayPrototypeLength(that), length = iterator;
+
+                            while (iterator) {
+                                var element = that[length - (iterator -= 1) - 1];
+                                callback(element) && (filter[index += 1] = element)
+                            }
+
+                            return filter
+                        }
+
+                        // Return
+                        return []
+                    });
+
                     // For Each
                     // Includes
                     // Index Of
