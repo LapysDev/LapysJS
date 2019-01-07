@@ -3406,18 +3406,11 @@
                 // Is Application Cache Error Event
                 LapysDevelopmentKit.functions.isApplicationCacheErrorEvent = function isApplicationCacheErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.applicationCacheErrorEvent, LDKO.applicationCacheErrorEventPrototype) };
 
+                // Is Arguments --- CHECKPOINT ---
+                LapysDevelopmentKit.functions.isArguments = function isArguments(arg) { return LDKF.isJSON(arg) && (function(stream) { return stream == "[object Arguments]" || stream == "[object Object]" })(LDKF.toString(arg)) };
+
                 // Is Array-Like
-                LapysDevelopmentKit.functions.isArrayLike = function isArrayLike(arg) {
-                    // Return
-                    return LDKF.isArray(arg) ||
-                        LDKF.isBigInt64Array(arg) || LDKF.isBigUint64Array(arg) ||
-                        LDKF.isCSSNumericArray(arg) ||
-                        LDKF.isFloat32Array(arg) || LDKF.isFloat64Array(arg) ||
-                        LDKF.isInt8Array(arg) || LDKF.isInt16Array(arg) || LDKF.isInt32Array(arg) ||
-                        LDKF.isMIMETypeArray(arg) ||
-                        LDKF.isPluginArray(arg) ||
-                        LDKF.isUint8Array(arg) || LDKF.isUint8ClampedArray(arg) || LDKF.isUint16Array(arg) || LDKF.isUint32Array(arg)
-                };
+                LapysDevelopmentKit.functions.isArrayLike = function isArrayLike(arg) { return LDKF.isArray(arg) || LDKF.isStrictlyArrayLike(arg) };
 
                 // Is Attribute
                 LapysDevelopmentKit.functions.isAttribute = function isAttribute(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.attribute, LDKO.attributePrototype) };
@@ -3587,6 +3580,12 @@
                 // Is Hash Change Event
                 LapysDevelopmentKit.functions.isHashChangeEvent = function isHashChangeEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.hashChangeEvent, LDKO.hashChangeEventPrototype) };
 
+                // Is HTML All Collection
+                LapysDevelopmentKit.functions.isHTMLAllCollection = function isHTMLAllCollection(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.htmlAllCollection, LDKO.htmlAllCollectionPrototype) };
+
+                // Is HTML Collection
+                LapysDevelopmentKit.functions.isHTMLCollection = function isHTMLCollection(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.htmlCollection, LDKO.htmlCollectionPrototype) };
+
                 // Is HTML Document
                 LapysDevelopmentKit.functions.isHTMLDocument = function isHTMLDocument(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.htmlDocument, LDKO.htmlDocumentPrototype) };
 
@@ -3707,6 +3706,9 @@
                         LDKT.isConstructibleObject(arg, LDKO.node, LDKO.nodePrototype)
                 };
 
+                // Is Node List
+                LapysDevelopmentKit.functions.isNodeList = function isNodeList(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.nodeList, LDKO.nodeListPrototype) };
+
                 // Is Notify Paint Event
                 LapysDevelopmentKit.functions.isNotifyPaintEvent = function isNotifyPaintEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.notifyPaintEvent, LDKO.notifyPaintEventPrototype) };
 
@@ -3729,7 +3731,7 @@
                 LapysDevelopmentKit.functions.isPaymentRequestUpdateEvent = function isPaymentRequestUpdateEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.paymentRequestUpdateEvent, LDKO.paymentRequestUpdateEventPrototype) };
 
                 // Is Plugin Array
-                LapysDevelopmentKit.functions.pluginArray = function pluginArray(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.pluginArray, LDKO.pluginArrayPrototype) };
+                LapysDevelopmentKit.functions.isPluginArray = function isPluginArray(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.pluginArray, LDKO.pluginArrayPrototype) };
 
                 // Is Pointer Event
                 LapysDevelopmentKit.functions.isPointerEvent = function isPointerEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.pointerEvent, LDKO.pointerEventPrototype) };
@@ -3805,6 +3807,19 @@
 
                 // Is Storage Event
                 LapysDevelopmentKit.functions.isStorageEvent = function isStorageEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.storageEvent, LDKO.storageEventPrototype) };
+
+                // Is Strictly Array-Like
+                LapysDevelopmentKit.functions.isStrictlyArrayLike = function isStrictlyArrayLike(arg) {
+                    // Return
+                    return LDKF.isArguments(arg) ||
+                        LDKF.isBigInt64Array(arg) || LDKF.isBigUint64Array(arg) ||
+                        LDKF.isCSSNumericArray(arg) ||
+                        LDKF.isFloat32Array(arg) || LDKF.isFloat64Array(arg) ||
+                        LDKF.isInt8Array(arg) || LDKF.isInt16Array(arg) || LDKF.isInt32Array(arg) ||
+                        LDKF.isMIMETypeArray(arg) ||
+                        LDKF.isPluginArray(arg) ||
+                        LDKF.isUint8Array(arg) || LDKF.isUint8ClampedArray(arg) || LDKF.isUint16Array(arg) || LDKF.isUint32Array(arg)
+                };
 
                 // Is SVG Zoom Event
                 LapysDevelopmentKit.functions.isSVGZoomEvent = function isSVGZoomEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.svgZoomEvent, LDKO.svgZoomEventPrototype) };
@@ -4671,6 +4686,18 @@
                 LapysDevelopmentKit.objects.htmlAllCollection = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLAllCollection", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.htmlAllCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlAllCollection, "prototype");
+                        // Length
+                        LapysDevelopmentKit.objects.htmlAllCollectionPrototypeLengthDescriptor = (function(descriptor) {
+                            // Logic > Return
+                            if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
+                            else return {get: function length() {
+                                // Return
+                                return LDKF.isHTMLAllCollection(this) ? (function(length) {
+                                    // Return
+                                    return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`HTMLAllCollection.prototype.length` accessor")
+                                })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
+                            }}
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlAllCollectionPrototype, "length"));
 
                 // HTML Audio Element
                 LapysDevelopmentKit.objects.htmlAudioElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLAudioElement", STRICT = true);
@@ -4686,6 +4713,18 @@
                 LapysDevelopmentKit.objects.htmlCollection = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLCollection", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.htmlCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlCollection, "prototype");
+                        // Length
+                        LapysDevelopmentKit.objects.htmlCollectionPrototypeLengthDescriptor = (function(descriptor) {
+                            // Logic > Return
+                            if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
+                            else return {get: function length() {
+                                // Return
+                                return LDKF.isHTMLCollection(this) ? (function(length) {
+                                    // Return
+                                    return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`HTMLCollection.prototype.length` accessor")
+                                })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
+                            }}
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlCollectionPrototype, "length"));
 
                 // HTML Element
                 LapysDevelopmentKit.objects.htmlElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLElement", STRICT = true);
@@ -4902,6 +4941,18 @@
                 LapysDevelopmentKit.objects.mimeTypeArray = LDKT.getObjectNativeConstructorByName(GLOBAL, "MimeTypeArray");
                     // Prototype
                     LapysDevelopmentKit.objects.mimeTypeArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.mimeTypeArray, "prototype");
+                        // Length
+                        LapysDevelopmentKit.objects.mimeTypeArrayPrototypeLengthDescriptor = (function(descriptor) {
+                            // Logic > Return
+                            if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
+                            else return {get: function length() {
+                                // Return
+                                return LDKF.isMIMETypeArray(this) ? (function(length) {
+                                    // Return
+                                    return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`MimeTypeArray.prototype.length` accessor")
+                                })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
+                            }}
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.mimeTypeArrayPrototype, "length"));
 
                 // Mouse Event
                 LapysDevelopmentKit.objects.mouseEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MouseEvent", STRICT = true);
@@ -4978,6 +5029,20 @@
 
                 // Node List
                 LapysDevelopmentKit.objects.nodeList = LDKT.getObjectNativeConstructorByName(GLOBAL, "NodeList", STRICT = true);
+                    // Prototype
+                    LapysDevelopmentKit.objects.nodeListPrototype = LDKF.objectPrototypeGetProperty(LDKO.nodeList, "prototype");
+                        // Length
+                        LapysDevelopmentKit.objects.nodeListPrototypeLengthDescriptor = (function(descriptor) {
+                            // Logic > Return
+                            if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
+                            else return {get: function length() {
+                                // Return
+                                return LDKF.isNodeList(this) ? (function(length) {
+                                    // Return
+                                    return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`NodeList.prototype.length` accessor")
+                                })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
+                            }}
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.nodeListPrototype, "length"));
 
                 // Notification
                 LapysDevelopmentKit.objects.notification = LDKT.getObjectNativeConstructorByName(GLOBAL, "Notification");
@@ -5043,6 +5108,18 @@
                 LapysDevelopmentKit.objects.pluginArray = LDKT.getObjectNativeConstructorByName(GLOBAL, "PluginArray");
                     // Prototype
                     LapysDevelopmentKit.objects.pluginArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.pluginArray, "prototype");
+                        // Length
+                        LapysDevelopmentKit.objects.pluginArrayPrototypeLengthDescriptor = (function(descriptor) {
+                            // Logic > Return
+                            if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
+                            else return {get: function length() {
+                                // Return
+                                return LDKF.isPluginArray(this) ? (function(length) {
+                                    // Return
+                                    return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`PluginArray.prototype.length` accessor")
+                                })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
+                            }}
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.pluginArrayPrototype, "length"));
 
                 // Pointer Event
                 LapysDevelopmentKit.objects.pointerEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PointerEvent", STRICT = true);
@@ -5373,12 +5450,12 @@
 
                         // Logic
                         if (LDKF.isArrayLike(argument)) {
-                            // Initialization > (Iterator, Length)
-                            var iterator = LDKF.arrayLikePrototypeLength(argument), length = iterator;
+                            // Initialization > Argument (Iterator, Length)
+                            var argumentIterator = LDKF.arrayLikePrototypeLength(argument), argumentLength = argumentIterator;
 
                             // Loop > Update > Array --- CHECKPOINT (Lapys) -> Is there a performance overhead for using the `item` property.
-                            while (iterator)
-                                array[index += 1] = LDKF.objectPrototypeGetProperty(argument, length - (iterator -= 1) - 1)
+                            while (argumentIterator)
+                                array[index += 1] = LDKF.objectPrototypeGetProperty(argument, argumentLength - (argumentIterator -= 1) - 1)
                         }
 
                         else
@@ -5572,6 +5649,29 @@
                             return false
                         };
 
+                // Array-Like > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.arrayLikePrototypeLength = function arrayLikePrototypeLength(arrayLike) {
+                        // Logic
+                        if (LDKF.isArguments(arrayLike)) return LDKF.getArgumentsLength(arrayLike);
+                        else if (LDKF.isArray(arrayLike)) return LDKF.arrayPrototypeLength(arrayLike);
+                        else if (LDKF.isHTMLAllCollection(arrayLike)) return LDKF.htmlAllCollectionPrototypeLength(arrayLike);
+                        else if (LDKF.isHTMLCollection(arrayLike)) return LDKF.htmlCollectionPrototypeLength(arrayLike);
+                        else if (LDKF.isMIMETypeArray(arrayLike)) return LDKF.mimeTypeArrayPrototypeLength(arrayLike);
+                        else if (LDKF.isNodeList(arrayLike)) return LDKF.nodeListPrototypeLength(arrayLike);
+                        else if (LDKF.isPluginArray(arrayLike)) return LDKF.pluginArrayPrototypeLength(arrayLike);
+
+                        // Initialization > (Key, Length)
+                        var key, length = -1;
+
+                        // Loop > Update > Length
+                        for (key in arrayLike)
+                            LDKF.stringPrototypeIsNumeric(key) && (function(index) { (index > length) && (length = index) })(LDKF.toNumber(key));
+
+                        // Return
+                        return length + 1
+                    };
+
                 // Cancel Animation Frame
                 LapysDevelopmentKit.functions.cancelAnimationFrame = function cancelAnimationFrame(handle) { return LDKO.cancelAnimationFrame.call(GLOBAL, handle) };
 
@@ -5634,6 +5734,22 @@
                         catch (error) { LDKO.consoleWarn(LDKT.argumentsToConsoleStream.apply(LDKT, arguments)) }
                     };
 
+                // HTML All Collection > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.htmlAllCollectionPrototypeLength = function htmlAllCollectionPrototypeLength(htmlAllCollection) { return LDKO.htmlAllCollectionPrototypeLengthDescriptor.get.call(htmlAllCollection) };
+
+                // HTML Collection > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.htmlCollectionPrototypeLength = function htmlCollectionPrototypeLength(htmlCollection) { return LDKO.htmlCollectionPrototypeLengthDescriptor.get.call(htmlCollection) };
+
+                // MIME Type Array > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.mimeTypeArrayPrototypeLength = function mimeTypeArrayPrototypeLength(mimeTypeArray) { return LDKO.mimeTypeArrayPrototypeLengthDescriptor.get.call(mimeTypeArray) };
+
+                // Node List > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.nodeListPrototypeLength = function nodeListPrototypeLength(nodeList) { return LDKO.nodeListPrototypeLengthDescriptor.get.call(nodeList) };
+
                 // Object > Prototype
                     // Iterate --- NOTE (Lapys) -> Index all properties of an object.
                     LapysDevelopmentKit.functions.objectPrototypeIterate = function objectPrototypeIterate(object, callback) {
@@ -5690,6 +5806,10 @@
                         // Return
                         return object
                     };
+
+                // Plugin Array > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.pluginArrayPrototypeLength = function pluginArrayPrototypeLength(pluginArray) { return LDKO.pluginArrayPrototypeLengthDescriptor.get.call(pluginArray) };
 
                 // Request Animation Frame
                 LapysDevelopmentKit.functions.requestAnimationFrame = function requestAnimationFrame(method) { return LDKO.requestAnimationFrame.call(GLOBAL, method) };
