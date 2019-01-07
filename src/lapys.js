@@ -1223,8 +1223,23 @@
                     // Add To Front
                     LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, item) { array[LDKF.arrayPrototypeLength(array)] = item };
 
-                    // Length --- NOTE (Lapys) -> Luckily, the `for...in` statement is compatible with most modern browsers.
-                    LapysDevelopmentKit.functions.arrayPrototypeLength = function arrayPrototypeLength(array) { var key, length = 0; for (key in array) LDKF.stringPrototypeIsNumeric(key) && (length += 1); return length };
+                    /* Length
+                            --- NOTE ---
+                                #Lapys: Luckily, the `for...in` statement is compatible with most modern browsers.
+
+                            --- UPDATE REQUIRED ---
+                                #Lapys: Must be compatible with partially filled arrays (arrays with non-enumerable keys that have values).
+                    */
+                    LapysDevelopmentKit.functions.arrayPrototypeLength = function arrayPrototypeLength(array) {
+                        // Initialization > (Key, Length)
+                        var key, length = 0;
+
+                        // Loop > Update > Length
+                        for (key in array) LDKF.stringPrototypeIsNumeric(key) && (function(index) { (index > length) && (length = index) })(LDKF.toNumber(key));
+
+                        // Return
+                        return length + 1
+                    };
 
                 // Is Constructible
                 LapysDevelopmentKit.functions.isConstructible = function isConstructible(arg) { return !LDKF.isNonConstructible(arg) };
@@ -5244,6 +5259,32 @@
 
             /* Functions */
                 // Array > Prototype
+                    // Add To Front
+                    LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, element) {
+                        // Initialization > Length
+                        var length = LDKF.getArgumentsLength(arguments);
+
+                        // Logic
+                        if (length == 2)
+                            // Update > Array
+                            array[LDKF.arrayPrototypeLength(array)] = element;
+
+                        else if (length > 2) {
+                            // Initialization > (Index, Iterator)
+                            var index = LDKF.arrayPrototypeLength(array) - 1, iterator = 0;
+
+                            // Update > Length
+                            length -= 1;
+
+                            // Loop > Update > Array --- NOTE (Lapys) -> Iteration rather than recursion.
+                            while (iterator != length)
+                                array[index += 1] = arguments[iterator += 1]
+                        }
+
+                        // Return
+                        return array
+                    };
+
                     // Build
                     LapysDevelopmentKit.functions.arrayPrototypeBuild = function arrayPrototypeBuild(array, callback) {
                         // Initialization > (Iterator, Length)
@@ -5930,89 +5971,144 @@
                             value: function valueOf() { return LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate }
                         });
 
-                // Array > Prototypes
-                if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
-                    // Add To Back --- CHECKPOINT ---
+                // Array
+                    // Distinct --- CHECKPOINT ---
+                    // First --- CHECKPOINT ---
+                    // Last --- CHECKPOINT ---
 
-                    // Every
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "every", function every(callback) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeEvery(this, callback) : true
-                    });
+                    // Prototype
+                    if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
+                        // Add --- CHECKPOINT ---
+                        // Add To Back --- CHECKPOINT ---
+                        // Add To Front --- CHECKPOINT ---
+                        // Build --- CHECKPOINT ---
+                        // Construct --- CHECKPOINT ---
+                        // Crush --- CHECKPOINT ---
+                        // Cut --- CHECKPOINT ---
+                        // Cut Index --- CHECKPOINT ---
+                        // Distinct --- CHECKPOINT ---
 
-                    // Filter
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "filter", function filter(callback) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeFilter(this, callback) : []
-                    });
-
-                    // For Each
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "forEach", function forEach(callback) {
-                        // (...)
-                        LDKF.isArray(this) && LDKF.arrayPrototypeForEach(this, callback)
-                    });
-
-                    // Includes
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "includes", function includes(element) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeIncludes(this, element) : false
-                    });
-
-                    // Index Of
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "indexOf", function indexOf(element) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeIndex(this, element) : -1
-                    });
-
-                    // Last Index Of
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "lastIndexOf", function lastIndexOf(element) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeLastIndex(this, element) : -1
-                    });
-
-                    // Map
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "map", function map(callback) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeBuild(this, callback) : []
-                    });
-
-                    // Reduce
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
-                        // Logic > Return
-                        if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this))
-                            return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback);
-
-                        // Error
-                        LDKF.error("Reduce of empty array with no initial value")
-                    });
-
-                    // Reduce Right
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
-                        // Logic > Return
-                        if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this)) {
-                            // Update > Array
-                            array = LDKF.arrayPrototypeReverse(array);
-
+                        // Every
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "every", function every(callback) {
                             // Return
-                            return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback)
-                        }
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeEvery(this, callback) : true
+                        });
 
-                        // Error
-                        LDKF.error("Reduce of empty array with no initial value")
-                    });
+                        // Filter
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "filter", function filter(callback) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeFilter(this, callback) : []
+                        });
 
-                    // Reverse
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reverse", function reverse(callback) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeReverse(this, callback) : LDKO.object(this)
-                    });
+                        // Filter Left --- CHECKPOINT ---
+                        // Filter Right --- CHECKPOINT ---
+                        // First --- CHECKPOINT ---
 
-                    // Some
-                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "some", function some(callback) {
-                        // Return
-                        return LDKF.isArray(this) ? LDKF.arrayPrototypeSome(this, callback) : true
-                    })
-                }
+                        // For Each
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "forEach", function forEach(callback) {
+                            // (...)
+                            LDKF.isArray(this) && LDKF.arrayPrototypeForEach(this, callback)
+                        });
+
+                        // Free --- CHECKPOINT ---
+
+                        // Includes
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "includes", function includes(element) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeIncludes(this, element) : false
+                        });
+
+                        // Index Of
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "indexOf", function indexOf(element) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeIndex(this, element) : -1
+                        });
+
+                        // Insert --- CHECKPOINT ---
+                        // Is Filled With --- CHECKPOINT ---
+                        // Is Filled With Only --- CHECKPOINT ---
+                        // Last --- CHECKPOINT ---
+
+                        // Last Index Of
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "lastIndexOf", function lastIndexOf(element) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeLastIndex(this, element) : -1
+                        });
+
+                        // Map
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "map", function map(callback) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeBuild(this, callback) : []
+                        });
+
+                        // Pad --- CHECKPOINT ---
+                        // Pad Left --- CHECKPOINT ---
+                        // Pad Right --- CHECKPOINT ---
+
+                        // Reduce
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
+                            // Logic > Return
+                            if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this))
+                                return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback);
+
+                            // Error
+                            LDKF.error("Reduce of empty array with no initial value")
+                        });
+
+                        // Reduce Right
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
+                            // Logic > Return
+                            if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this)) {
+                                // Update > Array
+                                array = LDKF.arrayPrototypeReverse(array);
+
+                                // Return
+                                return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback)
+                            }
+
+                            // Error
+                            LDKF.error("Reduce of empty array with no initial value")
+                        });
+
+                        // Remove --- CHECKPOINT ---
+                        // Remove All --- CHECKPOINT ---
+                        // Remove Duplicated --- CHECKPOINT ---
+                        // Remove Duplicated From Back --- CHECKPOINT ---
+                        // Remove Duplicated From Front --- CHECKPOINT ---
+                        // Remove Duplicates --- CHECKPOINT ---
+                        // Remove Duplicates From Back --- CHECKPOINT ---
+                        // Remove Duplicates From Front --- CHECKPOINT ---
+                        // Remove From Back --- CHECKPOINT ---
+                        // Remove From Front --- CHECKPOINT ---
+                        // Remove Repeated --- CHECKPOINT ---
+                        // Remove Repeated From Back --- CHECKPOINT ---
+                        // Remove Repeated From Front --- CHECKPOINT ---
+                        // Remove Repeats --- CHECKPOINT ---
+                        // Replace --- CHECKPOINT ---
+                        // Replace All --- CHECKPOINT ---
+                        // Replace All From Back --- CHECKPOINT ---
+                        // Replace All From Front --- CHECKPOINT ---
+                        // Replace Duplicated --- CHECKPOINT ---
+                        // Replace Duplicated From Back --- CHECKPOINT ---
+                        // Replace Duplicated From Front --- CHECKPOINT ---
+                        // Replace Repeats --- CHECKPOINT ---
+
+                        // Reverse
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reverse", function reverse(callback) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeReverse(this, callback) : LDKO.object(this)
+                        });
+
+                        // Some
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "some", function some(callback) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeSome(this, callback) : true
+                        });
+
+                        // Trim --- CHECKPOINT ---
+                        // Trim Left --- CHECKPOINT ---
+                        // Trim Right --- CHECKPOINT ---
+                    }
 
                 // Date > Prototype
                     // Now
