@@ -5462,6 +5462,7 @@
                     return array
                 };
                     // Prototype
+                        // Add To Back --- CHECKPOINT ---
                         // Add To Front
                         LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, element) {
                             // Initialization > Length
@@ -5526,6 +5527,13 @@
                             return returnValue
                         };
 
+                        // Crush --- CHECKPOINT ---
+                        // Crush Left --- CHECKPOINT ---
+                        // Crush Right --- CHECKPOINT ---
+                        // Cut --- CHECKPOINT ---
+                        // Cut Index --- CHECKPOINT ---
+                        // Distinct --- CHECKPOINT ---
+
                         // Every
                         LapysDevelopmentKit.functions.arrayPrototypeEvery = function arrayPrototypeEvery(array, callback) {
                             // Initialization > Iterator
@@ -5557,6 +5565,9 @@
                             return filter
                         };
 
+                        // Filter Left --- CHECKPOINT ---
+                        // Filter Right --- CHECKPOINT ---
+
                         // For Each
                         LapysDevelopmentKit.functions.arrayPrototypeForEach = function arrayPrototypeForEach(array, callback) {
                             // Initialization > Iterator
@@ -5571,6 +5582,8 @@
                                 callback(array[index], index, array)
                             }
                         };
+
+                        // Free --- CHECKPOINT ---
 
                         // Includes
                         LapysDevelopmentKit.functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element) {
@@ -5602,6 +5615,9 @@
                             return -1
                         };
 
+                        // Insert --- CHECKPOINT ---
+                        // Is Filled With --- CHECKPOINT ---
+
                         // Last Index
                         LapysDevelopmentKit.functions.arrayPrototypeLastIndex = function arrayPrototypeLastIndex(array, element) {
                             // Initialization > Iterator
@@ -5613,6 +5629,33 @@
                             // Return
                             return -1
                         };
+
+                        // Only --- CHECKPOINT ---
+                        // Pad --- CHECKPOINT ---
+                        // Pad Left --- CHECKPOINT ---
+                        // Pad Right --- CHECKPOINT ---
+                        // Remove --- CHECKPOINT ---
+                        // Remove All --- CHECKPOINT ---
+                        // Remove Duplicated --- CHECKPOINT ---
+                        // Remove Duplicated From Back --- CHECKPOINT ---
+                        // Remove Duplicated From Front --- CHECKPOINT ---
+                        // Remove Duplicates --- CHECKPOINT ---
+                        // Remove Duplicates From Back --- CHECKPOINT ---
+                        // Remove Duplicates From Front --- CHECKPOINT ---
+                        // Remove From Back --- CHECKPOINT ---
+                        // Remove From Front --- CHECKPOINT ---
+                        // Remove Repeated --- CHECKPOINT ---
+                        // Remove Repeated From Back --- CHECKPOINT ---
+                        // Remove Repeated From Front --- CHECKPOINT ---
+                        // Remove Repeats --- CHECKPOINT ---
+                        // Replace --- CHECKPOINT ---
+                        // Replace All --- CHECKPOINT ---
+                        // Replace All From Back --- CHECKPOINT ---
+                        // Replace All From Front --- CHECKPOINT ---
+                        // Replace Duplicated --- CHECKPOINT ---
+                        // Replace Duplicated From Back --- CHECKPOINT ---
+                        // Replace Duplicated From Front --- CHECKPOINT ---
+                        // Replace Repeats --- CHECKPOINT ---
 
                         // Reverse
                         LapysDevelopmentKit.functions.arrayPrototypeReverse = function arrayPrototypeReverse(array) {
@@ -5663,6 +5706,10 @@
                             // Return
                             return array
                         };
+
+                        // Trim --- CHECKPOINT ---
+                        // Trim Left --- CHECKPOINT ---
+                        // Trim Right --- CHECKPOINT ---
 
                 // Array-Like > Prototype
                     // Length
@@ -6297,7 +6344,6 @@
 
                         // Insert --- CHECKPOINT ---
                         // Is Filled With --- CHECKPOINT ---
-                        // Is Filled With Only --- CHECKPOINT ---
                         // Last --- CHECKPOINT ---
 
                         // Last Index Of
@@ -6312,6 +6358,7 @@
                             return LDKF.isArray(this) ? LDKF.arrayPrototypeBuild(this, callback) : []
                         });
 
+                        // Only --- CHECKPOINT ---
                         // Pad --- CHECKPOINT ---
                         // Pad Left --- CHECKPOINT ---
                         // Pad Right --- CHECKPOINT ---
@@ -6330,7 +6377,7 @@
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
                             // Logic > Return
                             if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this)) {
-                                // Update > Array
+                                // Update > Array --- NOTE (Lapys) -> Cheap solutions.
                                 array = LDKF.arrayPrototypeReverse(array);
 
                                 // Return
