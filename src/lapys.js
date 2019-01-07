@@ -6,12 +6,8 @@
 
     --- NOTE ---
         #Lapys:
-            - Supported development environments (in order priority):
-                -- Google Chrome (browser)
-                -- Safari (browser)
-                -- UC Browser (browser)
-                -- Mozilla Firefox (browser)
-                -- Opera (browser)
+            - Supported development environments:
+                -- Android (browser)
                 -- Internet Explorer (browser)
                     --- Internet Explorer 5
                     --- Internet Explorer 6
@@ -20,25 +16,25 @@
                     --- Internet Explorer 9
                     --- Internet Explorer 10
                     --- Internet Explorer 11
+                -- Google Chrome (browser)
                 -- Microsoft Edge (browser)
-                -- Android (browser)
+                -- Mozilla Firefox (browser)
                 -- Node (development environment)
-                -- Tor (browser)
+                -- Opera (browser)
+                -- Safari (browser)
+                -- UC Browser (browser)
 
             - The library makes an effort to use only native features of JavaScript to allow for interoperable compatibility with legacy environments
                     and also avoids over-use (if any) of specific vendor (or engine-dependent) features (e.g.: The `requestAnimationFrame` function).
                     -- To compensate for the lack of modern JavaScript features in legacy environments, the library uses an LDK and intuitive solutions to bypass such problems,
                         that is not to say that such a solution is infallible or perfectly executable (e.g.: The `console` object's methods).
-                        --- Accessors for example are not available with some ECMAScript standards,
-                            so alternative features (such as functions) are in place for older environments and accessors are used typically with more modern standards (or APIs).
-
+                    -- Accessors for example are not available with some ECMAScript standards,
+                        so alternative features (such as functions) are in place for older environments and accessors are used typically with more modern standards (or APIs).
                     -- Another case scenario with varying JavaScript environments is the situation of immutable object properties (e.g.: `Arguments.prototype.length` and `<constructor>.prototype`).
-
             - Over its years of development, the library is still a bare-bones version of what it could be (and code could definitely be re-factored).
 
     --- UPDATE REQUIRED ---
         #Lapys:
-            - `Function.prototype.apply` and `Function.prototype.call` must be used non-natively from the LDK.
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
                 -- Samsung Internet --- NOTE (Lapys) -> Untested...
                 -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
@@ -726,7 +722,7 @@
                     // Native To Environment
                     LapysDevelopmentKit.functions.error.nativeToEnvironment = function nativeToEnvironment(feature) { return LDKF.error("The " + LDKF.toString(feature) + LDKI.messages.error.nativeToEnvironmentSuffix) };
 
-                // To Debug Message --- CHECKPOINT ---
+                // To Debug Message
                 LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(message) + LDKI.messages.debugging.suffix };
 
             /* Objects */
@@ -2673,7 +2669,7 @@
 
             /* Functions */
                 // Evaluate
-                LapysDevelopmentKit.functions.eval = function evaluate(source) { return LDKO.eval(source) };
+                LapysDevelopmentKit.functions.eval = function evaluate(source) { return LDKO.eval.call(GLOBAL, source) };
 
             /* Objects */
                 // Abort Error
@@ -3406,8 +3402,8 @@
                 // Is Application Cache Error Event
                 LapysDevelopmentKit.functions.isApplicationCacheErrorEvent = function isApplicationCacheErrorEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.applicationCacheErrorEvent, LDKO.applicationCacheErrorEventPrototype) };
 
-                // Is Arguments --- CHECKPOINT ---
-                LapysDevelopmentKit.functions.isArguments = function isArguments(arg) { return LDKF.isJSON(arg) && (function(stream) { return stream == "[object Arguments]" || stream == "[object Object]" })(LDKF.toString(arg)) };
+                // Is Arguments
+                LapysDevelopmentKit.functions.isArguments = function isArguments(arg) { return LDKF.objectPrototypeConstructor(arg) === LDKO.object && LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "callee")) && LDKF.objectPrototypeHasProperty(arg, "length") && (function(stream) { return stream == "[object Arguments]" || stream == "[object Object]" })(LDKF.toString(arg)) };
 
                 // Is Array-Like
                 LapysDevelopmentKit.functions.isArrayLike = function isArrayLike(arg) { return LDKF.isArray(arg) || LDKF.isStrictlyArrayLike(arg) };
@@ -4687,7 +4683,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.htmlAllCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlAllCollection, "prototype");
                         // Length
-                        LapysDevelopmentKit.objects.htmlAllCollectionPrototypeLengthDescriptor = (function(descriptor) {
+                        LapysDevelopmentKit.objects.htmlAllCollection && (LapysDevelopmentKit.objects.htmlAllCollectionPrototypeLengthDescriptor = (function(descriptor) {
                             // Logic > Return
                             if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
                             else return {get: function length() {
@@ -4697,7 +4693,7 @@
                                     return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`HTMLAllCollection.prototype.length` accessor")
                                 })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
                             }}
-                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlAllCollectionPrototype, "length"));
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlAllCollectionPrototype, "length")));
 
                 // HTML Audio Element
                 LapysDevelopmentKit.objects.htmlAudioElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLAudioElement", STRICT = true);
@@ -4938,11 +4934,11 @@
                     LapysDevelopmentKit.objects.midiMessageEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.midiMessageEvent, "prototype");
 
                 // MIME Type Array
-                LapysDevelopmentKit.objects.mimeTypeArray = LDKT.getObjectNativeConstructorByName(GLOBAL, "MimeTypeArray");
+                LapysDevelopmentKit.objects.mimeTypeArray = LDKT.getObjectNativeConstructorByName(GLOBAL, "MimeTypeArray", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.mimeTypeArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.mimeTypeArray, "prototype");
                         // Length
-                        LapysDevelopmentKit.objects.mimeTypeArrayPrototypeLengthDescriptor = (function(descriptor) {
+                        LapysDevelopmentKit.objects.mimeTypeArray && (LapysDevelopmentKit.objects.mimeTypeArrayPrototypeLengthDescriptor = (function(descriptor) {
                             // Logic > Return
                             if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
                             else return {get: function length() {
@@ -4952,7 +4948,7 @@
                                     return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`MimeTypeArray.prototype.length` accessor")
                                 })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
                             }}
-                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.mimeTypeArrayPrototype, "length"));
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.mimeTypeArrayPrototype, "length")));
 
                 // Mouse Event
                 LapysDevelopmentKit.objects.mouseEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "MouseEvent", STRICT = true);
@@ -5105,11 +5101,11 @@
                 })();
 
                 // Plugin Array
-                LapysDevelopmentKit.objects.pluginArray = LDKT.getObjectNativeConstructorByName(GLOBAL, "PluginArray");
+                LapysDevelopmentKit.objects.pluginArray = LDKT.getObjectNativeConstructorByName(GLOBAL, "PluginArray", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.pluginArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.pluginArray, "prototype");
                         // Length
-                        LapysDevelopmentKit.objects.pluginArrayPrototypeLengthDescriptor = (function(descriptor) {
+                        LapysDevelopmentKit.objects.pluginArray && (LapysDevelopmentKit.objects.pluginArrayPrototypeLengthDescriptor = (function(descriptor) {
                             // Logic > Return
                             if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
                             else return {get: function length() {
@@ -5119,7 +5115,7 @@
                                     return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`PluginArray.prototype.length` accessor")
                                 })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
                             }}
-                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.pluginArrayPrototype, "length"));
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.pluginArrayPrototype, "length")));
 
                 // Pointer Event
                 LapysDevelopmentKit.objects.pointerEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "PointerEvent", STRICT = true);
@@ -5328,16 +5324,16 @@
                     LapysDevelopmentKit.objects.transitionEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.transitionEvent, "prototype");
 
                 // Unsigned 8-Bit Integer Array
-                LapysDevelopmentKit.objects.uint8Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Uint8Array");
+                LapysDevelopmentKit.objects.uint8Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Uint8Array", STRICT = true);
 
                 // Unsigned 8-Bit Integer Clamped Array
                 LapysDevelopmentKit.objects.uint8ClampedArray = LDKT.getObjectNativeConstructorByName(GLOBAL, "Uint8ClampedArray");
 
                 // Unsigned 16-Bit Integer Array
-                LapysDevelopmentKit.objects.uint16Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Uint16Array");
+                LapysDevelopmentKit.objects.uint16Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Uint16Array", STRICT = true);
 
                 // Unsigned 32-Bit Integer Array
-                LapysDevelopmentKit.objects.uint32Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Uint32Array");
+                LapysDevelopmentKit.objects.uint32Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Uint32Array", STRICT = true);
 
                 // UI Event
                 LapysDevelopmentKit.objects.uiEvent = LDKT.getObjectNativeConstructorByName(GLOBAL, "UIEvent", STRICT = true);
@@ -5412,27 +5408,27 @@
                     LapysDevelopmentKit.objects.xmlHTTPRequestEventTargetPrototype = LDKF.objectPrototypeGetProperty(LDKO.xmlHTTPRequestEventTarget, "prototype");
 
                 // 8-Bit Integer Array
-                LapysDevelopmentKit.objects.int8Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Int8Array");
+                LapysDevelopmentKit.objects.int8Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Int8Array", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.int8ArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.int8Array, "prototype");
 
                 // 16-Bit Integer Array
-                LapysDevelopmentKit.objects.int16Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Int16Array");
+                LapysDevelopmentKit.objects.int16Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Int16Array", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.int16ArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.int16Array, "prototype");
 
                 // 32-Bit Float Array
-                LapysDevelopmentKit.objects.float32Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Float32Array");
+                LapysDevelopmentKit.objects.float32Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Float32Array", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.float32ArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.float32Array, "prototype");
 
                 // 32-Bit Integer Array
-                LapysDevelopmentKit.objects.int32Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Int32Array");
+                LapysDevelopmentKit.objects.int32Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Int32Array", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.int32ArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.int32Array, "prototype");
 
                 // 64-Bit Float Array
-                LapysDevelopmentKit.objects.float64Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Float64Array");
+                LapysDevelopmentKit.objects.float64Array = LDKT.getObjectNativeConstructorByName(GLOBAL, "Float64Array", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.float64ArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.float64Array, "prototype");
 
@@ -5453,9 +5449,8 @@
                             // Initialization > Argument (Iterator, Length)
                             var argumentIterator = LDKF.arrayLikePrototypeLength(argument), argumentLength = argumentIterator;
 
-                            // Loop > Update > Array --- CHECKPOINT (Lapys) -> Is there a performance overhead for using the `item` property.
-                            while (argumentIterator)
-                                array[index += 1] = LDKF.objectPrototypeGetProperty(argument, argumentLength - (argumentIterator -= 1) - 1)
+                            // Loop > Update > Array --- NOTE (Lapys) -> The Argument's native `item` method is not utilized here.
+                            while (argumentIterator) array[index += 1] = LDKF.objectPrototypeGetProperty(argument, argumentLength - (argumentIterator -= 1) - 1)
                         }
 
                         else
@@ -5467,7 +5462,7 @@
                     return array
                 };
                     // Prototype
-                        // Add To Front --- NOTE (Lapys) -> Update this method.
+                        // Add To Front
                         LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, element) {
                             // Initialization > Length
                             var length = LDKF.getArgumentsLength(arguments);
@@ -5485,8 +5480,7 @@
                                 length -= 1;
 
                                 // Loop > Update > Array --- NOTE (Lapys) -> Iteration rather than recursion.
-                                while (iterator != length)
-                                    array[index += 1] = arguments[iterator += 1]
+                                while (iterator != length) array[index += 1] = arguments[iterator += 1]
                             }
 
                             // Return
@@ -5647,6 +5641,27 @@
 
                             // Return
                             return false
+                        };
+
+                        // Source Concatenate
+                        LapysDevelopmentKit.functions.arrayPrototypeSourceConcatenate = function arrayPrototypeSourceConcatenate(array) {
+                            // Initialization > (Index, Iterator, Length)
+                            var index = LDKF.arrayPrototypeLength(array) - 1,
+                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop
+                            while (iterator != 1) {
+                                // Initialization > Concatenation (Iterator, Length)
+                                var concatenation = arguments[length - (iterator -= 1)],
+                                    concatenationIterator = LDKF.arrayLikePrototypeLength(concatenation),
+                                    concatenationLength = concatenationIterator;
+
+                                // Loop > Update > Array
+                                while (concatenationIterator) array[index += 1] = concatenation[concatenationLength - (concatenationIterator -= 1) - 1]
+                            }
+
+                            // Return
+                            return array
                         };
 
                 // Array-Like > Prototype
@@ -6231,10 +6246,10 @@
                     if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
                         // Add --- CHECKPOINT ---
                         // Add To Back --- CHECKPOINT ---
-                        // Add To Front --- CHECKPOINT ---
+                        // Add To Front
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "addToFront", function addToFront(element) {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeAddToFront.apply(LDKF, LDKF.array(this, arguments)) : LDKF.error("`this` must be an array")
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeAddToFront.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
                         });
 
                         // Build --- CHECKPOINT ---
