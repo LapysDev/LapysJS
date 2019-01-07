@@ -5244,6 +5244,45 @@
 
             /* Functions */
                 // Array > Prototype
+                    // Build
+                    LapysDevelopmentKit.functions.arrayPrototypeBuild = function arrayPrototypeBuild(array, callback) {
+                        // Initialization > (Iterator, Length)
+                        var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+
+                        // Loop
+                        while (iterator) {
+                            // Initialization > Index
+                            var index = length - (iterator -= 1) - 1;
+
+                            // Update > Array
+                            array[index] = callback(array[index], index, array)
+                        }
+
+                        // Return
+                        return array
+                    };
+
+                    // Construct
+                    LapysDevelopmentKit.functions.arrayPrototypeConstruct = function arrayPrototypeConstruct(array, callback, returnValue) {
+                        // Initialization > (Iterator, Length)
+                        var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+
+                        // Update > Return Value
+                        (LDKF.getArgumentsLength(arguments) < 3) && (returnValue = array[0]);
+
+                        // Loop
+                        while (iterator) {
+                            // Initialization > Index
+                            var index = length - (iterator -= 1) - 1;
+
+                            // Update > Return Value
+                            returnValue = callback(returnValue, array[index], index, array)
+                        }
+
+                        // Return
+                        return returnValue
+                    };
+
                     // Every
                     LapysDevelopmentKit.functions.arrayPrototypeEvery = function arrayPrototypeEvery(array, callback) {
                         // Initialization > Iterator
@@ -5275,6 +5314,21 @@
                         return filter
                     };
 
+                    // For Each
+                    LapysDevelopmentKit.functions.arrayPrototypeForEach = function arrayPrototypeForEach(array, callback) {
+                        // Initialization > Iterator
+                        var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+
+                        // Loop
+                        while (iterator) {
+                            // Initialization > Index
+                            var index = length - (iterator -= 1) - 1;
+
+                            // Callback
+                            callback(array[index], index, array)
+                        }
+                    };
+
                     // Includes
                     LapysDevelopmentKit.functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element) {
                         // Initialization > Iterator
@@ -5287,6 +5341,24 @@
                         return false
                     };
 
+                    // Index
+                    LapysDevelopmentKit.functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element) {
+                        // Initialization > (Iterator, Length)
+                        var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+
+                        // Loop
+                        while (iterator) {
+                            // Initialization > Index
+                            var index = length - (iterator -= 1) - 1;
+
+                            // Logic > Return
+                            if (array[index] === element) return index
+                        }
+
+                        // Return
+                        return -1
+                    };
+
                     // Last Index
                     LapysDevelopmentKit.functions.arrayPrototypeLastIndex = function arrayPrototypeLastIndex(array, element) {
                         // Initialization > Iterator
@@ -5297,6 +5369,35 @@
 
                         // Return
                         return -1
+                    };
+
+                    // Reverse
+                    LapysDevelopmentKit.functions.arrayPrototypeReverse = function arrayPrototypeReverse(array) {
+                        // Initialization > (Iterator, Length, Reverse)
+                        var iterator = LDKF.arrayPrototypeLength(array), length = iterator,
+                            reverse = [];
+
+                        // Loop
+                        while (iterator) {
+                            // Update > (Iterator, Reverse)
+                            iterator -= 1;
+                            reverse[length - iterator - 1] = array[iterator]
+                        }
+
+                        // Return
+                        return reverse
+                    };
+
+                    // Some
+                    LapysDevelopmentKit.functions.arrayPrototypeSome = function arrayPrototypeSome(array, callback) {
+                        // Initialization > Iterator
+                        var iterator = LDKF.arrayPrototypeLength(array);
+
+                        // Loop > Logic > Return
+                        while (iterator) if (callback(array[iterator -= 1])) return true;
+
+                        // Return
+                        return false
                     };
 
                 // Cancel Animation Frame
@@ -5833,7 +5934,7 @@
                 if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
                     // Add To Back --- CHECKPOINT ---
 
-                    // Every --- CHECKPOINT ---
+                    // Every
                     LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "every", function every(callback) {
                         // Return
                         return LDKF.isArray(this) ? LDKF.arrayPrototypeEvery(this, callback) : true
@@ -5845,15 +5946,72 @@
                         return LDKF.isArray(this) ? LDKF.arrayPrototypeFilter(this, callback) : []
                     });
 
-                    // For Each --- CHECKPOINT ---
+                    // For Each
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "forEach", function forEach(callback) {
+                        // (...)
+                        LDKF.isArray(this) && LDKF.arrayPrototypeForEach(this, callback)
+                    });
+
                     // Includes
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "includes", function includes(element) {
+                        // Return
+                        return LDKF.isArray(this) ? LDKF.arrayPrototypeIncludes(this, element) : false
+                    });
+
                     // Index Of
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "indexOf", function indexOf(element) {
+                        // Return
+                        return LDKF.isArray(this) ? LDKF.arrayPrototypeIndex(this, element) : -1
+                    });
+
                     // Last Index Of
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "lastIndexOf", function lastIndexOf(element) {
+                        // Return
+                        return LDKF.isArray(this) ? LDKF.arrayPrototypeLastIndex(this, element) : -1
+                    });
+
                     // Map
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "map", function map(callback) {
+                        // Return
+                        return LDKF.isArray(this) ? LDKF.arrayPrototypeBuild(this, callback) : []
+                    });
+
                     // Reduce
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
+                        // Logic > Return
+                        if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this))
+                            return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback);
+
+                        // Error
+                        LDKF.error("Reduce of empty array with no initial value")
+                    });
+
                     // Reduce Right
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
+                        // Logic > Return
+                        if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this)) {
+                            // Update > Array
+                            array = LDKF.arrayPrototypeReverse(array);
+
+                            // Return
+                            return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback)
+                        }
+
+                        // Error
+                        LDKF.error("Reduce of empty array with no initial value")
+                    });
+
                     // Reverse
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reverse", function reverse(callback) {
+                        // Return
+                        return LDKF.isArray(this) ? LDKF.arrayPrototypeReverse(this, callback) : LDKO.object(this)
+                    });
+
                     // Some
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "some", function some(callback) {
+                        // Return
+                        return LDKF.isArray(this) ? LDKF.arrayPrototypeSome(this, callback) : true
+                    })
                 }
 
                 // Date > Prototype
