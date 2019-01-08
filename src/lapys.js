@@ -477,6 +477,9 @@
                     // Is Negative Zero
                     LapysDevelopmentKit.functions.numberPrototypeIsNegativeZero = function numberPrototypeIsNegativeZero(number) { return LDKF.objectIs(number, -0) };
 
+                    // Is Non-Integer
+                    LapysDevelopmentKit.functions.numberPrototypeIsNonInteger = function numberPrototypeIsNonInteger(number) { return !LDKF.numberPrototypeIsInteger(number) };
+
                     // Is Positive
                     LapysDevelopmentKit.functions.numberPrototypeIsPositive = function numberPrototypeIsPositive(number) { return number > 0 || LDKF.numberPrototypeIsPositiveZero(number) };
 
@@ -1257,6 +1260,12 @@
                         LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty = function objectSetInnumerableVariableProperty(object, key, value) { LDKF.objectDefineProperty(object, key, {configurable: true, enumerable: false, value: value, writable: true}) };
                             // When Property Is Void
                             LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty.whenPropertyIsVoid = function whenPropertyIsVoid(object, key, value) { LDKF.objectPrototypeHasProperty(object, key) || LDKF.objectSetInnumerableVariableProperty(object, key, value) };
+
+                        // Getter
+                            // Innumerable Variable
+                            LapysDevelopmentKit.functions.objectSetInnumerableVariableGetterProperty = function objectSetInnumerableVariableGetterProperty(object, key, value) { LDKF.objectDefineProperty(object, key, {configurable: true, enumerable: false, get: value}) };
+                                // When Property Is Void
+                                LapysDevelopmentKit.functions.objectSetInnumerableVariableGetterProperty.whenPropertyIsVoid = function whenPropertyIsVoid(object, key, value) { LDKF.objectPrototypeHasProperty(object, key) || LDKF.objectSetInnumerableVariableGetterProperty(object, key, value) };
 
                 // Function > Prototype
                     // Get Syntax Type
@@ -5462,26 +5471,66 @@
                     return array
                 };
                     // Prototype
-                        // Add To Back --- CHECKPOINT ---
+                        // Add To Back
+                        LapysDevelopmentKit.functions.arrayPrototypeAddToBack = function arrayPrototypeAddToBack(array, element) {
+                            // Initialization > (Array) Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                length = LDKF.getArgumentsLength(arguments);
+
+                            // Function > Add To Back
+                            function addToBack(element) {
+                                // Initialization > Iterator
+                                var iterator = arrayLength;
+
+                                // Loop > Update > Array
+                                while (iterator) array[iterator] = array[iterator -= 1];
+
+                                // Update > Array (Length)
+                                array[0] = element;
+                                arrayLength += 1
+                            }
+
+                            // Logic
+                            if (length == 2)
+                                // Update > Add To Back
+                                addToBack(element);
+
+                            else if (length > 2) {
+                                // Initialization > Iterator
+                                var iterator = length;
+
+                                // Loop > Update > Array
+                                while (iterator != 1) addToBack(arguments[iterator -= 1])
+                            }
+
+                            // Return
+                            return array
+                        };
+
                         // Add To Front
                         LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, element) {
-                            // Initialization > Length
-                            var length = LDKF.getArgumentsLength(arguments);
+                            // Initialization > (Array) Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                length = LDKF.getArgumentsLength(arguments);
+
+                            // Function > Add To Front
+                            function addToFront(element) {
+                                // Update > Array (Length)
+                                array[arrayLength] = element;
+                                arrayLength += 1
+                            }
 
                             // Logic
                             if (length == 2)
                                 // Update > Array
-                                array[LDKF.arrayPrototypeLength(array)] = element;
+                                addToFront(element);
 
                             else if (length > 2) {
-                                // Initialization > (Index, Iterator)
-                                var index = LDKF.arrayPrototypeLength(array) - 1, iterator = 0;
+                                // Initialization > Iterator
+                                var iterator = length;
 
-                                // Update > Length
-                                length -= 1;
-
-                                // Loop > Update > Array --- NOTE (Lapys) -> Iteration rather than recursion.
-                                while (iterator != length) array[index += 1] = arguments[iterator += 1]
+                                // Loop > Update > Array
+                                while (iterator != 1) addToFront(arguments[length - (iterator -= 1)])
                             }
 
                             // Return
@@ -5489,17 +5538,24 @@
                         };
 
                         // Build
-                        LapysDevelopmentKit.functions.arrayPrototypeBuild = function arrayPrototypeBuild(array, callback) {
-                            // Initialization > (Iterator, Length)
-                            var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+                        LapysDevelopmentKit.functions.arrayPrototypeBuild = function arrayPrototypeBuild(array, callbacks) {
+                            // Initialization > ((Array) Length, Iterator)
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
 
                             // Loop
-                            while (iterator) {
-                                // Initialization > Index
-                                var index = length - (iterator -= 1) - 1;
+                            while (iterator != 1) {
+                                // Initialization > (Callback, Array Iterator)
+                                var callback = arguments[length - (iterator -= 1)], arrayIterator = arrayLength;
 
-                                // Update > Array
-                                array[index] = callback(array[index], index, array)
+                                // Loop
+                                while (arrayIterator) {
+                                    // Initialization > Index
+                                    var index = arrayLength - (arrayIterator -= 1) - 1;
+
+                                    // Update > Array
+                                    array[index] = callback(array[index], index, array)
+                                }
                             }
 
                             // Return
@@ -5527,12 +5583,172 @@
                             return returnValue
                         };
 
-                        // Crush --- CHECKPOINT ---
-                        // Crush Left --- CHECKPOINT ---
-                        // Crush Right --- CHECKPOINT ---
-                        // Cut --- CHECKPOINT ---
-                        // Cut Index --- CHECKPOINT ---
-                        // Distinct --- CHECKPOINT ---
+                        // Cut
+                        LapysDevelopmentKit.functions.arrayPrototypeCut = function arrayPrototypeCut(array, lengths) {
+                            // Initialization > (Iterator, Length)
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop
+                            while (iterator != 1) {
+                                // Initialization > Argument
+                                var argument = arguments[length - (iterator -= 1)];
+
+                                // Update > Array
+                                LDKF.arrayPrototypeCutLeft(LDKF.arrayPrototypeCutRight(array, argument), argument)
+                            }
+
+                            // Return
+                            return array
+                        };
+
+                        // Cut Index
+                        LapysDevelopmentKit.functions.arrayPrototypeCutIndex = function arrayPrototypeCutIndex(array, indexes) {
+                            // Initialization > (Iterator, (Array) Length)
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop
+                            while (arrayLength && iterator != 1) {
+                                // Initialization > Index
+                                var index = arguments[length - (iterator -= 1)];
+
+                                // Update > Index
+                                LDKF.numberPrototypeIsNegativeZero(index) ?
+                                    index = arrayLength - 1 :
+                                    ((index > arrayLength - 1 || !LDKF.numberPrototypeIsPositiveInteger(index)) && (index = LDKD.series.infinite(arrayLength).point(index)));
+                                (index === arrayLength) && (index = 0);
+
+                                // Logic
+                                if (index < arrayLength) {
+                                    // Initialization > Array Iterator
+                                    var arrayIterator = arrayLength;
+
+                                    // Loop
+                                    while (arrayIterator)
+                                        // Logic
+                                        if ((arrayIterator -= 1) == index) {
+                                            // Loop
+                                            while (arrayIterator != arrayLength) array[arrayIterator] = array[arrayIterator += 1];
+
+                                            // Update > Array Length
+                                            arrayLength -= 1;
+
+                                            // [Break]
+                                            break
+                                        }
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error("Array index `" + LDKF.toString(index) + "` must be valid")
+                            }
+
+                            // Update > Array
+                            LDKF.arrayPrototypeResize(array, arrayLength);
+
+                            // Return
+                            return array
+                        };
+
+                        // Cut Left
+                        LapysDevelopmentKit.functions.arrayPrototypeCutLeft = function arrayPrototypeCutLeft(array, lengths) {
+                            // Initialization > (Iterator, (Array) Length)
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop
+                            while (iterator != 1) {
+                                // Initialization > Argument
+                                var argument = arguments[length - (iterator -= 1)];
+
+                                // Logic
+                                if (LDKF.numberPrototypeIsPositiveInteger(argument)) {
+                                    // Logic
+                                    if (argument > arrayLength - 1) {
+                                        // Update > Array (Length)
+                                        LDKF.arrayPrototypeFree(array);
+                                        arrayLength = 0
+                                    }
+
+                                    else if (argument) {
+                                        // Initialization > Array Iterator
+                                        var arrayIterator = arrayLength;
+
+                                        // Loop
+                                        while (arrayIterator) {
+                                            // Initialization > Index
+                                            var index = arrayLength - (arrayIterator -= 1) - 1;
+
+                                            // Update > Array
+                                            array[index] = array[argument + index]
+                                        }
+
+                                        // Update > Array
+                                        LDKF.arrayPrototypeResize(array, arrayLength - argument)
+                                    }
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error("Invalid array length `" + LDKF.toString(argument) + '`')
+                            }
+
+                            // Return
+                            return array
+                        };
+
+                        // Cut Right
+                        LapysDevelopmentKit.functions.arrayPrototypeCutRight = function arrayPrototypeCutRight(array, lengths) {
+                            // Initialization > (Iterator, (Array) Length)
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop
+                            while (iterator != 1) {
+                                // Initialization > Argument
+                                var argument = arguments[length - (iterator -= 1)];
+
+                                // Logic
+                                if (LDKF.numberPrototypeIsPositiveInteger(argument)) {
+                                    // Logic
+                                    if (argument > arrayLength - 1) {
+                                        // Update > Array (Length)
+                                        LDKF.arrayPrototypeFree(array);
+                                        arrayLength = 0
+                                    }
+
+                                    else if (argument)
+                                        // Update > Array
+                                        LDKF.arrayPrototypeResize(array, arrayLength - argument)
+                                }
+
+                                else
+                                    // Error
+                                    LDKF.error("Invalid array length `" + LDKF.toString(argument) + '`')
+                            }
+
+                            // Return
+                            return array
+                        };
+
+                        // Distinct
+                        LapysDevelopmentKit.functions.arrayPrototypeDistinct = function arrayPrototypeDistinct(array) {
+                            // Initialization > (Distinct, Index, Iterator, Length)
+                            var distinct = [], index = -1,
+                                iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+
+                            // Loop
+                            while (iterator) {
+                                // Initialization > Element
+                                var element = array[length - (iterator -= 1) - 1];
+
+                                // Update > Distinct
+                                LDKF.arrayPrototypeIncludes(distinct, element) || (distinct[index += 1] = element)
+                            }
+
+                            // Return
+                            return distinct
+                        };
 
                         // Every
                         LapysDevelopmentKit.functions.arrayPrototypeEvery = function arrayPrototypeEvery(array, callback) {
@@ -5546,8 +5762,8 @@
                             return true
                         };
 
-                        // Filter
-                        LapysDevelopmentKit.functions.arrayPrototypeFilter = function arrayPrototypeFilter(array, callback) {
+                        // Filter --- CHECKPOINT ---
+                        LapysDevelopmentKit.functions.arrayPrototypeFilter = function arrayPrototypeFilter(array, callbacks) {
                             // Initialization > (Filter, Index, Iterator, Length)
                             var filter = [], index = -1,
                                 iterator = LDKF.arrayPrototypeLength(array), length = iterator;
@@ -5566,7 +5782,12 @@
                         };
 
                         // Filter Left --- CHECKPOINT ---
+                        LapysDevelopmentKit.functions.arrayPrototypeFilterLeft = function arrayPrototypeFilterLeft(array, callbacks) {};
+
                         // Filter Right --- CHECKPOINT ---
+
+                        // First
+                        LapysDevelopmentKit.functions.arrayPrototypeFirst = function arrayPrototypeFirst(array) { return array[0] };
 
                         // For Each
                         LapysDevelopmentKit.functions.arrayPrototypeForEach = function arrayPrototypeForEach(array, callback) {
@@ -5583,7 +5804,20 @@
                             }
                         };
 
-                        // Free --- CHECKPOINT ---
+                        // Free
+                        LapysDevelopmentKit.functions.arrayPrototypeFree = function arrayPrototypeFree(array) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(array);
+
+                            // Loop > Deletion
+                            while (iterator) delete array[iterator -= 1];
+
+                            // Update > Array
+                            LDKF.arrayPrototypeResize(array, 0);
+
+                            // Return
+                            return array
+                        };
 
                         // Includes
                         LapysDevelopmentKit.functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element) {
@@ -5617,6 +5851,9 @@
 
                         // Insert --- CHECKPOINT ---
                         // Is Filled With --- CHECKPOINT ---
+
+                        // Last
+                        LapysDevelopmentKit.functions.arrayPrototypeLast = function arrayPrototypeLast(array) { return array[LDKF.arrayPrototypeLength(array) - 1] };
 
                         // Last Index
                         LapysDevelopmentKit.functions.arrayPrototypeLastIndex = function arrayPrototypeLastIndex(array, element) {
@@ -5656,6 +5893,8 @@
                         // Replace Duplicated From Back --- CHECKPOINT ---
                         // Replace Duplicated From Front --- CHECKPOINT ---
                         // Replace Repeats --- CHECKPOINT ---
+                        // Resize
+                        LapysDevelopmentKit.functions.arrayPrototypeResize = function arrayPrototypeResize(array, length) { LDKF.objectPrototypeSetProperty(array, "length", length) };
 
                         // Reverse
                         LapysDevelopmentKit.functions.arrayPrototypeReverse = function arrayPrototypeReverse(array) {
@@ -6285,26 +6524,85 @@
                         });
 
                 // Array
-                    // Distinct --- CHECKPOINT ---
-                    // First --- CHECKPOINT ---
-                    // Last --- CHECKPOINT ---
+                    // Distinct
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.array, "distinct", function distinct(array) {
+                        // Return
+                        return LDKF.isArray(array) ? LDKF.arrayPrototypeDistinct(array) : LDKF.error("Argument specified must be an array")
+                    });
+
+                    // First
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.array, "first", function first(array) {
+                        // Return
+                        return LDKF.isArray(array) ? LDKF.arrayPrototypeFirst(array) : LDKF.error("Argument specified must be an array")
+                    });
+
+                    // Last
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.array, "last", function last(array) {
+                        // Return
+                        return LDKF.isArray(array) ? LDKF.arrayPrototypeLast(array) : LDKF.error("Argument specified must be an array")
+                    });
 
                     // Prototype
                     if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
-                        // Add --- CHECKPOINT ---
-                        // Add To Back --- CHECKPOINT ---
+                        // Add
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "add", function add(element) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeAddToBack.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
+                        });
+
+                        // Add To Back
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "addToBack", function addToBack(element) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeAddToBack.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
+                        });
+
                         // Add To Front
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "addToFront", function addToFront(element) {
                             // Return
                             return LDKF.isArray(this) ? LDKF.arrayPrototypeAddToFront.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
                         });
 
-                        // Build --- CHECKPOINT ---
-                        // Construct --- CHECKPOINT ---
-                        // Crush --- CHECKPOINT ---
-                        // Cut --- CHECKPOINT ---
-                        // Cut Index --- CHECKPOINT ---
-                        // Distinct --- CHECKPOINT ---
+                        // Build
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "build", function build(callback) {
+                            // Return
+                            return LDKF.isArray(this) && LDKF.isFunction(callback) ? LDKF.arrayPrototypeBuild(this, callback) : LDKF.error("`this` must be an array")
+                        });
+
+                        // Construct
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "construct", function construct(callback, returnValue) {
+                            // Return
+                            return LDKF.isArray(this) && LDKF.isFunction(callback) ? (LDKF.getArgumentsLength(arguments) == 2 ? LDKF.arrayPrototypeConstruct(this, callback) : LDKF.arrayPrototypeConstruct(this, callback, returnValue)) : LDKF.error("`this` must be an array")
+                        });
+
+                        // Cut
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "cut", function cut(index) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeCut.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
+                        });
+
+                        // Cut Index
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "cutIndex", function cutIndex(index) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeCutIndex.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
+                        });
+
+                        // Cut Left
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "cutLeft", function cutLeft(index) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeCutLeft.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
+                        });
+
+                        // Cut Right
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "cutRight", function cutRight(index) {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeCutRight.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
+                        });
+
+                        // Distinct
+                        LDKF.objectSetInnumerableVariableGetterProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "distinct", function distinct() {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeDistinct(this) : LDKF.error("`this` must be an array")
+                        });
 
                         // Every
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "every", function every(callback) {
@@ -6321,6 +6619,7 @@
                         // Filter Left --- CHECKPOINT ---
                         // Filter Right --- CHECKPOINT ---
                         // First --- CHECKPOINT ---
+                        // Flatten --- CHECKPOINT ---
 
                         // For Each
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "forEach", function forEach(callback) {
@@ -6428,7 +6727,7 @@
                         // Trim Right --- CHECKPOINT ---
                     }
 
-                // Date > Prototype
+                // Date > Prototype --- CHECKPOINT ---
                     // Now
                     // To ISO String
 
@@ -6446,7 +6745,6 @@
                     // Describe
                     // Free
                     // Freeze
-                    // Import
                     // Keys
                     // Melt
                     // __Prototype__
@@ -6524,6 +6822,7 @@
                 // Object
                     // Concatenate
                     // Define Property
+                    // Flatten
                     // Get Own Property Descriptor
                     // Get Own Property Descriptors
                     // Get Own Property Names
@@ -6531,6 +6830,7 @@
                     // Get Own Property Values
                     // Get Prototype Of
                     // Keys
+                    // Port
                     // Set Prototype Of
                     // Watch
 
