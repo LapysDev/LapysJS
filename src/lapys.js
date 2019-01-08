@@ -1057,7 +1057,7 @@
                             var iterator = length;
 
                             // Loop > Update > String
-                            while (iterator != 1) string = LDKF.stringPrototypeTrim(string, arguments[length - (iterator -= 1)]);
+                            while (iterator != 1) string = LDKF.stringPrototypeTrim(string, arguments[length - (iterator -= 1)])
                         }
 
                         else
@@ -5613,10 +5613,7 @@
                                 var index = arguments[length - (iterator -= 1)];
 
                                 // Update > Index
-                                LDKF.numberPrototypeIsNegativeZero(index) ?
-                                    index = arrayLength - 1 :
-                                    ((index > arrayLength - 1 || !LDKF.numberPrototypeIsPositiveInteger(index)) && (index = LDKD.series.infinite(arrayLength).point(index)));
-                                (index === arrayLength) && (index = 0);
+                                index = index % arrayLength ? 0 : LDKD.series.infinite(1, arrayLength).point(index);
 
                                 // Logic
                                 if (index < arrayLength) {
@@ -5640,7 +5637,7 @@
 
                                 else
                                     // Error
-                                    LDKF.error("Array index `" + LDKF.toString(index) + "` must be valid")
+                                    LDKF.error("Array index `" + index + "` must be valid")
                             }
 
                             // Update > Array
@@ -5762,29 +5759,145 @@
                             return true
                         };
 
-                        // Filter --- CHECKPOINT ---
+                        // Filter
                         LapysDevelopmentKit.functions.arrayPrototypeFilter = function arrayPrototypeFilter(array, callbacks) {
-                            // Initialization > (Filter, Index, Iterator, Length)
-                            var filter = [], index = -1,
-                                iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+                            // Initialization > Length
+                            var length = LDKF.getArgumentsLength(arguments);
 
-                            // Loop
-                            while (iterator) {
-                                // Initialization > Element
-                                var element = array[length - (iterator -= 1) - 1];
+                            // Logic
+                            if (length == 1)
+                                // Update > Array
+                                LDKF.arrayPrototypeFilterLeft(LDKF.arrayPrototypeFilterRight(array));
 
-                                // Update > Filter
-                                callback(element) && (filter[index += 1] = element)
+                            else if (length == 2)
+                                // Update > Array
+                                LDKF.arrayPrototypeFilterLeft(LDKF.arrayPrototypeFilterRight(array, callbacks), callbacks);
+
+                            else if (length) {
+                                // Initialization > Iterator
+                                var iterator = length;
+
+                                // Loop > Update > Array
+                                while (iterator != 1) LDKF.arrayPrototypeFilter(array, arguments[length - (iterator -= 1)])
                             }
 
                             // Return
-                            return filter
+                            return array
                         };
 
-                        // Filter Left --- CHECKPOINT ---
-                        LapysDevelopmentKit.functions.arrayPrototypeFilterLeft = function arrayPrototypeFilterLeft(array, callbacks) {};
+                        // Filter Left
+                        LapysDevelopmentKit.functions.arrayPrototypeFilterLeft = function arrayPrototypeFilterLeft(array, callbacks) {
+                            // Initialization > (Iterator, Length)
+                            var arrayLength = LDKF.arrayPrototypeLength(array);
 
-                        // Filter Right --- CHECKPOINT ---
+                            // Logic
+                            if (arrayLength) {
+                                // Initialization > (Iterator, Length)
+                                var index = 0, iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                                // Loop
+                                while (iterator != 1) {
+                                    // Initialization > Callback
+                                    var callback = arguments[length - (iterator -= 1)];
+
+                                    // Logic
+                                    if (LDKF.isFunction(callback))
+                                        // Loop > Update > Index
+                                        while (callback(array[index]) && index != arrayLength) index += 1;
+
+                                    else {
+                                        // Initialization > (Callback (Array, Iterator, Length), Filtered)
+                                        var callbackArray = callback,
+                                            callbackIterator = LDKF.arrayPrototypeLength(callbackArray), callbackLength = callbackIterator,
+                                            filtered = false;
+
+                                        // Loop
+                                        while (callbackIterator && index != arrayLength) {
+                                            // Initialization > (Allow Filter, Callback)
+                                            var allowFilter = false,
+                                                callback = callbackArray[callbackLength - (callbackIterator -= 1) - 1];
+
+                                            // Loop
+                                            while (callback(array[index]) && index != arrayLength) {
+                                                // Update > (Index, Allow Filter, Callback Iterator)
+                                                allowFilter || (index += 1);
+                                                allowFilter = true;
+                                                callbackIterator = callbackLength;
+
+                                                // [Break]
+                                                break
+                                            }
+
+                                            // Logic > [Break]
+                                            if (!allowFilter && !callbackIterator) break
+                                        }
+                                    }
+                                }
+
+                                // Update > Array
+                                LDKF.arrayPrototypeCutLeft(array, index)
+                            }
+
+                            // Return
+                            return array
+                        };
+
+                        // Filter Right
+                        LapysDevelopmentKit.functions.arrayPrototypeFilterRight = function arrayPrototypeFilterRight(array, callbacks) {
+                            // Initialization > (Iterator, Length)
+                            var arrayLength = LDKF.arrayPrototypeLength(array);
+
+                            // Logic
+                            if (arrayLength) {
+                                // Initialization > (Iterator, Length)
+                                var index = arrayLength - 1, iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                                // Loop
+                                while (iterator != 1) {
+                                    // Initialization > Callback
+                                    var callback = arguments[length - (iterator -= 1)];
+
+                                    // Logic
+                                    if (LDKF.isFunction(callback))
+                                        // Loop > Update > Index
+                                        while (callback(array[index]) && index != -1) index -= 1;
+
+                                    else {
+                                        // Initialization > (Callback (Array, Iterator, Length), Filtered)
+                                        var callbackArray = callback,
+                                            callbackIterator = LDKF.arrayPrototypeLength(callbackArray), callbackLength = callbackIterator,
+                                            filtered = false;
+
+                                        // Loop
+                                        while (callbackIterator && index != -1) {
+                                            // Initialization > (Allow Filter, Callback)
+                                            var allowFilter = false,
+                                                callback = callbackArray[callbackLength - (callbackIterator -= 1) - 1];
+
+                                            // Loop
+                                            while (callback(array[index]) && index != -1) {
+                                                // Update > (Index, Allow Filter, Callback Iterator)
+                                                allowFilter || (index -= 1);
+                                                allowFilter = true;
+                                                callbackIterator = callbackLength;
+
+                                                // [Break]
+                                                break
+                                            }
+
+                                            // Logic > [Break]
+                                            if (!allowFilter && !callbackIterator) break
+                                        }
+                                    }
+                                }
+
+                                // Update > Array
+                                LDKF.arrayPrototypeResize(array, index + 1)
+                            }
+
+                            // Return
+                            return array
+                        };
 
                         // First
                         LapysDevelopmentKit.functions.arrayPrototypeFirst = function arrayPrototypeFirst(array) { return array[0] };
@@ -5850,6 +5963,10 @@
                         };
 
                         // Insert --- CHECKPOINT ---
+                        LapysDevelopmentKit.functions.arrayPrototypeInsert = function arrayPrototypeInsert(array, index) {
+
+                        };
+
                         // Is Filled With --- CHECKPOINT ---
 
                         // Last
@@ -6542,7 +6659,7 @@
                         return LDKF.isArray(array) ? LDKF.arrayPrototypeLast(array) : LDKF.error("Argument specified must be an array")
                     });
 
-                    // Prototype
+                    // [Logic] Prototype
                     if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Array")) {
                         // Add
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "add", function add(element) {
@@ -6563,9 +6680,24 @@
                         });
 
                         // Build
-                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "build", function build(callback) {
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "build", function build() {
                             // Return
-                            return LDKF.isArray(this) && LDKF.isFunction(callback) ? LDKF.arrayPrototypeBuild(this, callback) : LDKF.error("`this` must be an array")
+                            return LDKF.isArray(this) && (function(args) {
+                                // Initialization > (Iterator, Length)
+                                var iterator = LDKF.getArgumentsLength(args), length = iterator;
+
+                                // Loop
+                                while (iterator != 1) {
+                                    // Initialization > Argument
+                                    var arg = args[length - (iterator -= 1)];
+
+                                    // Error
+                                    LDKF.isFunction(arg) || LDKF.error("Argument specified `" + LDKF.toString(arg) + "` must be a function")
+                                }
+
+                                // Return
+                                return true
+                            })(arguments) ? LDKF.arrayPrototypeAddToBuild.apply(LDKF, LDKF.arrayPrototypeSourceConcatenate([this], arguments)) : LDKF.error("`this` must be an array")
                         });
 
                         // Construct
@@ -6607,22 +6739,50 @@
                         // Every
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "every", function every(callback) {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeEvery(this, callback) : true
+                            return LDKF.isArray(this) && LDKF.isFunction(callback) ? LDKF.arrayPrototypeEvery(this, callback) : true
                         });
 
-                        // Filter
+                        // Filter --- NOTE (Lapys) -> Different from the LDK's implementation? Maybe.
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "filter", function filter(callback) {
+                            // Initialization > Target
+                            var that = this;
+
+                            // Logic
+                            if (LDKF.isArray(this) && LDKF.isFunction(callback)) {
+                                // Initialization > (Filter, Index, Iterator, Length)
+                                var filter = [], index = -1,
+                                    iterator = LDKF.arrayPrototypeLength(that), length = iterator;
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Array Index
+                                    var arrayIndex = length - (iterator -= 1) - 1;
+
+                                    // Update > Filter
+                                    callback(array[arrayIndex], arrayIndex, array) && (filter[index += 1] = array[arrayIndex])
+                                }
+
+                                // Return
+                                return filter
+                            }
+
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeFilter(this, callback) : []
+                            return []
                         });
 
-                        // Filter Left --- CHECKPOINT ---
-                        // Filter Right --- CHECKPOINT ---
-                        // First --- CHECKPOINT ---
+                        // First
+                        LDKF.objectSetInnumerableVariableGetterProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "first", function first() {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeFirst(this) : LDKF.error("`this` must be an array")
+                        });
+
                         // Flatten --- CHECKPOINT ---
 
                         // For Each
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "forEach", function forEach(callback) {
+                            // Error
+                            LDKF.isFunction(callback) || LDKF.error('`' + LDKF.toString(callback) + "` must be a function");
+
                             // (...)
                             LDKF.isArray(this) && LDKF.arrayPrototypeForEach(this, callback)
                         });
@@ -6632,29 +6792,33 @@
                         // Includes
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "includes", function includes(element) {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeIncludes(this, element) : false
+                            return LDKF.getArgumentsLength(arguments) && LDKF.isArray(this) ? LDKF.arrayPrototypeIncludes(this, element) : false
                         });
 
                         // Index Of
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "indexOf", function indexOf(element) {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeIndex(this, element) : -1
+                            return LDKF.getArgumentsLength(arguments) && LDKF.isArray(this) ? LDKF.arrayPrototypeIndex(this, element) : -1
                         });
 
                         // Insert --- CHECKPOINT ---
                         // Is Filled With --- CHECKPOINT ---
                         // Last --- CHECKPOINT ---
+                        LDKF.objectSetInnumerableVariableGetterProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "last", function last() {
+                            // Return
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeLast(this) : LDKF.error("`this` must be an array")
+                        });
 
                         // Last Index Of
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "lastIndexOf", function lastIndexOf(element) {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeLastIndex(this, element) : -1
+                            return LDKF.getArgumentsLength(arguments) && LDKF.isArray(this) ? LDKF.arrayPrototypeLastIndex(this, element) : -1
                         });
 
                         // Map
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "map", function map(callback) {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeBuild(this, callback) : []
+                            return LDKF.isArray(this) && LDKF.isFunction(callback) ? LDKF.arrayPrototypeBuild(this, callback) : []
                         });
 
                         // Only --- CHECKPOINT ---
@@ -6664,6 +6828,9 @@
 
                         // Reduce
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
+                            // Error
+                            LDKF.isFunction(callback) || LDKF.error('`' + LDKF.toString(callback) + "` is not a function");
+
                             // Logic > Return
                             if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this))
                                 return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback);
@@ -6673,14 +6840,17 @@
                         });
 
                         // Reduce Right
-                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduce", function reduce(callback, returnValue) {
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reduceRight", function reduceRight(callback, returnValue) {
+                            // Error
+                            LDKF.isFunction(callback) || LDKF.error('`' + LDKF.toString(callback) + "` is not a function");
+
                             // Logic > Return
                             if (LDKF.isArray(this) && LDKF.arrayPrototypeLength(this)) {
-                                // Update > Array --- NOTE (Lapys) -> Cheap solutions.
-                                array = LDKF.arrayPrototypeReverse(array);
+                                // Initialization > Array --- NOTE (Lapys) -> Cheap solutions.
+                                var array = LDKF.arrayPrototypeReverse(this);
 
                                 // Return
-                                return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(this, callback, returnValue) : LDKF.arrayPrototypeConstruct(this, callback)
+                                return LDKF.getArgumentsLength(arguments) > 2 ? LDKF.arrayPrototypeConstruct(array, callback, returnValue) : LDKF.arrayPrototypeConstruct(array, callback)
                             }
 
                             // Error
@@ -6711,15 +6881,15 @@
                         // Replace Repeats --- CHECKPOINT ---
 
                         // Reverse
-                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reverse", function reverse(callback) {
+                        LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "reverse", function reverse() {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeReverse(this, callback) : LDKO.object(this)
+                            return LDKF.isArray(this) ? LDKF.arrayPrototypeReverse(this) : LDKO.object(this)
                         });
 
                         // Some
                         LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.arrayPrototype, "some", function some(callback) {
                             // Return
-                            return LDKF.isArray(this) ? LDKF.arrayPrototypeSome(this, callback) : false
+                            return LDKF.isArray(this) && LDKF.isFunction(callback) ? LDKF.arrayPrototypeSome(this, callback) : false
                         });
 
                         // Trim --- CHECKPOINT ---
