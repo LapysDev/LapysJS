@@ -88,6 +88,9 @@
             return that
         }),
 
+        // Private --- NOTE (Lapys) -> Object passed around within the Lapys Development Kit only.
+        PRIVATE = null,
+
         // Strict --- NOTE (Lapys) -> Cause alternative logical paths within a function or method.
         STRICT = false,
 
@@ -724,6 +727,18 @@
 
                     // Native To Environment
                     LapysDevelopmentKit.functions.error.nativeToEnvironment = function nativeToEnvironment(feature) { return LDKF.error("The " + LDKF.toString(feature) + LDKI.messages.error.nativeToEnvironmentSuffix) };
+
+                    // Type --- NOTE (Lapys) -> Types of LapysJS Error.
+                    LapysDevelopmentKit.functions.error.type = {
+                        // Initiate
+                        initiate: function initiate(message) { throw new LDKD.lapysJSInitiateError(LDKF.toDebugMessage.apply(LDKD, arguments)) },
+
+                        // Update
+                        update: function update(message) { throw new LDKD.lapysJSUpdateError(LDKF.toDebugMessage.apply(LDKD, arguments)) },
+
+                        // Terminate
+                        terminate: function terminate(message) { throw new LDKD.lapysJSTerminateError(LDKF.toDebugMessage.apply(LDKD, arguments)) }
+                    };
 
                 // To Debug Message
                 LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(message) + LDKI.messages.debugging.suffix };
@@ -3333,7 +3348,7 @@
                 LapysDevelopmentKit.data.lapysJSError = (function() {
                     // Initialization > Constructor
                     var constructor = LDKC.hasClassKeyword ?
-                        LDKO.eval("(function() {" +
+                        LDKF.eval("(function() {" +
                             "return class LapysJSError extends LapysJS.tmp.error {" +
                                 "constructor(message, stack) {" +
                                     "var length = arguments.length;" +
@@ -3358,6 +3373,98 @@
                         return lapysJSError
                     }
                 })();
+                    // LapysJS Initiate Error --- NOTE (Lapys) -> Code duplication follows here...
+                    LapysDevelopmentKit.data.lapysJSInitiateError = (function() {
+                        // Initialization > Constructor
+                        var constructor = LDKC.hasClassKeyword ?
+                            LDKF.eval("(function() {" +
+                                "return class LapysJSInitiateError extends LapysJS.tmp.error {" +
+                                    "constructor(message, stack) {" +
+                                        "var length = arguments.length;" +
+                                        "(length ? (length == 1 ? super(message) : super(message, stack)) : super());" +
+                                        "(typeof LapysJS.tmp.errorCaptureStackTrace == \"function\" && LapysJS.tmp.functionPrototypeIsNative(LapysJS.tmp.errorCaptureStackTrace)) && LapysJS.tmp.errorCaptureStackTrace(this, LapysJSInitiateError)" +
+                                    "}" +
+                                "}" +
+                            "})()") :
+                            function LapysJSInitiateError() { return LDKD.lapysJSError.apply(LDKO, arguments) };
+
+                        // Return
+                        return function LapysJSInitiateError(message, stack) {
+                            // Initialization > (Length, LapysJS Initiate Error)
+                            var length = LDKF.getArgumentsLength(arguments),
+                                lapysJSInitiateError = length ? (length == 1 ? new constructor(message) : new constructor(message, stack)) : new constructor;
+
+                            // Modification > LapysJS Initiate Error > (__Prototype__, Name)
+                            LDKC.hasClassKeyword || LDKF.objectPrototypeSet__Proto__(lapysJSInitiateError, (function() { try { return LDKF.objectCreate(LDKO.lapysJSErrorPrototype) } catch (error) {} return LDKF.objectCreate(LDKO.errorPrototype) })());
+                            LDKF.objectPrototypeSetProperty(lapysJSInitiateError, "name", "LapysJSInitiateError");
+
+                            // Return
+                            return lapysJSInitiateError
+                        }
+                    })();
+
+                    // LapysJS Update Error
+                    LapysDevelopmentKit.data.lapysJSUpdateError = (function() {
+                        // Initialization > Constructor
+                        var constructor = LDKC.hasClassKeyword ?
+                            LDKF.eval("(function() {" +
+                                "return class LapysJSUpdateError extends LapysJS.tmp.error {" +
+                                    "constructor(message, stack) {" +
+                                        "var length = arguments.length;" +
+                                        "(length ? (length == 1 ? super(message) : super(message, stack)) : super());" +
+                                        "(typeof LapysJS.tmp.errorCaptureStackTrace == \"function\" && LapysJS.tmp.functionPrototypeIsNative(LapysJS.tmp.errorCaptureStackTrace)) && LapysJS.tmp.errorCaptureStackTrace(this, LapysJSUpdateError)" +
+                                    "}" +
+                                "}" +
+                            "})()") :
+                            function LapysJSUpdateError() { return LDKD.lapysJSError.apply(LDKO, arguments) };
+
+                        // Return
+                        return function LapysJSUpdateError(message, stack) {
+                            // Initialization > (Length, LapysJS Update Error)
+                            var length = LDKF.getArgumentsLength(arguments),
+                                lapysJSUpdateError = length ? (length == 1 ? new constructor(message) : new constructor(message, stack)) : new constructor;
+
+                            // Modification > LapysJS Update Error > (__Prototype__, Name)
+                            LDKC.hasClassKeyword || LDKF.objectPrototypeSet__Proto__(lapysJSUpdateError, (function() { try { return LDKF.objectCreate(LDKO.lapysJSErrorPrototype) } catch (error) {} return LDKF.objectCreate(LDKO.errorPrototype) })());
+                            LDKF.objectPrototypeSetProperty(lapysJSUpdateError, "name", "LapysJSUpdateError");
+
+                            // Return
+                            return lapysJSUpdateError
+                        }
+                    })();
+
+                    // LapysJS Terminate Error
+                    LapysDevelopmentKit.data.lapysJSTerminateError = (function() {
+                        // Initialization > Constructor
+                        var constructor = LDKC.hasClassKeyword ?
+                            LDKF.eval("(function() {" +
+                                "return class LapysJSTerminateError extends LapysJS.tmp.error {" +
+                                    "constructor(message, stack) {" +
+                                        "var length = arguments.length;" +
+                                        "(length ? (length == 1 ? super(message) : super(message, stack)) : super());" +
+                                        "(typeof LapysJS.tmp.errorCaptureStackTrace == \"function\" && LapysJS.tmp.functionPrototypeIsNative(LapysJS.tmp.errorCaptureStackTrace)) && LapysJS.tmp.errorCaptureStackTrace(this, LapysJSTerminateError)" +
+                                    "}" +
+                                "}" +
+                            "})()") :
+                            function LapysJSTerminateError() { return LDKD.lapysJSError.apply(LDKO, arguments) };
+
+                        // Return
+                        return function LapysJSTerminateError(message, stack) {
+                            // Initialization > (Length, LapysJS Terminate Error)
+                            var length = LDKF.getArgumentsLength(arguments),
+                                lapysJSTerminateError = length ? (length == 1 ? new constructor(message) : new constructor(message, stack)) : new constructor;
+
+                            // Modification > LapysJS Terminate Error > (__Prototype__, Name)
+                            LDKC.hasClassKeyword || LDKF.objectPrototypeSet__Proto__(lapysJSTerminateError, (function() { try { return LDKF.objectCreate(LDKO.lapysJSErrorPrototype) } catch (error) {} return LDKF.objectCreate(LDKO.errorPrototype) })());
+                            LDKF.objectPrototypeSetProperty(lapysJSTerminateError, "name", "LapysJSTerminateError");
+
+                            // Return
+                            return lapysJSTerminateError
+                        }
+                    })();
+
+                    // Prototype
+                    LapysDevelopmentKit.data.lapysJSErrorPrototype = LDKF.objectPrototypePrototype(new LDKD.lapysJSError);
 
                 // LapysJS Node List
                 // LapysJS Pseudo Number
@@ -6692,18 +6799,18 @@
                         // Accordion
                         // Carousel
                         // Drag & Drop
-                        // Dropdown --- NOTE (Lapys) -> Or drop menu.
+                        // Dropdown --- NOTE (Lapys) -> Or Dropmenu.
                         // Dynamic Text
                         // Dynamic Time
-                        // Marquee --- NOTE (Lapys) -> Or roulette.
+                        // Marquee --- NOTE (Lapys) -> Or Roulette.
                         // Media
                             // Audio
                             // Video
                         // Pagination
                         // Picture-in-Picture
                         // Scrollbar
-                        // Table --- NOTE (Lapys) -> Or snack bar.
-                        // Toast
+                        // Table
+                        // Toast --- NOTE (Lapys) -> Or Snack Bar.
                         // Tooltip
 
                     // Debug Mode
@@ -7164,29 +7271,36 @@
         function TERMINATE() {}
 
     // Initiate
-    try { STATE || INITIATE() } catch (error) { STATE = INITIATE_ERROR_STATE }
+    try { STATE || INITIATE() } catch (error) {
+        // Update > (Private, State)
+        PRIVATE = error;
+        STATE = INITIATE_ERROR_STATE
+    }
 
     // Update
-    try { STATE || UPDATE() } catch (error) { STATE = UPDATE_ERROR_STATE }
+    try { STATE || UPDATE() } catch (error) {
+        // Update > (Private, State)
+        PRIVATE = error;
+        STATE = UPDATE_ERROR_STATE
+    }
 
     // Terminate
-    try { STATE || TERMINATE() } catch (error) { STATE = TERMINATE_ERROR_STATE }
+    try { STATE || TERMINATE() } catch (error) {
+        // Update > (Private, State)
+        PRIVATE = error;
+        STATE = TERMINATE_ERROR_STATE
+    }
 
-    // Logic --- CHECKPOINT (Lapys) -> Proper error names and actual errors printed to the console.
+    // Logic
     switch (STATE) {
         // Initiate Error
-        case INITIATE_ERROR_STATE:
-            LDKF.error("Error initializing library");
-            break;
+        case INITIATE_ERROR_STATE: LDKF.error.type.initiate("Error initializing library:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE)); break;
 
         // Update Error
-        case UPDATE_ERROR_STATE:
-            LDKF.error("Error integrating library runtime");
-            break;
+        case UPDATE_ERROR_STATE: LDKF.error.type.update("Error integrating library runtime:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE)); break;
 
         // Terminate Error
-        case TERMINATE_ERROR_STATE:
-            LDKF.error("Error completing library integration");
+        case TERMINATE_ERROR_STATE: LDKF.error.type.terminate("Error completing library integration:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE))
     }
 
     // {Console Messages} Console > Group
