@@ -19,7 +19,7 @@
                 -- Google Chrome (browser)
                 -- Microsoft Edge (browser)
                 -- Mozilla Firefox (browser)
-                -- Node (development environment)
+                -- Node (runtime)
                 -- Opera (browser)
                 -- Safari (browser)
                 -- UC Browser (browser)
