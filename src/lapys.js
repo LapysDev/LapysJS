@@ -31,7 +31,8 @@
                     -- Accessors for example are not available with some ECMAScript standards,
                         so alternative features (such as functions) are in place for older environments and accessors are used typically with more modern standards (or APIs).
                     -- Another case scenario with varying JavaScript environments is the situation of immutable object properties (e.g.: `Arguments.prototype.length` and `<constructor>.prototype`).
-            - Over its years of development, the library is still a bare-bones version of what it could be (and code could definitely be re-factored).
+
+            - Over its years of development, the library is still a bare-bones version of what it could be.
 
     --- UPDATE REQUIRED ---
         #Lapys:
@@ -3009,22 +3010,19 @@
             /* Functions */
                 // Create Function
                 LapysDevelopmentKit.functions.createFunction = function createFunction(name, options, body) {
-                    // Initialization > Length
-                    var length = LDKF.getArgumentsLength(arguments);
+                    // Initialization > (Length, Source)
+                    var length = LDKF.getArgumentsLength(arguments), source = "";
 
                     // Logic
                     if (!length)
-                        // Return
-                        return LDKF.eval("function() {}");
+                        // Update > Source
+                        source = "function() {}";
 
                     else if (length == 1)
-                        // Return
-                        return LDKF.eval("function " + name + "() {}");
+                        // Update > Source
+                        source = "function " + name + "() {}";
 
                     else {
-                        // Initialization > Source
-                        var source = "";
-
                         // Update > Name
                         name = (function(stream) {
                             // Error Handling > (...)
@@ -3132,10 +3130,10 @@
                                 "class" + (name ? ' ' + name + ' ' : ' ') + "{ constructor(" + parameters + ") {" + body + "} }" :
                                 "function" + (type == "generator" ? '*' : "") + (name ? ' ' + name : "") + "(" + parameters + ") { " + body + '}'
                         }
-
-                        // Return
-                        return LDKF.eval('(' + source + ')')
                     }
+
+                    // Return
+                    return LDKF.eval("(function() { return (" + source + ") })()")
                 };
 
         /* Global */
@@ -3225,38 +3223,61 @@
                     enumerable: false,
 
                     // Value
-                    value: new ((function() {
-                        // Initialization > Constructor
-                        var constructor = LDKF.createFunction("LapysJS");
+                    value: (function() {
+                        // Initialization > LapysJS
+                        var LapysJS = new ((function() {
+                            // Initialization > Constructor
+                            var constructor = LDKF.createFunction("LapysJS");
 
-                        // Modification > LapysJS > Prototype --- NOTE (Lapys) -> Made a finicky as wanted, in this case: making the constructor and prototype `undefined`.
-                        LapysJS.prototype = (function() {
-                            // Initialization > Prototype
-                            var prototype = new ((function() {
-                                // Initialization > Constructor
-                                var constructor = function() {};
+                            // Modification > Constructor > Prototype --- NOTE (Lapys) -> Made it as finicky as wanted, in this case: making the constructor and prototype `undefined`.
+                            constructor.prototype = (function() {
+                                // Initialization > Prototype
+                                var prototype = new ((function() {
+                                    // Initialization > Constructor
+                                    var constructor = function() {};
 
-                                // Modification > Constructor > Prototype
-                                constructor.prototype = {constructor: undefined};
+                                    // Modification > Constructor > Prototype
+                                    constructor.prototype = {constructor: undefined};
+
+                                    // Return
+                                    return constructor
+                                })());
+
+                                // Modification > Prototype
+                                    // Temporary
+                                    prototype.tmp = {};
+
+                                    // To String
+                                    prototype.toString = function toString() { return "LapysJS v" + VERSION };
 
                                 // Return
-                                return constructor
-                            })());
-
-                            // Modification > Prototype
-                                // Temporary
-                                prototype.tmp = {};
-
-                                // To String
-                                prototype.toString = function toString() { return "LapysJS v" + VERSION };
+                                return prototype
+                            })();
 
                             // Return
-                            return prototype
-                        })();
+                            return constructor
+                        })());
+
+                        // Modification > LapysJS > Processing Duration
+                        LDKF.objectDefineConstantProperty(LapysJS, "processingDuration", {value: new (function LapysJSProcessingDuration() {})});
+                            // Initiate
+                            LapysJS.processingDuration.initiate = 0;
+
+                            // Update
+                            LapysJS.processingDuration.update = 0;
+
+                            // Terminate
+                            LapysJS.processingDuration.terminate = 0;
+
+                            // Value Of
+                            LDKF.objectDefineConstantProperty(LDKF.objectPrototypePrototype(LapysJS.processingDuration), "valueOf", {
+                                // Value
+                                value: function valueOf() { return LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate }
+                            });
 
                         // Return
                         return LapysJS
-                    })()),
+                    })(),
 
                     // Writable
                     writable: false
@@ -4658,6 +4679,18 @@
 
                 // Date
                 LapysDevelopmentKit.objects.date = LDKT.getObjectNativeConstructorByName(GLOBAL, "Date");
+                    // Now
+                    LapysDevelopmentKit.objects.dateNow = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKO.date, "now");
+
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(method) == "now" && LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error.nativeToEnvironment("`Date.now` method")
+                    })();
+
+                    // Prototype
+                    LapysDevelopmentKit.objects.datePrototype = LDKF.objectPrototypeGetProperty(LDKO.date, "prototype");
 
                 // Delay Node
                 LapysDevelopmentKit.objects.delayNode = LDKT.getObjectNativeConstructorByName(GLOBAL, "DelayNode");
@@ -5202,6 +5235,16 @@
                 LapysDevelopmentKit.objects.performance = LDKT.getObjectNativeConstructorByName(GLOBAL, "Performance", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.performancePrototype = LDKF.objectPrototypeGetProperty(LDKO.performance, "prototype");
+                        // Now
+                        LapysDevelopmentKit.objects.performancePrototypeNow = (function() {
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.performancePrototype, "now");
+
+                            // Logic > (...)
+                            if (LDKF.isVoid(method)) return function now() { return LDKF.dateNow() };
+                            else if (LDKF.functionPrototypeGetName(method) == "now" && LDKF.functionPrototypeIsNative(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Performance.prototype.now` method")
+                        })();
 
                 // Performance
                 LapysDevelopmentKit.constants.performance = (function() {
@@ -6358,6 +6401,33 @@
                         catch (error) { LDKO.consoleWarn(LDKT.argumentsToConsoleStream.apply(LDKT, arguments)) }
                     };
 
+                // Date
+                    // Now
+                    LapysDevelopmentKit.functions.dateNow = function dateNow() { return LDKO.dateNow() };
+
+                // Function > Prototype
+                    // Measure
+                    LapysDevelopmentKit.functions.functionPrototypeMeasure = function functionPrototypeMeasure(method) {
+                        // Initialization > (Arguments, Timestamp)
+                        var args = (function(args) {
+                            // Initialization > (Argument List, Index, Iterator, Length)
+                            var argumentList = [], index = -1,
+                                iterator = LDKF.getArgumentsLength(args), length = iterator;
+
+                            // Loop > Update > Argument List
+                            while (iterator != 1) argumentList[index += 1] = args[length - (iterator -= 1)];
+
+                            // Return
+                            return argumentList
+                        })(arguments), timestamp = LDKC.clock.time();
+
+                        // Method
+                        method.apply(this, args);
+
+                        // Return
+                        return LDKC.clock.time() - timestamp
+                    };
+
                 // HTML All Collection > Prototype
                     // Length
                     LapysDevelopmentKit.functions.htmlAllCollectionPrototypeLength = function htmlAllCollectionPrototypeLength(htmlAllCollection) { return LDKO.htmlAllCollectionPrototypeLengthDescriptor.get.call(htmlAllCollection) };
@@ -6430,6 +6500,10 @@
                         // Return
                         return object
                     };
+
+                // Performance > Prototype
+                    // Now
+                    LapysDevelopmentKit.functions.performancePrototypeNow = function performancePrototypeNow(performance) { return LDKO.performancePrototypeNow.call(LDKF.getArgumentsLength(performance) ? performance : LDKC.performance) };
 
                 // Plugin Array > Prototype
                     // Length
@@ -6631,7 +6705,7 @@
                                             LDKF.requestAnimationFrame(animationFrame)
                                         }
                                     }, delay)
-                                } : function setCurrentId() { frame.currentId = (Math.random() * 10) | 0 };
+                                } : function setCurrentId() { frame.currentId = (LDKM.random() * 10) | 0 };
 
                                 // Function
                                     // Frame
@@ -6710,6 +6784,9 @@
                                 return frameId
                             };
 
+                            // Time {Stamp}
+                            that.time = function time() { return LDKC.performanceIsVoid ? LDKF.dateNow() : LDKF.performancePrototypeNow(LDKC.performance) };
+
                         // Return
                         return that
                     };
@@ -6783,6 +6860,9 @@
                 // Clock
                 LapysDevelopmentKit.constants.clock = new LDKD.clock;
 
+                // Performance Is Void
+                LapysDevelopmentKit.constants.performanceIsVoid = LDKF.isVoid(LDKC.performance);
+
     /* Function */
         /* Initiate
                 --- NOTE ---
@@ -6828,23 +6908,6 @@
                             // Momentum Scrolling
                             // Smooth Scrolling
                             // Snap Scrolling
-
-                    // Processing Duration
-                    LDKF.objectDefineConstantProperty(LapysJS, "processingDuration", {value: new (function LapysJSProcessingDuration() {})});
-                        // Initiate
-                        LapysJS.processingDuration.initiate = 0;
-
-                        // Update
-                        LapysJS.processingDuration.update = 0;
-
-                        // Terminate
-                        LapysJS.processingDuration.terminate = 0;
-
-                        // Value Of
-                        LDKF.objectDefineConstantProperty(LDKF.objectPrototypePrototype(LapysJS.processingDuration), "valueOf", {
-                            // Value
-                            value: function valueOf() { return LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate }
-                        });
 
                 // Array
                     // Distinct
@@ -7271,21 +7334,24 @@
         function TERMINATE() {}
 
     // Initiate
-    try { STATE || INITIATE() } catch (error) {
+    try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "initiate", {value: LDKF.functionPrototypeMeasure(INITIATE)}) }
+    catch (error) {
         // Update > (Private, State)
         PRIVATE = error;
         STATE = INITIATE_ERROR_STATE
     }
 
     // Update
-    try { STATE || UPDATE() } catch (error) {
+    try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "update", {value: LDKF.functionPrototypeMeasure(UPDATE)}) }
+    catch (error) {
         // Update > (Private, State)
         PRIVATE = error;
         STATE = UPDATE_ERROR_STATE
     }
 
     // Terminate
-    try { STATE || TERMINATE() } catch (error) {
+    try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "terminate", {value: LDKF.functionPrototypeMeasure(TERMINATE)}) }
+    catch (error) {
         // Update > (Private, State)
         PRIVATE = error;
         STATE = TERMINATE_ERROR_STATE
