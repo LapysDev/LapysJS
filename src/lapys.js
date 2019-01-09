@@ -4863,7 +4863,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.htmlCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlCollection, "prototype");
                         // Length
-                        LapysDevelopmentKit.objects.htmlCollectionPrototypeLengthDescriptor = (function(descriptor) {
+                        LapysDevelopmentKit.objects.htmlCollection && (LapysDevelopmentKit.objects.htmlCollectionPrototypeLengthDescriptor = (function(descriptor) {
                             // Logic > Return
                             if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
                             else return {get: function length() {
@@ -4873,7 +4873,7 @@
                                     return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`HTMLCollection.prototype.length` accessor")
                                 })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
                             }}
-                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlCollectionPrototype, "length"));
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.htmlCollectionPrototype, "length")));
 
                 // HTML Element
                 LapysDevelopmentKit.objects.htmlElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLElement", STRICT = true);
@@ -5181,7 +5181,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.nodeListPrototype = LDKF.objectPrototypeGetProperty(LDKO.nodeList, "prototype");
                         // Length
-                        LapysDevelopmentKit.objects.nodeListPrototypeLengthDescriptor = (function(descriptor) {
+                        LapysDevelopmentKit.objects.nodeList && (LapysDevelopmentKit.objects.nodeListPrototypeLengthDescriptor = (function(descriptor) {
                             // Logic > Return
                             if (LDKF.objectPrototypeHasProperty(descriptor, "get")) return descriptor;
                             else return {get: function length() {
@@ -5191,7 +5191,7 @@
                                     return LDKF.numberPrototypeIsPositiveInteger(length) ? length : LDKF.error.nativeToEnvironment("`NodeList.prototype.length` accessor")
                                 })(LDKF.objectPrototypeGetProperty(this, "length")) : LDKF.throwTypeError("Illegal invocation")
                             }}
-                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.nodeListPrototype, "length"));
+                        })(LDKF.objectGetOwnPropertyDescriptor(LDKO.nodeListPrototype, "length")));
 
                 // Notification
                 LapysDevelopmentKit.objects.notification = LDKT.getObjectNativeConstructorByName(GLOBAL, "Notification");
