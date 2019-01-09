@@ -7369,7 +7369,7 @@
         case TERMINATE_ERROR_STATE: LDKF.error.type.terminate("Error completing library integration:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE))
     }
 
-    // {Console Messages} Console > Group
+    // {Console Messages} Console > Group --- CHECKPOINT ---
     LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "...");
         // Console > Log
         LDKF.consoleLog("Debug Mode =", LapysJS.debugMode);
