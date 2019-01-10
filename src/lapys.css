@@ -4,9 +4,6 @@
     @version: 0.0.4
     @url: https://github.com/LapysDev/LapysJS
 
-    --- CHECKPOINT ---
-        #Lapys: Custom <scroll-bar> styling.
-
     --- RULES ---
         #Lapys:
             - Any updates must be as minimalistic as possible.
@@ -16,6 +13,19 @@
             - Precise hexadecimal color values (i.e.: 3, 6, 9, A, C, F) only.
 
             Yes, some of the CSS here is computer-generated.
+
+        --- UPDATE REQUIRED ---
+            #Lapys:
+                - accordion
+                - accordion-component
+                - .accordion
+                    - accordion-body
+                    - accordion-body-component
+                    - [role~=body][state]
+
+                    - accordion-head
+                    - accordion-head-component
+                    - [role~=head]
 
         --- WARN ---
             #Lapys:
