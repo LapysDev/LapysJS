@@ -3688,7 +3688,7 @@
                 // Is Document
                 LapysDevelopmentKit.functions.isDocument = function isDocument(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.document, LDKO.documentPrototype) };
 
-                // Is Document-Like
+                // Is Document-Like --- CHECKPOINT (Lapys) -> Like `LapysDevelopmentKit.functions.isElementLike`.
                 LapysDevelopmentKit.functions.isDocumentLike = function isDocumentLike(arg) { return LDKF.isDocument(arg) || LDKF.isStrictlyDocumentLike(arg) };
 
                 // Is DOM Error
@@ -3933,7 +3933,7 @@
                 // Is HTML All Collection
                 LapysDevelopmentKit.functions.isHTMLAllCollection = function isHTMLAllCollection(arg) { return !arg && LDKF.isVoid(arg) && LDKF.objectPrototypePrototype(arg) === LDKO.htmlAllCollectionPrototype };
 
-                // Is HTML Collection
+                // Is HTML Collection --- CHECKPOINT (Lapys) -> Like `LapysDevelopmentKit.functions.isElementLike`.
                 LapysDevelopmentKit.functions.isHTMLCollection = function isHTMLCollection(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.htmlCollection, LDKO.htmlCollectionPrototype) };
 
                 // Is HTML Document
@@ -4101,7 +4101,7 @@
                         LDKT.isConstructibleObject(arg, LDKO.node, LDKO.nodePrototype)
                 };
 
-                // Is Node List
+                // Is Node List --- CHECKPOINT (Lapys) -> Like `LapysDevelopmentKit.functions.isElementLike`.
                 LapysDevelopmentKit.functions.isNodeList = function isNodeList(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.nodeList, LDKO.nodeListPrototype) };
 
                 // Is Not Allowed Error
@@ -7974,6 +7974,7 @@
                                     CORRECT: function CORRECT(accordion, STRICT) {
                                         // Logic
                                         if (STRICT || AccordionManager.ASSERT(accordion)) {
+                                            // Modification > Accordion > Class
                                             LDKC.supportsStandardCustomElements || LDKC.hasHTMLUnknownElementConstructor || LDKF.elementPrototypeAddToClass(accordion, "accordion")
                                         }
 
