@@ -3763,7 +3763,7 @@
                                     // Is Event Handler
                                     function isEventHandler(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) }
 
-                                // Return
+                                // Return --- CHECKPOINT ---
                                 return (
                                     LDKT.isEventTargetPrototypeAddEventListenerMethod(LDKF.objectPrototypeGetProperty(arg, "addEventListener")) &&
                                     LDKT.isEventTargetPrototypeAttachEventMethod(LDKF.objectPrototypeGetProperty(arg, "attachEvent")) &&
@@ -6065,6 +6065,19 @@
                     // Prototype
                     LapysDevelopmentKit.objects.float64ArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.float64Array, "prototype");
 
+            /* Test
+                    --- NOTE ---
+                        #Lapys: Tests for `Element`, `EventTarget`, `HTMLElement` and `Node` methods.
+            */
+                // Is HTML Element Blur Method
+                LapysDevelopmentKit.test.isHTMLElementBlurMethod = function isHTMLElementBlurMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "blur" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Element Click Method
+                LapysDevelopmentKit.test.isHTMLElementClickMethod = function isHTMLElementClickMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "click" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Element Focus Method
+                LapysDevelopmentKit.test.isHTMLElementFocusMethod = function isHTMLElementFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "focus" && LDKF.functionPrototypeIsNative(method) };
+
             /* Functions */
                 // Array --- NOTE (Lapys) -> Also flattens array-like objects once when appended to returned array.
                 LapysDevelopmentKit.functions.array = function array(elements) {
@@ -7274,13 +7287,63 @@
                             else LDKF.error.nativeToEnvironment("`Element.prototype.setAttribute` method")
                     })();
 
+                // HTML Element > Prototype
+                    // Blur
+                    LapysDevelopmentKit.objects.htmlElementPrototypeBlur = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasHTMLElementConstructor ? LDKO.htmlElementPrototype : LDKC.htmlDivElement, "blur");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isHTMLElementBlurMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.blur` method")
+                    })();
+
+                    // Click
+                    LapysDevelopmentKit.objects.htmlElementPrototypeClick = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasHTMLElementConstructor ? LDKO.htmlElementPrototype : LDKC.htmlDivElement, "click");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isHTMLElementClickMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.click` method")
+                    })();
+
+                    // Focus
+                    LapysDevelopmentKit.objects.htmlElementPrototypeFocus = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasHTMLElementConstructor ? LDKO.htmlElementPrototype : LDKC.htmlDivElement, "focus");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isHTMLElementFocusMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.focus` method")
+                    })();
+
             /* Functions */
                 // Element > Prototype
                     // Add To Attribute --- CHECKPOINT ---
                     // Add To Class --- CHECKPOINT ---
                     // Get Attribute --- CHECKPOINT ---
                     // Has Attribute --- CHECKPOINT ---
+                    // Has In Attribute --- CHECKPOINT ---
+                    // Has In Class --- CHECKPOINT ---
+                    // Remove From Attribute --- CHECKPOINT ---
+                    // Remove From Class --- CHECKPOINT ---
+                    // Replace Attribute --- CHECKPOINT ---
+                    // Replace Attribute Node --- CHECKPOINT ---
+                    // Replace In Attribute --- CHECKPOINT ---
+                    // Replace From Attribute --- CHECKPOINT ---
                     // Set Attribute --- CHECKPOINT ---
+
+                // HTML Element > Prototype
+                    // Blur --- CHECKPOINT ---
+                    // Click --- CHECKPOINT ---
+                    // Focus --- CHECKPOINT ---
 
             /* Data
                     --- NOTE ---
