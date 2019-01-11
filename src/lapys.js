@@ -3730,34 +3730,38 @@
 
                             // Return --- UPDATE REQUIRED (Lapys) -> Stronger test required.
                             return typeof arg == "object" && LDKF.toString(arg) == "[object]" && (function() {
-                                // Function > Is Element Name
-                                function isElementName(name) {
-                                    // Initialization > Iterator
-                                    var iterator = LDKF.stringPrototypeLength(name), length = iterator;
+                                // Function
+                                    // Is Element Name
+                                    function isElementName(name) {
+                                        // Initialization > Iterator
+                                        var iterator = LDKF.stringPrototypeLength(name), length = iterator;
 
-                                    // Loop
-                                    while (iterator) {
-                                        // Initialization > (Index, Character)
-                                        var index = length - (iterator -= 1) - 1,
-                                            character = LDKF.stringPrototypeCharacterAt(name, index);
+                                        // Loop
+                                        while (iterator) {
+                                            // Initialization > (Index, Character)
+                                            var index = length - (iterator -= 1) - 1,
+                                                character = LDKF.stringPrototypeCharacterAt(name, index);
 
-                                        // Logic
-                                        if (index ? (character != '-' && character != '_' && !LDKF.stringPrototypeIsAlphabet(character) && !LDKF.stringPrototypeIsDigit(character)) : !LDKF.stringPrototypeIsAlphabet(character)) {
-                                            // Initialization > Is Valid Non-Tested Character
-                                            var isValidNonTestedCharacter = true;
+                                            // Logic
+                                            if (index ? (character != '-' && character != '_' && !LDKF.stringPrototypeIsAlphabet(character) && !LDKF.stringPrototypeIsDigit(character)) : !LDKF.stringPrototypeIsAlphabet(character)) {
+                                                // Initialization > Is Valid Non-Tested Character
+                                                var isValidNonTestedCharacter = true;
 
-                                            // Error Handling > (...)
-                                            try { LDKF.documentPrototypeCreateElement(character) }
-                                            catch (error) { isValidNonTestedCharacter = false }
+                                                // Error Handling > (...)
+                                                try { LDKF.documentPrototypeCreateElement(character) }
+                                                catch (error) { isValidNonTestedCharacter = false }
 
-                                            // Return
-                                            return isValidNonTestedCharacter
+                                                // Return
+                                                return isValidNonTestedCharacter
+                                            }
                                         }
+
+                                        // Return
+                                        return true
                                     }
 
-                                    // Return
-                                    return true
-                                }
+                                    // Is Event Handler
+                                    function isEventHandler(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) }
 
                                 // Return
                                 return (
@@ -3796,9 +3800,9 @@
                                     LDKT.isElementPrototypeInsertAdjacentElementMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentElement")) &&
                                     LDKT.isElementPrototypeInsertAdjacentHTMLMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentHTML")) &&
                                     LDKT.isElementPrototypeInsertAdjacentTextMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentText")) &&
-                                    (function(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) })(LDKF.objectPrototypeGetProperty(arg, "onbeforecopy")) &&
-                                    (function(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) })(LDKF.objectPrototypeGetProperty(arg, "onbeforecut")) &&
-                                    (function(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) })(LDKF.objectPrototypeGetProperty(arg, "onbeforepaste")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforecopy")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforecut")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforepaste")) &&
                                     LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "outerHTML")) &&
                                     LDKT.isElementPrototypeRemoveAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "removeAttribute")) &&
                                     LDKT.isElementPrototypeRemoveAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "removeAttributeNode")) &&
@@ -3811,8 +3815,52 @@
                                     LDKT.isElementPrototypeSetAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "setAttributeNode")) &&
                                     (function(tagName) { return LDKF.isString(tagName) && isElementName(tagName) })(LDKF.objectPrototypeGetProperty(arg, "tagName")) &&
 
-                                    (function(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) })(LDKF.objectPrototypeGetProperty(arg, "onselect")) &&
-                                    (function(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) })(LDKF.objectPrototypeGetProperty(arg, "onselectstart")) &&
+                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "accessKey")) &&
+                                    LDKT.isHTMLElementBlurMethod(LDKF.objectPrototypeGetProperty(arg, "blur")) &&
+                                    LDKT.isHTMLElementClickMethod(LDKF.objectPrototypeGetProperty(arg, "click")) &&
+                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "contentEditable")) &&
+                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "dir")) &&
+                                    LDKT.isHTMLElementFocusMethod(LDKF.objectPrototypeGetProperty(arg, "focus")) &&
+                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "innerText")) &&
+                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "lang")) &&
+                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetHeight")) &&
+                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetLeft")) &&
+                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetTop")) &&
+                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetWidth")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onblur")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onchange")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onclick")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncontextmenu")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncopy")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncuechange")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncut")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondblclick")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondrag")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragend")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragenter")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragleave")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragover")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragstart")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondrop")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onfocus")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oninvalid")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeydown")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeypress")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeyup")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onload")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousedown")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseenter")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseleave")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousemove")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseout")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseover")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseup")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousewheel")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onpaste")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onresize")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onscroll")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselect")) &&
+                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselectstart")) &&
                                     LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "outerText")) &&
                                     LDKF.isBoolean(LDKF.objectPrototypeGetProperty(arg, "spellcheck")) &&
                                     LDKF.numberPrototypeIsPositiveInteger(LDKF.objectPrototypeGetProperty(arg, "tabIndex")) &&
