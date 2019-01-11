@@ -36,6 +36,7 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
+            - Test all explicitly requested methods & properties.
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
                 -- Samsung Internet --- NOTE (Lapys) -> Untested...
                 -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
@@ -3702,7 +3703,7 @@
                 // Is Dynamics Compressor Node
                 LapysDevelopmentKit.functions.isDynamicsCompressorNode = function isDynamicsCompressorNode(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.dynamicsCompressorNode, LDKO.dynamicsCompressorNodePrototype) };
 
-                // Is Element-Like --- NOTE (Lapys) -> A bit different from other test methods.
+                // Is Element-Like
                 LapysDevelopmentKit.functions.isElementLike = function isElementLike(arg) {
                     // Return
                     return LDKC.hasHTMLElementConstructor ? arg instanceof LDKO.htmlElement : (
@@ -3728,11 +3729,14 @@
                                 while (componentRegistryIterator) if (componentRegistry[componentRegistryIterator -= 1] === arg) return true
                             }
 
-                            // Return --- UPDATE REQUIRED (Lapys) -> Stronger test required.
+                            // Return
                             return typeof arg == "object" && LDKF.toString(arg) == "[object]" && (function() {
                                 // Function
                                     // Is Element Name
                                     function isElementName(name) {
+                                        // Logic > Return
+                                        if (!LDKF.isString(name)) return false;
+
                                         // Initialization > Iterator
                                         var iterator = LDKF.stringPrototypeLength(name), length = iterator;
 
@@ -3763,108 +3767,108 @@
                                     // Is Event Handler
                                     function isEventHandler(handler) { return LDKF.isNull(handler) || LDKF.isFunction(handler) }
 
-                                // Return --- CHECKPOINT ---
+                                // Return --- NOTE (Lapys) -> Test all consistent properties.
                                 return (
-                                    LDKT.isEventTargetPrototypeAddEventListenerMethod(LDKF.objectPrototypeGetProperty(arg, "addEventListener")) &&
-                                    LDKT.isEventTargetPrototypeAttachEventMethod(LDKF.objectPrototypeGetProperty(arg, "attachEvent")) &&
-                                    LDKT.isEventTargetPrototypeAttachEventMethod(LDKF.objectPrototypeGetProperty(arg, "detachEvent")) &&
-                                    LDKT.isEventTargetPrototypeRemoveEventListenerMethod(LDKF.objectPrototypeGetProperty(arg, "removeEventListener")) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "addEventListener") ? LDKT.isEventTargetPrototypeAddEventListenerMethod(LDKF.objectPrototypeGetProperty(arg, "addEventListener")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "attachEvent") ? LDKT.isEventTargetPrototypeAttachEventMethod(LDKF.objectPrototypeGetProperty(arg, "attachEvent")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "detachEvent") ? LDKT.isEventTargetPrototypeDetachEventMethod(LDKF.objectPrototypeGetProperty(arg, "detachEvent")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "removeEventListener") ? LDKT.isEventTargetPrototypeRemoveEventListenerMethod(LDKF.objectPrototypeGetProperty(arg, "removeEventListener")) : true) &&
 
-                                    LDKT.isElementPrototypeAppendChildMethod(LDKF.objectPrototypeGetProperty(arg, "appendChild")) &&
-                                    LDKF.isNodeList(LDKF.objectPrototypeGetProperty(arg, "nodeList")) &&
-                                    LDKT.isNodePrototypeContainsMethod(LDKF.objectPrototypeGetProperty(arg, "cloneNode")) &&
-                                    LDKT.isNodePrototypeContainsMethod(LDKF.objectPrototypeGetProperty(arg, "contains")) &&
-                                    LDKT.isNodePrototypeHasChildNodesMethod(LDKF.objectPrototypeGetProperty(arg, "hasChildNodes")) &&
-                                    LDKT.isNodePrototypeInsertBeforeMethod(LDKF.objectPrototypeGetProperty(arg, "insertBefore")) &&
-                                    (function(nodeName) { return LDKF.isString(nodeName) && isElementName(nodeName) })(LDKF.objectPrototypeGetProperty(arg, "nodeName")) &&
-                                    (function(nodeType) { return LDKF.numberPrototypeIsPositiveInteger(nodeType) && nodeType == LDKO.nodePrototypeElementNode })(LDKF.objectPrototypeGetProperty(arg, "nodeType")) &&
-                                    LDKT.isNodePrototypeNormalizeMethod(LDKF.objectPrototypeGetProperty(arg, "normalize")) &&
-                                    LDKF.isDocumentLike(LDKF.objectPrototypeGetProperty(arg, "ownerDocument")) &&
-                                    LDKT.isNodePrototypeRemoveChildMethod(LDKF.objectPrototypeGetProperty(arg, "removeChild")) &&
-                                    LDKT.isNodePrototypeReplaceChildMethod(LDKF.objectPrototypeGetProperty(arg, "replaceChild")) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "appendChild") ? LDKT.isNodePrototypeAppendChildMethod(LDKF.objectPrototypeGetProperty(arg, "appendChild")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "nodeList") ? LDKF.isNodeList(LDKF.objectPrototypeGetProperty(arg, "childNodes")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "cloneNode") ? LDKT.isNodePrototypeCloneNodeMethod(LDKF.objectPrototypeGetProperty(arg, "cloneNode")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "contains") ? LDKT.isNodePrototypeContainsMethod(LDKF.objectPrototypeGetProperty(arg, "contains")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "hasChildNodes") ? LDKT.isNodePrototypeHasChildNodesMethod(LDKF.objectPrototypeGetProperty(arg, "hasChildNodes")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "insertBefore") ? LDKT.isNodePrototypeInsertBeforeMethod(LDKF.objectPrototypeGetProperty(arg, "insertBefore")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "nodeName") ? isElementName(LDKF.objectPrototypeGetProperty(arg, "nodeName")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "nodeType") ? (function(nodeType) { return LDKF.numberPrototypeIsPositiveInteger(nodeType) && nodeType == LDKO.nodePrototypeElementNode })(LDKF.objectPrototypeGetProperty(arg, "nodeType")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "normalize") ? LDKT.isNodePrototypeNormalizeMethod(LDKF.objectPrototypeGetProperty(arg, "normalize")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ownerDocument") ? LDKF.isDocumentLike(LDKF.objectPrototypeGetProperty(arg, "ownerDocument")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "removeChild") ? LDKT.isNodePrototypeRemoveChildMethod(LDKF.objectPrototypeGetProperty(arg, "removeChild")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "replaceChild") ? LDKT.isNodePrototypeReplaceChildMethod(LDKF.objectPrototypeGetProperty(arg, "replaceChild")) : true) &&
 
-                                    LDKF.isNodeList(LDKF.objectPrototypeGetProperty(arg, "childNodes")) &&
-                                    LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "children")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "className")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientHeight")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientLeft")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientTop")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientWidth")) &&
-                                    LDKT.isElementPrototypeGetAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "getAttribute")) &&
-                                    LDKT.isElementPrototypeGetAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "getAttributeNode")) &&
-                                    LDKT.isElementPrototypeGetBoundingClientRectMethod(LDKF.objectPrototypeGetProperty(arg, "getBoundingClientRect")) &&
-                                    LDKT.isElementPrototypeGetClientRectsMethod(LDKF.objectPrototypeGetProperty(arg, "getClientRects")) &&
-                                    LDKT.isElementPrototypeGetElementsByTagNameMethod(LDKF.objectPrototypeGetProperty(arg, "getElementsByTagName")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "id")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "innerHTML")) &&
-                                    LDKT.isElementPrototypeInsertAdjacentElementMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentElement")) &&
-                                    LDKT.isElementPrototypeInsertAdjacentHTMLMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentHTML")) &&
-                                    LDKT.isElementPrototypeInsertAdjacentTextMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentText")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforecopy")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforecut")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforepaste")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "outerHTML")) &&
-                                    LDKT.isElementPrototypeRemoveAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "removeAttribute")) &&
-                                    LDKT.isElementPrototypeRemoveAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "removeAttributeNode")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollHeight")) &&
-                                    LDKT.isElementPrototypeScrollIntoViewMethod(LDKF.objectPrototypeGetProperty(arg, "setAttribute")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollLeft")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollTop")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollWidth")) &&
-                                    LDKT.isElementPrototypeSetAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "setAttribute")) &&
-                                    LDKT.isElementPrototypeSetAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "setAttributeNode")) &&
-                                    (function(tagName) { return LDKF.isString(tagName) && isElementName(tagName) })(LDKF.objectPrototypeGetProperty(arg, "tagName")) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "childNodes") ? LDKF.isNodeList(LDKF.objectPrototypeGetProperty(arg, "childNodes")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "children") ? LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "children")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "className") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "className")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "clientHeight") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientHeight")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "clientLeft") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientLeft")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "clientTop") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientTop")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "clientWidth") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "clientWidth")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "getAttribute") ? LDKT.isElementPrototypeGetAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "getAttribute")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "getAttributeNode") ? LDKT.isElementPrototypeGetAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "getAttributeNode")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "getBoundingClientRect") ? LDKT.isElementPrototypeGetBoundingClientRectangleMethod(LDKF.objectPrototypeGetProperty(arg, "getBoundingClientRect")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "getClientRects") ? LDKT.isElementPrototypeGetClientRectanglesMethod(LDKF.objectPrototypeGetProperty(arg, "getClientRects")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "getElementsByTagName") ? LDKT.isElementPrototypeGetElementsByTagNameMethod(LDKF.objectPrototypeGetProperty(arg, "getElementsByTagName")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "id") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "id")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "innerHTML") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "innerHTML")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "insertAdjacentElement") ? LDKT.isElementPrototypeInsertAdjacentElementMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentElement")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "insertAdjacentHTML") ? LDKT.isElementPrototypeInsertAdjacentHTMLMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentHTML")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "insertAdjacentText") ? LDKT.isElementPrototypeInsertAdjacentTextMethod(LDKF.objectPrototypeGetProperty(arg, "insertAdjacentText")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onbeforecopy") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforecopy")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onbeforecut") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforecut")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onbeforepaste") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onbeforepaste")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "outerHTML") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "outerHTML")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "removeAttribute") ? LDKT.isElementPrototypeRemoveAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "removeAttribute")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "removeAttributeNode") ? LDKT.isElementPrototypeRemoveAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "removeAttributeNode")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "scrollHeight") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollHeight")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "setAttribute") ? LDKT.isElementPrototypeScrollIntoViewMethod(LDKF.objectPrototypeGetProperty(arg, "setAttribute")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "scrollLeft") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollLeft")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "scrollTop") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollTop")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "scrollWidth") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "scrollWidth")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "setAttribute") ? LDKT.isElementPrototypeSetAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "setAttribute")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "setAttributeNode") ? LDKT.isElementPrototypeSetAttributeNodeMethod(LDKF.objectPrototypeGetProperty(arg, "setAttributeNode")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "tagName") ? isElementName(LDKF.objectPrototypeGetProperty(arg, "tagName")) : true) &&
 
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "accessKey")) &&
-                                    LDKT.isHTMLElementBlurMethod(LDKF.objectPrototypeGetProperty(arg, "blur")) &&
-                                    LDKT.isHTMLElementClickMethod(LDKF.objectPrototypeGetProperty(arg, "click")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "contentEditable")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "dir")) &&
-                                    LDKT.isHTMLElementFocusMethod(LDKF.objectPrototypeGetProperty(arg, "focus")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "innerText")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "lang")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetHeight")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetLeft")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetTop")) &&
-                                    LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetWidth")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onblur")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onchange")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onclick")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncontextmenu")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncopy")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncuechange")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncut")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondblclick")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondrag")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragend")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragenter")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragleave")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragover")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragstart")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondrop")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onfocus")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oninvalid")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeydown")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeypress")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeyup")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onload")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousedown")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseenter")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseleave")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousemove")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseout")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseover")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseup")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousewheel")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onpaste")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onresize")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onscroll")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselect")) &&
-                                    isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselectstart")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "outerText")) &&
-                                    LDKF.isBoolean(LDKF.objectPrototypeGetProperty(arg, "spellcheck")) &&
-                                    LDKF.numberPrototypeIsPositiveInteger(LDKF.objectPrototypeGetProperty(arg, "tabIndex")) &&
-                                    LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "title"))
+                                    (LDKF.objectPrototypeHasProperty(arg, "accessKey") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "accessKey")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "blur") ? LDKT.isHTMLElementPrototypeBlurMethod(LDKF.objectPrototypeGetProperty(arg, "blur")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "click") ? LDKT.isHTMLElementPrototypeClickMethod(LDKF.objectPrototypeGetProperty(arg, "click")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "contentEditable") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "contentEditable")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "dir") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "dir")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "focus") ? LDKT.isHTMLElementPrototypeFocusMethod(LDKF.objectPrototypeGetProperty(arg, "focus")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "innerText") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "innerText")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "lang") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "lang")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "offsetHeight") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetHeight")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "offsetLeft") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetLeft")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "offsetTop") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetTop")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "offsetWidth") ? LDKF.numberPrototypeIsPositive(LDKF.objectPrototypeGetProperty(arg, "offsetWidth")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onblur") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onblur")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onchange") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onchange")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onclick") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onclick")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "oncontextmenu") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncontextmenu")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "oncopy") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncopy")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "oncuechange") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncuechange")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "oncut") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oncut")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondblclick") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondblclick")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondrag") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondrag")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondragend") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragend")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondragenter") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragenter")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondragleave") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragleave")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondragover") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragover")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondragstart") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondragstart")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "ondrop") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "ondrop")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onfocus") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onfocus")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "oninvalid") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "oninvalid")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onkeydown") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeydown")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onkeypress") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeypress")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onkeyup") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onkeyup")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onload") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onload")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmousedown") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousedown")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmouseenter") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseenter")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmouseleave") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseleave")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmousemove") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousemove")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmouseout") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseout")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmouseover") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseover")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmouseup") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmouseup")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onmousewheel") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onmousewheel")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onpaste") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onpaste")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onresize") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onresize")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onscroll") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onscroll")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onselect") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselect")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "onselectstart") ? isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselectstart")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "outerText") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "outerText")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "spellcheck") ? LDKF.isBoolean(LDKF.objectPrototypeGetProperty(arg, "spellcheck")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "tabIndex") ? LDKF.numberPrototypeIsPositiveInteger(LDKF.objectPrototypeGetProperty(arg, "tabIndex")) : true) &&
+                                    (LDKF.objectPrototypeHasProperty(arg, "title") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "title")) : true)
                                 )
                             })()
                         })()
@@ -5276,6 +5280,9 @@
                 // Has Element Constructor
                 LapysDevelopmentKit.constants.hasElementConstructor = !LDKF.isVoid(LDKO.element);
 
+                // Has Event Target Constructor
+                LapysDevelopmentKit.constants.hasEventTargetConstructor = !LDKF.isVoid(LDKO.eventTarget);
+
                 // Has HTML Element Constructor
                 LapysDevelopmentKit.constants.hasHTMLElementConstructor = !LDKF.isVoid(LDKO.htmlElement);
 
@@ -5645,6 +5652,20 @@
                 LapysDevelopmentKit.objects.node = LDKT.getObjectNativeConstructorByName(GLOBAL, "Node", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.nodePrototype = LDKF.objectPrototypeGetProperty(LDKO.node, "prototype");
+                        // Element Node
+                        LapysDevelopmentKit.objects.nodePrototypeElementNode = (function() {
+                            // Initialization > Number
+                            var number = LDKF.objectPrototypeGetProperty(LDKO.nodePrototype, "ELEMENT_NODE");
+
+                            // Logic
+                            if (!LDKF.isVoid(number))
+                                // Logic > (...)
+                                if (LDKF.numberPrototypeIsPositiveInteger(number)) return number;
+                                else LDKF.error.nativeToEnvironment("`Node.prototype.ELEMENT_NODE` property")
+                        })();
+
+                // Has Node Constructor
+                LapysDevelopmentKit.constants.hasNodeConstructor = !LDKF.isVoid(LDKO.node);
 
                 // Node List
                 LapysDevelopmentKit.objects.nodeList = LDKT.getObjectNativeConstructorByName(GLOBAL, "NodeList", STRICT = true);
@@ -6069,14 +6090,86 @@
                     --- NOTE ---
                         #Lapys: Tests for `Element`, `EventTarget`, `HTMLElement` and `Node` methods.
             */
-                // Is HTML Element Blur Method
-                LapysDevelopmentKit.test.isHTMLElementBlurMethod = function isHTMLElementBlurMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "blur" && LDKF.functionPrototypeIsNative(method) };
+                // Is Element Prototype Get Attribute Method
+                LapysDevelopmentKit.test.isElementPrototypeGetAttributeMethod = function isElementPrototypeGetAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAttribute" && LDKF.functionPrototypeIsNative(method) };
 
-                // Is HTML Element Click Method
-                LapysDevelopmentKit.test.isHTMLElementClickMethod = function isHTMLElementClickMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "click" && LDKF.functionPrototypeIsNative(method) };
+                // Is Element Prototype Get Attribute Node Method
+                LapysDevelopmentKit.test.isElementPrototypeGetAttributeNodeMethod = function isElementPrototypeGetAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAttributeNode" && LDKF.functionPrototypeIsNative(method) };
 
-                // Is HTML Element Focus Method
-                LapysDevelopmentKit.test.isHTMLElementFocusMethod = function isHTMLElementFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "focus" && LDKF.functionPrototypeIsNative(method) };
+                // Is Element Prototype Get Bounding Client Rectangle Method
+                LapysDevelopmentKit.test.isElementPrototypeGetBoundingClientRectangleMethod = function isElementPrototypeGetBoundingClientRectangleMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getBoundingClientRect" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Get Client Rectangles Method
+                LapysDevelopmentKit.test.isElementPrototypeGetClientRectanglesMethod = function isElementPrototypeGetClientRectanglesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getClientRects" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Get Elements By Tag Name Method
+                LapysDevelopmentKit.test.isElementPrototypeGetElementsByTagNameMethod = function isElementPrototypeGetElementsByTagNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByTagName" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Insert Adjacent Element Method
+                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentElementMethod = function isElementPrototypeInsertAdjacentElementMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentElement" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Insert Adjacent HTML Method
+                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentHTMLMethod = function isElementPrototypeInsertAdjacentHTMLMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentHTML" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Insert Adjacent Text Method
+                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentTextMethod = function isElementPrototypeInsertAdjacentTextMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentText" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Remove Attribute Method
+                LapysDevelopmentKit.test.isElementPrototypeRemoveAttributeMethod = function isElementPrototypeRemoveAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeAttribute" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Remove Attribute Node Method
+                LapysDevelopmentKit.test.isElementPrototypeRemoveAttributeNodeMethod = function isElementPrototypeRemoveAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeAttributeNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Set Attribute Method
+                LapysDevelopmentKit.test.isElementPrototypeSetAttributeMethod = function isElementPrototypeSetAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setAttribute" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Set Attribute Node Method
+                LapysDevelopmentKit.test.isElementPrototypeSetAttributeNodeMethod = function isElementPrototypeSetAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setAttributeNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Target Prototype Add Event Listener Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeAddEventListenerMethod = function isEventTargetPrototypeAddEventListenerMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "addEventListener" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Target Prototype Attach Event Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeAttachEventMethod = function isEventTargetPrototypeAttachEventMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "attachEvent" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Target Prototype Detach Event Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeDetachEventMethod = function isEventTargetPrototypeDetachEventMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "detachEvent" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Target Prototype Remove Event Listener Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeRemoveEventListenerMethod = function isEventTargetPrototypeRemoveEventListenerMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeEventListener" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Element Prototype Blur Method
+                LapysDevelopmentKit.test.isHTMLElementPrototypeBlurMethod = function isHTMLElementPrototypeBlurMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "blur" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Element Prototype Click Method
+                LapysDevelopmentKit.test.isHTMLElementPrototypeClickMethod = function isHTMLElementPrototypeClickMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "click" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Element Prototype Focus Method
+                LapysDevelopmentKit.test.isHTMLElementPrototypeFocusMethod = function isHTMLElementPrototypeFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "focus" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Append Child Method
+                LapysDevelopmentKit.test.isNodePrototypeAppendChildMethod = function isNodePrototypeAppendChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendChild" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Clone Node Method
+                LapysDevelopmentKit.test.isNodePrototypeCloneNodeMethod = function isNodePrototypeCloneNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "cloneNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Contains Method
+                LapysDevelopmentKit.test.isNodePrototypeContainsMethod = function isNodePrototypeContainsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "contains" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Has Child Nodes Method
+                LapysDevelopmentKit.test.isNodePrototypeHasChildNodesMethod = function isNodePrototypeHasChildNodesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "hasChildNodes" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Insert Before Method
+                LapysDevelopmentKit.test.isNodePrototypeInsertBeforeMethod = function isNodePrototypeInsertBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertBefore" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Normalize Method
+                LapysDevelopmentKit.test.isNodePrototypeNormalizeMethod = function isNodePrototypeNormalizeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "normalize" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Remove Child Method
+                LapysDevelopmentKit.test.isNodePrototypeRemoveChildMethod = function isNodePrototypeRemoveChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeChild" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Replace Child Method
+                LapysDevelopmentKit.test.isNodePrototypeReplaceChildMethod = function isNodePrototypeReplaceChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceChild" && LDKF.functionPrototypeIsNative(method) };
 
             /* Functions */
                 // Array --- NOTE (Lapys) -> Also flattens array-like objects once when appended to returned array.
@@ -7253,8 +7346,56 @@
                         // Logic
                         if (LDKC.isBrowserEnvironment)
                             // Logic > (...)
-                            if (LDKF.functionPrototypeGetName(method) == "getAttribute" && LDKF.functionPrototypeIsNative(method)) return method;
+                            if (LDKT.isElementPrototypeGetAttributeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.getAttribute` method")
+                    })();
+
+                    // Get Attribute Node
+                    LapysDevelopmentKit.objects.elementPrototypeGetAttributeNode = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getAttributeNode");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeGetAttributeNodeMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.getAttribute` method")
+                    })();
+
+                    // Get Bounding Client Rectangle
+                    LapysDevelopmentKit.objects.elementPrototypeGetBoundingClientRectangle = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getBoundingClientRect");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeGetBoundingClientRectangleMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.getBoundingClientRect` method")
+                    })();
+
+                    // Get Client Rectangles
+                    LapysDevelopmentKit.objects.elementPrototypeGetClientRectangles = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getBoundingClientRect");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeGetBoundingClientRectangleMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.getBoundingClientRect` method")
+                    })();
+
+                    // Get Elements By Tag Name
+                    LapysDevelopmentKit.objects.elementPrototypeGetElementsByTagName = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getElementsByTagName");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeGetElementsByTagNameMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.getElementsByTagName` method")
                     })();
 
                     // Has Attribute
@@ -7275,6 +7416,99 @@
                                 else LDKF.error.nativeToEnvironment("`Element.prototype.hasAttribute` method")
                     })();
 
+                    // Has Attributes
+                    LapysDevelopmentKit.objects.elementPrototypeHasAttributes = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "hasAttributes");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic
+                            if (LDKF.isVoid(method))
+                                // Return
+                                return function hasAttributes(names) {
+                                    // Error
+                                    LDKF.isElementLike(this) || LDKF.error("`this` must be an element");
+
+                                    // Initialization > (Iterator, Return Value)
+                                    var iterator = LDKF.getArgumentsLength(arguments), returnValue = false;
+
+                                    // Logic > Return
+                                    if (!iterator) return false;
+
+                                    // Loop > Logic > Return
+                                    while (iterator) if (!LDKF.elementPrototypeHasAttribute(this, arguments[iterator -= 1])) return false;
+
+                                    // Return
+                                    return true
+                                };
+
+                            else
+                                // Logic > (...)
+                                if (LDKF.functionPrototypeGetName(method) == "hasAttributes" && LDKF.functionPrototypeIsNative(method)) return method;
+                                else LDKF.error.nativeToEnvironment("`Element.prototype.hasAttributes` method")
+                    })();
+
+                    // Insert Adjacent Element
+                    LapysDevelopmentKit.objects.elementPrototypeInsertAdjacentElement = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "insertAdjacentElement");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeInsertAdjacentElementMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.insertAdjacentElement` method")
+                    })();
+
+                    // Insert Adjacent HTML
+                    LapysDevelopmentKit.objects.elementPrototypeInsertAdjacentHTML = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "insertAdjacentHTML");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeInsertAdjacentHTMLMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.insertAdjacentHTML` method")
+                    })();
+
+                    // Insert Adjacent Text
+                    LapysDevelopmentKit.objects.elementPrototypeInsertAdjacentText = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "insertAdjacentText");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeInsertAdjacentTextMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.insertAdjacentText` method")
+                    })();
+
+                    // Remove Attribute
+                    LapysDevelopmentKit.objects.elementPrototypeRemoveAttribute = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "removeAttribute");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeRemoveAttributeMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.removeAttribute` method")
+                    })();
+
+                    // Remove Attribute Node
+                    LapysDevelopmentKit.objects.elementPrototypeRemoveAttributeNode = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "removeAttributeNode");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeRemoveAttributeNodeMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.removeAttributeNode` method")
+                    })();
+
                     // Set Attribute
                     LapysDevelopmentKit.objects.elementPrototypeSetAttribute = (function() {
                         // Initialization > Method
@@ -7283,8 +7517,77 @@
                         // Logic
                         if (LDKC.isBrowserEnvironment)
                             // Logic > (...)
-                            if (LDKF.functionPrototypeGetName(method) == "setAttribute" && LDKF.functionPrototypeIsNative(method)) return method;
+                            if (LDKT.isElementPrototypeSetAttributeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.setAttribute` method")
+                    })();
+
+                    // Set Attribute Node
+                    LapysDevelopmentKit.objects.elementPrototypeSetAttributeNode = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "setAttributeNode");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isElementPrototypeSetAttributeNodeMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Element.prototype.setAttributeNode` method")
+                    })();
+
+                // Event Target > Prototype
+                    // Add Event Listener
+                    LapysDevelopmentKit.objects.eventTargetPrototypeAddEventListener = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "addEventListener");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic
+                            if (!LDKF.isVoid(method))
+                                // Logic > (...)
+                                if (LDKT.isEventTargetPrototypeAddEventListenerMethod(method)) return method;
+                                else LDKF.error.nativeToEnvironment("`Node.prototype.addEventListener` method")
+                    })();
+
+                    // Attach Event
+                    LapysDevelopmentKit.objects.eventTargetPrototypeAttachEvent = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "attachEvent");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic
+                            if (!LDKF.isVoid(method))
+                                // Logic > (...)
+                                if (LDKT.isEventTargetPrototypeAttachEventMethod(method)) return method;
+                                else LDKF.error.nativeToEnvironment("`Node.prototype.attachEvent` method")
+                    })();
+
+                    // Detach Event
+                    LapysDevelopmentKit.objects.eventTargetPrototypeDetachEvent = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "detachEvent");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic
+                            if (!LDKF.isVoid(method))
+                                // Logic > (...)
+                                if (LDKT.isEventTargetPrototypeDetachEventMethod(method)) return method;
+                                else LDKF.error.nativeToEnvironment("`Node.prototype.detachEvent` method")
+                    })();
+
+                    // Remove Event Listener
+                    LapysDevelopmentKit.objects.eventTargetPrototypeRemoveEventListener = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "removeEventListener");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic
+                            if (!LDKF.isVoid(method))
+                                // Logic > (...)
+                                if (LDKT.isEventTargetPrototypeRemoveEventListenerMethod(method)) return method;
+                                else LDKF.error.nativeToEnvironment("`Node.prototype.removeEventListener` method")
                     })();
 
                 // HTML Element > Prototype
@@ -7296,7 +7599,7 @@
                         // Logic
                         if (LDKC.isBrowserEnvironment)
                             // Logic > (...)
-                            if (LDKT.isHTMLElementBlurMethod(method)) return method;
+                            if (LDKT.isHTMLElementPrototypeBlurMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.blur` method")
                     })();
 
@@ -7308,7 +7611,7 @@
                         // Logic
                         if (LDKC.isBrowserEnvironment)
                             // Logic > (...)
-                            if (LDKT.isHTMLElementClickMethod(method)) return method;
+                            if (LDKT.isHTMLElementPrototypeClickMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.click` method")
                     })();
 
@@ -7320,8 +7623,105 @@
                         // Logic
                         if (LDKC.isBrowserEnvironment)
                             // Logic > (...)
-                            if (LDKT.isHTMLElementFocusMethod(method)) return method;
+                            if (LDKT.isHTMLElementPrototypeFocusMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.focus` method")
+                    })();
+
+                // Node > Prototype
+                    // Append Child
+                    LapysDevelopmentKit.objects.nodePrototypeAppendChild = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "appendChild");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeAppendChildMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.appendChild` method")
+                    })();
+
+                    // Clone Node
+                    LapysDevelopmentKit.objects.nodePrototypeCloneNode = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "cloneNode");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeCloneNodeMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.cloneNode` method")
+                    })();
+
+                    // Contains
+                    LapysDevelopmentKit.objects.nodePrototypeContains = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "contains");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeContainsMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.contains` method")
+                    })();
+
+                    // Has Child Nodes
+                    LapysDevelopmentKit.objects.nodePrototypeHasChildNodes = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "hasChildNodes");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeHasChildNodesMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.hasChildNodes` method")
+                    })();
+
+                    // Insert Before
+                    LapysDevelopmentKit.objects.nodePrototypeInsertBefore = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "insertBefore");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeInsertBeforeMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.insertBefore` method")
+                    })();
+
+                    // Normalize
+                    LapysDevelopmentKit.objects.nodePrototypeNormalize = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "normalize");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeNormalizeMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.normalize` method")
+                    })();
+
+                    // Remove Child
+                    LapysDevelopmentKit.objects.nodePrototypeRemoveChild = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "removeChild");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeRemoveChildMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.removeChild` method")
+                    })();
+
+                    // Replace Child
+                    LapysDevelopmentKit.objects.nodePrototypeReplaceChild = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "replaceChild");
+
+                        // Logic
+                        if (LDKC.isBrowserEnvironment)
+                            // Logic > (...)
+                            if (LDKT.isNodePrototypeReplaceChildMethod(method)) return method;
+                            else LDKF.error.nativeToEnvironment("`Node.prototype.replaceChild` method")
                     })();
 
             /* Functions */
@@ -7329,9 +7729,14 @@
                     // Add To Attribute --- CHECKPOINT ---
                     // Add To Class --- CHECKPOINT ---
                     // Get Attribute --- CHECKPOINT ---
+                    // Get Attribute Node --- CHECKPOINT ---
                     // Has Attribute --- CHECKPOINT ---
+                    // Has Attribute Node --- CHECKPOINT ---
+                    // Has Attributes --- CHECKPOINT ---
                     // Has In Attribute --- CHECKPOINT ---
                     // Has In Class --- CHECKPOINT ---
+                    // Remove Attribute --- CHECKPOINT ---
+                    // Remove Attribute Node --- CHECKPOINT ---
                     // Remove From Attribute --- CHECKPOINT ---
                     // Remove From Class --- CHECKPOINT ---
                     // Replace Attribute --- CHECKPOINT ---
@@ -7339,6 +7744,7 @@
                     // Replace In Attribute --- CHECKPOINT ---
                     // Replace From Attribute --- CHECKPOINT ---
                     // Set Attribute --- CHECKPOINT ---
+                    // Set Attribute Node --- CHECKPOINT ---
 
                 // HTML Element > Prototype
                     // Blur --- CHECKPOINT ---
