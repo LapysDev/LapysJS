@@ -4121,21 +4121,21 @@
                             (LDKF.objectPrototypeHasProperty(arg, "createAttribute") ? LDKT.isDocumentPrototypeCreateAttributeMethod(LDKF.objectPrototypeGetProperty(arg, "createAttribute")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "createComment") ? LDKT.isDocumentPrototypeCreateCommentMethod(LDKF.objectPrototypeGetProperty(arg, "createComment")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "createDocumentFragment") ? LDKT.isDocumentPrototypeCreateDocumentFragmentMethod(LDKF.objectPrototypeGetProperty(arg, "createDocumentFragment")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "createElement") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "createElement")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "createTextNode") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "createTextNode")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "createElement") ? LDKT.isDocumentPrototypeCreateElementMethod(LDKF.objectPrototypeGetProperty(arg, "createElement")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "createTextNode") ? LDKT.isDocumentPrototypeCreateTextNodeMethod(LDKF.objectPrototypeGetProperty(arg, "createTextNode")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "designMode") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "designMode")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "doctype") ? (function(documentType) { return LDKC.hasDocumentTypeConstructor ? documentType : true })(LDKF.objectPrototypeGetProperty(arg, "doctype")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "documentElement") ? LDKF.isHTMLElementLike(LDKF.objectPrototypeGetProperty(arg, "documentElement")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "domain") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "domain")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "elementFromPoint") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "elementFromPoint")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "elementFromPoint") ? LDKT.isDocumentPrototypeElementFromPointMethod(LDKF.objectPrototypeGetProperty(arg, "elementFromPoint")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "embeds") ? LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "embeds")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "execCommand") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "execCommand")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "execCommand") ? LDKT.isDocumentPrototypeExecCommandMethod(LDKF.objectPrototypeGetProperty(arg, "execCommand")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "fgColor") ? LDKF.stringPrototypeIsHexadecimal(LDKF.objectPrototypeGetProperty(arg, "fgColor")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "firstChild") ? LDKF.isNodeLike(LDKF.objectPrototypeGetProperty(arg, "firstChild")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "forms") ? LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "forms")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "getElementById") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "getElementById")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "getElementsByName") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "getElementsByName")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "getElementsByTagName") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "getElementsByTagName")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "getElementById") ? LDKT.isDocumentPrototypeGetElementByIdMethod(LDKF.objectPrototypeGetProperty(arg, "getElementById")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "getElementsByName") ? LDKT.isDocumentPrototypeGetElementsByNameMethod(LDKF.objectPrototypeGetProperty(arg, "getElementsByName")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "getElementsByTagName") ? LDKT.isDocumentPrototypeGetElementsByTagNameMethod(LDKF.objectPrototypeGetProperty(arg, "getElementsByTagName")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "hasFocus") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "hasFocus")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "images") ? LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "images")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "implementation") ? LDKF.objectPrototypeGetProperty(arg, "implementation") : true) &&
@@ -6240,6 +6240,27 @@
 
                 // Is Document Prototype Create Document Fragment Method
                 LapysDevelopmentKit.test.isDocumentPrototypeCreateDocumentFragmentMethod - function isDocumentPrototypeCreateDocumentFragmentMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createDocumentFragment" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Create Element Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCreateElementMethod - function isDocumentPrototypeCreateElementMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createElement" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Create Text Node Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCreateTextNodeMethod - function isDocumentPrototypeCreateTextNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createTextNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Element From Point Method
+                LapysDevelopmentKit.test.isDocumentPrototypeElementFromPointMethod - function isDocumentPrototypeElementFromPointMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "elementFromPoint" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Execute Command Method
+                LapysDevelopmentKit.test.isDocumentPrototypeExecCommandMethod - function isDocumentPrototypeExecCommandMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "execCommand" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Get Element By ID Method
+                LapysDevelopmentKit.test.isDocumentPrototypeGetElementByIdMethod - function isDocumentPrototypeGetElementByIdMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementById" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Get Elements By Name Method
+                LapysDevelopmentKit.test.isDocumentPrototypeGetElementsByNameMethod - function isDocumentPrototypeGetElementsByNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByName" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Get Elements By Tag Name Method
+                LapysDevelopmentKit.test.isDocumentPrototypeGetElementsByTagNameMethod - function isDocumentPrototypeGetElementsByTagNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "getElementsByName" && LDKF.functionPrototypeIsNative(method) };
 
                 // Is Element Name
                 LapysDevelopmentKit.test.isElementName = function isElementName(arg) {
