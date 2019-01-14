@@ -4085,7 +4085,7 @@
                 // Is Storage Event
                 LapysDevelopmentKit.functions.isStorageEvent = function isStorageEvent(arg) { return LDKT.isStrictlyConstructibleObject(arg, LDKO.storageEvent, LDKO.storageEventPrototype) };
 
-                // Is Strictly Array-Like --- NOTE (Lapys) -> Does not accept user-defined array-like objects.
+                // Is Strictly Array-Like --- CHECKPOINT ---
                 LapysDevelopmentKit.functions.isStrictlyArrayLike = function isStrictlyArrayLike(arg) {
                     // Return
                     return LDKF.isArguments(arg) ||
@@ -4100,7 +4100,7 @@
                         LDKF.isUint8Array(arg) || LDKF.isUint8ClampedArray(arg) || LDKF.isUint16Array(arg) || LDKF.isUint32Array(arg)
                 };
 
-                // Is Strictly Document-Like --- CHECKPOINT ---
+                // Is Strictly Document-Like
                 LapysDevelopmentKit.functions.isStrictlyDocumentLike = function isStrictlyDocumentLike(arg) {
                     // Return
                     return typeof arg == "object" && (
@@ -4136,7 +4136,7 @@
                             (LDKF.objectPrototypeHasProperty(arg, "getElementById") ? LDKT.isDocumentPrototypeGetElementByIdMethod(LDKF.objectPrototypeGetProperty(arg, "getElementById")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "getElementsByName") ? LDKT.isDocumentPrototypeGetElementsByNameMethod(LDKF.objectPrototypeGetProperty(arg, "getElementsByName")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "getElementsByTagName") ? LDKT.isDocumentPrototypeGetElementsByTagNameMethod(LDKF.objectPrototypeGetProperty(arg, "getElementsByTagName")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "hasFocus") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "hasFocus")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "hasFocus") ? LDKF.isFunction(LDKT.isDocumentPrototypeHasFocusMethod(arg, "hasFocus")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "images") ? LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "images")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "implementation") ? LDKF.objectPrototypeGetProperty(arg, "implementation") : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "lastChild") ? LDKF.isNodeLike(LDKF.objectPrototypeGetProperty(arg, "lastChild")) : true) &&
@@ -4160,22 +4160,22 @@
                             (LDKF.objectPrototypeHasProperty(arg, "onreadystatechange") ? LDKT.isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onreadystatechange")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "onselectionchange") ? LDKT.isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselectionchange")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "onselectstart") ? LDKT.isEventHandler(LDKF.objectPrototypeGetProperty(arg, "onselectstart")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "open") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "open")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "open") ? LDKT.isDocumentPrototypeOpenMethod(LDKF.objectPrototypeGetProperty(arg, "open")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "parentNode") ? LDKF.isNodeLike(LDKF.objectPrototypeGetProperty(arg, "parentNode")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "plugins") ? LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "plugins")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandEnabled") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "queryCommandEnabled")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandIndeterm") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "queryCommandIndeterm")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandState") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "queryCommandState")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandSupported") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "queryCommandSupported")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandValue") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "queryCommandValue")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandEnabled") ? LDKT.isDocumentPrototypeQueryCommandEnabledMethod(LDKF.objectPrototypeGetProperty(arg, "queryCommandEnabled")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandIndeterm") ? LDKT.isDocumentPrototypeQueryCommandIndetermMethod(LDKF.objectPrototypeGetProperty(arg, "queryCommandIndeterm")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandState") ? LDKT.isDocumentPrototypeQueryCommandStateMethod(LDKF.objectPrototypeGetProperty(arg, "queryCommandState")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandSupported") ? LDKT.isDocumentPrototypeQueryCommandSupportedMethod(LDKF.objectPrototypeGetProperty(arg, "queryCommandSupported")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "queryCommandValue") ? LDKT.isDocumentPrototypeQueryCommandValueMethod(LDKF.objectPrototypeGetProperty(arg, "queryCommandValue")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "readyState") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "readyState")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "referrer") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "referrer")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "scripts") ? LDKF.isHTMLCollection(LDKF.objectPrototypeGetProperty(arg, "scripts")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "styleSheets") ? LDKF.isStyleSheetList(LDKF.objectPrototypeGetProperty(arg, "styleSheets")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "title") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "title")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "vlinkColor") ? LDKF.stringPrototypeIsHexadecimal(LDKF.objectPrototypeGetProperty(arg, "vlinkColor")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "write") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "write")) : true) &&
-                            (LDKF.objectPrototypeHasProperty(arg, "writeln") ? LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "writeln")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "write") ? LDKT.isDocumentPrototypeWriteMethod(LDKF.objectPrototypeGetProperty(arg, "write")) : true) &&
+                            (LDKF.objectPrototypeHasProperty(arg, "writeln") ? LDKT.isDocumentPrototypeWriteLineMethod(LDKF.objectPrototypeGetProperty(arg, "writeln")) : true) &&
                             (LDKF.objectPrototypeHasProperty(arg, "URL") ? LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "URL")) : true)
                         )
                     )
@@ -4231,7 +4231,23 @@
                 LapysDevelopmentKit.functions.isStrictlyErrorLike = function isStrictlyErrorLike(arg) {
                     // Return
                     return typeof arg == "object" && (
-                        LDKC.hasErrorConstructor ? arg instanceof LDKO.error : STRICT
+                        LDKF.isAbortError(arg) ||
+                        LDKF.isConstraintError(arg) || LDKF.isConstraintNotSatisfiedError(arg) ||
+                        LDKF.isDataError(arg) || LDKF.isDataCloneError(arg) || LDKF.isDevicesNotFoundError(arg) || LDKF.isDOMError(arg) || LDKF.isDOMException(arg) ||
+                        LDKF.isEncodingError(arg) || LDKF.isEvalError(arg) || LDKF.isEventException(arg) ||
+                        LDKF.isHierarchyRequestError(arg) ||
+                        LDKF.isIndexSizeError(arg) || LDKF.isInternalError(arg) || LDKF.isInvalidAccessError(arg) || LDKF.isInvalidCharacterError(arg) || LDKF.isInvalidModificationError(arg) || LDKF.isInvalidNodeTypeError(arg) || LDKF.isInvalidStateError(arg) ||
+                        LDKF.isMediaError(arg) || LDKF.isMediaKeyError(arg) || LDKF.isMediaStreamError(arg) || LDKF.isMSMediaKeyError(arg) ||
+                        LDKF.isNamespaceError(arg) || LDKF.isNavigatorUserMediaError(arg) || LDKF.isNetworkError(arg) || LDKF.isNoModificationAllowedError(arg) || LDKF.isNotAllowedError(arg) || LDKF.isNotFoundError(arg) || LDKF.isNotReadableError(arg) || LDKF.isNotSupportedError(arg) ||
+                        LDKF.isOperationError(arg) || LDKF.isOverConstrainedError(arg) ||
+                        LDKF.isPermissionDeniedError(arg) || LDKF.isQuotaExceededError(arg) ||
+                        LDKF.isRangeError(arg) || LDKF.isReadOnlyError(arg) || LDKF.isReferenceError(arg) ||
+                        LDKF.isSecurityError(arg) || LDKF.isSpeechRecognitionError(arg) || LDKF.isSyntaxError(arg) ||
+                        LDKF.isTimeoutError(arg) || LDKF.isTrackStartError(arg) || LDKF.isTransactionInactiveError(arg) || LDKF.isTypeError(arg) || LDKF.isTypeMismatchError(arg) ||
+                        LDKF.isUnknownError(arg) || LDKF.isURIError(arg) || LDKF.isURLMismatchError(arg) ||
+                        LDKF.isVersionError(arg) ||
+                        LDKF.isWebkitSpeechRecognitionError(arg) || LDKF.isWrongDocumentError(arg) ||
+                        LDKT.isStrictlyConstructibleObject(arg, LDKO.error, LDKO.errorPrototype)
                     )
                 };
 
@@ -6261,6 +6277,33 @@
 
                 // Is Document Prototype Get Elements By Tag Name Method
                 LapysDevelopmentKit.test.isDocumentPrototypeGetElementsByTagNameMethod - function isDocumentPrototypeGetElementsByTagNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "getElementsByName" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Has Focus Method
+                LapysDevelopmentKit.test.isDocumentPrototypeHasFocusMethod - function isDocumentPrototypeHasFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "hasFocus" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Open Method
+                LapysDevelopmentKit.test.isDocumentPrototypeOpenMethod - function isDocumentPrototypeOpenMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "open" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Enabled Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandEnabledMethod - function isDocumentPrototypeQueryCommandEnabledMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "queryCommandEnabled" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Indeterm Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandIndetermMethod - function isDocumentPrototypeQueryCommandIndetermMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "queryCommandIndeterm" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command State Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandStateMethod - function isDocumentPrototypeQueryCommandStateMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "queryCommandState" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Supported Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandSupportedMethod - function isDocumentPrototypeQueryCommandSupportedMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "queryCommandSupported" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Value Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandValueMethod - function isDocumentPrototypeQueryCommandValueMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "queryCommandValue" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Write Method
+                LapysDevelopmentKit.test.isDocumentPrototypeWriteMethod - function isDocumentPrototypeWriteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "write" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Write Line Method
+                LapysDevelopmentKit.test.isDocumentPrototypeWriteLineMethod - function isDocumentPrototypeWriteLineMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetTagName(method) == "writeln" && LDKF.functionPrototypeIsNative(method) };
 
                 // Is Element Name
                 LapysDevelopmentKit.test.isElementName = function isElementName(arg) {
