@@ -6,6 +6,7 @@
 
     --- NOTE ---
         #Lapys:
+            - ECMAScript Version: ECMAScript 2, 3rd Edition (1999)
             - Supported development environments:
                 -- Android (browser)
                 -- Internet Explorer (browser)
@@ -19,7 +20,7 @@
                 -- Google Chrome (browser)
                 -- Microsoft Edge (browser)
                 -- Mozilla Firefox (browser)
-                -- Node (runtime)
+                -- Node.js (runtime)
                 -- Opera (browser)
                 -- Safari (browser)
                 -- UC Browser (browser)
@@ -39,11 +40,11 @@
             - Test for LapysJS data types as well.
             - Update POD-prototype methods with type testing mechanisms.
             - `LapysDevelopmentKit.functions.arrayLikePrototypeLength` uses the `item` prototype property.
-            - `DOMStringList`, `DOMStringMap`, `HTMLBodyElement` and `StyleSheetList` need interfaces within the LDK.
+            - `DOMStringList` and `DOMStringMap` need interfaces within the LDK.
             - Test all explicitly requested methods & properties.
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
-                -- Samsung Internet --- NOTE (Lapys) -> Untested...
                 -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
+                -- Samsung Internet (browser) --- NOTE (Lapys) -> Untested...
                 -- others...
 */
 (function Main() {
@@ -59,6 +60,9 @@
 
         // Description
         DESCRIPTION = "LapysJS is an intuitive, minimalist web library for quick development.",
+
+        // Global --- NOTE (Lapys) -> The JavaScript global object of the current environment.
+        GLOBAL = null,
 
         // Lapys Development Kit
         LapysDevelopmentKit = new (function LapysDevelopmentKit() {
@@ -394,1500 +398,8 @@
                         terminate: function terminate(message) { throw new LDKD.lapysJSTerminateError(LDKF.toDebugMessage.apply(LDKD, arguments)) }
                     };
 
-                // Function > Prototype
-                    // Get Syntax Type
-                    LapysDevelopmentKit.functions.functionPrototypeGetSyntaxType = function functionPrototypeGetSyntaxType(method) {
-                        // Initialization > Source
-                        var source = LDKF.functionPrototypeToSourceString(method);
-
-                        // Logic
-                        if (source != "undefined")
-                            // Logic > Return
-                            if (LDKF.stringPrototypeCharacterAt(source, 0) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's') return "class";
-                            else if (LDKF.stringPrototypeCharacterAt(source, 0) == 'f' && LDKF.stringPrototypeCharacterAt(source, 1) == 'u' && LDKF.stringPrototypeCharacterAt(source, 2) == 'n' && LDKF.stringPrototypeCharacterAt(source, 3) == 'c' && LDKF.stringPrototypeCharacterAt(source, 4) == 't' && LDKF.stringPrototypeCharacterAt(source, 5) == 'i' && LDKF.stringPrototypeCharacterAt(source, 6) == 'o' && LDKF.stringPrototypeCharacterAt(source, 7) == 'n') return (function() {
-                                // Initialization > (Iterator, Length)
-                                var iterator = 7, length = LDKF.stringPrototypeLength(source);
-
-                                // Loop
-                                while (iterator != length) {
-                                    // Initialization > Character
-                                    var character = LDKF.stringPrototypeCharacterAt(source, iterator += 1);
-
-                                    // Logic > Return
-                                    if (character == '(') return false;
-                                    else if (character == '*') return true
-                                }
-                            })() ? "generator" : "default";
-                            else if (
-                                // NOTE (Lapys) -> Not all arrow functions begin with English characters.
-                                LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, 0)) ||
-                                LDKF.stringPrototypeCharacterAt(source, 0) == '_' || LDKF.stringPrototypeCharacterAt(source, 0) == '$' || LDKF.stringPrototypeCharacterAt(source, 0) == '(' ||
-                                LDKF.stringPrototypeIncludes(source, "=>")
-                            ) return "arrow";
-
-                        // Return
-                        return null
-                    };
-
-                    // Is Native
-                    LapysDevelopmentKit.functions.functionPrototypeIsNative = function functionPrototypeIsNative(method, STRICT) {
-                        // Initialization > ((Allow) Stream (Lock), Source, Iterator, Length)
-                        var allowStream = true,
-                            source = LDKF.functionPrototypeToSourceString(method),
-                            iterator = LDKF.stringPrototypeLength(source),
-                            length = iterator,
-                            stream = "",
-                            streamLock = null;
-
-                        // Logic
-                        if (!STRICT) {
-                            // Logic > Return
-                            if (LDKF.isNonConstructible(method)) return false;
-                            if (LDKF.isNull(LDKF.functionPrototypeGetSyntaxType(method))) return true
-                        }
-
-                        // Loop
-                        while (iterator > 0) {
-                            // Initialization > Character
-                            var character = LDKF.stringPrototypeCharacterAt(source, length - (iterator -= 1) - 1);
-
-                            // Logic
-                            if (allowStream) {
-                                // Logic
-                                if (character == '/' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '/') {
-                                    // Update > ((Allow) Stream (Lock), Iterator)
-                                    allowStream = false;
-                                    iterator -= 1;
-                                    streamLock = "//";
-
-                                    // [Continue]
-                                    continue
-                                }
-
-                                else if (character == '/' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '*') {
-                                    // Update > (Allow Stream, Iterator)
-                                    allowStream = false;
-                                    iterator -= 1;
-
-                                    // [Continue]
-                                    continue
-                                }
-
-                                else if (character == '\'' || character == '"') {
-                                    // Update > (Allow) Stream (Lock)
-                                    allowStream = false;
-                                    streamLock = character;
-
-                                    // [Continue]
-                                    continue
-                                }
-
-                                // Update > Stream
-                                stream += character
-                            }
-
-                            else if (character == '\n' && streamLock == "//") {
-                                // Update > ((Allow) Stream (Lock), Iterator)
-                                allowStream = true;
-                                iterator += 1;
-                                streamLock = null
-                            }
-
-                            else if (character == '*' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '/') {
-                                // Update > (Allow Stream, Iterator)
-                                allowStream = true;
-                                iterator -= 1;
-
-                                // [Continue]
-                                continue
-                            }
-
-                            else if ((character == '\'' || character == '"') && character == streamLock) {
-                                // Update > (Allow) Stream (Lock)
-                                allowStream = true;
-                                streamLock = null;
-
-                                // [Continue]
-                                continue
-                            }
-                        }
-
-                        // Return
-                        return LDKF.stringPrototypeIncludes(stream, "[Command Line API]") || LDKF.stringPrototypeIncludes(stream, "[native code]")
-                    };
-
-                    // To Source String
-                    LapysDevelopmentKit.functions.functionPrototypeToSourceString = function functionPrototypeToSourceString(method) { return LDKF.stringPrototypeTrim(LDKF.toString(method) || "") };
-
-                // Get Arguments Length --- NOTE (Lapys) -> Fortunately, the `arguments.length` property is immutable.
-                LapysDevelopmentKit.functions.getArgumentsLength = function getArgumentsLength(argumentsList) { return argumentsList.length };
-
-                // Is Constructible
-                LapysDevelopmentKit.functions.isConstructible = function isConstructible(arg) { return !LDKF.isNonConstructible(arg) };
-
-                // Is Non-Constructible
-                LapysDevelopmentKit.functions.isNonConstructible = function isNonConstructible(arg) { return LDKF.isNull(arg) || LDKF.isVoid(arg) };
-
-                // Is Null
-                LapysDevelopmentKit.functions.isNull = function isNull(arg) { return arg === null && typeof arg == "object" };
-
-                // Is Number
-                LapysDevelopmentKit.functions.isNumber = function isNumber(arg) { return typeof arg == "number" };
-
-                // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern development environments.
-                LapysDevelopmentKit.functions.isVoid = function isVoid(arg) { return typeof arg == "undefined" };
-
-                // Log --- NOTE (Lapys) -> Only use within the main phases (`INITIATE`, `UPDATE` and `TERMINATE`).
-                LapysDevelopmentKit.functions.log = function log(arg) {
-                    // Logic
-                    if (LDKF.getArgumentsLength(arguments) == 1) {
-                        // (...) > Console > Log
-                        LDKF.consoleLog(arg);
-
-                        // Return
-                        return arg
-                    }
-
-                    else
-                        // (...) > Console > Log
-                        LDKF.consoleLog.apply(LDKF, arguments)
-                };
-
-                // Number > Prototype
-                    // Is Finite
-                    LapysDevelopmentKit.functions.numberPrototypeIsFinite = function numberPrototypeIsFinite(number) { return !LDKF.numberPrototypeIsInfinite(number) };
-
-                    // Is Infinite
-                    LapysDevelopmentKit.functions.numberPrototypeIsInfinite = function numberPrototypeIsInfinite(number) { var string = LDKF.toString(number); return LDKF.isNumber(number) && string == "Infinity" || string == "-Infinity" };
-
-                    // Is Integer
-                    LapysDevelopmentKit.functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(number) { return number == LDKM.int(number) };
-
-                    // Is NaN
-                    LapysDevelopmentKit.functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(number) { return LDKF.isNumber(number) && LDKF.toString(number) == "NaN" };
-
-                    // Is Negative
-                    LapysDevelopmentKit.functions.numberPrototypeIsNegative = function numberPrototypeIsNegative(number) { return number < 0 || LDKF.numberPrototypeIsNegativeZero(number) };
-
-                    // Is Negative Infinity
-                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeInfinity = function numberPrototypeIsNegativeInfinity(number) { return LDKF.numberPrototypeIsInfinite(number) && LDKF.numberPrototypeIsNegative(number) };
-
-                    // Is Negative Integer
-                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeInteger = function numberPrototypeIsNegativeInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsNegative(number) };
-
-                    // Is Negative Zero
-                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeZero = function numberPrototypeIsNegativeZero(number) { return LDKF.objectIs(number, -0) };
-
-                    // Is Non-Integer
-                    LapysDevelopmentKit.functions.numberPrototypeIsNonInteger = function numberPrototypeIsNonInteger(number) { return !LDKF.numberPrototypeIsInteger(number) };
-
-                    // Is Positive
-                    LapysDevelopmentKit.functions.numberPrototypeIsPositive = function numberPrototypeIsPositive(number) { return number > 0 || LDKF.numberPrototypeIsPositiveZero(number) };
-
-                    // Is Positive Infinity
-                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveInfinity = function numberPrototypeIsPositiveInfinity(number) { return LDKF.numberPrototypeIsInfinite(number) && LDKF.numberPrototypeIsPositive(number) };
-
-                    // Is Positive Integer
-                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveInteger = function numberPrototypeIsPositiveInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsPositive(number) };
-
-                    // Is Positive Zero
-                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveZero = function numberPrototypeIsPositiveZero(number) { return LDKF.objectIs(number, 0) };
-
-                    // Is Safe
-                    LapysDevelopmentKit.functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(number) { return number < LDKC.number.maximumValue && LDKF.numberPrototypeIsFinite(number) && !LDKF.numberPrototypeIsNaN(number) };
-
-                    // Is Safe Integer
-                    LapysDevelopmentKit.functions.numberPrototypeIsSafeInteger = function numberPrototypeIsSafeInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsSafe(number) };
-
-                // Object
-                    // Is
-                    LapysDevelopmentKit.functions.objectIs = function objectIs(objectA, objectB) { return objectA === objectB ? 0 !== objectA || 1 / objectA == 1 / objectB: objectA !== objectA && objectB !== objectB };
-
-                    // Prototype
-                        // Get Property
-                        LapysDevelopmentKit.functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, propertyName) { try { return object[propertyName] } catch (error) {} };
-
-                        // Has Own Property
-                        LapysDevelopmentKit.functions.objectPrototypeHasOwnProperty = function objectPrototypeHasOwnProperty(object, propertyName) { return LDKO.objectPrototypeHasOwnProperty.call(object, propertyName) };
-
-                        // Has Property
-                        LapysDevelopmentKit.functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, propertyName) { try { return propertyName in object } catch (error) {} return false };
-
-                        // Set Properties
-                        LapysDevelopmentKit.functions.objectPrototypeSetProperties = function objectPrototypeSetProperties(object, properties) {
-                            // Initialization > Iterator
-                            var iterator = LDKF.arrayPrototypeLength(properties), length = iterator;
-
-                            // Loop > Modification > Object > (...)
-                            while (iterator) LDKF.objectPrototypeSetProperty(object, properties[length - (iterator -= 1) - 1])
-                        };
-
-                        // Set Property
-                        LapysDevelopmentKit.functions.objectPrototypeSetProperty = function objectPrototypeSetProperty(object, property, value) {
-                            // Logic > (...)
-                            if (LDKF.getArgumentsLength(arguments) === 3) return LDKF.objectPrototypeSetProperty(object, {name: property, value: value});
-                            else try { return object[property.name] = property.value } catch (error) {}
-                        };
-                            // Innumerable Variable
-                            LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty = function objectSetInnumerableVariableProperty(object, key, value) { LDKF.objectDefineProperty(object, key, {configurable: true, enumerable: false, value: value, writable: true}) };
-                                // When Property Is Void
-                                LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty.whenPropertyIsVoid = function whenPropertyIsVoid(object, key, value) { LDKF.objectPrototypeHasProperty(object, key) || LDKF.objectSetInnumerableVariableProperty(object, key, value) };
-
-                            // Getter
-                                // Innumerable Variable
-                                LapysDevelopmentKit.functions.objectSetInnumerableVariableGetterProperty = function objectSetInnumerableVariableGetterProperty(object, key, value) { LDKF.objectDefineProperty(object, key, {configurable: true, enumerable: false, get: value}) };
-                                    // When Property Is Void
-                                    LapysDevelopmentKit.functions.objectSetInnumerableVariableGetterProperty.whenPropertyIsVoid = function whenPropertyIsVoid(object, key, value) { LDKF.objectPrototypeHasProperty(object, key) || LDKF.objectSetInnumerableVariableGetterProperty(object, key, value) };
-
-                // String > Prototype
-                    // Character At
-                    LapysDevelopmentKit.functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) {
-                        // Logic > Error --- WARN (Lapys) -> Prevent erroneously using this method with a non-string.
-                        if (typeof string != "string") LDKF.error("Argument specified must be a string");
-
-                        // Logic > Return
-                        if (LDKF.getArgumentsLength(arguments) < 2) return undefined;
-
-                        // Return
-                        return string[index] || LDKO.stringPrototypeCharacterAt.call(string, index) || undefined
-                    };
-
-                    // Length
-                    LapysDevelopmentKit.functions.stringPrototypeLength = function stringPrototypeLength(string) { var length = 0; while (!LDKF.isVoid(LDKF.stringPrototypeCharacterAt(string, length))) length += 1; return length };
-
-                    // Includes
-                    LapysDevelopmentKit.functions.stringPrototypeIncludes = function stringPrototypeIncludes(string, match) {
-                        // Initialization > (Iterator, (Match) Length)
-                        var iterator = LDKF.stringPrototypeLength(string), length = iterator,
-                            matchLength = LDKF.stringPrototypeLength(match);
-
-                        // Logic > Return
-                        if (!matchLength) return true;
-
-                        // Loop
-                        while (iterator) {
-                            // Initialization > (Index, Match Iterator)
-                            var index = length - (iterator -= 1) - 1, matchIterator = matchLength;
-
-                            // Loop
-                            while (matchIterator) {
-                                // Initialization > Match Index
-                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
-
-                                // Logic
-                                if (LDKF.stringPrototypeCharacterAt(string, index + matchIndex) != LDKF.stringPrototypeCharacterAt(match, matchIndex))
-                                    // [Break]
-                                    break;
-
-                                else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, index + matchIndex) == LDKF.stringPrototypeCharacterAt(match, matchIndex))
-                                    // Return
-                                    return true
-                            }
-                        }
-
-                        // Return
-                        return false
-                    };
-
-                    // Index
-                    LapysDevelopmentKit.functions.stringPrototypeIndex = function stringPrototypeIndex(string, matches) {
-                        // Initialization > Length
-                        var length = LDKF.getArgumentsLength(arguments);
-
-                        // Logic
-                        if (length == 1)
-                            // Return
-                            return -1;
-
-                        else if (length == 2) {
-                            // Update > Matches
-                            LDKF.isArray(matches) || (matches = [matches]);
-
-                            // Initialization > (Indexes (Iterator), Length, (Matches) (Iterator, Length))
-                            var indexes = [], indexesIterator = -1,
-                                length = LDKF.stringPrototypeLength(string),
-                                matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
-
-                            // Loop
-                            while (matchesIterator) {
-                                // Initialization > (Match) (Iterator, Length)
-                                var match = LDKF.stringPrototypeCharacterAt(matches, matchesIterator -= 1),
-                                    matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
-
-                                // Logic
-                                if (matchLength)
-                                    // Logic
-                                    if (matchLength == 1) {
-                                        // Initialization > Iterator
-                                        var iterator = 0;
-
-                                        // Loop > Update > Iterator
-                                        while (iterator != length && LDKF.stringPrototypeCharacterAt(string, iterator) != match)
-                                            iterator += 1;
-
-                                        // Logic > Update > Indexes
-                                        if (iterator == length) indexes[indexesIterator += 1] = -1;
-                                        else indexes[indexesIterator += 1] = iterator
-                                    }
-
-                                    else {
-                                        // Initialization > Iterator
-                                        var iterator = length;
-
-                                        // Loop
-                                        while (iterator) {
-                                            // Initialization > Index
-                                            var index = length - (iterator -= 1) - 1;
-
-                                            // Update > Match Iterator
-                                            matchIterator = matchLength;
-
-                                            // Loop
-                                            while (matchIterator) {
-                                                // Initialization > Match Index
-                                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
-
-                                                // Logic
-                                                if (LDKF.stringPrototypeCharacterAt(string, index + matchIndex) != LDKF.stringPrototypeCharacterAt(match, matchIndex))
-                                                    // [Break]
-                                                    break;
-
-                                                else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, index + matchIndex) == LDKF.stringPrototypeCharacterAt(match, matchIndex))
-                                                    // Update > Indexes
-                                                    indexes[indexesIterator += 1] = index
-                                            }
-                                        }
-                                    }
-
-                                else
-                                    // Update > Indexes
-                                    indexes[indexesIterator += 1] = -1
-                            }
-
-                            // Update > (Index, Indexes Iterator)
-                            index = -1;
-                            indexesIterator += 1;
-
-                            // Loop
-                            while (indexesIterator) {
-                                // Update > Indexes Iterator
-                                indexesIterator -= 1;
-
-                                // Logic > Update > Index
-                                if (index < indexes[indexesIterator]) index = indexes[indexesIterator]
-                            }
-
-                            // Return
-                            return index
-                        }
-
-                        else {
-                            // Initialization > (Iterator, New Matches)
-                            var iterator = -1, newMatches = [];
-
-                            // Loop > Update > New Matches
-                            while (length != 1) newMatches[iterator += 1] = arguments[length -= 1];
-
-                            // Return
-                            return LDKF.stringPrototypeIndex(string, newMatches)
-                        }
-                    };
-
-                    // Is Alphabet
-                    LapysDevelopmentKit.functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(character) { return character && (character == 'a' || character == 'A' || character == 'b' || character == 'B' || character == 'c' || character == 'C' || character == 'd' || character == 'D' || character == 'e' || character == 'E' || character == 'f' || character == 'F' || character == 'g' || character == 'G' || character == 'h' || character == 'H' || character == 'i' || character == 'I' || character == 'j' || character == 'J' || character == 'k' || character == 'K' || character == 'l' || character == 'L' || character == 'm' || character == 'M' || character == 'n' || character == 'N' || character == 'o' || character == 'O' || character == 'p' || character == 'P' || character == 'q' || character == 'Q' || character == 'r' || character == 'R' || character == 's' || character == 'S' || character == 't' || character == 'T' || character == 'u' || character == 'U' || character == 'v' || character == 'V' || character == 'w' || character == 'W' || character == 'x' || character == 'X' || character == 'y' || character == 'Y' || character == 'z' || character == 'Z') };
-
-                    // Is Digit
-                    LapysDevelopmentKit.functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(character) { return character && (character === '0' || character === '1' || character === '2' || character === '3' || character === '4' || character === '5' || character === '6' || character === '7' || character === '8' || character === '9') };
-
-                    // Is Numeric
-                    LapysDevelopmentKit.functions.stringPrototypeIsNumeric = function stringPrototypeIsNumeric(string) { var iterator = LDKF.stringPrototypeLength(string); while (iterator) if (!LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, iterator -= 1))) return false; return !!string };
-
-                    // Is Variable Character
-                    LapysDevelopmentKit.functions.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(character) {
-                        // Return
-                        return character && (LDKF.arrayPrototypeIncludes(LDKC.string.variableCharacters, character) || (function() {
-                            // Initialization > Is Variable Character
-                            var isVariableCharacter = true;
-
-                            // Error Handling > (...)
-                            try { LDKF.eval("var " + character) } catch (error) { isVariableCharacter = false }
-
-                            // Return
-                            return isVariableCharacter
-                        })())
-                    };
-
-                    // Slice
-                    LapysDevelopmentKit.functions.stringPrototypeSlice = function stringPrototypeSlice(string, begin, end) {
-                        // Initialization > ((Arguments) Length, Series, Stream)
-                        var argumentsLength = LDKF.getArgumentsLength(arguments),
-                            length = LDKF.stringPrototypeLength(string),
-                            series = LDKD.series.infinite(length),
-                            stream = "";
-
-                        // Logic > Return
-                        if (!string) return stream;
-
-                        // Update > End
-                        (argumentsLength < 2) && (begin = 0);
-                        (argumentsLength < 3) && (end = length);
-
-                        // Logic > Update > Begin
-                        if (!LDKF.numberPrototypeIsSafeInteger(begin)) begin = 0;
-                        else begin = series.point(begin);
-
-                        // Logic
-                        if (!LDKF.numberPrototypeIsSafeInteger(end)) {
-                            // Logic > Update > End
-                            if (LDKF.numberPrototypeIsPositiveInfinity(end)) end = length;
-                            else end = 0
-                        }
-
-                        else
-                            // Update > End
-                            end = series.point(end);
-
-                        // Logic > Loop > Update > Stream
-                        if (begin < end) while (begin != end) stream += LDKF.stringPrototypeCharacterAt(string, (begin += 1) - 1);
-
-                        // Return
-                        return stream
-                    };
-
-                    // Trim
-                    LapysDevelopmentKit.functions.stringPrototypeTrim = function stringPrototypeTrim(string, matches) {
-                        // Initialization > Length
-                        var length = LDKF.getArgumentsLength(arguments);
-
-                        // Logic
-                        if (length == 1)
-                            // Update > String
-                            string = LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string));
-
-                        else if (length == 2)
-                            // Update > String
-                            string = LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string, matches), matches);
-
-                        else if (length) {
-                            // Initialization > Iterator
-                            var iterator = length;
-
-                            // Loop > Update > String
-                            while (iterator != 1) string = LDKF.stringPrototypeTrim(string, arguments[length - (iterator -= 1)])
-                        }
-
-                        else
-                            // Return
-                            return "";
-
-                        // Return
-                        return string
-                    };
-
-                    // Trim Left
-                    LapysDevelopmentKit.functions.stringPrototypeTrimLeft = function stringPrototypeTrimLeft(string, matches) {
-                        // Initialization > Length
-                        var length = LDKF.getArgumentsLength(arguments);
-
-                        // Logic
-                        if (length > 2) {
-                            // Initialization > Iterator
-                            var iterator = length;
-
-                            // Loop > Update > String
-                            while (iterator != 1) string = LDKF.stringPrototypeTrimLeft(string, arguments[length - (iterator -= 1)]);
-
-                            // Return
-                            return string
-                        }
-
-                        else if (length) {
-                            // Initialization > (Iterator, Stream)
-                            var iterator = 0, stream = "";
-
-                            // Updates > Matches
-                            length == 1 ? matches = [' ', '\n'] : (LDKF.isArray(matches) || (matches = [matches]));
-
-                            // Initialization > Matches (Iterator, Length)
-                            var matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
-
-                            // Logic
-                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
-                                // Logic > Loop > Update > Iterator
-                                if (matchesLength) while (LDKF.stringPrototypeCharacterAt(string, iterator) == matches[0]) iterator += 1;
-                            }
-
-                            else
-                                // Loop
-                                while (matchesIterator) {
-                                    // Initialization > (Match) (Iterator, Length)
-                                    var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
-                                        matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
-
-                                    // Loop
-                                    while (matchIterator) {
-                                        // Update > Match Iterator
-                                        matchIterator -= 1;
-
-                                        // Logic
-                                        if (LDKF.stringPrototypeCharacterAt(string, iterator + matchIterator) != LDKF.stringPrototypeCharacterAt(match, matchIterator))
-                                            // [Break]
-                                            break;
-
-                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, iterator) == LDKF.stringPrototypeCharacterAt(match, 0)) {
-                                            // Update > (Iterator, Matches Iterator)
-                                            iterator += matchLength;
-                                            matchesIterator = matchesLength
-                                        }
-                                    }
-                                }
-
-                            // Update > (Length, Stream)
-                            length = LDKF.stringPrototypeLength(string) - 1;
-                            stream = iterator ? LDKF.stringPrototypeSlice(string, iterator, -0) : string;
-
-                            // Return
-                            return stream
-                        }
-
-                        else
-                            // Return
-                            return ""
-                    };
-
-                    // Trim Right
-                    LapysDevelopmentKit.functions.stringPrototypeTrimRight = function stringPrototypeTrimRight(string, matches) {
-                        // Initialization > Length
-                        var length = LDKF.getArgumentsLength(arguments);
-
-                        // Logic
-                        if (length > 2) {
-                            // Initialization > Iterator
-                            var iterator = length;
-
-                            // Loop > Update > String
-                            while (iterator != 1) string = LDKF.stringPrototypeTrimRight(string, arguments[length - (iterator -= 1)]);
-
-                            // Return
-                            return string
-                        }
-
-                        else if (length) {
-                            // Initialization > (Iterator, Stream)
-                            var iterator = 0, stream = "";
-
-                            // Updates > Matches
-                            length == 1 ? matches = [' ', '\n'] : (LDKF.isArray(matches) || (matches = [matches]));
-
-                            // Initialization > Matches (Iterator, Length)
-                            var matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
-
-                            // Update > Length
-                            length = LDKF.stringPrototypeLength(string);
-
-                            // Logic
-                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
-                                // Logic
-                                if (matchesLength) {
-                                    // Initialization > Index
-                                    var index = length - 1;
-
-                                    // Loop > Update > (Index, Iterator)
-                                    while (index && LDKF.stringPrototypeCharacterAt(string, index) == matches[0]) { index -= 1; iterator += 1 }
-                                }
-                            }
-
-                            else
-                                // Loop
-                                while (matchesIterator) {
-                                    // Initialization > (Match) (Iterator, Length)
-                                    var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
-                                        matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
-
-                                    // Loop
-                                    while (matchIterator) {
-                                        // Update > Match Iterator
-                                        matchIterator -= 1;
-
-                                        // Logic
-                                        if (LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - matchIterator - 1) - 1) != LDKF.stringPrototypeCharacterAt(match, matchIterator))
-                                            // [Break]
-                                            break;
-
-                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - 1) - 1) == LDKF.stringPrototypeCharacterAt(match, 0)) {
-                                            // Update > (Iterator, Matches Iterator)
-                                            iterator += matchLength;
-                                            matchesIterator = matchesLength;
-                                        }
-                                    }
-                                }
-
-                            // Update > Stream
-                            stream = iterator ? LDKF.stringPrototypeSlice(string, 0, length - (iterator + 1) + 1) : string;
-
-                            // Return
-                            return stream
-                        }
-
-                        else
-                            // Return
-                            return ""
-                    };
-
-                // To Debug Message
-                LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(message) + LDKI.messages.debugging.suffix };
-
-                // To Number
-                LapysDevelopmentKit.functions.toNumber = function toNumber(arg) { if (LDKF.isNumber(arg)) return arg - 0; else { try { arg = arg - 0 } catch (error) { try { arg = LDKO.number(arg) } catch (error) { try { arg = LDKF.toNumber(LDKF.string(arg)) } catch (error) {} } } return arg } };
-
-                // To String
-                LapysDevelopmentKit.functions.toString = function toString(arg) { try { return arg + "" } catch (error) {} return LDKO.string(arg) };
-
-            /* Math */
-                // Absolute
-                LapysDevelopmentKit.math.abs = function abs(number) { return LDKF.numberPrototypeIsNegative(number) ? -number : number };
-
-                // Integer
-                LapysDevelopmentKit.math.int = function int(number) { return number - number % 1 };
-
-            /* Test */
-                // Arguments to Console Stream --- NOTE (Lapys) -> Convert arguments to a console output-like stream.
-                LapysDevelopmentKit.test.argumentsToConsoleStream = function argumentsToConsoleStream() {
-                    // Initialization > (Iterator, Length, Stream)
-                    var iterator = LDKF.getArgumentsLength(arguments), length = iterator, stream = "";
-
-                    // Loop > Update > Stream
-                    while (iterator) stream += LDKF.toString(arguments[length - (iterator -= 1) - 1]) + (iterator ? ' ' : "");
-
-                    // Return
-                    return stream
-                };
-
-                // Environment Vendor Is --- NOTE (Lapys) -> Test that the specified vendor is currently existing.
-                LapysDevelopmentKit.test.environmentVendorIs = function environmentVendorIs(vendor) {
-                    // Initialization > Iterator
-                    var iterator = LDKF.arrayPrototypeLength(LDKE.vendors);
-
-                    // Loop > Logic > Return
-                    while (iterator) if (LDKE.vendors[iterator -= 1] == vendor) return true;
-
-                    // Return
-                    return false
-                };
-
-                // Get Native Constructor
-                LapysDevelopmentKit.test.getNativeConstructor = function getNativeConstructor(constructor, constructorName, STRICT) { if (LDKT.isNativeConstructor(constructor, constructorName, STRICT)) return constructor };
-
-                // Get Native Error
-                LapysDevelopmentKit.test.getNativeError = function getNativeError(error, errorName, STRICT) { if (LDKT.isNativeError(error, errorName, STRICT)) return error };
-
-                // Get Object Native Constructor By Name --- NOTE (Lapys) -> Return a native constructor via it's property name.
-                LapysDevelopmentKit.test.getObjectNativeConstructorByName = function getObjectNativeConstructorByName(object, constructorName, STRICT) { return LDKT.getNativeConstructor(LDKF.objectPrototypeGetProperty(object, constructorName), constructorName, STRICT) };
-
-                // Get Object Native Error By Name --- NOTE (Lapys) -> Similar to `LapysDevelopmentKit.functions.getObjectNativeConstructorByName`, but specifically for errors.
-                LapysDevelopmentKit.test.getObjectNativeErrorByName = function getObjectNativeErrorByName(object, errorName, STRICT) { return LDKT.getNativeError(LDKF.objectPrototypeGetProperty(object, errorName), errorName, STRICT) };
-
-                // Is Console Method --- NOTE (Lapys) -> Test the `console` object's methods.
-                LapysDevelopmentKit.test.isConsoleMethod = function isConsoleMethod(method) {
-                    // Initialization > (Console Has Prototype, Method Name)
-                    var consoleHasPrototype = LDKF.objectPrototypeHasProperty(LDKO, "consolePrototype"),
-                        methodName = LDKF.functionPrototypeGetName(method);
-
-                    // Return
-                    return (consoleHasPrototype && methodName == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method)) ||
-                        (consoleHasPrototype && !methodName && LDKF.functionPrototypeIsNative(method)) ||
-                        (function() {
-                            // Initialization > Is Non-Stringifiable
-                            var isNonStringifiable = false;
-
-                            // Error Handling > Update > Is Non-Stringifiable
-                            try { LDKO.string(method) } catch (error) { isNonStringifiable = true }
-
-                            // Return
-                            return isNonStringifiable
-                        })()
-                };
-
-                // Is Constructible Object --- WARN (Lapys) -> Defer to `LapysDevelopmentKit.functions.isConstructible` instead.
-                LapysDevelopmentKit.test.isConstructibleObject = function isConstructibleObject(arg, constructor, prototype, STRICT) {
-                    // Return
-                    return (STRICT ? true : typeof arg == "object") && LDKF.isConstructible(arg) && (
-                        LDKF.objectPrototypeConstructor(arg) === constructor &&
-                        (function(argPrototype) { return LDKC.hasActiveXObjectConstructor && LDKF.isVoid(argPrototype) ? true : argPrototype === prototype })(LDKF.objectPrototypePrototype(arg))
-                    )
-                };
-
-                // Is Native Constructor
-                LapysDevelopmentKit.test.isNativeConstructor = function isNativeConstructor(constructor, constructorName, STRICT) {
-                    // Logic
-                    if (!LDKF.isVoid(constructor))
-                        // Logic > (...)
-                        if (
-                            (STRICT ? (typeof constructor == "object" && (function(stream) { return stream == "[object " + constructorName + ']' || stream == "[object " + constructorName + "Constructor]" })(LDKF.toString(constructor))) : false) ||
-                            (LDKF.functionPrototypeGetName(constructor) == constructorName && LDKF.functionPrototypeIsNative(constructor))
-                        ) return true;
-                        else LDKF.error.nativeToEnvironment('`' + constructorName + "` constructor");
-
-                    // Return
-                    return false
-                };
-
-                // Is Native Error --- NOTE (Lapys) -> Similar to `LapysDevelopmentKit.functions.isNativeConstructor`, but specifically for errors.
-                LapysDevelopmentKit.test.isNativeError = function isNativeError(error, errorName, STRICT) {
-                    // Logic
-                    if (STRICT ? !LDKF.isVoid(error) : true)
-                        // Logic > Return
-                        if (
-                            (LDKF.functionPrototypeToSourceString(error) == errorName) ||
-                            ((LDKF.functionPrototypeGetName(error) || errorName) == errorName && LDKF.functionPrototypeIsNative(error))
-                        ) return true;
-                        else if (STRICT) LDKF.error.nativeToEnvironment('`' + errorName + "` constructor");
-
-                    // Return
-                    return false
-                };
-
-                // Is Public Constructor --- NOTE (Lapys) -> Test that the environment allows access to and utilizes the specified argument.
-                LapysDevelopmentKit.test.isPublicConstructor = function isPublicConstructor(arg) { return !LDKF.isVoid(arg) && LDKF.functionPrototypeIsNative(arg) };
-
-                /* Method Is Standard
-                        --- NOTE ---
-                            #Lapys: Crude version of `LapysDevelopmentKit.functions.functionPrototypeIsNative`
-                                for testing `Function.prototype.apply` and `Function.prototype.call` to be native methods.
-
-                        --- WARN ---
-                            #Lapys: Defer to `LapysDevelopmentKit.functions.functionPrototypeIsNative` instead.
-                */
-                LapysDevelopmentKit.test.methodIsStandard = function methodIsStandard(method, methodName, methodNameLength) {
-                    // Initialization > (...) --- NOTE (Lapys) -> Constant error codes.
-                    var STRING_PROTOTYPE_CHAR_AT_METHOD_IS_USER_DEFINED = 1;
-
-                    // Error Handling
-                    try {
-                        // Initialization > Source
-                        var source = method + "";
-
-                        // Return
-                        return typeof method == "function" && (function() {
-                            // Function
-                                // Get Character From Index
-                                function getCharacterFromIndex(string, index) {
-                                    // Error Handling
-                                    try {
-                                        // Initialization > Character
-                                        var character = string.charAt(index) || undefined;
-
-                                        // Error
-                                        if (!isCharacter(character)) throw {};
-
-                                        // Return
-                                        return character
-                                    } catch (error) {
-                                        // Error
-                                        throw STRING_PROTOTYPE_CHAR_AT_METHOD_IS_USER_DEFINED
-                                    }
-                                }
-
-                                // Is Character
-                                function isCharacter(arg) { return typeof arg == "string" && isSafeNumber(arg.length) && arg.length === 1 }
-
-                                // Is Safe Number
-                                function isSafeNumber(arg) { return typeof arg == "number" && arg < 9007199254740991 && (function(stream) { return arg != "Infinity" && arg != "-Infinity" && arg != "NaN" })(arg + "") }
-
-                            // Initialization > (Allow Stream, Is Standard, Iterator, Length, Match (Length), Stream Lock)
-                            var allowStream = true,
-                                isStandard = false,
-                                iterator = -1, length,
-                                match = ['[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']'], matchLength = 13,
-                                streamLock = null;
-
-                            // Loop
-                            while (iterator != -2 && (!~iterator || isCharacter(getCharacterFromIndex(source, iterator)))) {
-                                // Update > Length
-                                length = iterator += 1;
-
-                                // Initialization > (Character, Match Iterator)
-                                var character = getCharacterFromIndex(source, iterator),
-                                    matchIterator = matchLength;
-
-                                // Logic
-                                if (allowStream) {
-                                    // Logic
-                                    if (character == '/' && getCharacterFromIndex(source, iterator + 1) == '/') {
-                                        // Update > (Allow Stream, Stream Lock)
-                                        allowStream = false;
-                                        streamLock = "//";
-
-                                        // [Continue]
-                                        continue
-                                    }
-
-                                    else if (character == '/' && getCharacterFromIndex(source, iterator + 1) == '*') {
-                                        // Update > Allow Stream
-                                        allowStream = false;
-
-                                        // [Continue]
-                                        continue
-                                    }
-
-                                    else if (character == '\'' || character == '"') {
-                                        // Update > (Allow Stream, Stream Lock)
-                                        allowStream = false;
-                                        streamLock = character;
-
-                                        // [Continue]
-                                        continue
-                                    }
-
-                                    // Loop
-                                    while (matchIterator) {
-                                        // Initialization > Match Index
-                                        var matchIndex = matchLength - (matchIterator -= 1) - 1;
-
-                                        // Logic
-                                        if (getCharacterFromIndex(source, iterator + matchIndex) != match[matchIndex])
-                                            // [Break]
-                                            break;
-
-                                        else if (!matchIterator && getCharacterFromIndex(source, iterator + matchIndex) == match[matchIndex]) {
-                                            // Update > (Iterator, Is Standard)
-                                            iterator = -2;
-                                            isStandard = true
-                                        }
-                                    }
-                                }
-
-                                else if (character == '\n' && streamLock == "//") {
-                                    // Update > (Allow Stream, Stream Lock)
-                                    allowStream = true;
-                                    streamLock = null
-                                }
-
-                                else if (character == '*' && getCharacterFromIndex(source, iterator + 1) == '/')
-                                    // Update > Allow Stream
-                                    allowStream = true;
-
-                                else if ((character == '\'' || character == '"') && character == streamLock) {
-                                    // Update > (Allow Stream, Stream Lock)
-                                    allowStream = true;
-                                    streamLock = null
-                                }
-                            }
-
-                            // Logic --- NOTE (Lapys) -> Also test for the method's name as well.
-                            if (methodName && methodNameLength) {
-                                // Update > (Iterator, Match (Length))
-                                iterator = 7;
-                                match = methodName;
-                                matchLength = methodNameLength;
-
-                                // Loop
-                                while (iterator != -2 && iterator != length) {
-                                    // Update > Iterator
-                                    iterator += 1;
-
-                                    // Initialization > Match Iterator
-                                    var matchIterator = matchLength;
-
-                                    // Loop
-                                    while (matchIterator) {
-                                        // Initialization > Match Index
-                                        var matchIndex = matchLength - (matchIterator -= 1) - 1;
-
-                                        // Logic
-                                        if (getCharacterFromIndex(source, iterator + matchIndex) != match[matchIndex])
-                                            // [Break]
-                                            break;
-
-                                        else if (!matchIterator && getCharacterFromIndex(source, iterator + matchIndex) == match[matchIndex]) {
-                                            // Update > (Is Standard, Iterator)
-                                            isStandard = true;
-                                            iterator = -2
-                                        }
-                                    }
-                                }
-
-                                // Update > Is Standard
-                                (iterator == length) && (isStandard = false)
-                            }
-
-                            // Return
-                            return isStandard
-                        })()
-                    } catch (error) {
-                        // Logic
-                        switch (error) {
-                            // (...)
-                            case STRING_PROTOTYPE_CHAR_AT_METHOD_IS_USER_DEFINED:
-                                // Error
-                                LDKT.throwError("`String.prototype.charAt` method" + LDKI.messages.error.nativeToEnvironmentSuffix)
-                        }
-                    }
-
-                    // Return
-                    return false
-                };
-
-                // Throw Error --- WARN (Lapys) -> Defer to `LapysDevelopmentKit.functions.error` instead.
-                LapysDevelopmentKit.test.throwError = function throwError(message) { throw (LDKI.messages.debugging.prefix + message + LDKI.messages.debugging.suffix) };
-
-                // Is Function Prototype Apply Method --- NOTE (Lapys) -> The tests are also executed after initialization.
-                LapysDevelopmentKit.test.isFunctionPrototypeApplyMethod = function isFunctionPrototypeApplyMethod(method) { return LDKT.methodIsStandard(method, ['a', 'p', 'p', 'l', 'y'], 5) };
-                LDKT.isFunctionPrototypeApplyMethod((function() { try { return LDKO.functionPrototypeApply = Main.apply } catch (error) {} })()) || LDKT.throwError("`Function.prototype.apply` method" + LDKI.messages.error.nativeToEnvironmentSuffix);
-
-                // Is Function Prototype Call Method
-                LapysDevelopmentKit.test.isFunctionPrototypeCallMethod = function isFunctionPrototypeCallMethod(method) { return LDKT.methodIsStandard(method, ['c', 'a', 'l', 'l'], 4) };
-                LDKT.isFunctionPrototypeCallMethod((function() { try { return LDKO.functionPrototypeCall = Main.call } catch (error) {} })()) || LDKT.throwError("`Function.prototype.call` method" + LDKI.messages.error.nativeToEnvironmentSuffix);
-
-            /* Objects */
-                // String > Prototype
-                    /* Character At
-                            --- WARN ---
-                                #Lapys: Specifically for legacy versions of the Internet Explorer web browser.
-                                    - Fortunately, syntactic indexing still works for non-string objects.
-                                    - Unfortunately, this takes priority over default string character indexing in most other programming languages (which means slower processing speeds).
-                    */
-                    LapysDevelopmentKit.objects.stringPrototypeCharacterAt = (function() {
-                        // Initialization > Method
-                        var method = (function() {
-                            // Error Handling > Return
-                            try { return "".constructor.prototype.charAt }
-                            catch (error) {}
-                        })();
-
-                        // Error Handling
-                        try {
-                            // Logic > (...)
-                            if (
-                                typeof method == "function" && (function(stream) {
-                                    // Return
-                                    return stream == "function charAt() { [native code] }" ||
-                                        stream == "function charAt() {\n    [native code]\n}" ||
-                                        stream == "\nfunction charAt() {\n    [native code]\n}\n"
-                                })(method + "")
-                            ) return method;
-                            else throw {}
-                        } catch (error) {
-                            // Logic > Error
-                            if (' '[0] != ' ') LDKF.error.nativeToEnvironment("`String.prototype.charAt` method")
-                        }
-                    })();
-
-                    // Character Code At --- NOTE (Lapys) -> Used for the `LapysDevelopmentKit.math.random.generateSeeder` method.
-                    LapysDevelopmentKit.objects.stringPrototypeCharacterCodeAt = (function() {
-                        // Initialization > Method
-                        var method = (function() {
-                            // Error Handling > Return
-                            try { return "".constructor.prototype.charCodeAt }
-                            catch (error) {}
-                        })();
-
-                        // Logic > (...)
-                        if (
-                            typeof method == "function" &&
-                            (function(stream) {
-                                // Return
-                                return stream == "function charCodeAt() { [native code] }" ||
-                                    stream == "function charCodeAt() {\n    [native code]\n}" ||
-                                    stream == "\nfunction charCodeAt() {\n    [native code]\n}\n"
-                            })(method + "")
-                        ) return method;
-                        else LDKF.error.nativeToEnvironment("`String.prototype.charCodeAt` method")
-                    })();
-
-            /* Constants */
-                // Has __Define__ Getter Property
-                LapysDevelopmentKit.constants.has__Define__GetterProperty = typeof __defineGetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__DefineGetter__ = __defineGetter__);
-
-                // Has __Define__ Setter Property
-                LapysDevelopmentKit.constants.has__Define__SetterProperty = typeof __defineSetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__DefineSetter__ = __defineSetter__);
-
-                // Has __Lookup__ Getter Property
-                LapysDevelopmentKit.constants.has__Lookup__GetterProperty = typeof __lookupGetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__LookupGetter__ = __lookupGetter__);
-
-                // Has __Lookup__ Setter Property
-                LapysDevelopmentKit.constants.has__Lookup__SetterProperty = typeof __lookupSetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__LookupSetter__ = __lookupSetter__);
-
-                // Has __Prototype__ Accessor
-                LapysDevelopmentKit.constants.has__Proto__Accessor = LDKF.objectPrototypeHasProperty({}, "__proto__");
-
-                // Is Browser Environment --- UPDATE REQUIRED (Lapys) -> Test here should be improved.
-                LapysDevelopmentKit.constants.isBrowserEnvironment = typeof window == "object" && LDKF.isConstructible(window);
-
-            /* Objects */
-                // Object --- UPDATE REQUIRED (Lapys) -> Should be parsed without native methods.
-                LapysDevelopmentKit.objects.object = LDKF.objectPrototypeGetProperty({}, "constructor");
-                    // Create
-                    LapysDevelopmentKit.objects.objectCreate = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "create")) {
-                            // Update > Method
-                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "create");
-
-                            // Error
-                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.create` method")
-                        }
-
-                        else
-                            // Update > Method
-                            method = function create(prototype) {
-                                // Function > Constructor
-                                function constructor() {}
-
-                                // Modification > Constructor > Prototype
-                                constructor.prototype = prototype;
-
-                                // Initialization > Object
-                                var object = new constructor;
-
-                                // Modification > Object > Constructor
-                                LDKF.isConstructible(prototype) && (object.constructor = constructor);
-
-                                // Return
-                                return object
-                            };
-
-                        // Return
-                        return method
-                    })();
-
-                    // Define Property
-                    LapysDevelopmentKit.objects.objectDefineProperty = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (
-                            LDKF.objectPrototypeHasProperty(LDKO.object, "defineProperty") && (function() {
-                                // Initialization > Is Standard
-                                var isStandard = true;
-
-                                // Update > Method
-                                method = LDKF.objectPrototypeGetProperty(LDKO.object, "defineProperty");
-
-                                // Error Handling > (...)
-                                try { method({}, "", {}) }
-                                catch (error) { isStandard = false }
-
-                                // Return
-                                return isStandard
-                            })()
-                        )
-                            // Error
-                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.defineProperty` method")
-
-                        else
-                            // Return
-                            return function defineProperty(object, key, descriptor) {
-                                // Error Handling > Return
-                                try { return method(object, key, descriptor) }
-                                catch (error) {}
-
-                                // Modification > Object > [Key]
-                                (LDKC.has__Define__GetterProperty && LDKF.objectPrototypeHasProperty(descriptor, "get")) &&
-                                LDKO.objectPrototype__DefineGetter__.call(object, key, LDKF.objectPrototypeGetProperty(descriptor, "get"));
-
-                                (LDKC.has__Define__SetterProperty && LDKF.objectPrototypeHasProperty(descriptor, "set")) &&
-                                LDKO.objectPrototype__DefineSetter__.call(object, key, LDKF.objectPrototypeGetProperty(descriptor, "set"));
-
-                                LDKF.objectPrototypeHasProperty(descriptor, "value") &&
-                                LDKF.objectPrototypeSetProperty(object, key, LDKF.objectPrototypeGetProperty(descriptor, "value"));
-
-                                // Return
-                                return object
-                            };
-
-                        // Return
-                        return method
-                    })();
-
-                    // Get Own Property Descriptor
-                    LapysDevelopmentKit.objects.objectGetOwnPropertyDescriptor = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (
-                            LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertyDescriptor") &&
-                            (function() {
-                                // Initialization > Is Standard
-                                var isStandard = true;
-
-                                // Update > Method
-                                method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyDescriptor");
-
-                                // Error Handling > (...)
-                                try { method({}, "") }
-                                catch (error) { isStandard = false }
-
-                                // Return
-                                return isStandard
-                            })()
-                        )
-                            // Error
-                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.getOwnPropertyDescriptor` method");
-
-                        else
-                            // Update > Method
-                            method = function getOwnPropertyDescriptor(object, key) {
-                                // Initialization > (Getter, Setter, Has __Lookup__ Properties, Is Accessor)
-                                var getter, setter,
-                                    has__Lookup__Properties = LDKC.has__Lookup__GetterProperty && LDKC.has__Lookup__SetterProperty,
-                                    isAccessor = has__Lookup__Properties ?
-                                        (getter = LDKO.objects.objectPrototype__LookupGetter__.call(object, key)) ||
-                                        (setter = LDKO.objects.objectPrototype__LookupSetter__.call(object, key)) :
-                                        null;
-
-                                // Return
-                                return LDKF.isNull(isAccessor) ?
-                                    {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(object, key), writable: true} :
-                                    {configurable: true, enumerable: true, get: getter, set: setter}
-                            };
-
-                        // Return
-                        return method
-                    })();
-
-                    // Get Own Property Names
-                    LapysDevelopmentKit.objects.objectGetOwnPropertyNames = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertyNames")) {
-                            // Update > Method
-                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyNames");
-
-                            // Error
-                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.getOwnPropertyNames` method")
-                        }
-
-                        else
-                            // Update > Method --- UPDATE REQUIRED (Lapys) -> Should also return non-enumerable properties as well.
-                            method = function getOwnPropertyNames(object) {
-                                // Initialization > (Index, Key, Property Names)
-                                var index = -1, key, propertyNames = [];
-
-                                // Loop > Update > Property Names
-                                for (key in object) LDKF.objectPrototypeHasOwnProperty(object, key) && (propertyNames[index += 1] = key);
-
-                                // Return
-                                return propertyNames
-                            };
-
-                        // Return
-                        return method
-                    })();
-
-                    // Get Own Property Symbols
-                    LapysDevelopmentKit.objects.objectGetOwnPropertySymbols = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertySymbols")) {
-                            // Update > Method
-                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertySymbols");
-
-                            // Error
-                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.getOwnPropertySymbols` method")
-                        }
-
-                        // Return
-                        return method
-                    })();
-
-                    // Get Prototype Of --- CITE (Lapys) -> `https://gist.github.com/subtleGradient/1052392`.
-                    LapysDevelopmentKit.objects.objectGetPrototypeOf = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getPrototypeOf"))
-                            // Update > Method
-                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getPrototypeOf");
-
-                        else {
-                            // Function > Get Prototype Value
-                            function getPrototypeValue(object, propertyName) {
-                                // Initialization > Own Value
-                                var ownValue;
-
-                                // Error Handling
-                                try { if (LDKF.objectPrototypeHasOwnProperty(object, propertyName)) { ownValue = object[propertyName]; delete object[propertyName]; return object[propertyName] } }
-                                catch (error) { throw error }
-                                finally { LDKF.objectPrototypeSetProperty(object, propertyName, ownValue); return object[propertyName] }
-
-                                // Return
-                                return object[propertyName]
-                            }
-
-                            // Update > Method
-                            method = LDKC.has__Proto__Accessor ?
-                                function getPrototypeOf(object) { return getPrototypeValue(object, "__proto__") } :
-                                function getPrototypeOf(object) {
-                                    // Error Handling > Return
-                                    try { return getPrototypeValue(object, "constructor").prototype || LDKO.objectPrototype }
-                                    catch (error) {}
-                                }
-                        }
-
-                        // Update > Method
-                        (typeof method == "function") || (method = undefined);
-
-                        // Return
-                        return method
-                    })();
-
-                    // Keys
-                    LapysDevelopmentKit.objects.objectKeys = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "keys")) {
-                            // Update > Method
-                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "keys");
-
-                            // Error
-                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.keys` method")
-                        }
-
-                        else if (typeof LDKO.objectGetOwnPropertyNames == "function")
-                            // Update > Method
-                            method = function keys(object) {
-                                // Initialization > (Property Names, Iterator, Length, Index, Keys)
-                                var propertyNames = LDKF.objectGetOwnPropertyNames(object),
-                                    iterator = LDKF.arrayPrototypeLength(keys), length = iterator,
-                                    index = -1, keys = [];
-
-                                // Loop
-                                while (iterator) {
-                                    // Initialization > Property Name
-                                    var propertyName = propertyNames[length - (iterator -= 1) - 1];
-
-                                    // Update > Keys
-                                    LDKF.objectPrototypeHasOwnProperty(object, propertyName) &&
-                                    (keys[index += 1] = propertyName)
-                                }
-
-                                // Return
-                                return keys
-                            };
-
-                        else
-                            // Update > Method
-                            method = function keys(object) {
-                                // Initialization > (Index, Key(s))
-                                var index = -1, key, keys = [];
-
-                                // Loop > Update > Keys
-                                for (key in object) LDKF.objectPrototypeHasOwnProperty(object, key) && (keys[index += 1] = key);
-
-                                // Return
-                                return keys
-                            };
-
-                        // Return
-                        return method
-                    })();
-
-                    // Prototype
-                    LapysDevelopmentKit.objects.objectPrototype = LDKF.objectPrototypeGetProperty(LDKO.object, "prototype");
-                        // Has Own Property
-                        LapysDevelopmentKit.objects.objectPrototypeHasOwnProperty = (function() {
-                            // Initialization > Method
-                            var method;
-
-                            // Logic
-                            if (LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "hasOwnProperty")) {
-                                // Update > Method
-                                method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "hasOwnProperty");
-
-                                // Error
-                                LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.prototype.hasOwnProperty` method")
-                            }
-
-                            else
-                                // Update > Method
-                                method = function hasOwnProperty(propertyName) {
-                                    // Initialization > (Key, Object)
-                                    var key, object = this;
-
-                                    // Loop > Logic > Return
-                                    for (key in object) if (key === propertyName) return true;
-
-                                    // Return
-                                    return false
-                                };
-
-                            // Return
-                            return method
-                        })();
-
-                    // Set Prototype Of --- CITE (Lapys) -> `https://gist.github.com/edoardocavazza/47246856759f2273e48b`
-                    LapysDevelopmentKit.objects.objectSetPrototypeOf = (function() {
-                        // Initialization > Method
-                        var method;
-
-                        // Logic
-                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "setPrototypeOf")) {
-                            // Update > Method
-                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "setPrototypeOf");
-
-                            // Error
-                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.setPrototypeOf` method")
-                        }
-
-                        else if (LDKC.has__Proto__Accessor)
-                            // Update > Method
-                            method = function setPrototypeOf(object, prototype) { LDKF.objectPrototypeSetProperty(object, "__proto__", prototype) };
-
-                        // Update > Method
-                        (typeof method == "function") || (method = undefined);
-
-                        // Return
-                        return method
-                    })();
-
-            /* Functions */
-                // Object --- FLAG (Lapys) ---
-                    // Create
-                    LapysDevelopmentKit.functions.objectCreate = function objectCreate(prototype) { return LDKO.objectCreate(prototype) };
-
-                    // Define Property
-                    LapysDevelopmentKit.functions.objectDefineProperty = function objectDefineProperty(object, key, descriptor) { return LDKO.objectDefineProperty(object, key, descriptor) };
-                        // Constant
-                        LapysDevelopmentKit.functions.objectDefineConstantProperty = function objectDefineConstantProperty(object, key, descriptor) {
-                            // Modification > Descriptor > (Configurable, Writable)
-                            LDKF.objectDefineProperty(descriptor, "configurable", {enumerable: true, value: false});
-                            LDKF.objectPrototypeHasProperty(descriptor, "value") && LDKF.objectDefineProperty(descriptor, "writable", {enumerable: true, value: false});
-
-                            // Modification > Object > [Key]
-                            LDKF.objectDefineProperty(object, key, descriptor)
-                        };
-
-                    // Get Own Property Descriptor
-                    LapysDevelopmentKit.functions.objectGetOwnPropertyDescriptor = function objectGetOwnPropertyDescriptor(object, propertyName) { return LDKO.objectGetOwnPropertyDescriptor(object, propertyName) };
-
-                    // Get Own Property Names
-                    LapysDevelopmentKit.functions.objectGetOwnPropertyNames = function objectGetOwnPropertyNames(object) { return LDKO.objectGetOwnPropertyNames(object) };
-
-                    // Get Own Property Symbols
-                    LapysDevelopmentKit.functions.objectGetOwnPropertySymbols = function objectGetOwnPropertySymbols(object) { return LDKO.objectGetOwnPropertySymbols(object) };
-
-                    // Get Prototype Of
-                    LapysDevelopmentKit.functions.objectGetPrototypeOf = function objectGetPrototypeOf(object) { return LDKO.objectGetPrototypeOf(object) };
-
-                    // Keys
-                    LapysDevelopmentKit.functions.objectKeys = function objectKeys(object) { return LDKO.objectKeys(object) };
-
-                    /* Prototype */
-                        // Get __Proto__
-                        LapysDevelopmentKit.functions.objectPrototypeGet__Prototype__ = function objectPrototypeGet__Prototype__(object) {
-                            // Initialization > __Prototype__
-                            var __proto__ = undefined;
-
-                            // Error Handling
-                            try {
-                                // Logic > Update > __Prototype__
-                                if (LDKF.objectPrototypeHasProperty(object, "__proto__")) __proto__ = object.__proto__;
-                                else if (typeof LDKO.objectGetPrototypeOf == "function") __proto__ = LDKF.objectGetPrototypeOf(object)
-                            } catch (error) {}
-
-                            // Return
-                            return __proto__
-                        };
-
-                        // Set __Proto__ --- WARN (NOTE) -> Accessors are not available in some environments.
-                        LapysDevelopmentKit.functions.objectPrototypeSet__Prototype__ = function objectPrototypeSet__Prototype__(object, __proto__) {
-                            // Error Handling
-                            try {
-                                // Logic > (...)
-                                    // {...}
-                                    if (LDKF.objectPrototypeHasProperty(object, "__proto__")) LDKF.objectPrototypeSetProperty(object, "__proto__", __proto__);
-
-                                    // {...}
-                                    else if (typeof LDKO.objectSetPrototypeOf == "function") LDKF.objectSetPrototypeOf(object, __proto__);
-
-                                    // {...} NOTE (Lapys) -> Shamelessly mimic mutating an object's prototype.
-                                    else {
-                                        // Initialization > (__Prototype__ Keys, Iterator, Length)
-                                        var __proto__Keys = LDKF.objectGetOwnPropertyNames(__proto__),
-                                            iterator = LDKF.arrayPrototypeLength(__proto__Keys), length = iterator;
-
-                                        // Loop
-                                        while (iterator) {
-                                            // Initialization > __Prototype__ Key
-                                            var __proto__Key = __proto__Keys[length - (iterator -= 1) - 1];
-
-                                            // Error Handling
-                                            try {
-                                                // Initialization > __Prototype__ Descriptor
-                                                var __proto__PropertyDescriptor = LDKF.objectGetOwnPropertyDescriptor(object, __proto__Key);
-
-                                                // Modification > Object > [__Prototype__ Key]
-                                                __proto__PropertyDescriptor && (LDKF.objectPrototypeHasProperty(__proto__PropertyDescriptor, "get") || LDKF.objectPrototypeHasProperty(__proto__PropertyDescriptor, "set")) ?
-                                                    LDKF.objectDefineProperty(object, __proto__Key, __proto__PropertyDescriptor) :
-                                                    LDKF.objectPrototypeSetProperty(object, __proto__Key, __proto__[__proto__Key])
-                                            } catch (error) {}
-                                        }
-                                    }
-                            } catch (error) {}
-                        };
-
-                        // Constructor
-                        LapysDevelopmentKit.functions.objectPrototypeConstructor = function objectPrototypeConstructor(object, STRICT) {
-                            // Initialization > (Constructor, Is Constructible)
-                            var constructor, isConstructible = LDKF.isConstructible(object);
-
-                            // Error Handling
-                            try { if (typeof (constructor = isConstructible ? object.constructor : undefined) != "function") throw {} }
-                            catch (error) {
-                                // Error Handling > Update > Constructor --- NOTE (Lapys) -> It is assumed the object is of the `Object` constructor.
-                                try { constructor = isConstructible ? (LDKF.objectPrototypeGet__Prototype__(object) || {}).constructor : undefined }
-                                catch (error) { constructor = undefined }
-                            }
-
-                            // Logic
-                            if (!STRICT)
-                                // Error Handling > Update > Constructor
-                                try { (!LDKF.isFunction(constructor) && !LDKF.isNull(constructor)) && (constructor = undefined) }
-                                catch (error) { (typeof constructor != "function" && !LDKF.isNull(constructor)) && (constructor = undefined) }
-
-                            // Update > Constructor
-                            constructor && ((object instanceof constructor) || (constructor = undefined));
-
-                            // Return
-                            return constructor
-                        };
-
-                        // Prototype --- NOTE (Lapys) -> Same as `<object>.__proto__ || Object.getPrototypeOf(<object>)`, not `<object>.prototype`.
-                        LapysDevelopmentKit.functions.objectPrototypePrototype = function objectPrototypePrototype(object) { return LDKF.objectGetPrototypeOf(object) || LDKF.objectPrototypeGet__Prototype__(object) };
-
-                        // Prototype Chain --- NOTE (Lapys) -> Mostly for debugging only.
-                        LapysDevelopmentKit.functions.objectPrototypePrototypeChain = function objectPrototypePrototypeChain(object) {
-                            // Initialization > (Former) Prototype (Chain (Iterator))
-                            var formerPrototype, prototype = LDKF.objectPrototypePrototype(object),
-                                prototypeChain = [], prototypeChainIterator = -1;
-
-                            // Loop
-                            while (formerPrototype !== prototype && !LDKF.isNull(prototype)) {
-                                // Update > (Former) Prototype (Chain)
-                                prototypeChain[prototypeChainIterator += 1] = prototype;
-                                formerPrototype = prototype;
-                                prototype = LDKF.objectPrototypePrototype(prototype)
-                            }
-
-                            // Return
-                            return prototypeChain
-                        };
-
-                    // Set Prototype Of
-                    LapysDevelopmentKit.functions.objectSetPrototypeOf = function objectSetPrototypeOf(object, __proto__) { return LDKO.objectSetPrototypeOf(object, __proto__) };
+                // Evaluate
+                LapysDevelopmentKit.functions.eval = function evaluate(source) { return LDKO.eval.call(GLOBAL, source) };
 
                 // Function > Prototype
                     // Get Body --- NOTE (Lapys) -> The function turned out huge because of the recursive nature of different function types (class extensions, function parameters and so on).
@@ -2348,6 +860,40 @@
                         return parameters
                     };
 
+                    // Get Syntax Type
+                    LapysDevelopmentKit.functions.functionPrototypeGetSyntaxType = function functionPrototypeGetSyntaxType(method) {
+                        // Initialization > Source
+                        var source = LDKF.functionPrototypeToSourceString(method);
+
+                        // Logic
+                        if (source != "undefined")
+                            // Logic > Return
+                            if (LDKF.stringPrototypeCharacterAt(source, 0) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's') return "class";
+                            else if (LDKF.stringPrototypeCharacterAt(source, 0) == 'f' && LDKF.stringPrototypeCharacterAt(source, 1) == 'u' && LDKF.stringPrototypeCharacterAt(source, 2) == 'n' && LDKF.stringPrototypeCharacterAt(source, 3) == 'c' && LDKF.stringPrototypeCharacterAt(source, 4) == 't' && LDKF.stringPrototypeCharacterAt(source, 5) == 'i' && LDKF.stringPrototypeCharacterAt(source, 6) == 'o' && LDKF.stringPrototypeCharacterAt(source, 7) == 'n') return (function() {
+                                // Initialization > (Iterator, Length)
+                                var iterator = 7, length = LDKF.stringPrototypeLength(source);
+
+                                // Loop
+                                while (iterator != length) {
+                                    // Initialization > Character
+                                    var character = LDKF.stringPrototypeCharacterAt(source, iterator += 1);
+
+                                    // Logic > Return
+                                    if (character == '(') return false;
+                                    else if (character == '*') return true
+                                }
+                            })() ? "generator" : "default";
+                            else if (
+                                // NOTE (Lapys) -> Not all arrow functions begin with English characters.
+                                LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, 0)) ||
+                                LDKF.stringPrototypeCharacterAt(source, 0) == '_' || LDKF.stringPrototypeCharacterAt(source, 0) == '$' || LDKF.stringPrototypeCharacterAt(source, 0) == '(' ||
+                                LDKF.stringPrototypeIncludes(source, "=>")
+                            ) return "arrow";
+
+                        // Return
+                        return null
+                    };
+
                     // Is Arrow
                     LapysDevelopmentKit.functions.functionPrototypeIsArrow = function functionPrototypeIsArrow(method) { return LDKF.functionPrototypeGetSyntaxType(method) == "arrow" };
 
@@ -2360,20 +906,1556 @@
                     // Is Default
                     LapysDevelopmentKit.functions.functionPrototypeIsDefault = function functionPrototypeIsDefault(method) { return LDKF.functionPrototypeGetSyntaxType(method) == "default" };
 
-                    // Is Native Arrow
-                    LapysDevelopmentKit.functions.functionPrototypeIsNativeArrow = function functionPrototypeIsArrow(method) { return LDKF.functionPrototypeIsArrow(method) && LDKF.functionPrototypeIsNative(method) };
+                    // Is Native
+                    LapysDevelopmentKit.functions.functionPrototypeIsNative = function functionPrototypeIsNative(method, STRICT) {
+                        // Initialization > ((Allow) Stream (Lock), Source, Iterator, Length)
+                        var allowStream = true,
+                            source = LDKF.functionPrototypeToSourceString(method),
+                            iterator = LDKF.stringPrototypeLength(source),
+                            length = iterator,
+                            stream = "",
+                            streamLock = null;
 
-                    // Is Native Class
-                    LapysDevelopmentKit.functions.functionPrototypeIsNativeClass = function functionPrototypeIsClass(method) { return LDKF.functionPrototypeIsClass(method) && LDKF.functionPrototypeIsNative(method) };
+                        // Logic
+                        if (!STRICT) {
+                            // Logic > Return
+                            if (LDKF.isNonConstructible(method)) return false;
+                            if (LDKF.isNull(LDKF.functionPrototypeGetSyntaxType(method))) return true
+                        }
 
-                    // Is Native Generator
-                    LapysDevelopmentKit.functions.functionPrototypeIsNativeGenerator = function functionPrototypeIsGenerator(method) { return LDKF.functionPrototypeIsGenerator(method) && LDKF.functionPrototypeIsNative(method) };
+                        // Loop
+                        while (iterator > 0) {
+                            // Initialization > Character
+                            var character = LDKF.stringPrototypeCharacterAt(source, length - (iterator -= 1) - 1);
 
-                    // Is Native Default
-                    LapysDevelopmentKit.functions.functionPrototypeIsNativeDefault = function functionPrototypeIsClass(method) { return LDKF.functionPrototypeIsDefault(method) && LDKF.functionPrototypeIsNative(method) };
+                            // Logic
+                            if (allowStream) {
+                                // Logic
+                                if (character == '/' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '/') {
+                                    // Update > ((Allow) Stream (Lock), Iterator)
+                                    allowStream = false;
+                                    iterator -= 1;
+                                    streamLock = "//";
+
+                                    // [Continue]
+                                    continue
+                                }
+
+                                else if (character == '/' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '*') {
+                                    // Update > (Allow Stream, Iterator)
+                                    allowStream = false;
+                                    iterator -= 1;
+
+                                    // [Continue]
+                                    continue
+                                }
+
+                                else if (character == '\'' || character == '"') {
+                                    // Update > (Allow) Stream (Lock)
+                                    allowStream = false;
+                                    streamLock = character;
+
+                                    // [Continue]
+                                    continue
+                                }
+
+                                // Update > Stream
+                                stream += character
+                            }
+
+                            else if (character == '\n' && streamLock == "//") {
+                                // Update > ((Allow) Stream (Lock), Iterator)
+                                allowStream = true;
+                                iterator += 1;
+                                streamLock = null
+                            }
+
+                            else if (character == '*' && LDKF.stringPrototypeCharacterAt(source, length - iterator) == '/') {
+                                // Update > (Allow Stream, Iterator)
+                                allowStream = true;
+                                iterator -= 1;
+
+                                // [Continue]
+                                continue
+                            }
+
+                            else if ((character == '\'' || character == '"') && character == streamLock) {
+                                // Update > (Allow) Stream (Lock)
+                                allowStream = true;
+                                streamLock = null;
+
+                                // [Continue]
+                                continue
+                            }
+                        }
+
+                        // Return
+                        return LDKF.stringPrototypeIncludes(stream, "[Command Line API]") || LDKF.stringPrototypeIncludes(stream, "[native code]")
+                    };
+                        // Is Arrow
+                        LapysDevelopmentKit.functions.functionPrototypeIsNativeArrow = function functionPrototypeIsArrow(method) { return LDKF.functionPrototypeIsArrow(method) && LDKF.functionPrototypeIsNative(method) };
+
+                        // Is Class
+                        LapysDevelopmentKit.functions.functionPrototypeIsNativeClass = function functionPrototypeIsClass(method) { return LDKF.functionPrototypeIsClass(method) && LDKF.functionPrototypeIsNative(method) };
+
+                        // Is Default
+                        LapysDevelopmentKit.functions.functionPrototypeIsNativeDefault = function functionPrototypeIsClass(method) { return LDKF.functionPrototypeIsDefault(method) && LDKF.functionPrototypeIsNative(method) };
+
+                        // Is Generator
+                        LapysDevelopmentKit.functions.functionPrototypeIsNativeGenerator = function functionPrototypeIsGenerator(method) { return LDKF.functionPrototypeIsGenerator(method) && LDKF.functionPrototypeIsNative(method) };
 
                     // Is User-Defined
                     LapysDevelopmentKit.functions.functionPrototypeIsUserDefined = function functionPrototypeIsUserDefined(method) { return !LDKF.functionPrototypeIsNative(method) };
+
+                    // To Source String
+                    LapysDevelopmentKit.functions.functionPrototypeToSourceString = function functionPrototypeToSourceString(method) { return LDKF.stringPrototypeTrim(LDKF.toString(method) || "") };
+
+                // Get Arguments Length --- NOTE (Lapys) -> Fortunately, the `arguments.length` property is immutable.
+                LapysDevelopmentKit.functions.getArgumentsLength = function getArgumentsLength(argumentsList) { return argumentsList.length };
+
+                // Is Array
+                LapysDevelopmentKit.functions.isArray = function isArray(arg) {
+                    // Logic > Error Handling > Return
+                    if (LDKC.has__Proto__Accessor)
+                        try { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKF.objectPrototypeConstructor(arg) === LDKO.array && LDKF.isNull(LDKF.objectPrototypeGet__Prototype__(LDKF.objectPrototypeGet__Prototype__(LDKF.objectPrototypeGet__Prototype__(arg)))) }
+                        catch (error) {}
+
+                    // Error Handling > Return
+                    try { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKF.objectPrototypeConstructor(arg) === LDKO.array }
+                    catch (error) {}
+
+                    // Return
+                    return false
+                };
+
+                // Is Boolean
+                LapysDevelopmentKit.functions.isBoolean = function isBoolean(arg) { return typeof arg == "boolean" };
+
+                // Is Constructible
+                LapysDevelopmentKit.functions.isConstructible = function isConstructible(arg) { return !LDKF.isNonConstructible(arg) };
+
+                // Is Function
+                LapysDevelopmentKit.functions.isFunction = function isFunction(arg, STRICT) {
+                    // Return
+                    return typeof arg == "function" || (function() {
+                        // Logic > Return
+                        if (
+                            !LDKF.isVoid(LDKF, "activeXObject") || (
+                                LDKF.objectPrototypeHasProperty(GLOBAL, "ActiveXObject") &&
+                                (function(method) { return (function(stream) { return stream == "function" || stream == "undefined" })(typeof method) && LDKF.functionPrototypeIsNative(method, STRICT = true) })(LDKF.objectPrototypeGetProperty(GLOBAL, "ActiveXObject"))
+                            )
+                        ) return (typeof arg == "string" && arg === "[object]") || (typeof arg == "object" && LDKF.functionPrototypeIsDefault(arg))
+
+                        // Return
+                        return false
+                    })()
+                };
+
+                // Is Non-Constructible
+                LapysDevelopmentKit.functions.isNonConstructible = function isNonConstructible(arg) { return LDKF.isNull(arg) || LDKF.isVoid(arg) };
+
+                // Is Null
+                LapysDevelopmentKit.functions.isNull = function isNull(arg) { return arg === null && typeof arg == "object" };
+
+                // Is Number
+                LapysDevelopmentKit.functions.isNumber = function isNumber(arg) { return typeof arg == "number" };
+
+                // Is Regular Expression
+                LapysDevelopmentKit.functions.isRegularExpression = function isRegularExpression(arg) { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKF.objectPrototypeConstructor(arg) === LDKO.regularExpression };
+
+                // Is String
+                LapysDevelopmentKit.functions.isString = function isString(arg) { return typeof arg == "string" };
+
+                // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern development environments.
+                LapysDevelopmentKit.functions.isVoid = function isVoid(arg) { return typeof arg == "undefined" };
+
+                // Log --- NOTE (Lapys) -> Only use within the main phases (`INITIATE`, `UPDATE` and `TERMINATE`).
+                LapysDevelopmentKit.functions.log = function log(arg) {
+                    // Logic
+                    if (LDKF.getArgumentsLength(arguments) == 1) {
+                        // (...) > Console > Log
+                        LDKF.consoleLog(arg);
+
+                        // Return
+                        return arg
+                    }
+
+                    else
+                        // (...) > Console > Log
+                        LDKF.consoleLog.apply(LDKF, arguments)
+                };
+
+                // Number > Prototype
+                    // Is Finite
+                    LapysDevelopmentKit.functions.numberPrototypeIsFinite = function numberPrototypeIsFinite(number) { return !LDKF.numberPrototypeIsInfinite(number) };
+
+                    // Is Infinite
+                    LapysDevelopmentKit.functions.numberPrototypeIsInfinite = function numberPrototypeIsInfinite(number) { var string = LDKF.toString(number); return LDKF.isNumber(number) && string == "Infinity" || string == "-Infinity" };
+
+                    // Is Integer
+                    LapysDevelopmentKit.functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(number) { return number == LDKM.int(number) };
+
+                    // Is NaN
+                    LapysDevelopmentKit.functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(number) { return LDKF.isNumber(number) && LDKF.toString(number) == "NaN" };
+
+                    // Is Negative
+                    LapysDevelopmentKit.functions.numberPrototypeIsNegative = function numberPrototypeIsNegative(number) { return number < 0 || LDKF.numberPrototypeIsNegativeZero(number) };
+
+                    // Is Negative Infinity
+                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeInfinity = function numberPrototypeIsNegativeInfinity(number) { return LDKF.numberPrototypeIsInfinite(number) && LDKF.numberPrototypeIsNegative(number) };
+
+                    // Is Negative Integer
+                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeInteger = function numberPrototypeIsNegativeInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsNegative(number) };
+
+                    // Is Negative Zero
+                    LapysDevelopmentKit.functions.numberPrototypeIsNegativeZero = function numberPrototypeIsNegativeZero(number) { return LDKF.objectIs(number, -0) };
+
+                    // Is Non-Integer
+                    LapysDevelopmentKit.functions.numberPrototypeIsNonInteger = function numberPrototypeIsNonInteger(number) { return !LDKF.numberPrototypeIsInteger(number) };
+
+                    // Is Positive
+                    LapysDevelopmentKit.functions.numberPrototypeIsPositive = function numberPrototypeIsPositive(number) { return number > 0 || LDKF.numberPrototypeIsPositiveZero(number) };
+
+                    // Is Positive Infinity
+                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveInfinity = function numberPrototypeIsPositiveInfinity(number) { return LDKF.numberPrototypeIsInfinite(number) && LDKF.numberPrototypeIsPositive(number) };
+
+                    // Is Positive Integer
+                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveInteger = function numberPrototypeIsPositiveInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsPositive(number) };
+
+                    // Is Positive Zero
+                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveZero = function numberPrototypeIsPositiveZero(number) { return LDKF.objectIs(number, 0) };
+
+                    // Is Safe
+                    LapysDevelopmentKit.functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(number) { return number < LDKC.number.maximumValue && LDKF.numberPrototypeIsFinite(number) && !LDKF.numberPrototypeIsNaN(number) };
+
+                    // Is Safe Integer
+                    LapysDevelopmentKit.functions.numberPrototypeIsSafeInteger = function numberPrototypeIsSafeInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsSafe(number) };
+
+                // Object
+                    // Create
+                    LapysDevelopmentKit.functions.objectCreate = function objectCreate(prototype) { return LDKO.objectCreate(prototype) };
+
+                    // Define Property
+                    LapysDevelopmentKit.functions.objectDefineProperty = function objectDefineProperty(object, key, descriptor) { return LDKO.objectDefineProperty(object, key, descriptor) };
+                        // Constant
+                        LapysDevelopmentKit.functions.objectDefineConstantProperty = function objectDefineConstantProperty(object, key, descriptor) {
+                            // Modification > Descriptor > (Configurable, Writable)
+                            LDKF.objectDefineProperty(descriptor, "configurable", {enumerable: true, value: false});
+                            LDKF.objectPrototypeHasProperty(descriptor, "value") && LDKF.objectDefineProperty(descriptor, "writable", {enumerable: true, value: false});
+
+                            // Modification > Object > [Key]
+                            LDKF.objectDefineProperty(object, key, descriptor)
+                        };
+
+                    // Is
+                    LapysDevelopmentKit.functions.objectIs = function objectIs(objectA, objectB) { return objectA === objectB ? 0 !== objectA || 1 / objectA == 1 / objectB: objectA !== objectA && objectB !== objectB };
+
+                    // Get Own Property Descriptor
+                    LapysDevelopmentKit.functions.objectGetOwnPropertyDescriptor = function objectGetOwnPropertyDescriptor(object, propertyName) { return LDKO.objectGetOwnPropertyDescriptor(object, propertyName) };
+
+                    // Get Own Property Names
+                    LapysDevelopmentKit.functions.objectGetOwnPropertyNames = function objectGetOwnPropertyNames(object) { return LDKO.objectGetOwnPropertyNames(object) };
+
+                    // Get Own Property Symbols
+                    LapysDevelopmentKit.functions.objectGetOwnPropertySymbols = function objectGetOwnPropertySymbols(object) { return LDKO.objectGetOwnPropertySymbols(object) };
+
+                    // Get Prototype Of
+                    LapysDevelopmentKit.functions.objectGetPrototypeOf = function objectGetPrototypeOf(object) { return LDKO.objectGetPrototypeOf(object) };
+
+                    // Keys
+                    LapysDevelopmentKit.functions.objectKeys = function objectKeys(object) { return LDKO.objectKeys(object) };
+
+                    // Prototype
+                        // Constructor --- NOTE (Lapys) -> The `instanceof` keyword proved fruitless here.
+                        LapysDevelopmentKit.functions.objectPrototypeConstructor = function objectPrototypeConstructor(object, STRICT) {
+                            // Initialization > (Constructor, Is Constructible)
+                            var constructor, isConstructible = LDKF.isConstructible(object);
+
+                            // Error Handling
+                            try { if (typeof (constructor = isConstructible ? object.constructor : undefined) != "function") throw {} }
+                            catch (error) {
+                                // Error Handling > Update > Constructor --- NOTE (Lapys) -> It is assumed the object is of the `Object` constructor.
+                                try { constructor = isConstructible ? (LDKF.objectPrototypeGet__Prototype__(object, STRICT = true) || {}).constructor : undefined }
+                                catch (error) { constructor = undefined }
+                            }
+
+                            // Logic
+                            if (!STRICT)
+                                // Error Handling > Update > Constructor
+                                try { (!LDKF.isFunction(constructor) && !LDKF.isNull(constructor)) && (constructor = undefined) }
+                                catch (error) { (typeof constructor != "function" && !LDKF.isNull(constructor)) && (constructor = undefined) }
+
+                            // Return
+                            return constructor
+                        };
+
+                        // Get __Prototype__
+                        LapysDevelopmentKit.functions.objectPrototypeGet__Prototype__ = function objectPrototypeGet__Prototype__(object, STRICT) {
+                            // Initialization > __Prototype__
+                            var __proto__ = undefined;
+
+                            // Error Handling
+                            try {
+                                // Logic > Update > __Prototype__
+                                if (LDKF.objectPrototypeHasProperty(object, "__proto__")) __proto__ = object.__proto__;
+                                else if (typeof LDKO.objectGetPrototypeOf == "function") __proto__ = LDKF.objectGetPrototypeOf(object)
+                            } catch (error) {}
+
+                            // Logic
+                            if (!STRICT && LDKF.isVoid(__proto__)) {
+                                // Initialization > Constructor
+                                var constructor = LDKF.objectPrototypeConstructor(object);
+
+                                // Update > __Prototype__
+                                LDKF.isConstructible(constructor) && (__proto__ = LDKF.objectPrototypeGetProperty(constructor, "prototype"))
+                            }
+
+                            // Return
+                            return __proto__
+                        };
+
+                        // Get Property
+                        LapysDevelopmentKit.functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, propertyName) { try { return object[propertyName] } catch (error) {} };
+
+                        // Prototype --- NOTE (Lapys) -> Same as `<object>.__proto__ || Object.getPrototypeOf(<object>)`, not `<object>.prototype`.
+                        LapysDevelopmentKit.functions.objectPrototypePrototype = function objectPrototypePrototype(object) { return LDKF.objectPrototypeGet__Prototype__(object) };
+
+                        // Prototype Chain --- NOTE (Lapys) -> Mostly for debugging only.
+                        LapysDevelopmentKit.functions.objectPrototypePrototypeChain = function objectPrototypePrototypeChain(object) {
+                            // Initialization > (Former) Prototype (Chain (Iterator))
+                            var formerPrototype, prototype = LDKF.objectPrototypePrototype(object),
+                                prototypeChain = [], prototypeChainIterator = -1;
+
+                            // Loop
+                            while (formerPrototype !== prototype && !LDKF.isNull(prototype)) {
+                                // Update > (Former) Prototype (Chain)
+                                prototypeChain[prototypeChainIterator += 1] = prototype;
+                                formerPrototype = prototype;
+                                prototype = LDKF.objectPrototypePrototype(prototype)
+                            }
+
+                            // Return
+                            return prototypeChain
+                        };
+
+                        // Has Own Property
+                        LapysDevelopmentKit.functions.objectPrototypeHasOwnProperty = function objectPrototypeHasOwnProperty(object, propertyName) { return LDKO.objectPrototypeHasOwnProperty.call(object, propertyName) };
+
+                        // Has Property
+                        LapysDevelopmentKit.functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, propertyName) { try { return propertyName in object } catch (error) {} return false };
+
+                        // Set __Prototype__ --- WARN (NOTE) -> Accessors are not available in some environments.
+                        LapysDevelopmentKit.functions.objectPrototypeSet__Prototype__ = function objectPrototypeSet__Prototype__(object, __proto__) {
+                            // Error Handling
+                            try {
+                                // Logic > (...)
+                                    // {...}
+                                    if (LDKF.objectPrototypeHasProperty(object, "__proto__")) LDKF.objectPrototypeSetProperty(object, "__proto__", __proto__);
+
+                                    // {...}
+                                    else if (typeof LDKO.objectSetPrototypeOf == "function") LDKF.objectSetPrototypeOf(object, __proto__);
+
+                                    // {...} NOTE (Lapys) -> Shamelessly mimic mutating an object's prototype.
+                                    else {
+                                        // Initialization > (__Prototype__ Keys, Iterator, Length)
+                                        var __proto__Keys = LDKF.objectGetOwnPropertyNames(__proto__),
+                                            iterator = LDKF.arrayPrototypeLength(__proto__Keys), length = iterator;
+
+                                        // Loop
+                                        while (iterator) {
+                                            // Initialization > __Prototype__ Key
+                                            var __proto__Key = __proto__Keys[length - (iterator -= 1) - 1];
+
+                                            // Error Handling
+                                            try {
+                                                // Initialization > __Prototype__ Descriptor
+                                                var __proto__PropertyDescriptor = LDKF.objectGetOwnPropertyDescriptor(object, __proto__Key);
+
+                                                // Modification > Object > [__Prototype__ Key]
+                                                __proto__PropertyDescriptor && (LDKF.objectPrototypeHasProperty(__proto__PropertyDescriptor, "get") || LDKF.objectPrototypeHasProperty(__proto__PropertyDescriptor, "set")) ?
+                                                    LDKF.objectDefineProperty(object, __proto__Key, __proto__PropertyDescriptor) :
+                                                    LDKF.objectPrototypeSetProperty(object, __proto__Key, __proto__[__proto__Key])
+                                            } catch (error) {}
+                                        }
+                                    }
+                            } catch (error) {}
+                        };
+
+                        // Set Properties
+                        LapysDevelopmentKit.functions.objectPrototypeSetProperties = function objectPrototypeSetProperties(object, properties) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(properties), length = iterator;
+
+                            // Loop > Modification > Object > (...)
+                            while (iterator) LDKF.objectPrototypeSetProperty(object, properties[length - (iterator -= 1) - 1])
+                        };
+
+                        // Set Property
+                        LapysDevelopmentKit.functions.objectPrototypeSetProperty = function objectPrototypeSetProperty(object, property, value) {
+                            // Logic > (...)
+                            if (LDKF.getArgumentsLength(arguments) === 3) return LDKF.objectPrototypeSetProperty(object, {name: property, value: value});
+                            else try { return object[property.name] = property.value } catch (error) {}
+                        };
+                            // Innumerable Variable
+                            LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty = function objectSetInnumerableVariableProperty(object, key, value) { LDKF.objectDefineProperty(object, key, {configurable: true, enumerable: false, value: value, writable: true}) };
+                                // When Property Is Void
+                                LapysDevelopmentKit.functions.objectSetInnumerableVariableProperty.whenPropertyIsVoid = function whenPropertyIsVoid(object, key, value) { LDKF.objectPrototypeHasProperty(object, key) || LDKF.objectSetInnumerableVariableProperty(object, key, value) };
+
+                            // Getter
+                                // Innumerable Variable
+                                LapysDevelopmentKit.functions.objectSetInnumerableVariableGetterProperty = function objectSetInnumerableVariableGetterProperty(object, key, value) { LDKF.objectDefineProperty(object, key, {configurable: true, enumerable: false, get: value}) };
+                                    // When Property Is Void
+                                    LapysDevelopmentKit.functions.objectSetInnumerableVariableGetterProperty.whenPropertyIsVoid = function whenPropertyIsVoid(object, key, value) { LDKF.objectPrototypeHasProperty(object, key) || LDKF.objectSetInnumerableVariableGetterProperty(object, key, value) };
+
+                    // Set Prototype Of
+                    LapysDevelopmentKit.functions.objectSetPrototypeOf = function objectSetPrototypeOf(object, __proto__) { return LDKO.objectSetPrototypeOf(object, __proto__) };
+
+                // Regular Expression
+                LapysDevelopmentKit.functions.regularExpression = function regularExpression(source) { return LDKF.getArgumentsLength(arguments) ? LDKO.regularExpression(source) : new LDKO.regularExpression };
+
+                // String > Prototype
+                    // Character At
+                    LapysDevelopmentKit.functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) {
+                        // Logic > Error --- WARN (Lapys) -> Prevent erroneously using this method with a non-string.
+                        if (typeof string != "string") LDKF.error("Argument specified must be a string");
+
+                        // Logic > Return
+                        if (LDKF.getArgumentsLength(arguments) < 2) return undefined;
+
+                        // Return
+                        return string[index] || LDKO.stringPrototypeCharacterAt.call(string, index) || undefined
+                    };
+
+                    // Is Empty
+                    LapysDevelopmentKit.functions.stringPrototypeIsEmpty = function stringPrototypeIsEmpty(string) { return !string };
+
+                    // Length
+                    LapysDevelopmentKit.functions.stringPrototypeLength = function stringPrototypeLength(string) { var length = 0; while (!LDKF.isVoid(LDKF.stringPrototypeCharacterAt(string, length))) length += 1; return length };
+
+                    // Includes
+                    LapysDevelopmentKit.functions.stringPrototypeIncludes = function stringPrototypeIncludes(string, match) {
+                        // Initialization > (Iterator, (Match) Length)
+                        var iterator = LDKF.stringPrototypeLength(string), length = iterator,
+                            matchLength = LDKF.stringPrototypeLength(match);
+
+                        // Logic > Return
+                        if (!matchLength) return true;
+
+                        // Loop
+                        while (iterator) {
+                            // Initialization > (Index, Match Iterator)
+                            var index = length - (iterator -= 1) - 1, matchIterator = matchLength;
+
+                            // Loop
+                            while (matchIterator) {
+                                // Initialization > Match Index
+                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                // Logic
+                                if (LDKF.stringPrototypeCharacterAt(string, index + matchIndex) != LDKF.stringPrototypeCharacterAt(match, matchIndex))
+                                    // [Break]
+                                    break;
+
+                                else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, index + matchIndex) == LDKF.stringPrototypeCharacterAt(match, matchIndex))
+                                    // Return
+                                    return true
+                            }
+                        }
+
+                        // Return
+                        return false
+                    };
+
+                    // Index
+                    LapysDevelopmentKit.functions.stringPrototypeIndex = function stringPrototypeIndex(string, matches) {
+                        // Initialization > Length
+                        var length = LDKF.getArgumentsLength(arguments);
+
+                        // Logic
+                        if (length == 1)
+                            // Return
+                            return -1;
+
+                        else if (length == 2) {
+                            // Update > Matches
+                            LDKF.isArray(matches) || (matches = [matches]);
+
+                            // Initialization > (Indexes (Iterator), Length, (Matches) (Iterator, Length))
+                            var indexes = [], indexesIterator = -1,
+                                length = LDKF.stringPrototypeLength(string),
+                                matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
+
+                            // Loop
+                            while (matchesIterator) {
+                                // Initialization > (Match) (Iterator, Length)
+                                var match = LDKF.stringPrototypeCharacterAt(matches, matchesIterator -= 1),
+                                    matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+
+                                // Logic
+                                if (matchLength)
+                                    // Logic
+                                    if (matchLength == 1) {
+                                        // Initialization > Iterator
+                                        var iterator = 0;
+
+                                        // Loop > Update > Iterator
+                                        while (iterator != length && LDKF.stringPrototypeCharacterAt(string, iterator) != match)
+                                            iterator += 1;
+
+                                        // Logic > Update > Indexes
+                                        if (iterator == length) indexes[indexesIterator += 1] = -1;
+                                        else indexes[indexesIterator += 1] = iterator
+                                    }
+
+                                    else {
+                                        // Initialization > Iterator
+                                        var iterator = length;
+
+                                        // Loop
+                                        while (iterator) {
+                                            // Initialization > Index
+                                            var index = length - (iterator -= 1) - 1;
+
+                                            // Update > Match Iterator
+                                            matchIterator = matchLength;
+
+                                            // Loop
+                                            while (matchIterator) {
+                                                // Initialization > Match Index
+                                                var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                                // Logic
+                                                if (LDKF.stringPrototypeCharacterAt(string, index + matchIndex) != LDKF.stringPrototypeCharacterAt(match, matchIndex))
+                                                    // [Break]
+                                                    break;
+
+                                                else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, index + matchIndex) == LDKF.stringPrototypeCharacterAt(match, matchIndex))
+                                                    // Update > Indexes
+                                                    indexes[indexesIterator += 1] = index
+                                            }
+                                        }
+                                    }
+
+                                else
+                                    // Update > Indexes
+                                    indexes[indexesIterator += 1] = -1
+                            }
+
+                            // Update > (Index, Indexes Iterator)
+                            index = -1;
+                            indexesIterator += 1;
+
+                            // Loop
+                            while (indexesIterator) {
+                                // Update > Indexes Iterator
+                                indexesIterator -= 1;
+
+                                // Logic > Update > Index
+                                if (index < indexes[indexesIterator]) index = indexes[indexesIterator]
+                            }
+
+                            // Return
+                            return index
+                        }
+
+                        else {
+                            // Initialization > (Iterator, New Matches)
+                            var iterator = -1, newMatches = [];
+
+                            // Loop > Update > New Matches
+                            while (length != 1) newMatches[iterator += 1] = arguments[length -= 1];
+
+                            // Return
+                            return LDKF.stringPrototypeIndex(string, newMatches)
+                        }
+                    };
+
+                    // Is Alphabet
+                    LapysDevelopmentKit.functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(character) { return character && (character == 'a' || character == 'A' || character == 'b' || character == 'B' || character == 'c' || character == 'C' || character == 'd' || character == 'D' || character == 'e' || character == 'E' || character == 'f' || character == 'F' || character == 'g' || character == 'G' || character == 'h' || character == 'H' || character == 'i' || character == 'I' || character == 'j' || character == 'J' || character == 'k' || character == 'K' || character == 'l' || character == 'L' || character == 'm' || character == 'M' || character == 'n' || character == 'N' || character == 'o' || character == 'O' || character == 'p' || character == 'P' || character == 'q' || character == 'Q' || character == 'r' || character == 'R' || character == 's' || character == 'S' || character == 't' || character == 'T' || character == 'u' || character == 'U' || character == 'v' || character == 'V' || character == 'w' || character == 'W' || character == 'x' || character == 'X' || character == 'y' || character == 'Y' || character == 'z' || character == 'Z') };
+
+                    // Is Digit
+                    LapysDevelopmentKit.functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(character) { return character && (character === '0' || character === '1' || character === '2' || character === '3' || character === '4' || character === '5' || character === '6' || character === '7' || character === '8' || character === '9') };
+
+                    // Is Numeric
+                    LapysDevelopmentKit.functions.stringPrototypeIsNumeric = function stringPrototypeIsNumeric(string) { var iterator = LDKF.stringPrototypeLength(string); while (iterator) if (!LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, iterator -= 1))) return false; return !!string };
+
+                    // Is Variable Character
+                    LapysDevelopmentKit.functions.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(character) {
+                        // Return
+                        return character && (LDKF.arrayPrototypeIncludes(LDKC.string.variableCharacters, character) || (function() {
+                            // Initialization > Is Variable Character
+                            var isVariableCharacter = true;
+
+                            // Error Handling > (...)
+                            try { LDKF.eval("var " + character) } catch (error) { isVariableCharacter = false }
+
+                            // Return
+                            return isVariableCharacter
+                        })())
+                    };
+
+                    // Slice
+                    LapysDevelopmentKit.functions.stringPrototypeSlice = function stringPrototypeSlice(string, begin, end) {
+                        // Initialization > ((Arguments) Length, Series, Stream)
+                        var argumentsLength = LDKF.getArgumentsLength(arguments),
+                            length = LDKF.stringPrototypeLength(string),
+                            series = LDKD.series.infinite(length),
+                            stream = "";
+
+                        // Logic > Return
+                        if (!string) return stream;
+
+                        // Update > End
+                        (argumentsLength < 2) && (begin = 0);
+                        (argumentsLength < 3) && (end = length);
+
+                        // Logic > Update > Begin
+                        if (!LDKF.numberPrototypeIsSafeInteger(begin)) begin = 0;
+                        else begin = series.point(begin);
+
+                        // Logic
+                        if (!LDKF.numberPrototypeIsSafeInteger(end)) {
+                            // Logic > Update > End
+                            if (LDKF.numberPrototypeIsPositiveInfinity(end)) end = length;
+                            else end = 0
+                        }
+
+                        else
+                            // Update > End
+                            end = series.point(end);
+
+                        // Logic > Loop > Update > Stream
+                        if (begin < end) while (begin != end) stream += LDKF.stringPrototypeCharacterAt(string, (begin += 1) - 1);
+
+                        // Return
+                        return stream
+                    };
+
+                    // Trim
+                    LapysDevelopmentKit.functions.stringPrototypeTrim = function stringPrototypeTrim(string, matches) {
+                        // Initialization > Length
+                        var length = LDKF.getArgumentsLength(arguments);
+
+                        // Logic
+                        if (length == 1)
+                            // Update > String
+                            string = LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string));
+
+                        else if (length == 2)
+                            // Update > String
+                            string = LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string, matches), matches);
+
+                        else if (length) {
+                            // Initialization > Iterator
+                            var iterator = length;
+
+                            // Loop > Update > String
+                            while (iterator != 1) string = LDKF.stringPrototypeTrim(string, arguments[length - (iterator -= 1)])
+                        }
+
+                        else
+                            // Return
+                            return "";
+
+                        // Return
+                        return string
+                    };
+
+                    // Trim Left
+                    LapysDevelopmentKit.functions.stringPrototypeTrimLeft = function stringPrototypeTrimLeft(string, matches) {
+                        // Initialization > Length
+                        var length = LDKF.getArgumentsLength(arguments);
+
+                        // Logic
+                        if (length > 2) {
+                            // Initialization > Iterator
+                            var iterator = length;
+
+                            // Loop > Update > String
+                            while (iterator != 1) string = LDKF.stringPrototypeTrimLeft(string, arguments[length - (iterator -= 1)]);
+
+                            // Return
+                            return string
+                        }
+
+                        else if (length) {
+                            // Initialization > (Iterator, Stream)
+                            var iterator = 0, stream = "";
+
+                            // Updates > Matches
+                            length == 1 ? matches = [' ', '\n'] : (LDKF.isArray(matches) || (matches = [matches]));
+
+                            // Initialization > Matches (Iterator, Length)
+                            var matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
+
+                            // Logic
+                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
+                                // Logic > Loop > Update > Iterator
+                                if (matchesLength) while (LDKF.stringPrototypeCharacterAt(string, iterator) == matches[0]) iterator += 1;
+                            }
+
+                            else
+                                // Loop
+                                while (matchesIterator) {
+                                    // Initialization > (Match) (Iterator, Length)
+                                    var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
+                                        matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Update > Match Iterator
+                                        matchIterator -= 1;
+
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(string, iterator + matchIterator) != LDKF.stringPrototypeCharacterAt(match, matchIterator))
+                                            // [Break]
+                                            break;
+
+                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, iterator) == LDKF.stringPrototypeCharacterAt(match, 0)) {
+                                            // Update > (Iterator, Matches Iterator)
+                                            iterator += matchLength;
+                                            matchesIterator = matchesLength
+                                        }
+                                    }
+                                }
+
+                            // Update > (Length, Stream)
+                            length = LDKF.stringPrototypeLength(string) - 1;
+                            stream = iterator ? LDKF.stringPrototypeSlice(string, iterator, -0) : string;
+
+                            // Return
+                            return stream
+                        }
+
+                        else
+                            // Return
+                            return ""
+                    };
+
+                    // Trim Right
+                    LapysDevelopmentKit.functions.stringPrototypeTrimRight = function stringPrototypeTrimRight(string, matches) {
+                        // Initialization > Length
+                        var length = LDKF.getArgumentsLength(arguments);
+
+                        // Logic
+                        if (length > 2) {
+                            // Initialization > Iterator
+                            var iterator = length;
+
+                            // Loop > Update > String
+                            while (iterator != 1) string = LDKF.stringPrototypeTrimRight(string, arguments[length - (iterator -= 1)]);
+
+                            // Return
+                            return string
+                        }
+
+                        else if (length) {
+                            // Initialization > (Iterator, Stream)
+                            var iterator = 0, stream = "";
+
+                            // Updates > Matches
+                            length == 1 ? matches = [' ', '\n'] : (LDKF.isArray(matches) || (matches = [matches]));
+
+                            // Initialization > Matches (Iterator, Length)
+                            var matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
+
+                            // Update > Length
+                            length = LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
+                                // Logic
+                                if (matchesLength) {
+                                    // Initialization > Index
+                                    var index = length - 1;
+
+                                    // Loop > Update > (Index, Iterator)
+                                    while (index && LDKF.stringPrototypeCharacterAt(string, index) == matches[0]) { index -= 1; iterator += 1 }
+                                }
+                            }
+
+                            else
+                                // Loop
+                                while (matchesIterator) {
+                                    // Initialization > (Match) (Iterator, Length)
+                                    var match = LDKF.toString(matches[matchesLength - (matchesIterator -= 1) - 1]),
+                                        matchIterator = LDKF.stringPrototypeLength(match), matchLength = matchIterator;
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Update > Match Iterator
+                                        matchIterator -= 1;
+
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - matchIterator - 1) - 1) != LDKF.stringPrototypeCharacterAt(match, matchIterator))
+                                            // [Break]
+                                            break;
+
+                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - 1) - 1) == LDKF.stringPrototypeCharacterAt(match, 0)) {
+                                            // Update > (Iterator, Matches Iterator)
+                                            iterator += matchLength;
+                                            matchesIterator = matchesLength;
+                                        }
+                                    }
+                                }
+
+                            // Update > Stream
+                            stream = iterator ? LDKF.stringPrototypeSlice(string, 0, length - (iterator + 1) + 1) : string;
+
+                            // Return
+                            return stream
+                        }
+
+                        else
+                            // Return
+                            return ""
+                    };
+
+                // Symbol
+                LapysDevelopmentKit.functions.symbol = function symbol(description) { return LDKF.getArgumentsLength(arguments) ? LDKO.symbol(description) : new LDKO.symbol };
+
+                // To Debug Message
+                LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(message) + LDKI.messages.debugging.suffix };
+
+                // To Number
+                LapysDevelopmentKit.functions.toNumber = function toNumber(arg) { if (LDKF.isNumber(arg)) return arg - 0; else { try { arg = arg - 0 } catch (error) { try { arg = LDKO.number(arg) } catch (error) { try { arg = LDKF.toNumber(LDKF.string(arg)) } catch (error) {} } } return arg } };
+
+                // To String
+                LapysDevelopmentKit.functions.toString = function toString(arg) {
+                    // Function > (Explicit, Implicit) Cast
+                    function explicitCast(arg) { return LDKO.string(arg) }
+                    function implicitCast(arg) { return arg + "" }
+
+                    // Error Handling
+                    try { if (LDKF.objectPrototypeHasProperty(LDKO, "string")) return explicitCast(arg) } catch (error) {}
+                    try { return implicitCast(arg) } catch (error) {}
+                };
+
+            /* Math */
+                // Absolute
+                LapysDevelopmentKit.math.abs = function abs(number) { return LDKF.numberPrototypeIsNegative(number) ? -number : number };
+
+                // Integer
+                LapysDevelopmentKit.math.int = function int(number) { return number - number % 1 };
+
+            /* Test */
+                // Arguments to Console Stream --- NOTE (Lapys) -> Convert arguments to a console output-like stream.
+                LapysDevelopmentKit.test.argumentsToConsoleStream = function argumentsToConsoleStream() {
+                    // Initialization > (Iterator, Length, Stream)
+                    var iterator = LDKF.getArgumentsLength(arguments), length = iterator, stream = "";
+
+                    // Loop > Update > Stream
+                    while (iterator) stream += LDKF.toString(arguments[length - (iterator -= 1) - 1]) + (iterator ? ' ' : "");
+
+                    // Return
+                    return stream
+                };
+
+                // Environment Vendor Is --- NOTE (Lapys) -> Test that the specified vendor is currently existing.
+                LapysDevelopmentKit.test.environmentVendorIs = function environmentVendorIs(vendor) {
+                    // Initialization > Iterator
+                    var iterator = LDKF.arrayPrototypeLength(LDKE.vendors);
+
+                    // Loop > Logic > Return
+                    while (iterator) if (LDKE.vendors[iterator -= 1] == vendor) return true;
+
+                    // Return
+                    return false
+                };
+
+                // Get Native Constructor
+                LapysDevelopmentKit.test.getNativeConstructor = function getNativeConstructor(constructor, constructorName, STRICT) { if (LDKT.isNativeConstructor(constructor, constructorName, STRICT)) return constructor };
+
+                // Get Native Error
+                LapysDevelopmentKit.test.getNativeError = function getNativeError(error, errorName, STRICT) { if (LDKT.isNativeError(error, errorName, STRICT)) return error };
+
+                // Get Object Native Constructor By Name --- NOTE (Lapys) -> Return a native constructor via it's property name.
+                LapysDevelopmentKit.test.getObjectNativeConstructorByName = function getObjectNativeConstructorByName(object, constructorName, STRICT) { return LDKT.getNativeConstructor(LDKF.objectPrototypeGetProperty(object, constructorName), constructorName, STRICT) };
+
+                // Get Object Native Error By Name --- NOTE (Lapys) -> Similar to `LapysDevelopmentKit.functions.getObjectNativeConstructorByName`, but specifically for errors.
+                LapysDevelopmentKit.test.getObjectNativeErrorByName = function getObjectNativeErrorByName(object, errorName, STRICT) { return LDKT.getNativeError(LDKF.objectPrototypeGetProperty(object, errorName), errorName, STRICT) };
+
+                // Is Console Method --- NOTE (Lapys) -> Test the `console` object's methods.
+                LapysDevelopmentKit.test.isConsoleMethod = function isConsoleMethod(method) {
+                    // Initialization > (Console Has Prototype, Method Name)
+                    var consoleHasPrototype = LDKF.objectPrototypeHasProperty(LDKO, "consolePrototype"),
+                        methodName = LDKF.functionPrototypeGetName(method);
+
+                    // Return
+                    return (consoleHasPrototype && methodName == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method)) ||
+                        (consoleHasPrototype && !methodName && LDKF.functionPrototypeIsNative(method)) ||
+                        (function() {
+                            // Initialization > Is Non-Stringifiable
+                            var isNonStringifiable = false;
+
+                            // Error Handling > Update > Is Non-Stringifiable
+                            try { LDKO.string(method) } catch (error) { isNonStringifiable = true }
+
+                            // Return
+                            return isNonStringifiable
+                        })()
+                };
+
+                // Is Constructible Object --- WARN (Lapys) -> Defer to `LapysDevelopmentKit.functions.isConstructible` instead.
+                LapysDevelopmentKit.test.isConstructibleObject = function isConstructibleObject(arg, constructor, prototype, STRICT) {
+                    // Return
+                    return (STRICT ? true : typeof arg == "object") && LDKF.isConstructible(arg) && (
+                        LDKF.objectPrototypeConstructor(arg) === constructor &&
+                        (function(argPrototype) { return LDKC.hasActiveXObjectConstructor && LDKF.isVoid(argPrototype) ? true : argPrototype === prototype })(LDKF.objectPrototypePrototype(arg))
+                    )
+                };
+
+                // Is Native Constructor
+                LapysDevelopmentKit.test.isNativeConstructor = function isNativeConstructor(constructor, constructorName, STRICT) {
+                    // Logic
+                    if (LDKT.isPublicConstructor(constructor))
+                        // Logic > (...)
+                        if (
+                            (STRICT ?
+                                (
+                                    (typeof constructor == "function" || typeof constructor == "object") &&
+                                    (function(stream) { return stream == "[object]" || stream == "[object " + constructorName + ']' || stream == "[object " + constructorName + "Constructor]" })(LDKF.toString(constructor))
+                                ) :
+                                false
+                            ) ||
+                            (LDKF.functionPrototypeGetName(constructor) == constructorName && LDKF.functionPrototypeIsNative(constructor))
+                        ) return true;
+                        else LDKF.error.nativeToEnvironment('`' + constructorName + "` constructor");
+
+                    // Return
+                    return false
+                };
+
+                // Is Native Error --- NOTE (Lapys) -> Similar to `LapysDevelopmentKit.functions.isNativeConstructor`, but specifically for errors.
+                LapysDevelopmentKit.test.isNativeError = function isNativeError(error, errorName, STRICT) {
+                    // Logic
+                    if (STRICT ? LDKT.isPublicConstructor(error) : true)
+                        // Logic > Return
+                        if (
+                            (LDKF.functionPrototypeToSourceString(error) == errorName) ||
+                            ((LDKF.functionPrototypeGetName(error) || errorName) == errorName && LDKF.functionPrototypeIsNative(error))
+                        ) return true;
+                        else if (STRICT) LDKF.error.nativeToEnvironment('`' + errorName + "` constructor");
+
+                    // Return
+                    return false
+                };
+
+                // Is Public Constructor --- NOTE (Lapys) -> Test that the environment allows access to and utilizes the specified argument.
+                LapysDevelopmentKit.test.isPublicConstructor = function isPublicConstructor(arg) { return !LDKF.isVoid(arg) && LDKF.functionPrototypeIsNative(arg) };
+
+                /* Method Is Standard
+                        --- NOTE ---
+                            #Lapys: Crude version of `LapysDevelopmentKit.functions.functionPrototypeIsNative`
+                                for testing `Function.prototype.apply` and `Function.prototype.call` to be native methods.
+
+                        --- WARN ---
+                            #Lapys: Defer to `LapysDevelopmentKit.functions.functionPrototypeIsNative` instead.
+                */
+                LapysDevelopmentKit.test.methodIsStandard = function methodIsStandard(method, methodName, methodNameLength) {
+                    // Initialization > (...) --- NOTE (Lapys) -> Constant error codes.
+                    var STRING_PROTOTYPE_CHAR_AT_METHOD_IS_USER_DEFINED = 1;
+
+                    // Error Handling
+                    try {
+                        // Initialization > Source
+                        var source = method + "";
+
+                        // Return
+                        return typeof method == "function" && (function() {
+                            // Function
+                                // Get Character From Index
+                                function getCharacterFromIndex(string, index) {
+                                    // Error Handling
+                                    try {
+                                        // Initialization > Character
+                                        var character = string.charAt(index) || undefined;
+
+                                        // Error
+                                        if (!isCharacter(character)) throw {};
+
+                                        // Return
+                                        return character
+                                    } catch (error) {
+                                        // Error
+                                        throw STRING_PROTOTYPE_CHAR_AT_METHOD_IS_USER_DEFINED
+                                    }
+                                }
+
+                                // Is Character
+                                function isCharacter(arg) { return typeof arg == "string" && isSafeNumber(arg.length) && arg.length === 1 }
+
+                                // Is Safe Number
+                                function isSafeNumber(arg) { return typeof arg == "number" && arg < 9007199254740991 && (function(stream) { return arg != "Infinity" && arg != "-Infinity" && arg != "NaN" })(arg + "") }
+
+                            // Initialization > (Allow Stream, Is Standard, Iterator, Length, Match (Length), Stream Lock)
+                            var allowStream = true,
+                                isStandard = false,
+                                iterator = -1, length,
+                                match = ['[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']'], matchLength = 13,
+                                streamLock = null;
+
+                            // Loop
+                            while (iterator != -2 && (!~iterator || isCharacter(getCharacterFromIndex(source, iterator)))) {
+                                // Update > Length
+                                length = iterator += 1;
+
+                                // Initialization > (Character, Match Iterator)
+                                var character = getCharacterFromIndex(source, iterator),
+                                    matchIterator = matchLength;
+
+                                // Logic
+                                if (allowStream) {
+                                    // Logic
+                                    if (character == '/' && getCharacterFromIndex(source, iterator + 1) == '/') {
+                                        // Update > (Allow Stream, Stream Lock)
+                                        allowStream = false;
+                                        streamLock = "//";
+
+                                        // [Continue]
+                                        continue
+                                    }
+
+                                    else if (character == '/' && getCharacterFromIndex(source, iterator + 1) == '*') {
+                                        // Update > Allow Stream
+                                        allowStream = false;
+
+                                        // [Continue]
+                                        continue
+                                    }
+
+                                    else if (character == '\'' || character == '"') {
+                                        // Update > (Allow Stream, Stream Lock)
+                                        allowStream = false;
+                                        streamLock = character;
+
+                                        // [Continue]
+                                        continue
+                                    }
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Initialization > Match Index
+                                        var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                        // Logic
+                                        if (getCharacterFromIndex(source, iterator + matchIndex) != match[matchIndex])
+                                            // [Break]
+                                            break;
+
+                                        else if (!matchIterator && getCharacterFromIndex(source, iterator + matchIndex) == match[matchIndex]) {
+                                            // Update > (Iterator, Is Standard)
+                                            iterator = -2;
+                                            isStandard = true
+                                        }
+                                    }
+                                }
+
+                                else if (character == '\n' && streamLock == "//") {
+                                    // Update > (Allow Stream, Stream Lock)
+                                    allowStream = true;
+                                    streamLock = null
+                                }
+
+                                else if (character == '*' && getCharacterFromIndex(source, iterator + 1) == '/')
+                                    // Update > Allow Stream
+                                    allowStream = true;
+
+                                else if ((character == '\'' || character == '"') && character == streamLock) {
+                                    // Update > (Allow Stream, Stream Lock)
+                                    allowStream = true;
+                                    streamLock = null
+                                }
+                            }
+
+                            // Logic --- NOTE (Lapys) -> Also test for the method's name as well.
+                            if (methodName && methodNameLength) {
+                                // Update > (Iterator, Match (Length))
+                                iterator = 7;
+                                match = methodName;
+                                matchLength = methodNameLength;
+
+                                // Loop
+                                while (iterator != -2 && iterator != length) {
+                                    // Update > Iterator
+                                    iterator += 1;
+
+                                    // Initialization > Match Iterator
+                                    var matchIterator = matchLength;
+
+                                    // Loop
+                                    while (matchIterator) {
+                                        // Initialization > Match Index
+                                        var matchIndex = matchLength - (matchIterator -= 1) - 1;
+
+                                        // Logic
+                                        if (getCharacterFromIndex(source, iterator + matchIndex) != match[matchIndex])
+                                            // [Break]
+                                            break;
+
+                                        else if (!matchIterator && getCharacterFromIndex(source, iterator + matchIndex) == match[matchIndex]) {
+                                            // Update > (Is Standard, Iterator)
+                                            isStandard = true;
+                                            iterator = -2
+                                        }
+                                    }
+                                }
+
+                                // Update > Is Standard
+                                (iterator == length) && (isStandard = false)
+                            }
+
+                            // Return
+                            return isStandard
+                        })()
+                    } catch (error) {
+                        // Logic
+                        switch (error) {
+                            // (...)
+                            case STRING_PROTOTYPE_CHAR_AT_METHOD_IS_USER_DEFINED:
+                                // Error
+                                LDKT.throwError("`String.prototype.charAt` method" + LDKI.messages.error.nativeToEnvironmentSuffix)
+                        }
+                    }
+
+                    // Return
+                    return false
+                };
+
+                // Throw Error --- WARN (Lapys) -> Defer to `LapysDevelopmentKit.functions.error` instead.
+                LapysDevelopmentKit.test.throwError = function throwError(message) { throw (LDKI.messages.debugging.prefix + message + LDKI.messages.debugging.suffix) };
+
+                // Is Function Prototype Apply Method --- NOTE (Lapys) -> The tests are also executed after initialization.
+                LapysDevelopmentKit.test.isFunctionPrototypeApplyMethod = function isFunctionPrototypeApplyMethod(method) { return LDKT.methodIsStandard(method, ['a', 'p', 'p', 'l', 'y'], 5) };
+                LDKT.isFunctionPrototypeApplyMethod((function() { try { return LDKO.functionPrototypeApply = Main.apply } catch (error) {} })()) || LDKT.throwError("`Function.prototype.apply` method" + LDKI.messages.error.nativeToEnvironmentSuffix);
+
+                // Is Function Prototype Call Method
+                LapysDevelopmentKit.test.isFunctionPrototypeCallMethod = function isFunctionPrototypeCallMethod(method) { return LDKT.methodIsStandard(method, ['c', 'a', 'l', 'l'], 4) };
+                LDKT.isFunctionPrototypeCallMethod((function() { try { return LDKO.functionPrototypeCall = Main.call } catch (error) {} })()) || LDKT.throwError("`Function.prototype.call` method" + LDKI.messages.error.nativeToEnvironmentSuffix);
+
+            /* Objects */
+                // String > Prototype
+                    /* Character At
+                            --- WARN ---
+                                #Lapys: Specifically for legacy versions of the Internet Explorer web browser.
+                                    - Fortunately, syntactic indexing still works for non-string objects.
+                                    - Unfortunately, this takes priority over default string character indexing in most other programming languages (which means slower processing speeds).
+                    */
+                    LapysDevelopmentKit.objects.stringPrototypeCharacterAt = (function() {
+                        // Initialization > Method
+                        var method = (function() {
+                            // Error Handling > Return
+                            try { return "".constructor.prototype.charAt }
+                            catch (error) {}
+                        })();
+
+                        // Error Handling
+                        try {
+                            // Logic > (...)
+                            if (
+                                typeof method == "function" && (function(stream) {
+                                    // Return
+                                    return stream == "function charAt() { [native code] }" ||
+                                        stream == "function charAt() {\n    [native code]\n}" ||
+                                        stream == "\nfunction charAt() {\n    [native code]\n}\n"
+                                })(method + "")
+                            ) return method;
+                            else throw {}
+                        } catch (error) {
+                            // Logic > Error
+                            if (' '[0] != ' ') LDKF.error.nativeToEnvironment("`String.prototype.charAt` method")
+                        }
+                    })();
+
+                    // Character Code At --- NOTE (Lapys) -> Used for the `LapysDevelopmentKit.math.random.generateSeeder` method.
+                    LapysDevelopmentKit.objects.stringPrototypeCharacterCodeAt = (function() {
+                        // Initialization > Method
+                        var method = (function() {
+                            // Error Handling > Return
+                            try { return "".constructor.prototype.charCodeAt }
+                            catch (error) {}
+                        })();
+
+                        // Logic > (...)
+                        if (
+                            typeof method == "function" &&
+                            (function(stream) {
+                                // Return
+                                return stream == "function charCodeAt() { [native code] }" ||
+                                    stream == "function charCodeAt() {\n    [native code]\n}" ||
+                                    stream == "\nfunction charCodeAt() {\n    [native code]\n}\n"
+                            })(method + "")
+                        ) return method;
+                        else LDKF.error.nativeToEnvironment("`String.prototype.charCodeAt` method")
+                    })();
+
+            /* Constants */
+                // Has __Define__ Getter Property
+                LapysDevelopmentKit.constants.has__Define__GetterProperty = typeof __defineGetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__DefineGetter__ = __defineGetter__);
+
+                // Has __Define__ Setter Property
+                LapysDevelopmentKit.constants.has__Define__SetterProperty = typeof __defineSetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__DefineSetter__ = __defineSetter__);
+
+                // Has __Lookup__ Getter Property
+                LapysDevelopmentKit.constants.has__Lookup__GetterProperty = typeof __lookupGetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__LookupGetter__ = __lookupGetter__);
+
+                // Has __Lookup__ Setter Property
+                LapysDevelopmentKit.constants.has__Lookup__SetterProperty = typeof __lookupSetter__ == "function" && LDKF.functionPrototypeIsNative(LDKO.objectPrototype__LookupSetter__ = __lookupSetter__);
+
+                // Has __Prototype__ Accessor
+                LapysDevelopmentKit.constants.has__Proto__Accessor = LDKF.objectPrototypeHasProperty({}, "__proto__");
+
+                // Is Web Environment --- UPDATE REQUIRED (Lapys) -> Test here should be improved.
+                LapysDevelopmentKit.constants.isWebEnvironment = typeof window == "object" && LDKF.isConstructible(window);
+
+            /* Objects */
+                // Object --- UPDATE REQUIRED (Lapys) -> Should be parsed without native methods.
+                LapysDevelopmentKit.objects.object = LDKF.objectPrototypeGetProperty({}, "constructor");
+                    // Create
+                    LapysDevelopmentKit.objects.objectCreate = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "create")) {
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "create");
+
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.create` method")
+                        }
+
+                        else
+                            // Update > Method
+                            method = function create(prototype) {
+                                // Function > Constructor
+                                function constructor() {}
+
+                                // Modification > Constructor > Prototype
+                                constructor.prototype = prototype;
+
+                                // Initialization > Object
+                                var object = new constructor;
+
+                                // Modification > Object > Constructor
+                                LDKF.isConstructible(prototype) && (object.constructor = constructor);
+
+                                // Return
+                                return object
+                            };
+
+                        // Return
+                        return method
+                    })();
+
+                    // Define Property
+                    LapysDevelopmentKit.objects.objectDefineProperty = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (
+                            LDKF.objectPrototypeHasProperty(LDKO.object, "defineProperty") && (function() {
+                                // Initialization > Is Standard
+                                var isStandard = true;
+
+                                // Update > Method
+                                method = LDKF.objectPrototypeGetProperty(LDKO.object, "defineProperty");
+
+                                // Error Handling > (...)
+                                try { method({}, "", {}) }
+                                catch (error) { isStandard = false }
+
+                                // Return
+                                return isStandard
+                            })()
+                        )
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.defineProperty` method")
+
+                        else
+                            // Return
+                            return function defineProperty(object, key, descriptor) {
+                                // Error Handling > Return
+                                try { return method(object, key, descriptor) }
+                                catch (error) {}
+
+                                // Modification > Object > [Key]
+                                (LDKC.has__Define__GetterProperty && LDKF.objectPrototypeHasProperty(descriptor, "get")) &&
+                                LDKO.objectPrototype__DefineGetter__.call(object, key, LDKF.objectPrototypeGetProperty(descriptor, "get"));
+
+                                (LDKC.has__Define__SetterProperty && LDKF.objectPrototypeHasProperty(descriptor, "set")) &&
+                                LDKO.objectPrototype__DefineSetter__.call(object, key, LDKF.objectPrototypeGetProperty(descriptor, "set"));
+
+                                LDKF.objectPrototypeHasProperty(descriptor, "value") &&
+                                LDKF.objectPrototypeSetProperty(object, key, LDKF.objectPrototypeGetProperty(descriptor, "value"));
+
+                                // Return
+                                return object
+                            };
+
+                        // Return
+                        return method
+                    })();
+
+                    // Get Own Property Descriptor
+                    LapysDevelopmentKit.objects.objectGetOwnPropertyDescriptor = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (
+                            LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertyDescriptor") &&
+                            (function() {
+                                // Initialization > Is Standard
+                                var isStandard = true;
+
+                                // Update > Method
+                                method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyDescriptor");
+
+                                // Error Handling > (...)
+                                try { method({}, "") }
+                                catch (error) { isStandard = false }
+
+                                // Return
+                                return isStandard
+                            })()
+                        )
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.getOwnPropertyDescriptor` method");
+
+                        else
+                            // Update > Method
+                            method = function getOwnPropertyDescriptor(object, key) {
+                                // Initialization > (Getter, Setter, Has __Lookup__ Properties, Is Accessor)
+                                var getter, setter,
+                                    has__Lookup__Properties = LDKC.has__Lookup__GetterProperty && LDKC.has__Lookup__SetterProperty,
+                                    isAccessor = has__Lookup__Properties ?
+                                        (getter = LDKO.objects.objectPrototype__LookupGetter__.call(object, key)) ||
+                                        (setter = LDKO.objects.objectPrototype__LookupSetter__.call(object, key)) :
+                                        null;
+
+                                // Return
+                                return LDKF.isNull(isAccessor) ?
+                                    {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(object, key), writable: true} :
+                                    {configurable: true, enumerable: true, get: getter, set: setter}
+                            };
+
+                        // Return
+                        return method
+                    })();
+
+                    // Get Own Property Names
+                    LapysDevelopmentKit.objects.objectGetOwnPropertyNames = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertyNames")) {
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyNames");
+
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.getOwnPropertyNames` method")
+                        }
+
+                        else
+                            // Update > Method --- UPDATE REQUIRED (Lapys) -> Should also return non-enumerable properties as well.
+                            method = function getOwnPropertyNames(object) {
+                                // Initialization > (Index, Key, Property Names)
+                                var index = -1, key, propertyNames = [];
+
+                                // Loop > Update > Property Names
+                                for (key in object) LDKF.objectPrototypeHasOwnProperty(object, key) && (propertyNames[index += 1] = key);
+
+                                // Return
+                                return propertyNames
+                            };
+
+                        // Return
+                        return method
+                    })();
+
+                    // Get Own Property Symbols
+                    LapysDevelopmentKit.objects.objectGetOwnPropertySymbols = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertySymbols")) {
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertySymbols");
+
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.getOwnPropertySymbols` method")
+                        }
+
+                        // Return
+                        return method
+                    })();
+
+                    // Get Prototype Of --- CITE (Lapys) -> `https://gist.github.com/subtleGradient/1052392`.
+                    LapysDevelopmentKit.objects.objectGetPrototypeOf = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "getPrototypeOf"))
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "getPrototypeOf");
+
+                        else {
+                            // Function > Get Prototype Value
+                            function getPrototypeValue(object, propertyName) {
+                                // Initialization > Own Value
+                                var ownValue;
+
+                                // Error Handling
+                                try {
+                                    // Logic
+                                    if (LDKF.objectPrototypeHasOwnProperty(object, propertyName)) {
+                                        // Update > Own Value
+                                        ownValue = object[propertyName];
+
+                                        // Deletion
+                                        delete object[propertyName];
+
+                                        // Return
+                                        return object[propertyName]
+                                    }
+                                } catch (error) { throw error }
+
+                                // Return
+                                return object[propertyName]
+                            }
+
+                            // Update > Method
+                            method = LDKC.has__Proto__Accessor ?
+                                function getPrototypeOf(object) { return getPrototypeValue(object, "__proto__") } :
+                                function getPrototypeOf(object) {
+                                    // Error Handling > Return
+                                    try { return getPrototypeValue(object, "constructor").prototype || LDKO.objectPrototype }
+                                    catch (error) {}
+                                }
+                        }
+
+                        // Update > Method
+                        (typeof method == "function") || (method = undefined);
+
+                        // Return
+                        return method
+                    })();
+
+                    // Keys
+                    LapysDevelopmentKit.objects.objectKeys = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "keys")) {
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "keys");
+
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.keys` method")
+                        }
+
+                        else if (typeof LDKO.objectGetOwnPropertyNames == "function")
+                            // Update > Method
+                            method = function keys(object) {
+                                // Initialization > (Property Names, Iterator, Length, Index, Keys)
+                                var propertyNames = LDKF.objectGetOwnPropertyNames(object),
+                                    iterator = LDKF.arrayPrototypeLength(keys), length = iterator,
+                                    index = -1, keys = [];
+
+                                // Loop
+                                while (iterator) {
+                                    // Initialization > Property Name
+                                    var propertyName = propertyNames[length - (iterator -= 1) - 1];
+
+                                    // Update > Keys
+                                    LDKF.objectPrototypeHasOwnProperty(object, propertyName) &&
+                                    (keys[index += 1] = propertyName)
+                                }
+
+                                // Return
+                                return keys
+                            };
+
+                        else
+                            // Update > Method
+                            method = function keys(object) {
+                                // Initialization > (Index, Key(s))
+                                var index = -1, key, keys = [];
+
+                                // Loop > Update > Keys
+                                for (key in object) LDKF.objectPrototypeHasOwnProperty(object, key) && (keys[index += 1] = key);
+
+                                // Return
+                                return keys
+                            };
+
+                        // Return
+                        return method
+                    })();
+
+                    // Prototype --- NOTE (Lapys) -> Fortunately, the `prototype` property is immutable for constructors (as it should be).
+                    LapysDevelopmentKit.objects.objectPrototype = LDKF.objectPrototypeGetProperty(LDKO.object, "prototype");
+                        // Has Own Property
+                        LapysDevelopmentKit.objects.objectPrototypeHasOwnProperty = (function() {
+                            // Initialization > Method
+                            var method;
+
+                            // Logic
+                            if (LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "hasOwnProperty")) {
+                                // Update > Method
+                                method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "hasOwnProperty");
+
+                                // Error
+                                LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.prototype.hasOwnProperty` method")
+                            }
+
+                            else
+                                // Update > Method
+                                method = function hasOwnProperty(propertyName) {
+                                    // Initialization > (Key, Object)
+                                    var key, object = this;
+
+                                    // Loop > Logic > Return
+                                    for (key in object) if (key === propertyName) return true;
+
+                                    // Return
+                                    return false
+                                };
+
+                            // Return
+                            return method
+                        })();
+
+                    // Set Prototype Of --- CITE (Lapys) -> `https://gist.github.com/edoardocavazza/47246856759f2273e48b`
+                    LapysDevelopmentKit.objects.objectSetPrototypeOf = (function() {
+                        // Initialization > Method
+                        var method;
+
+                        // Logic
+                        if (LDKF.objectPrototypeHasProperty(LDKO.object, "setPrototypeOf")) {
+                            // Update > Method
+                            method = LDKF.objectPrototypeGetProperty(LDKO.object, "setPrototypeOf");
+
+                            // Error
+                            LDKF.functionPrototypeIsNative(method) || LDKF.error.nativeToEnvironment("`Object.setPrototypeOf` method")
+                        }
+
+                        else if (LDKC.has__Proto__Accessor)
+                            // Update > Method
+                            method = function setPrototypeOf(object, prototype) { LDKF.objectPrototypeSetProperty(object, "__proto__", prototype) };
+
+                        // Update > Method
+                        (typeof method == "function") || (method = undefined);
+
+                        // Return
+                        return method
+                    })();
 
             /* Environment > (...)
                     --- NOTE ---
@@ -2452,7 +2534,7 @@
                 ) {
                     // Modification > (Lapys Development Kit > Environment) > (Global(s), Type, Vendors)
                     LapysDevelopmentKit.environment.global = global;
-                    LapysDevelopmentKit.environment.globals = LDKC.isBrowserEnvironment ? [global, module, window] : [global, module];
+                    LapysDevelopmentKit.environment.globals = LDKC.isWebEnvironment ? [global, module, window] : [global, module];
                     LapysDevelopmentKit.environment.type = "runtime";
                     LapysDevelopmentKit.environment.vendors[LDKF.arrayPrototypeLength(LapysDevelopmentKit.environment.vendors)] = "Node.js";
 
@@ -2481,42 +2563,58 @@
                     // Loop > Update > Arguments --- NOTE (Lapys) -> Update the global `args` variable.
                     while (iterator) LDKF.arrayPrototypeAddToFront(args, argv[length - (iterator -= 1) - 1])
                 }
+
+                // Update > Global
+                GLOBAL = LapysDevelopmentKit.environment.global
             })();
 
-    /* Initialization */
-        // Global
-        var GLOBAL = LapysDevelopmentKit.environment.global;
-
-    /* Modification */
-        /* Lapys Development Kit */
             /* Objects */
                 // Array
                 LapysDevelopmentKit.objects.array = LDKF.objectPrototypeConstructor([]);
                     // Prototype
                     LapysDevelopmentKit.objects.arrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.array, "prototype");
 
+                // Evaluate
+                LapysDevelopmentKit.objects.eval = (function() {
+                    // Initialization > Method
+                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "eval");
+
+                    // Logic
+                    if (!LDKF.isVoid(method))
+                        // Logic > (...)
+                        if (LDKF.functionPrototypeGetName(method) == "eval" && LDKF.functionPrototypeIsNative(method)) return method;
+                        else LDKF.error.nativeToEnvironment("`eval` function")
+                })();
+
                 // Function
                 LapysDevelopmentKit.objects["function"] = LDKF.objectPrototypeConstructor(function() {});
-                    // Prototype
-                    LapysDevelopmentKit.objects.functionPrototype = (function() {
-                        // Initialization > Prototype
-                        var prototype = LDKO["function"] === LDKF.objectPrototypeConstructor(LDKO["function"]) ?
-                            LDKF.objectPrototypeGet__Prototype__(LDKO["function"]) :
-                            LDKF.objectPrototypeGet__Prototype__(function() {});
+                    // Prototype --- NOTE (Lapys) -> Try to convert `Function.prototype.apply` and `Function.prototype.call` to constant methods.
+                    LapysDevelopmentKit.objects.functionPrototype = LDKF.objectPrototypeGetProperty(LDKO["function"], "prototype");
+                        // Apply
+                        LDKF.objectDefineProperty(LDKO.functionPrototype, "apply", (function() {
+                            // Initialization > Descriptor
+                            var descriptor = LDKF.objectGetOwnPropertyDescriptor(LDKO.functionPrototype, "apply");
 
-                        // Logic
-                        if (!LDKF.isConstructible(prototype) && LDKF.objectPrototypeHasProperty(LDKO["function"], "prototype")) {
-                            // Update > Prototype
-                            prototype = LDKF.objectPrototypeGetProperty(LDKO["function"], "prototype");
+                            // Modification > Descriptor > (Configurable, Writable)
+                            descriptor.configurable = false;
+                            descriptor.writable = false;
 
-                            // Logic > Return
-                            if (!LDKF.functionPrototypeGetName(prototype) && LDKF.functionPrototypeIsNative(prototype)) return prototype;
-                            else return
-                        }
+                            // Return
+                            return descriptor
+                        })());
 
-                        // Return
-                        return prototype
-                    })();
+                        // Call
+                        LDKF.objectDefineProperty(LDKO.functionPrototype, "call", (function() {
+                            // Initialization > Descriptor
+                            var descriptor = LDKF.objectGetOwnPropertyDescriptor(LDKO.functionPrototype, "call");
+
+                            // Modification > Descriptor > (Configurable, Writable)
+                            descriptor.configurable = false;
+                            descriptor.writable = false;
+
+                            // Return
+                            return descriptor
+                        })());
 
                 // Number
                 LapysDevelopmentKit.objects.number = LDKF.objectPrototypeConstructor(0);
@@ -2534,149 +2632,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.symbolPrototype = LDKF.objectPrototypeGetProperty(LDKO.symbol, "prototype");
 
-            /* Functions */
-                // Regular Expression
-                LapysDevelopmentKit.functions.regularExpression = function regularExpression(source) { return LDKF.getArgumentsLength(arguments) ? LDKO.regularExpression(source) : new LDKO.regularExpression };
-
-                // String > Prototype
-                    // Is Empty
-                    LapysDevelopmentKit.functions.stringPrototypeIsEmpty = function stringPrototypeIsEmpty(string) { return !string };
-
-                // Symbol
-                LapysDevelopmentKit.functions.symbol = function symbol(description) { return LDKF.getArgumentsLength(arguments) ? LDKO.symbol(description) : new LDKO.symbol };
-
-                // Is Array
-                LapysDevelopmentKit.functions.isArray = function isArray(arg) {
-                    // Logic > Error Handling > Return
-                    if (LDKC.has__Proto__Accessor)
-                        try { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKF.objectPrototypeConstructor(arg) === LDKO.array && LDKF.isNull(LDKF.objectPrototypeGet__Prototype__(LDKF.objectPrototypeGet__Prototype__(LDKF.objectPrototypeGet__Prototype__(arg)))) }
-                        catch (error) {}
-
-                    // Error Handling > Return
-                    try { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKF.objectPrototypeConstructor(arg) === LDKO.array }
-                    catch (error) {}
-
-                    // Return
-                    return false
-                };
-
-                // Is Boolean
-                LapysDevelopmentKit.functions.isBoolean = function isBoolean(arg) { return typeof arg == "boolean" };
-
-                // Is Default
-                LapysDevelopmentKit.functions.isDefault = function isDefault(arg) {
-                    // Logic > Return
-                    if (LDKF.isArray(arg)) return LDKF.objectIs(LDKF.arrayPrototypeLength(arg), 0) && LDKF.stringPrototypeIsEmpty(LDKF.toString(arg));
-                    else if (LDKF.isBoolean(arg)) return !arg;
-                    else if (LDKF.isFunction(arg)) return LDKF.toString(arg) == "function() {}";
-                    else if (LDKF.isNull(arg)) return true;
-                    else if (LDKF.isNumber(arg)) return LDKF.objectIs(arg, 0);
-                    else if (LDKF.isRegularExpression(arg)) return (function(string) { return string == "//" || string == "/(?:)/" })(LDKF.toString(arg));
-                    else if (LDKF.isString(arg)) return LDKF.stringPrototypeIsEmpty(arg);
-                    else if (LDKF.isSymbol(arg)) return LDKF.toString(arg) == "Symbol()";
-                    else if (LDKF.isVoid(arg)) return true;
-                    else return LDKF.isObject(arg) && LDKF.objectIs(LDKF.arrayPrototypeLength(LDKF.objectKeys(arg)), 0)
-                };
-
-                // Is Function
-                LapysDevelopmentKit.functions.isFunction = function isFunction(arg, STRICT) {
-                    // Return
-                    return typeof arg == "function" || (function() {
-                        // Logic > Return
-                        if (
-                            !LDKF.isVoid(LDKF, "activeXObject") || (
-                                LDKF.objectPrototypeHasProperty(GLOBAL, "ActiveXObject") &&
-                                (function(method) { return (function(stream) { return stream == "function" || stream == "undefined" })(typeof method) && LDKF.functionPrototypeIsNative(method, STRICT = true) })(LDKF.objectPrototypeGetProperty(GLOBAL, "ActiveXObject"))
-                            )
-                        ) return (typeof arg == "string" && arg === "[object]") || (typeof arg == "object" && LDKF.functionPrototypeIsDefault(arg))
-
-                        // Return
-                        return false
-                    })()
-                };
-
-                // Is Regular Expression
-                LapysDevelopmentKit.functions.isRegularExpression = function isRegularExpression(arg) { return typeof arg == "object" && LDKF.isConstructible(arg) && LDKF.objectPrototypeConstructor(arg) === LDKO.regularExpression };
-
-                // Is String
-                LapysDevelopmentKit.functions.isString = function isString(arg) { return typeof arg == "string" };
-
-                // To Default
-                LapysDevelopmentKit.functions.toDefault = function toDefault(arg) {
-                    // Logic > (...)
-                    if (LDKF.isArray(arg)) return [];
-                    else if (LDKF.isBoolean(arg)) return false;
-                    else if (LDKF.isDefault(arg)) return arg;
-                    else if (LDKF.isFunction(arg)) return function() {};
-                    else if (LDKF.isNull(arg)) return null;
-                    else if (LDKF.isNumber(arg)) return 0;
-                    else if (LDKF.isRegularExpression(arg)) return new LDKF.regularExpression;
-                    else if (LDKF.isString(arg)) return "";
-                    else if (LDKF.isSymbol(arg)) return new LDKF.symbol;
-                    else if (LDKF.isVoid(arg)) return undefined;
-                    else {
-                        // Initialization > Constructor
-                        var constructor = LDKF.objectPrototypeConstructor(arg);
-
-                        // Logic
-                        if (LDKF.isFunction(constructor)) {
-                            // Error Handling > Return
-                            try { return new constructor } catch (error) {}
-                            try { return constructor() } catch (error) {}
-                        }
-
-                        else
-                            // Return
-                            return {}
-                    }
-                };
-
-            /* Objects */
-                // Evaluate
-                LapysDevelopmentKit.objects.eval = (function() {
-                    // Initialization > Method
-                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "eval");
-
-                    // Logic
-                    if (!LDKF.isVoid(method))
-                        // Logic > (...)
-                        if (LDKF.functionPrototypeGetName(method) == "eval" && LDKF.functionPrototypeIsNative(method)) return method;
-                        else LDKF.error.nativeToEnvironment("`eval` function")
-                })();
-
-                // Function > Prototype --- NOTE (Lapys) -> Try to convert `Function.prototype.apply` and `Function.prototype.call` to constant methods.
-                    // Apply
-                    LDKF.objectDefineProperty(LDKO.functionPrototype, "apply", (function() {
-                        // Initialization > Descriptor
-                        var descriptor = LDKF.objectGetOwnPropertyDescriptor(LDKO.functionPrototype, "apply");
-
-                        // Modification > Descriptor > (Configurable, Writable)
-                        descriptor.configurable = false;
-                        descriptor.writable = false;
-
-                        // Return
-                        return descriptor
-                    })());
-
-                    // Call
-                    LDKF.objectDefineProperty(LDKO.functionPrototype, "call", (function() {
-                        // Initialization > Descriptor
-                        var descriptor = LDKF.objectGetOwnPropertyDescriptor(LDKO.functionPrototype, "call");
-
-                        // Modification > Descriptor > (Configurable, Writable)
-                        descriptor.configurable = false;
-                        descriptor.writable = false;
-
-                        // Return
-                        return descriptor
-                    })());
-
-            /* Functions */
-                // Evaluate
-                LapysDevelopmentKit.functions.eval = function evaluate(source) { return LDKO.eval.call(GLOBAL, source) };
-
-            /* Objects */
-                // Abort Error
+                // Abort Error --- FLAG ---
                 LapysDevelopmentKit.objects.abortError = LDKT.getObjectNativeErrorByName(GLOBAL, "AbortError");
                     // Prototype
                     LapysDevelopmentKit.objects.abortErrorPrototype = LDKF.objectPrototypeGetProperty(LDKO.abortError, "prototype")
@@ -2707,12 +2663,12 @@
                     LapysDevelopmentKit.objects.devicesNotFoundErrorPrototype = LDKF.objectPrototypeGetProperty(LDKO.devicesNotFoundError, "prototype")
 
                 // DOM Error
-                LapysDevelopmentKit.objects.domError = LDKC.isBrowserEnvironment ? LDKT.getObjectNativeErrorByName(GLOBAL, "DOMError", STRICT = true) : false;
+                LapysDevelopmentKit.objects.domError = LDKC.isWebEnvironment ? LDKT.getObjectNativeErrorByName(GLOBAL, "DOMError", STRICT = true) : false;
                     // Prototype
                     LapysDevelopmentKit.objects.domErrorPrototype = LDKF.objectPrototypeGetProperty(LDKO.domError, "prototype")
 
                 // DOM Exception
-                LapysDevelopmentKit.objects.domException = LDKC.isBrowserEnvironment ? LDKT.getObjectNativeErrorByName(GLOBAL, "DOMException", STRICT = true) : false;
+                LapysDevelopmentKit.objects.domException = LDKC.isWebEnvironment ? LDKT.getObjectNativeErrorByName(GLOBAL, "DOMException", STRICT = true) : false;
                     // Prototype
                     LapysDevelopmentKit.objects.domExceptionPrototype = LDKF.objectPrototypeGetProperty(LDKO.domException, "prototype")
 
@@ -3351,7 +3307,7 @@
                             LapysJS.processingDuration.terminate = 0;
 
                             // Value Of
-                            LDKF.objectDefineConstantProperty(LDKF.objectPrototypePrototype(LapysJS.processingDuration), "valueOf", {
+                            LDKF.objectDefineConstantProperty(LapysJS.processingDuration.constructor.prototype, "valueOf", {
                                 // Value
                                 value: function valueOf() { return LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate }
                             });
@@ -3391,6 +3347,10 @@
                         "})()") :
                         function LapysJSError() { return LDKO.error.apply(LDKO, arguments) };
 
+                    // Modification > (Lapys Development Kit > Objects) > LapysJS Error (Prototype)
+                    LDKO.lapysJSError = constructor;
+                    LDKO.lapysJSErrorPrototype = constructor.prototype;
+
                     // Return
                     return function LapysJSError(message, stack) {
                         // Initialization > (Length, LapysJS Error)
@@ -3419,6 +3379,10 @@
                                 "}" +
                             "})()") :
                             function LapysJSInitiateError() { return LDKD.lapysJSError.apply(LDKO, arguments) };
+
+                        // Modification > (Lapys Development Kit > Objects) > LapysJS Initiate Error (Prototype)
+                        LDKO.lapysJSInitiateError = constructor;
+                        LDKO.lapysJSInitiateErrorPrototype = constructor.prototype;
 
                         // Return
                         return function LapysJSInitiateError(message, stack) {
@@ -3450,6 +3414,10 @@
                             "})()") :
                             function LapysJSUpdateError() { return LDKD.lapysJSError.apply(LDKO, arguments) };
 
+                        // Modification > (Lapys Development Kit > Objects) > LapysJS Update Error (Prototype)
+                        LDKO.lapysJSUpdateError = constructor;
+                        LDKO.lapysJSUpdateErrorPrototype = constructor.prototype;
+
                         // Return
                         return function LapysJSUpdateError(message, stack) {
                             // Initialization > (Length, LapysJS Update Error)
@@ -3479,6 +3447,10 @@
                                 "}" +
                             "})()") :
                             function LapysJSTerminateError() { return LDKD.lapysJSError.apply(LDKO, arguments) };
+
+                        // Modification > (Lapys Development Kit > Objects) > LapysJS Terminate Error (Prototype)
+                        LDKO.lapysJSTerminateError = constructor;
+                        LDKO.lapysJSTerminateErrorPrototype = constructor.prototype;
 
                         // Return
                         return function LapysJSTerminateError(message, stack) {
@@ -3691,7 +3663,7 @@
                 LapysDevelopmentKit.functions.isEnterPictureInPictureEvent = function isEnterPictureInPictureEvent(arg) { return LDKT.isConstructibleObject(arg, LDKO.enterPictureInPictureEvent, LDKO.enterPictureInPictureEventPrototype) };
 
                 // Is Error
-                LapysDevelopmentKit.functions.isError = function isError(arg) { return LDKC.hasErrorConstructor ? LDKT.isConstructibleObject(arg, LDKO.error, LDKO.errorPrototype) : LDKF.isStrictlyErrorLike(arg) };
+                LapysDevelopmentKit.functions.isError = function isError(arg) { return LDKT.isConstructibleObject(arg, LDKO.error, LDKO.errorPrototype) };
 
                 // Is Error-Like
                 LapysDevelopmentKit.functions.isErrorLike = function isErrorLike(arg) { return LDKF.isError(arg) || LDKF.isStrictlyErrorLike(arg) };
@@ -3803,6 +3775,21 @@
 
                 // Is Keyboard Event
                 LapysDevelopmentKit.functions.isKeyboardEvent = function isKeyboardEvent(arg) { return LDKT.isConstructibleObject(arg, LDKO.keyboardEvent, LDKO.keyboardEventPrototype) };
+
+                // Is LapysJS Error
+                LapysDevelopmentKit.functions.isLapysJSError = function isLapysJSError(arg) { return LDKT.isConstructibleObject(arg, LDKO.lapysJSError, LDKO.lapysJSErrorPrototype) };
+
+                // Is LapysJS Error-Like
+                LapysDevelopmentKit.functions.isLapysJSErrorLike = function isLapysJSErrorLike(arg) { return LDKF.isLapysJSError(arg) || LDKF.isStrictlyLapysJSErrorLike(arg) };
+
+                // Is LapysJS Initiate Error
+                LapysDevelopmentKit.functions.isLapysJSInitiateError = function isLapysJSInitiateError(arg) { return LDKT.isConstructibleObject(arg, LDKO.lapysJSInitiateError, LDKO.lapysJSInitiateErrorPrototype) };
+
+                // Is LapysJS Update Error
+                LapysDevelopmentKit.functions.isLapysJSUpdateError = function isLapysJSUpdateError(arg) { return LDKT.isConstructibleObject(arg, LDKO.lapysJSUpdateError, LDKO.lapysJSUpdateErrorPrototype) };
+
+                // Is LapysJS Terminate Error
+                LapysDevelopmentKit.functions.isLapysJSTerminateError = function isLapysJSTerminateError(arg) { return LDKT.isConstructibleObject(arg, LDKO.lapysJSTerminateError, LDKO.lapysJSTerminateErrorPrototype) };
 
                 // Is Media Element Audio Source Node
                 LapysDevelopmentKit.functions.isMediaElementAudioSourceNode = function isMediaElementAudioSourceNode(arg) { return LDKT.isConstructibleObject(arg, LDKO.mediaElementAudioSourceNode, LDKO.mediaElementAudioSourceNodePrototype) };
@@ -4065,7 +4052,7 @@
                 // Is Storage Event
                 LapysDevelopmentKit.functions.isStorageEvent = function isStorageEvent(arg) { return LDKT.isConstructibleObject(arg, LDKO.storageEvent, LDKO.storageEventPrototype) };
 
-                // Is Strictly Array-Like --- CHECKPOINT ---
+                // Is Strictly Array-Like --- NOTE (Lapys) -> Test a suite of array-like objects.
                 LapysDevelopmentKit.functions.isStrictlyArrayLike = function isStrictlyArrayLike(arg) {
                     // Return
                     return LDKF.isArguments(arg) ||
@@ -4074,9 +4061,11 @@
                         LDKF.isFloat32Array(arg) || LDKF.isFloat64Array(arg) ||
                         LDKF.isHTMLAllCollection(arg) || LDKF.isHTMLCollection(arg) ||
                         LDKF.isInt8Array(arg) || LDKF.isInt16Array(arg) || LDKF.isInt32Array(arg) ||
+                        LDKF.isLapysJSNodeList(arg) ||
                         LDKF.isMIMETypeArray(arg) ||
                         LDKF.isNamedNodeMap(arg) || LDKF.isNodeList(arg) ||
                         LDKF.isPluginArray(arg) ||
+                        LDKF.isStyleSheetList(arg) ||
                         LDKF.isUint8Array(arg) || LDKF.isUint8ClampedArray(arg) || LDKF.isUint16Array(arg) || LDKF.isUint32Array(arg)
                 };
 
@@ -4207,7 +4196,7 @@
                     )
                 };
 
-                // Is Strictly Error-Like --- CHECKPOINT ---
+                // Is Strictly Error-Like --- NOTE (Lapys) -> Test a specific suite of error types.
                 LapysDevelopmentKit.functions.isStrictlyErrorLike = function isStrictlyErrorLike(arg) {
                     // Return
                     return typeof arg == "object" && (
@@ -4217,6 +4206,7 @@
                         LDKF.isEncodingError(arg) || LDKF.isEvalError(arg) || LDKF.isEventException(arg) ||
                         LDKF.isHierarchyRequestError(arg) ||
                         LDKF.isIndexSizeError(arg) || LDKF.isInternalError(arg) || LDKF.isInvalidAccessError(arg) || LDKF.isInvalidCharacterError(arg) || LDKF.isInvalidModificationError(arg) || LDKF.isInvalidNodeTypeError(arg) || LDKF.isInvalidStateError(arg) ||
+                        LDKF.isLapysJSErrorLike(arg) ||
                         LDKF.isMediaError(arg) || LDKF.isMediaKeyError(arg) || LDKF.isMediaStreamError(arg) || LDKF.isMSMediaKeyError(arg) ||
                         LDKF.isNamespaceError(arg) || LDKF.isNavigatorUserMediaError(arg) || LDKF.isNetworkError(arg) || LDKF.isNoModificationAllowedError(arg) || LDKF.isNotAllowedError(arg) || LDKF.isNotFoundError(arg) || LDKF.isNotReadableError(arg) || LDKF.isNotSupportedError(arg) ||
                         LDKF.isOperationError(arg) || LDKF.isOverConstrainedError(arg) ||
@@ -4226,8 +4216,7 @@
                         LDKF.isTimeoutError(arg) || LDKF.isTrackStartError(arg) || LDKF.isTransactionInactiveError(arg) || LDKF.isTypeError(arg) || LDKF.isTypeMismatchError(arg) ||
                         LDKF.isUnknownError(arg) || LDKF.isURIError(arg) || LDKF.isURLMismatchError(arg) ||
                         LDKF.isVersionError(arg) ||
-                        LDKF.isWebkitSpeechRecognitionError(arg) || LDKF.isWrongDocumentError(arg) ||
-                        LDKT.isConstructibleObject(arg, LDKO.error, LDKO.errorPrototype)
+                        LDKF.isWebkitSpeechRecognitionError(arg) || LDKF.isWrongDocumentError(arg)
                     )
                 };
 
@@ -4319,7 +4308,6 @@
                                 LDKF.isElementLike(arg) &&
                                 LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "accessKey")) &&
                                 LDKT.isHTMLElementPrototypeBlurMethod(LDKF.objectPrototypeGetProperty(arg, "blur")) &&
-                                LDKT.isHTMLElementPrototypeClickMethod(LDKF.objectPrototypeGetProperty(arg, "click")) &&
                                 LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "contentEditable")) &&
                                 LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "dir")) &&
                                 LDKT.isHTMLElementPrototypeFocusMethod(LDKF.objectPrototypeGetProperty(arg, "focus")) &&
@@ -4368,6 +4356,9 @@
                         )
                     )
                 };
+
+                // Is Strictly LapysJS Error-Like
+                LapysDevelopmentKit.functions.isStrictlyLapysJSErrorLike = function isStrictlyLapysJSErrorLike(arg) { return LDKF.isLapysJSInitiateError(arg) || LDKF.isLapysJSUpdateError(arg) || LDKF.isLapysJSTerminateError(arg) };
 
                 // Is Strictly Named Node Map-Like
                 LapysDevelopmentKit.functions.isStrictlyNamedNodeMapLike = function isStrictlyNamedNodeMapLike(arg, PRIVATE) {
@@ -4469,10 +4460,10 @@
                 // Is Typed Array-Like
                 LapysDevelopmentKit.functions.isTypedArrayLike = function isTypedArrayLike(arg) {
                     // Return
-                    return LDKF.isBigInt64Array(arrayLike) || LDKF.isBigUint64Array(arrayLike) ||
-                        LDKF.isFloat32Array(arrayLike) || LDKF.isFloat64Array(arrayLike) ||
-                        LDKF.isInt8Array(arrayLike) || LDKF.isInt16Array(arrayLike) || LDKF.isInt32Array(arrayLike) ||
-                        LDKF.isUint8Array(arrayLike) || LDKF.isUint8ClampedArray(arrayLike) || LDKF.isUint16Array(arrayLike) || LDKF.isUint32Array(arrayLike)
+                    return LDKF.isBigInt64Array(arg) || LDKF.isBigUint64Array(arg) ||
+                        LDKF.isFloat32Array(arg) || LDKF.isFloat64Array(arg) ||
+                        LDKF.isInt8Array(arg) || LDKF.isInt16Array(arg) || LDKF.isInt32Array(arg) ||
+                        LDKF.isUint8Array(arg) || LDKF.isUint8ClampedArray(arg) || LDKF.isUint16Array(arg) || LDKF.isUint32Array(arg)
                 };
 
                 // Is Type Error
@@ -5223,7 +5214,7 @@
                     var object = LDKF.objectPrototypeGetProperty(GLOBAL, "customElements");
 
                     // Logic
-                    if (LDKC.isBrowserEnvironment && LDKC.supportsCustomElements)
+                    if (LDKC.isWebEnvironment && LDKC.supportsCustomElements)
                         // Logic > (...)
                         if (
                             typeof object == "object" &&
@@ -5279,7 +5270,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.deviceOrientationEventPrototype = LDKF.objectPrototypeGetProperty(LDKO.deviceOrientationEvent, "prototype");
 
-                // Document --- NOTE (Lapys) -> Yes, this can actually be `undefined`.
+                // Document
                 LapysDevelopmentKit.objects.document = LDKT.getObjectNativeConstructorByName(GLOBAL, "Document", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.documentPrototype = LDKF.objectPrototypeGetProperty(LDKO.document, "prototype");
@@ -5298,7 +5289,7 @@
                 // Has Document Constructor
                 LapysDevelopmentKit.constants.hasDocumentConstructor = !LDKF.isVoid(LDKO.document);
 
-                // HTML Document --- NOTE (Lapys) -> Yes, this can actually be `undefined`.
+                // HTML Document
                 LapysDevelopmentKit.objects.htmlDocument = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLDocument", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.htmlDocumentPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlDocument, "prototype");
@@ -5326,13 +5317,13 @@
                     var object = LDKF.objectPrototypeGetProperty(GLOBAL, "document");
 
                     // Logic
-                    if (LDKC.isBrowserEnvironment)
+                    if (LDKC.isWebEnvironment)
                         // Logic > (...)
                         if (
                             typeof object == "object" &&
                             (function(stream) { return stream == "[object]" || stream == "[object Document]" || stream == "[object HTMLDocument]" })(LDKF.toString(object)) &&
                             (function(constructor) { return LDKF.isNull(constructor) || constructor === LDKO.document || constructor === LDKO.htmlDocument || constructor === LDKO.object })(LDKF.objectPrototypeConstructor(object, STRICT = true)) &&
-                            (function(prototype) { return LDKF.isVoid(prototype) || (LDKF.isVoid(LDKO.documentPrototype) ? false : prototype === LDKO.documentPrototype) || (LDKF.isVoid(LDKO.htmlDocumentPrototype) ? false : prototype === LDKO.htmlDocumentPrototype) })(LDKF.objectPrototypePrototype(object))
+                            (function(prototype) { return (prototype === LDKO.objectPrototype || LDKF.isVoid(prototype)) || (LDKF.isVoid(LDKO.documentPrototype) ? false : prototype === LDKO.documentPrototype) || (LDKF.isVoid(LDKO.htmlDocumentPrototype) ? false : prototype === LDKO.htmlDocumentPrototype) })(LDKF.objectPrototypePrototype(object))
                         ) return object;
                         else LDKF.error.nativeToEnvironment("`document` object")
                 })();
@@ -5344,7 +5335,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasDocumentConstructor ? LDKO.documentPrototype : LDKC.document, "createElement");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKF.functionPrototypeGetName(method) == "createElement" && LDKF.functionPrototypeIsNative(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Document.prototype.createElement` method")
@@ -5369,7 +5360,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.dynamicsCompressorNodePrototype = LDKF.objectPrototypeGetProperty(LDKO.dynamicsCompressorNode, "prototype");
 
-                // Element --- NOTE (Lapys) -> Yes, this can actually be `undefined`.
+                // Element
                 LapysDevelopmentKit.objects.element = LDKT.getObjectNativeConstructorByName(GLOBAL, "Element", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.elementPrototype = LDKF.objectPrototypeGetProperty(LDKO.element, "prototype");
@@ -5492,7 +5483,7 @@
                 // Has HTML Collection Constructor
                 LapysDevelopmentKit.constants.hasHTMLCollectionConstructor = !LDKF.isVoid(LDKO.htmlCollection);
 
-                // HTML Element --- NOTE (Lapys) -> Yes, this can actually be `undefined`.
+                // HTML Element
                 LapysDevelopmentKit.objects.htmlElement = LapysJS.tmp.htmlElement = LDKT.getObjectNativeConstructorByName(GLOBAL, "HTMLElement", STRICT = true);
                     // Prototype
                     LapysDevelopmentKit.objects.htmlElementPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlElement, "prototype");
@@ -5915,7 +5906,7 @@
                             typeof object == "object" &&
                             (function(stream) { return stream == "[object]" || stream == "[object Object]" || stream == "[object Performance]" })(LDKF.toString(object)) &&
                             (function(constructor) { return constructor === LDKO.object || constructor === LDKO.performance || LDKF.isVoid(constructor) })(LDKF.objectPrototypeConstructor(object)) &&
-                            (function(prototype) { return prototype === LDKO.performancePrototype || LDKF.isVoid(prototype) })(LDKF.objectPrototypePrototype(object))
+                            (function(prototype) { return (prototype === LDKO.objectPrototype || prototype === LDKO.performancePrototype) || LDKF.isVoid(prototype) })(LDKF.objectPrototypePrototype(object))
                         ) return object;
                         else LDKF.error.nativeToEnvironment("`performance` object")
                 })();
@@ -5977,11 +5968,6 @@
 
                 // Range
                 LapysDevelopmentKit.objects.range = LDKT.getObjectNativeConstructorByName(GLOBAL, "Range", STRICT = true);
-
-                // Regular Expression
-                LapysDevelopmentKit.objects.regularExpression = LDKT.getObjectNativeConstructorByName(GLOBAL, "RegExp");
-                    // Prototype
-                    LapysDevelopmentKit.objects.regularExpressionPrototype = LDKF.objectPrototypeGetProperty(LDKO.regularExpression, "prototype");
 
                 // Request Animation Frame
                 LapysDevelopmentKit.objects.requestAnimationFrame = (function() {
@@ -6491,9 +6477,6 @@
 
                 // Is HTML Element Prototype Blur Method
                 LapysDevelopmentKit.test.isHTMLElementPrototypeBlurMethod = function isHTMLElementPrototypeBlurMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "blur" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Element Prototype Click Method
-                LapysDevelopmentKit.test.isHTMLElementPrototypeClickMethod = function isHTMLElementPrototypeClickMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "click" && LDKF.functionPrototypeIsNative(method) };
 
                 // Is HTML Element Prototype Focus Method
                 LapysDevelopmentKit.test.isHTMLElementPrototypeFocusMethod = function isHTMLElementPrototypeFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "focus" && LDKF.functionPrototypeIsNative(method) };
@@ -7739,7 +7722,7 @@
 
             /* Constants */
                 // HTML Div Element
-                LapysDevelopmentKit.constants.htmlDivElement = LDKF.documentPrototypeCreateElement("div");
+                LapysDevelopmentKit.constants.htmlDivElement = LDKC.isWebEnvironment ? LDKF.documentPrototypeCreateElement("div") : undefined;
 
                 // Supports Standard Custom Elements
                 LapysDevelopmentKit.constants.supportsStandardCustomElements = LDKC.hasClassKeyword && LDKC.supportsCustomElements;
@@ -7752,7 +7735,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getAttribute");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeGetAttributeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.getAttribute` method")
@@ -7764,7 +7747,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getAttributeNode");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeGetAttributeNodeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.getAttribute` method")
@@ -7776,7 +7759,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getBoundingClientRect");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeGetBoundingClientRectangleMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.getBoundingClientRect` method")
@@ -7788,7 +7771,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getBoundingClientRect");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeGetBoundingClientRectangleMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.getBoundingClientRect` method")
@@ -7800,7 +7783,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "getElementsByTagName");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeGetElementsByTagNameMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.getElementsByTagName` method")
@@ -7812,7 +7795,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "hasAttribute");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic
                             if (LDKF.isVoid(method))
                                 // Return
@@ -7830,7 +7813,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "hasAttributes");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic
                             if (LDKF.isVoid(method))
                                 // Return
@@ -7866,7 +7849,7 @@
                         LDKF.isVoid(method) && (method = LDKF.objectPrototypeGetProperty(LDKO.htmlElementPrototype, "insertAdjacentElement"));
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeInsertAdjacentElementMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.insertAdjacentElement` method")
@@ -7881,7 +7864,7 @@
                         LDKF.isVoid(method) && (method = LDKF.objectPrototypeGetProperty(LDKO.htmlElementPrototype, "insertAdjacentHTML"));
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeInsertAdjacentHTMLMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.insertAdjacentHTML` method")
@@ -7896,7 +7879,7 @@
                         LDKF.isVoid(method) && (method = LDKF.objectPrototypeGetProperty(LDKO.htmlElementPrototype, "insertAdjacentText"));
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeInsertAdjacentTextMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.insertAdjacentText` method")
@@ -7908,7 +7891,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "removeAttribute");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeRemoveAttributeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.removeAttribute` method")
@@ -7920,7 +7903,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "removeAttributeNode");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeRemoveAttributeNodeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.removeAttributeNode` method")
@@ -7932,7 +7915,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "setAttribute");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeSetAttributeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.setAttribute` method")
@@ -7944,7 +7927,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasElementConstructor ? LDKO.elementPrototype : LDKC.htmlDivElement, "setAttributeNode");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isElementPrototypeSetAttributeNodeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Element.prototype.setAttributeNode` method")
@@ -7957,7 +7940,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "addEventListener");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic
                             if (!LDKF.isVoid(method))
                                 // Logic > (...)
@@ -7971,7 +7954,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "attachEvent");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic
                             if (!LDKF.isVoid(method))
                                 // Logic > (...)
@@ -7985,7 +7968,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "detachEvent");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic
                             if (!LDKF.isVoid(method))
                                 // Logic > (...)
@@ -7999,7 +7982,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasEventTargetConstructor ? LDKO.eventTargetPrototype : LDKC.htmlDivElement, "removeEventListener");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic
                             if (!LDKF.isVoid(method))
                                 // Logic > (...)
@@ -8014,22 +7997,10 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasHTMLElementConstructor ? LDKO.htmlElementPrototype : LDKC.htmlDivElement, "blur");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isHTMLElementPrototypeBlurMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.blur` method")
-                    })();
-
-                    // Click
-                    LapysDevelopmentKit.objects.htmlElementPrototypeClick = (function() {
-                        // Initialization > Method
-                        var method = LDKF.objectPrototypeGetProperty(LDKC.hasHTMLElementConstructor ? LDKO.htmlElementPrototype : LDKC.htmlDivElement, "click");
-
-                        // Logic
-                        if (LDKC.isBrowserEnvironment)
-                            // Logic > (...)
-                            if (LDKT.isHTMLElementPrototypeClickMethod(method)) return method;
-                            else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.click` method")
                     })();
 
                     // Focus
@@ -8038,7 +8009,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasHTMLElementConstructor ? LDKO.htmlElementPrototype : LDKC.htmlDivElement, "focus");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isHTMLElementPrototypeFocusMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`HTMLElement.prototype.focus` method")
@@ -8051,7 +8022,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "appendChild");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeAppendChildMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.appendChild` method")
@@ -8063,7 +8034,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "cloneNode");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeCloneNodeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.cloneNode` method")
@@ -8078,7 +8049,7 @@
                         LDKF.isVoid(method) && (method = LDKF.objectPrototypeGetProperty(LDKO.htmlElementPrototype, "contains"));
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeContainsMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.contains` method")
@@ -8090,7 +8061,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "hasChildNodes");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeHasChildNodesMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.hasChildNodes` method")
@@ -8102,7 +8073,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "insertBefore");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeInsertBeforeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.insertBefore` method")
@@ -8114,7 +8085,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "normalize");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeNormalizeMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.normalize` method")
@@ -8126,7 +8097,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "removeChild");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeRemoveChildMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.removeChild` method")
@@ -8138,7 +8109,7 @@
                         var method = LDKF.objectPrototypeGetProperty(LDKC.hasNodeConstructor ? LDKO.nodePrototype : LDKC.htmlDivElement, "replaceChild");
 
                         // Logic
-                        if (LDKC.isBrowserEnvironment)
+                        if (LDKC.isWebEnvironment)
                             // Logic > (...)
                             if (LDKT.isNodePrototypeReplaceChildMethod(method)) return method;
                             else LDKF.error.nativeToEnvironment("`Node.prototype.replaceChild` method")
@@ -8312,7 +8283,7 @@
 
                                 // Return
                                 return prototype
-                            })(LDKF.objectCreate(LDKO.htmlElementPrototype));
+                            })(LDKO.htmlElementPrototype ? LDKF.objectCreate(LDKO.htmlElementPrototype) : {});
 
                             // Return
                             return HTMLComponentElement

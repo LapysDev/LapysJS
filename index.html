@@ -21,18 +21,6 @@
 
 <body>
     <!-- Scripts -->
-        <!-- Document Script -->
-        <script language=javascript type=text/javascript>
-            /* Modification > Window > LapysJS
-                    --- NOTE ---
-                        #Lapys: Define custom options for the LapysJS plugin.
-            */
-            window.LapysJS = {
-                // Components
-                components: ['tooltip']
-            }
-        </script>
-
         <!-- LapysJS Script -->
         <script language=javascript src=src/lapys.js type=text/javascript> </script>
 
@@ -43,83 +31,6 @@
         <script language=javascript src=assets/js/index.js type=text/javascript> </script>
 
     <!-- Main -->
-    <main>
-        <!-- Landing -->
-        <jumbotron-element class="center flex jumbotron reverse" id=landing>
-            <!-- Reflection -->
-            <div role=reflection> </div>
-
-            <!-- Header Container -->
-            <hgroup class="center col-1 flex min-grid-h-2 reverse" role=header-container>
-                <!-- Header -->
-                <h1 role=header script=h1.write(app.name)> </h1>
-
-                <!-- Sub Header -->
-                <h2 role=subheader script="h2.write(['Do more with less code', 'Not a JavaScript Library', 'The Minimalistic JS Framework'].random)"> Do more with less code </h2>
-            </hgroup>
-
-            <!-- Introduction Navigation -->
-            <nav class="col-grp col-1 fixed-grp m-row-grp" role=introduction-navigation script="
-                repeat(array(nav.children), function(key, value) {
-                    var child = value;
-                    child.addEvent('mouseleave', function blur() { $$('jumbotron-element#landing').removeAttributeEntry('role', 'focus-only') });
-                    child.addEvent('mouseover', function focus() { $$('jumbotron-element#landing').addAttributeEntry('role', 'focus-only') })
-                })
-            ">
-                <!-- Documentation/ Learn -->
-                <div class="col-1 m-grid-1" role="dynamic interactive" script="
-                    function modify() { (div.innerHTML.trim() == 'Learn') || div.write({duration: 250, mode: 'clear'}).with(' Learn ', {duration: 250, mode: 'type'}) }
-                    function reset() { (div.innerHTML.trim() == 'Documentation') || div.write({duration: 250, mode: 'clear'}).with(' Documentation ', {duration: 250, mode: 'type'}) }
-
-                    addEvent('blur', reset);
-                    div.addEvent(['blur', 'mouseleave'], reset);
-                    div.addEvent(['focus', 'mouseover'], modify)
-                "> Documentation </div>
-
-                <!-- CSS -->
-                <div class="col-1 m-grid-1" role=interactive> CSS </div>
-
-                <!-- JavaScript -->
-                <div class="col-1 m-grid-1" role=interactive> JavaScript </div>
-
-                <!-- Projects -->
-                <div class="col-1 m-grid-1" role=interactive> Projects </div>
-
-                <!-- Themes -->
-                <div class="col-1 m-grid-1" role=interactive> Themes </div>
-
-                <!-- Story -->
-                <div class="col-1 m-grid-1" role=interactive> Story </div>
-            </nav>
-        </jumbotron-element>
-
-        <!-- Introduction -->
-        <section class=flat-section id=introduction>
-            <!-- Header -->
-            <h1 class=underline role=header> Built by &amp; for Minimalists </h1>
-
-            <!-- Content -->
-            <p role=content>
-                Took 2+ years or so. Was determined not to make it another JavaScript framework or jQuery clone (even though that was what it is was). <br> <br>
-
-                Struggled with the concept for a while until I figured out the library was designed for simplicity by maximizing native JavaScript features effectively rather than piling onto the stack with more custom features (like templates in React Native). <br> <br>
-
-                Anyways, it&rsquo;s been fun developing this. Of course, this library was not built for profit but honestly for fun and the developer community. <br> Mostly to send a message that through critical & logical thinking, anything is possible even with 0&rsquo;s and 1&rsquo;s (the most minimal and simply sophisticated you can get). <br> <br>
-
-                Enjoy.
-            </p>
-
-            <!-- Download Container -->
-            <div id=downloadContainer role=container>
-                <button>
-                    <big> Download </big>
-                    <small> v0.0.4 </small>
-                </button>
-            </div>
-        </section>
-
-        <!-- Control Panel -->
-        <div id=control> </div>
-    </main>
+    <main> </main>
 </body>
 </html>
