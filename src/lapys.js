@@ -535,7 +535,7 @@
                         terminate: function terminate(message) { throw new LDKD.lapysJSTerminateError(LDKF.toDebugMessage.apply(LDKD, arguments)) }
                     };
 
-                // Evaluate
+                // Evaluate --- WARN (Lapys) -> Powerful, but slows down performance.
                 LapysDevelopmentKit.functions.eval = function evaluate(source) { return LDKO.eval.call(GLOBAL, source) };
 
                 // Function > Prototype
@@ -756,8 +756,8 @@
 
                                 // Update > Was Within Scope --- NOTE (Lapys) -> Implicit `extends` keyword scopes are only valid with `class` or `function` syntax-ed functions.
                                 (syntaxType == "class") && (
-                                    (function(stream) { return stream == "class " || stream == "class\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 6)) ||
-                                    (function(stream) { return stream == "function " || stream == "function(" || stream == "function\n" })(LDKF.stringPrototypeSlice(source, iterator, iterator + 9))
+                                    LDKF.objectPrototypeIs.OR(LDKF.stringPrototypeSlice(source, iterator, iterator + 6), "class ", "class\n") ||
+                                    LDKF.objectPrototypeIs.OR(LDKF.stringPrototypeSlice(source, iterator, iterator + 9), "function ", "function(", "function\n")
                                 ) && (wasWithinScope -= 1);
 
                                 // Logic > [Break]
@@ -1154,7 +1154,7 @@
                 LapysDevelopmentKit.functions.isAbortError = function isAbortError(arg) { return LDKT.isConstructibleObject(arg, LDKO.abortError, LDKO.abortErrorPrototype) };
 
                 // Is Arguments
-                LapysDevelopmentKit.functions.isArguments = function isArguments(arg) { return LDKF.objectPrototypeConstructor(arg) === LDKO.object && LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "callee")) && LDKF.objectPrototypeHasProperty(arg, "length") && (function(stream) { return stream == "[object Arguments]" || stream == "[object Object]" })(LDKF.toString(arg)) };
+                LapysDevelopmentKit.functions.isArguments = function isArguments(arg) { return LDKF.objectPrototypeConstructor(arg) === LDKO.object && LDKF.isFunction(LDKF.objectPrototypeGetProperty(arg, "callee")) && LDKF.objectPrototypeHasProperty(arg, "length") && LDKF.objectPrototypeIs.OR(LDKF.toString(arg), "[object Arguments]", "[object Object]") };
 
                 // Is Array
                 LapysDevelopmentKit.functions.isArray = function isArray(arg) {
@@ -1219,6 +1219,8 @@
                 // Is Document-Like
                 LapysDevelopmentKit.functions.isDocumentLike = function isDocumentLike(arg, PRIVATE) { return LDKF.isDocument(arg, PRIVATE) || LDKF.isStrictlyDocumentLike(arg, PRIVATE) };
 
+                // Is Document Type --- CHECKPOINT ---
+
                 // Is DOM Error
                 LapysDevelopmentKit.functions.isDOMError = function isDOMError(arg) { return LDKT.isConstructibleObject(arg, LDKO.domError, LDKO.domErrorPrototype) };
 
@@ -1278,7 +1280,7 @@
                         if (
                             !LDKF.isVoid(LDKF, "activeXObject") || (
                                 LDKF.objectPrototypeHasProperty(GLOBAL, "ActiveXObject") &&
-                                (function(method) { return (function(stream) { return stream == "function" || stream == "undefined" })(typeof method) && LDKF.functionPrototypeIsNative(method, STRICT = true) })(LDKF.objectPrototypeGetProperty(GLOBAL, "ActiveXObject"))
+                                (function(method) { return LDKF.objectPrototypeIs.OR(typeof method, "function", "undefined") && LDKF.functionPrototypeIsNative(method, STRICT = true) })(LDKF.objectPrototypeGetProperty(GLOBAL, "ActiveXObject"))
                             )
                         ) return (typeof arg == "string" && arg === "[object]") || (typeof arg == "object" && LDKF.functionPrototypeIsDefault(arg))
 
@@ -1496,7 +1498,7 @@
                             #Lapys:
                                 - The first of many confusingly named 'type-detection' methods.
                                 - Test a suite of array-like objects.
-                                - Not sure if `PerformanceObserverEntryList` objects are array-like objects.
+                                - Not sure if `PerformanceObserverEntryList`, `PresentationConnectionList`, `SVGAnimatedLengthList`, `SVGAnimatedNumberList`, and `SVGAnimatedTransformList` objects are array-like objects.
                 */
                 LapysDevelopmentKit.functions.isStrictlyArrayLike = function isStrictlyArrayLike(arg) {
                     // Return
@@ -1510,8 +1512,7 @@
                         LDKF.isNamedNodeMap(arg) || LDKF.isNodeList(arg) ||
                         LDKF.isPluginArray(arg) ||
                         LDKF.isRadioNodeList(arg) ||
-                        LDKF.isSet(arg) || LDKF.isSourceBufferList(arg) || LDKF.isStylePropertyMap(arg) || LDKF.isStylePropertyMapReadOnly(arg) || LDKF.isStyleSheetList(arg) ||
-                        LDKF.isSVGAnimatedLengthList(arg) || LDKF.isSVGAnimatedNumberList(arg) || LDKF.isSVGAnimatedTransformList(arg) || LDKF.isSVGLengthList(arg) || LDKF.isSVGNumberList(arg) || LDKF.isSVGPointList(arg) || LDKF.isSVGStringList(arg) || LDKF.isSVGTransformList(arg) ||
+                        LDKF.isSet(arg) || LDKF.isSourceBufferList(arg) || LDKF.isStylePropertyMap(arg) || LDKF.isStylePropertyMapReadOnly(arg) || LDKF.isStyleSheetList(arg) || LDKF.isSVGLengthList(arg) || LDKF.isSVGNumberList(arg) || LDKF.isSVGPointList(arg) || LDKF.isSVGStringList(arg) || LDKF.isSVGTransformList(arg) ||
                         LDKF.isTextTrackCueList(arg) || LDKF.isTextTrackList(arg) || LDKF.isTouchList(arg) || LDKF.isTypedArrayLike(arg)
                 };
 
@@ -1610,7 +1611,7 @@
                             LDKT.isDocumentPrototypeCreateElementMethod(LDKF.objectPrototypeGetProperty(arg, "createElement")) &&
                             LDKT.isDocumentPrototypeCreateTextNodeMethod(LDKF.objectPrototypeGetProperty(arg, "createTextNode")) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "designMode")) &&
-                            (function(documentType) { return LDKC.hasDocumentTypeConstructor ? documentType : true })(LDKF.objectPrototypeGetProperty(arg, "doctype")) &&
+                            (function(documentType) { return LDKC.hasDocumentTypeConstructor ? LDKF.isDocumentType(documentType) : true })(LDKF.objectPrototypeGetProperty(arg, "doctype")) &&
                             LDKF.isHTMLElementLike(LDKF.objectPrototypeGetProperty(arg, "documentElement")) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(arg, "domain")) &&
                             LDKT.isDocumentPrototypeElementFromPointMethod(LDKF.objectPrototypeGetProperty(arg, "elementFromPoint")) &&
@@ -1666,6 +1667,8 @@
                         )
                     )
                 };
+
+                // Is Strictly Document Type-Like --- CHECKPOINT ---
 
                 // Is Strictly DOM Rectangle List-Like
                 LapysDevelopmentKit.functions.isStrictlyDOMRectangleListLike = function isStrictlyDOMRectangleListLike(arg) {
@@ -2135,39 +2138,6 @@
                     )
                 };
 
-                // Is Strictly SVG Animated Length List-Like
-                LapysDevelopmentKit.functions.isStrictlySVGAnimatedLengthListLike = function isStrictlySVGAnimatedLengthListLike(arg) {
-                    // Return
-                    return typeof arg == "object" && (
-                        LDKC.hasSVGAnimatedLengthListConstructor ? arg instanceof LDKO.svgAnimatedLengthList : (
-                            LDKF.isSVGLength(LDKF.objectPrototypeGetProperty(arg, "animVal")) &&
-                            LDKF.isSVGLength(LDKF.objectPrototypeGetProperty(arg, "baseVal"))
-                        )
-                    )
-                };
-
-                // Is Strictly SVG Animated Number List-Like
-                LapysDevelopmentKit.functions.isStrictlySVGAnimatedNumberListLike = function isStrictlySVGAnimatedNumberListLike(arg) {
-                    // Return
-                    return typeof arg == "object" && (
-                        LDKC.hasSVGAnimatedNumberListConstructor ? arg instanceof LDKO.svgAnimatedNumberList : (
-                            LDKF.isSVGLength(LDKF.objectPrototypeGetProperty(arg, "animVal")) &&
-                            LDKF.isSVGLength(LDKF.objectPrototypeGetProperty(arg, "baseVal"))
-                        )
-                    )
-                };
-
-                // Is Strictly SVG Animated Transform List-Like
-                LapysDevelopmentKit.functions.isStrictlySVGAnimatedTransformListLike = function isStrictlySVGAnimatedTransformListLike(arg) {
-                    // Return
-                    return typeof arg == "object" && (
-                        LDKC.hasSVGAnimatedTransformListConstructor ? arg instanceof LDKO.svgAnimatedTransformList : (
-                            LDKF.isSVGLength(LDKF.objectPrototypeGetProperty(arg, "animVal")) &&
-                            LDKF.isSVGLength(LDKF.objectPrototypeGetProperty(arg, "baseVal"))
-                        )
-                    )
-                };
-
                 // Is Strictly SVG Length-Like
                 LapysDevelopmentKit.functions.isStrictlySVGLengthLike = function isStrictlySVGLengthLike(arg) {
                     // Return
@@ -2342,15 +2312,6 @@
 
                 // Is Style Sheet List
                 LapysDevelopmentKit.functions.isStyleSheetList = function isStyleSheetList(arg, PRIVATE) { return LDKC.hasStyleSheetListConstructor ? LDKT.isConstructibleObject(arg, LDKO.styleSheetList, LDKO.styleSheetListPrototype) : LDKF.isStrictlyStyleSheetListLike(arg, PRIVATE) };
-
-                // Is SVG Animated Length List
-                LapysDevelopmentKit.functions.isSVGAnimatedLengthList = function isSVGAnimatedLengthList(arg) { return LDKC.hasSVGAnimatedLengthListConstructor ? LDKT.isConstructibleObject(arg, LDKO.svgAnimatedLengthList, LDKO.svgAnimatedLengthListPrototype) : LDKF.isStrictlySVGAnimatedLengthListLike(arg) };
-
-                // Is SVG Animated Number List
-                LapysDevelopmentKit.functions.isSVGAnimatedNumberList = function isSVGAnimatedNumberList(arg) { return LDKC.hasSVGAnimatedNumberListConstructor ? LDKT.isConstructibleObject(arg, LDKO.svgAnimatedNumberList, LDKO.svgAnimatedNumberListPrototype) : LDKF.isStrictlySVGAnimatedNumberListLike(arg) };
-
-                // Is SVG Animated Transform List
-                LapysDevelopmentKit.functions.isSVGAnimatedTransformList = function isSVGAnimatedTransformList(arg) { return LDKC.hasSVGAnimatedTransformListConstructor ? LDKT.isConstructibleObject(arg, LDKO.svgAnimatedTransformList, LDKO.svgAnimatedTransformListPrototype) : LDKF.isStrictlySVGAnimatedTransformListLike(arg) };
 
                 // Is SVG Length
                 LapysDevelopmentKit.functions.isSVGLength = function isSVGLength(arg) { return LDKC.hasSVGLengthConstructor ? LDKT.isConstructibleObject(arg, LDKO.svgLength, LDKO.svgLengthPrototype) : LDKF.isStrictlySVGLengthLike(arg) };
@@ -3387,7 +3348,7 @@
                             (STRICT ?
                                 (
                                     (typeof constructor == "function" || typeof constructor == "object") &&
-                                    (function(stream) { return stream == "[object]" || stream == constructorName || stream == "[object " + constructorName + ']' || stream == "[object " + constructorName + "Constructor]" })(LDKF.toString(constructor))
+                                    LDKF.objectPrototypeIs.OR(LDKF.toString(constructor), constructorName, "[object]", "[object " + constructorName + ']', "[object " + constructorName + "Constructor]")
                                 ) :
                                 false
                             )
@@ -4630,6 +4591,9 @@
                     return allowsClassKeyword
                 })();
 
+                // Environment Vendor Includes Node.js
+                LapysDevelopmentKit.constants.isNode_jsEnvironment = LDKT.environmentVendorIs("Node.js");
+
         /* Global */
             /* LapysJS */
             (function() {
@@ -4849,11 +4813,7 @@
                 // LapysJS Promise --- CHECKPOINT ---
                 // LapysJS Safe Number --- CHECKPOINT ---
 
-            /* Constants, Objects
-                    --- NOTE ---
-                        #Lapys: If the requested (queried) objects are not globally available via it's variable name,
-                            then use an alternative method to return said object (or return an a fallback object).
-            */
+            /* Objects */
                 // Active X Object
                 LapysDevelopmentKit.objects.activeXObject = LDKT.queryObjectNativeConstructor(GLOBAL, "ActiveXObject");
                     // Prototype
@@ -4892,90 +4852,16 @@
 
                 // Clear Timeout
                 LapysDevelopmentKit.objects.clearTimeout = (function() {
-                    // Initialization > (..., Method)
-                    var environmentVendorIsNode_js = LDKT.environmentVendorIs("Node.js"),
-                        method = LDKF.objectPrototypeGetProperty(GLOBAL, "clearTimeout");
+                    // Initialization > Method
+                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "clearTimeout");
 
                     // Logic > (...)
                     if (
-                        (environmentVendorIsNode_js ? "clearTimeout" : LDKF.functionPrototypeGetName(method)) == "clearTimeout" &&
-                        (environmentVendorIsNode_js || LDKF.functionPrototypeIsNative(method))
+                        (LDKC.isNode_jsEnvironment ? "clearTimeout" : LDKF.functionPrototypeGetName(method)) == "clearTimeout" &&
+                        (LDKC.isNode_jsEnvironment || LDKF.functionPrototypeIsNative(method))
                     ) return method;
                     else LDKF.error.nativeToEnvironment("`clearTimeout` function")
                 })();
-
-                // Console --- NOTE (Lapys) -> The test for the `console` methods are similar to most other native constructor tests.
-                LapysDevelopmentKit.constants.console = (function() {
-                    // Initialization > (Object, (Has) Prototype)
-                    var object = LDKF.objectPrototypeGetProperty(GLOBAL, "console"),
-                        prototype = LDKF.objectPrototypePrototype(object),
-                        hasPrototype = !LDKF.isVoid(prototype);
-
-                    // Modification > (Lapys Development Kit > Objects) > (Console > Prototype)
-                    hasPrototype && (LDKO.consolePrototype = prototype);
-
-                    // Logic > (...) --- NOTE (Lapys) -> The `LapysDevelopmentKit.objects.console` constructor gets defined here.
-                    if (
-                        typeof object == "object" &&
-                        (function(stream) { return stream == "[object Console]" || stream == "[object console]" || stream == "[object Object]" })(LDKF.toString(object)) &&
-                        (LDKT.environmentVendorIs("Node.js") ?
-                            (function(constructor) {
-                                // Return
-                                return (LDKF.functionPrototypeGetName(constructor) == "Console" && LDKF.functionPrototypeIsUserDefined(constructor))
-                            })(LDKO.console = LDKF.objectPrototypeConstructor(object)) :
-                            (function(constructor) {
-                                // Return
-                                return constructor === LDKO.object || (
-                                    LDKF.toString(constructor) == "[object Console]" || (
-                                        LDKF.functionPrototypeGetName(constructor) == "Console" &&
-                                        LDKF.functionPrototypeIsNative(constructor)
-                                    )
-                                )
-                            })(LDKO.console = LDKF.objectPrototypeConstructor(object, STRICT = true))
-                        ) &&
-                        (hasPrototype ? prototype !== LDKO.object && (function(stream) { return stream == "[object ConsolePrototype]" || stream == "[object Object]" })(LDKF.toString(prototype)) : true)
-                    ) return object;
-                    else LDKF.error.nativeToEnvironment("`console` object")
-                })();
-                    // Group
-                    LapysDevelopmentKit.objects.consoleGroup = (function() {
-                        // Initialization > Method
-                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "group");
-
-                        // Logic > (...)
-                        if ((LDKF.functionPrototypeGetName(method) == "group" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
-                        else LDKF.error.nativeToEnvironment("`console.group` method")
-                    })();
-
-                    // Group End
-                    LapysDevelopmentKit.objects.consoleGroupEnd = (function() {
-                        // Initialization > Method
-                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "groupEnd");
-
-                        // Logic > (...)
-                        if ((LDKF.functionPrototypeGetName(method) == "groupEnd" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
-                        else LDKF.error.nativeToEnvironment("`console.groupEnd` method")
-                    })();
-
-                    // Log
-                    LapysDevelopmentKit.objects.consoleLog = (function() {
-                        // Initialization > Method
-                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "log");
-
-                        // Logic > (...)
-                        if ((LDKF.functionPrototypeGetName(method) == "log" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
-                        else LDKF.error.nativeToEnvironment("`console.log` method")
-                    })();
-
-                    // Warn
-                    LapysDevelopmentKit.objects.consoleWarn = (function() {
-                        // Initialization > Method
-                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "warn");
-
-                        // Logic > (...)
-                        if ((LDKF.functionPrototypeGetName(method) == "warn" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
-                        else LDKF.error.nativeToEnvironment("`console.warn` method")
-                    })();
 
                 // CSS Numeric Array
                 LapysDevelopmentKit.objects.cssNumericArray = LDKT.queryObjectNativeConstructor(GLOBAL, "CSSNumericArray");
@@ -5054,6 +4940,9 @@
 
                 // Document Fragment
                 LapysDevelopmentKit.objects.documentFragment = LDKT.queryObjectNativeConstructor(GLOBAL, "DocumentFragment", STRICT = true);
+
+                // Document Type --- CHECKPOINT ---
+                    // Prototype --- CHECKPOINT ---
 
                 // DOM Rectangle
                 LapysDevelopmentKit.objects.domRectangle = LDKT.queryObjectNativeConstructor(GLOBAL, "DOMRect");
@@ -5412,14 +5301,13 @@
 
                 // Set Timeout
                 LapysDevelopmentKit.objects.setTimeout = (function() {
-                    // Initialization > (..., Method)
-                    var environmentVendorIsNode_js = LDKT.environmentVendorIs("Node.js"),
-                        method = LDKF.objectPrototypeGetProperty(GLOBAL, "setTimeout");
+                    // Initialization > Method
+                    var method = LDKF.objectPrototypeGetProperty(GLOBAL, "setTimeout");
 
                     // Logic > (...)
                     if (
                         LDKF.functionPrototypeGetName(method) == "setTimeout" &&
-                        (environmentVendorIsNode_js || LDKF.functionPrototypeIsNative(method))
+                        (LDKC.isNode_jsEnvironment || LDKF.functionPrototypeIsNative(method))
                     ) return method;
                     else LDKF.error.nativeToEnvironment("`setTimeout` function")
                 })();
@@ -5452,77 +5340,45 @@
                         // Length Getter
                         LapysDevelopmentKit.objects.styleSheetListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.styleSheetListPrototype, "length");
 
-                // SVG Animated Length List
-                LapysDevelopmentKit.objects.svgAnimatedLengthList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGAnimatedLengthList");
-                    // Prototype
-                    LapysDevelopmentKit.objects.svgAnimatedLengthListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgAnimatedLengthList, "prototype");
-
-                // Has SVG Animated Length List Constructor
-                LDKC.hasSVGAnimatedLengthListConstructor = LDKT.isPublicConstructor(LDKO.svgAnimatedLengthList);
-
-                // SVG Animated Number List
-                LapysDevelopmentKit.objects.svgAnimatedNumberList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGAnimatedNumberList");
-                    // Prototype
-                    LapysDevelopmentKit.objects.svgAnimatedNumberListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgAnimatedNumberList, "prototype");
-
-                // Has SVG Animated Number List Constructor
-                LDKC.hasSVGAnimatedNumberListConstructor = LDKT.isPublicConstructor(LDKO.svgAnimatedNumberList);
-
-                // SVG Animated Transform List
-                LapysDevelopmentKit.objects.svgAnimatedTransformList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGAnimatedTransformList");
-                    // Prototype
-                    LapysDevelopmentKit.objects.svgAnimatedTransformListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgAnimatedTransformList, "prototype");
-
-                // Has SVG Animated Transform List Constructor
-                LDKC.hasSVGAnimatedTransformListConstructor = LDKT.isPublicConstructor(LDKO.svgAnimatedTransformList);
-
                 // SVG Length
                 LapysDevelopmentKit.objects.svgLength = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGLength");
                     // Prototype
                     LapysDevelopmentKit.objects.svgLengthPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgLength, "prototype");
 
-                // Has SVG Length Constructor
-                LDKC.hasSVGLengthConstructor = LDKT.isPublicConstructor(LDKO.svgLength);
-
                 // SVG Length List
                 LapysDevelopmentKit.objects.svgLengthList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGLengthList");
                     // Prototype
                     LapysDevelopmentKit.objects.svgLengthListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgLengthList, "prototype");
-
-                // Has SVG Length List Constructor
-                LDKC.hasSVGLengthListConstructor = LDKT.isPublicConstructor(LDKO.svgLengthList);
+                        // Number of Items Getter
+                        LapysDevelopmentKit.objects.svgLengthListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgLengthListPrototype, "numberOfItems");
 
                 // SVG Number List
                 LapysDevelopmentKit.objects.svgNumberList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGNumberList");
                     // Prototype
                     LapysDevelopmentKit.objects.svgNumberListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgNumberList, "prototype");
-
-                // Has SVG Number List Constructor
-                LDKC.hasSVGNumberListConstructor = LDKT.isPublicConstructor(LDKO.svgNumberList);
+                        // Number of Items Getter
+                        LapysDevelopmentKit.objects.svgNumberListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgNumberListPrototype, "numberOfItems");
 
                 // SVG Point List
                 LapysDevelopmentKit.objects.svgPointList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGPointList");
                     // Prototype
                     LapysDevelopmentKit.objects.svgPointListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgPointList, "prototype");
-
-                // Has SVG Point List Constructor
-                LDKC.hasSVGPointListConstructor = LDKT.isPublicConstructor(LDKO.svgPointList);
+                        // Number of Items Getter
+                        LapysDevelopmentKit.objects.svgPointListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgPointListPrototype, "numberOfItems");
 
                 // SVG String List
                 LapysDevelopmentKit.objects.svgStringList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGStringList");
                     // Prototype
                     LapysDevelopmentKit.objects.svgStringListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgStringList, "prototype");
-
-                // Has SVG String List Constructor
-                LDKC.hasSVGStringListConstructor = LDKT.isPublicConstructor(LDKO.svgStringList);
+                        // Number of Items Getter
+                        LapysDevelopmentKit.objects.svgStringListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgStringListPrototype, "numberOfItems");
 
                 // SVG Transform List
                 LapysDevelopmentKit.objects.svgTransformList = LDKT.queryObjectNativeConstructor(GLOBAL, "SVGTransformList");
                     // Prototype
                     LapysDevelopmentKit.objects.svgTransformListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgTransformList, "prototype");
-
-                // Has SVG Transform List Constructor
-                LDKC.hasSVGTransformListConstructor = LDKT.isPublicConstructor(LDKO.svgTransformList);
+                        // Number of Items Getter
+                        LapysDevelopmentKit.objects.svgTransformListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgTransformListPrototype, "numberOfItems");
 
                 // Text
                 LapysDevelopmentKit.objects.text = LDKT.queryObjectNativeConstructor(GLOBAL, "Text", STRICT = true);
@@ -5531,17 +5387,15 @@
                 LapysDevelopmentKit.objects.textTrackCueList = LDKT.queryObjectNativeConstructor(GLOBAL, "TextTrackCueList");
                     // Prototype
                     LapysDevelopmentKit.objects.textTrackCueListPrototype = LDKF.objectPrototypeGetProperty(LDKO.textTrackCueList, "prototype");
-
-                // Has Text Track Cue List Constructor
-                LDKC.hasTextTrackCueListConstructor = LDKT.isPublicConstructor(LDKO.textTrackCueList);
+                        // Length Getter
+                        LapysDevelopmentKit.objects.textTrackCueListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.textTrackCueListPrototype, "length");
 
                 // Text Track List
                 LapysDevelopmentKit.objects.textTrackList = LDKT.queryObjectNativeConstructor(GLOBAL, "TextTrackList");
                     // Prototype
                     LapysDevelopmentKit.objects.textTrackListPrototype = LDKF.objectPrototypeGetProperty(LDKO.textTrackList, "prototype");
-
-                // Has Text Track List Constructor
-                LDKC.hasTextTrackListConstructor = LDKT.isPublicConstructor(LDKO.textTrackList);
+                        // Length Getter
+                        LapysDevelopmentKit.objects.textTrackListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.textTrackListPrototype, "length");
 
                 // Touch
                 LapysDevelopmentKit.objects.touch = LDKT.queryObjectNativeConstructor(GLOBAL, "Touch");
@@ -5550,9 +5404,8 @@
                 LapysDevelopmentKit.objects.touchList = LDKT.queryObjectNativeConstructor(GLOBAL, "TouchList");
                     // Prototype
                     LapysDevelopmentKit.objects.touchListPrototype = LDKF.objectPrototypeGetProperty(LDKO.touchList, "prototype");
-
-                // Has Touch List Constructor
-                LDKC.hasTouchListConstructor = LDKT.isPublicConstructor(LDKO.touchList);
+                        // Length Getter
+                        LapysDevelopmentKit.objects.touchListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.touchListPrototype, "length");
 
                 // 8-Bit Unsigned Integer Array
                 LapysDevelopmentKit.objects.uint8Array = LDKT.queryObjectNativeConstructor(GLOBAL, "Uint8Array", STRICT = true);
@@ -5725,6 +5578,33 @@
                 // Has Style Property Map Read-Only Constructor
                 LapysDevelopmentKit.constants.hasStylePropertyMapReadOnlyConstructor = LDKT.isPublicConstructor(LDKO.stylePropertyMapReadOnly);
 
+                // Has SVG Length Constructor
+                LapysDevelopmentKit.constants.hasSVGLengthConstructor = LDKT.isPublicConstructor(LDKO.svgLength);
+
+                // Has SVG Length List Constructor
+                LapysDevelopmentKit.constants.hasSVGLengthListConstructor = LDKT.isPublicConstructor(LDKO.svgLengthList);
+
+                // Has SVG Number List Constructor
+                LapysDevelopmentKit.constants.hasSVGNumberListConstructor = LDKT.isPublicConstructor(LDKO.svgNumberList);
+
+                // Has SVG Point List Constructor
+                LapysDevelopmentKit.constants.hasSVGPointListConstructor = LDKT.isPublicConstructor(LDKO.svgPointList);
+
+                // Has SVG String List Constructor
+                LapysDevelopmentKit.constants.hasSVGStringListConstructor = LDKT.isPublicConstructor(LDKO.svgStringList);
+
+                // Has SVG Transform List Constructor
+                LapysDevelopmentKit.constants.hasSVGTransformListConstructor = LDKT.isPublicConstructor(LDKO.svgTransformList);
+
+                // Has Text Track Cue List Constructor
+                LapysDevelopmentKit.constants.hasTextTrackCueListConstructor = LDKT.isPublicConstructor(LDKO.textTrackCueList);
+
+                // Has Text Track List Constructor
+                LapysDevelopmentKit.constants.hasTextTrackListConstructor = LDKT.isPublicConstructor(LDKO.textTrackList);
+
+                // Has Touch List Constructor
+                LapysDevelopmentKit.constants.hasTouchListConstructor = LDKT.isPublicConstructor(LDKO.touchList);
+
                 // Has XML Document Constructor
                 LapysDevelopmentKit.constants.hasXMLDocumentConstructor = LDKT.isPublicConstructor(LDKO.xmlDocument);
 
@@ -5765,6 +5645,79 @@
                 LapysDevelopmentKit.constants.supportsCustomElements = LDKC.allowsClassKeyword && LDKT.isPublicConstructor(LDKO.customElementRegistry);
 
             /* Constants, Objects */
+                // Console --- NOTE (Lapys) -> The test for the `console` methods are similar to most other native constructor tests.
+                LapysDevelopmentKit.constants.console = (function() {
+                    // Initialization > (Object, (Has) Prototype)
+                    var object = LDKF.objectPrototypeGetProperty(GLOBAL, "console"),
+                        prototype = LDKF.objectPrototypePrototype(object),
+                        hasPrototype = !LDKF.isVoid(prototype);
+
+                    // Modification > (Lapys Development Kit > Objects) > (Console > Prototype)
+                    hasPrototype && (LDKO.consolePrototype = prototype);
+
+                    // Logic > (...) --- NOTE (Lapys) -> The `LapysDevelopmentKit.objects.console` constructor gets defined here.
+                    if (
+                        typeof object == "object" &&
+                        (function(stream) { return stream == "[object Console]" || stream == "[object console]" || stream == "[object Object]" })(LDKF.toString(object)) &&
+                        (LDKT.environmentVendorIs("Node.js") ?
+                            (function(constructor) {
+                                // Return
+                                return (LDKF.functionPrototypeGetName(constructor) == "Console" && LDKF.functionPrototypeIsUserDefined(constructor))
+                            })(LDKO.console = LDKF.objectPrototypeConstructor(object)) :
+                            (function(constructor) {
+                                // Return
+                                return constructor === LDKO.object || (
+                                    LDKF.toString(constructor) == "[object Console]" || (
+                                        LDKF.functionPrototypeGetName(constructor) == "Console" &&
+                                        LDKF.functionPrototypeIsNative(constructor)
+                                    )
+                                )
+                            })(LDKO.console = LDKF.objectPrototypeConstructor(object, STRICT = true))
+                        ) &&
+                        (hasPrototype ? prototype !== LDKO.object && (function(stream) { return stream == "[object ConsolePrototype]" || stream == "[object Object]" })(LDKF.toString(prototype)) : true)
+                    ) return object;
+                    else LDKF.error.nativeToEnvironment("`console` object")
+                })();
+                    // Group
+                    LapysDevelopmentKit.objects.consoleGroup = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "group");
+
+                        // Logic > (...)
+                        if ((LDKF.functionPrototypeGetName(method) == "group" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
+                        else LDKF.error.nativeToEnvironment("`console.group` method")
+                    })();
+
+                    // Group End
+                    LapysDevelopmentKit.objects.consoleGroupEnd = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "groupEnd");
+
+                        // Logic > (...)
+                        if ((LDKF.functionPrototypeGetName(method) == "groupEnd" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
+                        else LDKF.error.nativeToEnvironment("`console.groupEnd` method")
+                    })();
+
+                    // Log
+                    LapysDevelopmentKit.objects.consoleLog = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "log");
+
+                        // Logic > (...)
+                        if ((LDKF.functionPrototypeGetName(method) == "log" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
+                        else LDKF.error.nativeToEnvironment("`console.log` method")
+                    })();
+
+                    // Warn
+                    LapysDevelopmentKit.objects.consoleWarn = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKC.console, "warn");
+
+                        // Logic > (...)
+                        if ((LDKF.functionPrototypeGetName(method) == "warn" && LDKF.functionPrototypeIsNative(method)) || LDKT.isConsoleMethod(method)) return method;
+                        else LDKF.error.nativeToEnvironment("`console.warn` method")
+                    })();
+
                 // Custom Elements
                 LapysDevelopmentKit.constants.customElements = (function() {
                     // Initialization > Object
