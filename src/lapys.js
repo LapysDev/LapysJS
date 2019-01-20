@@ -37,9 +37,8 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
-            - Test for `Symbol` objects as well.
             - `LapysDevelopmentKit.functions.arrayLikePrototypeLength` uses the `item` prototype property.
-            - Use `LapysDevelopmentKit.functions.objectPrototypeIs.OR` liberally.
+            - Test for `Symbol` objects as well.
 
             - Test all explicitly requested methods & properties.
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
@@ -6409,7 +6408,7 @@
                             return array
                         };
 
-                        // Add To Front
+                        // Add To Front --- NOTE (Lapys) -> Update the former `LapysDevelopmentKit.functions.arrayPrototypeAddToFront` method.
                         LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, element) {
                             // Initialization > (Array) Length
                             var arrayLength = LDKF.arrayPrototypeLength(array),
@@ -7114,7 +7113,8 @@
                     };
 
                 // Array-Like > Prototype
-                    // Length
+                    // Element At --- CHECKPOINT ---
+                    // Length --- CHECKPOINT ---
                     LapysDevelopmentKit.functions.arrayLikePrototypeLength = function arrayLikePrototypeLength(arrayLike) {
                         // Logic > Return
                         if (LDKF.isArguments(arrayLike)) return LDKF.getArgumentsLength(arrayLike);
@@ -8437,7 +8437,7 @@
                 // Performance Is Void
                 LapysDevelopmentKit.constants.performanceIsVoid = LDKF.isVoid(LDKC.performance);
 
-    /* Function */
+    /* Phase */
         /* Initiate
                 --- NOTE ---
                     #Lapys:
