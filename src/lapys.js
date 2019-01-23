@@ -1459,6 +1459,9 @@
                 // Is Plugin Array
                 LapysDevelopmentKit.functions.isPluginArray = function isPluginArray(arg) { return LDKT.isConstructibleObject(arg, LDKO.pluginArray, LDKO.pluginArrayPrototype) };
 
+                // Is Primitive
+                LapysDevelopmentKit.functions.isPrimitive = function isPrimitive(arg) { return LDKF.isBoolean(arg) || LDKF.isNumber(arg) || LDKF.isString(arg) || LDKF.isSymbol(arg) };
+
                 // Is Quota Exceeded Error
                 LapysDevelopmentKit.functions.isQuotaExceededError = function isQuotaExceededError(arg) { return LDKT.isConstructibleObject(arg, LDKO.quotaExceededError, LDKO.quotaExceededErrorPrototype) };
 
@@ -8370,7 +8373,7 @@
                     // Tooltip --- CHECKPOINT ---
 
             /* Math */
-                // Internal Multiplication --- CITE (Lapys) -> `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul#Polyfill`.
+                // Integer Multiplication --- CITE (Lapys) -> `https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/imul#Polyfill`.
                 LapysDevelopmentKit.math.imul = function imul(numberA, numberB) {
                     // Initialization > Number (A, B) (Maximum, Minimum)
                     var numberAMaximum = (numberA >>> 16) & 0xFFFF, numberAMinimum = numberA & 0xFFFF,
