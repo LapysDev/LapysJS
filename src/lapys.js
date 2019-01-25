@@ -157,7 +157,7 @@
                     LapysDevelopmentKit.constants.string.alphabets = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
 
                     // Alphanumerics
-                    LapysDevelopmentKit.constants.string.alphanumerics = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
+                    LapysDevelopmentKit.constants.string.alphanumerics = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
                     // Binary
                     LapysDevelopmentKit.constants.string.binary = ['0', '1'];
@@ -484,7 +484,7 @@
                 // Error --- NOTE (Lapys) -> The methods used in the function's statements are indicative of when errors are expected to be possibly thrown in the code.
                 LapysDevelopmentKit.functions.error = function error(message) { throw LDKF.objectPrototypeHasProperty(LDKD, "lapysJSError") ? new LDKD.lapysJSError(LDKF.toDebugMessage.apply(LDKD, arguments)) : LDKF.toDebugMessage.apply(LDKF, arguments) };
                     // Library Is Pre-Installed
-                    LapysDevelopmentKit.functions.error.libraryIsPreInstalled = function libraryIsPreInstalled() { return LDKF.error("The library is already installed") };
+                    LapysDevelopmentKit.functions.error.libraryIsPreInstalled = function libraryIsPreInstalled() { return LDKF.error(LDKI.messages.error.libraryIsPreInstalled) };
 
                     // Native To Environment
                     LapysDevelopmentKit.functions.error.nativeToEnvironment = function nativeToEnvironment(feature) { return LDKF.error("The " + LDKF.toString(feature) + LDKI.messages.error.nativeToEnvironmentSuffix) };
@@ -669,7 +669,7 @@
                                             break
                                     }
 
-                                // {Scope Hierarchy Logic} Logic > Update > Within Scope
+                                // [Scope Hierarchy Logic] Logic > Update > Within Scope
                                 if (character == '(' || character == '{' || character == '[') isWithinScope += 1;
                                 else if (character == ')' || character == '}' || character == ']') isWithinScope -= 1;
 
@@ -2438,22 +2438,6 @@
                 // Is 64-Bit Float Array
                 LapysDevelopmentKit.functions.isFloat64Array = function isFloat64Array(arg) { return LDKT.isConstructibleObject(arg, LDKO.float64Array, LDKO.float64ArrayPrototype) };
 
-                // Log --- NOTE (Lapys) -> Only use within the main phases (`INITIATE`, `UPDATE` and `TERMINATE`).
-                LapysDevelopmentKit.functions.log = function log(arg) {
-                    // Logic
-                    if (LDKF.getArgumentsLength(arguments) == 1) {
-                        // (...) > Console > Log
-                        LDKF.consoleLog(arg);
-
-                        // Return
-                        return arg
-                    }
-
-                    else
-                        // (...) > Console > Log
-                        LDKF.consoleLog.apply(LDKF, arguments)
-                };
-
                 // Number > Prototype
                     // Is Finite
                     LapysDevelopmentKit.functions.numberPrototypeIsFinite = function numberPrototypeIsFinite(number) { return !LDKF.numberPrototypeIsInfinite(number) };
@@ -2692,13 +2676,13 @@
                             // Error Handling
                             try {
                                 // Logic > (...)
-                                    // {...}
+                                    // (...)
                                     if (LDKF.objectPrototypeHasProperty(object, "__proto__")) LDKF.objectPrototypeSetProperty(object, "__proto__", __proto__);
 
-                                    // {...}
+                                    // (...)
                                     else if (typeof LDKO.objectSetPrototypeOf == "function") LDKF.objectSetPrototypeOf(object, __proto__);
 
-                                    // {...} NOTE (Lapys) -> Shamelessly mimic mutating an object's prototype.
+                                    // (...) NOTE (Lapys) -> Shamelessly mimic mutating an object's prototype.
                                     else {
                                         // Initialization > (__Prototype__ Keys, Iterator, Length)
                                         var __proto__Keys = LDKF.objectGetOwnPropertyNames(__proto__),
@@ -2752,6 +2736,22 @@
 
                     // Set Prototype Of
                     LapysDevelopmentKit.functions.objectSetPrototypeOf = function objectSetPrototypeOf(object, __proto__) { return LDKO.objectSetPrototypeOf(object, __proto__) };
+
+                // Print --- NOTE (Lapys) -> Only use within the main phases (`INITIATE`, `UPDATE` and `TERMINATE`).
+                LapysDevelopmentKit.functions.print = function print(arg) {
+                    // Logic
+                    if (LDKF.getArgumentsLength(arguments) == 1) {
+                        // (...) > Console > Log
+                        LDKF.consoleLog(arg);
+
+                        // Return
+                        return arg
+                    }
+
+                    else
+                        // (...) > Console > Log
+                        LDKF.consoleLog.apply(LDKF, arguments)
+                };
 
                 // Regular Expression
                 LapysDevelopmentKit.functions.regularExpression = function regularExpression(source) { return LDKF.getArgumentsLength(arguments) ? LDKO.regularExpression(source) : new LDKO.regularExpression };
@@ -3203,7 +3203,7 @@
                         LapysDevelopmentKit.information.messages.debugging.prefix = "[LapysJS v" + VERSION + "] ->\n    ";
 
                         // Suffix
-                        LapysDevelopmentKit.information.messages.debugging.suffix = "\n";
+                        LapysDevelopmentKit.information.messages.debugging.suffix = '\n';
 
                     // Error
                         // Compatible with Library Suffix
@@ -3211,6 +3211,9 @@
 
                         // JavaScript Engine Support Suffix
                         LapysDevelopmentKit.information.messages.error.javaScriptEngineSupportSuffix = " must be supported by this JavaScript engine";
+
+                        // Library Is Pre-Installed
+                        LapysDevelopmentKit.information.messages.error.libraryIsPreInstalled = "The library is already installed";
 
                         // Native to Environment Suffix
                         LapysDevelopmentKit.information.messages.error.nativeToEnvironmentSuffix = " must be native to this development environment to install the library";
@@ -4016,14 +4019,14 @@
                     LapysDevelopmentKit.environment.state = "ok";
                     LapysDevelopmentKit.environment.type = "standard";
 
-                    // {Angular JS} Logic
+                    // [Angular JS] Logic
                     if (typeof angular == "object" && LDKF.objectPrototypeConstructor(angular) === LDKO.object && LDKF.toString(angular) == "[object Object]") {
                         // Modification > (Lapys Development Kit > Environment) > (Type, Vendors)
                         LapysDevelopmentKit.environment.type = "framework"
                         LapysDevelopmentKit.environment.vendors[LDKF.arrayPrototypeLength(LapysDevelopmentKit.environment.vendors)] = "angular"
                     }
 
-                    // {Electron JS} Logic
+                    // [Electron JS] Logic
                     if (
                         LDKF.objectPrototypeHasProperty(window, "process") && (function() {
                             // Error Handling
@@ -4043,7 +4046,7 @@
                         LapysDevelopmentKit.environment.vendors[LDKF.arrayPrototypeLength(LapysDevelopmentKit.environment.vendors)] = "Electron JS"
                     }
 
-                    // {jQuery} Logic
+                    // [jQuery] Logic
                     if (
                         typeof jQuery == "function" && LDKF.functionPrototypeIsUserDefined(jQuery) &&
                         typeof $ == "function" && LDKF.functionPrototypeIsUserDefined($)
@@ -4053,14 +4056,14 @@
                         LapysDevelopmentKit.environment.vendors[LDKF.arrayPrototypeLength(LapysDevelopmentKit.environment.vendors)] = "jQuery"
                     }
 
-                    // {React JS} Logic
+                    // [React JS] Logic
                     if (typeof React == "object" && LDKF.objectPrototypeConstructor(React) === LDKO.object && LDKF.toString(React) == "[object Object]") {
                         // Modification > (Lapys Development Kit > Environment) > (Type, Vendors)
                         LapysDevelopmentKit.environment.type = "framework"
                         LapysDevelopmentKit.environment.vendors[LDKF.arrayPrototypeLength(LapysDevelopmentKit.environment.vendors)] = "React JS"
                     }
 
-                    // {Vue JS} Logic
+                    // [Vue JS] Logic
                     if (typeof Vue == "function" && LDKF.functionPrototypeIsUserDefined(Vue)) {
                         // Modification > (Lapys Development Kit > Environment) > (Type, Vendors)
                         LapysDevelopmentKit.environment.type = "framework"
@@ -4068,7 +4071,7 @@
                     }
                 }
 
-                // {Node.js} Logic
+                // [Node.js] Logic
                 if (
                     typeof global != "undefined" && typeof module != "undefined" && (function() {
                         // Error Handling > Return
@@ -8835,9 +8838,9 @@
                 // Length
                 // Mathematics
                 // Maximum
-                // {Get} Maximum {Object}
+                // [Get] Maximum [Object]
                 // Minimum
-                // {Get} Minimum {Object}
+                // [Get] Minimum [Object]
                 // Momentum Scroll By
                 // Momentum Scroll Into View
                 // Momentum Scroll To
@@ -8951,7 +8954,7 @@
         case TERMINATE_ERROR_STATE: LDKF.error.type.terminate("Error completing library integration:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE))
     }
 
-    // {Console Messages} Console > Group --- NOTE (Lapys) -> Unfortunately, the `document.currentScript` accessor is not consistent amongst all environments.
+    // [Console Messages] Console > Group --- NOTE (Lapys) -> Unfortunately, the `document.currentScript` accessor is not consistent amongst all environments.
     LDKF.consoleGroup("LapysJS v" + VERSION);
         // Console > Log
         LDKF.consoleLog("Debug Mode =", LapysJS.debugMode);
