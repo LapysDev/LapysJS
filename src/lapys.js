@@ -63,14 +63,14 @@
         // Global --- NOTE (Lapys) -> The JavaScript global object of the current environment.
         GLOBAL = null,
 
-        // Lapys Development Kit
+        // Lapys Development Kit --- NOTE (Lapys) -> Integration of the Lapys Development Kit into JavaScript.
         LapysDevelopmentKit = new (function LapysDevelopmentKit() {
             // Initialization > Target
             var that = this;
 
             // Modification > Target
                 // Constants
-                that.constants = {defaults: {}, number: {}, string: {}};
+                that.constants = {number: {}, string: {}};
 
                 // Data --- NOTE (Lapys) -> Custom data objects.
                 that.data = {};
@@ -139,7 +139,10 @@
             LDKS = LapysDevelopmentKit.settings,
             LDKT = LapysDevelopmentKit.test;
 
-    /* Modification */
+    /* Modification
+            --- NOTE ---
+                #Lapys: Best to modify the Lapys Development Kit externally.
+    */
         /* Lapys Development Kit */
             /* Constants */
                 // Number
@@ -166,7 +169,7 @@
                     LapysDevelopmentKit.constants.string.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
                     // Hexadecimal
-                    LapysDevelopmentKit.constants.string.hexadecimal = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f'];
+                    LapysDevelopmentKit.constants.string.hexadecimal = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
                     // Lowercase Alphabets
                     LapysDevelopmentKit.constants.string.lowercaseAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -177,170 +180,247 @@
                     // Uppercase Alphabets
                     LapysDevelopmentKit.constants.string.uppercaseAlphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-                    // {Explicit} Variable Characters
-                    LapysDevelopmentKit.constants.string.variableCharacters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
+                    // [Explicit] Variable Characters
+                    LapysDevelopmentKit.constants.string.variableCharacters = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-            /* Data */
-                // Series --- CHECKPOINT --- WARN (Lapys) -> Crude array for internal arithmetic only.
-                LapysDevelopmentKit.data.series = (function() {
-                    // Initialization > Constructor
-                    var constructor = function Series(begin, end) {
-                        // Initialization > Target
-                        var that = this;
+            /* Data
+                    --- NOTE ---
+                        #Lapys: Normally, with private methods & properties in the Lapys Development Kit
+                            basic private-scoped security measures are not taken,
 
-                        // Logic > Return
-                        if (begin > end) return new LDKD.series(end, begin);
+                            but in the case of possibly global custom data types,
+                            we still asset some level of security.
+            */
+                /* Clock
+                        --- NOTE ---
+                            #Lapys: For asynchronous processes only
+                                (unfortunately).
+                */
+                LapysDevelopmentKit.data.clock = function Clock() {};
+                    // Prototype
+                    LapysDevelopmentKit.data.clockPrototype = LapysDevelopmentKit.data.clock.prototype;
+                        /* Check
+                                --- NOTE ---
+                                    #Lapys: Asynchronous reversed `while` statement.
+                        */
+                        LapysDevelopmentKit.data.clockPrototype.check = function check(condition, ontrue, onfail) {
+                            // Initialization > Has On Fail
+                            var hasOnFail = LDKF.getArgumentsLength(arguments) > 2, that = this;
 
-                        // Initialization > Length
-                        var length = LDKF.getArgumentsLength(arguments);
+                            // Error
+                            LDKF.isClock(that) || LDKF.error.targetType("Clock");
 
-                        // Modification > Target
-                            // Add To Front
-                            that.addToFront = function addToFront(number) {
-                                // Initialization > Length
-                                var length = LDKF.getArgumentsLength(arguments);
+                            // Initialization > (Observer, Frame)
+                            var observer = hasOnFail ? new LDKD.observer(condition, ontrue, onfail) : new LDKD.observer(condition, ontrue),
+                                frame = that.wind(function() { observer.observe() && frame.stop() });
+
+                            // Return
+                            return observer
+                        };
+
+                        // Stop
+                        LapysDevelopmentKit.data.clockPrototype.stop = function stop(frame) { LDKF.isClock(this) || LDKF.error("Argument specified must be a `Frame`."); LDKD.framePrototype.stop.call(frame) };
+
+                        /* Thread
+                                --- UPDATE REQUIRED ---
+                                    #Lapys: Multi-threading parallelism, maybe?
+                                        - Although how would Web Workers `Worker` objects or any solution as such be integrated into the library?
+                        */
+                        LapysDevelopmentKit.data.clockPrototype.thread = function thread() {};
+
+                        // Tick
+                        LapysDevelopmentKit.data.clockPrototype.tick = function tick(handler, delay) {
+                            // Return
+                            return LDKF.getArgumentsLength(arguments) > 1 ?
+                                LapysDevelopmentKit.data.clockPrototype.wind.call(this, function() { var frame = this; handler.call(frame); frame.stop() }, delay) :
+                                LapysDevelopmentKit.data.clockPrototype.wind.call(this, function() { var frame = this; handler.call(frame); frame.stop() })
+                        };
+
+                        // Timestamp
+                        LapysDevelopmentKit.data.clockPrototype.timestamp = function timestamp() { LDKF.isClock(this) || LDKF.error.targetType("Clock"); return LDKC.hasPerformanceObject ? LDKF.dateNow() : LDKF.performancePrototypeNow(LDKC.performance) };
+
+                        // Wind
+                        LapysDevelopmentKit.data.clockPrototype.wind = function wind(handler, interval) {
+                            // Initialization > (Count, Frame, Has Interval, ID, Target)
+                            var count = -1,
+                                frame = new LDKD.frame(handler),
+                                hasInterval = LDKF.getArgumentsLength(arguments) > 1,
+                                id, that = this;
+
+                            // Error
+                            LDKF.isClock(that) || LDKF.error.targetType("Clock");
+
+                            // Logic
+                            if (hasInterval) {
+                                // Error
+                                (LDKF.numberPrototypeIsPositive(interval) && LDKF.numberPrototypeIsSafeInteger(interval)) || LDKF.error("Second argument specified must be a safe number");
+
+                                // Update > Interval
+                                interval = LDKM.ceil(interval / 16.666666666666668)
+                            }
+
+                            // Wind
+                            (function wind() {
+                                // Initialization > Frame State
+                                var frameState = frame.state;
 
                                 // Logic
-                                if (length)
+                                if (frameState == "playing" || frameState == "unplayed") {
                                     // Logic
-                                    if (length == 1) {
-                                        // Update > Number
-                                        number = LDKF.toNumber(number);
+                                    if (hasInterval) {
+                                        // Update > Count
+                                        count += 1;
 
-                                        // Modification > Target > (First, Last)
-                                        that.length || (that.first = number);
-                                        that.last = that[(that.length += 1) - 1] = number
+                                        // Logic
+                                        if (count == interval) {
+                                            // Frame > Play
+                                            frame.play();
+
+                                            // Update > Count
+                                            count = 0
+                                        }
                                     }
 
-                                    else {
-                                        // Initialization > Iterator
-                                        var iterator = length;
+                                    else
+                                        // Frame > Play
+                                        frame.play();
 
-                                        // Loop > Update > Target
-                                        while (iterator) that.addToFront(arguments[length - (iterator -= 1) - 1])
-                                    }
-                            };
-
-                            // First
-                            that.first = null;
-
-                            // Is Empty
-                            that.isEmpty = false;
-
-                            // Length
-                            that.length = 0;
-
-                            // Last
-                            that.last = null;
-
-                            // Type
-                            that.type = "arithmetic";
-
-                        // Logic
-                        switch (length) {
-                            // [0]
-                            case 0: that.isEmpty = true; break;
-
-                            // [Default]
-                            default:
-                                // Initialization > Iterator
-                                var iterator = length;
-
-                                // Modification > Target > (First, Last)
-                                that.first = begin;
-                                length == 1 ? that.last = begin : that.last = end;
-
-                                // Loop
-                                while (iterator) {
-                                    // Initialization > Index
-                                    var index = length - (iterator -= 1) - 1;
-
-                                    // Modification > Target > (..., Length)
-                                    that[index] = arguments[index];
-                                    that.length += 1
+                                    // Update > ID
+                                    id = LDKF.requestAnimationFrame(wind)
                                 }
-                        }
 
-                        // Return
-                        return that
-                    };
+                                else if (frameState == "stopped") {
+                                    // Frame > Stop
+                                    frame.stop();
+
+                                    // (...)
+                                    LDKF.cancelAnimationFrame(id)
+                                }
+                            })();
+
+                            // Return
+                            return frame
+                        };
+
+                // Frame
+                LapysDevelopmentKit.data.frame = function Frame(action) {
+                    // Initialization > Target
+                    var that = this;
+
+                    // Error
+                    LDKF.isFrame(that) || LDKF.error.targetType("Frame");
+                    LDKF.isFunction(action) || LDKF.error("Argument must be a function.");
+
+                    // Modification > Target > Action
+                    that.action = action;
 
                     // Return
-                    return function Series() {
-                        // Initialization > (Length, Series)
-                        var length = LDKF.getArgumentsLength(arguments),
-                            series = new constructor;
+                    return that
+                };
+                    // Prototype
+                    LapysDevelopmentKit.data.framePrototype = LapysDevelopmentKit.data.frame.prototype;
+                        // Action --- NOTE (Lapys) -> The Action performed when the Frame is played.
+                        LapysDevelopmentKit.data.frame.prototype.action = null;
 
-                        // Logic
-                        if (length) {
-                            // Initialization > Iterator
-                            var iterator = length;
+                        // Current Tick --- NOTE (Lapys) -> Frame current time being played.
+                        LapysDevelopmentKit.data.frame.prototype.currentTick = 0;
 
-                            // Loop > Update > Series
-                            while (iterator) series.addToFront(arguments[length - (iterator -= 1) - 1])
-                        }
+                        // Pause --- NOTE (Lapys) -> Honestly, this property is more for semantics than anything...
+                        LapysDevelopmentKit.data.frame.prototype.pause = function pause() {
+                            var that = this;
 
-                        // Return
-                        return series
-                    }
-                })();
-                    // Infinite
-                    LapysDevelopmentKit.data.series.infinite = function infinite(begin, end) {
-                        // Initialization > (Length, Series)
-                        var length = LDKF.getArgumentsLength(arguments),
-                            series = new LDKD.series;
+                            // Error
+                            LDKF.isFrame(that) || LDKF.error.targetType("Frame");
 
-                        // Logic
-                        if (length) {
-                            // Logic > Update > (Begin, End)
-                            if (length == 1) { end = begin; begin = 0 }
+                            // Modification > Target > State
+                            (that.state === "stopped") || (that.state === "paused") || (that.state = "paused")
+                        };
 
-                            // Logic > Return
-                            if (begin > end) return LDKD.series.infinite(end, begin);
+                        // Play
+                        LapysDevelopmentKit.data.frame.prototype.play = function play() {
+                            // Initialization > Target
+                            var that = this;
 
-                            // Modification > Series > (First, Is Empty, Last, Length)
-                            series.first = LDKF.toNumber(begin);
-                            series.isEmpty = false;
-                            series.last = LDKF.toNumber(end);
-                            series.length = series.last - series.first
-                        }
+                            // Error
+                            LDKF.isFrame(that) || LDKF.error.targetType("Frame");
 
-                        else {
-                            // Modification > Series > (Is Empty, Length)
-                            series.isEmpty = true;
-                            series.length = null
-                        }
-
-                        // Modification > Series
-                            // Point --- NOTE (Lapys) -> Returns the `point` argument locally, not the function itself.
-                            series.point = function point(point) {
-                                // Update > Point
-                                point = LDKF.toNumber(point);
+                            // Logic
+                            if (that.state !== "stopped") {
+                                // Modification > Target > State
+                                (that.state === "playing") || (that.state = "playing");
 
                                 // Logic > Return
-                                if (!series.first && !series.last) return 0;
-                                if (LDKF.numberPrototypeIsInfinite(point) || LDKF.numberPrototypeIsNaN(point)) return LDKC.number.nan;
+                                if (!LDKF.isNull(that.action)) return that.action.call(that, that.currentTick);
 
-                                // Logic
-                                if (LDKF.numberPrototypeIsNegativeZero(point))
-                                    // Update > Point
-                                    point = series.last;
+                                // Modification > Target > Current Tick
+                                that.currentTick += 1
+                            }
+                        };
 
-                                else
-                                    // Loop > Update > Point
-                                    while (point < series.first) point = series.last - LDKM.abs(point);
-                                    while (point > series.last) point -= series.last;
+                        // State
+                        LapysDevelopmentKit.data.frame.prototype.state = "unplayed";
 
-                                // Return
-                                return point
-                            };
+                        // Stop
+                        LapysDevelopmentKit.data.frame.prototype.stop = function stop() {
+                            // Initialization > Target
+                            var that = this;
 
-                            // Type
-                            series.type = "infinite";
+                            // Error
+                            LDKF.isFrame(that) || LDKF.error.targetType("Frame");
 
-                        // Return
-                        return series
-                    };
+                            // Modification > Target > State
+                            (that.state === "stopped") || (that.state = "stopped")
+                        };
+
+                // Observer
+                LapysDevelopmentKit.data.observer = function Observer(condition, ontrue, onfail) {
+                    // Initialization > (Length, Has On Fail, Target)
+                    var length = LDKF.getArgumentsLength(arguments), hasOnFail = length > 2, that = this;
+
+                    // Error
+                    LDKF.isObserver(that) || LDKF.error.targetType("Observer");
+                    length && (LDKF.isFunction(condition) || LDKF.isNull(condition) || LDKF.error("First argument specified must be a function."));
+                    (length > 1) && (LDKF.isFunction(ontrue) || LDKF.isNull(ontrue) || LDKF.error("Second argument specified must be a function."));
+                    (length > 2) && (LDKF.isFunction(onfail) || LDKF.isNull(onfail) || LDKF.error("Third argument specified must be a function."));
+
+                    // Modification > Target > (Condition, On (True, False))
+                    that.condition = condition;
+                    that.ontrue = ontrue;
+                    that.onfail = onfail;
+
+                    // Return
+                    return that
+                };
+                    // Prototype
+                    LapysDevelopmentKit.data.observerPrototype = LapysDevelopmentKit.data.observer.prototype;
+                        // Condition
+                        LapysDevelopmentKit.data.observerPrototype.condition = null;
+
+                        // Observe
+                        LapysDevelopmentKit.data.observerPrototype.observe = function observe() {
+                            // Initialization > Target
+                            var that = this;
+
+                            // Error
+                            LDKF.isObserver(that) || LDKF.error.targetType("Observer");
+
+                            // Target > On (True, Fail)
+                            LDKF.isNull(that.condition) || (
+                                (that.state = !!that.condition.apply(that, arguments)) ?
+                                    that.ontrue.apply(that, arguments) :
+                                    that.onfail.apply(that, arguments)
+                            );
+
+                            // Return
+                            return that.state
+                        };
+
+                        // On (Fail, True)
+                        LapysDevelopmentKit.data.observerPrototype.onfail = null;
+                        LapysDevelopmentKit.data.observerPrototype.ontrue = null;
+
+                        // State
+                        LapysDevelopmentKit.data.observerPrototype.state = null;
 
             /* Functions */
                 // Array > Prototype
@@ -350,7 +430,7 @@
                     // Length --- NOTE (Lapys) -> Fortunately, the `length` property of arrays is consistent with the object itself.
                     LapysDevelopmentKit.functions.arrayPrototypeLength = function arrayPrototypeLength(array) { return array.length };
 
-                // Create Function
+                // Create Function --- WARN (Lapys) -> Over familiar use as this method heavily depends on the `eval` function.
                 LapysDevelopmentKit.functions.createFunction = function createFunction(name, options, body) {
                     // Initialization > (Length, Source)
                     var length = LDKF.getArgumentsLength(arguments), source = "";
@@ -482,7 +562,27 @@
                 };
 
                 // Error --- NOTE (Lapys) -> The methods used in the function's statements are indicative of when errors are expected to be possibly thrown in the code.
-                LapysDevelopmentKit.functions.error = function error(message) { throw LDKF.objectPrototypeHasProperty(LDKD, "lapysJSError") ? new LDKD.lapysJSError(LDKF.toDebugMessage.apply(LDKD, arguments)) : LDKF.toDebugMessage.apply(LDKF, arguments) };
+                LapysDevelopmentKit.functions.error = function error() {
+                    // Initialization > Has LapysJS Error
+                    var hasLapysJSError = LDKF.objectPrototypeHasProperty(LDKD, "lapysJSError");
+
+                    // Logic
+                    if (LDKF.getArgumentsLength(arguments) < 2) {
+                        // Initialization > Message
+                        var message = LDKF.toDebugMessage.apply(LDKF, arguments);
+
+                        // Error
+                        throw hasLapysJSError ? new LDKD.lapysJSError(message) : message
+                    }
+
+                    else {
+                        // Initialization > (Constructor, Message)
+                        var constructor = arguments[0], message = LDKF.toDebugMessage(arguments[1]);
+
+                        // Error
+                        throw constructor(message)
+                    }
+                };
                     // Library Is Pre-Installed
                     LapysDevelopmentKit.functions.error.libraryIsPreInstalled = function libraryIsPreInstalled() { return LDKF.error(LDKI.messages.error.libraryIsPreInstalled) };
 
@@ -521,6 +621,9 @@
                             // Return
                             return message
                         };
+
+                    // Target Type
+                    LapysDevelopmentKit.functions.error.targetType = function targetType(type) { return LDKF.error("`this` must be a `" + type + "` (call the constructor instead with the `new` keyword).") };
 
                     // Type --- NOTE (Lapys) -> Types of LapysJS Error.
                     LapysDevelopmentKit.functions.error.type = {
@@ -1182,6 +1285,9 @@
                 // Is Boolean
                 LapysDevelopmentKit.functions.isBoolean = function isBoolean(arg) { return typeof arg == "boolean" };
 
+                // Is Clock
+                LapysDevelopmentKit.functions.isClock = function isClock(arg) { return LDKT.isConstructibleObject(arg, LDKD.clock, LDKD.clockPrototype) };
+
                 // Is Constraint Error
                 LapysDevelopmentKit.functions.isConstraintError = function isConstraintError(arg) { return LDKT.isConstructibleObject(arg, LDKO.constraintError, LDKO.constraintErrorPrototype) };
 
@@ -1270,6 +1376,9 @@
 
                 // Is File List
                 LapysDevelopmentKit.functions.isFileList = function isFileList(arg) { return LDKC.hasFileListConstructor ? LDKT.isConstructibleObject(arg, LDKO.fileList, LDKO.fileListPrototype) : LDKF.isStrictlyFileListLike(arg) };
+
+                // Is Frame
+                LapysDevelopmentKit.functions.isFrame = function isFrame(arg) { return LDKT.isConstructibleObject(arg, LDKD.frame, LDKD.framePrototype) };
 
                 // Is Function
                 LapysDevelopmentKit.functions.isFunction = function isFunction(arg, STRICT) {
@@ -1446,6 +1555,9 @@
 
                 // Is Number
                 LapysDevelopmentKit.functions.isNumber = function isNumber(arg) { return typeof arg == "number" };
+
+                // Is Observer
+                LapysDevelopmentKit.functions.isObserver = function isObserver(arg) { return LDKT.isConstructibleObject(arg, LDKD.observer, LDKD.observerPrototype) };
 
                 // Is Operation Error
                 LapysDevelopmentKit.functions.isOperationError = function isOperationError(arg) { return LDKT.isConstructibleObject(arg, LDKO.operationError, LDKO.operationErrorPrototype) };
@@ -2451,7 +2563,7 @@
                     // Is NaN
                     LapysDevelopmentKit.functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(number) { return LDKF.isNumber(number) && LDKF.toString(number) == "NaN" };
 
-                    // Is Negative
+                    // Is Negative --- NOTE (Lapys) -> In JavaScript's case, also tests for negative zero.
                     LapysDevelopmentKit.functions.numberPrototypeIsNegative = function numberPrototypeIsNegative(number) { return number < 0 || LDKF.numberPrototypeIsNegativeZero(number) };
 
                     // Is Negative Infinity
@@ -2486,7 +2598,22 @@
 
                 // Object
                     // Create
-                    LapysDevelopmentKit.functions.objectCreate = function objectCreate(prototype) { return LDKO.objectCreate(prototype) };
+                    LapysDevelopmentKit.functions.objectCreate = function objectCreate(prototype) {
+                        // Function > Constructor
+                        function constructor() {}
+
+                        // Modification > Constructor > Prototype
+                        constructor.prototype = prototype;
+
+                        // Initialization > Object
+                        var object = new constructor;
+
+                        // Modification > Object > Constructor --- NOTE (Lapys) -> JavaScript semantics.
+                        LDKF.isConstructible(prototype) && (object.constructor = constructor);
+
+                        // Return
+                        return object
+                    };
 
                     // Define Property
                     LapysDevelopmentKit.functions.objectDefineProperty = function objectDefineProperty(object, key, descriptor) { return LDKO.objectDefineProperty(object, key, descriptor) };
@@ -2935,11 +3062,11 @@
                     };
 
                     // Slice
+                    window.slice =
                     LapysDevelopmentKit.functions.stringPrototypeSlice = function stringPrototypeSlice(string, begin, end) {
-                        // Initialization > ((Arguments) Length, Series, Stream)
+                        // Initialization > ((Arguments) Length, Stream)
                         var argumentsLength = LDKF.getArgumentsLength(arguments),
                             length = LDKF.stringPrototypeLength(string),
-                            series = LDKD.series.infinite(length),
                             stream = "";
 
                         // Logic > Return
@@ -2951,7 +3078,7 @@
 
                         // Logic > Update > Begin
                         if (!LDKF.numberPrototypeIsSafeInteger(begin)) begin = 0;
-                        else begin = series.point(begin);
+                        else begin = LDKM.rebound(begin, length);
 
                         // Logic
                         if (!LDKF.numberPrototypeIsSafeInteger(end)) {
@@ -2962,7 +3089,7 @@
 
                         else
                             // Update > End
-                            end = series.point(end);
+                            end = LDKM.rebound(end, length);
 
                         // Logic > Loop > Update > Stream
                         if (begin < end) while (begin != end) stream += LDKF.stringPrototypeCharacterAt(string, (begin += 1) - 1);
@@ -3169,7 +3296,7 @@
                 };
 
                 // To Debug Message
-                LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(message) + LDKI.messages.debugging.suffix };
+                LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(LDKF.getArgumentsLength(arguments) ? message : "") + LDKI.messages.debugging.suffix };
 
                 // To Number
                 LapysDevelopmentKit.functions.toNumber = function toNumber(arg) { if (LDKF.isNumber(arg)) return arg - 0; else { try { arg = arg - 0 } catch (error) { try { arg = LDKO.number(arg) } catch (error) { try { arg = LDKF.toNumber(LDKF.string(arg)) } catch (error) {} } } return arg } };
@@ -3184,6 +3311,9 @@
                     try { if (LDKF.objectPrototypeHasProperty(LDKO, "string")) return explicitCast(arg) } catch (error) {}
                     try { return implicitCast(arg) } catch (error) {}
                 };
+
+                // Warn --- CHECKPOINT ---
+                LapysDevelopmentKit.functions.warn = function warn(arg) {};
 
             /* Information */
                 // Data
@@ -3220,10 +3350,32 @@
 
             /* Math */
                 // Absolute
-                LapysDevelopmentKit.math.abs = function abs(number) { return LDKF.numberPrototypeIsNegative(number) ? -number : number };
+                LapysDevelopmentKit.math.abs = function abs(number, STRICT) { return (STRICT ? number < 0 : LDKF.numberPrototypeIsNegative(number)) ? -number : number };
+
+                // Ceiling
+                LapysDevelopmentKit.math.ceil = function ceil(number) { return LDKM.int(number) + !!(number % 1) };
 
                 // Integer
                 LapysDevelopmentKit.math.int = function int(number) { return number - number % 1 };
+
+                /* [Ranged] Rebound
+                        --- NOTE ---
+                            #Lapys:
+                                - Mostly for array indexes...
+                                - The method is precise up to 6 decimal places.
+                                - End is assumed to be greater than Start.
+                */
+                LapysDevelopmentKit.math.rebound = function rebound(index, start, end) {
+                    // Logic > Return
+                    if (LDKF.getArgumentsLength(arguments) == 2)
+                        return LDKM.rebound(index, 0, arguments[1]);
+
+                    // Logic
+                    if (index < start ^ index > end) {}
+
+                    // Return
+                    return index
+                };
 
             /* Test */
                 // Arguments to Console Stream --- NOTE (Lapys) -> Convert arguments to a console output-like stream.
@@ -3657,22 +3809,7 @@
 
                         else
                             // Update > Method
-                            method = function create(prototype) {
-                                // Function > Constructor
-                                function constructor() {}
-
-                                // Modification > Constructor > Prototype
-                                constructor.prototype = prototype;
-
-                                // Initialization > Object
-                                var object = new constructor;
-
-                                // Modification > Object > Constructor
-                                LDKF.isConstructible(prototype) && (object.constructor = constructor);
-
-                                // Return
-                                return object
-                            };
+                            method = function create(prototype) { return LDKF.objectCreate.apply(this, arguments) };
 
                         // Return
                         return method
@@ -6378,6 +6515,7 @@
                     return array
                 };
                     // Prototype
+                        // Add --- NOTE (Lapys) -> Consider using `Array.prototype.push` for performance boosts.
                         // Add To Back
                         LapysDevelopmentKit.functions.arrayPrototypeAddToBack = function arrayPrototypeAddToBack(array, element) {
                             // Initialization > (Array) Length
@@ -6414,7 +6552,7 @@
                             return array
                         };
 
-                        // Add To Front --- NOTE (Lapys) -> Update the former `LapysDevelopmentKit.functions.arrayPrototypeAddToFront` method.
+                        // Add To Front --- NOTE (Lapys) -> Re-defined.
                         LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, element) {
                             // Initialization > (Array) Length
                             var arrayLength = LDKF.arrayPrototypeLength(array),
@@ -6521,7 +6659,7 @@
 
                                 // (Update > Index) | Error
                                 LDKF.numberPrototypeIsSafeInteger(index) ?
-                                    index = (index % arrayLength && LDKD.series.infinite(1, arrayLength).point(index)) :
+                                    index = (index % arrayLength && LDKM.rebound(index, 1, arrayLength)) :
                                     LDKF.error("Invalid array index: `" + LDKF.toString(index) + '`');
 
                                 // Initialization > Array Iterator
@@ -6895,7 +7033,7 @@
 
                                 else {
                                     // Update > Index
-                                    LDKF.numberPrototypeIsNegative(index) && (index = LDKD.series.infinite(1, arrayLength).point(index));
+                                    LDKF.numberPrototypeIsNegative(index) && (index = LDKM.rebound(index, 1, arrayLength));
 
                                     // Initialization > Array Iterator
                                     var arrayIterator = arrayLength;
@@ -6981,7 +7119,7 @@
                         // Pad --- CHECKPOINT ---
                         // Pad Left --- CHECKPOINT ---
                         // Pad Right --- CHECKPOINT ---
-                        // Remove --- CHECKPOINT ---
+                        // Remove --- CHECKPOINT --- NOTE (Lapys) -> Consider using `Array.prototype.splice` for performance boosts.
                         // Remove All --- CHECKPOINT ---
                         // Remove Duplicated --- CHECKPOINT ---
                         // Remove Duplicated From Back --- CHECKPOINT ---
@@ -7231,13 +7369,13 @@
 
                             // Return
                             return argumentList
-                        })(arguments), timestamp = LDKC.clock.time();
+                        })(arguments), timestamp = LDKC.clock.timestamp();
 
                         // Method
                         method.apply(this, args);
 
                         // Return
-                        return LDKC.clock.time() - timestamp
+                        return LDKC.clock.timestamp() - timestamp
                     };
 
                 // HTML All Collection > Prototype
@@ -7256,62 +7394,66 @@
                     // Length
                     LapysDevelopmentKit.functions.nodeListPrototypeLength = function nodeListPrototypeLength(nodeList) { return LDKO.nodeListPrototypeLengthDescriptor.get.call(nodeList) };
 
-                // Object > Prototype
-                    // Iterate --- NOTE (Lapys) -> Index all properties of an object.
-                    LapysDevelopmentKit.functions.objectPrototypeIterate = function objectPrototypeIterate(object, callback) {
-                        // Initialization > (Key, (Property) (Names, Symbols) (Iterator, Length), Properties (Iterator, Length))
-                        var key,
-                            propertyNames = (function() { try { return LDKF.objectGetOwnPropertyNames(object) || [] } catch (error) {} })(),
-                            propertyNamesIterator = LDKF.arrayPrototypeLength(propertyNames), propertyNamesLength = propertyNamesIterator,
-                            propertySymbols = (function() { try { return LDKF.isFunction(LDKO.objectGetOwnPropertySymbols) ? LDKF.objectGetOwnPropertySymbols(object) : [] } catch (error) {} })(),
-                            propertySymbolsIterator = LDKF.arrayPrototypeLength(propertySymbols), propertySymbolsLength = propertySymbolsIterator,
-                            property, properties = [],
-                            propertiesIterator = 0, propertiesLength;
+                // Object
+                    // Create --- NOTE (Lapys) -> Re-defined.
+                    LapysDevelopmentKit.functions.objectCreate = function objectCreate(prototype) { return LDKO.objectCreate(prototype) };
 
-                        // Function
-                            // Add To Properties
-                            function addToProperties(key, value, descriptor) {
-                                // Logic
-                                if (!isIncludedToProperties(key)) {
-                                    // Initialization > (Descriptor, Value)
-                                    var descriptor = LDKF.objectGetOwnPropertyDescriptor(object, key), value = LDKF.objectPrototypeGetProperty(object, key);
+                    // Prototype
+                        // Iterate --- NOTE (Lapys) -> Index all properties of an object.
+                        LapysDevelopmentKit.functions.objectPrototypeIterate = function objectPrototypeIterate(object, callback) {
+                            // Initialization > (Key, (Property) (Names, Symbols) (Iterator, Length), Properties (Iterator, Length))
+                            var key,
+                                propertyNames = (function() { try { return LDKF.objectGetOwnPropertyNames(object) || [] } catch (error) {} })(),
+                                propertyNamesIterator = LDKF.arrayPrototypeLength(propertyNames), propertyNamesLength = propertyNamesIterator,
+                                propertySymbols = (function() { try { return LDKF.isFunction(LDKO.objectGetOwnPropertySymbols) ? LDKF.objectGetOwnPropertySymbols(object) : [] } catch (error) {} })(),
+                                propertySymbolsIterator = LDKF.arrayPrototypeLength(propertySymbols), propertySymbolsLength = propertySymbolsIterator,
+                                property, properties = [],
+                                propertiesIterator = 0, propertiesLength;
 
-                                    // Update > Properties (Iterator)
-                                    properties[propertiesIterator] = {key: key, value: value, descriptor: descriptor};
-                                    propertiesIterator += 1
+                            // Function
+                                // Add To Properties
+                                function addToProperties(key, value, descriptor) {
+                                    // Logic
+                                    if (!isIncludedToProperties(key)) {
+                                        // Initialization > (Descriptor, Value)
+                                        var descriptor = LDKF.objectGetOwnPropertyDescriptor(object, key), value = LDKF.objectPrototypeGetProperty(object, key);
+
+                                        // Update > Properties (Iterator)
+                                        properties[propertiesIterator] = {key: key, value: value, descriptor: descriptor};
+                                        propertiesIterator += 1
+                                    }
                                 }
+
+                                function isIncludedToProperties(key) {
+                                    // Initialization > Iterator
+                                    var iterator = propertiesIterator;
+
+                                    // Loop > Logic > Return
+                                    while (iterator) if (properties[iterator -= 1] === key) return true;
+
+                                    // Return
+                                    return false
+                                }
+
+                            // Loop > Add to Properties
+                            while (propertyNamesIterator) addToProperties(propertyNames[propertyNamesLength - (propertyNamesIterator -= 1) - 1]);
+                            while (propertySymbolsIterator) addToProperties(propertySymbols[propertySymbolsLength - (propertySymbolsIterator -= 1) - 1]);
+
+                            // Update > Properties Length
+                            propertiesLength = propertiesIterator;
+
+                            // Loop
+                            while (propertiesIterator) {
+                                // Update > Property
+                                property = properties[propertiesLength - (propertiesIterator -= 1) - 1];
+
+                                // Callback
+                                callback(property.key, property.value, property.descriptor);
                             }
 
-                            function isIncludedToProperties(key) {
-                                // Initialization > Iterator
-                                var iterator = propertiesIterator;
-
-                                // Loop > Logic > Return
-                                while (iterator) if (properties[iterator -= 1] === key) return true;
-
-                                // Return
-                                return false
-                            }
-
-                        // Loop > Add to Properties
-                        while (propertyNamesIterator) addToProperties(propertyNames[propertyNamesLength - (propertyNamesIterator -= 1) - 1]);
-                        while (propertySymbolsIterator) addToProperties(propertySymbols[propertySymbolsLength - (propertySymbolsIterator -= 1) - 1]);
-
-                        // Update > Properties Length
-                        propertiesLength = propertiesIterator;
-
-                        // Loop
-                        while (propertiesIterator) {
-                            // Update > Property
-                            property = properties[propertiesLength - (propertiesIterator -= 1) - 1];
-
-                            // Callback
-                            callback(property.key, property.value, property.descriptor);
-                        }
-
-                        // Return
-                        return object
-                    };
+                            // Return
+                            return object
+                        };
 
                 // Performance > Prototype
                     // Now
@@ -7972,128 +8114,6 @@
                     --- NOTE ---
                         #Lapys: All data types here do not expose their constructors explicitly.
             */
-                // Clock
-                LapysDevelopmentKit.data.clock = (function() {
-                    // Initialization > Constructor
-                    var constructor = function Clock() {
-                        // Initialization > Target
-                        var that = this;
-
-                        // Modification > Target
-                            // Frame
-                            that.frame = function frame(method, delay) {
-                                // Initialization > (Frame, Has Recorded Initial ID, Index, Set Current ID)
-                                var frame, hasRecordedInitialId = false, index = (function() {
-                                    // Initialization > Index
-                                    var index = 0;
-
-                                    // Loop
-                                    while (LDKI.data.lists.frames[index]) index += 1;
-
-                                    // Return
-                                    return index
-                                })(), setCurrentId = delay ? function setCurrentId() {
-                                    // Modification > Frame > Current ID
-                                    frame.currentId = LDKF.setTimeout(function() {
-                                        // Logic
-                                        if (LDKI.data.lists.frames[index] /* --- NOTE (Lapys) -> or `frame`. */) {
-                                            // Method
-                                            method();
-
-                                            // (...) > Request Animation Frame > Animation Frame
-                                            LDKF.requestAnimationFrame(animationFrame)
-                                        }
-                                    }, delay)
-                                } : function setCurrentId() { frame.currentId = (LDKM.random() * 10) | 0 };
-
-                                // Function
-                                    // Frame
-                                    function animationFrame() {
-                                        // Update > Frame
-                                        frame = LDKI.data.lists.frames[index];
-
-                                        // Logic
-                                        if (frame) {
-                                            // Set Current ID --- NOTE (Lapys) -> Implicitly calls a timeout if Delay is set.
-                                            setCurrentId();
-
-                                            // Logic --- NOTE (Lapys) -> Set the initial ID.
-                                            if (!hasRecordedInitialId) {
-                                                // Modification > Frame > Initial ID
-                                                frame.initialId = frame.currentId;
-
-                                                // Update > Has Recorded Initial ID
-                                                hasRecordedInitialId = true
-                                            }
-
-                                            // Logic --- NOTE (Lapys) -> If there's a delay, the Current ID set is returned from a timeout (`setTimeout`) already (hence, do not run another timeout (`requestAnimationFrame`)).
-                                            if (!delay) {
-                                                // Method
-                                                method();
-
-                                                // (...) > Request Animation Frame > Animation Frame
-                                                LDKF.requestAnimationFrame(animationFrame)
-                                            }
-                                        }
-                                    }
-
-                                // Update > (Lapys Development Kit > Data > Lists > Frames) --- NOTE (Lapys) -> Or `frame`.
-                                LDKI.data.lists.frames[index] = {};
-
-                                // Animation Frame
-                                animationFrame();
-
-                                // Return
-                                return frame.currentId
-                            };
-
-                            // Stop
-                            that.stop = function stop(tickId) {
-                                // Initialization > Iterator
-                                var iterator = LDKF.arrayPrototypeLength(LDKI.data.lists.frames);
-
-                                // Loop
-                                while (iterator) {
-                                    // Initialization > Frame
-                                    var frame = LDKI.data.lists.frames[iterator -= 1];
-
-                                    // Logic
-                                    if (frame.initialId == tickId) {
-                                        // Update > (Lapys Development Kit > Data > Lists > Frames)
-                                        LDKI.data.lists.frames[iterator] = null;
-
-                                        // [Break]
-                                        break
-                                    }
-                                }
-                            };
-
-                            // Tick --- NOTE (Lapys) -> Play a single frame of animation.
-                            that.tick = function tick(method, delay) {
-                                // Initialization > Frame ID
-                                var frameId = that.frame(function() {
-                                    // Method
-                                    frameId && method();
-
-                                    // (Target > Stop) > Frame ID
-                                    that.stop(frameId)
-                                }, delay);
-
-                                // Return
-                                return frameId
-                            };
-
-                            // Time {Stamp}
-                            that.time = function time() { return LDKC.performanceIsVoid ? LDKF.dateNow() : LDKF.performancePrototypeNow(LDKC.performance) };
-
-                        // Return
-                        return that
-                    };
-
-                    // Return
-                    return function Clock() { return new constructor }
-                })();
-
                 // Component --- NOTE (Lapys) -> All components extend to this constructor (which extends to `HTMLElement`).
                 LapysDevelopmentKit.data.component = LapysJS.tmp.evalScope.htmlComponentElement =
                     LDKC.supportsStandardCustomElements ?
@@ -8441,7 +8461,7 @@
                 LapysDevelopmentKit.constants.clock = new LDKD.clock;
 
                 // Performance Is Void
-                LapysDevelopmentKit.constants.performanceIsVoid = LDKF.isVoid(LDKC.performance);
+                LapysDevelopmentKit.constants.hasPerformanceObject = LDKF.isVoid(LDKC.performance);
 
     /* Phase */
         /* Initiate
@@ -8452,6 +8472,9 @@
                         - Initiate global functions and objects.
         */
         function INITIATE() {
+            // --- CHECKPOINT ---
+            LDKC.has__Define__GetterProperty || LDKF.warn("No accessors");
+
             /* Modification */
                 /* LapysJS */
                     // Components --- NOTE (Lapys) -> The components are actually not constructors.
