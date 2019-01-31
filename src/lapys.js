@@ -3062,6 +3062,7 @@
                     };
 
                     // Slice
+                    window.slice =
                     LapysDevelopmentKit.functions.stringPrototypeSlice = function stringPrototypeSlice(string, begin, end) {
                         // Initialization > ((Arguments) Length, Stream)
                         var argumentsLength = LDKF.getArgumentsLength(arguments),
@@ -3187,7 +3188,7 @@
 
                             // Update > (Length, Stream)
                             length = LDKF.stringPrototypeLength(string) - 1;
-                            stream = iterator ? LDKF.stringPrototypeSlice(string, iterator, -0) : string;
+                            stream = iterator ? LDKF.stringPrototypeSlice(string, iterator, -1) : string;
 
                             // Return
                             return stream
@@ -3851,7 +3852,7 @@
 
                         else
                             // Update > Method
-                            method = function create(prototype) { return LDKF.objectCreate.apply(this, arguments) };
+                            method = LDKF.objectCreate;
 
                         // Return
                         return method
