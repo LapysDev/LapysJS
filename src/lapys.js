@@ -3062,7 +3062,6 @@
                     };
 
                     // Slice
-                    window.slice =
                     LapysDevelopmentKit.functions.stringPrototypeSlice = function stringPrototypeSlice(string, begin, end) {
                         // Initialization > ((Arguments) Length, Stream)
                         var argumentsLength = LDKF.getArgumentsLength(arguments),
@@ -3366,12 +3365,55 @@
                                 - End is assumed to be greater than Start.
                 */
                 LapysDevelopmentKit.math.rebound = function rebound(index, start, end) {
-                    // Logic > Return
+                    // Logic
                     if (LDKF.getArgumentsLength(arguments) == 2)
+                        // Return
                         return LDKM.rebound(index, 0, arguments[1]);
 
-                    // Logic
-                    if (index < start ^ index > end) {}
+                    else if (index == end)
+                        // Return
+                        return end;
+
+                    else if (index == start)
+                        // Return
+                        return start;
+
+                    else if (index < start ^ index > end)
+                        // Logic
+                        if (index > end)
+                            // Logic
+                            if (LDKF.numberPrototypeIsPositive(end))
+                                // Loop > Update > Index
+                                while (index > end) index -= end;
+
+                            else
+                                // Loop
+                                while (index > end) {
+                                    // Loop
+                                    if (index + end < start) {
+                                        // Update > Index
+                                        index += start;
+
+                                        // [Break]
+                                        break
+                                    }
+
+                                    else
+                                        // Update > Index
+                                        index += end
+                                }
+
+                        else {
+                            // Initialization > Difference
+                            var difference = LDKM.abs(end - start), iterator = 1;
+
+                            // Loop > Update > Iterator
+                            while (index != start - iterator) iterator += 1;
+                            while (iterator > difference) iterator -= difference;
+
+                            // Return
+                            return end - (iterator - 1)
+                        }
 
                     // Return
                     return index
