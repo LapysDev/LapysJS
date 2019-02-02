@@ -26,12 +26,17 @@
                 -- UC Browser (browser)
 
             - The library makes an effort to use only native features of JavaScript to allow for interoperable compatibility with legacy environments
-                    and also avoids over-use (if any) of specific vendor (or engine-dependent) features (e.g.: The `requestAnimationFrame` function).
-                    -- To compensate for the lack of modern JavaScript features in legacy environments, the library uses an LDK and intuitive solutions to bypass such problems,
-                        that is not to say that such a solution is infallible or perfectly executable (e.g.: The `console` object's methods).
-                    -- Accessors for example are not available with some ECMAScript standards,
-                        so alternative features (such as functions) are in place for older environments and accessors are used typically with more modern standards (or APIs).
-                    -- Another case scenario with varying JavaScript environments is the situation of immutable object properties (e.g.: `Arguments.prototype.length` and `<constructor>.prototype`).
+                and also avoids over-use (if any) of specific vendor (or engine-dependent) features.
+
+                This is mainly due to subtle inconsistencies in the adaptation of the ECMAScript standards for JavaScript in web browsers and other run-times.
+                (Hence the need for fallbacks, polyfills, shims and shivs (and HTML conditional comments)).
+
+                This is also to implement the design standards of the Lapys Development Kit into JavaScript by defining its core concepts and mechanics:
+                    -- private entities stay private (or at least constant): `Object.prototype`,
+                    -- there is a single/ as few necessary ways to solve a problem: `String.prototype.trimEnd`, `String.prototype.trimRight`
+                    -- all versions are consistent: `String.prototype.charAt`, `requestAnimationFrame`,`webkitRequestAnimationFrame`
+                    -- syntax is intuitive and self-explanatory
+                    -- and so on...
 
             - Over its years of development, the library is still a bare-bones version of what it could be.
 
@@ -425,22 +430,22 @@
             /* Functions */
                 // Array
                 LapysDevelopmentKit.functions.array = function array(elements) {
-                    // Initialization > (Array, Index, Iterator)
+                    // Initialization > (Array, Index, Iterator, Length)
                     var array = [], index = -1,
-                        iterator = LDKF.getArgumentsLength(arguments);
+                        iterator = LDKF.getArgumentsLength(arguments), length = iterator;
 
                     // Loop
                     while (iterator) {
                         // Initialization > Element
-                        var element = arguments[iterator -= 1];
+                        var element = arguments[length - (iterator -= 1) - 1];
 
                         // Logic
                         if (LDKF.isArrayLike(element)) {
-                            // Initialization > Length
-                            var length = LDKF.arrayLikePrototypeLength(element);
+                            // Initialization > Array-Like Length
+                            var arrayLikeLength = LDKF.arrayLikePrototypeLength(element);
 
                             // Loop > Update > Array
-                            while (length) array[index += 1] = LDKF.arrayLikePrototypeElementAt(element, length -= 1)
+                            while (arrayLikeLength) array[index += 1] = LDKF.arrayLikePrototypeElementAt(element, arrayLikeLength -= 1)
                         }
 
                         else
@@ -1159,46 +1164,46 @@
                         return arrayLike[index]
                     };
 
-                    // Length --- CHECKPOINT ---
+                    // Length
                     LapysDevelopmentKit.functions.arrayLikePrototypeLength = function arrayLikePrototypeLength(arrayLike) {
                         // Logic > Return
                         if (LDKF.isArguments(arrayLike)) return LDKF.getArgumentsLength(arrayLike);
                         else if (LDKF.isArray(arrayLike)) return LDKF.arrayPrototypeLength(arrayLike);
-                        else if (LDKF.isAudioParameterMap(arrayLike)) return {};
-                        else if (LDKF.isCSSNumericArray(arrayLike)) return {};
-                        else if (LDKF.isCSSRuleList(arrayLike)) return {};
-                        else if (LDKF.isCSSStyleDeclaration(arrayLike)) return {};
-                        else if (LDKF.isDataTransferItemList(arrayLike)) return {};
-                        else if (LDKF.isDOMRectangleList(arrayLike)) return {};
-                        else if (LDKF.isDOMStringList(arrayLike)) return {};
-                        else if (LDKF.isDOMTokenList(arrayLike)) return {};
-                        else if (LDKF.isFileList(arrayLike)) return {};
+                        else if (LDKF.isAudioParameterMap(arrayLike)) return LDKF.audioParameterMapPrototypeSize(arrayLike);
+                        else if (LDKF.isCSSNumericArray(arrayLike)) return LDKF.cssNumericArrayPrototypeLength(arrayLike);
+                        else if (LDKF.isCSSRuleList(arrayLike)) return LDKF.cssRuleListPrototypeLength(arrayLike);
+                        else if (LDKF.isCSSStyleDeclaration(arrayLike)) return LDKF.cssStyleDeclarationPrototypeLength(arrayLike);
+                        else if (LDKF.isDataTransferItemList(arrayLike)) return LDKF.dataTransferItemListPrototypeLength(arrayLike);
+                        else if (LDKF.isDOMRectangleList(arrayLike)) return LDKF.domRectangleListPrototypeLength(arrayLike);
+                        else if (LDKF.isDOMStringList(arrayLike)) return LDKF.domStringListPrototypeLength(arrayLike);
+                        else if (LDKF.isDOMTokenList(arrayLike)) return LDKF.domTokenListPrototypeLength(arrayLike);
+                        else if (LDKF.isFileList(arrayLike)) return LDKF.fileListPrototypeLength(arrayLike);
                         else if (LDKF.isHTMLAllCollection(arrayLike)) return LDKF.htmlAllCollectionPrototypeLength(arrayLike);
                         else if (LDKF.isHTMLCollection(arrayLike)) return LDKF.htmlCollectionPrototypeLength(arrayLike);
-                        else if (LDKF.isHTMLFormControlsCollection(arrayLike)) return {};
-                        else if (LDKF.isHTMLOptionsCollection(arrayLike)) return {};
-                        else if (LDKF.isLapysJSNodeList(arrayLike)) return {};
-                        else if (LDKF.isMap(arrayLike)) return {};
-                        else if (LDKF.isMediaKeyStatusMap(arrayLike)) return {};
-                        else if (LDKF.isMediaList(arrayLike)) return {};
+                        else if (LDKF.isHTMLFormControlsCollection(arrayLike)) return LDKF.htmlFormControlsCollectionPrototypeLength(arrayLike);
+                        else if (LDKF.isHTMLOptionsCollection(arrayLike)) return LDKF.htmlOptionsCollectionPrototypeLength(arrayLike);
+                        else if (LDKF.isLapysJSNodeList(arrayLike)) return LDKF.lapysJSNodeListPrototypeLength(arrayLike);
+                        else if (LDKF.isMap(arrayLike)) return LDKF.mapPrototypeSize(arrayLike);
+                        else if (LDKF.isMediaKeyStatusMap(arrayLike)) return LDKF.mediaKeyStatusMapPrototypeLength(arrayLike);
+                        else if (LDKF.isMediaList(arrayLike)) return LDKF.mediaListPrototypeLength(arrayLike);
                         else if (LDKF.isMIMETypeArray(arrayLike)) return LDKF.mimeTypeArrayPrototypeLength(arrayLike);
-                        else if (LDKF.isNamedNodeMap(arrayLike)) return {};
+                        else if (LDKF.isNamedNodeMap(arrayLike)) return LDKF.namedNodeMapPrototypeLength(arrayLike);
                         else if (LDKF.isNodeList(arrayLike)) return LDKF.nodeListPrototypeLength(arrayLike);
                         else if (LDKF.isPluginArray(arrayLike)) return LDKF.pluginArrayPrototypeLength(arrayLike);
-                        else if (LDKF.isRadioNodeList(arrayLike)) return {};
-                        else if (LDKF.isSet(arrayLike)) return {};
-                        else if (LDKF.isSourceBufferList(arrayLike)) return {};
-                        else if (LDKF.isStylePropertyMapReadOnly(arrayLike)) return {};
-                        else if (LDKF.isStylePropertyMap(arrayLike)) return {};
-                        else if (LDKF.isStyleSheetList(arrayLike)) return {};
-                        else if (LDKF.isSVGLengthList(arrayLike)) return {};
-                        else if (LDKF.isSVGNumberList(arrayLike)) return {};
-                        else if (LDKF.isSVGPointList(arrayLike)) return {};
-                        else if (LDKF.isSVGStringList(arrayLike)) return {};
-                        else if (LDKF.isSVGTransformList(arrayLike)) return {};
-                        else if (LDKF.isTextTrackCueList(arrayLike)) return {};
-                        else if (LDKF.isTextTrackList(arrayLike)) return {};
-                        else if (LDKF.isTouchList(arrayLike)) return {};
+                        else if (LDKF.isRadioNodeList(arrayLike)) return LDKF.radioNodeListPrototypeLength(arrayLike);
+                        else if (LDKF.isSet(arrayLike)) return LDKF.setPrototypeSize(arrayLike);
+                        else if (LDKF.isSourceBufferList(arrayLike)) return LDKF.sourceBufferListPrototypeLength(arrayLike);
+                        else if (LDKF.isStylePropertyMap(arrayLike)) return LDKF.stylePropertyMapPrototypeSize(arrayLike);
+                        else if (LDKF.isStylePropertyMapReadOnly(arrayLike)) return LDKF.stylePropertyMapReadOnlyPrototypeSize(arrayLike);
+                        else if (LDKF.isStyleSheetList(arrayLike)) return LDKF.styleSheetListPrototypeLength(arrayLike);
+                        else if (LDKF.isSVGLengthList(arrayLike)) return LDKF.svgLengthListPrototypeNumberOfItems(arrayLike);
+                        else if (LDKF.isSVGNumberList(arrayLike)) return LDKF.svgNumberListPrototypeNumberOfItems(arrayLike);
+                        else if (LDKF.isSVGPointList(arrayLike)) return LDKF.svgPointListPrototypeNumberOfItems(arrayLike);
+                        else if (LDKF.isSVGStringList(arrayLike)) return LDKF.svgStringListPrototypeNumberOfItems(arrayLike);
+                        else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.svgTransformListPrototypeNumberOfItems(arrayLike);
+                        else if (LDKF.isTextTrackCueList(arrayLike)) return LDKF.textTrackCueListPrototypeLength(arrayLike);
+                        else if (LDKF.isTextTrackList(arrayLike)) return LDKF.textTrackListPrototypeLength(arrayLike);
+                        else if (LDKF.isTouchList(arrayLike)) return LDKF.touchListPrototypeLength(arrayLike);
                         else if (LDKF.isTypedArrayLike(arrayLike)) return LDKF.typedArrayLikePrototypeLength(arrayLike);
 
                         // Initialization > (Key, Length)
@@ -1214,6 +1219,9 @@
                 // Audio Parameter Map > Prototype
                     // Get
                     LapysDevelopmentKit.functions.audioParameterMapPrototypeGet = function audioParameterMapPrototypeGet(audioParameterMap, index) { return LDKO.audioParameterMapPrototypeGet.call(audioParameterMap, index) };
+
+                    // Size
+                    LapysDevelopmentKit.functions.audioParameterMapPrototypeSize = function audioParameterMapPrototypeSize(audioParameterMap) { return LDKO.audioParameterMapPrototypeSizeGetter.call(audioParameterMap) };
 
                 // Cancel Animation Frame
                 LapysDevelopmentKit.functions.cancelAnimationFrame = function cancelAnimationFrame(handle) { return LDKO.cancelAnimationFrame.call(GLOBAL, handle) };
@@ -1408,13 +1416,27 @@
                     return LDKF.eval("(function() { return (" + source + ") })()")
                 };
 
+                // CSS Numeric Array
+                    // Length
+                    LapysDevelopmentKit.functions.cssNumericArrayPrototypeLength = function cssNumericArrayPrototypeLength(cssNumericArray) { return LDKO.cssNumericArrayPrototypeLengthGetter.call(cssNumericArray) };
+
                 // CSS Rule List > Prototype
                     // Item
                     LapysDevelopmentKit.functions.cssRuleListPrototypeItem = function cssRuleListPrototypeItem(cssRuleList, index) { return LDKO.cssRuleListPrototypeItem.call(cssRuleList, index) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.cssRuleListPrototypeLength = function cssRuleListPrototypeLength(cssRuleList) { return LDKO.cssRuleListPrototypeLengthGetter.call(cssRuleList) };
+
                 // CSS Style Declaration > Prototype
                     // Item
                     LapysDevelopmentKit.functions.cssStyleDeclarationPrototypeItem = function cssStyleDeclarationPrototypeItem(cssStyleDeclaration, index) { return LDKO.cssStyleDeclarationPrototypeItem.call(cssStyleDeclaration, index) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.cssStyleDeclarationPrototypeLength = function cssStyleDeclarationPrototypeLength(cssStyleDeclaration) { return LDKO.cssStyleDeclarationPrototypeLengthGetter.call(cssStyleDeclaration) };
+
+                // Data Transfer Item List > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.dataTransferItemListPrototypeLength = function dataTransferItemListPrototypeLength(dataTransferItemList) { return LDKO.dataTransferItemListPrototypeLengthGetter.call(dataTransferItemList) };
 
                 // Date
                     // Now
@@ -1433,13 +1455,22 @@
                     // Item
                     LapysDevelopmentKit.functions.domRectangleListPrototypeItem = function domRectangleListPrototypeItem(domRectangleList, index) { return LDKO.domRectangleListPrototypeItem.call(domRectangleList, index) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.domRectangleListPrototypeLength = function domRectangleListPrototypeLength(domRectangleList) { return LDKO.domRectangleListPrototypeLengthGetter.call(domRectangleList) };
+
                 // DOM String List > Prototype
                     // Item
                     LapysDevelopmentKit.functions.domStringListPrototypeItem = function domStringListPrototypeItem(domStringList, index) { return LDKO.domStringListPrototypeItem.call(domStringList, index) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.domStringListPrototypeLength = function domStringListPrototypeLength(domStringList) { return LDKO.domStringListPrototypeLengthGetter.call(domStringList) };
+
                 // DOM Token List > Prototype
                     // Item
                     LapysDevelopmentKit.functions.domTokenListPrototypeItem = function domTokenListPrototypeItem(domTokenList, index) { return LDKO.domTokenListPrototypeItem.call(domTokenList, index) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.domTokenListPrototypeLength = function domTokenListPrototypeLength(domTokenList) { return LDKO.domTokenListPrototypeLengthGetter.call(domTokenList) };
 
                 // Error --- NOTE (Lapys) -> The methods used in the function's statements are indicative of when errors are expected to be possibly thrown in the code.
                 LapysDevelopmentKit.functions.error = function error() {
@@ -1510,6 +1541,9 @@
                 // File List > Prototype
                     // Item
                     LapysDevelopmentKit.functions.fileListPrototypeItem = function fileListPrototypeItem(fileList, index) { return LDKO.fileListPrototypeItem.call(fileList, index) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.fileListPrototypeLength = function fileListPrototypeLength(fileList) { return LDKO.fileListPrototypeLengthGetter.call(fileList) };
 
                 // Function > Prototype
                     // Get Body --- NOTE (Lapys) -> The function turned out huge because of the recursive nature of different function types (class extensions, function parameters and so on).
@@ -2163,9 +2197,15 @@
                     // Item
                     LapysDevelopmentKit.functions.htmlFormControlsCollectionPrototypeItem = function htmlFormControlsCollectionPrototypeItem(htmlFormControlsCollection, index) { return LDKO.htmlFormControlsCollectionPrototypeItem.call(htmlFormControlsCollection, index) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.htmlFormControlsCollectionPrototypeLength = function htmlFormControlsCollectionPrototypeLength(htmlFormControlsCollection) { return LDKO.htmlFormControlsCollectionPrototypeLengthGetter.call(htmlFormControlsCollection) };
+
                 // HTML Options Collection > Prototype
                     // Item
                     LapysDevelopmentKit.functions.htmlOptionsCollectionPrototypeItem = function htmlOptionsCollectionPrototypeItem(htmlOptionsCollection, index) { return LDKO.htmlOptionsCollectionPrototypeItem.call(htmlOptionsCollection, index) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.htmlOptionsCollectionPrototypeLength = function htmlOptionsCollectionPrototypeLength(htmlOptionsCollection) { return LDKO.htmlOptionsCollectionPrototypeLengthGetter.call(htmlOptionsCollection) };
 
                 // Is Abort Error
                 LapysDevelopmentKit.functions.isAbortError = function isAbortError(arg) { return LDKT.isConstructibleObject(arg, LDKO.abortError, LDKO.abortErrorPrototype) };
@@ -3489,13 +3529,22 @@
                     // Get
                     LapysDevelopmentKit.functions.mapPrototypeGet = function mapPrototypeGet(map, key) { return LDKO.mapPrototypeGet.call(map, key) };
 
+                    // Size
+                    LapysDevelopmentKit.functions.mapPrototypeSize = function mapPrototypeSize(map) { return LDKO.mapPrototypeSizeGetter.call(map) };
+
                 // Media Key Status Map > Prototype
                     // Get
                     LapysDevelopmentKit.functions.mediaKeyStatusMapPrototypeGet = function mediaKeyStatusMapPrototypeGet(mediaKeyStatusMap, keyId) { return LDKO.mediaKeyStatusMapPrototypeGet.call(mediaKeyStatusMap, keyId) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.mediaKeyStatusMapPrototypeLength = function mediaKeyStatusMapPrototypeLength(mediaKeyStatusMap) { return LDKO.mediaKeyStatusMapPrototypeLengthGetter.call(mediaKeyStatusMap) };
+
                 // Media List > Prototype
                     // Item
                     LapysDevelopmentKit.functions.mediaListPrototypeItem = function mediaListPrototypeItem(mediaList, index) { return LDKO.mediaListPrototypeItem.call(mediaList, index) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.mediaListPrototypeLength = function mediaListPrototypeLength(mediaList) { return LDKO.mediaListPrototypeLengthGetter.call(mediaList) };
 
                 // MIME Type Array > Prototype
                     // Item
@@ -3507,6 +3556,9 @@
                 // Named Node Map > Prototype
                     // Item
                     LapysDevelopmentKit.functions.namedNodeMapPrototypeItem = function namedNodeMapPrototypeItem(namedNodeMap, index) { return LDKO.namedNodeMapPrototypeItem.call(namedNodeMap, index) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.namedNodeMapPrototypeLength = function namedNodeMapPrototypeLength(namedNodeMap) { return LDKO.namedNodeMapPrototypeLengthGetter.call(namedNodeMap) };
 
                 // Node List > Prototype
                     // Item
@@ -3563,22 +3615,7 @@
 
                 // Object
                     // Create
-                    LapysDevelopmentKit.functions.objectCreate = function objectCreate(prototype) {
-                        // Function > Constructor
-                        function constructor() {}
-
-                        // Modification > Constructor > Prototype
-                        constructor.prototype = prototype;
-
-                        // Initialization > Object
-                        var object = new constructor;
-
-                        // Modification > Object > Constructor --- NOTE (Lapys) -> JavaScript semantics.
-                        LDKF.isConstructible(prototype) && (object.constructor = constructor);
-
-                        // Return
-                        return object
-                    };
+                    LapysDevelopmentKit.functions.objectCreate = function objectCreate() { return LDKO.objectCreate.apply(this, arguments) };
 
                     // Define Property
                     LapysDevelopmentKit.functions.objectDefineProperty = function objectDefineProperty(object, key, descriptor) { return LDKO.objectDefineProperty(object, key, descriptor) };
@@ -3916,6 +3953,9 @@
                     // Item
                     LapysDevelopmentKit.functions.radioNodeListPrototypeItem = function radioNodeListPrototypeItem(radioNodeList, index) { return LDKO.radioNodeListPrototypeItem.call(radioNodeList, index) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.radioNodeListPrototypeLength = function radioNodeListPrototypeLength(radioNodeList) { return LDKO.radioNodeListPrototypeLengthGetter.call(radioNodeList) };
+
                 // Register Custom Element
                 LapysDevelopmentKit.functions.registerCustomElement = function registerCustomElement() {
                     // Return
@@ -3929,6 +3969,10 @@
 
                 // Request Animation Frame
                 LapysDevelopmentKit.functions.requestAnimationFrame = function requestAnimationFrame(method) { return LDKO.requestAnimationFrame.call(GLOBAL, method) };
+
+                // Set > Prototype
+                    // Size
+                    LapysDevelopmentKit.functions.setPrototypeSize = function setPrototypeSize(set) { return LDKO.setPrototypeSizeGetter.call(set) };
 
                 // Set Interval
                 LapysDevelopmentKit.functions.setInterval = function setInterval(method, delay) {
@@ -3960,6 +4004,10 @@
                     // Return
                     return timeoutId
                 };
+
+                // Source Buffer List > Prototype
+                    // Length
+                    LapysDevelopmentKit.functions.sourceBufferListPrototypeLength = function sourceBufferListPrototypeLength(sourceBufferList) { return LDKO.sourceBufferListPrototypeLengthGetter.call(sourceBufferList) };
 
                 // String > Prototype
                     // Character At
@@ -4540,33 +4588,57 @@
                     // Get
                     LapysDevelopmentKit.functions.stylePropertyMapPrototypeGet = function stylePropertyMapPrototypeGet(stylePropertyMap, property) { return LDKO.stylePropertyMapPrototypeGet.call(stylePropertyMap, property) };
 
+                    // Size
+                    LapysDevelopmentKit.functions.stylePropertyMapPrototypeSize = function stylePropertyMapPrototypeSize(stylePropertyMap) { return LDKO.stylePropertyMapPrototypeSizeGetter.call(stylePropertyMap) };
+
                 // Style Property Map Read-Only > Prototype
                     // Get
                     LapysDevelopmentKit.functions.stylePropertyMapReadOnlyPrototypeGet = function stylePropertyMapReadOnlyPrototypeGet(stylePropertyMapReadOnly, property) { return LDKO.stylePropertyMapReadOnlyPrototypeGet.call(stylePropertyMapReadOnly, property) };
+
+                    // Size
+                    LapysDevelopmentKit.functions.stylePropertyMapReadOnlyPrototypeSize = function stylePropertyMapReadOnlyPrototypeSize(stylePropertyMapReadOnly) { return LDKO.stylePropertyMapReadOnlyPrototypeSizeGetter.call(stylePropertyMapReadOnly) };
 
                 // Style Sheet List > Prototype
                     // Item
                     LapysDevelopmentKit.functions.styleSheetListPrototypeItem = function styleSheetListPrototypeItem(styleSheetList, property) { return LDKO.styleSheetListPrototypeItem.call(styleSheetList, property) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.styleSheetListPrototypeLength = function styleSheetListPrototypeLength(styleSheetList) { return LDKO.styleSheetListPrototypeLengthGetter.call(styleSheetList) };
+
                 // SVG Length List > Prototype
                     // Get Item
                     LapysDevelopmentKit.functions.svgLengthListPrototypeGetItem = function svgLengthListPrototypeGetItem(svgLengthList, index) { return LDKO.svgLengthListPrototypeGetItem.call(svgLengthList, index) };
+
+                    // Number Of Items
+                    LapysDevelopmentKit.functions.svgLengthListPrototypeNumberOfItems = function svgLengthListPrototypeNumberOfItems(svgLengthList) { return LDKO.svgLengthListPrototypeNumberOfItemsGetter.call(svgLengthList) };
 
                 // SVG Number List > Prototype
                     // Get Item
                     LapysDevelopmentKit.functions.svgNumberListPrototypeGetItem = function svgNumberListPrototypeGetItem(svgNumberList, index) { return LDKO.svgNumberListPrototypeGetItem.call(svgNumberList, index) };
 
+                    // Number Of Items
+                    LapysDevelopmentKit.functions.svgNumberListPrototypeNumberOfItems = function svgNumberListPrototypeNumberOfItems(svgNumberList) { return LDKO.svgNumberListPrototypeNumberOfItemsGetter.call(svgNumberList) };
+
                 // SVG Point List > Prototype
                     // Get Item
                     LapysDevelopmentKit.functions.svgPointListPrototypeGetItem = function svgPointListPrototypeGetItem(svgPointList, index) { return LDKO.svgPointListPrototypeGetItem.call(svgPointList, index) };
+
+                    // Number Of Items
+                    LapysDevelopmentKit.functions.svgPointListPrototypeNumberOfItems = function svgPointListPrototypeNumberOfItems(svgPointList) { return LDKO.svgPointListPrototypeNumberOfItemsGetter.call(svgPointList) };
 
                 // SVG String List > Prototype
                     // Get Item
                     LapysDevelopmentKit.functions.svgStringListPrototypeGetItem = function svgStringListPrototypeGetItem(svgStringList, index) { return LDKO.svgStringListPrototypeGetItem.call(svgStringList, index) };
 
+                    // Number Of Items
+                    LapysDevelopmentKit.functions.svgStringListPrototypeNumberOfItems = function svgStringListPrototypeNumberOfItems(svgStringList) { return LDKO.svgStringListPrototypeNumberOfItemsGetter.call(svgStringList) };
+
                 // SVG Transform List > Prototype
                     // Get Item
                     LapysDevelopmentKit.functions.svgTransformListPrototypeGetItem = function svgTransformListPrototypeGetItem(svgTransformList, index) { return LDKO.svgTransformListPrototypeGetItem.call(svgTransformList, index) };
+
+                    // Number Of Items
+                    LapysDevelopmentKit.functions.svgTransformListPrototypeNumberOfItems = function svgTransformListPrototypeNumberOfItems(svgTransformList) { return LDKO.svgTransformListPrototypeNumberOfItemsGetter.call(svgTransformList) };
 
                 // Symbol
                 LapysDevelopmentKit.functions.symbol = function symbol(description) { return LDKF.getArgumentsLength(arguments) ? LDKO.symbol(description) : new LDKO.symbol };
@@ -4575,9 +4647,15 @@
                     // Get Cue By ID
                     LapysDevelopmentKit.functions.textTrackCueListPrototypeGetCueById = function textTrackCueListPrototypeGetCueById(textTrackCueList, id) { return LDKO.textTrackCueListPrototypeGetCueById.call(textTrackCueList, id) };
 
+                    // Length
+                    LapysDevelopmentKit.functions.textTrackCueListPrototypeLength = function textTrackCueListPrototypeLength(textTrackCueList) { return LDKO.textTrackCueListPrototypeLengthGetter.call(textTrackCueList) };
+
                 // Text Track List > Prototype
                     // Get Track By ID
                     LapysDevelopmentKit.functions.textTrackListPrototypeGetTrackById = function textTrackListPrototypeGetTrackById(textTrackList, id) { return LDKO.textTrackListPrototypeGetTrackById.call(textTrackList, id) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.textTrackListPrototypeLength = function textTrackListPrototypeLength(textTrackList) { return LDKO.textTrackListPrototypeLengthGetter.call(textTrackList) };
 
                 // Throw Error
                 LapysDevelopmentKit.functions.throwError = function throwError(message) {
@@ -4613,6 +4691,9 @@
                 // Touch List > Prototype
                     // Item
                     LapysDevelopmentKit.functions.touchListPrototypeItem = function touchListPrototypeItem(touchList, index) { return LDKO.touchListPrototypeItem.call(touchList, index) };
+
+                    // Length
+                    LapysDevelopmentKit.functions.touchListPrototypeLength = function touchListPrototypeLength(touchList) { return LDKO.touchListPrototypeLengthGetter.call(touchList) };
 
                 // Typed Array > Prototype
                     // Length
@@ -4862,6 +4943,48 @@
                     }
                 };
 
+                // Is Audio Parameter Map Prototype Entries Method
+                LapysDevelopmentKit.test.isAudioParameterMapPrototypeEntriesMethod = function isAudioParameterMapPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Audio Parameter Map Prototype For Each Method
+                LapysDevelopmentKit.test.isAudioParameterMapPrototypeForEachMethod = function isAudioParameterMapPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Audio Parameter Map Prototype Get Method
+                LapysDevelopmentKit.test.isAudioParameterMapPrototypeGetMethod = function isAudioParameterMapPrototypeGetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "get" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Audio Parameter Map Prototype Has Method
+                LapysDevelopmentKit.test.isAudioParameterMapPrototypeHasMethod = function isAudioParameterMapPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Audio Parameter Map Prototype Keys Method
+                LapysDevelopmentKit.test.isAudioParameterMapPrototypeKeysMethod = function isAudioParameterMapPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Audio Parameter Map Prototype Values Method
+                LapysDevelopmentKit.test.isAudioParameterMapPrototypeValuesMethod = function isAudioParameterMapPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is {Registered} Component --- NOTE (Lapys) -> Is the Argument a component like an Accordion or Picture-in-Picture 'window'?
+                LapysDevelopmentKit.test.isComponent = function isComponent(arg) {
+                    /* Initialization > (Component Registries, Iterator)
+                            --- NOTE ---
+                                #Lapys: If there's no way to test if an Argument is an element via the `Element` or `HTMLElement` constructors,
+                                    then check the library's component registries.
+                    */
+                    var componentRegistries = LDKF.arrayPrototypeConcatenate(
+                        LDKI.data.lists.accordions,
+                            LDKI.data.lists.accordionBodies,
+                            LDKI.data.lists.accordionHeads
+                    ), iterator = LDKF.arrayPrototypeLength(componentRegistries);
+
+                    // Loop
+                    while (iterator) {
+                        // Initialization > Component Registry (Iterator)
+                        var componentRegistry = componentRegistries[iterator -= 1],
+                            componentRegistryIterator = LDKF.arrayPrototypeLength(componentRegistry);
+
+                        // Loop > Logic > Return
+                        while (componentRegistryIterator) if (componentRegistry[componentRegistryIterator -= 1] === arg) return true
+                    }
+                };
+
                 // Is Console Method --- NOTE (Lapys) -> Test the `console` object's methods.
                 LapysDevelopmentKit.test.isConsoleMethod = function isConsoleMethod(method) {
                     // Initialization > (Console Has Prototype, Method Name)
@@ -4899,6 +5022,359 @@
                     )
                 };
 
+                // Is CSS Numeric Array Prototype Entries Method
+                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeEntriesMethod = function isCSSNumericArrayPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Numeric Array Prototype For Each Method
+                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeForEachMethod = function isCSSNumericArrayPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Numeric Array Prototype Keys Method
+                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeKeysMethod = function isCSSNumericArrayPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Numeric Array Prototype Values Method
+                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeValuesMethod = function isCSSNumericArrayPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Rule List Prototype Item Method
+                LapysDevelopmentKit.test.isCSSRuleListPrototypeItemMethod = function isCSSRuleListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Style Declaration Prototype Get Property Priority Method
+                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeGetPropertyPriorityMethod = function isCSSStyleDeclarationPrototypeGetPropertyPriorityMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getPropertyPriority" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Style Declaration Prototype Get Property Value Method
+                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeGetPropertyValueMethod = function isCSSStyleDeclarationPrototypeGetPropertyValueMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getPropertyValue" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Style Declaration Prototype Item Method
+                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeItemMethod = function isCSSStyleDeclarationPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Style Declaration Prototype Remove Property Method
+                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeRemovePropertyMethod = function isCSSStyleDeclarationPrototypeRemovePropertyMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeProperty" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is CSS Style Declaration Prototype Set Property Method
+                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeSetPropertyMethod = function isCSSStyleDeclarationPrototypeSetPropertyMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setProperty" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Data Transfer Item List Prototype Add Method
+                LapysDevelopmentKit.test.isDataTransferItemListPrototypeAddMethod = function isDataTransferItemListPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Data Transfer Item List Prototype Clear Method
+                LapysDevelopmentKit.test.isDataTransferItemListPrototypeClearMethod = function isDataTransferItemListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Data Transfer Item List Prototype Remove Method
+                LapysDevelopmentKit.test.isDataTransferItemListPrototypeRemoveMethod = function isDataTransferItemListPrototypeRemoveMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "remove" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Clear Method
+                LapysDevelopmentKit.test.isDocumentPrototypeClearMethod = function isDocumentPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Close Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCloseMethod = function isDocumentPrototypeCloseMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "close" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Create Attribute Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCreateAttributeMethod = function isDocumentPrototypeCreateAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createAttribute" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Create Comment Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCreateCommentMethod = function isDocumentPrototypeCreateCommentMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createComment" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Create Document Fragment Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCreateDocumentFragmentMethod = function isDocumentPrototypeCreateDocumentFragmentMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createDocumentFragment" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Create Element Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCreateElementMethod = function isDocumentPrototypeCreateElementMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createElement" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Create Text Node Method
+                LapysDevelopmentKit.test.isDocumentPrototypeCreateTextNodeMethod = function isDocumentPrototypeCreateTextNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createTextNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Element From Point Method
+                LapysDevelopmentKit.test.isDocumentPrototypeElementFromPointMethod = function isDocumentPrototypeElementFromPointMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "elementFromPoint" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Execute Command Method
+                LapysDevelopmentKit.test.isDocumentPrototypeExecCommandMethod = function isDocumentPrototypeExecCommandMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "execCommand" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Get Element By ID Method
+                LapysDevelopmentKit.test.isDocumentPrototypeGetElementByIdMethod = function isDocumentPrototypeGetElementByIdMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementById" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Get Elements By Name Method
+                LapysDevelopmentKit.test.isDocumentPrototypeGetElementsByNameMethod = function isDocumentPrototypeGetElementsByNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByName" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Get Elements By Tag Name Method
+                LapysDevelopmentKit.test.isDocumentPrototypeGetElementsByTagNameMethod = function isDocumentPrototypeGetElementsByTagNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByTagName" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Has Focus Method
+                LapysDevelopmentKit.test.isDocumentPrototypeHasFocusMethod = function isDocumentPrototypeHasFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "hasFocus" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Open Method
+                LapysDevelopmentKit.test.isDocumentPrototypeOpenMethod = function isDocumentPrototypeOpenMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "open" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Enabled Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandEnabledMethod = function isDocumentPrototypeQueryCommandEnabledMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandEnabled" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Indeterm Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandIndetermMethod = function isDocumentPrototypeQueryCommandIndetermMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandIndeterm" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command State Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandStateMethod = function isDocumentPrototypeQueryCommandStateMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandState" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Supported Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandSupportedMethod = function isDocumentPrototypeQueryCommandSupportedMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandSupported" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Query Command Value Method
+                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandValueMethod = function isDocumentPrototypeQueryCommandValueMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandValue" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Write Method
+                LapysDevelopmentKit.test.isDocumentPrototypeWriteMethod = function isDocumentPrototypeWriteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "write" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Document Prototype Write Line Method
+                LapysDevelopmentKit.test.isDocumentPrototypeWriteLineMethod = function isDocumentPrototypeWriteLineMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "writeln" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Rectangle List Prototype Item Method
+                LapysDevelopmentKit.test.isDOMRectangleListPrototypeItemMethod = function isDOMRectangleListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM String List Prototype Clear Method
+                LapysDevelopmentKit.test.isDOMStringListPrototypeClearMethod = function isDOMStringListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM String List Prototype Item Method
+                LapysDevelopmentKit.test.isDOMStringListPrototypeItemMethod = function isDOMStringListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Add Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeAddMethod = function isDOMTokenListPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Contains Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeContainsMethod = function isDOMTokenListPrototypeContainsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "contains" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Entries Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeEntriesMethod = function isDOMTokenListPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype For Each Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeForEachMethod = function isDOMTokenListPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Item Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeItemMethod = function isDOMTokenListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Keys Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeKeysMethod = function isDOMTokenListPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Remove Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeRemoveMethod = function isDOMTokenListPrototypeRemoveMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "remove" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Replace Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeReplaceMethod = function isDOMTokenListPrototypeReplaceMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replace" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Supports Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeSupportsMethod = function isDOMTokenListPrototypeSupportsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "supports" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Toggle Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeToggleMethod = function isDOMTokenListPrototypeToggleMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "toggle" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is DOM Token List Prototype Values Method
+                LapysDevelopmentKit.test.isDOMTokenListPrototypeValuesMethod = function isDOMTokenListPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Name
+                LapysDevelopmentKit.test.isElementName = function isElementName(arg) {
+                    // Logic > Return
+                    if (!LDKF.isString(name)) return false;
+
+                    // Initialization > Iterator
+                    var iterator = LDKF.stringPrototypeLength(name), length = iterator;
+
+                    // Loop
+                    while (iterator) {
+                        // Initialization > (Index, Character)
+                        var index = length - (iterator -= 1) - 1,
+                            character = LDKF.stringPrototypeCharacterAt(name, index);
+
+                        // Logic
+                        if (index ? (character != '-' && character != '_' && !LDKF.stringPrototypeIsAlphabet(character) && !LDKF.stringPrototypeIsDigit(character)) : !LDKF.stringPrototypeIsAlphabet(character)) {
+                            // Initialization > Is Valid Non-Tested Character
+                            var isValidNonTestedCharacter = true;
+
+                            // Error Handling > (...)
+                            try { LDKF.documentPrototypeCreateElement(character) }
+                            catch (error) { isValidNonTestedCharacter = false }
+
+                            // Return
+                            return isValidNonTestedCharacter
+                        }
+                    }
+
+                    // Return
+                    return true
+                };
+
+                // Is Element Prototype Get Attribute Method
+                LapysDevelopmentKit.test.isElementPrototypeGetAttributeMethod = function isElementPrototypeGetAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAttribute" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Get Attribute Node Method
+                LapysDevelopmentKit.test.isElementPrototypeGetAttributeNodeMethod = function isElementPrototypeGetAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAttributeNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Get Bounding Client Rectangle Method
+                LapysDevelopmentKit.test.isElementPrototypeGetBoundingClientRectangleMethod = function isElementPrototypeGetBoundingClientRectangleMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getBoundingClientRect" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Get Client Rectangles Method
+                LapysDevelopmentKit.test.isElementPrototypeGetClientRectanglesMethod = function isElementPrototypeGetClientRectanglesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getClientRects" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Get Elements By Tag Name Method
+                LapysDevelopmentKit.test.isElementPrototypeGetElementsByTagNameMethod = function isElementPrototypeGetElementsByTagNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByTagName" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Insert Adjacent Element Method
+                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentElementMethod = function isElementPrototypeInsertAdjacentElementMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentElement" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Insert Adjacent HTML Method
+                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentHTMLMethod = function isElementPrototypeInsertAdjacentHTMLMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentHTML" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Insert Adjacent Text Method
+                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentTextMethod = function isElementPrototypeInsertAdjacentTextMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentText" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Remove Attribute Method
+                LapysDevelopmentKit.test.isElementPrototypeRemoveAttributeMethod = function isElementPrototypeRemoveAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeAttribute" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Remove Attribute Node Method
+                LapysDevelopmentKit.test.isElementPrototypeRemoveAttributeNodeMethod = function isElementPrototypeRemoveAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeAttributeNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Scroll Into View Method
+                LapysDevelopmentKit.test.isElementPrototypeScrollIntoViewMethod = function isElementPrototypeScrollIntoViewMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "scrollIntoView" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Set Attribute Method
+                LapysDevelopmentKit.test.isElementPrototypeSetAttributeMethod = function isElementPrototypeSetAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setAttribute" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Element Prototype Set Attribute Node Method
+                LapysDevelopmentKit.test.isElementPrototypeSetAttributeNodeMethod = function isElementPrototypeSetAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setAttributeNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Handler
+                LapysDevelopmentKit.test.isEventHandler = function isEventHandler(arg) { return LDKF.isNull(arg) || LDKF.isFunction(arg) };
+
+                // Is Event Target Prototype Add Event Listener Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeAddEventListenerMethod = function isEventTargetPrototypeAddEventListenerMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "addEventListener" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Target Prototype Attach Event Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeAttachEventMethod = function isEventTargetPrototypeAttachEventMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "attachEvent" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Target Prototype Detach Event Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeDetachEventMethod = function isEventTargetPrototypeDetachEventMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "detachEvent" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Event Target Prototype Remove Event Listener Method
+                LapysDevelopmentKit.test.isEventTargetPrototypeRemoveEventListenerMethod = function isEventTargetPrototypeRemoveEventListenerMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeEventListener" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is File List Prototype Item Method
+                LapysDevelopmentKit.test.isFileListPrototypeItemMethod = function isFileListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML All Collection Prototype Item Method
+                LapysDevelopmentKit.test.isHTMLAllCollectionPrototypeItemMethod = function isHTMLAllCollectionPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML All Collection Prototype Named Item Method
+                LapysDevelopmentKit.test.isHTMLAllCollectionPrototypeNamedItemMethod = function isHTMLAllCollectionPrototypeNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "namedItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Collection Prototype Item Method
+                LapysDevelopmentKit.test.isHTMLCollectionPrototypeItemMethod = function isHTMLCollectionPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Collection Prototype Named Item Method
+                LapysDevelopmentKit.test.isHTMLCollectionPrototypeNamedItemMethod = function isHTMLCollectionPrototypeNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "namedItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Element Prototype Blur Method
+                LapysDevelopmentKit.test.isHTMLElementPrototypeBlurMethod = function isHTMLElementPrototypeBlurMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "blur" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Element Prototype Focus Method
+                LapysDevelopmentKit.test.isHTMLElementPrototypeFocusMethod = function isHTMLElementPrototypeFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "focus" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Form Controls Collection Prototype Named Item Method
+                LapysDevelopmentKit.test.isHTMLFormControlsCollectionPrototypeNamedItemMethod = function isHTMLFormControlsCollectionPrototypeNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "namedItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Options Collection Prototype Add Method
+                LapysDevelopmentKit.test.isHTMLOptionsCollectionPrototypeAddMethod = function isHTMLOptionsCollectionPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is HTML Options Collection Prototype Remove Method
+                LapysDevelopmentKit.test.isHTMLOptionsCollectionPrototypeRemoveMethod = function isHTMLOptionsCollectionPrototypeRemoveMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "remove" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Clear Method
+                LapysDevelopmentKit.test.isMapPrototypeClearMethod = function isMapPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Delete Method
+                LapysDevelopmentKit.test.isMapPrototypeDeleteMethod = function isMapPrototypeDeleteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "delete" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Entries Method
+                LapysDevelopmentKit.test.isMapPrototypeEntriesMethod = function isMapPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype For Each Method
+                LapysDevelopmentKit.test.isMapPrototypeForEachMethod = function isMapPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Get Method
+                LapysDevelopmentKit.test.isMapPrototypeGetMethod = function isMapPrototypeGetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "get" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Has Method
+                LapysDevelopmentKit.test.isMapPrototypeHasMethod = function isMapPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Keys Method
+                LapysDevelopmentKit.test.isMapPrototypeKeysMethod = function isMapPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Set Method
+                LapysDevelopmentKit.test.isMapPrototypeSetMethod = function isMapPrototypeSetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "set" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Map Prototype Values Method
+                LapysDevelopmentKit.test.isMapPrototypeValuesMethod = function isMapPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media Key Status Map Prototype Entries Method
+                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeEntriesMethod = function isMediaKeyStatusMapPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media Key Status Map Prototype For Each Method
+                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeForEachMethod = function isMediaKeyStatusMapPrototypeForEachMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media Key Status Map Prototype Get Method
+                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeGetMethod = function isMediaKeyStatusMapPrototypeGetMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media Key Status Map Prototype Has Method
+                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeHasMethod = function isMediaKeyStatusMapPrototypeHasMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media Key Status Map Prototype Keys Method
+                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeKeysMethod = function isMediaKeyStatusMapPrototypeKeysMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media Key Status Map Prototype Values Method
+                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeValuesMethod = function isMediaKeyStatusMapPrototypeValuesMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media List Prototype Append Medium Method
+                LapysDevelopmentKit.test.isMediaListPrototypeAppendMediumMethod = function isMediaListPrototypeAppendMediumMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendMedium" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media List Prototype Delete Medium Method
+                LapysDevelopmentKit.test.isMediaListPrototypeDeleteMediumMethod = function isMediaListPrototypeDeleteMediumMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "deleteMedium" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Media List Prototype Item Method
+                LapysDevelopmentKit.test.isMediaListPrototypeItemMethod = function isMediaListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Named Node Map Prototype Get Named Item Method
+                LapysDevelopmentKit.test.isNamedNodeMapPrototypeGetNamedItemMethod = function isNamedNodeMapPrototypeGetNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getNamedItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Named Node Map Prototype Item Method
+                LapysDevelopmentKit.test.isNamedNodeMapPrototypeItemMethod = function isNamedNodeMapPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Named Node Map Prototype Remove Named Item Method
+                LapysDevelopmentKit.test.isNamedNodeMapPrototypeRemoveNamedItemMethod = function isNamedNodeMapPrototypeRemoveNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeNamedItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Named Node Map Prototype Set Named Item Method
+                LapysDevelopmentKit.test.isNamedNodeMapPrototypeSetNamedItemMethod = function isNamedNodeMapPrototypeSetNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setNamedItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Append Child Method
+                LapysDevelopmentKit.test.isNodePrototypeAppendChildMethod = function isNodePrototypeAppendChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendChild" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Clone Node Method
+                LapysDevelopmentKit.test.isNodePrototypeCloneNodeMethod = function isNodePrototypeCloneNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "cloneNode" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Contains Method
+                LapysDevelopmentKit.test.isNodePrototypeContainsMethod = function isNodePrototypeContainsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "contains" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Has Child Nodes Method
+                LapysDevelopmentKit.test.isNodePrototypeHasChildNodesMethod = function isNodePrototypeHasChildNodesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "hasChildNodes" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Insert Before Method
+                LapysDevelopmentKit.test.isNodePrototypeInsertBeforeMethod = function isNodePrototypeInsertBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertBefore" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Normalize Method
+                LapysDevelopmentKit.test.isNodePrototypeNormalizeMethod = function isNodePrototypeNormalizeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "normalize" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Remove Child Method
+                LapysDevelopmentKit.test.isNodePrototypeRemoveChildMethod = function isNodePrototypeRemoveChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeChild" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node Prototype Replace Child Method
+                LapysDevelopmentKit.test.isNodePrototypeReplaceChildMethod = function isNodePrototypeReplaceChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceChild" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Node List Prototype Item Method
+                LapysDevelopmentKit.test.isNodeListPrototypeItemMethod = function isNodeListPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
+
                 // Is Object Native Constructor --- NOTE (Lapys) -> Should only be called from `LapysDevelopmentKit.test.queryObjectNativeConstructor`.
                 LapysDevelopmentKit.test.isObjectNativeConstructor = function isObjectNativeConstructor(object, options, STRICT) {
                     // Initialization > (Constructor (Name), Property Name, Target)
@@ -4932,13 +5408,30 @@
                 };
 
                 // Is Object Native Method
-                LapysDevelopmentKit.test.isObjectNativeMethod = function isObjectNativeMethod(object, options) {
+                LapysDevelopmentKit.test.isObjectNativeMethod = function isObjectNativeMethod(object, options, STRICT) {
                     // Initialization > Method (Name)
-                    var method = options.methodObject, methodName = options.methodName, propertyName = options.propertyName;
+                    var method = options.methodObject, methodName = options.methodName, propertyName = options.propertyName, propertySourceString = options.propertySourceString;
 
-                    // Logic > Return
-                    if (typeof method == "function" && LDKF.functionPrototypeGetName(method) == methodName && LDKF.functionPrototypeIsNative(method))
-                        return LDKF.objectPrototypePropertyIsUnique(object, propertyName);
+                    // Logic
+                    if (LDKF.objectPrototypeHasProperty(object, propertyName) && !LDKF.isVoid(method))
+                        // Logic
+                        if (
+                            (
+                                LDKF.isFunction(method) &&
+                                (LDKF.functionPrototypeGetName(method) || (STRICT ? methodName : "")) == methodName &&
+                                LDKF.functionPrototypeIsNative(method)
+                            ) ||
+                            (
+                                LDKF.isString(method) &&
+                                method === "[Interface prototype object]"
+                            )
+                        )
+                            // Return
+                            return LDKF.objectPrototypePropertyIsUnique(object, propertyName);
+
+                        else if (this === LDKF.error)
+                            // Error
+                            LDKF.error.nativeToEnvironment('`' + (propertySourceString || "<Object>." + methodName) + "` method");
 
                     // Return
                     return false
@@ -4946,6 +5439,189 @@
 
                 // Is Public Constructor --- NOTE (Lapys) -> Test that the environment allows access to and utilizes the specified argument.
                 LapysDevelopmentKit.test.isPublicConstructor = function isPublicConstructor(arg) { return !LDKF.isVoid(arg) && LDKF.functionPrototypeIsNative(arg) };
+
+                // Is Set Prototype Add Method
+                LapysDevelopmentKit.test.isSetPrototypeAddMethod = function isSetPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Set Prototype Clear Method
+                LapysDevelopmentKit.test.isSetPrototypeClearMethod = function isSetPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Set Prototype Delete Method
+                LapysDevelopmentKit.test.isSetPrototypeDeleteMethod = function isSetPrototypeDeleteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "delete" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Set Prototype Entries Method
+                LapysDevelopmentKit.test.isSetPrototypeEntriesMethod = function isSetPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Set Prototype For Each Method
+                LapysDevelopmentKit.test.isSetPrototypeForEachMethod = function isSetPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Set Prototype Has Method
+                LapysDevelopmentKit.test.isSetPrototypeHasMethod = function isSetPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Set Prototype Keys Method
+                LapysDevelopmentKit.test.isSetPrototypeKeysMethod = function isSetPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Set Prototype Values Method
+                LapysDevelopmentKit.test.isSetPrototypeValuesMethod = function isSetPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Prototype Append Method
+                LapysDevelopmentKit.test.isStylePropertyMapPrototypeAppendMethod = function isStylePropertyMapPrototypeAppendMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "append" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Prototype Clear Method
+                LapysDevelopmentKit.test.isStylePropertyMapPrototypeClearMethod = function isStylePropertyMapPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Prototype Delete Method
+                LapysDevelopmentKit.test.isStylePropertyMapPrototypeDeleteMethod = function isStylePropertyMapPrototypeDeleteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "delete" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Prototype Set Method
+                LapysDevelopmentKit.test.isStylePropertyMapPrototypeSetMethod = function isStylePropertyMapPrototypeSetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "set" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Read-Only Prototype Entries Method
+                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeEntriesMethod = function isStylePropertyMapReadOnlyPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Read-Only Prototype For Each Method
+                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeForEachMethod = function isStylePropertyMapReadOnlyPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Read-Only Prototype Get Method
+                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeGetMethod = function isStylePropertyMapReadOnlyPrototypeGetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "get" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Read-Only Prototype Get All Method
+                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeGetAllMethod = function isStylePropertyMapReadOnlyPrototypeGetAllMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAll" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Read-Only Prototype Has Method
+                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeHasMethod = function isStylePropertyMapReadOnlyPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Read-Only Prototype Keys Method
+                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeKeysMethod = function isStylePropertyMapReadOnlyPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Property Map Read-Only Prototype Values Method
+                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeValuesMethod = function isStylePropertyMapReadOnlyPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Style Sheet List Prototype Item Method
+                LapysDevelopmentKit.test.isStyleSheetListPrototypeItemMethod = function isStyleSheetListPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length Prototype Convert To Specified Units Method
+                LapysDevelopmentKit.test.isSVGLengthPrototypeConvertToSpecifiedUnitsMethod = function isSVGLengthPrototypeConvertToSpecifiedUnitsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "convertToSpecifiedUnits" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length Prototype New Value Specified Units Method
+                LapysDevelopmentKit.test.isSVGLengthPrototypeNewValueSpecifiedUnitsMethod = function isSVGLengthPrototypeNewValueSpecifiedUnitsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "newValueSpecifiedUnits" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length List Prototype Append Item Method
+                LapysDevelopmentKit.test.isSVGLengthListPrototypeAppendItemMethod = function isSVGLengthListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length List Prototype Clear Method
+                LapysDevelopmentKit.test.isSVGLengthListPrototypeClearMethod = function isSVGLengthListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length List Prototype Get Item Method
+                LapysDevelopmentKit.test.isSVGLengthListPrototypeGetItemMethod = function isSVGLengthListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length List Prototype Initialize Method
+                LapysDevelopmentKit.test.isSVGLengthListPrototypeInitializeMethod = function isSVGLengthListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length List Prototype Insert Item Before Method
+                LapysDevelopmentKit.test.isSVGLengthListPrototypeInsertItemBeforeMethod = function isSVGLengthListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length List Prototype Remove Item Method
+                LapysDevelopmentKit.test.isSVGLengthListPrototypeRemoveItemMethod = function isSVGLengthListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Length List Prototype Replace Item Method
+                LapysDevelopmentKit.test.isSVGLengthListPrototypeReplaceItemMethod = function isSVGLengthListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Number List Prototype Append Item Method
+                LapysDevelopmentKit.test.isSVGNumberListPrototypeAppendItemMethod = function isSVGNumberListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Number List Prototype Clear Method
+                LapysDevelopmentKit.test.isSVGNumberListPrototypeClearMethod = function isSVGNumberListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Number List Prototype Get Item Method
+                LapysDevelopmentKit.test.isSVGNumberListPrototypeGetItemMethod = function isSVGNumberListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Number List Prototype Initialize Method
+                LapysDevelopmentKit.test.isSVGNumberListPrototypeInitializeMethod = function isSVGNumberListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Number List Prototype Insert Item Before Method
+                LapysDevelopmentKit.test.isSVGNumberListPrototypeInsertItemBeforeMethod = function isSVGNumberListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Number List Prototype Remove Item Method
+                LapysDevelopmentKit.test.isSVGNumberListPrototypeRemoveItemMethod = function isSVGNumberListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Number List Prototype Replace Item Method
+                LapysDevelopmentKit.test.isSVGNumberListPrototypeReplaceItemMethod = function isSVGNumberListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Point List Prototype Append Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeAppendItemMethod = function isSVGPointListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Point List Prototype Clear Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeClearMethod = function isSVGPointListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Point List Prototype Get Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeGetItemMethod = function isSVGPointListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Point List Prototype Initialize Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeInitializeMethod = function isSVGPointListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Point List Prototype Insert Before Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeInsertItemBeforeMethod = function isSVGPointListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Point List Prototype Remove Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeRemoveItemMethod = function isSVGPointListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG String List Prototype Append Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeAppendItemMethod = function isSVGPointListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG String List Prototype Clear Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeClearMethod = function isSVGPointListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG String List Prototype Get Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeGetItemMethod = function isSVGPointListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG String List Prototype Initialize Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeInitializeMethod = function isSVGPointListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG String List Prototype Insert Item Before Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeInsertItemBeforeMethod = function isSVGPointListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG String List Prototype Remove Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeRemoveItemMethod = function isSVGPointListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG String List Prototype Replace Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeReplaceItemMethod = function isSVGPointListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Append Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeAppendItemMethod = function isSVGPointListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Clear Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeClearMethod = function isSVGPointListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Consolidate Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeConsolidateMethod = function isSVGPointListPrototypeConsolidateMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "consolidate" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Create SVG Transform From Matrix Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeCreateSVGTransformFromMatrixMethod = function isSVGPointListPrototypeCreateSVGTransformFromMatrixMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createSVGTransformFromMatrix" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Get Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeGetItemMethod = function isSVGPointListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Initialize Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeInitializeMethod = function isSVGPointListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Insert Item Before Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeInsertItemBeforeMethod = function isSVGPointListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Remove Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeRemoveItemMethod = function isSVGPointListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is SVG Transform List Prototype Replace Item Method
+                LapysDevelopmentKit.test.isSVGPointListPrototypeReplaceItemMethod = function isSVGPointListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Text Track Cue List Prototype Get Cue By ID Method
+                LapysDevelopmentKit.test.isTextTrackCueListPrototypeGetCueByIdMethod = function isTextTrackCueListPrototypeGetCueByIdMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getCueById" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Text Track List Prototype Get Track By ID Method
+                LapysDevelopmentKit.test.isTextTrackListPrototypeGetTrackByIdMethod = function isTextTrackListPrototypeGetTrackByIdMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getTrackById" && LDKF.functionPrototypeIsNative(method) };
+
+                // Is Touch List Prototype Item Method
+                LapysDevelopmentKit.test.isTouchListPrototypeItemMethod = function isTouchListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
 
                 /* Method Is Standard
                         --- NOTE ---
@@ -5141,7 +5817,7 @@
                 };
 
                 // Query Object Native Method --- NOTE (Lapys) -> Practically code duplication at this point, but semantics dictate that these must be separate functions.
-                LapysDevelopmentKit.test.queryObjectNativeMethod = function queryObjectNativeMethod(object, options) {
+                LapysDevelopmentKit.test.queryObjectNativeMethod = function queryObjectNativeMethod(object, options, STRICT) {
                     // Update > Options
                     (LDKF.isString(options) || LDKF.isSymbol(options)) && (options = {propertyName: options});
 
@@ -5150,9 +5826,11 @@
                     LDKF.objectPrototypeHasProperty(options, "name") && LDKF.objectPrototypeReplaceProperty(options, "name", "propertyName");
                     LDKF.objectPrototypeHasProperty(options, "methodName") || (options.methodName = options.propertyName);
                     LDKF.objectPrototypeHasProperty(options, "methodObject") || (options.methodObject = LDKF.objectPrototypeGetProperty(object, options.STRICT ? options.propertyName : options.methodName));
+                    LDKF.objectPrototypeHasProperty(options, "source") && LDKF.objectPrototypeReplaceProperty(options, "source", "propertySourceString");
+                    LDKF.objectPrototypeHasProperty(options, "propertySourceString") || (options.propertySourceString = null);
 
                     // Logic > Return
-                    if (LDKT.isObjectNativeMethod(object, options)) return options.methodObject
+                    if (LDKT.isObjectNativeMethod.call(LDKF.error, object, options, STRICT)) return options.methodObject
                 };
 
                 // Throw Error --- WARN (Lapys) -> Defer to `LapysDevelopmentKit.functions.error` instead.
@@ -5247,7 +5925,22 @@
 
                         else
                             // Update > Method
-                            method = LDKF.objectCreate;
+                            method = function create(prototype) {
+                                // Function > Constructor
+                                function constructor() {}
+
+                                // Modification > Constructor > Prototype
+                                constructor.prototype = prototype;
+
+                                // Initialization > Object
+                                var object = new constructor;
+
+                                // Modification > Object > Constructor --- NOTE (Lapys) -> JavaScript semantics.
+                                LDKF.isConstructible(prototype) && (object.constructor = constructor);
+
+                                // Return
+                                return object
+                            };
 
                         // Return
                         return method
@@ -6409,7 +7102,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.audioParameterMapPrototype = LDKF.objectPrototypeGetProperty(LDKO.audioParameterMap, "prototype");
                         // Get
-                        LapysDevelopmentKit.objects.audioParameterMapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.audioParameterMapPrototype, "get");
+                        LapysDevelopmentKit.objects.audioParameterMapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.audioParameterMapPrototype, {name: "get", source: "AudioParamMap.prototype.get"});
 
                         // Size Getter
                         LapysDevelopmentKit.objects.audioParameterMapPrototypeSizeGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.audioParameterMapPrototype, "size");
@@ -6458,7 +7151,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.cssRuleListPrototype = LDKF.objectPrototypeGetProperty(LDKO.cssRuleList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.cssRuleListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.cssRuleListPrototype, "item");
+                        LapysDevelopmentKit.objects.cssRuleListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.cssRuleListPrototype, {name: "item", source: "CSSRuleList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.cssRuleListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.cssRuleListPrototype, "length");
@@ -6468,7 +7161,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.cssStyleDeclarationPrototype = LDKF.objectPrototypeGetProperty(LDKO.cssStyleDeclaration, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.cssStyleDeclarationPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.cssStyleDeclarationPrototype, "item");
+                        LapysDevelopmentKit.objects.cssStyleDeclarationPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.cssStyleDeclarationPrototype, {name: "item", source: "CSSStyleDeclaration.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.cssStyleDeclarationPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.cssStyleDeclarationPrototype, "length");
@@ -6543,7 +7236,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.domRectangleListPrototype = LDKF.objectPrototypeGetProperty(LDKO.domRectangleList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.domRectangleListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.domRectangleListPrototype, "item");
+                        LapysDevelopmentKit.objects.domRectangleListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.domRectangleListPrototype, {name: "item", source: "DOMRectList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.domRectangleListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.domRectangleListPrototype, "length");
@@ -6551,9 +7244,9 @@
                 // DOM String List
                 LapysDevelopmentKit.objects.domStringList = LDKT.queryObjectNativeConstructor(GLOBAL, "DOMStringList");
                     // Prototype
-                    LapysDevelopmentKit.objects.domStringListPrototype = LDKF.objectPrototypeGetProperty(LDKO.domStringListPrototype, "prototype");
+                    LapysDevelopmentKit.objects.domStringListPrototype = LDKF.objectPrototypeGetProperty(LDKO.domStringList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.domStringListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.domStringListPrototype, "item");
+                        LapysDevelopmentKit.objects.domStringListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.domStringListPrototype, {name: "item", source: "DOMStringList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.domStringListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.domStringListPrototype, "length");
@@ -6563,7 +7256,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.domTokenListPrototype = LDKF.objectPrototypeGetProperty(LDKO.domTokenList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.domTokenListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.domTokenListPrototype, "item");
+                        LapysDevelopmentKit.objects.domTokenListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.domTokenListPrototype, {name: "item", source: "DOMTokenList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.domTokenListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.domTokenListPrototype, "length");
@@ -6591,7 +7284,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.fileListPrototype = LDKF.objectPrototypeGetProperty(LDKO.fileList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.fileListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.fileListPrototype, "item");
+                        LapysDevelopmentKit.objects.fileListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.fileListPrototype, {name: "item", source: "FileList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.fileListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.fileListPrototype, "length");
@@ -6601,7 +7294,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.htmlAllCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlAllCollection, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.htmlAllCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlAllCollectionPrototype, "item");
+                        LapysDevelopmentKit.objects.htmlAllCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlAllCollectionPrototype, {name: "item", source: "HTMLAllCollection.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.htmlAllCollectionPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.htmlAllCollectionPrototype, "length");
@@ -6621,7 +7314,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.htmlCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlCollection, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.htmlCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlCollectionPrototype, "item");
+                        LapysDevelopmentKit.objects.htmlCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlCollectionPrototype, {name: "item", source: "HTMLCollection.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.htmlCollectionPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.htmlCollectionPrototype, "length");
@@ -6641,7 +7334,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.htmlFormControlsCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlFormControlsCollection, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.htmlFormControlsCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlFormControlsCollectionPrototype, "item");
+                        LapysDevelopmentKit.objects.htmlFormControlsCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlFormControlsCollectionPrototype, {name: "item", source: "HTMLFormControlsCollection.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.htmlFormControlsCollectionPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.htmlFormControlsCollectionPrototype, "length");
@@ -6676,7 +7369,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.htmlOptionsCollectionPrototype = LDKF.objectPrototypeGetProperty(LDKO.htmlOptionsCollection, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.htmlOptionsCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlOptionsCollectionPrototype, "item");
+                        LapysDevelopmentKit.objects.htmlOptionsCollectionPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.htmlOptionsCollectionPrototype, {name: "item", source: "HTMLOptionsCollection.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.htmlOptionsCollectionPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.htmlOptionsCollectionPrototype, "length");
@@ -6762,7 +7455,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.mapPrototype = LDKF.objectPrototypeGetProperty(LDKO.map, "prototype");
                         // Get
-                        LapysDevelopmentKit.objects.mapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.mapPrototype, "get");
+                        LapysDevelopmentKit.objects.mapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.mapPrototype, {name: "get", source: "Map.prototype.get"});
 
                         // Size Getter
                         LapysDevelopmentKit.objects.mapPrototypeSizeGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.mapPrototype, "size");
@@ -6787,7 +7480,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.mediaKeyStatusMapPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaKeyStatusMap, "prototype");
                         // Get
-                        LapysDevelopmentKit.objects.mediaKeyStatusMapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.mediaKeyStatusMapPrototype, "get");
+                        LapysDevelopmentKit.objects.mediaKeyStatusMapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.mediaKeyStatusMapPrototype, {name: "get", source: "MediaKeyStatusMap.prototype.get"}, STRICT = true);
 
                         // Length Getter
                         LapysDevelopmentKit.objects.mediaKeyStatusMapPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.mediaKeyStatusMapPrototype, "size");
@@ -6797,7 +7490,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.mediaListPrototype = LDKF.objectPrototypeGetProperty(LDKO.mediaList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.mediaListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.mediaListPrototype, "item");
+                        LapysDevelopmentKit.objects.mediaListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.mediaListPrototype, {name: "item", source: "MediaList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.mediaListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.mediaListPrototype, "length");
@@ -6807,7 +7500,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.mimeTypeArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.mimeTypeArray, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.mimeTypeArrayPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.mimeTypeArrayPrototype, "item");
+                        LapysDevelopmentKit.objects.mimeTypeArrayPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.mimeTypeArrayPrototype, {name: "item", source: "MimeTypeArray.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.mimeTypeArrayPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.mimeTypeArrayPrototype, "length");
@@ -6822,7 +7515,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.namedNodeMapPrototype = LDKF.objectPrototypeGetProperty(LDKO.namedNodeMap, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.namedNodeMapPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.namedNodeMapPrototype, "item");
+                        LapysDevelopmentKit.objects.namedNodeMapPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.namedNodeMapPrototype, {name: "item", source: "NamedNodeMap.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.namedNodeMapPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.namedNodeMapPrototype, "length");
@@ -6860,7 +7553,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.nodeListPrototype = LDKF.objectPrototypeGetProperty(LDKO.nodeList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.nodeListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.nodeListPrototype, "item");
+                        LapysDevelopmentKit.objects.nodeListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.nodeListPrototype, {name: "item", source: "NodeList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.nodeListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.nodeListPrototype, "length");
@@ -6905,7 +7598,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.pluginArrayPrototype = LDKF.objectPrototypeGetProperty(LDKO.pluginArray, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.pluginArrayPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.pluginArrayPrototype, "item");
+                        LapysDevelopmentKit.objects.pluginArrayPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.pluginArrayPrototype, {name: "item", source: "PluginArray.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.pluginArrayPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.pluginArrayPrototype, "length");
@@ -6915,7 +7608,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.radioNodeListPrototype = LDKF.objectPrototypeGetProperty(LDKO.radioNodeList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.radioNodeListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.radioNodeListPrototype, "item");
+                        LapysDevelopmentKit.objects.radioNodeListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.radioNodeListPrototype, {name: "item", source: "RadioNodeList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.radioNodeListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.radioNodeListPrototype, "length");
@@ -6977,7 +7670,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.stylePropertyMapPrototype = LDKF.objectPrototypeGetProperty(LDKO.stylePropertyMap, "prototype");
                         // Get
-                        LapysDevelopmentKit.objects.stylePropertyMapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.stylePropertyMapPrototype, "get");
+                        LapysDevelopmentKit.objects.stylePropertyMapPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.stylePropertyMapPrototype, {name: "get", source: "StylePropertyMap.prototype.get"});
 
                         // Size Getter
                         LapysDevelopmentKit.objects.stylePropertyMapPrototypeSizeGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.stylePropertyMapPrototype, "size");
@@ -6987,7 +7680,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.stylePropertyMapReadOnlyPrototype = LDKF.objectPrototypeGetProperty(LDKO.stylePropertyMapReadOnly, "prototype");
                         // Get
-                        LapysDevelopmentKit.objects.stylePropertyMapReadOnlyPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.stylePropertyMapReadOnlyPrototype, "get");
+                        LapysDevelopmentKit.objects.stylePropertyMapReadOnlyPrototypeGet = LDKT.queryObjectNativeMethod(LDKO.stylePropertyMapReadOnlyPrototype, {name: "get", source: "StylePropertyMapReadOnly.prototype.get"});
 
                         // Size Getter
                         LapysDevelopmentKit.objects.stylePropertyMapReadOnlyPrototypeSizeGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.stylePropertyMapReadOnlyPrototype, "size");
@@ -6997,7 +7690,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.styleSheetListPrototype = LDKF.objectPrototypeGetProperty(LDKO.styleSheetList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.styleSheetListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.styleSheetListPrototype, "item");
+                        LapysDevelopmentKit.objects.styleSheetListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.styleSheetListPrototype, {name: "item", source: "StyleSheetList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.styleSheetListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.styleSheetListPrototype, "length");
@@ -7012,7 +7705,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.svgLengthListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgLengthList, "prototype");
                         // Get Item
-                        LapysDevelopmentKit.objects.svgLengthListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgLengthListPrototype, "getItem");
+                        LapysDevelopmentKit.objects.svgLengthListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgLengthListPrototype, {name: "getItem", source: "SVGLengthList.prototype.getItem"});
 
                         // Number of Items Getter
                         LapysDevelopmentKit.objects.svgLengthListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgLengthListPrototype, "numberOfItems");
@@ -7022,7 +7715,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.svgNumberListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgNumberList, "prototype");
                         // Get Item
-                        LapysDevelopmentKit.objects.svgNumberListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgNumberListPrototype, "getItem");
+                        LapysDevelopmentKit.objects.svgNumberListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgNumberListPrototype, {name: "getItem", source: "SVGNumberList.prototype.getItem"});
 
                         // Number of Items Getter
                         LapysDevelopmentKit.objects.svgNumberListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgNumberListPrototype, "numberOfItems");
@@ -7032,7 +7725,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.svgPointListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgPointList, "prototype");
                         // Get Item
-                        LapysDevelopmentKit.objects.svgPointListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgPointListPrototype, "getItem");
+                        LapysDevelopmentKit.objects.svgPointListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgPointListPrototype, {name: "getItem", source: "SVGPointList.prototype.getItem"});
 
                         // Number of Items Getter
                         LapysDevelopmentKit.objects.svgPointListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgPointListPrototype, "numberOfItems");
@@ -7042,7 +7735,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.svgStringListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgStringList, "prototype");
                         // Get Item
-                        LapysDevelopmentKit.objects.svgStringListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgStringListPrototype, "getItem");
+                        LapysDevelopmentKit.objects.svgStringListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgStringListPrototype, {name: "getItem", source: "SVGStringList.prototype.getItem"});
 
                         // Number of Items Getter
                         LapysDevelopmentKit.objects.svgStringListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgStringListPrototype, "numberOfItems");
@@ -7052,7 +7745,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.svgTransformListPrototype = LDKF.objectPrototypeGetProperty(LDKO.svgTransformList, "prototype");
                         // Get Item
-                        LapysDevelopmentKit.objects.svgTransformListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgTransformListPrototype, "getItem");
+                        LapysDevelopmentKit.objects.svgTransformListPrototypeGetItem = LDKT.queryObjectNativeMethod(LDKO.svgTransformListPrototype, {name: "getItem", source: "SVGTransformList.prototype.getItem"});
 
                         // Number of Items Getter
                         LapysDevelopmentKit.objects.svgTransformListPrototypeNumberOfItemsGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.svgTransformListPrototype, "numberOfItems");
@@ -7065,7 +7758,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.textTrackCueListPrototype = LDKF.objectPrototypeGetProperty(LDKO.textTrackCueList, "prototype");
                         // Get Cue By Id
-                        LapysDevelopmentKit.objects.textTrackCueListPrototypeGetCueById = LDKT.queryObjectNativeMethod(LDKO.textTrackCueListPrototype, "getCueById");
+                        LapysDevelopmentKit.objects.textTrackCueListPrototypeGetCueById = LDKT.queryObjectNativeMethod(LDKO.textTrackCueListPrototype, {name: "getCueById", source: "TextTrackCueList.prototype.getCueById"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.textTrackCueListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.textTrackCueListPrototype, "length");
@@ -7075,7 +7768,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.textTrackListPrototype = LDKF.objectPrototypeGetProperty(LDKO.textTrackList, "prototype");
                         // Get Track By Id
-                        LapysDevelopmentKit.objects.textTrackListPrototypeGetTrackById = LDKT.queryObjectNativeMethod(LDKO.textTrackListPrototype, "getTrackById");
+                        LapysDevelopmentKit.objects.textTrackListPrototypeGetTrackById = LDKT.queryObjectNativeMethod(LDKO.textTrackListPrototype, {name: "getTrackById", source: "TextTrackList.prototype.getTrackById"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.textTrackListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.textTrackListPrototype, "length");
@@ -7088,7 +7781,7 @@
                     // Prototype
                     LapysDevelopmentKit.objects.touchListPrototype = LDKF.objectPrototypeGetProperty(LDKO.touchList, "prototype");
                         // Item
-                        LapysDevelopmentKit.objects.touchListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.touchListPrototype, "item");
+                        LapysDevelopmentKit.objects.touchListPrototypeItem = LDKT.queryObjectNativeMethod(LDKO.touchListPrototype, {name: "item", source: "TouchList.prototype.item"});
 
                         // Length Getter
                         LapysDevelopmentKit.objects.touchListPrototypeLengthGetter = LDKT.getArrayLikePrototypeLengthDescriptorGetter(LDKO.touchListPrototype, "length");
@@ -7482,619 +8175,6 @@
                                 if (LDKF.functionPrototypeGetName(method) == "createElement" && LDKF.functionPrototypeIsNative(method)) return method;
                                 else LDKF.error.nativeToEnvironment("`Document.prototype.createElement` method")
                         })();
-
-            /* Test */
-                // Is Audio Parameter Map Prototype Entries Method
-                LapysDevelopmentKit.test.isAudioParameterMapPrototypeEntriesMethod = function isAudioParameterMapPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Audio Parameter Map Prototype For Each Method
-                LapysDevelopmentKit.test.isAudioParameterMapPrototypeForEachMethod = function isAudioParameterMapPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Audio Parameter Map Prototype Get Method
-                LapysDevelopmentKit.test.isAudioParameterMapPrototypeGetMethod = function isAudioParameterMapPrototypeGetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "get" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Audio Parameter Map Prototype Has Method
-                LapysDevelopmentKit.test.isAudioParameterMapPrototypeHasMethod = function isAudioParameterMapPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Audio Parameter Map Prototype Keys Method
-                LapysDevelopmentKit.test.isAudioParameterMapPrototypeKeysMethod = function isAudioParameterMapPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Audio Parameter Map Prototype Values Method
-                LapysDevelopmentKit.test.isAudioParameterMapPrototypeValuesMethod = function isAudioParameterMapPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is {Registered} Component --- NOTE (Lapys) -> Is the Argument a component like an Accordion or Picture-in-Picture 'window'?
-                LapysDevelopmentKit.test.isComponent = function isComponent(arg) {
-                    /* Initialization > (Component Registries, Iterator)
-                            --- NOTE ---
-                                #Lapys: If there's no way to test if an Argument is an element via the `Element` or `HTMLElement` constructors,
-                                    then check the library's component registries.
-                    */
-                    var componentRegistries = LDKF.arrayPrototypeConcatenate(
-                        LDKI.data.lists.accordions,
-                            LDKI.data.lists.accordionBodies,
-                            LDKI.data.lists.accordionHeads
-                    ), iterator = LDKF.arrayPrototypeLength(componentRegistries);
-
-                    // Loop
-                    while (iterator) {
-                        // Initialization > Component Registry (Iterator)
-                        var componentRegistry = componentRegistries[iterator -= 1],
-                            componentRegistryIterator = LDKF.arrayPrototypeLength(componentRegistry);
-
-                        // Loop > Logic > Return
-                        while (componentRegistryIterator) if (componentRegistry[componentRegistryIterator -= 1] === arg) return true
-                    }
-                };
-
-                // Is CSS Numeric Array Prototype Entries Method
-                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeEntriesMethod = function isCSSNumericArrayPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Numeric Array Prototype For Each Method
-                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeForEachMethod = function isCSSNumericArrayPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Numeric Array Prototype Keys Method
-                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeKeysMethod = function isCSSNumericArrayPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Numeric Array Prototype Values Method
-                LapysDevelopmentKit.test.isCSSNumericArrayPrototypeValuesMethod = function isCSSNumericArrayPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Rule List Prototype Item Method
-                LapysDevelopmentKit.test.isCSSRuleListPrototypeItemMethod = function isCSSRuleListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Style Declaration Prototype Get Property Priority Method
-                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeGetPropertyPriorityMethod = function isCSSStyleDeclarationPrototypeGetPropertyPriorityMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getPropertyPriority" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Style Declaration Prototype Get Property Value Method
-                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeGetPropertyValueMethod = function isCSSStyleDeclarationPrototypeGetPropertyValueMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getPropertyValue" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Style Declaration Prototype Item Method
-                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeItemMethod = function isCSSStyleDeclarationPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Style Declaration Prototype Remove Property Method
-                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeRemovePropertyMethod = function isCSSStyleDeclarationPrototypeRemovePropertyMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeProperty" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is CSS Style Declaration Prototype Set Property Method
-                LapysDevelopmentKit.test.isCSSStyleDeclarationPrototypeSetPropertyMethod = function isCSSStyleDeclarationPrototypeSetPropertyMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setProperty" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Data Transfer Item List Prototype Add Method
-                LapysDevelopmentKit.test.isDataTransferItemListPrototypeAddMethod = function isDataTransferItemListPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Data Transfer Item List Prototype Clear Method
-                LapysDevelopmentKit.test.isDataTransferItemListPrototypeClearMethod = function isDataTransferItemListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Data Transfer Item List Prototype Remove Method
-                LapysDevelopmentKit.test.isDataTransferItemListPrototypeRemoveMethod = function isDataTransferItemListPrototypeRemoveMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "remove" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Clear Method
-                LapysDevelopmentKit.test.isDocumentPrototypeClearMethod = function isDocumentPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Close Method
-                LapysDevelopmentKit.test.isDocumentPrototypeCloseMethod = function isDocumentPrototypeCloseMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "close" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Create Attribute Method
-                LapysDevelopmentKit.test.isDocumentPrototypeCreateAttributeMethod = function isDocumentPrototypeCreateAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createAttribute" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Create Comment Method
-                LapysDevelopmentKit.test.isDocumentPrototypeCreateCommentMethod = function isDocumentPrototypeCreateCommentMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createComment" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Create Document Fragment Method
-                LapysDevelopmentKit.test.isDocumentPrototypeCreateDocumentFragmentMethod = function isDocumentPrototypeCreateDocumentFragmentMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createDocumentFragment" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Create Element Method
-                LapysDevelopmentKit.test.isDocumentPrototypeCreateElementMethod = function isDocumentPrototypeCreateElementMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createElement" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Create Text Node Method
-                LapysDevelopmentKit.test.isDocumentPrototypeCreateTextNodeMethod = function isDocumentPrototypeCreateTextNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createTextNode" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Element From Point Method
-                LapysDevelopmentKit.test.isDocumentPrototypeElementFromPointMethod = function isDocumentPrototypeElementFromPointMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "elementFromPoint" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Execute Command Method
-                LapysDevelopmentKit.test.isDocumentPrototypeExecCommandMethod = function isDocumentPrototypeExecCommandMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "execCommand" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Get Element By ID Method
-                LapysDevelopmentKit.test.isDocumentPrototypeGetElementByIdMethod = function isDocumentPrototypeGetElementByIdMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementById" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Get Elements By Name Method
-                LapysDevelopmentKit.test.isDocumentPrototypeGetElementsByNameMethod = function isDocumentPrototypeGetElementsByNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByName" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Get Elements By Tag Name Method
-                LapysDevelopmentKit.test.isDocumentPrototypeGetElementsByTagNameMethod = function isDocumentPrototypeGetElementsByTagNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByTagName" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Has Focus Method
-                LapysDevelopmentKit.test.isDocumentPrototypeHasFocusMethod = function isDocumentPrototypeHasFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "hasFocus" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Open Method
-                LapysDevelopmentKit.test.isDocumentPrototypeOpenMethod = function isDocumentPrototypeOpenMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "open" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Query Command Enabled Method
-                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandEnabledMethod = function isDocumentPrototypeQueryCommandEnabledMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandEnabled" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Query Command Indeterm Method
-                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandIndetermMethod = function isDocumentPrototypeQueryCommandIndetermMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandIndeterm" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Query Command State Method
-                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandStateMethod = function isDocumentPrototypeQueryCommandStateMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandState" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Query Command Supported Method
-                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandSupportedMethod = function isDocumentPrototypeQueryCommandSupportedMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandSupported" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Query Command Value Method
-                LapysDevelopmentKit.test.isDocumentPrototypeQueryCommandValueMethod = function isDocumentPrototypeQueryCommandValueMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "queryCommandValue" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Write Method
-                LapysDevelopmentKit.test.isDocumentPrototypeWriteMethod = function isDocumentPrototypeWriteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "write" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Document Prototype Write Line Method
-                LapysDevelopmentKit.test.isDocumentPrototypeWriteLineMethod = function isDocumentPrototypeWriteLineMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "writeln" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Rectangle List Prototype Item Method
-                LapysDevelopmentKit.test.isDOMRectangleListPrototypeItemMethod = function isDOMRectangleListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM String List Prototype Clear Method
-                LapysDevelopmentKit.test.isDOMStringListPrototypeClearMethod = function isDOMStringListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM String List Prototype Item Method
-                LapysDevelopmentKit.test.isDOMStringListPrototypeItemMethod = function isDOMStringListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Add Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeAddMethod = function isDOMTokenListPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Contains Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeContainsMethod = function isDOMTokenListPrototypeContainsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "contains" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Entries Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeEntriesMethod = function isDOMTokenListPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype For Each Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeForEachMethod = function isDOMTokenListPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Item Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeItemMethod = function isDOMTokenListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Keys Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeKeysMethod = function isDOMTokenListPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Remove Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeRemoveMethod = function isDOMTokenListPrototypeRemoveMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "remove" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Replace Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeReplaceMethod = function isDOMTokenListPrototypeReplaceMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replace" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Supports Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeSupportsMethod = function isDOMTokenListPrototypeSupportsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "supports" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Toggle Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeToggleMethod = function isDOMTokenListPrototypeToggleMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "toggle" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is DOM Token List Prototype Values Method
-                LapysDevelopmentKit.test.isDOMTokenListPrototypeValuesMethod = function isDOMTokenListPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Name
-                LapysDevelopmentKit.test.isElementName = function isElementName(arg) {
-                    // Logic > Return
-                    if (!LDKF.isString(name)) return false;
-
-                    // Initialization > Iterator
-                    var iterator = LDKF.stringPrototypeLength(name), length = iterator;
-
-                    // Loop
-                    while (iterator) {
-                        // Initialization > (Index, Character)
-                        var index = length - (iterator -= 1) - 1,
-                            character = LDKF.stringPrototypeCharacterAt(name, index);
-
-                        // Logic
-                        if (index ? (character != '-' && character != '_' && !LDKF.stringPrototypeIsAlphabet(character) && !LDKF.stringPrototypeIsDigit(character)) : !LDKF.stringPrototypeIsAlphabet(character)) {
-                            // Initialization > Is Valid Non-Tested Character
-                            var isValidNonTestedCharacter = true;
-
-                            // Error Handling > (...)
-                            try { LDKF.documentPrototypeCreateElement(character) }
-                            catch (error) { isValidNonTestedCharacter = false }
-
-                            // Return
-                            return isValidNonTestedCharacter
-                        }
-                    }
-
-                    // Return
-                    return true
-                };
-
-                // Is Element Prototype Get Attribute Method
-                LapysDevelopmentKit.test.isElementPrototypeGetAttributeMethod = function isElementPrototypeGetAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAttribute" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Get Attribute Node Method
-                LapysDevelopmentKit.test.isElementPrototypeGetAttributeNodeMethod = function isElementPrototypeGetAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAttributeNode" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Get Bounding Client Rectangle Method
-                LapysDevelopmentKit.test.isElementPrototypeGetBoundingClientRectangleMethod = function isElementPrototypeGetBoundingClientRectangleMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getBoundingClientRect" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Get Client Rectangles Method
-                LapysDevelopmentKit.test.isElementPrototypeGetClientRectanglesMethod = function isElementPrototypeGetClientRectanglesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getClientRects" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Get Elements By Tag Name Method
-                LapysDevelopmentKit.test.isElementPrototypeGetElementsByTagNameMethod = function isElementPrototypeGetElementsByTagNameMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getElementsByTagName" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Insert Adjacent Element Method
-                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentElementMethod = function isElementPrototypeInsertAdjacentElementMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentElement" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Insert Adjacent HTML Method
-                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentHTMLMethod = function isElementPrototypeInsertAdjacentHTMLMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentHTML" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Insert Adjacent Text Method
-                LapysDevelopmentKit.test.isElementPrototypeInsertAdjacentTextMethod = function isElementPrototypeInsertAdjacentTextMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertAdjacentText" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Remove Attribute Method
-                LapysDevelopmentKit.test.isElementPrototypeRemoveAttributeMethod = function isElementPrototypeRemoveAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeAttribute" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Remove Attribute Node Method
-                LapysDevelopmentKit.test.isElementPrototypeRemoveAttributeNodeMethod = function isElementPrototypeRemoveAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeAttributeNode" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Scroll Into View Method
-                LapysDevelopmentKit.test.isElementPrototypeScrollIntoViewMethod = function isElementPrototypeScrollIntoViewMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "scrollIntoView" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Set Attribute Method
-                LapysDevelopmentKit.test.isElementPrototypeSetAttributeMethod = function isElementPrototypeSetAttributeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setAttribute" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Element Prototype Set Attribute Node Method
-                LapysDevelopmentKit.test.isElementPrototypeSetAttributeNodeMethod = function isElementPrototypeSetAttributeNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setAttributeNode" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Event Handler
-                LapysDevelopmentKit.test.isEventHandler = function isEventHandler(arg) { return LDKF.isNull(arg) || LDKF.isFunction(arg) };
-
-                // Is Event Target Prototype Add Event Listener Method
-                LapysDevelopmentKit.test.isEventTargetPrototypeAddEventListenerMethod = function isEventTargetPrototypeAddEventListenerMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "addEventListener" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Event Target Prototype Attach Event Method
-                LapysDevelopmentKit.test.isEventTargetPrototypeAttachEventMethod = function isEventTargetPrototypeAttachEventMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "attachEvent" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Event Target Prototype Detach Event Method
-                LapysDevelopmentKit.test.isEventTargetPrototypeDetachEventMethod = function isEventTargetPrototypeDetachEventMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "detachEvent" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Event Target Prototype Remove Event Listener Method
-                LapysDevelopmentKit.test.isEventTargetPrototypeRemoveEventListenerMethod = function isEventTargetPrototypeRemoveEventListenerMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeEventListener" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is File List Prototype Item Method
-                LapysDevelopmentKit.test.isFileListPrototypeItemMethod = function isFileListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML All Collection Prototype Item Method
-                LapysDevelopmentKit.test.isHTMLAllCollectionPrototypeItemMethod = function isHTMLAllCollectionPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML All Collection Prototype Named Item Method
-                LapysDevelopmentKit.test.isHTMLAllCollectionPrototypeNamedItemMethod = function isHTMLAllCollectionPrototypeNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "namedItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Collection Prototype Item Method
-                LapysDevelopmentKit.test.isHTMLCollectionPrototypeItemMethod = function isHTMLCollectionPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Collection Prototype Named Item Method
-                LapysDevelopmentKit.test.isHTMLCollectionPrototypeNamedItemMethod = function isHTMLCollectionPrototypeNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "namedItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Element Prototype Blur Method
-                LapysDevelopmentKit.test.isHTMLElementPrototypeBlurMethod = function isHTMLElementPrototypeBlurMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "blur" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Element Prototype Focus Method
-                LapysDevelopmentKit.test.isHTMLElementPrototypeFocusMethod = function isHTMLElementPrototypeFocusMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "focus" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Form Controls Collection Prototype Named Item Method
-                LapysDevelopmentKit.test.isHTMLFormControlsCollectionPrototypeNamedItemMethod = function isHTMLFormControlsCollectionPrototypeNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "namedItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Options Collection Prototype Add Method
-                LapysDevelopmentKit.test.isHTMLOptionsCollectionPrototypeAddMethod = function isHTMLOptionsCollectionPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is HTML Options Collection Prototype Remove Method
-                LapysDevelopmentKit.test.isHTMLOptionsCollectionPrototypeRemoveMethod = function isHTMLOptionsCollectionPrototypeRemoveMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "remove" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Clear Method
-                LapysDevelopmentKit.test.isMapPrototypeClearMethod = function isMapPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Delete Method
-                LapysDevelopmentKit.test.isMapPrototypeDeleteMethod = function isMapPrototypeDeleteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "delete" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Entries Method
-                LapysDevelopmentKit.test.isMapPrototypeEntriesMethod = function isMapPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype For Each Method
-                LapysDevelopmentKit.test.isMapPrototypeForEachMethod = function isMapPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Get Method
-                LapysDevelopmentKit.test.isMapPrototypeGetMethod = function isMapPrototypeGetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "get" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Has Method
-                LapysDevelopmentKit.test.isMapPrototypeHasMethod = function isMapPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Keys Method
-                LapysDevelopmentKit.test.isMapPrototypeKeysMethod = function isMapPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Set Method
-                LapysDevelopmentKit.test.isMapPrototypeSetMethod = function isMapPrototypeSetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "set" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Map Prototype Values Method
-                LapysDevelopmentKit.test.isMapPrototypeValuesMethod = function isMapPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media Key Status Map Prototype Entries Method
-                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeEntriesMethod = function isMediaKeyStatusMapPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media Key Status Map Prototype For Each Method
-                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeForEachMethod = function isMediaKeyStatusMapPrototypeForEachMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media Key Status Map Prototype Get Method
-                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeGetMethod = function isMediaKeyStatusMapPrototypeGetMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media Key Status Map Prototype Has Method
-                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeHasMethod = function isMediaKeyStatusMapPrototypeHasMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media Key Status Map Prototype Keys Method
-                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeKeysMethod = function isMediaKeyStatusMapPrototypeKeysMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media Key Status Map Prototype Values Method
-                LapysDevelopmentKit.test.isMediaKeyStatusMapPrototypeValuesMethod = function isMediaKeyStatusMapPrototypeValuesMethod(method) { return LDKF.isFunction(method) && !LDKF.functionPrototypeGetName(method) && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media List Prototype Append Medium Method
-                LapysDevelopmentKit.test.isMediaListPrototypeAppendMediumMethod = function isMediaListPrototypeAppendMediumMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendMedium" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media List Prototype Delete Medium Method
-                LapysDevelopmentKit.test.isMediaListPrototypeDeleteMediumMethod = function isMediaListPrototypeDeleteMediumMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "deleteMedium" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Media List Prototype Item Method
-                LapysDevelopmentKit.test.isMediaListPrototypeItemMethod = function isMediaListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Named Node Map Prototype Get Named Item Method
-                LapysDevelopmentKit.test.isNamedNodeMapPrototypeGetNamedItemMethod = function isNamedNodeMapPrototypeGetNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getNamedItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Named Node Map Prototype Item Method
-                LapysDevelopmentKit.test.isNamedNodeMapPrototypeItemMethod = function isNamedNodeMapPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Named Node Map Prototype Remove Named Item Method
-                LapysDevelopmentKit.test.isNamedNodeMapPrototypeRemoveNamedItemMethod = function isNamedNodeMapPrototypeRemoveNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeNamedItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Named Node Map Prototype Set Named Item Method
-                LapysDevelopmentKit.test.isNamedNodeMapPrototypeSetNamedItemMethod = function isNamedNodeMapPrototypeSetNamedItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "setNamedItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Append Child Method
-                LapysDevelopmentKit.test.isNodePrototypeAppendChildMethod = function isNodePrototypeAppendChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendChild" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Clone Node Method
-                LapysDevelopmentKit.test.isNodePrototypeCloneNodeMethod = function isNodePrototypeCloneNodeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "cloneNode" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Contains Method
-                LapysDevelopmentKit.test.isNodePrototypeContainsMethod = function isNodePrototypeContainsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "contains" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Has Child Nodes Method
-                LapysDevelopmentKit.test.isNodePrototypeHasChildNodesMethod = function isNodePrototypeHasChildNodesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "hasChildNodes" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Insert Before Method
-                LapysDevelopmentKit.test.isNodePrototypeInsertBeforeMethod = function isNodePrototypeInsertBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertBefore" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Normalize Method
-                LapysDevelopmentKit.test.isNodePrototypeNormalizeMethod = function isNodePrototypeNormalizeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "normalize" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Remove Child Method
-                LapysDevelopmentKit.test.isNodePrototypeRemoveChildMethod = function isNodePrototypeRemoveChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeChild" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node Prototype Replace Child Method
-                LapysDevelopmentKit.test.isNodePrototypeReplaceChildMethod = function isNodePrototypeReplaceChildMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceChild" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Node List Prototype Item Method
-                LapysDevelopmentKit.test.isNodeListPrototypeItemMethod = function isNodeListPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype Add Method
-                LapysDevelopmentKit.test.isSetPrototypeAddMethod = function isSetPrototypeAddMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "add" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype Clear Method
-                LapysDevelopmentKit.test.isSetPrototypeClearMethod = function isSetPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype Delete Method
-                LapysDevelopmentKit.test.isSetPrototypeDeleteMethod = function isSetPrototypeDeleteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "delete" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype Entries Method
-                LapysDevelopmentKit.test.isSetPrototypeEntriesMethod = function isSetPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype For Each Method
-                LapysDevelopmentKit.test.isSetPrototypeForEachMethod = function isSetPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype Has Method
-                LapysDevelopmentKit.test.isSetPrototypeHasMethod = function isSetPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype Keys Method
-                LapysDevelopmentKit.test.isSetPrototypeKeysMethod = function isSetPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Set Prototype Values Method
-                LapysDevelopmentKit.test.isSetPrototypeValuesMethod = function isSetPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Prototype Append Method
-                LapysDevelopmentKit.test.isStylePropertyMapPrototypeAppendMethod = function isStylePropertyMapPrototypeAppendMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "append" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Prototype Clear Method
-                LapysDevelopmentKit.test.isStylePropertyMapPrototypeClearMethod = function isStylePropertyMapPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Prototype Delete Method
-                LapysDevelopmentKit.test.isStylePropertyMapPrototypeDeleteMethod = function isStylePropertyMapPrototypeDeleteMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "delete" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Prototype Set Method
-                LapysDevelopmentKit.test.isStylePropertyMapPrototypeSetMethod = function isStylePropertyMapPrototypeSetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "set" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Read-Only Prototype Entries Method
-                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeEntriesMethod = function isStylePropertyMapReadOnlyPrototypeEntriesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "entries" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Read-Only Prototype For Each Method
-                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeForEachMethod = function isStylePropertyMapReadOnlyPrototypeForEachMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "forEach" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Read-Only Prototype Get Method
-                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeGetMethod = function isStylePropertyMapReadOnlyPrototypeGetMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "get" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Read-Only Prototype Get All Method
-                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeGetAllMethod = function isStylePropertyMapReadOnlyPrototypeGetAllMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getAll" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Read-Only Prototype Has Method
-                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeHasMethod = function isStylePropertyMapReadOnlyPrototypeHasMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "has" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Read-Only Prototype Keys Method
-                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeKeysMethod = function isStylePropertyMapReadOnlyPrototypeKeysMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "keys" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Property Map Read-Only Prototype Values Method
-                LapysDevelopmentKit.test.isStylePropertyMapReadOnlyPrototypeValuesMethod = function isStylePropertyMapReadOnlyPrototypeValuesMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "values" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Style Sheet List Prototype Item Method
-                LapysDevelopmentKit.test.isStyleSheetListPrototypeItemMethod = function isStyleSheetListPrototypeItemMethod(method) { return LDKF.isFunction(method) && (LDKF.functionPrototypeGetName(method) || "item") == "item" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length Prototype Convert To Specified Units Method
-                LapysDevelopmentKit.test.isSVGLengthPrototypeConvertToSpecifiedUnitsMethod = function isSVGLengthPrototypeConvertToSpecifiedUnitsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "convertToSpecifiedUnits" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length Prototype New Value Specified Units Method
-                LapysDevelopmentKit.test.isSVGLengthPrototypeNewValueSpecifiedUnitsMethod = function isSVGLengthPrototypeNewValueSpecifiedUnitsMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "newValueSpecifiedUnits" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length List Prototype Append Item Method
-                LapysDevelopmentKit.test.isSVGLengthListPrototypeAppendItemMethod = function isSVGLengthListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length List Prototype Clear Method
-                LapysDevelopmentKit.test.isSVGLengthListPrototypeClearMethod = function isSVGLengthListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length List Prototype Get Item Method
-                LapysDevelopmentKit.test.isSVGLengthListPrototypeGetItemMethod = function isSVGLengthListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length List Prototype Initialize Method
-                LapysDevelopmentKit.test.isSVGLengthListPrototypeInitializeMethod = function isSVGLengthListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length List Prototype Insert Item Before Method
-                LapysDevelopmentKit.test.isSVGLengthListPrototypeInsertItemBeforeMethod = function isSVGLengthListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length List Prototype Remove Item Method
-                LapysDevelopmentKit.test.isSVGLengthListPrototypeRemoveItemMethod = function isSVGLengthListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Length List Prototype Replace Item Method
-                LapysDevelopmentKit.test.isSVGLengthListPrototypeReplaceItemMethod = function isSVGLengthListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Number List Prototype Append Item Method
-                LapysDevelopmentKit.test.isSVGNumberListPrototypeAppendItemMethod = function isSVGNumberListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Number List Prototype Clear Method
-                LapysDevelopmentKit.test.isSVGNumberListPrototypeClearMethod = function isSVGNumberListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Number List Prototype Get Item Method
-                LapysDevelopmentKit.test.isSVGNumberListPrototypeGetItemMethod = function isSVGNumberListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Number List Prototype Initialize Method
-                LapysDevelopmentKit.test.isSVGNumberListPrototypeInitializeMethod = function isSVGNumberListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Number List Prototype Insert Item Before Method
-                LapysDevelopmentKit.test.isSVGNumberListPrototypeInsertItemBeforeMethod = function isSVGNumberListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Number List Prototype Remove Item Method
-                LapysDevelopmentKit.test.isSVGNumberListPrototypeRemoveItemMethod = function isSVGNumberListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Number List Prototype Replace Item Method
-                LapysDevelopmentKit.test.isSVGNumberListPrototypeReplaceItemMethod = function isSVGNumberListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Point List Prototype Append Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeAppendItemMethod = function isSVGPointListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Point List Prototype Clear Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeClearMethod = function isSVGPointListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Point List Prototype Get Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeGetItemMethod = function isSVGPointListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Point List Prototype Initialize Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeInitializeMethod = function isSVGPointListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Point List Prototype Insert Before Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeInsertItemBeforeMethod = function isSVGPointListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Point List Prototype Remove Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeRemoveItemMethod = function isSVGPointListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG String List Prototype Append Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeAppendItemMethod = function isSVGPointListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG String List Prototype Clear Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeClearMethod = function isSVGPointListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG String List Prototype Get Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeGetItemMethod = function isSVGPointListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG String List Prototype Initialize Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeInitializeMethod = function isSVGPointListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG String List Prototype Insert Item Before Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeInsertItemBeforeMethod = function isSVGPointListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG String List Prototype Remove Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeRemoveItemMethod = function isSVGPointListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG String List Prototype Replace Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeReplaceItemMethod = function isSVGPointListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Append Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeAppendItemMethod = function isSVGPointListPrototypeAppendItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "appendItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Clear Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeClearMethod = function isSVGPointListPrototypeClearMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "clear" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Consolidate Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeConsolidateMethod = function isSVGPointListPrototypeConsolidateMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "consolidate" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Create SVG Transform From Matrix Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeCreateSVGTransformFromMatrixMethod = function isSVGPointListPrototypeCreateSVGTransformFromMatrixMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "createSVGTransformFromMatrix" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Get Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeGetItemMethod = function isSVGPointListPrototypeGetItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Initialize Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeInitializeMethod = function isSVGPointListPrototypeInitializeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "initialize" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Insert Item Before Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeInsertItemBeforeMethod = function isSVGPointListPrototypeInsertItemBeforeMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "insertItemBefore" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Remove Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeRemoveItemMethod = function isSVGPointListPrototypeRemoveItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "removeItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is SVG Transform List Prototype Replace Item Method
-                LapysDevelopmentKit.test.isSVGPointListPrototypeReplaceItemMethod = function isSVGPointListPrototypeReplaceItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "replaceItem" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Text Track Cue List Prototype Get Cue By ID Method
-                LapysDevelopmentKit.test.isTextTrackCueListPrototypeGetCueByIdMethod = function isTextTrackCueListPrototypeGetCueByIdMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getCueById" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Text Track List Prototype Get Track By ID Method
-                LapysDevelopmentKit.test.isTextTrackListPrototypeGetTrackByIdMethod = function isTextTrackListPrototypeGetTrackByIdMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "getTrackById" && LDKF.functionPrototypeIsNative(method) };
-
-                // Is Touch List Prototype Item Method
-                LapysDevelopmentKit.test.isTouchListPrototypeItemMethod = function isTouchListPrototypeItemMethod(method) { return LDKF.isFunction(method) && LDKF.functionPrototypeGetName(method) == "item" && LDKF.functionPrototypeIsNative(method) };
-
-            /* Functions */
-                // Array --- NOTE (Lapys) -> Also flattens array-like objects once when appended to returned array.
-                LapysDevelopmentKit.functions.array = function array(elements) {
-                    // Initialization > (Array, Index, Iterator, Length)
-                    var array = [], index = -1,
-                        iterator = LDKF.getArgumentsLength(arguments), length = iterator;
-
-                    // Loop
-                    while (iterator) {
-                        // Initialization > Argument
-                        var argument = arguments[length - (iterator -= 1) - 1];
-
-                        // Logic
-                        if (LDKF.isArrayLike(argument)) {
-                            // Initialization > Argument (Iterator, Length)
-                            var argumentIterator = LDKF.arrayLikePrototypeLength(argument), argumentLength = argumentIterator;
-
-                            // Loop > Update > Array --- NOTE (Lapys) -> The Argument's native `item` method is not utilized here.
-                            while (argumentIterator) array[index += 1] = LDKF.objectPrototypeGetProperty(argument, argumentLength - (argumentIterator -= 1) - 1)
-                        }
-
-                        else
-                            // Update > Array
-                            array[index += 1] = argument
-                    }
-
-                    // Return
-                    return array
-                };
-
-                // Object
-                    // Create --- NOTE (Lapys) -> Re-defined.
-                    LapysDevelopmentKit.functions.objectCreate = function objectCreate(prototype) { return LDKO.objectCreate(prototype) };
 
             /* Constants */
                 // HTML Div Element
