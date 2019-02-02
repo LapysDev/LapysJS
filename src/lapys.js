@@ -498,37 +498,44 @@
 
                         // Build
                         LapysDevelopmentKit.functions.arrayPrototypeBuild = function arrayPrototypeBuild(array, callbacks) {
-                            // Initialization > (Iterator, Length)
-                            var iterator = LDKF.getArgumentsLength(arguments), length = LDKF.arrayPrototypeLength(array);
+                            // Initialization > (Iterator, (Array) Length)
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator,
+                                arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Loop
                             while (iterator != 1) {
-                                // Initialization > (Callback, Index)
-                                var callback = arguments[iterator -= 1], index = length;
+                                // Initialization > (Callback, Array Iterator)
+                                var callback = arguments[length - (iterator -= 1)], arrayIterator = arrayLength;
 
-                                // Loop > Update > Array
-                                while (index) array[length - (index -= 1) - 1] = callback.call(array, length - index - 1, array[length - index - 1])
+                                // Loop
+                                while (arrayIterator) {
+                                    // Initialization > Array Index
+                                    var arrayIndex = arrayLength - (arrayIterator -= 1) - 1;
+
+                                    // Update > Array
+                                    array[arrayIndex] = callback.call(array, arrayIndex, array[arrayIndex])
+                                }
                             }
 
                             // Return
                             return array
                         };
 
-                        // Concatenate --- FLAG ---
-                        LapysDevelopmentKit.functions.arrayPrototypeConcatenate = function arrayPrototypeConcatenate(array) {
+                        // Concatenate
+                        LapysDevelopmentKit.functions.arrayPrototypeConcatenate = function arrayPrototypeConcatenate(array, arrays) {
                             // Initialization > (Index, Iterator, Length)
                             var index = LDKF.arrayPrototypeLength(array) - 1,
                                 iterator = LDKF.getArgumentsLength(arguments), length = iterator;
 
                             // Loop
                             while (iterator != 1) {
-                                // Initialization > Concatenation (Iterator, Length)
+                                // Initialization > (Concatenation) (Iterator, Length)
                                 var concatenation = arguments[length - (iterator -= 1)],
-                                    concatenationIterator = LDKF.arrayLikePrototypeLength(concatenation),
-                                    concatenationLength = concatenationIterator;
+                                    concatenationIterator = LDKF.arrayPrototypeLength(concatenation), concatenationLength = concatenationIterator;
 
                                 // Loop > Update > Array
-                                while (concatenationIterator) array[index += 1] = concatenation[concatenationLength - (concatenationIterator -= 1) - 1]
+                                while (concatenationIterator)
+                                    array[index += 1] = concatenation[concatenationLength - (concatenationIterator -= 1) - 1]
                             }
 
                             // Return
@@ -556,35 +563,22 @@
                         // Cut Index
                         LapysDevelopmentKit.functions.arrayPrototypeCutIndex = function arrayPrototypeCutIndex(array, indexes) {
                             // Initialization > (Iterator, (Array) Length)
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator,
+                                arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Loop
-                            while (arrayLength && iterator != 1) {
+                            while (iterator != 1) {
                                 // Initialization > Index
                                 var index = arguments[length - (iterator -= 1)];
 
-                                // (Update > Index) | Error
-                                LDKF.numberPrototypeIsSafeInteger(index) ?
-                                    index = (index % arrayLength && LDKM.rebound(index, 1, arrayLength)) :
-                                    LDKF.error("Invalid array index: `" + LDKF.toString(index) + '`');
+                                // Logic
+                                if (index < arrayLength) {
+                                    // Loop > Update > (Index, Array)
+                                    while (index != arrayLength) { index += 1; array[index - 1] = array[index] }
 
-                                // Initialization > Array Iterator
-                                var arrayIterator = arrayLength;
-
-                                // Loop
-                                while (arrayIterator)
-                                    // Logic
-                                    if ((arrayIterator -= 1) == index) {
-                                        // Loop
-                                        while (arrayIterator != arrayLength) array[arrayIterator] = array[arrayIterator += 1];
-
-                                        // Update > Array Length
-                                        arrayLength -= 1;
-
-                                        // [Break]
-                                        break
-                                    }
+                                    // Update > Array Length
+                                    arrayLength -= 1
+                                }
                             }
 
                             // Update > Array
@@ -597,45 +591,33 @@
                         // Cut Left
                         LapysDevelopmentKit.functions.arrayPrototypeCutLeft = function arrayPrototypeCutLeft(array, lengths) {
                             // Initialization > (Iterator, (Array) Length)
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator,
+                                arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Loop
                             while (iterator != 1) {
-                                // Initialization > Argument
-                                var argument = arguments[length - (iterator -= 1)];
+                                // Initialization > Index
+                                var index = arguments[length - (iterator -= 1)];
 
                                 // Logic
-                                if (LDKF.numberPrototypeIsPositiveInteger(argument)) {
-                                    // Logic
-                                    if (argument > arrayLength - 1) {
-                                        // Update > Array (Length)
-                                        LDKF.arrayPrototypeFree(array);
-                                        arrayLength = 0
-                                    }
+                                if (index < arrayLength) {
+                                    // Initialization > Array Iterator
+                                    var arrayIterator = arrayLength;
 
-                                    else if (argument) {
-                                        // Initialization > Array Iterator
-                                        var arrayIterator = arrayLength;
+                                    // Loop > Update > Array (Iterator)
+                                    while (arrayIterator) { arrayIterator -= 1; array[arrayLength - arrayIterator - 1] = array[arrayLength - (arrayIterator - index) - 1] }
 
-                                        // Loop
-                                        while (arrayIterator) {
-                                            // Initialization > Index
-                                            var index = arrayLength - (arrayIterator -= 1) - 1;
-
-                                            // Update > Array
-                                            array[index] = array[argument + index]
-                                        }
-
-                                        // Update > Array
-                                        LDKF.arrayPrototypeResize(array, arrayLength - argument)
-                                    }
+                                    // Update > Array Length
+                                    arrayLength -= index
                                 }
 
                                 else
-                                    // Error
-                                    LDKF.error("Invalid array length: `" + LDKF.toString(argument) + '`')
+                                    // Update > Array Length
+                                    arrayLength = 0
                             }
+
+                            // Update > Array
+                            LDKF.arrayPrototypeResize(array, arrayLength);
 
                             // Return
                             return array
@@ -644,32 +626,20 @@
                         // Cut Right
                         LapysDevelopmentKit.functions.arrayPrototypeCutRight = function arrayPrototypeCutRight(array, lengths) {
                             // Initialization > (Iterator, (Array) Length)
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator,
+                                arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Loop
                             while (iterator != 1) {
-                                // Initialization > Argument
-                                var argument = arguments[length - (iterator -= 1)];
+                                // Initialization > Index
+                                var index = arguments[length - (iterator -= 1)];
 
-                                // Logic
-                                if (LDKF.numberPrototypeIsPositiveInteger(argument)) {
-                                    // Logic
-                                    if (argument > arrayLength - 1) {
-                                        // Update > Array (Length)
-                                        LDKF.arrayPrototypeFree(array);
-                                        arrayLength = 0
-                                    }
-
-                                    else if (argument)
-                                        // Update > Array
-                                        LDKF.arrayPrototypeResize(array, arrayLength - argument)
-                                }
-
-                                else
-                                    // Error
-                                    LDKF.error("Invalid array length: `" + LDKF.toString(argument) + '`')
+                                // Update > Array Length
+                                arrayLength = (index = arrayLength - index) > 0 ? index : 0
                             }
+
+                            // Update > Array
+                            LDKF.arrayPrototypeResize(array, arrayLength);
 
                             // Return
                             return array
@@ -696,11 +666,17 @@
 
                         // Every
                         LapysDevelopmentKit.functions.arrayPrototypeEvery = function arrayPrototypeEvery(array, callback) {
-                            // Initialization > Iterator
-                            var iterator = LDKF.arrayPrototypeLength(array);
+                            // Initialization > (Iterator, Length)
+                            var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
 
-                            // Loop > Logic > Return
-                            while (iterator) if (!callback(array[iterator -= 1])) return false;
+                            // Loop
+                            while (iterator) {
+                                // Initialization > Index
+                                var index = length - (iterator -= 1) - 1;
+
+                                // Logic
+                                if (!callback.call(array, index, array[index])) return false
+                            }
 
                             // Return
                             return true
@@ -708,82 +684,36 @@
 
                         // Filter
                         LapysDevelopmentKit.functions.arrayPrototypeFilter = function arrayPrototypeFilter(array, callbacks) {
-                            // Initialization > Length
-                            var length = LDKF.getArgumentsLength(arguments);
-
-                            // Logic
-                            if (length == 1)
-                                // Update > Array
-                                LDKF.arrayPrototypeFilterLeft(LDKF.arrayPrototypeFilterRight(array));
-
-                            else if (length == 2)
-                                // Update > Array
-                                LDKF.arrayPrototypeFilterLeft(LDKF.arrayPrototypeFilterRight(array, callbacks), callbacks);
-
-                            else if (length) {
-                                // Initialization > Iterator
-                                var iterator = length;
-
-                                // Loop > Update > Array
-                                while (iterator != 1) LDKF.arrayPrototypeFilter(array, arguments[length - (iterator -= 1)])
-                            }
+                            // Update > Array
+                            array = LDKF.arrayPrototypeFilterRight.apply(LDKF, arguments);
 
                             // Return
-                            return array
+                            return LDKF.arrayPrototypeFilterLeft.apply(LDKF, arguments)
                         };
 
                         // Filter Left
                         LapysDevelopmentKit.functions.arrayPrototypeFilterLeft = function arrayPrototypeFilterLeft(array, callbacks) {
-                            // Initialization > (Iterator, Length)
-                            var arrayLength = LDKF.arrayPrototypeLength(array);
+                            // Initialization > (Iterator, Length, Array (Index, Length))
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator,
+                                arrayIndex = 0, arrayLength = LDKF.arrayPrototypeLength(array);
 
-                            // Logic
-                            if (arrayLength) {
-                                // Initialization > (Iterator, Length)
-                                var index = 0, iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+                            // Loop
+                            while (iterator != 1) {
+                                // Initialization > Callback
+                                var callback = arguments[length - (iterator -= 1)];
 
                                 // Loop
-                                while (iterator != 1) {
-                                    // Initialization > Callback
-                                    var callback = arguments[length - (iterator -= 1)];
+                                while (callback.call(array, arrayIndex, array[arrayIndex])) {
+                                    // Update > Array Index
+                                    arrayIndex += 1;
 
-                                    // Logic
-                                    if (LDKF.isFunction(callback))
-                                        // Loop > Update > Index
-                                        while (callback(array[index]) && index != arrayLength) index += 1;
-
-                                    else {
-                                        // Initialization > (Callback (Array, Iterator, Length), Filtered)
-                                        var callbackArray = callback,
-                                            callbackIterator = LDKF.arrayPrototypeLength(callbackArray), callbackLength = callbackIterator,
-                                            filtered = false;
-
-                                        // Loop
-                                        while (callbackIterator && index != arrayLength) {
-                                            // Initialization > (Allow Filter, Callback)
-                                            var allowFilter = false,
-                                                callback = callbackArray[callbackLength - (callbackIterator -= 1) - 1];
-
-                                            // Loop
-                                            while (callback(array[index]) && index != arrayLength) {
-                                                // Update > (Index, Allow Filter, Callback Iterator)
-                                                allowFilter || (index += 1);
-                                                allowFilter = true;
-                                                callbackIterator = callbackLength;
-
-                                                // [Break]
-                                                break
-                                            }
-
-                                            // Logic > [Break]
-                                            if (!allowFilter && !callbackIterator) break
-                                        }
-                                    }
+                                    // Logic > [Break]
+                                    if (arrayIndex == arrayLength) break
                                 }
-
-                                // Update > Array
-                                LDKF.arrayPrototypeCutLeft(array, index)
                             }
+
+                            // Update > Array
+                            LDKF.arrayPrototypeCutLeft(array, arrayIndex);
 
                             // Return
                             return array
@@ -791,56 +721,22 @@
 
                         // Filter Right
                         LapysDevelopmentKit.functions.arrayPrototypeFilterRight = function arrayPrototypeFilterRight(array, callbacks) {
-                            // Initialization > (Iterator, Length)
-                            var arrayLength = LDKF.arrayPrototypeLength(array);
+                            // Initialization > (Iterator, Length, Array (Length, Index))
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator,
+                                arrayLength = LDKF.arrayPrototypeLength(array), arrayIndex = arrayLength - 1;
 
-                            // Logic
-                            if (arrayLength) {
-                                // Initialization > (Iterator, Length)
-                                var index = arrayLength - 1, iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+                            // Loop
+                            while (iterator != 1) {
+                                // Initialization > Callback
+                                var callback = arguments[length - (iterator -= 1)];
 
-                                // Loop
-                                while (iterator != 1) {
-                                    // Initialization > Callback
-                                    var callback = arguments[length - (iterator -= 1)];
-
-                                    // Logic
-                                    if (LDKF.isFunction(callback))
-                                        // Loop > Update > Index
-                                        while (callback(array[index]) && index != -1) index -= 1;
-
-                                    else {
-                                        // Initialization > (Callback (Array, Iterator, Length), Filtered)
-                                        var callbackArray = callback,
-                                            callbackIterator = LDKF.arrayPrototypeLength(callbackArray), callbackLength = callbackIterator,
-                                            filtered = false;
-
-                                        // Loop
-                                        while (callbackIterator && index != -1) {
-                                            // Initialization > (Allow Filter, Callback)
-                                            var allowFilter = false,
-                                                callback = callbackArray[callbackLength - (callbackIterator -= 1) - 1];
-
-                                            // Loop
-                                            while (callback(array[index]) && index != -1) {
-                                                // Update > (Index, Allow Filter, Callback Iterator)
-                                                allowFilter || (index -= 1);
-                                                allowFilter = true;
-                                                callbackIterator = callbackLength;
-
-                                                // [Break]
-                                                break
-                                            }
-
-                                            // Logic > [Break]
-                                            if (!allowFilter && !callbackIterator) break
-                                        }
-                                    }
-                                }
-
-                                // Update > Array
-                                LDKF.arrayPrototypeResize(array, index + 1)
+                                // Loop > Update > Array Index
+                                while (arrayIndex && callback.call(array, arrayIndex, array[arrayIndex]))
+                                    arrayIndex -= 1
                             }
+
+                            // Update > Array
+                            LDKF.arrayPrototypeCutRight(array, arrayLength - arrayIndex - 1);
 
                             // Return
                             return array
@@ -859,17 +755,14 @@
 
                         // For Each
                         LapysDevelopmentKit.functions.arrayPrototypeForEach = function arrayPrototypeForEach(array, callback) {
-                            // Initialization > Iterator
+                            // Initialization > (Iterator, Length)
                             var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
 
-                            // Loop
-                            while (iterator) {
-                                // Initialization > Index
-                                var index = length - (iterator -= 1) - 1;
+                            // Loop > (...)
+                            while (iterator) { var index = length - (iterator -= 1) - 1; callback.call(array, index, array[index]) }
 
-                                // Callback
-                                callback(array[index], index, array)
-                            }
+                            // Return
+                            return array
                         };
 
                         // Free
@@ -918,69 +811,21 @@
                         };
 
                         // Insert
-                        LapysDevelopmentKit.functions.arrayPrototypeInsert = function arrayPrototypeInsert(array, element, indexes) {
-                            // Initialization > (Iterator, (Array) Length)
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+                        LapysDevelopmentKit.functions.arrayPrototypeInsert = function arrayPrototypeInsert(array, element, index) {
+                            // Initialization > (Iterator, Length)
+                            var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
 
-                            // Loop
-                            while (iterator != 2) {
-                                // Initialization > Index
-                                var index = arguments[length - (iterator -= 1) + 1];
+                            // Logic
+                            if (index < length)
+                                // Loop > Update > (Array, Iterator)
+                                while (iterator != index) { array[iterator] = array[iterator - 1]; iterator -= 1 }
 
-                                // Error
-                                LDKF.numberPrototypeIsSafeInteger(index) || LDKF.error("Invalid array index: `" + LDKF.toString(index) + '`');
-
-                                // Logic
-                                if (-index > arrayLength - 1) {
-                                    // Update > Array
-                                    LDKF.arrayPrototypeShiftRight(array, -index - (arrayLength - 1));
-                                    array[0] = element
-                                }
-
-                                else {
-                                    // Update > Index
-                                    LDKF.numberPrototypeIsNegative(index) && (index = LDKM.rebound(index, 1, arrayLength));
-
-                                    // Initialization > Array Iterator
-                                    var arrayIterator = arrayLength;
-
-                                    // Logic
-                                    if (index > arrayLength - 1)
-                                        array[index] = element;
-
-                                    else
-                                        // Loop
-                                        while (arrayIterator)
-                                            // Logic
-                                            if ((arrayIterator -= 1) == index) {
-                                                // Loop
-                                                arrayIterator = arrayLength;
-
-                                                // Loop
-                                                while (arrayIterator != index) {
-                                                    // Update > Array (Iterator)
-                                                    arrayIterator -= 1;
-                                                    array[arrayIterator + 1] = array[arrayIterator]
-                                                }
-
-                                                // Update > Array
-                                                array[index] = element;
-
-                                                // Update > Array Length
-                                                arrayLength += 1;
-
-                                                // [Break]
-                                                break
-                                            }
-                                }
-                            }
+                            // Update > Array
+                            array[index] = element;
 
                             // Return
                             return array
                         };
-
-                        // Is Filled With --- CHECKPOINT ---
 
                         // Last
                         LapysDevelopmentKit.functions.arrayPrototypeLast = function arrayPrototypeLast(array) {
@@ -1025,9 +870,44 @@
                         // Length --- NOTE (Lapys) -> Fortunately, the `length` property of arrays is consistent with the object itself.
                         LapysDevelopmentKit.functions.arrayPrototypeLength = function arrayPrototypeLength(array) { return array.length };
 
-                        // Only --- CHECKPOINT ---
-                        // Pad --- CHECKPOINT ---
+                        // Like
+                        LapysDevelopmentKit.functions.arrayPrototypeLike = function arrayPrototypeLike(arrayA, arrayB) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(arrayB);
+
+                            // Loop > Logic > Return
+                            while (iterator) if (!LDKF.arrayPrototypeIncludes(arrayA, arrayB[iterator -= 1])) return false;
+
+                            // Return
+                            return true
+                        };
+
+                        // Only
+                        LapysDevelopmentKit.functions.arrayPrototypeOnly = function arrayPrototypeOnly(array, element) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(array);
+
+                            // Loop > Logic > Return
+                            while (iterator) if (array[iterator -= 1] !== element) return false;
+
+                            // Return
+                            return true
+                        };
+
+                        // Pad --- NOTE (Lapys) -> Fills either side of an array with default-value elements; In JavaScript's case, that would be `undefined`.
+                        LapysDevelopmentKit.function.arrayPrototypePad = function arrayPrototypePad(array) {
+                            // Update > Array
+                            array = LDKF.arrayPrototypePadRight.apply(LDKF, arguments);
+
+                            // Return
+                            return LDKF.arrayPrototypePadLeft.apply(LDKF, arguments)
+                        };
+
                         // Pad Left --- CHECKPOINT ---
+                        LapysDevelopmentKit.functions.arrayPrototypePadLeft = function arrayPrototypePadLeft(array, lengths) {
+
+                        };
+
                         // Pad Right --- CHECKPOINT ---
                         // Remove --- CHECKPOINT --- NOTE (Lapys) -> Consider using `Array.prototype.splice` for performance boosts.
                         // Remove All --- CHECKPOINT ---
@@ -4406,32 +4286,11 @@
 
                     // Trim
                     LapysDevelopmentKit.functions.stringPrototypeTrim = function stringPrototypeTrim(string, matches) {
-                        // Initialization > Length
-                        var length = LDKF.getArgumentsLength(arguments);
-
-                        // Logic
-                        if (length == 1)
-                            // Update > String
-                            string = LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string));
-
-                        else if (length == 2)
-                            // Update > String
-                            string = LDKF.stringPrototypeTrimLeft(LDKF.stringPrototypeTrimRight(string, matches), matches);
-
-                        else if (length) {
-                            // Initialization > Iterator
-                            var iterator = length;
-
-                            // Loop > Update > String
-                            while (iterator != 1) string = LDKF.stringPrototypeTrim(string, arguments[length - (iterator -= 1)])
-                        }
-
-                        else
-                            // Return
-                            return "";
+                        // Update > String
+                        string = LDKF.stringPrototypeTrimRight.apply(LDKF, arguments);
 
                         // Return
-                        return string
+                        return LDKF.stringPrototypeTrimLeft.apply(LDKF, arguments)
                     };
 
                     // Trim Left
