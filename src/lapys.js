@@ -6,7 +6,10 @@
 
     --- NOTE ---
         #Lapys:
-            - ECMAScript Version: ECMAScript 2, 3rd Edition (1999)
+            - Supported environment standards:
+                -- ECMAScript 2, 3rd Edition (1999)
+                -- JavaScript v1.3
+
             - Supported development environments:
                 -- Android (browser)
                 -- Internet Explorer (browser)
@@ -33,21 +36,24 @@
 
                 This is also to implement the design standards of the Lapys Development Kit into JavaScript by defining its core concepts and mechanics:
                     -- private entities stay private (or at least constant): `Object.prototype`,
-                    -- there is a single/ as few necessary ways to solve a problem: `String.prototype.trimEnd`, `String.prototype.trimRight`
-                    -- all versions are consistent: `String.prototype.charAt`, `requestAnimationFrame`,`webkitRequestAnimationFrame`
-                    -- syntax is intuitive and self-explanatory
+                    -- there is a single/ as few necessary ways to solve a problem: `String.prototype.trimEnd`, `String.prototype.trimRight`,
+                    -- all versions are consistent: `String.prototype.charAt`, `requestAnimationFrame`, `webkitRequestAnimationFrame`,
+                    -- syntax is intuitive and self-explanatory: `constructor`, `delete`, `isConnected`, `super`,
                     -- and so on...
 
             - Over its years of development, the library is still a bare-bones version of what it could be.
 
     --- UPDATE REQUIRED ---
         #Lapys:
-            - `LapysDevelopmentKit.functions.arrayLikePrototypeLength` uses the `item` prototype property.
             - Test for `Symbol` objects as well.
-
             - Test all explicitly requested methods & properties.
+
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
                 -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
+                -- Internet Explorer 4 (browser)
+                -- Netscape (browser)
+                    --- Netscape 2
+                    --- Netscape 4
                 -- Samsung Internet (browser) --- NOTE (Lapys) -> Untested...
                 -- others...
 */
@@ -456,8 +462,20 @@
                     // Return
                     return array
                 };
-                    // Prototype --- NOTE (Lapys) -> All array methods affect the target object.
-                        // Add To Back --- NOTE (Lapys) -> Consider using `Array.prototype.push` for performance boosts.
+                    /* Prototype
+                            --- NOTE ---
+                                #Lapys: All array methods affect the source/ target object.
+
+                            --- WARN ---
+                                #Lapys:
+                                    - Each array method assumes the source Array is always complete (non-partial).
+                                    - Ensure each method is not heavily dependent on another,
+                                        interoperability may be key, but performance is the zenith here.
+                    */
+                        // Add
+                        LapysDevelopmentKit.functions.arrayPrototypeAdd = function arrayPrototypeAdd(array, element) { return LDKF.arrayPrototypeAddToFront.apply(LDKF, arguments) };
+
+                        // Add To Back --- NOTE (Lapys) -> Faster than `Array.prototype.unshift`.
                         LapysDevelopmentKit.functions.arrayPrototypeAddToBack = function arrayPrototypeAddToBack(array, element) {
                             // Initialization > (Iterator, Length)
                             var iterator = LDKF.getArgumentsLength(arguments), length = LDKF.arrayPrototypeLength(array);
@@ -480,7 +498,7 @@
                             return array
                         };
 
-                        // Add To Front
+                        // Add To Front --- NOTE (Lapys) -> Consider using `Array.prototype.push` for performance boosts.
                         LapysDevelopmentKit.functions.arrayPrototypeAddToFront = function arrayPrototypeAddToFront(array, element) {
                             // Initialization > (Iterator, Length)
                             var iterator = LDKF.getArgumentsLength(arguments), length = LDKF.arrayPrototypeLength(array);
@@ -519,6 +537,18 @@
 
                             // Return
                             return array
+                        };
+
+                        // Clone --- WARN (Lapys) -> Except for high-end performance purposes, defer to `LapysDevelopmentKit.functions.objectPrototypeClone` instead.
+                        LapysDevelopmentKit.functions.arrayPrototypeClone = function arrayPrototypeClone(array) {
+                            // Initialization > (Clone, Iterator)
+                            var clone = [], iterator = LDKF.arrayPrototypeLength(array);
+
+                            // Loop > Update > Clone
+                            while (iterator) clone[iterator -= 1] = array[iterator];
+
+                            // Return
+                            return clone
                         };
 
                         // Concatenate
@@ -572,7 +602,7 @@
                                 var index = arguments[length - (iterator -= 1)];
 
                                 // Logic
-                                if (index < arrayLength) {
+                                if (~index && index < arrayLength) {
                                     // Loop > Update > (Index, Array)
                                     while (index != arrayLength) { index += 1; array[index - 1] = array[index] }
 
@@ -742,6 +772,39 @@
                             return array
                         };
 
+                        // Find
+                        LapysDevelopmentKit.functions.arrayPrototypeFind = function arrayPrototypeFind(array, callback) { return LDKF.arrayPrototypeFindFromBack(array, callback) };
+
+                        // Find From Back
+                        LapysDevelopmentKit.functions.arrayPrototypeFindFromBack = function arrayPrototypeFindFromBack(array, callback) {
+                            // Initialization > (Iterator, Length)
+                            var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
+
+                            // Loop
+                            while (iterator) {
+                                // Initialization > Index
+                                var index = length - (iterator -= 1) - 1;
+
+                                // Logic > Return
+                                if (callback.call(array, index, array[index])) return array[index]
+                            }
+                        };
+
+                        // Find From Front
+                        LapysDevelopmentKit.functions.arrayPrototypeFindFromFront = function arrayPrototypeFindFromFront(array, callback) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(array);
+
+                            // Loop
+                            while (iterator) {
+                                // Update > Iterator
+                                iterator -= 1;
+
+                                // Logic > Return
+                                if (callback.call(array, iterator, array[iterator])) return array[iterator]
+                            }
+                        };
+
                         // First
                         LapysDevelopmentKit.functions.arrayPrototypeFirst = function arrayPrototypeFirst(array) {
                             // Initialization > Key
@@ -793,7 +856,10 @@
                         };
 
                         // Index
-                        LapysDevelopmentKit.functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element) {
+                        LapysDevelopmentKit.functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element) { return LDKF.arrayPrototypeIndexFromBack(array, element) };
+
+                        // Index From Back
+                        LapysDevelopmentKit.functions.arrayPrototypeIndexFromBack = function arrayPrototypeIndexFromBack(array, element) {
                             // Initialization > (Iterator, Length)
                             var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
 
@@ -810,21 +876,113 @@
                             return -1
                         };
 
+                        // Index From Front
+                        LapysDevelopmentKit.functions.arrayPrototypeIndexFromFront = function arrayPrototypeIndexFromFront(array, element) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(array);
+
+                            // Loop > Logic > Return
+                            while (iterator) if (array[iterator -= 1] === element) return iterator;
+
+                            // Return
+                            return -1
+                        };
+
                         // Insert
                         LapysDevelopmentKit.functions.arrayPrototypeInsert = function arrayPrototypeInsert(array, element, index) {
                             // Initialization > (Iterator, Length)
                             var iterator = LDKF.arrayPrototypeLength(array), length = iterator;
 
-                            // Logic
-                            if (index < length)
-                                // Loop > Update > (Array, Iterator)
-                                while (iterator != index) { array[iterator] = array[iterator - 1]; iterator -= 1 }
+                            // Logic > Loop > Update > (Array, Iterator)
+                            if (index < length) while (iterator != index) { array[iterator] = array[iterator - 1]; iterator -= 1 }
 
                             // Update > Array
                             array[index] = element;
 
                             // Return
                             return array
+                        };
+
+                        // Instance
+                        LapysDevelopmentKit.functions.arrayPrototypeInstance = function arrayPrototypeInstance(array, element) {
+                            // Initialization > Length
+                            var length = LDKF.getArgumentsLength(arguments);
+
+                            // Logic
+                            if (length) {
+                                // Initialization > (Array (Iterator, Length), Index, Instances)
+                                var arrayIterator = LDKF.arrayPrototypeLength(array), arrayLength = arrayIterator,
+                                    index = -1, instances = [];
+
+                                // Logic
+                                if (arrayLength) {
+                                    // (...) --- NOTE (Lapys) -> Filter the Array to contain only the specified arguments.
+                                    (length == 1) || (function(args) {
+                                        // Update > Array
+                                        array = LDKF.arrayPrototypeClone(array);
+
+                                        // Loop
+                                        while (arrayIterator) {
+                                            // Initialization > (Element, Iterator)
+                                            var element = array[arrayIterator -= 1], iterator = length;
+
+                                            // Loop
+                                            while (iterator != 1) {
+                                                // Update > Iterator
+                                                iterator -= 1;
+
+                                                // Logic
+                                                if (element === args[iterator])
+                                                    // [Break]
+                                                    break;
+
+                                                else if (element !== args[iterator] && iterator == 1) {
+                                                    // Update > Array (Length)
+                                                    LDKF.arrayPrototypeCutIndex(array, arrayIterator);
+                                                    arrayLength -= 1
+                                                }
+                                            }
+                                        }
+
+                                        // Update > Array Iterator
+                                        arrayIterator = arrayLength
+                                    })(arguments);
+
+                                    // Loop --- NOTE (Lapys) -> Get the occurrences of each element in the Array.
+                                    while (arrayIterator) {
+                                        // Initialization > (Element, Instances Iterator, Is Distinct)
+                                        var element = array[arrayIterator -= 1], instancesIterator = index + 1, isDistinct = true;
+
+                                        // Loop
+                                        while (!!instancesIterator ^ !~instancesIterator) {
+                                            // Update > Instances Iterator
+                                            instancesIterator -= 1;
+
+                                            // Logic
+                                            if (element === instances[instancesIterator].element) {
+                                                // Modification > (...) > Occurrence
+                                                instances[instancesIterator].occurrence += 1;
+
+                                                // Update > Is Distinct
+                                                isDistinct = false;
+
+                                                // [Break]
+                                                break
+                                            }
+                                        }
+
+                                        // Update > Instances
+                                        isDistinct && (instances[index += 1] = {element: element, occurrence: 1})
+                                    }
+
+                                    // Return
+                                    return length == 2 ? instances[0].occurrence : instances
+                                }
+
+                                else
+                                    // Return
+                                    return length == 2 ? 0 : []
+                            }
                         };
 
                         // Last
@@ -855,18 +1013,6 @@
                             return array[LDKF.toNumber(formerKey)]
                         };
 
-                        // Last Index
-                        LapysDevelopmentKit.functions.arrayPrototypeLastIndex = function arrayPrototypeLastIndex(array, element) {
-                            // Initialization > Iterator
-                            var iterator = LDKF.arrayPrototypeLength(array);
-
-                            // Loop > Logic > Return
-                            while (iterator) if (array[iterator -= 1] === element) return iterator;
-
-                            // Return
-                            return -1
-                        };
-
                         // Length --- NOTE (Lapys) -> Fortunately, the `length` property of arrays is consistent with the object itself.
                         LapysDevelopmentKit.functions.arrayPrototypeLength = function arrayPrototypeLength(array) { return array.length };
 
@@ -895,7 +1041,7 @@
                         };
 
                         // Pad --- NOTE (Lapys) -> Fills either side of an array with default-value elements; In JavaScript's case, that would be `undefined`.
-                        LapysDevelopmentKit.function.arrayPrototypePad = function arrayPrototypePad(array) {
+                        LapysDevelopmentKit.functions.arrayPrototypePad = function arrayPrototypePad(array) {
                             // Update > Array
                             array = LDKF.arrayPrototypePadRight.apply(LDKF, arguments);
 
@@ -903,22 +1049,97 @@
                             return LDKF.arrayPrototypePadLeft.apply(LDKF, arguments)
                         };
 
-                        // Pad Left --- CHECKPOINT ---
-                        LapysDevelopmentKit.functions.arrayPrototypePadLeft = function arrayPrototypePadLeft(array, lengths) {
+                        // Pad Left
+                        LapysDevelopmentKit.functions.arrayPrototypePadLeft = function arrayPrototypePadLeft(array, length) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.arrayPrototypeLength(array);
 
+                            // Loop > Update > (Iterator, Array)
+                            while (iterator) { iterator -= 1; array[iterator + length] = array[iterator] }
+                            while (length) array[length -= 1] = undefined;
+
+                            // Return
+                            return array
                         };
 
-                        // Pad Right --- CHECKPOINT ---
-                        // Remove --- CHECKPOINT --- NOTE (Lapys) -> Consider using `Array.prototype.splice` for performance boosts.
-                        // Remove All --- CHECKPOINT ---
-                        // Remove Duplicated --- CHECKPOINT ---
+                        // Pad Right
+                        LapysDevelopmentKit.functions.arrayPrototypePadRight = function arrayPrototypePadRight(array, length) {
+                            // Update > Length
+                            length += LDKF.arrayPrototypeLength(array);
+
+                            // Loop > Update > (Length, Array)
+                            while (length) { length -= 1; array[length] = array[length] }
+
+                            // Return
+                            return array
+                        };
+
+                        // Remove --- NOTE (Lapys) -> Consider using `Array.prototype.splice` for performance boosts.
+                        LapysDevelopmentKit.functions.arrayPrototypeRemove = function arrayPrototypeRemove(array, element) { return LDKF.arrayPrototypeRemoveFromBack.apply(LDKF, arguments) };
+
+                        // Remove All
+                        LapysDevelopmentKit.functions.arrayPrototypeRemoveAll = function arrayPrototypeRemoveAll(array, element) {
+                            // Initialization > (Iterator, Length)
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop
+                            while (iterator != 1) {
+                                // Initialization > Index
+                                var index;
+
+                                // Update > Element
+                                element = arguments[length - (iterator -= 1)];
+
+                                // Loop > Update > Array
+                                while (~(index = LDKF.arrayPrototypeIndexFromFront(array, element)))
+                                    LDKF.arrayPrototypeCutIndex(array, index)
+                            }
+
+                            // Return
+                            return array
+                        };
+
+                        // Remove Duplicated --- NOTE (Lapys) -> An element is a duplicate when it has multiple instances.
+                        LapysDevelopmentKit.functions.arrayPrototypeRemoveDuplicated = function arrayPrototypeRemoveDuplicated(array) { return LDKF.arrayPrototypeRemoveDuplicatedFromBack(array) };
+
                         // Remove Duplicated From Back --- CHECKPOINT ---
+                        LapysDevelopmentKit.functions.arrayPrototypeRemoveDuplicatedFromBack = function arrayPrototypeRemoveDuplicatedFromBack(array) {
+                            var length = LDKF.arrayPrototypeLength(array);
+
+                            if (length) {}
+
+                            // Return
+                            return array
+                        };
+
                         // Remove Duplicated From Front --- CHECKPOINT ---
                         // Remove Duplicates --- CHECKPOINT ---
                         // Remove Duplicates From Back --- CHECKPOINT ---
                         // Remove Duplicates From Front --- CHECKPOINT ---
-                        // Remove From Back --- CHECKPOINT ---
-                        // Remove From Front --- CHECKPOINT ---
+                        // Remove From Back
+                        LapysDevelopmentKit.functions.arrayPrototypeRemoveFromBack = function arrayPrototypeRemoveFromBack(array, element) {
+                            // Initialization > (Iterator, Length)
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop > Update > Array
+                            while (iterator != 1) LDKF.arrayPrototypeCutIndex(array, LDKF.arrayPrototypeIndexFromBack(array, arguments[length - (iterator -= 1)]));
+
+                            // Return
+                            return array
+                        };
+
+                        // Remove From Front
+                        LapysDevelopmentKit.functions.arrayPrototypeRemoveFromFront = function arrayPrototypeRemoveFromFront(array, element) {
+                            // Initialization > (Iterator, Length)
+                            var iterator = LDKF.getArgumentsLength(arguments), length = iterator;
+
+                            // Loop > Update > Array
+                            while (iterator != 1) LDKF.arrayPrototypeCutIndex(array, LDKF.arrayPrototypeIndexFromFront(array, arguments[length - (iterator -= 1)]));
+
+                            // Return
+                            return array
+                        };
+
                         // Remove Repeated --- CHECKPOINT ---
                         // Remove Repeated From Back --- CHECKPOINT ---
                         // Remove Repeated From Front --- CHECKPOINT ---
@@ -1181,19 +1402,16 @@
 
                     else {
                         // Update > Name
-                        name = (function(stream) {
-                            // Error Handling > (...)
-                            try { stream && LDKF.eval("var " + stream) } catch (error) { LDKF.error("Invalid name `" + name + "` for function") }
+                        name = name ? LDKF.toString(name) : "";
 
-                            // Return
-                            return stream
-                        })(name ? LDKF.toString(name) : "");
+                        // Error --- NOTE (Lapys) -> Ensure the Name argument is syntactically valid.
+                        try { name && LDKF.eval("var " + name) } catch (error) { LDKF.error("Invalid name `" + name + "` for function") }
 
-                        // Update > Options
+                        // Update > Options --- NOTE (Lapys) -> Parse the given Options argument.
                         LDKF.isString(options) && (options = {params: [options]});
                         LDKF.isArray(options) && (options = {params: options});
 
-                        // Error
+                        // Error --- NOTE (Lapys) -> Still parse the given Options argument.
                         LDKF.isJSON(options) ?
                             (
                                 !LDKF.objectPrototypeHasProperty(options, "params") &&
@@ -1201,7 +1419,7 @@
                             ) && LDKF.error("The second argument given must either have a `params` or `type` property") :
                             LDKF.error("The second argument must be options for the function or parameters");
 
-                        // Initialization > (Parameters (Count), Type)
+                        // Initialization > (Parameters (Count), Type) --- NOTE (Lapys) -> Again, still parse the given Options argument.
                         var paramsCount, parameters = LDKF.objectPrototypeHasProperty(options, "params") ? (function(parameters) {
                             // Update > Parameters
                             LDKF.isString(parameters) && (parameters = LDKF.objectPrototypeSetProperty(options, "params", [parameters]));
@@ -1230,7 +1448,7 @@
                         // Error
                         (type == "arrow" || type == "class" || type == "default" || type == "generator") || LDKF.error("Invalid type `" + LDKF.toString(type) + "` for function");
 
-                        // Logic
+                        // Logic --- NOTE (Lapys) -> Construct the code of an arrow function.
                         if (type == "arrow") {
                             // Update > Source
                             source += paramsCount == 1 && (function(parameter) {
@@ -1259,10 +1477,10 @@
                                     LDKF.eval(source + body)
                                 } catch (error) {
                                     // Initialization > Delimiter
-                                    var delimter = LDKF.stringPrototypeIncludes(body, '\n') ? '\n' : ' ';
+                                    var delimiter = LDKF.stringPrototypeIncludes(body, '\n') ? '\n' : ' ';
 
                                     // Update > Body
-                                    body = '{' + delimter + body + delimter + '}'
+                                    body = '{' + delimiter + body + delimiter + '}'
                                 }
 
                                 // Update > Source
@@ -1275,20 +1493,23 @@
                         }
 
                         else {
-                            // Initialization > Extends
-                            var baseConstructor = LDKF.objectPrototypeHasProperty(options, "extends") ? LDKF.objectPrototypeGetProperty(options, "extends") : "";
+                            // Update > Body --- NOTE (Lapys) -> If the Body argument is not specified.
+                            (length == 2) && (body = "");
+                            body = LDKF.stringPrototypeTrim(body, ' ');
+
+                            // Initialization > (Base Constructor, Body Delimiter)
+                            var baseConstructor = LDKF.objectPrototypeHasProperty(options, "extends") ? LDKF.objectPrototypeGetProperty(options, "extends") : "",
+                                bodyDelimiter = body ? (LDKF.stringPrototypeIncludes(body, '\n') ? '\n' : ' ') : "";
 
                             // Update > (Body, Source)
-                            body = (function() {
-                                // Initialization > Delimiter
-                                var delimter = LDKF.stringPrototypeIncludes(body, '\n') ? '\n' : ' ';
-
-                                // Return
-                                return delimter + body + delimter
-                            })();
+                            body = bodyDelimiter + body + bodyDelimiter;
                             source += type == "class" ?
-                                "class" + (name ? ' ' + name + ' ' : ' ') + (baseConstructor && name ? "extends " + baseConstructor + ' ' : "") + "{ constructor(" + parameters + ") {" + body + "} }" :
-                                "function" + (type == "generator" ? '*' : "") + (name ? ' ' + name : "") + "(" + parameters + ") { " + body + '}'
+                                (
+                                    LDKC.allowsClassKeyword ?
+                                        ("class" + (name ? ' ' + name + ' ' : ' ') + (baseConstructor && name ? "extends (" + baseConstructor + ") " : "") + "{ constructor(" + parameters + ") {" + body + "} }") :
+                                        ("(function() { var method = function " + (name ? ' ' + name : "") + "(" + parameters + ") {" + body + "};" + (baseConstructor ? " method.prototype = LapysJS.tmp.evalScope.objectCreate(" + baseConstructor + "); " : "") + "return method })()")
+                                ) :
+                                "function" + (type == "generator" ? '*' : "") + (name ? ' ' + name : "") + "(" + parameters + ") {" + body + '}'
                         }
                     }
 
@@ -4125,7 +4346,7 @@
                     };
 
                     // Remove All
-                    LapysDevelopmentKit.functions.stringPrototypeRemoveAll = function stringPrototypeRemoveAll(string, matches, replacement) { return LDKF.stringPrototypeReplaceAll(string, matches, "") };
+                    LapysDevelopmentKit.functions.stringPrototypeRemoveAll = function stringPrototypeRemoveAll(string, matches) { return LDKF.stringPrototypeReplaceAll(string, matches, "") };
 
                     // Replace All
                     LapysDevelopmentKit.functions.stringPrototypeReplaceAll = function stringPrototypeReplaceAll(string, matches, replacement) {
@@ -6710,9 +6931,9 @@
                     LapysDevelopmentKit.objects.wrongDocumentErrorPrototype = LDKF.objectPrototypeGetProperty(LDKO.wrongDocumentError, "prototype");
 
             /* Constants */
-                // Allows Class Keyword
+                // Allows `class` Keyword --- NOTE (Lapys) -> Some environments do not support the `class` keyword although it even exists syntactically.
                 LapysDevelopmentKit.constants.allowsClassKeyword = (function() {
-                    // Initialization > Has Class Keyword
+                    // Initialization > Allows `class` Keyword
                     var allowsClassKeyword = true;
 
                     // Error Handling > (...)
@@ -6727,7 +6948,7 @@
                 LapysDevelopmentKit.constants.isNode_jsEnvironment = LDKT.environmentVendorIs("Node.js");
 
         /* Global */
-            /* LapysJS */
+            /* LapysJS --- NOTE (Lapys) -> Purposely made complicated. */
             (function() {
                 // Error--- NOTE (Lapys) -> Initial test for if the library is pre-installed here.
                 (function(LapysJS) {
@@ -6859,12 +7080,6 @@
                             // Terminate
                             LapysJS.processingDuration.terminate = 0;
 
-                            // Value Of
-                            LDKF.objectDefineConstantProperty(LapysJS.processingDuration.constructor.prototype, "valueOf", {
-                                // Value
-                                value: function valueOf() { return LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate }
-                            });
-
                         // Return
                         return LapysJS
                     })(),
@@ -6873,6 +7088,21 @@
                     writable: false
                 })
             })();
+                // Environment
+                LapysJS.environment = {};
+                    // Global
+                    LapysJS.environment.global = GLOBAL;
+
+                    // Specifications
+                    LapysJS.environment.specifications = {};
+                        // Allows `class` Keyword
+                        LapysJS.environment.specifications.allowsClassKeyword = LDKC.allowsClassKeyword;
+
+                // Process
+                LapysJS.process = {};
+                    // Arguments
+                    LapysJS.process.args = args;
+
                 // Temporary Data --- NOTE (Lapys) -> Exposed private memory.
                     // Evaluation Scope
                     LapysJS.tmp.evalScope = new function EvaluationScope() {};
@@ -9075,9 +9305,27 @@
                     // Momentum Scroll into View
                     // Momentum Scroll To
 
-                // Function > Prototype
+                // [Logic] Function > Prototype
+                if (LDKF.arrayPrototypeIncludes(LDKS.prototypes, "Function")) {
                     // Bind
+
+                    // Measure
+                    LDKF.objectSetInnumerableVariableProperty.whenPropertyIsVoid(LDKO.functionPrototype, "measure", function measure() {
+                        // Initialization > Timestamp
+                        var timestamp = LDKC.clock.timestamp();
+
+                        // Error
+                        LDKF.isFunction(this) || LDKF.throwTypeError("Illegal invocation.");
+
+                        // Target
+                        this.apply(this, arguments);
+
+                        // Return
+                        return LDKC.clock.timestamp() - timestamp
+                    });
+
                     // Then
+                }
 
                 // Object > Prototype
                     // Define
@@ -9131,6 +9379,10 @@
                 // Float
                 // Free Input
                 // Function
+                LDKF.objectDefineProperty(GLOBAL, "func", {configurable: true, enumerable: false, value: function func() { return LDKF.createFunction.apply(LDKF, arguments) }, writable: true});
+                    // Extend --- CHECKPOINT ---
+                    LDKF.objectDefineProperty(GLOBAL.func, "extend", {configurable: true, enumerable: false, value: function extend(derived, base) { LDKF.objectPrototypeSetProperty(derived, "prototype", LDKF.objectPrototypeGetProperty(base, "prototype")); return derived }, writable: true});
+
                 // Global This --- NOTE (Lapys) -> To be honest, the `globalThis` property does not always match the global object.
                 LDKF.objectPrototypeHasProperty(GLOBAL, "globalThis") || LDKF.objectDefineProperty(GLOBAL, "globalThis", {configurable: true, enumerable: false, value: GLOBAL, writable: true});
 
@@ -9235,45 +9487,28 @@
 
     // Initiate
     try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "initiate", {value: LDKF.functionPrototypeMeasure(INITIATE)}) }
-    catch (error) {
-        // Update > (Private, State)
-        PRIVATE = error;
-        STATE = INITIATE_ERROR_STATE
-    }
+    catch (error) { PRIVATE = error; STATE = INITIATE_ERROR_STATE }
 
     // Update
     try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "update", {value: LDKF.functionPrototypeMeasure(UPDATE)}) }
-    catch (error) {
-        // Update > (Private, State)
-        PRIVATE = error;
-        STATE = UPDATE_ERROR_STATE
-    }
+    catch (error) { PRIVATE = error; STATE = UPDATE_ERROR_STATE }
 
     // Terminate
     try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "terminate", {value: LDKF.functionPrototypeMeasure(TERMINATE)}) }
-    catch (error) {
-        // Update > (Private, State)
-        PRIVATE = error;
-        STATE = TERMINATE_ERROR_STATE
-    }
+    catch (error) { PRIVATE = error; STATE = TERMINATE_ERROR_STATE }
 
-    // Logic
+    // Logic > Error
     switch (STATE) {
-        // Initiate Error
         case INITIATE_ERROR_STATE: LDKF.error.type.initiate("Error initializing library:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE)); break;
-
-        // Update Error
         case UPDATE_ERROR_STATE: LDKF.error.type.update("Error integrating library runtime:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE)); break;
-
-        // Terminate Error
         case TERMINATE_ERROR_STATE: LDKF.error.type.terminate("Error completing library integration:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE))
     }
 
-    // [Console Messages] Console > Group --- NOTE (Lapys) -> Unfortunately, the `document.currentScript` accessor is not consistent amongst all environments.
+    // [Console Messages] Console > Group
     LDKF.consoleGroup("LapysJS v" + VERSION);
         // Console > Log
         LDKF.consoleLog("Debug Mode =", LapysJS.debugMode);
-        LDKF.consoleLog("Processing Duration =", (function(processingDuration) { return LDKF.isNumber(processingDuration) ? processingDuration : (LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate) })(LapysJS.processingDuration.valueOf()));
+        LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate);
         LDKF.consoleLog('\n');
     LDKF.consoleGroupEnd();
 
