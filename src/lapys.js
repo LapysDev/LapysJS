@@ -12,6 +12,7 @@
 
             - Supported development environments:
                 -- Android (browser)
+                -- Avast Secure Browser (browser)
                 -- Internet Explorer (browser)
                     --- Internet Explorer 5
                     --- Internet Explorer 6
@@ -47,14 +48,14 @@
         #Lapys:
             - Test for `Symbol` objects as well.
             - Test all explicitly requested methods & properties.
+            - CRUNCH LAG!!!
 
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
-                -- Avast SafeZone Browser (browser) --- NOTE (Lapys) -> Untested...
-                -- Internet Explorer 4 (browser)
-                -- Netscape (browser)
+                -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
+                -- Netscape (browser) --- NOTE (Lapys) -> Deprecated.
                     --- Netscape 2
                     --- Netscape 4
-                -- Samsung Internet (browser) --- NOTE (Lapys) -> Untested...
+                -- Samsung Internet (browser) --- NOTE (Lapys) -> Untested.
                 -- others...
 */
 (function Main() {
@@ -124,9 +125,6 @@
 
             // Update Error
             UPDATE_ERROR_STATE = -3,
-
-            // Terminate Error
-            TERMINATE_ERROR_STATE = -4,
 
         // Undefined --- NOTE (Lapys) -> Specify `undefined`.
         undefined = void 0,
@@ -833,7 +831,7 @@
                             // Initialization > Iterator
                             var iterator = LDKF.arrayPrototypeLength(array);
 
-                            // Loop > Deletion
+                            // Loop > Deletion --- NOTE (Lapys) -> Some environments do not resize the Array properly.
                             while (iterator) LDKF.objectPrototypeDeleteProperty(array, iterator -= 1);
 
                             // Update > Array
@@ -1077,23 +1075,29 @@
                         // Remove --- NOTE (Lapys) -> Consider using `Array.prototype.splice` for performance boosts.
                         LapysDevelopmentKit.functions.arrayPrototypeRemove = function arrayPrototypeRemove(array, element) { return LDKF.arrayPrototypeRemoveFromBack.apply(LDKF, arguments) };
 
-                        // Remove All
+                        // Remove All --- NOTE (Lapys) -> Implicitly functions as `LapysDevelopmentKit.functions.arrayPrototypeFree` if no Element is specified.
                         LapysDevelopmentKit.functions.arrayPrototypeRemoveAll = function arrayPrototypeRemoveAll(array, element) {
                             // Initialization > (Iterator, Length)
                             var iterator = LDKF.getArgumentsLength(arguments), length = iterator;
 
-                            // Loop
-                            while (iterator != 1) {
-                                // Initialization > Index
-                                var index;
+                            // Logic
+                            if (length == 1)
+                                // Update > Array
+                                LDKF.arrayPrototypeFree(array);
 
-                                // Update > Element
-                                element = arguments[length - (iterator -= 1)];
+                            else
+                                // Loop
+                                while (iterator != 1) {
+                                    // Initialization > Index
+                                    var index;
 
-                                // Loop > Update > Array
-                                while (~(index = LDKF.arrayPrototypeIndexFromFront(array, element)))
-                                    LDKF.arrayPrototypeCutIndex(array, index)
-                            }
+                                    // Update > Element
+                                    element = arguments[length - (iterator -= 1)];
+
+                                    // Loop > Update > Array
+                                    while (~(index = LDKF.arrayPrototypeIndexFromFront(array, element)))
+                                        LDKF.arrayPrototypeCutIndex(array, index)
+                                }
 
                             // Return
                             return array
@@ -1104,8 +1108,10 @@
 
                         // Remove Duplicated From Back --- CHECKPOINT ---
                         LapysDevelopmentKit.functions.arrayPrototypeRemoveDuplicatedFromBack = function arrayPrototypeRemoveDuplicatedFromBack(array) {
+                            // Initialization > Length
                             var length = LDKF.arrayPrototypeLength(array);
 
+                            // Logic
                             if (length) {}
 
                             // Return
@@ -1630,10 +1636,7 @@
                         initiate: function initiate(message) { throw new LDKD.lapysJSInitiateError(LDKF.toDebugMessage.apply(LDKD, arguments)) },
 
                         // Update
-                        update: function update(message) { throw new LDKD.lapysJSUpdateError(LDKF.toDebugMessage.apply(LDKD, arguments)) },
-
-                        // Terminate
-                        terminate: function terminate(message) { throw new LDKD.lapysJSTerminateError(LDKF.toDebugMessage.apply(LDKD, arguments)) }
+                        update: function update(message) { throw new LDKD.lapysJSUpdateError(LDKF.toDebugMessage.apply(LDKD, arguments)) }
                     };
 
                 // Evaluate --- WARN (Lapys) -> Powerful, but slows down performance.
@@ -2532,9 +2535,6 @@
                 // Is LapysJS Update Error
                 LapysDevelopmentKit.functions.isLapysJSUpdateError = function isLapysJSUpdateError(arg) { return LDKT.isConstructibleObject(arg, LDKO.lapysJSUpdateError, LDKO.lapysJSUpdateErrorPrototype) };
 
-                // Is LapysJS Terminate Error
-                LapysDevelopmentKit.functions.isLapysJSTerminateError = function isLapysJSTerminateError(arg) { return LDKT.isConstructibleObject(arg, LDKO.lapysJSTerminateError, LDKO.lapysJSTerminateErrorPrototype) };
-
                 // Is Map
                 LapysDevelopmentKit.functions.isMap = function isMap(arg) { return LDKC.hasMapConstructor ? LDKT.isConstructibleObject(arg, LDKO.map, LDKO.mapPrototype) : LDKF.isStrictlyMapLike(arg) };
 
@@ -3147,7 +3147,7 @@
                 };
 
                 // Is Strictly LapysJS Error-Like
-                LapysDevelopmentKit.functions.isStrictlyLapysJSErrorLike = function isStrictlyLapysJSErrorLike(arg) { return LDKF.isLapysJSInitiateError(arg) || LDKF.isLapysJSUpdateError(arg) || LDKF.isLapysJSTerminateError(arg) };
+                LapysDevelopmentKit.functions.isStrictlyLapysJSErrorLike = function isStrictlyLapysJSErrorLike(arg) { return LDKF.isLapysJSInitiateError(arg) || LDKF.isLapysJSUpdateError(arg) };
 
                 // Is Strictly Map-Like
                 LapysDevelopmentKit.functions.isStrictlyMapLike = function isStrictlyMapLike(arg) {
@@ -7077,9 +7077,6 @@
                             // Update
                             LapysJS.processingDuration.update = 0;
 
-                            // Terminate
-                            LapysJS.processingDuration.terminate = 0;
-
                         // Return
                         return LapysJS
                     })(),
@@ -7160,9 +7157,6 @@
 
                     // LapysJS Update Error
                     LapysDevelopmentKit.data.lapysJSUpdateError = LDKT.createErrorPseudoConstructor("LapysJSUpdateError", "LapysJS.tmp.evalScope.lapysJSError", "LapysJS.tmp.evalScope.lapysJSErrorPrototype");
-
-                    // LapysJS Terminate Error
-                    LapysDevelopmentKit.data.lapysJSTerminateError = LDKT.createErrorPseudoConstructor("LapysJSTerminateError", "LapysJS.tmp.evalScope.lapysJSError", "LapysJS.tmp.evalScope.lapysJSErrorPrototype");
 
                 // LapysJS Node List --- CHECKPOINT ---
                 LapysDevelopmentKit.data.lapysJSNodeList = function LapysJSNodeList() {};
@@ -9045,8 +9039,8 @@
                 --- NOTE ---
                     #Lapys:
                         - Update the LapysJS objects.
-                        - Modify object prototypes.
-                        - Initiate global functions and objects.
+                        - Modify object prototypes (e.g.: `Array.prototype`, `Function.prototype`, e.t.c.).
+                        - Initiate global functions and objects (e.g.: `array`, `func`, e.t.c.).
         */
         function INITIATE() {
             // --- CHECKPOINT ---
@@ -9473,17 +9467,10 @@
         /* Update
                 --- NOTE ---
                     #Lapys:
-                        - Integrate components.
-                        - Integrate features.
+                        - Integrate LapysJS components during runtime.
+                        - Integrate LapysJS features during runtime.
         */
         function UPDATE() {}
-
-        /* Terminate
-                --- NOTE ---
-                    #Lapys:
-                        - ...
-        */
-        function TERMINATE() {}
 
     // Initiate
     try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "initiate", {value: LDKF.functionPrototypeMeasure(INITIATE)}) }
@@ -9493,22 +9480,17 @@
     try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "update", {value: LDKF.functionPrototypeMeasure(UPDATE)}) }
     catch (error) { PRIVATE = error; STATE = UPDATE_ERROR_STATE }
 
-    // Terminate
-    try { STATE || LDKF.objectDefineConstantProperty(LapysJS.processingDuration, "terminate", {value: LDKF.functionPrototypeMeasure(TERMINATE)}) }
-    catch (error) { PRIVATE = error; STATE = TERMINATE_ERROR_STATE }
-
     // Logic > Error
     switch (STATE) {
         case INITIATE_ERROR_STATE: LDKF.error.type.initiate("Error initializing library:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE)); break;
-        case UPDATE_ERROR_STATE: LDKF.error.type.update("Error integrating library runtime:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE)); break;
-        case TERMINATE_ERROR_STATE: LDKF.error.type.terminate("Error completing library integration:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE))
+        case UPDATE_ERROR_STATE: LDKF.error.type.update("Error integrating library runtime:\n\t\r" + LDKF.errorPrototypeGetMessage(PRIVATE))
     }
 
     // [Console Messages] Console > Group
     LDKF.consoleGroup("LapysJS v" + VERSION);
         // Console > Log
         LDKF.consoleLog("Debug Mode =", LapysJS.debugMode);
-        LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate);
+        LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.initiate + LapysJS.processingDuration.update);
         LDKF.consoleLog('\n');
     LDKF.consoleGroupEnd();
 
