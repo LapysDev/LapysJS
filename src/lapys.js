@@ -55,7 +55,6 @@
                 -- Netscape (browser) --- NOTE (Lapys) -> Deprecated.
                     --- Netscape 2
                     --- Netscape 4
-                -- Samsung Internet (browser) --- NOTE (Lapys) -> Untested.
                 -- others...
 */
 (function Main() {
@@ -198,37 +197,35 @@
                             basic private-scoped security measures are not taken,
 
                             but in the case of possibly global custom data types,
-                            we still asset some level of security.
+                            we still assert some level of security.
             */
-                /* Clock
-                        --- NOTE ---
-                            #Lapys: For asynchronous processes only
-                                (unfortunately).
-                */
+                // Clock --- NOTE (Lapys) -> For asynchronous processes only.
                 LapysDevelopmentKit.data.clock = function Clock() {};
                     // Prototype
                     LapysDevelopmentKit.data.clockPrototype = LapysDevelopmentKit.data.clock.prototype;
                         /* Check
                                 --- NOTE ---
-                                    #Lapys: Asynchronous reversed `while` statement.
+                                    #Lapys: Asynchronous `LapysDevelopmentKit.functions.assert` using `Observer` objects or
+                                        asynchronous reverse-condition `while` statement.
                         */
                         LapysDevelopmentKit.data.clockPrototype.check = function check(condition, ontrue, onfail) {
-                            // Initialization > Has On Fail
-                            var hasOnFail = LDKF.getArgumentsLength(arguments) > 2, that = this;
+                            var that = this;
 
                             // Error
-                            LDKF.isClock(that) || LDKF.error.targetType("Clock");
+                            LDKT.targetIsOfConstructor(that, LDKF.isClock, "Clock");
 
-                            // Initialization > (Observer, Frame)
-                            var observer = hasOnFail ? new LDKD.observer(condition, ontrue, onfail) : new LDKD.observer(condition, ontrue),
-                                frame = that.wind(function() { observer.observe() && frame.stop() });
+                            // Initialization > Observer
+                            var observer = new LDKD.observer(condition, ontrue, LDKF.getArgumentsLength(arguments) > 2 ? onfail : null);
+
+                            // Target > Wind
+                            that.wind(function() { observer.observe() && that.stop() });
 
                             // Return
                             return observer
                         };
 
                         // Stop
-                        LapysDevelopmentKit.data.clockPrototype.stop = function stop(frame) { LDKF.isClock(this) || LDKF.error("Argument specified must be a `Frame`."); LDKD.framePrototype.stop.call(frame) };
+                        LapysDevelopmentKit.data.clockPrototype.stop = function stop(frame) { LDKF.isFrame(frame) || LDKF.error("Argument specified must be a `Frame`."); LDKD.framePrototype.stop.call(frame) };
 
                         /* Thread
                                 --- UPDATE REQUIRED ---
@@ -238,72 +235,52 @@
                         LapysDevelopmentKit.data.clockPrototype.thread = function thread() {};
 
                         // Tick
-                        LapysDevelopmentKit.data.clockPrototype.tick = function tick(handler, delay) {
-                            // Return
-                            return LDKF.getArgumentsLength(arguments) > 1 ?
-                                LapysDevelopmentKit.data.clockPrototype.wind.call(this, function() { var frame = this; handler.call(frame); frame.stop() }, delay) :
-                                LapysDevelopmentKit.data.clockPrototype.wind.call(this, function() { var frame = this; handler.call(frame); frame.stop() })
-                        };
+                        LapysDevelopmentKit.data.clockPrototype.tick = function tick(handler, delay) { var callback = handler; handler = function() { callback.call(this); LDKD.framePrototype.stop.call(this) }; return LapysDevelopmentKit.data.clockPrototype.wind.apply(this, arguments) };
 
                         // Timestamp
-                        LapysDevelopmentKit.data.clockPrototype.timestamp = function timestamp() { LDKF.isClock(this) || LDKF.error.targetType("Clock"); return LDKC.hasPerformanceObject ? LDKF.dateNow() : LDKF.performancePrototypeNow(LDKC.performance) };
+                        LapysDevelopmentKit.data.clockPrototype.timestamp = function timestamp() { LDKT.targetIsOfConstructor(this, LDKF.isClock, "Clock"); return LDKC.hasPerformanceObject ? LDKF.performancePrototypeNow(LDKC.performance) : LDKF.dateNow() };
 
                         // Wind
                         LapysDevelopmentKit.data.clockPrototype.wind = function wind(handler, interval) {
-                            // Initialization > (Count, Frame, Has Interval, ID, Target)
-                            var count = -1,
-                                frame = new LDKD.frame(handler),
-                                hasInterval = LDKF.getArgumentsLength(arguments) > 1,
-                                id, that = this;
-
                             // Error
-                            LDKF.isClock(that) || LDKF.error.targetType("Clock");
+                            LDKT.targetIsOfConstructor(this, LDKF.isClock, "Clock");
 
-                            // Logic
-                            if (hasInterval) {
-                                // Error
-                                (LDKF.numberPrototypeIsPositive(interval) && LDKF.numberPrototypeIsSafeInteger(interval)) || LDKF.error("Second argument specified must be a safe number");
+                            // Initialization
+                                // Frame
+                                var frame = new LDKD.frame(handler),
 
-                                // Update > Interval
-                                interval = LDKM.ceil(interval / 16.666666666666668)
-                            }
+                                // Frame ID
+                                frameId,
+
+                                // Tick --- NOTE (Lapys) -> Number of ticks animated/ wound.
+                                tick = -1;
+
+                            // (Update > Interval) | Error --- NOTE (Lapys) -> Since the `setInterval` function is opted out, we'll run each tick at 60 frames per second (hence the division).
+                            (LDKF.getArgumentsLength(arguments) > 1) || (interval = 0);
+                            interval > -1 && LDKF.numberPrototypeIsSafeInteger(interval) ? interval = LDKM.ceil(interval / 16.666666666666668) : LDKF.throwTypeError("Second argument must be a safe positive integer.");
 
                             // Wind
-                            (function wind() {
-                                // Initialization > Frame State
-                                var frameState = frame.state;
-
+                            (function animationFrame() {
                                 // Logic
-                                if (frameState == "playing" || frameState == "unplayed") {
-                                    // Logic
-                                    if (hasInterval) {
-                                        // Update > Count
-                                        count += 1;
+                                switch (frame.state) {
+                                    // Un-played, Playing
+                                    case "unplayed": case "playing":
+                                        // Logic > (...)
+                                        if ((tick += 1) == interval) { frame.play(); tick = -1 }
 
-                                        // Logic
-                                        if (count == interval) {
-                                            // Frame > Play
-                                            frame.play();
+                                        // Update > Frame ID
+                                        frameId = LDKF.requestAnimationFrame(animationFrame);
 
-                                            // Update > Count
-                                            count = 0
-                                        }
-                                    }
+                                        // [Break]
+                                        break;
 
-                                    else
-                                        // Frame > Play
-                                        frame.play();
+                                    // Stopped
+                                    case "stopped":
+                                        // Frame > Stop
+                                        frame.stop();
 
-                                    // Update > ID
-                                    id = LDKF.requestAnimationFrame(wind)
-                                }
-
-                                else if (frameState == "stopped") {
-                                    // Frame > Stop
-                                    frame.stop();
-
-                                    // (...)
-                                    LDKF.cancelAnimationFrame(id)
+                                        // Cancel Animation Frame > (...)
+                                        LDKF.isVoid(frameId) || LDKF.cancelAnimationFrame(frameId)
                                 }
                             })();
 
@@ -313,92 +290,70 @@
 
                 // Frame
                 LapysDevelopmentKit.data.frame = function Frame(action) {
-                    // Initialization > Target
-                    var that = this;
-
-                    // Error
-                    LDKF.isFrame(that) || LDKF.error.targetType("Frame");
-                    LDKF.isFunction(action) || LDKF.error("Argument must be a function.");
-
-                    // Modification > Target > Action
-                    that.action = action;
+                    // (...)
+                    LDKT.targetIsOfConstructor(this, LDKF.isFrame, "Frame");
+                    LDKF.isFunction(action) ? this.action = action : LDKF.error("Argument must be a function.");
 
                     // Return
-                    return that
+                    return this
                 };
                     // Prototype
                     LapysDevelopmentKit.data.framePrototype = LapysDevelopmentKit.data.frame.prototype;
                         // Action --- NOTE (Lapys) -> The Action performed when the Frame is played.
-                        LapysDevelopmentKit.data.frame.prototype.action = null;
+                        LapysDevelopmentKit.data.framePrototype.action = null;
 
-                        // Current Tick --- NOTE (Lapys) -> Frame current time being played.
-                        LapysDevelopmentKit.data.frame.prototype.currentTick = 0;
+                        // Current Tick
+                        LapysDevelopmentKit.data.framePrototype.currentTick = 0;
 
                         // Pause --- NOTE (Lapys) -> Honestly, this property is more for semantics than anything...
-                        LapysDevelopmentKit.data.frame.prototype.pause = function pause() {
-                            var that = this;
-
+                        LapysDevelopmentKit.data.framePrototype.pause = function pause() {
                             // Error
-                            LDKF.isFrame(that) || LDKF.error.targetType("Frame");
+                            LDKT.targetIsOfConstructor(this, LDKF.isFrame, "Frame");
 
                             // Modification > Target > State
-                            (that.state === "stopped") || (that.state === "paused") || (that.state = "paused")
+                            (this.state == "paused" || this.state == "stopped") || (this.state = "paused")
                         };
 
                         // Play
-                        LapysDevelopmentKit.data.frame.prototype.play = function play() {
-                            // Initialization > Target
-                            var that = this;
-
+                        LapysDevelopmentKit.data.framePrototype.play = function play() {
                             // Error
-                            LDKF.isFrame(that) || LDKF.error.targetType("Frame");
+                            LDKT.targetIsOfConstructor(this, LDKF.isFrame, "Frame");
 
                             // Logic
-                            if (that.state !== "stopped") {
+                            if (this.state != "stopped") {
                                 // Modification > Target > State
-                                (that.state === "playing") || (that.state = "playing");
+                                (this.state == "playing") || (this.state = "playing");
 
-                                // Logic > Return
-                                if (!LDKF.isNull(that.action)) return that.action.call(that, that.currentTick);
-
-                                // Modification > Target > Current Tick
-                                that.currentTick += 1
+                                // Target > Action
+                                if (!LDKF.isNull(this.action)) return this.action.call(this, (this.currentTick += 1) - 1)
                             }
                         };
 
                         // State
-                        LapysDevelopmentKit.data.frame.prototype.state = "unplayed";
+                        LapysDevelopmentKit.data.framePrototype.state = "unplayed";
 
                         // Stop
-                        LapysDevelopmentKit.data.frame.prototype.stop = function stop() {
-                            // Initialization > Target
-                            var that = this;
-
+                        LapysDevelopmentKit.data.framePrototype.stop = function stop() {
                             // Error
-                            LDKF.isFrame(that) || LDKF.error.targetType("Frame");
+                            LDKF.isFrame(this) || LDKF.error.invalidType("Frame");
 
                             // Modification > Target > State
-                            (that.state === "stopped") || (that.state = "stopped")
+                            return this.state == "stopped" ? false : !!(this.state = "stopped")
                         };
 
                 // Observer
                 LapysDevelopmentKit.data.observer = function Observer(condition, ontrue, onfail) {
-                    // Initialization > (Length, Has On Fail, Target)
-                    var length = LDKF.getArgumentsLength(arguments), hasOnFail = length > 2, that = this;
+                    // Initialization > Length
+                    var length = LDKF.getArgumentsLength(arguments);
 
-                    // Error
-                    LDKF.isObserver(that) || LDKF.error.targetType("Observer");
-                    length && (LDKF.isFunction(condition) || LDKF.isNull(condition) || LDKF.error("First argument specified must be a function."));
-                    (length > 1) && (LDKF.isFunction(ontrue) || LDKF.isNull(ontrue) || LDKF.error("Second argument specified must be a function."));
-                    (length > 2) && (LDKF.isFunction(onfail) || LDKF.isNull(onfail) || LDKF.error("Third argument specified must be a function."));
-
-                    // Modification > Target > (Condition, On (True, False))
-                    that.condition = condition;
-                    that.ontrue = ontrue;
-                    that.onfail = onfail;
+                    // (...)
+                    LDKT.targetIsOfConstructor(this, LDKF.isObserver, "Observer");
+                    length ? LDKF.isFunction(condition) || LDKF.isNull(condition) || LDKF.error("First argument specified must be a function.") : (this.condition = condition);
+                    length > 1 ? LDKF.isFunction(ontrue) || LDKF.isNull(ontrue) || LDKF.error("Second argument specified must be a function.") : (this.ontrue = ontrue);
+                    length > 2 ? LDKF.isFunction(onfail) || LDKF.isNull(onfail) || LDKF.error("Third argument specified must be a function.") : (this.onfail = onfail);
 
                     // Return
-                    return that
+                    return this
                 };
                     // Prototype
                     LapysDevelopmentKit.data.observerPrototype = LapysDevelopmentKit.data.observer.prototype;
@@ -407,21 +362,18 @@
 
                         // Observe
                         LapysDevelopmentKit.data.observerPrototype.observe = function observe() {
-                            // Initialization > Target
-                            var that = this;
-
                             // Error
-                            LDKF.isObserver(that) || LDKF.error.targetType("Observer");
+                            LDKT.targetIsOfConstructor(this, LDKF.isObserver, "Observer");
 
                             // Target > On (True, Fail)
-                            LDKF.isNull(that.condition) || (
-                                (that.state = !!that.condition.apply(that, arguments)) ?
-                                    that.ontrue.apply(that, arguments) :
-                                    that.onfail.apply(that, arguments)
+                            LDKF.isNull(this.condition) || (
+                                (this.state = !!this.condition.apply(this, arguments)) ?
+                                    this.ontrue.apply(this, arguments) :
+                                    this.onfail.apply(this, arguments)
                             );
 
                             // Return
-                            return that.state
+                            return this.state
                         };
 
                         // On (Fail, True)
@@ -1588,6 +1540,9 @@
                     // Error
                     throw hasLapysJSError ? new LDKD.lapysJSError(message) : message
                 };
+                    // Invalid Type
+                    LapysDevelopmentKit.functions.error.invalidType = function invalidType(type) { return LDKF.error("`this` must be a `" + type + "`.") };
+
                     // Library Is Pre-Installed
                     LapysDevelopmentKit.functions.error.libraryIsPreInstalled = function libraryIsPreInstalled() { return LDKF.error(LDKI.messages.error.libraryIsPreInstalled) };
 
@@ -1626,9 +1581,6 @@
                             // Return
                             return message
                         };
-
-                    // Target Type
-                    LapysDevelopmentKit.functions.error.targetType = function targetType(type) { return LDKF.error("`this` must be a `" + type + "` (call the constructor instead with the `new` keyword).") };
 
                     // Type --- NOTE (Lapys) -> Types of LapysJS Error.
                     LapysDevelopmentKit.functions.error.type = {
@@ -5913,6 +5865,9 @@
                     if (LDKT.isObjectNativeMethod.call(LDKF.error, object, options, STRICT)) return options.methodObject
                 };
 
+                // Target Is Of Constructor
+                LapysDevelopmentKit.test.targetIsOfConstructor = function targetIsOfConstructor(arg, condition, constructorName) { return condition.call(this, arg) || LDKF.error.invalidType(constructorName) };
+
                 // Throw Error --- WARN (Lapys) -> Defer to `LapysDevelopmentKit.functions.error` instead.
                 LapysDevelopmentKit.test.throwError = function throwError(message) { throw (LDKI.messages.debugging.prefix + message + LDKI.messages.debugging.suffix) };
 
@@ -9032,7 +8987,7 @@
                 LapysDevelopmentKit.constants.clock = new LDKD.clock;
 
                 // Performance Is Void
-                LapysDevelopmentKit.constants.hasPerformanceObject = LDKF.isVoid(LDKC.performance);
+                LapysDevelopmentKit.constants.hasPerformanceObject = !LDKF.isVoid(LDKC.performance);
 
     /* Phase */
         /* Initiate
