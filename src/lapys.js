@@ -124,7 +124,7 @@
         STRICT = false,
 
         // State --- NOTE (Lapys) -> A zero state means null errors.
-        STATE = 0,
+        STATE = +0,
             // Initiate Error
             INITIATE_ERROR_STATE = -2,
 
@@ -132,7 +132,7 @@
             UPDATE_ERROR_STATE = -3,
 
         // Undefined --- NOTE (Lapys) -> Specify `undefined`.
-        undefined = void 0,
+        undefined = void +0,
 
         // Unique --- NOTE (Lapys) -> Unique object.
         UNIQUE = {},
@@ -227,7 +227,7 @@
                                 tick = -1;
 
                             // (Update > Interval) | Error --- NOTE (Lapys) -> Since the `setInterval` function is opted out, we'll run each tick at 60 frames per second (hence the division).
-                            (LDKF.getArgumentsLength(arguments) > 1) || (interval = 0);
+                            (LDKF.getArgumentsLength(arguments) > 1) || (interval = +0);
                             interval > -1 && LDKF.numberPrototypeIsSafeInteger(interval) ? interval = LDKM.ceil(interval / 16.666666666666668) : LDKF.throwTypeError("Second argument must be a safe positive integer.");
 
                             // Wind
@@ -274,7 +274,7 @@
                         LapysDevelopmentKit.data.framePrototype.action = null;
 
                         // Current Tick
-                        LapysDevelopmentKit.data.framePrototype.currentTick = 0;
+                        LapysDevelopmentKit.data.framePrototype.currentTick = +0;
 
                         // Pause --- NOTE (Lapys) -> Honestly, this property is more for semantics than anything...
                         LapysDevelopmentKit.data.framePrototype.pause = function pause() {
@@ -401,7 +401,7 @@
                             --- WARN ---
                                 #Lapys:
                                     - Array methods that use a function parameter must callback with `key, value` arguments, not `value` alone.
-                                    - Each array method assumes the source Array is always complete (non-partial).
+                                    - Each array method assumes the source Array is always complete (non-holey or non-sparse, but rather dense or packed).
                                     - Ensure each method is not heavily dependent on another,
                                         interoperability may be key, but performance is the zenith here.
                     */
@@ -576,7 +576,7 @@
 
                                 else
                                     // Update > Array Length
-                                    arrayLength = 0
+                                    arrayLength = +0
                             }
 
                             // Update > Array
@@ -598,7 +598,7 @@
                                 var index = arguments[length - (iterator -= 1)];
 
                                 // Update > Array Length
-                                arrayLength = (index = arrayLength - index) > 0 ? index : 0
+                                arrayLength = (index = arrayLength - index) > +0 ? index : +0
                             }
 
                             // Update > Array
@@ -673,7 +673,7 @@
                         LapysDevelopmentKit.functions.arrayPrototypeFilterLeft = function arrayPrototypeFilterLeft(array, callbacks) {
                             // Initialization > (Iterator, Length, Array (Index, Length))
                             var iterator = LDKF.getArgumentsLength(arguments), length = iterator,
-                                arrayIndex = 0, arrayLength = LDKF.arrayPrototypeLength(array);
+                                arrayIndex = +0, arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Loop
                             while (iterator != 1) {
@@ -785,7 +785,7 @@
                             while (iterator) LDKF.objectPrototypeDeleteProperty(array, iterator -= 1);
 
                             // Update > Array
-                            LDKF.arrayPrototypeResize(array, 0);
+                            LDKF.arrayPrototypeResize(array, +0);
 
                             // Return
                             return array
@@ -923,7 +923,7 @@
                             }
 
                             // Return
-                            return length == 2 ? (instances[0] || {occurrence: 0}).occurrence : instances
+                            return length == 2 ? (instances[+0] || {occurrence: +0}).occurrence : instances
                         };
 
                         // Is Distinct
@@ -1252,7 +1252,7 @@
                                                 array[index] = replacement;
 
                                                 // Modification > Instance > Occurrence
-                                                instance.occurrence = 0;
+                                                instance.occurrence = +0;
 
                                                 // [Break]
                                                 break
@@ -1298,7 +1298,7 @@
                                                 array[iterator] = replacement;
 
                                                 // Modification > Instance > Occurrence
-                                                instance.occurrence = 0;
+                                                instance.occurrence = +0;
 
                                                 // [Break]
                                                 break
@@ -1451,7 +1451,7 @@
 
                                                 else if (instance.occurrence > 1)
                                                     // Modification > Instance > Occurrence
-                                                    instance.occurrence = 0
+                                                    instance.occurrence = +0
                                         }
                                     }
                                 }
@@ -1500,7 +1500,7 @@
 
                                                 else if (instance.occurrence > 1)
                                                     // Modification > Instance > Occurrence
-                                                    instance.occurrence = 0
+                                                    instance.occurrence = +0
                                         }
                                     }
                                 }
@@ -1692,6 +1692,19 @@
 
                         // Trim Right --- CHECKPOINT ---
                         LapysDevelopmentKit.functions.arrayPrototypeTrimRight = function arrayPrototypeTrimRight(array, element) {};
+
+                    // Size --- NOTE (Lapys) -> Avoid `Array.prototype.length` or `LapysDevelopmentKit.functions.arrayPrototypeLength` because most JavaScript engines do not optimize for parsing sparse arrays to non-empty arrays.
+                    LapysDevelopmentKit.functions.arraySize = function arraySize(length, STRICT) {
+                        // Initialization > Array
+                        var array = [];
+
+                        // Logic > Update > Array
+                        if (STRICT) LDKF.arrayPrototypeResize(array, length);
+                        else while (length) array[length -= 1] = undefined;
+
+                        // Return
+                        return array
+                    };
 
                 // Array-Like > Prototype
                     // Element At --- NOTE (Lapys) -> Some prototype methods used may be invalid in indexing the Array-Like object.
@@ -1934,7 +1947,7 @@
                             })(parameters) ? "" : '(';
 
                             // Update > Source
-                            source += (parameters ? (parameters + (LDKF.stringPrototypeCharacterAt(source, 0) ? ')' : "")) : "()") + " => ";
+                            source += (parameters ? (parameters + (LDKF.stringPrototypeCharacterAt(source, +0) ? ')' : "")) : "()") + " => ";
 
                             // Logic
                             if (length != 2) {
@@ -2016,7 +2029,7 @@
                         // Logic
                         if (LDKF.getArgumentsLength(arguments) == 1) {
                             // Update > (Local Name, Document)
-                            localName = arguments[0];
+                            localName = arguments[+0];
                             document = LDKC.document
                         }
 
@@ -2115,9 +2128,9 @@
                         var allowStream = true,
                             bodyIsIndexed = false,
                             character,
-                            isWithinScope = 0,
+                            isWithinScope = +0,
                             iterator = -1,
-                            scopeLock = null, scopeLockLevel = 0,
+                            scopeLock = null, scopeLockLevel = +0,
                             stream = "", streamLock = null;
 
                         // Loop
@@ -2289,7 +2302,7 @@
                         var allowStream = true,
                             bodyIsIndexed = false,
                             character,
-                            isWithinScope = 0,
+                            isWithinScope = +0,
                             iterator = -1,
                             scopeLock = null,
                             stream = "", streamLock = null,
@@ -2501,7 +2514,7 @@
 
                         // Update > Parameters
                         parameters[parametersIterator += 1] = parameter;
-                        parameters[0] = LDKF.stringPrototypeTrimLeft(parameters[0], [' ', '(']);
+                        parameters[+0] = LDKF.stringPrototypeTrimLeft(parameters[+0], [' ', '(']);
                         parameters[parametersIterator] = LDKF.stringPrototypeTrimRight(parameters[parametersIterator], [' ', ')']);
                         parametersIterator += 1;
 
@@ -2570,8 +2583,8 @@
                         // Logic
                         if (source != "undefined")
                             // Logic > Return
-                            if (LDKF.stringPrototypeCharacterAt(source, 0) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's') return "class";
-                            else if (LDKF.stringPrototypeCharacterAt(source, 0) == 'f' && LDKF.stringPrototypeCharacterAt(source, 1) == 'u' && LDKF.stringPrototypeCharacterAt(source, 2) == 'n' && LDKF.stringPrototypeCharacterAt(source, 3) == 'c' && LDKF.stringPrototypeCharacterAt(source, 4) == 't' && LDKF.stringPrototypeCharacterAt(source, 5) == 'i' && LDKF.stringPrototypeCharacterAt(source, 6) == 'o' && LDKF.stringPrototypeCharacterAt(source, 7) == 'n') return (function() {
+                            if (LDKF.stringPrototypeCharacterAt(source, +0) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's') return "class";
+                            else if (LDKF.stringPrototypeCharacterAt(source, +0) == 'f' && LDKF.stringPrototypeCharacterAt(source, 1) == 'u' && LDKF.stringPrototypeCharacterAt(source, 2) == 'n' && LDKF.stringPrototypeCharacterAt(source, 3) == 'c' && LDKF.stringPrototypeCharacterAt(source, 4) == 't' && LDKF.stringPrototypeCharacterAt(source, 5) == 'i' && LDKF.stringPrototypeCharacterAt(source, 6) == 'o' && LDKF.stringPrototypeCharacterAt(source, 7) == 'n') return (function() {
                                 // Initialization > (Iterator, Length)
                                 var iterator = 7, length = LDKF.stringPrototypeLength(source);
 
@@ -2587,8 +2600,8 @@
                             })() ? "generator" : "default";
                             else if (
                                 // NOTE (Lapys) -> Not all arrow functions begin with English characters.
-                                LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, 0)) ||
-                                LDKF.stringPrototypeCharacterAt(source, 0) == '_' || LDKF.stringPrototypeCharacterAt(source, 0) == '$' || LDKF.stringPrototypeCharacterAt(source, 0) == '(' ||
+                                LDKF.stringPrototypeIsAlphabet(LDKF.stringPrototypeCharacterAt(source, +0)) ||
+                                LDKF.stringPrototypeCharacterAt(source, +0) == '_' || LDKF.stringPrototypeCharacterAt(source, +0) == '$' || LDKF.stringPrototypeCharacterAt(source, +0) == '(' ||
                                 LDKF.stringPrototypeIncludes(source, "=>")
                             ) return "arrow";
 
@@ -2626,7 +2639,7 @@
                         }
 
                         // Loop
-                        while (iterator > 0) {
+                        while (iterator > +0) {
                             // Initialization > Character
                             var character = LDKF.stringPrototypeCharacterAt(source, length - (iterator -= 1) - 1);
 
@@ -4144,7 +4157,7 @@
                     LapysDevelopmentKit.functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(number) { return LDKF.isNumber(number) && LDKF.toString(number) == "NaN" };
 
                     // Is Negative --- NOTE (Lapys) -> In JavaScript's case, also tests for negative zero.
-                    LapysDevelopmentKit.functions.numberPrototypeIsNegative = function numberPrototypeIsNegative(number) { return number < 0 || LDKF.numberPrototypeIsNegativeZero(number) };
+                    LapysDevelopmentKit.functions.numberPrototypeIsNegative = function numberPrototypeIsNegative(number) { return number < +0 || LDKF.numberPrototypeIsNegativeZero(number) };
 
                     // Is Negative Infinity
                     LapysDevelopmentKit.functions.numberPrototypeIsNegativeInfinity = function numberPrototypeIsNegativeInfinity(number) { return LDKF.numberPrototypeIsInfinite(number) && LDKF.numberPrototypeIsNegative(number) };
@@ -4159,7 +4172,7 @@
                     LapysDevelopmentKit.functions.numberPrototypeIsNonInteger = function numberPrototypeIsNonInteger(number) { return !LDKF.numberPrototypeIsInteger(number) };
 
                     // Is Positive
-                    LapysDevelopmentKit.functions.numberPrototypeIsPositive = function numberPrototypeIsPositive(number) { return number > 0 || LDKF.numberPrototypeIsPositiveZero(number) };
+                    LapysDevelopmentKit.functions.numberPrototypeIsPositive = function numberPrototypeIsPositive(number) { return number > +0 || LDKF.numberPrototypeIsPositiveZero(number) };
 
                     // Is Positive Infinity
                     LapysDevelopmentKit.functions.numberPrototypeIsPositiveInfinity = function numberPrototypeIsPositiveInfinity(number) { return LDKF.numberPrototypeIsInfinite(number) && LDKF.numberPrototypeIsPositive(number) };
@@ -4168,10 +4181,10 @@
                     LapysDevelopmentKit.functions.numberPrototypeIsPositiveInteger = function numberPrototypeIsPositiveInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsPositive(number) };
 
                     // Is Positive Zero
-                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveZero = function numberPrototypeIsPositiveZero(number) { return LDKF.objectIs(number, 0) };
+                    LapysDevelopmentKit.functions.numberPrototypeIsPositiveZero = function numberPrototypeIsPositiveZero(number) { return LDKF.objectIs(number, +0) };
 
                     // Is Safe
-                    LapysDevelopmentKit.functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(number) { return number < LDKC.number.maximumValue && LDKF.numberPrototypeIsFinite(number) && !LDKF.numberPrototypeIsNaN(number) };
+                    LapysDevelopmentKit.functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(number) { return number < (LDKC.number.maximumValue = 0x1FFFFFFFFFFFFF) && LDKF.numberPrototypeIsFinite(number) && !LDKF.numberPrototypeIsNaN(number) };
 
                     // Is Safe Integer
                     LapysDevelopmentKit.functions.numberPrototypeIsSafeInteger = function numberPrototypeIsSafeInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsSafe(number) };
@@ -4193,7 +4206,7 @@
                         };
 
                     // Is
-                    LapysDevelopmentKit.functions.objectIs = function objectIs(objectA, objectB) { return objectA === objectB ? 0 !== objectA || 1 / objectA == 1 / objectB: objectA !== objectA && objectB !== objectB };
+                    LapysDevelopmentKit.functions.objectIs = function objectIs(objectA, objectB) { return objectA === objectB ? +0 !== objectA || 1 / objectA == 1 / objectB: objectA !== objectA && objectB !== objectB };
 
                     // Get Own Property Descriptor
                     LapysDevelopmentKit.functions.objectGetOwnPropertyDescriptor = function objectGetOwnPropertyDescriptor(object, propertyName) { return LDKO.objectGetOwnPropertyDescriptor(object, propertyName) };
@@ -4330,7 +4343,7 @@
                                 propertySymbols = (function() { try { return LDKF.isFunction(LDKO.objectGetOwnPropertySymbols) ? LDKF.objectGetOwnPropertySymbols(object) : [] } catch (error) {} })(),
                                 propertySymbolsIterator = LDKF.arrayPrototypeLength(propertySymbols), propertySymbolsLength = propertySymbolsIterator,
                                 property, properties = [],
-                                propertiesIterator = 0, propertiesLength;
+                                propertiesIterator = +0, propertiesLength;
 
                             // Function
                                 // Add To Properties
@@ -4592,7 +4605,7 @@
                     LapysDevelopmentKit.functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(string, index) { return LDKO.stringPrototypeCharacterCodeAt.call(string, index) };
 
                     // Length
-                    LapysDevelopmentKit.functions.stringPrototypeLength = function stringPrototypeLength(string) { var length = 0; while (!LDKF.isVoid(LDKF.stringPrototypeCharacterAt(string, length))) length += 1; return length };
+                    LapysDevelopmentKit.functions.stringPrototypeLength = function stringPrototypeLength(string) { var length = +0; while (!LDKF.isVoid(LDKF.stringPrototypeCharacterAt(string, length))) length += 1; return length };
 
                     // Includes
                     LapysDevelopmentKit.functions.stringPrototypeIncludes = function stringPrototypeIncludes(string, match) {
@@ -4658,7 +4671,7 @@
                                     // Logic
                                     if (matchLength == 1) {
                                         // Initialization > Iterator
-                                        var iterator = 0;
+                                        var iterator = +0;
 
                                         // Loop > Update > Iterator
                                         while (iterator != length && LDKF.stringPrototypeCharacterAt(string, iterator) != match)
@@ -4844,7 +4857,7 @@
                                 replacementIsString = LDKF.isString(replacement);
 
                             // Loop
-                            while (iterator > 0) {
+                            while (iterator > +0) {
                                 // Initialization > (Index, Match Found, Matches Iterator)
                                 var index = length - (iterator -= 1) - 1,
                                     matchFound = false,
@@ -4913,22 +4926,21 @@
                         if (!string) return stream;
 
                         // Update > End
-                        (argumentsLength < 2) && (begin = 0);
+                        (argumentsLength < 2) && (begin = +0);
                         (argumentsLength < 3) && (end = length);
 
                         // Logic > Update > Begin
-                        if (!LDKF.numberPrototypeIsSafeInteger(begin)) begin = 0;
+                        if (!LDKF.numberPrototypeIsSafeInteger(begin)) begin = +0;
                         else begin = LDKM.rebound(begin, length);
 
                         // Logic
                         if (!LDKF.numberPrototypeIsSafeInteger(end)) {
                             // Logic > Update > End
                             if (LDKF.numberPrototypeIsPositiveInfinity(end)) end = length;
-                            else end = 0
+                            else end = +0
                         }
 
                         else
-                            // Update > End
                             end = LDKM.rebound(end, length);
 
                         // Logic > Loop > Update > Stream
@@ -5027,7 +5039,7 @@
 
                         else if (length) {
                             // Initialization > (Iterator, Stream)
-                            var iterator = 0, stream = "";
+                            var iterator = +0, stream = "";
 
                             // Updates > Matches
                             length == 1 ? matches = [' ', '\n'] : (LDKF.isArray(matches) || (matches = [matches]));
@@ -5036,9 +5048,9 @@
                             var matchesIterator = LDKF.arrayPrototypeLength(matches), matchesLength = matchesIterator;
 
                             // Logic
-                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
+                            if (LDKF.stringPrototypeLength(matches[+0]) == 1 && (!matchesLength || matchesLength == 1)) {
                                 // Logic > Loop > Update > Iterator
-                                if (matchesLength) while (LDKF.stringPrototypeCharacterAt(string, iterator) == matches[0]) iterator += 1;
+                                if (matchesLength) while (LDKF.stringPrototypeCharacterAt(string, iterator) == matches[+0]) iterator += 1;
                             }
 
                             else
@@ -5058,7 +5070,7 @@
                                             // [Break]
                                             break;
 
-                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, iterator) == LDKF.stringPrototypeCharacterAt(match, 0)) {
+                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, iterator) == LDKF.stringPrototypeCharacterAt(match, +0)) {
                                             // Update > (Iterator, Matches Iterator)
                                             iterator += matchLength;
                                             matchesIterator = matchesLength
@@ -5098,7 +5110,7 @@
 
                         else if (length) {
                             // Initialization > (Iterator, Stream)
-                            var iterator = 0, stream = "";
+                            var iterator = +0, stream = "";
 
                             // Updates > Matches
                             length == 1 ? matches = [' ', '\n'] : (LDKF.isArray(matches) || (matches = [matches]));
@@ -5110,14 +5122,14 @@
                             length = LDKF.stringPrototypeLength(string);
 
                             // Logic
-                            if (LDKF.stringPrototypeLength(matches[0]) == 1 && (!matchesLength || matchesLength == 1)) {
+                            if (LDKF.stringPrototypeLength(matches[+0]) == 1 && (!matchesLength || matchesLength == 1)) {
                                 // Logic
                                 if (matchesLength) {
                                     // Initialization > Index
                                     var index = length - 1;
 
                                     // Loop > Update > (Index, Iterator)
-                                    while (index && LDKF.stringPrototypeCharacterAt(string, index) == matches[0]) { index -= 1; iterator += 1 }
+                                    while (index && LDKF.stringPrototypeCharacterAt(string, index) == matches[+0]) { index -= 1; iterator += 1 }
                                 }
                             }
 
@@ -5138,7 +5150,7 @@
                                             // [Break]
                                             break;
 
-                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - 1) - 1) == LDKF.stringPrototypeCharacterAt(match, 0)) {
+                                        else if (!matchIterator && LDKF.stringPrototypeCharacterAt(string, length - iterator - (matchLength - 1) - 1) == LDKF.stringPrototypeCharacterAt(match, +0)) {
                                             // Update > (Iterator, Matches Iterator)
                                             iterator += matchLength;
                                             matchesIterator = matchesLength;
@@ -5147,7 +5159,7 @@
                                 }
 
                             // Update > Stream
-                            stream = iterator ? LDKF.stringPrototypeSlice(string, 0, length - (iterator + 1) + 1) : string;
+                            stream = iterator ? LDKF.stringPrototypeSlice(string, +0, length - (iterator + 1) + 1) : string;
 
                             // Return
                             return stream
@@ -5258,7 +5270,7 @@
                 LapysDevelopmentKit.functions.toDebugMessage = function toDebugMessage(message) { return LDKI.messages.debugging.prefix + LDKF.toString(LDKF.getArgumentsLength(arguments) ? message : "") + LDKI.messages.debugging.suffix };
 
                 // To Number
-                LapysDevelopmentKit.functions.toNumber = function toNumber(arg) { if (LDKF.isNumber(arg)) return arg - 0; else { try { arg = arg - 0 } catch (error) { try { arg = LDKO.number(arg) } catch (error) { try { arg = LDKF.toNumber(LDKF.string(arg)) } catch (error) {} } } return arg } };
+                LapysDevelopmentKit.functions.toNumber = function toNumber(arg) { if (LDKF.isNumber(arg)) return arg - +0; else { try { arg = arg - +0 } catch (error) { try { arg = LDKO.number(arg) } catch (error) { try { arg = LDKF.toNumber(LDKF.string(arg)) } catch (error) {} } } return arg } };
 
                 // To String
                 LapysDevelopmentKit.functions.toString = function toString(arg) {
@@ -5373,7 +5385,7 @@
 
             /* Math */
                 // Absolute
-                LapysDevelopmentKit.math.abs = function abs(number, STRICT) { return (STRICT ? number < 0 : LDKF.numberPrototypeIsNegative(number)) ? -number : number };
+                LapysDevelopmentKit.math.abs = function abs(number, STRICT) { return (STRICT ? number < +0 : LDKF.numberPrototypeIsNegative(number)) ? -number : number };
 
                 // Ceiling
                 LapysDevelopmentKit.math.ceil = function ceil(number) { return LDKM.int(number) + !!(number % 1) };
@@ -5392,7 +5404,7 @@
                     // Logic
                     if (LDKF.getArgumentsLength(arguments) == 2)
                         // Return
-                        return LDKM.rebound(index, 0, arguments[1]);
+                        return LDKM.rebound(index, +0, arguments[1]);
 
                     else if (index == end)
                         // Return
@@ -6227,7 +6239,16 @@
                                 function isCharacter(arg) { return typeof arg == "string" && isSafeNumber(arg.length) && arg.length === 1 }
 
                                 // Is Safe Number
-                                function isSafeNumber(arg) { return typeof arg == "number" && arg < 9007199254740991 && (function(stream) { return arg != "Infinity" && arg != "-Infinity" && arg != "NaN" })(arg + "") }
+                                function isSafeNumber(arg) {
+                                    // Initialization > Stream
+                                    var stream;
+
+                                    // Error Handling > Update > Stream
+                                    try { stream = arg + "" } catch (error) {}
+
+                                    // Return
+                                    return typeof arg == "number" && stream != "Infinity" && stream != "-Infinity" && stream != "NaN"
+                                }
 
                             // Initialization > (Allow Stream, Is Standard, Iterator, Length, Match (Length), Stream Lock)
                             var allowStream = true,
@@ -6355,6 +6376,7 @@
                             // (...)
                             case STRING_PROTOTYPE_CHAR_AT_METHOD_IS_USER_DEFINED:
                                 // Error
+                                console.log(method);
                                 LDKT.throwError("`String.prototype.charAt` method" + LDKI.messages.error.nativeToEnvironmentSuffix)
                         }
                     }
@@ -6430,8 +6452,8 @@
                             if (!(typeof method == "function" && LDKF.objectPrototypeIs.OR(method + "", "function charAt() { [native code] }", "function charAt() {\n    [native code]\n}", "\nfunction charAt() {\n    [native code]\n}\n"))) throw UNIQUE
                         } catch (error) {
                             // (Update > Method) | Error
-                            ' '[0] === ' ' ?
-                                method = function charAt(index) { return LDKF.toString(this)[LDKF.getArgumentsLength(arguments) ? index : 0] } :
+                            ' '[+0] === ' ' ?
+                                method = function charAt(index) { return LDKF.toString(this)[LDKF.getArgumentsLength(arguments) ? index : +0] } :
                                 LDKF.error.nativeToEnvironment("`String.prototype.charAt` method")
                         }
 
@@ -6468,7 +6490,7 @@
                     var constructor = LDKF.objectPrototypeGetProperty({}, "constructor");
 
                     // Logic > (...)
-                    if (LDKF.functionPrototypeGetName(constructor) == "Object") return constructor;
+                    if (LDKF.functionPrototypeGetName(constructor) == "Object" && LDKF.functionPrototypeIsNative(constructor)) return constructor;
                     else LDKF.error.nativeToEnvironment("`Object` constructor")
                 })();
                     // Create
@@ -6838,16 +6860,13 @@
 
                 // Number
                     // Infinity
-                    LapysDevelopmentKit.constants.number.infinity = 1 / 0;
+                    LapysDevelopmentKit.constants.number.infinity = 1 / +0;
 
                     // Maximum Array Length
-                    LapysDevelopmentKit.constants.number.maximumArrayLength = -1 >>> 0;
-
-                    // Maximum Value --- NOTE (Lapys) -> ...
-                    LapysDevelopmentKit.constants.number.maximumValue = 9007199254740991;
+                    LapysDevelopmentKit.constants.number.maximumArrayLength = -1 >>> +0;
 
                     // Not-a-Number
-                    LapysDevelopmentKit.constants.number.nan = 0 / 0;
+                    LapysDevelopmentKit.constants.number.nan = +0 / +0;
 
                 // String --- NOTE (Lapys) -> Code duplication, I know.
                     // Alphabets
@@ -7276,7 +7295,7 @@
                     LapysDevelopmentKit.objects.notSupportedErrorPrototype = LDKF.objectPrototypeGetProperty(LDKO.notSupportedError, "prototype");
 
                 // Number
-                LapysDevelopmentKit.objects.number = LDKF.objectPrototypeConstructor(0);
+                LapysDevelopmentKit.objects.number = LDKF.objectPrototypeConstructor(+0);
 
                 // Operation Error
                 LapysDevelopmentKit.objects.operationError = LDKT.queryObjectNativeConstructor(GLOBAL, "OperationError");
@@ -7512,7 +7531,7 @@
                                         case "boolean": return false; break;
 
                                         // Number
-                                        case "number": return 0; break;
+                                        case "number": return +0; break;
 
                                         // String
                                         case "string": return ""
@@ -7595,10 +7614,10 @@
                         // Modification > LapysJS > Processing Duration
                         LDKF.objectDefineConstantProperty(LapysJS, "processingDuration", {value: new (function LapysJSProcessingDuration() {})});
                             // Initiate
-                            LapysJS.processingDuration.initiate = 0;
+                            LapysJS.processingDuration.initiate = +0;
 
                             // Update
-                            LapysJS.processingDuration.update = 0;
+                            LapysJS.processingDuration.update = +0;
 
                         // Return
                         return LapysJS
@@ -7673,7 +7692,7 @@
                 */
                 LapysDevelopmentKit.data.lapysJSError = LDKT.createErrorPseudoConstructor("LapysJSError", "LapysJS.tmp.evalScope.error");
                     // (...) --- NOTE (Lapys) -> Access the `LapysJS.tmp.evalScope.customErrorConstructors` registry, rather than constructing a new `LapysJSError` object an querying its constructor.
-                    (LapysDevelopmentKit.objects.lapysJSError = LapysJS.tmp.evalScope.lapysJSError = LapysJS.tmp.evalScope.customErrorConstructors[0]);
+                    (LapysDevelopmentKit.objects.lapysJSError = LapysJS.tmp.evalScope.lapysJSError = LapysJS.tmp.evalScope.customErrorConstructors[+0]);
 
                     // Prototype
                     LapysDevelopmentKit.data.lapysJSErrorPrototype = LapysDevelopmentKit.objects.lapysJSErrorPrototype = LapysJS.tmp.evalScope.lapysJSErrorPrototype = LDKF.objectPrototypeGetProperty(LDKO.lapysJSError, "prototype");
@@ -9246,7 +9265,7 @@
                         numberBMaximum = (numberB >>> 16) & 0xFFFF, numberBMinimum = numberB & 0xFFFF;
 
                     // Return --- NOTE (Lapys) -> Sign unsigned value.
-                    return ((numberAMinimum * numberBMinimum) + (((numberAMaximum * numberBMinimum + numberAMinimum * numberBMaximum) << 16) >>> 0) | 0)
+                    return ((numberAMinimum * numberBMinimum) + (((numberAMaximum * numberBMinimum + numberAMinimum * numberBMaximum) << 16) >>> +0) | +0)
                 };
 
                 // Random
@@ -9254,14 +9273,14 @@
                     // Generate Seed ---- NOTE (Lapys) -> Creates a XOR FNV 1A state.
                     LapysDevelopmentKit.math.random.generateSeeder = function xfnv1a(seed) {
                         // Initialization > (Iterator, Length, ...)
-                        var iterator = 0,
+                        var iterator = +0,
                             length = LDKF.stringPrototypeLength(seed ? seed : seed = ""),
-                            tmp = 2166136261 >>> 0 /* NOTE (Lapys) -> Un-sign the number within a specific range. */;
+                            tmp = 0x811C9DC5 >>> +0 /* NOTE (Lapys) -> Un-sign the number within a specific range. */;
 
                         // Loop
                         while (iterator != length) {
                             // Update > (..., Iterator)
-                            tmp = LDKM.imul(tmp ^ LDKF.stringPrototypeCharacterCodeAt(seed, iterator), 16777619);
+                            tmp = LDKM.imul(tmp ^ LDKF.stringPrototypeCharacterCodeAt(seed, iterator), 0x1000193);
                             iterator += 1
                         }
 
@@ -9272,7 +9291,7 @@
                             tmp += tmp << 3; tmp ^= tmp >>> 17;
 
                             // Return
-                            return (tmp += tmp << 5) >>> 0
+                            return (tmp += tmp << 5) >>> +0
                         }
                     };
 
@@ -9281,18 +9300,18 @@
                         // Return
                         return function randomizer() {
                             // Update > Hash (A, B, C, D)
-                            hashA >>>= 0; hashB >>>= 0; hashC >>>= 0; hashD >>>= 0;
+                            hashA >>>= +0; hashB >>>= +0; hashC >>>= +0; hashD >>>= +0;
 
                             // Initialization > Temporary
-                            var tmp = (hashA + hashB) | 0;
+                            var tmp = (hashA + hashB) | +0;
 
                             // Update > (Hash (A, B, C, D), Temporary)
-                            hashA = hashB ^ hashB >>> 9; hashB = hashC + (hashC << 3) | 0; hashC = (hashC << 21 | hashC >>> 11); hashD = hashD + 1 | 0;
-                            tmp = tmp + hashD | 0;
-                            hashC = hashC + tmp | 0;
+                            hashA = hashB ^ hashB >>> 9; hashB = hashC + (hashC << 3) | +0; hashC = (hashC << 21 | hashC >>> 11); hashD = hashD + 1 | +0;
+                            tmp = tmp + hashD | +0;
+                            hashC = hashC + tmp | +0;
 
                             // Return
-                            return (tmp >>> 0) / 4294967296
+                            return (tmp >>> +0) / 4294967296
                         }
                     };
 
