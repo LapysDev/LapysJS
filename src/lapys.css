@@ -16,16 +16,7 @@
 
         --- UPDATE REQUIRED ---
             #Lapys:
-                - accordion
-                - accordion-component
-                - .accordion
-                    - accordion-body
-                    - accordion-body-component
-                    - [role~=body][state]
-
-                    - accordion-head
-                    - accordion-head-component
-                    - [role~=head]
+                - Button with panel that opens up 3D and shows the button's inner contents (like a door).
 
         --- WARN ---
             #Lapys:
@@ -35,83 +26,6 @@
 /* CSS At-Rules */
     /* Character-Set Encoding */
     @charset 'UTF-8';
-
-    /* Keyframes */
-        /* Document Fade In */
-        @keyframes documentFadeIn {
-            0% {
-                filter: brightness(0);
-                opacity: 0
-            }
-
-            5% { opacity: 0 }
-
-            95% { opacity: 1 }
-
-            to {
-                filter: brightness(1);
-                opacity: 1
-            }
-        }
-
-        /* Document Fade Out */
-        @keyframes documentFadeOut {
-            0% {
-                filter: brightness(1);
-                opacity: 1
-            }
-
-            5% { opacity: 1 }
-
-            95% { opacity: 0 }
-
-            to {
-                filter: brightness(0);
-                opacity: 0
-            }
-        }
-
-        /* Slow Fade In */
-        @keyframes slowFadeIn {
-            0% {
-                margin-top: -100px;
-                opacity: 0;
-                position: absolute;
-                top: -100px;
-                transform: translateY(-100px)
-            }
-
-            5% { opacity: 0 }
-
-            to {
-                margin-top: 0;
-                opacity: 1;
-                position: absolute;
-                top: 0;
-                transform: translateY(0)
-            }
-        }
-
-        /* Slow Fade Out */
-        @keyframes slowFadeOut {
-            0% {
-                margin-top: 0;
-                opacity: 1;
-                position: absolute;
-                top: 0;
-                transform: translateY(0)
-            }
-
-            95% { opacity: 1 }
-
-            to {
-                margin-top: 100px;
-                opacity: 0;
-                position: absolute;
-                top: 100px;
-                transform: translateY(100px)
-            }
-        }
 
 /* DOM Elements */
     /* All */
