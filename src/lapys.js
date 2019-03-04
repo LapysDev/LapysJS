@@ -107,6 +107,11 @@
 
     /* Modification */
         /* Lapys Development Kit */
+            /* Constants */
+                // Number > (Infinity, Not-A-Number)
+                LapysDevelopmentKit.Constants.Number.Infinity = 1 / 0;
+                LapysDevelopmentKit.Constants.Number.NaN = 0 / 0;
+
             /* Data */
                 /* Clock */
                 LapysDevelopmentKit.Data.Clock = function Clock() {};
@@ -248,17 +253,22 @@
 
                         // Build --- NOTE (Lapys) -> Similar to the `Array.prototype.map` method.
                         LapysDevelopmentKit.Functions.arrayPrototypeBuild = function arrayPrototypeBuild(array, handler) {
-                            // Initialization > (Array Length, Length, Iterator)
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                length = LDKF.getArgumentsLength(arguments), iterator = length;
+                            // Initialization > Array Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array);
 
-                            // Loop
-                            while (iterator -= 1) {
-                                // Initialization > (Array Iterator, Handler)
-                                var arrayIterator = arrayLength, handler = arguments[length - iterator];
+                            // Logic
+                            if (arrayLength) {
+                                // Initialization > (Length, Iterator)
+                                var length = LDKF.getArgumentsLength(arguments), iterator = length;
 
-                                // Loop > (...)
-                                while (arrayIterator) { var element = array[arrayIterator -= 1]; array[arrayIterator] = handler.call(array, arrayIterator, element) }
+                                // Loop
+                                while (iterator -= 1) {
+                                    // Initialization > (Array Iterator, Handler)
+                                    var arrayIterator = arrayLength, handler = arguments[length - iterator];
+
+                                    // Loop > (...)
+                                    while (arrayIterator) { var element = array[arrayIterator -= 1]; array[arrayIterator] = handler.call(array, arrayIterator, element) }
+                                }
                             }
 
                             // Return
@@ -266,7 +276,7 @@
                         };
 
                         // Clone --- MINIFY --- NOTE (Lapys) -> Except for extreme performance reasons, defer to the `LapysDevelopmentKit.functions.objectPrototypeClone` method instead.
-                        LapysDevelopmentKit.Functions.arrayPrototypeClone = function arrayPrototypeClone(array) { var clone = [], iterator = LDKF.arrayPrototypeLength(array); while (iterator) { iterator -= 1; clone[iterator] = array[iterator]; } return clone };
+                        LapysDevelopmentKit.Functions.arrayPrototypeClone = function arrayPrototypeClone(array) { var clone = [], iterator = LDKF.arrayPrototypeLength(array); while (iterator) { iterator -= 1; clone[iterator] = array[iterator] } return clone };
 
                         // Concatenate
                         LapysDevelopmentKit.Functions.arrayPrototypeConcatenate = function arrayPrototypeConcatenate(array, arrayA) {
@@ -295,26 +305,32 @@
 
                         // Cut At
                         LapysDevelopmentKit.Functions.arrayPrototypeCutAt = function arrayPrototypeCutAt(array, index) {
-                            // Initialization > (Array Length, Length Iterator)
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                length = LDKF.getArgumentsLength(arguments), iterator = length;
+                            // Initialization > Array Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array);
 
-                            while (arrayLength && (iterator -= 1)) {
-                                // Initialization > Index
-                                var index = arguments[length - iterator];
+                            // Logic
+                            if (arrayLength) {
+                                // Initialization > (Length, Iterator)
+                                var length = LDKF.getArgumentsLength(arguments), iterator = length;
 
-                                // Logic
-                                if (index < arrayLength + 1) {
-                                    // Loop > Update > (Array, Index)
-                                    while (index != arrayLength) { array[index] = array[index + 1]; index += 1 }
+                                // Loop
+                                while (arrayLength && (iterator -= 1)) {
+                                    // Initialization > Index
+                                    var index = arguments[length - iterator];
 
-                                    // Update > Array Length
-                                    arrayLength -= 1
+                                    // Logic
+                                    if (index < arrayLength + 1) {
+                                        // Loop > Update > (Array, Index)
+                                        while (index != arrayLength) { array[index] = array[index + 1]; index += 1 }
+
+                                        // Update > Array Length
+                                        arrayLength -= 1
+                                    }
                                 }
-                            }
 
-                            // Update > Array
-                            LDKF.arrayPrototypeResize(array, arrayLength, STRICT = true);
+                                // Update > Array
+                                LDKF.arrayPrototypeResize(array, arrayLength, STRICT = true)
+                            }
 
                             // Return
                             return array
@@ -331,7 +347,7 @@
                                 var arrayLength = LDKF.arrayPrototypeLength(array);
 
                                 // Update > Array
-                                length > arrayLength - 1 ? LDKF.arrayPrototypeFree(array) : LDKF.arrayPrototypeResize(array, arrayLength - length)
+                                arrayLength && (length > arrayLength - 1 ? LDKF.arrayPrototypeFree(array) : LDKF.arrayPrototypeResize(array, arrayLength - length))
                             }
 
                             // Return
@@ -340,44 +356,49 @@
 
                         // Cut Through
                         LapysDevelopmentKit.Functions.arrayPrototypeCutThrough = function arrayPrototypeCutThrough(array, index, length) {
-                            // Initialization > (Array Length, (Index, Length) Is Out Of Range)
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                indexIsOutOfRange = index > arrayLength,
-                                lengthIsOutOfRange = length > arrayLength;
+                            // Initialization > Array Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Logic
-                            if (!indexIsOutOfRange || !lengthIsOutOfRange) {
-                                // Update > (Index, Length)
-                                (indexIsOutOfRange || index == arrayLength) && (index = arrayLength - 1);
-                                (lengthIsOutOfRange || length == arrayLength) && (length = arrayLength - 1);
+                            if (arrayLength) {
+                                // Initialization > (Index, Length) Is Out Of Range
+                                var indexIsOutOfRange = index > arrayLength,
+                                    lengthIsOutOfRange = length > arrayLength;
 
                                 // Logic
-                                if (index == length)
-                                    // Update > Array
-                                    LDKF.arrayPrototypeCutAt(array, index);
-
-                                else if (index < length) {
-                                    // Initialization > Shift Length
-                                    var shiftLength = length - index;
+                                if (!indexIsOutOfRange || !lengthIsOutOfRange) {
+                                    // Update > (Index, Length)
+                                    (indexIsOutOfRange || index == arrayLength) && (index = arrayLength - 1);
+                                    (lengthIsOutOfRange || length == arrayLength) && (length = arrayLength - 1);
 
                                     // Logic
-                                    if (!index && shiftLength > arrayLength - 1)
+                                    if (index == length)
                                         // Update > Array
-                                        LDKF.arrayPrototypeFree(array);
+                                        LDKF.arrayPrototypeCutAt(array, index);
+
+                                    else if (index < length) {
+                                        // Initialization > Shift Length
+                                        var shiftLength = length - index;
+
+                                        // Logic
+                                        if (!index && shiftLength > arrayLength - 1)
+                                            // Update > Array
+                                            LDKF.arrayPrototypeFree(array);
+
+                                        else {
+                                            // Loop > Update > (Array, Index)
+                                            while (index != arrayLength) { array[index] = array[index + shiftLength + 1]; index += 1 }
+
+                                            // Update > Array
+                                            LDKF.arrayPrototypeResize(array, arrayLength - shiftLength - 1, STRICT = true)
+                                        }
+                                    }
 
                                     else {
-                                        // Loop > Update > (Array, Index)
-                                        while (index != arrayLength) { array[index] = array[index + shiftLength + 1]; index += 1 }
-
                                         // Update > Array
-                                        LDKF.arrayPrototypeResize(array, arrayLength - shiftLength - 1, STRICT = true)
+                                        LDKF.arrayPrototypeCutThrough(array, index, arrayLength - 1);
+                                        LDKF.arrayPrototypeCutThrough(array, 0, length)
                                     }
-                                }
-
-                                else {
-                                    // Update > Array
-                                    LDKF.arrayPrototypeCutThrough(array, index, arrayLength - 1);
-                                    LDKF.arrayPrototypeCutThrough(array, 0, length)
                                 }
                             }
 
@@ -386,29 +407,11 @@
                         };
 
                         // Depth --- CHECKPOINT
-                        LapysDevelopmentKit.Functions.arrayPrototypeDepth = function arrayPrototypeDepth(array) {
-                            var arrayIterator = LDKF.arrayPrototypeLength(array),
-                                depth = 1, depthTree = [], depthTreeLength = 0;
-
-                            function arrayPrototypeIsDeep(array) {
-                                var arrayIterator = LDKF.arrayPrototypeLength(array);
-                                while (arrayIterator) if (LDKF.isArray(array[arrayIterator -= 1])) return true
-                                return false
-                            }
-
-                            while (arrayIterator) {
-                                var element = array[arrayIterator -= 1];
-
-                                LDKF.isArray(element) && (depth += LDKF.arrayPrototypeDepth(element));
-
-                                depthTree[depthTreeLength] = depth;
-                                depth = 1; depthTreeLength += 1
-                            }
-
-                            return depthTreeLength ? Math.max.apply(Math, depthTree) : 1
-                        };
+                        LapysDevelopmentKit.Functions.arrayPrototypeDepth = function arrayPrototypeDepth(array) {};
 
                         // Distinct --- CHECKPOINT
+                        LapysDevelopmentKit.Functions.arrayPrototypeDistinct = function arrayPrototypeDistinct(array) {};
+
                         // Every --- CHECKPOINT
                         // Fill --- CHECKPOINT
                         // Filter --- CHECKPOINT
@@ -418,6 +421,45 @@
                         // Find From Back --- CHECKPOINT
                         // Find From Front --- CHECKPOINT
                         // First --- CHECKPOINT
+                        // Flatten
+                        LapysDevelopmentKit.Functions.arrayPrototypeFlatten = function arrayPrototypeFlatten(array) {
+                            // Initialization > Array Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array);
+
+                            // Logic
+                            if (arrayLength) {
+                                // Initialization > Array Iterator
+                                var arrayIterator = 0;
+
+                                // Loop
+                                while (arrayIterator != arrayLength) {
+                                    // Initialization > Element
+                                    var element = array[arrayIterator];
+
+                                    // Logic --- NOTE (Lapys) -> Flatten the Element (Sub-Array) unto the Array.
+                                    if (LDKF.isArray(element)) {
+                                        // Initialization > (Array Index, Sub Array (Length, Iterator))
+                                        var arrayIndex = arrayLength,
+                                            subarray = element,
+                                            subarrayLength = LDKF.arrayPrototypeLength(subarray), subarrayIterator = subarrayLength;
+
+                                        // Loop > Update > (Sub Array Iterator, Array)
+                                        while ((arrayIndex -= 1) != arrayIterator) array[arrayIndex + subarrayLength - 1] = array[arrayIndex];
+                                        while (subarrayIterator) { subarrayIterator -= 1; array[arrayIterator + subarrayIterator] = subarray[subarrayIterator] }
+
+                                        // Update > Array Length
+                                        arrayLength += subarrayLength - 1
+                                    }
+
+                                    // Update > Array Iterator
+                                    arrayIterator += 1
+                                }
+                            }
+
+                            // Return
+                            return array
+                        };
+
                         // For Each
                         LapysDevelopmentKit.Functions.arrayPrototypeForeach = function arrayPrototypeForeach(array, handler) {
                             // Initialization > Array (Length, Iterator)
@@ -431,9 +473,9 @@
                         };
 
                         // Free
-                        LapysDevelopmentKit.Functions.arrayPrototypeFree = function arrayPrototypeFree(array, STRICT) {
+                        LapysDevelopmentKit.Functions.arrayPrototypeFree = function arrayPrototypeFree(array, IGNORE_FREEING_MEMORY) {
                             // Logic --- NOTE (Lapys) -> Some JavaScript environments do not free the array properly.
-                            if (!STRICT) {
+                            if (!IGNORE_FREEING_MEMORY) {
                                 // Initialization > Array Iterator
                                 var arrayIterator = LDKF.arrayPrototypeLength(array);
 
@@ -455,7 +497,6 @@
                         // Insert At --- CHECKPOINT
                         // Insert Through --- CHECKPOINT
                         // Instance --- CHECKPOINT
-                        // Is Distinct --- CHECKPOINT
                         // Last --- CHECKPOINT
                         // Length --- NOTE (Lapys) -> Arrays manage their own length.
                         LapysDevelopmentKit.Functions.arrayPrototypeLength = function arrayPrototypeLength(array) { return array.length };
@@ -497,12 +538,12 @@
                         // Replace Repeat From Front --- CHECKPOINT
                         // Replace Repeats --- CHECKPOINT
                         // Resize
-                        LapysDevelopmentKit.Functions.arrayPrototypeResize = function arrayPrototypeResize(array, length, STRICT) {
+                        LapysDevelopmentKit.Functions.arrayPrototypeResize = function arrayPrototypeResize(array, length, USE_LENGTH_PROPERTY) {
                             // Initialization > Array Length
                             var arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Update > Array
-                            !STRICT && (length < +0 || !length) ? arrayLength && LDKF.arrayPrototypeFree(array) : array.length = length;
+                            !USE_LENGTH_PROPERTY && (length < +0 || !length) ? arrayLength && LDKF.arrayPrototypeFree(array) : array.length = length;
 
                             // Return
                             return array
@@ -517,20 +558,22 @@
                                 var arrayLength = LDKF.arrayPrototypeLength(array);
 
                                 // Logic
-                                if (length > arrayLength - 1)
-                                    // Update > Array
-                                    LDKF.arrayPrototypeFree(array);
+                                if (arrayLength)
+                                    // Logic
+                                    if (length > arrayLength - 1)
+                                        // Update > Array
+                                        LDKF.arrayPrototypeFree(array);
 
-                                else {
-                                    // Initialization > Array Iterator
-                                    var arrayIterator = arrayLength;
+                                    else {
+                                        // Initialization > Array Iterator
+                                        var arrayIterator = arrayLength;
 
-                                    // Loop > Update > Array (Iterator)
-                                    while (arrayIterator) { arrayIterator -= 1; array[arrayLength - arrayIterator - 1] = array[arrayLength - arrayIterator + (length - 1)] }
+                                        // Loop > Update > Array (Iterator)
+                                        while (arrayIterator) { arrayIterator -= 1; array[arrayLength - arrayIterator - 1] = array[arrayLength - arrayIterator + (length - 1)] }
 
-                                    // Update > Array
-                                    LDKF.arrayPrototypeResize(array, arrayLength - length)
-                                }
+                                        // Update > Array
+                                        LDKF.arrayPrototypeResize(array, arrayLength - length)
+                                    }
                             }
 
                             // Return
@@ -538,17 +581,23 @@
                         };
 
                         // Shift Right
-                        LapysDevelopmentKit.Functions.arrayPrototypeShiftRight = function arrayPrototypeShiftRight(array, length, STRICT) {
+                        LapysDevelopmentKit.Functions.arrayPrototypeShiftRight = function arrayPrototypeShiftRight(array, length, VOID_UNUSED_ELEMENTS) {
                             // Logic
                             if (length) {
-                                // Initialization > Array (Length, Iterator)
-                                var arrayLength = LDKF.arrayPrototypeLength(array), arrayIterator = arrayLength;
+                                // Initialization > Array Length
+                                var arrayLength = LDKF.arrayPrototypeLength(array);
 
-                                // Loop > Update > Array (Iterator)
-                                while (arrayIterator) { arrayIterator -= 1; array[arrayIterator + length] = array[arrayIterator] }
+                                // Logic
+                                if (arrayLength) {
+                                    // Initialization > Array Iterator
+                                    var arrayIterator = arrayLength;
 
-                                // Logic > Loop > Update > Array
-                                if (!STRICT) while (length) array[length -= 1] = undefined;
+                                    // Loop > Update > Array (Iterator)
+                                    while (arrayIterator) { arrayIterator -= 1; array[arrayIterator + length] = array[arrayIterator] }
+
+                                    // Logic > Loop > Update > Array
+                                    if (!VOID_UNUSED_ELEMENTS) while (length) array[length -= 1] = undefined
+                                }
                             }
 
                             // Return
@@ -560,6 +609,7 @@
                         // Trim --- CHECKPOINT
                         // Trim Left --- CHECKPOINT
                         // Trim Right --- CHECKPOINT
+
                     /* Size
                             --- WARN ---
                                 #Lapys:
@@ -573,13 +623,151 @@
                 // Is Array --- CHECKPOINT
                 LapysDevelopmentKit.Functions.isArray = function isArray(arg) { return arg instanceof Array };
 
+                // Is Constructible
+                LapysDevelopmentKit.Functions.isConstructible = function isConstructible(arg) { return !LDKF.isNonConstructible(arg) };
+
+                // Is Non-Constructible
+                LapysDevelopmentKit.Functions.isNonConstructible = function isNonConstructible(arg) { return LDKF.isNull(arg) || LDKF.isVoid(arg) };
+
                 // Is Null
-                LapysDevelopmentKit.Functions.isNull = function isNull(arg) { return arg === null };
+                LapysDevelopmentKit.Functions.isNull = function isNull(arg) { return null === arg };
+
+                // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern development environments.
+                LapysDevelopmentKit.Functions.isVoid = function isVoid(arg) { return typeof arg == "undefined" };
 
                 // Object
+                    // Get Own Non-Getter-Setter Property Names --- CHECKPOINT
+                    LapysDevelopmentKit.Functions.objectGetOwnNonGetterSetterPropertyNames = function objectGetOwnNonGetterSetterPropertyNames(object) {
+                        // Return
+                        return Array.prototype.concat.call([], Object.getOwnPropertyNames(object), Object.getOwnPropertySymbols(object)).filter(function(propertyName) {
+                            var descriptor = Object.getOwnPropertyDescriptor(object, propertyName);
+                            return !LDKF.objectPrototypeHasProperty(descriptor, "get") && !LDKF.objectPrototypeHasProperty(descriptor, "set")
+                        })
+                    };
+
+                    // Has Same Inheritance
+                    LapysDevelopmentKit.Functions.objectHasSameInheritance = function objectHasSameInheritance(objectA, objectB) {
+                        // Return
+                        return LDKF.objectPrototypeConstructor(objectA) === LDKF.objectPrototypeConstructor(objectB) &&
+                            LDKF.objectPrototypePrototype(objectA) === LDKF.objectPrototypePrototype(objectB)
+                    };
+
                     // Prototype
+                        // Constructor --- CHECKPOINT
+                        LapysDevelopmentKit.Functions.objectPrototypeConstructor = function objectPrototypeConstructor(object) { return object.constructor };
+
                         // Delete Property [By Name]
                         LapysDevelopmentKit.Functions.objectPrototypeDeleteProperty = function objectPrototypeDeleteProperty(object, propertyName) { delete object[propertyName]; return object };
+
+                        // Depth
+                        LapysDevelopmentKit.Functions.objectPrototypeDepth = function objectPrototypeDepth(object) {
+                            // Initialization
+                                // Depth
+                                var depth = 1,
+
+                                // Depth Tree --- NOTE (Lapys) -> Contains other objects within the object's properties similar to the Object.
+                                depthTree = [],
+                                    // Iterator, Length
+                                    depthTreeIterator = 0, depthTreeLength = 0,
+
+                                // Has Recursive Reference --- NOTE (Lapys) -> Terminate the depth search if a recursive reference is found.
+                                hasRecursiveReference = false,
+
+                                // Recorded References --- NOTE (Lapys) -> Record all references and values found within the search.
+                                recordedReferences = [],
+                                    recordedReferencesIterator = 0, recordedReferencesLength = 0,
+
+                                // Recorded Depth Tree --- NOTE (Lapys) -> For miscellaneous actions, see code below for uses.
+                                    // Iterator, Length
+                                    recordedDepthTreeIterator = null, recordedDepthTreeLength = null;
+
+                            // Initialization > (Object Property Names) (Length, Iterator)
+                            var objectPropertyNames = LDKF.objectGetOwnNonGetterSetterPropertyNames(object),
+                                objectPropertyNamesLength = LDKF.arrayPrototypeLength(objectPropertyNames),
+                                objectPropertyNamesIterator = objectPropertyNamesLength;
+
+                            // Loop --- NOTE (Lapys) -> Populate the Depth Tree with an initial layer.
+                            while (objectPropertyNamesIterator) {
+                                // Initialization > Object Property (Name, Value)
+                                var objectPropertyName = objectPropertyNames[objectPropertyNamesLength - (objectPropertyNamesIterator -= 1) - 1],
+                                    objectPropertyValue = object[objectPropertyName];
+
+                                // Logic > Update > Depth Tree (Length)
+                                if (LDKF.isConstructible(objectPropertyValue) && LDKF.objectHasSameInheritance(object, objectPropertyValue)) { depthTree[depthTreeLength] = objectPropertyValue; depthTreeLength += 1 }
+                            }
+
+                            // Loop --- NOTE (Lapys) -> Recur through the Object's properties.
+                            do {
+                                // Logic
+                                if (recordedDepthTreeLength) {
+                                    // Initialization > (Sub-Object) (Property Names (Length, Iterator))
+                                    var subobject = depthTree[depthTreeIterator],
+                                        subobjectPropertyNames = LDKF.objectGetOwnNonGetterSetterPropertyNames(subobject),
+                                        subobjectPropertyNamesLength = LDKF.arrayPrototypeLength(subobject),
+                                        subobjectPropertyNamesIterator = subobjectPropertyNamesLength;
+
+                                    // Logic --- NOTE (Lapys) -> Check for circular/ recursive references to the main Object or its descendant properties.
+                                    if (object === subobject)
+                                        // Update > Has Recursive Reference
+                                        hasRecursiveReference = true;
+
+                                    else
+                                        // Loop > Update > Has Recursive Reference
+                                        for (recordedReferencesIterator = recordedReferencesLength; !hasRecursiveReference && recordedReferencesIterator; recordedReferencesIterator -= 1)
+                                            (subobject === recordedReferences[recordedReferencesIterator]) && (hasRecursiveReference = true);
+
+                                    // Logic
+                                    if (!hasRecursiveReference) {
+                                        // Loop
+                                        while (subobjectPropertyNamesIterator) {
+                                            // Initialization > Sub-Object Property (Name, Value)
+                                            var subobjectPropertyName = subobjectPropertyNames[subobjectPropertyNamesLength - (subobjectPropertyNamesIterator -= 1) - 1],
+                                                subobjectPropertyValue = subobject[subobjectPropertyName];
+
+                                            // Logic > Update > Depth Tree (Length)
+                                            if (LDKF.isConstructible(subobjectPropertyValue) && LDKF.objectHasSameInheritance(object, subobjectPropertyValue)) { depthTree[depthTreeLength] = subobjectPropertyValue; depthTreeLength += 1 }
+                                        }
+
+                                        // Update > Depth Tree Iterator
+                                        depthTreeIterator += 1
+                                    }
+                                }
+
+                                // Logic --- NOTE (Lapys) -> Represents when the search goes to a deeper layer/ level.
+                                if (depthTreeIterator == recordedDepthTreeLength || !recordedDepthTreeLength) {
+                                    // Logic
+                                    if (recordedDepthTreeLength) {
+                                        // Loop --- NOTE (Lapys) -> Record all references after iterating through them.
+                                        while (recordedDepthTreeIterator != recordedDepthTreeLength) {
+                                            // Update > Recorded References
+                                            recordedReferences[recordedReferencesLength] = depthTree[recordedDepthTreeIterator];
+
+                                            // Update > Recorded (Depth Tree Iterator, References Length)
+                                            recordedDepthTreeIterator += 1;
+                                            recordedReferencesLength += 1
+                                        }
+
+                                        // Update > Depth --- NOTE (Lapys) -> Semantically represents the current layer of properties recursively searched.
+                                        depth += 1
+                                    }
+
+                                    // Update > Recorded Depth Tree Length
+                                    recordedDepthTreeLength = depthTreeLength
+                                }
+                            } while (depthTreeIterator != recordedDepthTreeLength && !hasRecursiveReference);
+
+                            // Update > Depth
+                            hasRecursiveReference && (depth = LDKC.Number.Infinity);
+
+                            // Return
+                            return depth
+                        };
+
+                        // Has Property [By Name]
+                        LapysDevelopmentKit.Functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, propertyName) { return propertyName in object };
+
+                        // Prototype --- CHECKPOINT
+                        LapysDevelopmentKit.Functions.objectPrototypePrototype = function objectPrototypePrototype(object) { return Object.getPrototypeOf(object) };
 
         /* Window --- CHECKPOINT */
         window["LDK"]= LapysDevelopmentKit;
