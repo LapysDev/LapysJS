@@ -367,7 +367,7 @@
                             return array
                         };
 
-                        // Cut Through
+                        // Cut Through --- CHECKPOINT
                         LapysDevelopmentKit.Functions.arrayPrototypeCutThrough = function arrayPrototypeCutThrough(array, index, length) {
                             // Initialization > Array Length
                             var arrayLength = LDKF.arrayPrototypeLength(array);
@@ -710,8 +710,67 @@
                             return -1
                         };
 
-                        // Insert At --- CHECKPOINT
+                        // Insert At
+                        LapysDevelopmentKit.Functions.arrayPrototypeInsertAt = function arrayPrototypeInsertAt(array, element, index) {
+                            // Initialization > Array Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array);
+
+                            // Logic
+                            if (arrayLength && index < arrayLength) {
+                                // Initialization > Array Iterator
+                                var arrayIterator = arrayLength;
+
+                                // Loop > Update > Array (Iterator)
+                                while (arrayIterator != index) { arrayIterator -= 1; array[arrayIterator + 1] = array[arrayIterator] }
+                            }
+
+                            // Update > Array
+                            array[index] = element;
+
+                            // Return
+                            return array
+                        };
+
                         // Insert Through --- CHECKPOINT
+                        LapysDevelopmentKit.Functions.arrayPrototypeInsertThrough = function arrayPrototypeInsertThrough(array, patternElement, index, length) {
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                argumentsLength = LDKF.getArgumentsLength(arguments), argumentsIterator = argumentsLength - 2,
+                                insertIndex = arguments[argumentsLength - 2];
+                                insertLength = arguments[argumentsLength - 1],
+                                pattern = [], patternIterator = 0, patternLength = 0;
+
+                            while ((argumentsIterator -= 1) > 0) {
+                                pattern[argumentsIterator - 1] = arguments[argumentsIterator];
+                                patternLength += 1
+                            }
+
+                            if (insertIndex == insertLength)
+                                LDKF.arrayPrototypeInsertAt(array, pattern[0], insertIndex);
+
+                            else if (insertIndex > insertLength) {
+                                var args = LDKF.arrayPrototypeConcatenate([array], pattern, [insertIndex, insertLength]);
+                            }
+
+                            else {
+                                else if (arrayLength && insertIndex < arrayLength) {
+                                    var arrayIterator = arrayLength;
+
+                                    while (arrayIterator != insertIndex) {
+                                        arrayIterator -= 1;
+                                        array[arrayIterator + insertLength - insertIndex + 1] = array[arrayIterator]
+                                    }
+                                }
+
+                                while (insertIndex != insertLength + 1) {
+                                    array[insertIndex] = pattern[patternIterator];
+                                    insertIndex += 1;
+                                    ((patternIterator += 1) == patternLength) && (patternIterator = 0)
+                                }
+                            }
+
+                            return array
+                        };
+
                         // Instance --- CHECKPOINT
                         // Last --- CHECKPOINT
                         // Length --- NOTE (Lapys) -> Arrays manage their own length.
