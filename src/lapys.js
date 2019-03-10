@@ -71,13 +71,19 @@
         // Global --- NOTE (Lapys) -> The global object of the current environment.
         var GLOBAL = null,
 
-        // Lapys Development Kit --- REDACT
+        // Lapys Development Kit --- REDACT --- UPDATE REQUIRED (Lapys) -> From quick inspection, re-asses the global `LapysJS` object differently.
         LapysDevelopmentKit = {
             Constants: {Number: {}, String: {}},
             Data: {},
             Environment: {Data: {}, Type: null, State: "OK", Vendors: []},
             Functions: {},
-            Information: {Messages: {Debugging: {}, Error: {}}, Settings: {DebugMode: false}},
+            Information: {
+                Messages: {Debugging: {}, Error: {}},
+                Settings: {
+                    DebugMode: LapysJS.debugMode, // NOTE (Lapys) -> Expose the Lapys Development Kit.
+                    PublicMode: LapysJS.publicMode // NOTE (Lapys) -> Determines if LapysJS assesses native JavaScript features before use.
+                }
+            },
             Mathematics: {},
             Objects: {},
             Storage: {Registry: {}},
@@ -154,8 +160,8 @@
                 LapysDevelopmentKit.Data.Handler = function Handler() {};
                     // Prototype
                     LapysDevelopmentKit.Data.HandlerPrototype = LDKD.Handler.prototype;
-                        // Function
-                        LapysDevelopmentKit.Data.HandlerPrototype["function"] = null;
+                        // Routine
+                        LapysDevelopmentKit.Data.HandlerPrototype.routine = null;
 
                 /* Frame */
                 LapysDevelopmentKit.Data.Frame = function Frame() {};
@@ -217,7 +223,8 @@
 
                             --- WARN ---
                                 #Lapys:
-                                    - Array methods that use a function-type parameter must callback with `key, value` arguments, not `value` alone.
+                                    - Array methods that use a function-type parameter must callback with `key, value` arguments, not `value` (or `value, key`) argument(s) alone;
+                                        This is to keep the coherency between arrays & objects (to infer that arrays are objects).
                                     - Do not pass argument flags (e.g.: `STRICT` parameters) to variadic array methods.
                                     - Each array method assumes the source Array is always complete (non-holey or non-sparse, but rather dense or packed).
                                     - Ensure each method may not be heavily dependent on another, interoperability may be key, but performance is the zenith here.
@@ -1840,19 +1847,42 @@
                             var arrayLength = LDKF.arrayPrototypeLength(array);
 
                             // Logic
-                            if (arrayLength)
-                                // Logic
-                                if (index < length) {
-                                    // Update > Array
-                                    (length + 1 > arrayLength - 1) || LDKF.arrayPrototypeCutThrough(array, length + 1, arrayLength, STRICT = arrayLength);
-                                    ~(index - 1) && LDKF.arrayPrototypeCutThrough(array, 0, index - 1)
-                                }
+                            if (arrayLength) {
+                                // Initialization > Array Iterator
+                                var arrayIterator = 0;
 
-                                else if (index > length) {
-                                    // Update > (Index, Array)
-                                    (index - 1 > arrayLength) && (index = arrayLength);
-                                    length + 1 > arrayLength - 1 ? LDKF.arrayPrototypeFree(array) : LDKF.arrayPrototypeCutThrough(array, length + 1, index - 1, STRICT = arrayLength)
+                                // Logic
+                                if (index > arrayLength - 1 && length > arrayLength - 1)
+                                    // Update > Array
+                                    LDKF.arrayPrototypeFree(array);
+
+                                else {
+                                    // Update > Length
+                                    (length > arrayLength - 1) && (length = arrayLength - 1);
+
+                                    // Logic
+                                    if (index < length + 1 && index < arrayLength + 1) {
+                                        // Update > Array Length
+                                        arrayLength = length - index + 1;
+
+                                        // Loop > Update > Array (Iterator)
+                                        while (arrayIterator != arrayLength) { array[arrayIterator] = array[arrayIterator + index]; arrayIterator += 1 }
+
+                                        // Update > Array
+                                        LDKF.arrayPrototypeResize(array, arrayLength)
+                                    }
+
+                                    else if (index > length) {
+                                        // (Loop > )Update > (...)
+                                        (index > arrayLength - 1) && (index = arrayLength - 1);
+                                        arrayLength = (arrayLength - index) + length + 1;
+                                        while (length != index + 2) { length += 1; array[length] = array[arrayIterator + index]; arrayIterator += 1 }
+
+                                        // Update > Array
+                                        LDKF.arrayPrototypeResize(array, arrayLength)
+                                    }
                                 }
+                            }
 
                             // Return
                             return array
@@ -2136,22 +2166,187 @@
 
                 /* Function */
                     // Prototype
-                        // Body --- CHECKPOINT
+                        // Body --- CHECKPOINT --- WARN (Lapys) -> Do not use in conjuncture with `LapysDevelopmentKit.Functions.iterateSource` for classes.
+                        LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING) {
+                            var bodySource = null, // NOTE (Lapys) -> The `null` value represents that the Routine type could not be discerned.
+                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
+                                type = LDKF.functionPrototypeType(routine);
+
+                            if (!LDKF.isNull(type)) {
+                                var bodySourceIterator = 0, bodySourceLength = 0;
+                                bodySource = "";
+
+                                if (type == "arrow") {}
+                                else if (type == "class") {}
+                                else {}
+                            }
+
+                            return bodySource
+                        };
+
                         // Head --- CHECKPOINT
-                        // Is Default --- CHECKPOINT
-                        // Is Arrow --- CHECKPOINT
-                        // Is Class --- CHECKPOINT
-                        // Is Generator --- CHECKPOINT
-                        // Is Native --- CHECKPOINT --- NOTE (Lapys) -> Native functions are always default.
+                        LapysDevelopmentKit.Functions.functionPrototypeHead = function functionPrototypeHead(routine, SOURCE_STRING) {
+                            var headSource = null, // NOTE (Lapys) -> The `null` value represents that the Routine type could not be discerned.
+                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
+                                type = LDKF.functionPrototypeType(routine);
+
+                            if (!LDKF.isNull(type)) {
+                                var headSourceIterator = 0, headSourceLength = 0;
+                                headSource = "";
+
+                                if (type == "arrow") {
+                                    LDKF.iterateSource(source, function(character, index) {
+                                        if (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') {
+                                            headSourceLength = index + 1;
+                                            this.stop()
+                                        }
+                                    }, STRICT = true)
+                                }
+
+                                else if (type == "class") {}
+                                else {}
+
+                                if (headSourceLength) {
+                                    headSourceIterator = headSourceLength + 1;
+
+                                    while (headSourceIterator)
+                                        headSource = LDKF.stringPrototypeCharacterAt(source, headSourceIterator -= 1) + headSource
+                                }
+                            }
+
+                            return headSource
+                        };
+
+                        // Is Arrow
+                        LapysDevelopmentKit.Functions.functionPrototypeIsArrow = function functionPrototypeIsArrow(routine, SOURCE_STRING) {
+                            // Initialization > (Is Generator, Source)
+                            var isArrow = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Loop > Logic > (Update > Is Generator; Target > Stop)
+                            LDKF.iterateSource(source, function(character, index) { if (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') { isArrow = true; this.stop() } }, STRICT = true);
+
+                            // Return
+                            return isArrow
+                        };
+
+                        // Is Class --- MINIFY
+                        LapysDevelopmentKit.Functions.functionPrototypeIsClass = function functionPrototypeIsClass(routine, SOURCE_STRING) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.stringPrototypeCharacterAt(source, 0) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's' };
+
+                        // Is Default
+                        LapysDevelopmentKit.Functions.functionPrototypeIsDefault = function functionPrototypeIsDefault(routine, SOURCE_STRING) {
+                            // Initialization > (Is Generator, Source)
+                            var isGenerator = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Loop > Logic > (Update > Is Generator; Target > Stop)
+                            LDKF.iterateSource(source, function(character, index) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true);
+
+                            // Return
+                            return !isGenerator && (
+                                LDKF.stringPrototypeCharacterAt(source, 0) == 'f' &&
+                                LDKF.stringPrototypeCharacterAt(source, 1) == 'u' &&
+                                LDKF.stringPrototypeCharacterAt(source, 2) == 'n' &&
+                                LDKF.stringPrototypeCharacterAt(source, 3) == 'c' &&
+                                LDKF.stringPrototypeCharacterAt(source, 4) == 't' &&
+                                LDKF.stringPrototypeCharacterAt(source, 5) == 'i' &&
+                                LDKF.stringPrototypeCharacterAt(source, 6) == 'o' &&
+                                LDKF.stringPrototypeCharacterAt(source, 7) == 'n'
+                            )
+                        };
+
+                        // Is Generator --- UPDATE REQUIRED (Lapys) -> Remove duplicated code here (reference at `LapysDevelopmentKit.Functions.functionPrototypeIsDefault` method).
+                        LapysDevelopmentKit.Functions.functionPrototypeIsGenerator = function functionPrototypeIsGenerator(routine, SOURCE_STRING) {
+                            // Initialization > (Is Generator, Source)
+                            var isGenerator = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Loop > Logic > (Update > Is Generator; Target > Stop)
+                            LDKF.iterateSource(source, function(character, index) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true);
+
+                            // Return
+                            return isGenerator && (
+                                LDKF.stringPrototypeCharacterAt(source, 0) == 'f' &&
+                                LDKF.stringPrototypeCharacterAt(source, 1) == 'u' &&
+                                LDKF.stringPrototypeCharacterAt(source, 2) == 'n' &&
+                                LDKF.stringPrototypeCharacterAt(source, 3) == 'c' &&
+                                LDKF.stringPrototypeCharacterAt(source, 4) == 't' &&
+                                LDKF.stringPrototypeCharacterAt(source, 5) == 'i' &&
+                                LDKF.stringPrototypeCharacterAt(source, 6) == 'o' &&
+                                LDKF.stringPrototypeCharacterAt(source, 7) == 'n'
+                            )
+                        };
+
+                        // Is Native
+                        LapysDevelopmentKit.Functions.functionPrototypeIsNative = function functionPrototypeIsNative(routine, SOURCE_STRING) {
+                            // Initialization
+                                // Is Native
+                                var isNative = false,
+
+                                // Native Syntaxes --- NOTE (Lapys) -> Code to search through the Source for to assert if the function is native.
+                                nativeSyntaxes = ["[Command Line API]", "[native code]"],
+                                    // Iterator, Length --- NOTE (Lapys) -> Iteration data of the Native Syntaxes array.
+                                    nativeSyntaxesIterator = 0, nativeSyntaxesLength = 2,
+
+                                    // Iterators, Lengths --- NOTE (Lapys) -> Re-mapping of the Native Syntaxes array.
+                                    nativeSyntaxesIterators = [0, 0],
+                                    nativeSyntaxesLengths = [18, 13],
+
+                                // Source
+                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Loop --- NOTE (Lapys) -> Ignore all syntax groups (e.g.: comments) except arrays.
+                            LDKF.iterateSource(source, function(character, index) {
+                                // Update > Native Syntaxes Iterator
+                                nativeSyntaxesIterator = nativeSyntaxesLength;
+
+                                // Loop
+                                while (!isNative && nativeSyntaxesIterator) {
+                                    // Initialization > Native Syntax
+                                    var nativeSyntax = nativeSyntaxes[nativeSyntaxesIterator -= 1];
+
+                                    // Logic > Update > (...)
+                                    if (character == LDKF.stringPrototypeCharacterAt(nativeSyntax, nativeSyntaxesIterators[nativeSyntaxesIterator])) {
+                                        nativeSyntaxesIterators[nativeSyntaxesIterator] += 1;
+                                        (nativeSyntaxesIterators[nativeSyntaxesIterator] == nativeSyntaxesLengths[nativeSyntaxesIterator]) && (isNative = true)
+                                    }
+
+                                    else
+                                        nativeSyntaxesIterators[nativeSyntaxesIterator] = 0
+                                }
+
+                                // Target > Stop --- NOTE (Lapys) -> Stop the current Iterator.
+                                isNative && this.stop()
+                            }, STRICT = {comments: true, delimiters: {arrays: false, objects: true, strings: true, syntax: true}}, STRICT = true);
+
+                            // Return
+                            return isNative
+                        };
+
                         // Name --- CHECKPOINT
+                        LapysDevelopmentKit.Functions.functionPrototypeName = function functionPrototypeName() {};
+
                         // Parameters --- CHECKPOINT
-                        // Parameters Length --- CHECKPOINT
-                        // To Source String
+                        LapysDevelopmentKit.Functions.functionPrototypeParameters = function functionPrototypeParameters() {};
+
+                        // Parameters Length
+                        LapysDevelopmentKit.Functions.functionPrototypeParametersLength = function functionPrototypeParametersLength(routine) { return LDKF.arrayPrototypeLength(LDKF.functionPrototypeParameters(routine)) };
+
+                        // To Source String --- NOTE (Lapys) -> We trim the data for consistency.
                         LapysDevelopmentKit.Functions.functionPrototypeToSourceString = function functionPrototypeToSourceString(routine) { return LDKF.stringPrototypeTrim(LDKF.toString(routine)) };
 
-                        // Type --- CHECKPOINT
-                        LapysDevelopmentKit.Functions.functionPrototypeType = function functionPrototypeType(routine) {
+                        // Type --- NOTE (Lapys) -> Function types are: `arrow` (lambda), `class` (structure), `default` and `generator`.
+                        LapysDevelopmentKit.Functions.functionPrototypeType = function functionPrototypeType(routine, SOURCE_STRING) {
+                            // Initialization > Type
+                            var type = null;
 
+                            // Logic > Update > Type
+                            switch (true) {
+                                case LDKF.functionPrototypeIsArrow(routine, STRICT = SOURCE_STRING): type = "arrow"; break;
+                                case LDKF.functionPrototypeIsClass(routine, STRICT = SOURCE_STRING): type = "class"; break;
+                                case LDKF.functionPrototypeIsDefault(routine, STRICT = SOURCE_STRING): type = "default"; break;
+                                case LDKF.functionPrototypeIsGenerator(routine, STRICT = SOURCE_STRING): type = "generator"; break;
+                            }
+
+                            // Return
+                            return type
                         };
 
                 // Get Arguments Length --- NOTE (Lapys) -> Argument objects store their own length.
@@ -2162,6 +2357,11 @@
 
                 // Is Boolean
                 LapysDevelopmentKit.Functions.isBoolean = function isBoolean(arg) { return typeof arg == "boolean" };
+                    // Is Negative Boolean
+                    LapysDevelopmentKit.Functions.isNegativeBoolean = function isNegativeBoolean(arg) { return LDKF.isBoolean(arg) && arg === false };
+
+                    // Is Positive Boolean
+                    LapysDevelopmentKit.Functions.isPositiveBoolean = function isPositiveBoolean(arg) { return LDKF.isBoolean(arg) && arg === true };
 
                 // Is Constructible
                 LapysDevelopmentKit.Functions.isConstructible = function isConstructible(arg) { return !LDKF.isNonConstructible(arg) };
@@ -2186,6 +2386,79 @@
 
                 // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern development environments.
                 LapysDevelopmentKit.Functions.isVoid = function isVoid(arg) { return typeof arg == "undefined" };
+
+                /* Iterate Source [String]
+                        --- NOTE (Lapys) -> Iterate through JavaScript source syntax.
+                            - The `this` object for the Handler points to an Iterator object.
+                        --- WARN (Lapys) -> The handler is executed with `value, key` arguments rather than the reverse (`key, value`)
+                            because this use-case (iterating through source code) is not publicly available to the library user (unless Debug Mode is enabled).
+                */
+                LapysDevelopmentKit.Functions.iterateSource = function iterateSource(source, handler, IGNORE, IS_FUNCTION) {
+                    /* Logic
+                            --- CODE (Lapys) -> Modify the `IGNORE` flag to be a JSON structure of `{
+                                comments: {multiline: <boolean>, singleline: <boolean>},
+                                delimiters: {arrays: <boolean>, objects: <boolean>, strings: <boolean>, syntax: <boolean>}
+                            }`.
+                    */
+                    if (IGNORE) {
+                        // Update > Ignore
+                        LDKF.isBoolean(IGNORE) && (IGNORE = {comments: IGNORE, delimiters: IGNORE});
+
+                        // Modification > Ignore > (...)
+                        IGNORE.comments = LDKF.isBoolean(IGNORE.comments) ? {multiline: IGNORE.comments, singleline: IGNORE.comments} : (typeof IGNORE.comments == "object" ? IGNORE.comments : {multiline: false, singleline: false});
+                        IGNORE.delimiters = LDKF.isBoolean(IGNORE.delimiters) ? {arrays: IGNORE.delimiters, objects: IGNORE.delimiters, strings: IGNORE.delimiters, syntax: IGNORE.delimiters} : (typeof IGNORE.delimiters == "object" ? IGNORE.delimiters : {arrays: false, objects: false, strings: false, syntax: false});
+
+                        // Logic > Modification > Ignore > Delimiters
+                        if (LDKF.objectPrototypeHasProperty(IGNORE, "arrays")) { IGNORE.delimiters.arrays = !!IGNORE.arrays; LDKF.objectPrototypeDeleteProperty(IGNORE, "arrays") }
+                        if (LDKF.objectPrototypeHasProperty(IGNORE, "objects")) { IGNORE.delimiters.objects = !!IGNORE.objects; LDKF.objectPrototypeDeleteProperty(IGNORE, "objects") }
+                        if (LDKF.objectPrototypeHasProperty(IGNORE, "strings")) { IGNORE.delimiters.strings = !!IGNORE.strings; LDKF.objectPrototypeDeleteProperty(IGNORE, "strings") }
+                        if (LDKF.objectPrototypeHasProperty(IGNORE, "syntax")) { IGNORE.delimiters.syntax = !!IGNORE.syntax; LDKF.objectPrototypeDeleteProperty(IGNORE, "syntax") }
+                    }
+
+                    else
+                        // Update > Ignore
+                        IGNORE = {comments: {multiline: false, singleline: false}, delimiters: {arrays: false, objects: false, strings: false, syntax: false}};
+
+                    // Initialization > Source (Length, Iterator)
+                    var sourceLength = LDKF.stringPrototypeLength(source), sourceIterator = sourceLength;
+
+                    var ITERATOR = {
+                        state: "iterating",
+                        stop: function stop() { ITERATOR.state = "broken" }
+                    }, iterationLocks = [], iterationLocksLength = 0, parseIteration = true;
+
+                    var isFunctionSource = IS_FUNCTION,
+                        isClassFunctionSource = isFunctionSource && LDKF.functionPrototypeIsClass(null, STRICT = source),
+                        hasIndexedFunctionSourceBody = false,
+                        hasIndexedFunctionSourceHead = isClassFunctionSource;
+
+                    // Update > Source
+                    isClassFunctionSource && (source = LDKF.functionPrototypeBody(null, STRICT = source));
+
+                    function addIterationLock() {}
+
+                    // Loop
+                    while (sourceIterator && ITERATOR.state != "broken") {
+                        // Initialization > (Index, (Next, Preceding, Previous) (Character))
+                        var index = sourceLength - (sourceIterator -= 1) - 1,
+                            character = LDKF.stringPrototypeCharacterAt(source, index);
+
+                        if (character == '(' && (isFunctionSource ? hasIndexedFunctionSourceHead : true)) {
+                            hasIndexedFunctionSourceHead = true;
+                            iterationLocks
+                        }
+
+                        // Handler
+                        parseIteration && ((
+                            (IGNORE.comments.multiline && iterationLockType == "multiline-comment") ||
+                            (IGNORE.comments.singleline && iterationLockType == "singleline-comment") ||
+                            (IGNORE.delimiters.arrays && iterationLockType == "array-group") ||
+                            (IGNORE.delimiters.objects && iterationLockType == "object-group") ||
+                            (IGNORE.delimiters.strings && iterationLockType == "string") ||
+                            (IGNORE.delimiters.syntax && iterationLockType == "syntax-group")
+                        ) || handler.call(ITERATOR, character, index))
+                    }
+                };
 
                 /* Number */
                     // Prototype
@@ -2332,10 +2605,10 @@
                 /* String */
                     // Prototype
                         // Character At --- CHECKPOINT
-                        LapysDevelopmentKit.Functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) { return string.charAt(index) || string[index] };
+                        LapysDevelopmentKit.Functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) { return string.charAt(index) || string[index] || null };
 
                         // Character Code At --- CHECKPOINT
-                        LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(string, index) { return string.charCodeAt(index) };
+                        LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(string, index) { return string.charCodeAt(index) || -1 };
 
                         // Cut
                         LapysDevelopmentKit.Functions.stringPrototypeCut = function stringPrototypeCut(string, length, STRING_LENGTH) { return LDKF.stringPrototypeCutLeft(LDKF.stringPrototypeCutRight(string, length, STRING_LENGTH), length, STRING_LENGTH) };
@@ -2393,6 +2666,30 @@
 
                         // Length --- NOTE (Lapys) -> Similar to the `LapysDevelopmentKit.Functions.arrayPrototypeLength` method: Strings manage their own length.
                         LapysDevelopmentKit.Functions.stringPrototypeLength = function stringPrototypeLength(string) { return string.length };
+
+                        // Slice
+                        LapysDevelopmentKit.Functions.stringPrototypeSlice = function stringPrototypeSlice(string, index, length) {
+                            // Initialization > (Slice, String Length)
+                            var slice = "", stringLength = LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength)
+                                // Logic
+                                if (index < length + 1 && index < stringLength + 1) {
+                                    // (Loop > )Update > (...)
+                                    (length > stringLength - 1) && (length = stringLength - 1);
+                                    while (index != length + 1) { slice += string[index]; index += 1 }
+                                }
+
+                                else if (index > length) {
+                                    // Update > Slice
+                                    slice += LDKF.stringPrototypeSlice(string, 0, length > stringLength - 1 ? stringLength : length);
+                                    (index < stringLength) && (slice += LDKF.stringPrototypeSlice(string, index, stringLength))
+                                }
+
+                            // Return
+                            return slice
+                        };
 
                         // Trim
                         LapysDevelopmentKit.Functions.stringPrototypeTrim = function stringPrototypeTrim(string, substring) {
