@@ -1922,7 +1922,7 @@
                                 --- NOTE (Lapys) -> Ascending order by default; The Sorter must return the priority element it chose.
                                 --- UPDATE REQUIRED (Lapys) -> Use an actual sorting algorithm.
                         */
-                        LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(array, sorter) {
+                        LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(array, sorter, IS_NUMERIC_ARRAY) {
                             // Initialization > Array (Length, Iterator)
                             var arrayLength = LDKF.arrayPrototypeLength(array), arrayIterator = arrayLength;
 
@@ -2047,7 +2047,7 @@
                                     var arrayIndex = 1, resort = false;
 
                                     // Loop
-                                    while (~(arrayIterator - arrayIndex) && sorter(previousElement, element) === element) {
+                                    while (~(arrayIterator - arrayIndex) && sorter(previousElement, element, IS_NUMERIC_ARRAY) === element) {
                                         // Update > (Array (Index), (Previous) Element, Re-Sort)
                                         array[arrayIterator - (arrayIndex - 1)] = previousElement;
                                         array[arrayIterator - arrayIndex] = element;
@@ -2394,69 +2394,37 @@
                             because this use-case (iterating through source code) is not publicly available to the library user (unless Debug Mode is enabled).
                 */
                 LapysDevelopmentKit.Functions.iterateSource = function iterateSource(source, handler, IGNORE, IS_FUNCTION) {
-                    /* Logic
-                            --- CODE (Lapys) -> Modify the `IGNORE` flag to be a JSON structure of `{
-                                comments: {multiline: <boolean>, singleline: <boolean>},
-                                delimiters: {arrays: <boolean>, objects: <boolean>, strings: <boolean>, syntax: <boolean>}
-                            }`.
-                    */
-                    if (IGNORE) {
-                        // Update > Ignore
-                        LDKF.isBoolean(IGNORE) && (IGNORE = {comments: IGNORE, delimiters: IGNORE});
+                    var hasIndexedFunctionSourceBody = !IS_FUNCTION,
+                        hasIndexedFunctionSourceHead = !IS_FUNCTION,
+                        sourceLength = LDKF.stringPrototypeLength(source),
+                        sourceIterator = sourceLength;
 
-                        // Modification > Ignore > (...)
-                        IGNORE.comments = LDKF.isBoolean(IGNORE.comments) ? {multiline: IGNORE.comments, singleline: IGNORE.comments} : (typeof IGNORE.comments == "object" ? IGNORE.comments : {multiline: false, singleline: false});
-                        IGNORE.delimiters = LDKF.isBoolean(IGNORE.delimiters) ? {arrays: IGNORE.delimiters, objects: IGNORE.delimiters, strings: IGNORE.delimiters, syntax: IGNORE.delimiters} : (typeof IGNORE.delimiters == "object" ? IGNORE.delimiters : {arrays: false, objects: false, strings: false, syntax: false});
-
-                        // Logic > Modification > Ignore > Delimiters
-                        if (LDKF.objectPrototypeHasProperty(IGNORE, "arrays")) { IGNORE.delimiters.arrays = !!IGNORE.arrays; LDKF.objectPrototypeDeleteProperty(IGNORE, "arrays") }
-                        if (LDKF.objectPrototypeHasProperty(IGNORE, "objects")) { IGNORE.delimiters.objects = !!IGNORE.objects; LDKF.objectPrototypeDeleteProperty(IGNORE, "objects") }
-                        if (LDKF.objectPrototypeHasProperty(IGNORE, "strings")) { IGNORE.delimiters.strings = !!IGNORE.strings; LDKF.objectPrototypeDeleteProperty(IGNORE, "strings") }
-                        if (LDKF.objectPrototypeHasProperty(IGNORE, "syntax")) { IGNORE.delimiters.syntax = !!IGNORE.syntax; LDKF.objectPrototypeDeleteProperty(IGNORE, "syntax") }
-                    }
-
-                    else
-                        // Update > Ignore
-                        IGNORE = {comments: {multiline: false, singleline: false}, delimiters: {arrays: false, objects: false, strings: false, syntax: false}};
-
-                    // Initialization > Source (Length, Iterator)
-                    var sourceLength = LDKF.stringPrototypeLength(source), sourceIterator = sourceLength;
-
-                    var ITERATOR = {
-                        state: "iterating",
-                        stop: function stop() { ITERATOR.state = "broken" }
-                    }, iterationLocks = [], iterationLocksLength = 0, parseIteration = true;
-
-                    var isFunctionSource = IS_FUNCTION,
-                        isClassFunctionSource = isFunctionSource && LDKF.functionPrototypeIsClass(null, STRICT = source),
-                        hasIndexedFunctionSourceBody = false,
-                        hasIndexedFunctionSourceHead = isClassFunctionSource;
-
-                    // Update > Source
-                    isClassFunctionSource && (source = LDKF.functionPrototypeBody(null, STRICT = source));
-
-                    function addIterationLock() {}
-
-                    // Loop
-                    while (sourceIterator && ITERATOR.state != "broken") {
-                        // Initialization > (Index, (Next, Preceding, Previous) (Character))
-                        var index = sourceLength - (sourceIterator -= 1) - 1,
-                            character = LDKF.stringPrototypeCharacterAt(source, index);
-
-                        if (character == '(' && (isFunctionSource ? hasIndexedFunctionSourceHead : true)) {
-                            hasIndexedFunctionSourceHead = true;
-                            iterationLocks
+                    // Update > Ignore
+                    IGNORE = LDKF.isBoolean(IGNORE) ? {
+                        comments: {mutliline: IGNORE, singleline: IGNORE},
+                        delimiters: {
+                            arrays: IGNORE, objects: IGNORE, syntax: IGNORE
+                            strings: {literals: IGNORE ? "both" : "none", templates: IGNORE}
                         }
+                    } : {
+                        comments: {multiline: !!(IGNORE.comments || {}).multiline, singleline: !!(IGNORE.comments || {}).singleline},
+                        delimiters: {
+                            arrays: !!(IGNORE.delimiters || {}).arrays, objects: !!(IGNORE.delimiters || {}).objects, syntax: !!(IGNORE.delimiters || {}).syntax,
+                            strings: {literals: ((IGNORE.delimiters || {}).strings || {}).literals || "none", templates: !!((IGNORE.delimiters || {}).strings || {}).templates}
+                        }
+                    };
 
-                        // Handler
-                        parseIteration && ((
-                            (IGNORE.comments.multiline && iterationLockType == "multiline-comment") ||
-                            (IGNORE.comments.singleline && iterationLockType == "singleline-comment") ||
-                            (IGNORE.delimiters.arrays && iterationLockType == "array-group") ||
-                            (IGNORE.delimiters.objects && iterationLockType == "object-group") ||
-                            (IGNORE.delimiters.strings && iterationLockType == "string") ||
-                            (IGNORE.delimiters.syntax && iterationLockType == "syntax-group")
-                        ) || handler.call(ITERATOR, character, index))
+                    var allowSyntaxParsing = true;
+
+                    while (sourceIterator) {
+                        var sourceIndex = sourceLength - (sourceIterator -= 1) - 1,
+                            character = LDKF.stringPrototypeCharacterAt(source, sourceIndex);
+
+                        if (character == '/') {
+                            var nextCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex + 1);
+
+                            if (nextCharacter == '*')
+                        }
                     }
                 };
 
