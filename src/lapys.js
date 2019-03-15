@@ -2399,32 +2399,96 @@
                         sourceLength = LDKF.stringPrototypeLength(source),
                         sourceIterator = sourceLength;
 
-                    // Update > Ignore
-                    IGNORE = LDKF.isBoolean(IGNORE) ? {
-                        comments: {mutliline: IGNORE, singleline: IGNORE},
-                        delimiters: {
-                            arrays: IGNORE, objects: IGNORE, syntax: IGNORE
-                            strings: {literals: IGNORE ? "both" : "none", templates: IGNORE}
-                        }
-                    } : {
-                        comments: {multiline: !!(IGNORE.comments || {}).multiline, singleline: !!(IGNORE.comments || {}).singleline},
-                        delimiters: {
-                            arrays: !!(IGNORE.delimiters || {}).arrays, objects: !!(IGNORE.delimiters || {}).objects, syntax: !!(IGNORE.delimiters || {}).syntax,
-                            strings: {literals: ((IGNORE.delimiters || {}).strings || {}).literals || "none", templates: !!((IGNORE.delimiters || {}).strings || {}).templates}
-                        }
-                    };
+                    if (LDKF.isBoolean(IGNORE))
+                        IGNORE = {comments: {multiline: IGNORE, singleline: IGNORE}, delimiters: {arrays: IGNORE, objects: IGNORE, syntax: IGNORE, strings: {literals: IGNORE ? "both" : "none", templates: IGNORE}}};
 
-                    var allowSyntaxParsing = true;
+                    else {
+                        IGNORE = IGNORE || {};
+                        IGNORE = {
+                            comments: LDKF.isBoolean(IGNORE.comments) ? {multiline: IGNORE.comments, singleline: IGNORE.comments} : {multiline: !!(IGNORE.comments || {}).multiline, singleline: !!(IGNORE.comments || {}).singleline},
+                            delimiters: LDKF.isBoolean(IGNORE.delimiters) ? {
+                                arrays: IGNORE.delimiters, objects: IGNORE.delimiters, syntax: IGNORE.delimiters,
+                                strings: {literals: IGNORE.delimiters ? "both" : "none", templates: IGNORE.delimiters}
+                            } : {
+                                arrays: !!(IGNORE.delimiters || {}).arrays, objects: !!(IGNORE.delimiters || {}).objects, syntax: !!(IGNORE.delimiters || {}).syntax,
+                                strings: LDKF.isBoolean((IGNORE.delimiters || {}).strings) ?
+                                    {literals: (IGNORE.delimiters || {}).strings ? "both" : "none", templates: (IGNORE.delimiters || {}).strings} :
+                                    {literals: ((IGNORE.delimiters || {}).strings || {}).literals || "none", templates: !!((IGNORE.delimiters || {}).strings || {}).templates}
+                            }
+                        }
+                    }
+
+                    var allowSyntaxParsing = true, currentSyntaxGroup = null,
+                        syntaxGroups = [], syntaxGroupsLength = 0;
 
                     while (sourceIterator) {
-                        var sourceIndex = sourceLength - (sourceIterator -= 1) - 1,
+                        var skipIterationFor = null,
+                            sourceIndex = sourceLength - (sourceIterator -= 1) - 1,
                             character = LDKF.stringPrototypeCharacterAt(source, sourceIndex);
 
-                        if (character == '/') {
-                            var nextCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex + 1);
+                        if (allowSyntaxParsing) {
+                            if (character == '/') {
+                                var nextCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex + 1);
 
-                            if (nextCharacter == '*')
+                                if (nextCharacter == '*') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "multiline-comment"; syntaxGroupsLength += 1 }
+                                else if (nextCharacter == '/') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "singleline-comment"; syntaxGroupsLength += 1 }
+                            }
+
+                            else if (character == '\'') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "single-quote-string-literal"; syntaxGroupsLength += 1 }
+                            else if (character == '"') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "double-quote-string-literal"; syntaxGroupsLength += 1 }
+                            else if (character == '`') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "template-string"; syntaxGroupsLength += 1 }
+
+                            else if (currentSyntaxGroup == "array-literal" && (character == ']')) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
+                            else if (character == '[') { syntaxGroups[syntaxGroupsLength] = "array-literal"; syntaxGroupsLength += 1 }
+
+                            else if (currentSyntaxGroup == "object-literal" && (character == '}')) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
+                            else if (character == '{') { syntaxGroups[syntaxGroupsLength] = "object-literal"; syntaxGroupsLength += 1 }
+
+                            else if (currentSyntaxGroup == "syntax-group" && (character == ')')) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
+                            else if (character == '(') { syntaxGroups[syntaxGroupsLength] = "syntax-group"; syntaxGroupsLength += 1 }
                         }
+
+                        else {
+                            if (
+                                (currentSyntaxGroup == "singleline-comment" && (character == '\n')) ||
+                                (currentSyntaxGroup == "multiline-comment" && (character == '/' && LDKF.stringPrototypeCharacterAt(source, sourceIndex - 1) == '*'))
+                            ) allowSyntaxParsing = true;
+
+                            else {
+                                var precedingCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex - 2),
+                                    previousCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex - 1);
+
+                                if (
+                                    (previousCharacter != '\\' || (precedingCharacter == '\\' && previousCharacter == '\\')) &&
+                                    (
+                                        (currentSyntaxGroup == "single-quote-string-literal" && (character == '\'')) ||
+                                        (currentSyntaxGroup == "double-quote-string-literal" && (character == '"')) ||
+                                        (currentSyntaxGroup == "template-string" && (character == '`'))
+                                    )
+                                ) allowSyntaxParsing = true
+                            }
+
+                            if (allowSyntaxParsing) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
+                        }
+
+                        currentSyntaxGroup = syntaxGroupsLength ? syntaxGroups[syntaxGroupsLength - 1] : null;
+
+                        (
+                            (IGNORE.comments.multiline && (currentSyntaxGroup == "multiline-comment" || skipIterationFor == "multiline-comment")) ||
+                            (IGNORE.comments.singleline && (currentSyntaxGroup == "singleline-comment" || skipIterationFor == "singleline-comment")) ||
+                            (IGNORE.delimiters.arrays && (currentSyntaxGroup == "array-literal" || skipIterationFor == "array-literal")) ||
+                            (IGNORE.delimiters.objects && (currentSyntaxGroup == "object-literal" || skipIterationFor == "object-literal")) ||
+                            (IGNORE.delimiters.syntax && (currentSyntaxGroup == "syntax-group" || skipIterationFor == "syntax-group")) ||
+                            (
+                                (IGNORE.delimiters.strings.literals == "both" || IGNORE.delimiters.strings.literals == "double") &&
+                                (currentSyntaxGroup == "double-quote-string-literal" || skipIterationFor == "double-quote-string-literal")
+                            ) ||
+                            (
+                                (IGNORE.delimiters.strings.literals == "both" || IGNORE.delimiters.strings.literals == "single") &&
+                                (currentSyntaxGroup == "single-quote-string-literal" || skipIterationFor == "single-quote-string-literal")
+                            ) ||
+                            (IGNORE.delimiters.strings.templates && (currentSyntaxGroup == "template-string" || skipIterationFor == "template-string"))
+                        ) || handler.call(source, character, sourceIndex)
                     }
                 };
 
