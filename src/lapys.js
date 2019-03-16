@@ -73,7 +73,7 @@
 
         // Lapys Development Kit --- REDACT --- UPDATE REQUIRED (Lapys) -> From quick inspection, re-asses the global `LapysJS` object differently.
         LapysDevelopmentKit = {
-            Constants: {Number: {}, String: {}},
+            Constants: {Keywords: {}, Number: {}, String: {}},
             Data: {},
             Environment: {Data: {}, Type: null, State: "OK", Vendors: []},
             Functions: {},
@@ -113,12 +113,19 @@
 
     /* Modification */
         /* Lapys Development Kit */
-            /* Constants */
+            /* Constants --- REDACT */
                 // Number > (Infinity, Not-A-Number)
                 LapysDevelopmentKit.Constants.Number.Infinity = 1 / 0;
                 LapysDevelopmentKit.Constants.Number.NaN = 0 / 0;
 
-                // String > (...) --- REDACT
+                // Keywords > (...) --- NOTE (Lapys) -> Store the keyword strings as arrays because older browsers defer to the `String.prototype.charAt` method rather than syntactic string indexing (i.e.: the `[]` operation).
+                LapysDevelopmentKit.Constants.Keywords["extends"] = ['e', 'x', 't', 'e', 'n', 'd', 's'];
+                LapysDevelopmentKit.Constants.Keywords.nativeFunctionCodes = [
+                    ['[', 'C', 'o', 'm', 'm', 'a', 'n', 'd', ' ', 'L', 'i', 'n', 'e', ' ', 'A', 'P', 'I', ']'],
+                    ['[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']']
+                ];
+
+                // String > (...)
                 LapysDevelopmentKit.Constants.String.alphabets = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
                 LapysDevelopmentKit.Constants.String.binary = ['0', '1'];
                 LapysDevelopmentKit.Constants.String.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -2166,154 +2173,132 @@
 
                 /* Function */
                     // Prototype
-                        // Body --- CHECKPOINT --- WARN (Lapys) -> Do not use in conjuncture with `LapysDevelopmentKit.Functions.iterateSource` for classes.
-                        LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING) {
-                            var bodySource = null, // NOTE (Lapys) -> The `null` value represents that the Routine type could not be discerned.
-                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
-                                type = LDKF.functionPrototypeType(routine);
-
-                            if (!LDKF.isNull(type)) {
-                                var bodySourceIterator = 0, bodySourceLength = 0;
-                                bodySource = "";
-
-                                if (type == "arrow") {}
-                                else if (type == "class") {}
-                                else {}
-                            }
-
-                            return bodySource
-                        };
+                        // Body --- CHECKPOINT
+                        LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING) {};
 
                         // Head --- CHECKPOINT
-                        LapysDevelopmentKit.Functions.functionPrototypeHead = function functionPrototypeHead(routine, SOURCE_STRING) {
-                            var headSource = null, // NOTE (Lapys) -> The `null` value represents that the Routine type could not be discerned.
-                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
-                                type = LDKF.functionPrototypeType(routine);
-
-                            if (!LDKF.isNull(type)) {
-                                var headSourceIterator = 0, headSourceLength = 0;
-                                headSource = "";
-
-                                if (type == "arrow") {
-                                    LDKF.iterateSource(source, function(character, index) {
-                                        if (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') {
-                                            headSourceLength = index + 1;
-                                            this.stop()
-                                        }
-                                    }, STRICT = true)
-                                }
-
-                                else if (type == "class") {}
-                                else {}
-
-                                if (headSourceLength) {
-                                    headSourceIterator = headSourceLength + 1;
-
-                                    while (headSourceIterator)
-                                        headSource = LDKF.stringPrototypeCharacterAt(source, headSourceIterator -= 1) + headSource
-                                }
-                            }
-
-                            return headSource
-                        };
+                        LapysDevelopmentKit.Functions.functionPrototypeHead = function functionPrototypeHead(routine, SOURCE_STRING) {};
 
                         // Is Arrow
                         LapysDevelopmentKit.Functions.functionPrototypeIsArrow = function functionPrototypeIsArrow(routine, SOURCE_STRING) {
-                            // Initialization > (Is Generator, Source)
+                            // Initialization > (Is Arrow, Source)
                             var isArrow = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
-                            // Loop > Logic > (Update > Is Generator; Target > Stop)
-                            LDKF.iterateSource(source, function(character, index) { if (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') { isArrow = true; this.stop() } }, STRICT = true);
+                            // Loop
+                            LDKF.iterateSource(source, function(character, index) {
+                                // Update > Is Arrow
+                                (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') && (isArrow = true);
+
+                                // Target > Stop
+                                isArrow && this.stop()
+                            }, STRICT = true, STRICT = false);
 
                             // Return
                             return isArrow
                         };
 
-                        // Is Class --- MINIFY
+                        // Is Class
                         LapysDevelopmentKit.Functions.functionPrototypeIsClass = function functionPrototypeIsClass(routine, SOURCE_STRING) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.stringPrototypeCharacterAt(source, 0) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's' };
 
-                        // Is Default
-                        LapysDevelopmentKit.Functions.functionPrototypeIsDefault = function functionPrototypeIsDefault(routine, SOURCE_STRING) {
-                            // Initialization > (Is Generator, Source)
-                            var isGenerator = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+                        // Is Extended Class
+                        LapysDevelopmentKit.Functions.functionPrototypeIsExtendedClass = function functionPrototypeIsExtendedClass(routine, SOURCE_STRING) {
+                            // Initialization > (Is Extended Class, Source)
+                            var isExtendedClass = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
-                            // Loop > Logic > (Update > Is Generator; Target > Stop)
-                            LDKF.iterateSource(source, function(character, index) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true);
+                            // Logic
+                            if (LDKF.functionPrototypeIsClass(routine, STRICT = source)) {
+                                // Initialization > Lookup Syntax (Length)
+                                var lookupSyntax = LDKC.Keywords["extends"], lookupSyntaxLength = 7;
+
+                                // Loop
+                                LDKF.iterateSource(source, function(character, index) {
+                                    // Initialization > Lookup Syntax Iterator
+                                    var lookupSyntaxIterator = 0;
+
+                                    // Loop > Update > Lookup Iterator
+                                    while (lookupSyntaxIterator != lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
+                                        lookupSyntaxIterator += 1;
+
+                                    // Logic
+                                    if (lookupSyntaxIterator == lookupSyntaxLength) {
+                                        // Update > Is Extended Class
+                                        isExtendedClass = true;
+
+                                        // Target > Stop
+                                        this.stop()
+                                    }
+                                }, STRICT = true, STRICT = false, STRICT = 5)
+                            }
 
                             // Return
-                            return !isGenerator && (
-                                LDKF.stringPrototypeCharacterAt(source, 0) == 'f' &&
-                                LDKF.stringPrototypeCharacterAt(source, 1) == 'u' &&
-                                LDKF.stringPrototypeCharacterAt(source, 2) == 'n' &&
-                                LDKF.stringPrototypeCharacterAt(source, 3) == 'c' &&
-                                LDKF.stringPrototypeCharacterAt(source, 4) == 't' &&
-                                LDKF.stringPrototypeCharacterAt(source, 5) == 'i' &&
-                                LDKF.stringPrototypeCharacterAt(source, 6) == 'o' &&
-                                LDKF.stringPrototypeCharacterAt(source, 7) == 'n'
-                            )
+                            return isExtendedClass
                         };
 
-                        // Is Generator --- UPDATE REQUIRED (Lapys) -> Remove duplicated code here (reference at `LapysDevelopmentKit.Functions.functionPrototypeIsDefault` method).
+                        // Is Default
+                        LapysDevelopmentKit.Functions.functionPrototypeIsDefault = function functionPrototypeIsDefault(routine, SOURCE_STRING) { return !LDKF.functionPrototypeIsArrow(routine, SOURCE_STRING) && !LDKF.functionPrototypeIsClass(routine, SOURCE_STRING) && !LDKF.functionPrototypeIsGenerator(routine, SOURCE_STRING) };
+
+                        // Is Generator
                         LapysDevelopmentKit.Functions.functionPrototypeIsGenerator = function functionPrototypeIsGenerator(routine, SOURCE_STRING) {
                             // Initialization > (Is Generator, Source)
                             var isGenerator = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
-                            // Loop > Logic > (Update > Is Generator; Target > Stop)
-                            LDKF.iterateSource(source, function(character, index) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true);
+                            // Loop
+                            LDKF.stringPrototypeCharacterAt(source, 0) == 'f' &&
+                            LDKF.stringPrototypeCharacterAt(source, 1) == 'u' &&
+                            LDKF.stringPrototypeCharacterAt(source, 2) == 'n' &&
+                            LDKF.stringPrototypeCharacterAt(source, 3) == 'c' &&
+                            LDKF.stringPrototypeCharacterAt(source, 4) == 't' &&
+                            LDKF.stringPrototypeCharacterAt(source, 5) == 'i' &&
+                            LDKF.stringPrototypeCharacterAt(source, 6) == 'o' &&
+                            LDKF.stringPrototypeCharacterAt(source, 7) == 'n' &&
+                            LDKF.iterateSource(source, function(character, index) {
+                                // Update > Is Generator
+                                (character == '*') && (isGenerator = true);
+
+                                // Target > Stop
+                                isGenerator && this.stop()
+                            }, STRICT = true, STRICT = false, STRICT = 8);
 
                             // Return
-                            return isGenerator && (
-                                LDKF.stringPrototypeCharacterAt(source, 0) == 'f' &&
-                                LDKF.stringPrototypeCharacterAt(source, 1) == 'u' &&
-                                LDKF.stringPrototypeCharacterAt(source, 2) == 'n' &&
-                                LDKF.stringPrototypeCharacterAt(source, 3) == 'c' &&
-                                LDKF.stringPrototypeCharacterAt(source, 4) == 't' &&
-                                LDKF.stringPrototypeCharacterAt(source, 5) == 'i' &&
-                                LDKF.stringPrototypeCharacterAt(source, 6) == 'o' &&
-                                LDKF.stringPrototypeCharacterAt(source, 7) == 'n'
-                            )
+                            return isGenerator
                         };
 
                         // Is Native
                         LapysDevelopmentKit.Functions.functionPrototypeIsNative = function functionPrototypeIsNative(routine, SOURCE_STRING) {
-                            // Initialization
-                                // Is Native
-                                var isNative = false,
+                            // Initialization > (Is Native, Source)
+                            var isNative = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
-                                // Native Syntaxes --- NOTE (Lapys) -> Code to search through the Source for to assert if the function is native.
-                                nativeSyntaxes = ["[Command Line API]", "[native code]"],
-                                    // Iterator, Length --- NOTE (Lapys) -> Iteration data of the Native Syntaxes array.
-                                    nativeSyntaxesIterator = 0, nativeSyntaxesLength = 2,
+                            // Initialization > (Lookup Syntaxes) (Length(s))
+                            var lookupSyntaxes = LDKC.Keywords.nativeFunctionCodes,
+                                lookupSyntaxesLengths = [18, 13], // NOTE (Lapys) -> Basically, mapping `LapysDevelopmentKit.Constants.Keywords.nativeFunctionCodes` to its elements' lengths.
+                                lookupSyntaxesLength = 2;
 
-                                    // Iterators, Lengths --- NOTE (Lapys) -> Re-mapping of the Native Syntaxes array.
-                                    nativeSyntaxesIterators = [0, 0],
-                                    nativeSyntaxesLengths = [18, 13],
-
-                                // Source
-                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
-
-                            // Loop --- NOTE (Lapys) -> Ignore all syntax groups (e.g.: comments) except arrays.
+                            // Loop
                             LDKF.iterateSource(source, function(character, index) {
-                                // Update > Native Syntaxes Iterator
-                                nativeSyntaxesIterator = nativeSyntaxesLength;
+                                // Initialization > Lookup Syntaxes Iterator
+                                var lookupSyntaxesIterator = lookupSyntaxesLength;
 
                                 // Loop
-                                while (!isNative && nativeSyntaxesIterator) {
-                                    // Initialization > Native Syntax
-                                    var nativeSyntax = nativeSyntaxes[nativeSyntaxesIterator -= 1];
+                                while (lookupSyntaxesIterator) {
+                                    // Update > Lookup Syntaxes Iterator
+                                    lookupSyntaxesIterator -= 1;
 
-                                    // Logic > Update > (...)
-                                    if (character == LDKF.stringPrototypeCharacterAt(nativeSyntax, nativeSyntaxesIterators[nativeSyntaxesIterator])) {
-                                        nativeSyntaxesIterators[nativeSyntaxesIterator] += 1;
-                                        (nativeSyntaxesIterators[nativeSyntaxesIterator] == nativeSyntaxesLengths[nativeSyntaxesIterator]) && (isNative = true)
+                                    // Initialization > (Lookup Syntax) (Iterator, Length)
+                                    var lookupSyntax = lookupSyntaxes[lookupSyntaxesIterator],
+                                        lookupSyntaxIterator = 0, lookupSyntaxLength = lookupSyntaxesLengths[lookupSyntaxesIterator];
+
+                                    // Loop > Update > Lookup Syntax Iterator
+                                    while (lookupSyntaxIterator != lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
+                                        lookupSyntaxIterator += 1;
+
+                                    // Logic
+                                    if (lookupSyntaxIterator == lookupSyntaxLength) {
+                                        // Update > (Is Native, Lookup Syntaxes Iterator)
+                                        isNative = true;
+                                        lookupSyntaxesIterator = 0;
+                                        this.stop()
                                     }
-
-                                    else
-                                        nativeSyntaxesIterators[nativeSyntaxesIterator] = 0
                                 }
-
-                                // Target > Stop --- NOTE (Lapys) -> Stop the current Iterator.
-                                isNative && this.stop()
                             }, STRICT = {comments: true, delimiters: {arrays: false, objects: true, strings: true, syntax: true}}, STRICT = true);
 
                             // Return
@@ -2329,25 +2314,8 @@
                         // Parameters Length
                         LapysDevelopmentKit.Functions.functionPrototypeParametersLength = function functionPrototypeParametersLength(routine) { return LDKF.arrayPrototypeLength(LDKF.functionPrototypeParameters(routine)) };
 
-                        // To Source String --- NOTE (Lapys) -> We trim the data for consistency.
-                        LapysDevelopmentKit.Functions.functionPrototypeToSourceString = function functionPrototypeToSourceString(routine) { return LDKF.stringPrototypeTrim(LDKF.toString(routine)) };
-
-                        // Type --- NOTE (Lapys) -> Function types are: `arrow` (lambda), `class` (structure), `default` and `generator`.
-                        LapysDevelopmentKit.Functions.functionPrototypeType = function functionPrototypeType(routine, SOURCE_STRING) {
-                            // Initialization > Type
-                            var type = null;
-
-                            // Logic > Update > Type
-                            switch (true) {
-                                case LDKF.functionPrototypeIsArrow(routine, STRICT = SOURCE_STRING): type = "arrow"; break;
-                                case LDKF.functionPrototypeIsClass(routine, STRICT = SOURCE_STRING): type = "class"; break;
-                                case LDKF.functionPrototypeIsDefault(routine, STRICT = SOURCE_STRING): type = "default"; break;
-                                case LDKF.functionPrototypeIsGenerator(routine, STRICT = SOURCE_STRING): type = "generator"; break;
-                            }
-
-                            // Return
-                            return type
-                        };
+                        // To Source String
+                        LapysDevelopmentKit.Functions.functionPrototypeToSourceString = function functionPrototypeToSourceString(routine) { return LDKF.isNull(routine) ? "" : LDKF.stringPrototypeTrim(LDKF.toString(routine)) };
 
                 // Get Arguments Length --- NOTE (Lapys) -> Argument objects store their own length.
                 LapysDevelopmentKit.Functions.getArgumentsLength = function getArgumentsLength(argumentsObject) { return argumentsObject.length };
@@ -2393,12 +2361,12 @@
                         --- WARN (Lapys) -> The handler is executed with `value, key` arguments rather than the reverse (`key, value`)
                             because this use-case (iterating through source code) is not publicly available to the library user (unless Debug Mode is enabled).
                 */
-                LapysDevelopmentKit.Functions.iterateSource = function iterateSource(source, handler, IGNORE, IS_FUNCTION) {
+                LapysDevelopmentKit.Functions.iterateSource = function iterateSource(source, handler, IGNORE, IS_FUNCTION, STARTING_ITERATION_INDEX) {
+                    // Initialization > (Has Indexed Function Source (Body, Head), Source (Length, Iterator))
                     var hasIndexedFunctionSourceBody = !IS_FUNCTION,
-                        hasIndexedFunctionSourceHead = !IS_FUNCTION,
-                        sourceLength = LDKF.stringPrototypeLength(source),
-                        sourceIterator = sourceLength;
+                        hasIndexedFunctionSourceHead = !IS_FUNCTION;
 
+                    // Logic > Update > Ignore --- MINIFY --- NOTE (Lapys) -> Patch up the `IGNORE` flag object.
                     if (LDKF.isBoolean(IGNORE))
                         IGNORE = {comments: {multiline: IGNORE, singleline: IGNORE}, delimiters: {arrays: IGNORE, objects: IGNORE, syntax: IGNORE, strings: {literals: IGNORE ? "both" : "none", templates: IGNORE}}};
 
@@ -2418,18 +2386,39 @@
                         }
                     }
 
-                    var allowSyntaxParsing = true, currentSyntaxGroup = null,
-                        syntaxGroups = [], syntaxGroupsLength = 0;
+                    // Update > Starting Iteration index
+                    STARTING_ITERATION_INDEX = STARTING_ITERATION_INDEX || 0;
 
+                    // Initialization
+                        // Allow Syntax Parsing --- NOTE (Lapys) -> Ignore syntax within comments, strings and so on.
+                        var allowSyntaxParsing = true,
+
+                        // Source (Length, Iterator)
+                        sourceLength = LDKF.stringPrototypeLength(source) - STARTING_ITERATION_INDEX, sourceIterator = sourceLength,
+
+                        // Syntax Groups (Length) --- NOTE (Lapys) -> Use an array to represent the depth of a syntax group (e.g.: `[]` has a depth of 1, `[[]]` has a depth of 2)
+                        syntaxGroups = [], syntaxGroupsLength = 0,
+                            // Current Syntax Group --- NOTE (Lapys) -> Represents the last member of the Syntax Groups array.
+                            currentSyntaxGroup = null,
+
+                        // Iterator --- REDACT
+                        ITERATOR = {stop: function stop() { sourceIterator = 0 }};
+
+                    // Loop --- UPDATE REQUIRED (Lapys) -> The logic for this loop could do with some legible compacting.
                     while (sourceIterator) {
+                        // Initialization > (Skip Iteration For, Source Index, Character)
                         var skipIterationFor = null,
-                            sourceIndex = sourceLength - (sourceIterator -= 1) - 1,
+                            sourceIndex = (sourceLength - (sourceIterator -= 1) - 1) + STARTING_ITERATION_INDEX,
                             character = LDKF.stringPrototypeCharacterAt(source, sourceIndex);
 
+                        // Logic
                         if (allowSyntaxParsing) {
+                            // Logic > (...)
                             if (character == '/') {
+                                // Initialization > Next Character
                                 var nextCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex + 1);
 
+                                // Logic > Update > (...)
                                 if (nextCharacter == '*') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "multiline-comment"; syntaxGroupsLength += 1 }
                                 else if (nextCharacter == '/') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "singleline-comment"; syntaxGroupsLength += 1 }
                             }
@@ -2442,43 +2431,51 @@
                             else if (character == '[') { syntaxGroups[syntaxGroupsLength] = "array-literal"; syntaxGroupsLength += 1 }
 
                             else if (currentSyntaxGroup == "object-literal" && (character == '}')) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
-                            else if (character == '{') {
+                            else if (character == '{')
+                                // Logic > Update > (...)
                                 if (IS_FUNCTION && !hasIndexedFunctionSourceBody) hasIndexedFunctionSourceBody = true;
                                 else { syntaxGroups[syntaxGroupsLength] = "object-literal"; syntaxGroupsLength += 1 }
-                            }
 
                             else if (currentSyntaxGroup == "syntax-group" && (character == ')')) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
-                            else if (character == '(') {
+                            else if (character == '(')
+                                // Logic > Update > (...)
                                 if (IS_FUNCTION && !hasIndexedFunctionSourceHead) hasIndexedFunctionSourceHead = true;
                                 else { syntaxGroups[syntaxGroupsLength] = "syntax-group"; syntaxGroupsLength += 1 }
-                            }
                         }
 
                         else {
+                            // Logic
                             if (
                                 (currentSyntaxGroup == "singleline-comment" && (character == '\n')) ||
                                 (currentSyntaxGroup == "multiline-comment" && (character == '/' && LDKF.stringPrototypeCharacterAt(source, sourceIndex - 1) == '*'))
-                            ) allowSyntaxParsing = true;
+                            )
+                                // Update > Allow Syntax Parsing
+                                allowSyntaxParsing = true;
 
                             else {
+                                // Initialization > (Preceding, Previous) Character
                                 var precedingCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex - 2),
                                     previousCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex - 1);
 
-                                if (
+                                // Update > Allow Syntax Parsing
+                                (
                                     (previousCharacter != '\\' || (precedingCharacter == '\\' && previousCharacter == '\\')) &&
                                     (
                                         (currentSyntaxGroup == "single-quote-string-literal" && (character == '\'')) ||
                                         (currentSyntaxGroup == "double-quote-string-literal" && (character == '"')) ||
                                         (currentSyntaxGroup == "template-string" && (character == '`'))
                                     )
-                                ) allowSyntaxParsing = true
+                                ) && (allowSyntaxParsing = true)
                             }
 
+                            // Logic > Update > (...)
                             if (allowSyntaxParsing) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
                         }
 
+                        // Update > Current Syntax Group
                         currentSyntaxGroup = syntaxGroupsLength ? syntaxGroups[syntaxGroupsLength - 1] : null;
 
+                        // Handler
                         (
                             (IGNORE.comments.multiline && (currentSyntaxGroup == "multiline-comment" || skipIterationFor == "multiline-comment")) ||
                             (IGNORE.comments.singleline && (currentSyntaxGroup == "singleline-comment" || skipIterationFor == "singleline-comment")) ||
@@ -2494,7 +2491,7 @@
                                 (currentSyntaxGroup == "single-quote-string-literal" || skipIterationFor == "single-quote-string-literal")
                             ) ||
                             (IGNORE.delimiters.strings.templates && (currentSyntaxGroup == "template-string" || skipIterationFor == "template-string"))
-                        ) || handler.call(source, character, sourceIndex)
+                        ) || handler.call(ITERATOR, character, sourceIndex)
                     }
                 };
 
