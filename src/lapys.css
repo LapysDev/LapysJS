@@ -32,9 +32,7 @@
     *, ::after, ::before { box-sizing: border-box }
         /* States */
             /* Link */
-            :link {
-                text-decoration: none
-            }
+            :link { text-decoration: none }
 
             /* Selection */
             ::selection {
@@ -71,9 +69,7 @@
             }
 
     /* <abbr> */
-    abbr[abbr] {
-        text-decoration: none
-    }
+    abbr[abbr] { text-decoration: none }
 
     abbr[data-title],
     abbr[title] {
