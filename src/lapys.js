@@ -12,22 +12,12 @@
 
             - Supported development environments:
                 -- Android (browser)
-                -- Avast Secure Browser (browser)
-                -- Internet Explorer (browser)
-                    --- Internet Explorer 5
-                    --- Internet Explorer 6
-                    --- Internet Explorer 7
-                    --- Internet Explorer 8
-                    --- Internet Explorer 9
-                    --- Internet Explorer 10
-                    --- Internet Explorer 11
+                -- Internet Explorer 5 - 11 (browser)
                 -- Google Chrome (browser)
                 -- Microsoft Edge (browser)
                 -- Mozilla Firefox (browser)
                 -- Node.js (runtime)
-                -- Opera (browser)
                 -- Safari (browser)
-                -- UC Browser (browser)
 
             - The library makes an effort to use only native features of JavaScript to allow for interoperable compatibility with legacy environments
                 and also avoids over-use (if any) of specific vendor (or engine-dependent) features.
@@ -55,9 +45,7 @@
         #Lapys:
             - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
                 -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
-                -- Netscape (browser) --- NOTE (Lapys) -> Deprecated.
-                    --- Netscape 2
-                    --- Netscape 4
+                -- Netscape 2 & Netscape 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- others...
 */
 (function Main() {
@@ -2173,11 +2161,78 @@
 
                 /* Function */
                     // Prototype
-                        // Body --- CHECKPOINT
+                        // Body [Source] --- CHECKPOINT
                         LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING) {};
 
-                        // Head --- CHECKPOINT
-                        LapysDevelopmentKit.Functions.functionPrototypeHead = function functionPrototypeHead(routine, SOURCE_STRING) {};
+                        // Head [Source]
+                        LapysDevelopmentKit.Functions.functionPrototypeHead = function functionPrototypeHead(routine, SOURCE_STRING) {
+                            // Initialization > Function Head (Source)
+                            var functionHeadSource = "", source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Logic --- CHECKPOINT
+                            if (LDKF.functionPrototypeIsClass(routine, STRICT = source)) {
+                                var formattedSource = "";
+                                LDKF.iterateSource(source, function(character) { formattedSource += character }, STRICT = true, STRICT = false);
+                                console.log(formattedSource)
+                            }
+
+                            else {
+                                // Initialization > Uses Function Keyword
+                                var usesFunctionKeyword = LDKF.stringPrototypeCharacterAt(source, +0) == 'f' && LDKF.stringPrototypeCharacterAt(source, 1) == 'u' && LDKF.stringPrototypeCharacterAt(source, 2) == 'n' && LDKF.stringPrototypeCharacterAt(source, 3) == 'c' && LDKF.stringPrototypeCharacterAt(source, 4) == 't' && LDKF.stringPrototypeCharacterAt(source, 5) == 'i' && LDKF.stringPrototypeCharacterAt(source, 6) == 'o' && LDKF.stringPrototypeCharacterAt(source, 7) == 'n';
+
+                                // Logic
+                                if (usesFunctionKeyword || LDKF.stringPrototypeCharacterAt(source, +0) == '(') {
+                                    // Initialization > Iterator
+                                    var hasIndexedFunctionSourceHead = false, iterator = +0;
+
+                                    // Loop
+                                    LDKF.iterateSource(source, function(character, index) {
+                                        // Update > Function Head Source
+                                        functionHeadSource += character;
+
+                                        // Logic > Update > (...)
+                                        switch (character) {
+                                            case '(': iterator += 1; hasIndexedFunctionSourceHead || (hasIndexedFunctionSourceHead = true); break;
+                                            case ')': iterator -= 1
+                                        }
+
+                                        // Logic > (...) --- NOTE (Lapys) -> Iterator serves a different purpose at this point of code.
+                                        if (hasIndexedFunctionSourceHead && !iterator) { iterator = index; this.stop() }
+                                    }, STRICT = false, STRICT = true);
+
+                                    // [Additive Source] Logic
+                                        // [Arrow]
+                                        if (LDKF.functionPrototypeIsArrow(routine, STRICT = source))
+                                            // Loop
+                                            LDKF.iterateSource(source, function(character, index) {
+                                                // Update > Function Head Source
+                                                functionHeadSource += character;
+
+                                                // Target > Stop
+                                                (character == '>' && LDKF.stringPrototypeCharacterAt(source, index - 1) == '=') && this.stop()
+                                            }, STRICT = false, STRICT = true, STRICT = iterator)
+                                }
+
+                                else if (LDKF.functionPrototypeIsArrow(routine, STRICT = source)) {
+                                    // Initialization > Iterator
+                                    var iterator = +0;
+
+                                    // Loop
+                                    while (!hasIndexedFunctionSourceHead) {
+                                        // Initialization > Character
+                                        var character = LDKF.stringPrototypeCharacterAt(source, iterator);
+
+                                        // Update > (Function Head Source, Has Indexed Function Source Head, Iterator)
+                                        functionHeadSource += character;
+                                        hasIndexedFunctionSourceHead = character == '>' && LDKF.stringPrototypeCharacterAt(source, iterator - 1) == '=';
+                                        iterator += 1
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return functionHeadSource
+                        };
 
                         // Is Arrow
                         LapysDevelopmentKit.Functions.functionPrototypeIsArrow = function functionPrototypeIsArrow(routine, SOURCE_STRING) {
