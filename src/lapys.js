@@ -2161,16 +2161,21 @@
 
                 /* Function */
                     // Prototype
-                        // Body [Source] --- CHECKPOINT
+                        // Body [Source]
                         LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING) {
-                            // Initialization > Function Body (Source)
-                            var functionBodySource = "", source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+                            // Initialization > (Function Body Source (Index), Source (Length))
+                            var functionBodySource = "", functionBodySourceIndex = -1,
+                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
+                                sourceLength = LDKF.stringPrototypeLength(source);
 
                             // Logic
-                            if (LDKF.functionPrototypeIsClass(routine, STRICT = source)) {
-                                // Initialization > (Function Body Source Index, Source (Length, Iterator), Syntax Group Depth)
-                                var functionBodySourceIndex = -1,
-                                    sourceLength = LDKF.stringPrototypeLength(source), sourceIterator = sourceLength,
+                            if (LDKF.functionPrototypeIsArrow(routine, STRICT = source) && LDKF.stringPrototypeLast(source) != '}')
+                                // Update > Function Body Source Index
+                                functionBodySourceIndex = LDKF.stringPrototypeLength(LDKF.functionPrototypeHead(routine, STRICT = source));
+
+                            else {
+                                // Initialization > (Source (Length, Iterator), Syntax Group Depth)
+                                var sourceLength = LDKF.stringPrototypeLength(source), sourceIterator = sourceLength,
                                     syntaxGroupDepth = 0;
 
                                 // Loop
@@ -2184,12 +2189,10 @@
                                     // Logic > Update > (Function Body Source Index, Source Iterator)
                                     if (!syntaxGroupDepth) { functionBodySourceIndex = sourceIterator; sourceIterator = 0 }
                                 }
-
-                                // Logic > Loop > Update > Function Head Source
-                                if (~functionBodySourceIndex) while (functionBodySourceIndex != sourceLength) { functionBodySource += LDKF.stringPrototypeCharacterAt(source, functionBodySourceIndex); functionBodySourceIndex += 1 }
                             }
 
-                            else {}
+                            // Loop > Update > Function Head Source
+                            while (functionBodySourceIndex != sourceLength) { functionBodySource += LDKF.stringPrototypeCharacterAt(source, functionBodySourceIndex); functionBodySourceIndex += 1 }
 
                             // Return
                             return functionBodySource
@@ -2200,27 +2203,14 @@
                             // Initialization > Function Head (Source)
                             var functionHeadSource = "", source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
-                            // Logic
+                            // Logic --- NOTE (Lapys) -> If Routine is a class, an algorithm similar to the one used in the `LapysDevelopmentKit.Functions.functionPrototypeBody` method will be used (which means potential code duplication).
                             if (LDKF.functionPrototypeIsClass(routine, STRICT = source)) {
-                                // Initialization > (Function Body Source Index, Source Iterator, Syntax Group Depth)
-                                var functionBodySourceIndex = -1,
-                                    sourceIterator = LDKF.stringPrototypeLength(source),
-                                    syntaxGroupDepth = 0;
+                                // Initialization > Function Head Source Index
+                                var functionHeadSourceIndex = LDKF.stringPrototypeLength(source) - LDKF.stringPrototypeLength(LDKF.functionPrototypeBody(routine, STRICT = source));
 
-                                // Loop
-                                while (sourceIterator) {
-                                    // Logic > Update > Syntax Group Depth
-                                    switch (LDKF.stringPrototypeCharacterAt(source, sourceIterator -= 1)) {
-                                        case '{': syntaxGroupDepth -= 1; break;
-                                        case '}': syntaxGroupDepth += 1
-                                    }
-
-                                    // Logic > Update > (Function Body Source Index, Source Iterator)
-                                    if (!syntaxGroupDepth) { functionBodySourceIndex = sourceIterator; sourceIterator = 0 }
-                                }
-
-                                // Logic > Loop > Update > Function Head Source
-                                if (~functionBodySourceIndex) while (functionBodySourceIndex) functionHeadSource = LDKF.stringPrototypeCharacterAt(source, functionBodySourceIndex -= 1) + functionHeadSource
+                                // Loop > Update > Function Head Source
+                                while (functionHeadSourceIndex)
+                                    functionHeadSource = LDKF.stringPrototypeCharacterAt(source, functionHeadSourceIndex -= 1) + functionHeadSource
                             }
 
                             else {
