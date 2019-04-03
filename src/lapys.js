@@ -2176,7 +2176,7 @@
                             else {
                                 // Initialization > (Source (Length, Iterator), Syntax Group Depth)
                                 var sourceLength = LDKF.stringPrototypeLength(source), sourceIterator = sourceLength,
-                                    syntaxGroupDepth = 0;
+                                    syntaxGroupDepth = +0;
 
                                 // Loop
                                 while (sourceIterator) {
@@ -2187,7 +2187,7 @@
                                     }
 
                                     // Logic > Update > (Function Body Source Index, Source Iterator)
-                                    if (!syntaxGroupDepth) { functionBodySourceIndex = sourceIterator; sourceIterator = 0 }
+                                    if (!syntaxGroupDepth) { functionBodySourceIndex = sourceIterator; sourceIterator = +0 }
                                 }
                             }
 
@@ -2589,11 +2589,17 @@
 
                 /* Number */
                     // Prototype
+                        // Is Equal
+                        LapysDevelopmentKit.Functions.numberPrototypeIsEqual = function numberPrototypeIsEqual(numberA, numberB) { return !(numberA ^ numberB) };
+
                         // Is Even
-                        LapysDevelopmentKit.Functions.numberPrototypeIsEven = function numberPrototypeIsEven(number) { return number && !(number % 2) };
+                        LapysDevelopmentKit.Functions.numberPrototypeIsEven = function numberPrototypeIsEven(number) { return !(number & 1) && LDKF.numberPrototypeIsInteger(number) };
+
+                        // Is Integer --- UPDATE REQUIRED (Lapys) -> Use bitwise operators.
+                        LapysDevelopmentKit.Functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(number) { return number == LDKM.int(number) };
 
                         // Is Odd
-                        LapysDevelopmentKit.Functions.numberPrototypeIsOdd = function numberPrototypeIsOdd(number) { return number && number % 2 == 1 };
+                        LapysDevelopmentKit.Functions.numberPrototypeIsOdd = function numberPrototypeIsOdd(number) { return (number & 1) && LDKF.numberPrototypeIsInteger(number) };
 
                 /* Object */
                     // Get Own Non-Getter-Setter Property Names --- CHECKPOINT
@@ -2611,6 +2617,9 @@
                         return LDKF.objectPrototypeConstructor(objectA) === LDKF.objectPrototypeConstructor(objectB) &&
                             LDKF.objectPrototypePrototype(objectA) === LDKF.objectPrototypePrototype(objectB)
                     };
+
+                    // Is
+                    LapysDevelopmentKit.Functions.objectIs = function objectIs(objectA, objectB) { return objectA === objectB ? +0 !== objectA || 1 / objectA == 1 / objectB: objectA !== objectA && objectB !== objectB };
 
                     // Prototype
                         // Constructor --- CHECKPOINT
@@ -2959,10 +2968,13 @@
                     return number
                 };
 
-                // To String --- CHECKPOINT
+                // To String --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Functions.toString = function toString(arg) { return arg + "" };
 
             /* Mathematics */
+                // Absolute --- NOTE (Lapys) -> This method assumes integers are stored as 32-bit two`s-complement values and that right-shifting performs sign extension.
+                LapysDevelopmentKit.Mathematics.abs = function abs(number) { var mask = number >> 31; return (mask ^ number) - mask };
+
                 // Integer
                 LapysDevelopmentKit.Mathematics.int = function int(number) { return number - number % 1 };
 
@@ -2974,6 +2986,60 @@
 
                     // Return --- NOTE (Lapys) -> Sign unsigned value.
                     return ((numberAMinimum * numberBMinimum) + (((numberAMaximum * numberBMinimum + numberAMinimum * numberBMaximum) << 16) >>> +0) | +0)
+                };
+
+                // Maximum --- NOTE (Lapys) -> Slower than the native `Math.max` method.
+                LapysDevelopmentKit.Mathematics.max = function max() {
+                    // Initialization > (Iterator, Maximum)
+                    var iterator = LDKF.getArgumentsLength(arguments), maximum = iterator ? arguments[0] : null;
+
+                    // Loop
+                    while (iterator && ~iterator) {
+                        // Initialization > Number A
+                        var numberA = arguments[iterator -= 1];
+
+                        // Logic
+                        if (iterator) {
+                            // Initialization > Number B
+                            var numberB = arguments[iterator -= 1];
+
+                            // Update > Number A (Lapys) -> Re-purpose Number A.
+                            numberA = numberA > numberB ? numberA : numberB
+                        }
+
+                        // Update > Maximum
+                        maximum = maximum > numberA ? maximum : numberA
+                    }
+
+                    // Return
+                    return maximum
+                };
+
+                // Minimum --- NOTE (Lapys) -> Slower than the native `Math.min` method.
+                LapysDevelopmentKit.Mathematics.min = function min() {
+                    // Initialization > (Iterator, Maximum)
+                    var iterator = LDKF.getArgumentsLength(arguments), minimum = iterator ? arguments[0] : null;
+
+                    // Loop
+                    while (iterator && ~iterator) {
+                        // Initialization > Number A
+                        var numberA = arguments[iterator -= 1];
+
+                        // Logic
+                        if (iterator) {
+                            // Initialization > Number B
+                            var numberB = arguments[iterator -= 1];
+
+                            // Update > Number A (Lapys) -> Re-purpose Number A.
+                            numberA = numberA < numberB ? numberA : numberB
+                        }
+
+                        // Update > Minimum
+                        minimum = minimum < numberA ? minimum : numberA
+                    }
+
+                    // Return
+                    return minimum
                 };
 
                 // Random
@@ -3025,6 +3091,28 @@
 
                     // Randomizer
                     LapysDevelopmentKit.Mathematics.random.randomizer = (function(seeder) { return LDKM.random.generateRandomizer(seeder(), seeder(), seeder(), seeder()) })(LDKM.random.generateSeeder("LapysJS"));
+
+                /* [Ranged] Rebound
+                        --- NOTE (Lapys) -> Has common use in public array/ string manipulation methods.
+                        --- NOTE (Lapys) -> Revolve an Index through an infinite series with boundaries of Start and End.
+                */
+                LapysDevelopmentKit.Mathematics.rebound = function rebound(index, start, end) {
+                    if (index >= start && index <= end) return index;
+
+                    else {
+                        var difference = end - start;
+
+                        if (index < start) {
+                            while (LDKM.abs(start - index) > difference) index += difference;
+                            return end - LDKM.abs(index)
+                        }
+
+                        else if (index > end) {}
+                    }
+                };
+
+                // Unsign
+                LapysDevelopmentKit.Mathematics.unsign = function unsign(number) { return number >>> +0 };
 
         /* Window --- CHECKPOINT */
         window["LDK"]= LapysDevelopmentKit;
