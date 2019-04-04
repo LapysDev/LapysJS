@@ -2175,8 +2175,21 @@
                     };
 
                 // Array-Like > Prototype
-                    // Element At
-                    // Length
+                    // Element At --- CHECKPOINT (Lapys)
+                    // Length --- CHECKPOINT (Lapys)
+
+                // Console
+                    // Group --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Functions.consoleGroup = function consoleGroup() {};
+
+                    // Group End --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Functions.consoleGroupEnd = function consoleGroupEnd() {};
+
+                    // Log --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Functions.consoleLog = function consoleLog() {};
+
+                    // Warn --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Functions.consoleWarn = function consoleWarn() {};
 
                 // Element > Prototype
                     // Add To Attribute --- CHECKPOINT (Lapys)
@@ -2198,6 +2211,10 @@
                     // Replace From Class --- CHECKPOINT (Lapys)
                     // Set Attribute --- CHECKPOINT (Lapys)
                     // Set Attribute Node --- CHECKPOINT (Lapys)
+
+                // Error > Prototype
+                    // Get Message
+                    LapysDevelopmentKit.Functions.errorPrototypeGetMessage = function errorPrototypeGetMessage() {};
 
                 // Function
                     // Prototype
@@ -2436,6 +2453,9 @@
                             // Return
                             return isNative
                         };
+
+                        // Measure --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.functionPrototypeMeasure = function functionPrototypeMeasure(routine) {};
 
                         // Name --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.functionPrototypeName = function functionPrototypeName() {};
@@ -3009,6 +3029,14 @@
                         // Upper --- CHECKPOINT (Lapys)
 
                 // Throw Error --- CHECKPOINT (Lapys)
+                // Throw LapysJS Initiate Error --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Functions.throwLapysJSInitiateError = function throwLapysJSInitiateError() {};
+
+                // Throw LapysJS Terminate Error --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Functions.throwLapysJSTerminateError = function throwLapysJSTerminateError() {};
+
+                // Throw LapysJS Update Error --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Functions.throwLapysJSUpdateError = function throwLapysJSUpdateError() {};
 
                 // To Number
                 LapysDevelopmentKit.Functions.toNumber = function toNumber(arg) {
@@ -3826,7 +3854,7 @@
         /* Global > ... --- CHECKPOINT (Lapys) --- REDACT (Lapys) */
         window.LapysDevelopmentKit = LapysDevelopmentKit;
         window["LDK"] = LapysDevelopmentKit;
-        window["LDKC"] = LapysDevelopmentKit.Constants;L
+        window["LDKC"] = LapysDevelopmentKit.Constants;
         window["LDKD"] = LapysDevelopmentKit.Data;
         window["LDKE"] = LapysDevelopmentKit.Environment;
         window["LDKF"] = LapysDevelopmentKit.Functions;
@@ -3835,6 +3863,214 @@
         window["LDKO"] = LapysDevelopmentKit.Objects;
         window["LDKS"] = LapysDevelopmentKit.Storage;
         window["LDKT"] = LapysDevelopmentKit.Test;
+
+    /* Phase */
+        /* Initiate --- CHECKPOINT (Lapys) */
+        function Initiate() {
+            // Warn --- CHECKPOINT (Lapys) -> Warn about missing properties such as `__defineGetter__` (or `__defineSetter__`) or `__proto__`.
+
+            /* Modification */
+                /* LapysJS */
+                    // Components
+                        // Accordion --- CHECKPOINT (Lapys)
+                        // Audio --- CHECKPOINT (Lapys)
+                        // Carousel --- CHECKPOINT (Lapys)
+                        // Drag-Drop --- CHECKPOINT (Lapys)
+                        // Dropdown --- CHECKPOINT (Lapys)
+                        // Dynamic Text --- CHECKPOINT (Lapys)
+                        // Dynamic Time --- CHECKPOINT (Lapys)
+                        // Marquee --- CHECKPOINT (Lapys)
+                        // Pagination --- CHECKPOINT (Lapys)
+                        // Picture-In-Picture --- CHECKPOINT (Lapys)
+                        // Scrollbar --- CHECKPOINT (Lapys)
+                        // Table --- CHECKPOINT (Lapys)
+                        // Toast --- CHECKPOINT (Lapys)
+                        // Tooltip --- CHECKPOINT (Lapys)
+                        // Video --- CHECKPOINT (Lapys)
+
+                    // Debug Mode --- CHECKPOINT (Lapys)
+                    // Features
+                        // HTML Conditional Elements --- CHECKPOINT (Lapys)
+                        // HTML Include Elements --- CHECKPOINT (Lapys)
+                        // Script Attribute --- CHECKPOINT (Lapys)
+
+                // Array --- NOTE (Lapys) -> From here, most of these modifications will be polyfills or added features.
+                    // Distinct --- CHECKPOINT (Lapys)
+                    // First --- CHECKPOINT (Lapys)
+                    // Last --- CHECKPOINT (Lapys)
+                    // Prototype --- CHECKPOINT (Lapys)
+
+                // Date > Prototype
+                    // Now --- CHECKPOINT (Lapys)
+                    // To ISO String --- CHECKPOINT (Lapys)
+
+                // Element > Prototype
+                    // Momentum Scroll By --- CHECKPOINT (Lapys)
+                    // Momentum Scroll Into View --- CHECKPOINT (Lapys)
+                    // Momentum Scroll To --- CHECKPOINT (Lapys)
+
+                // Function > Prototype --- CHECKPOINT (Lapys)
+
+                // Object > Prototype
+                    // Define --- CHECKPOINT (Lapys)
+                    // Describe --- CHECKPOINT (Lapys)
+                    // Free --- CHECKPOINT (Lapys)
+                    // Freeze --- CHECKPOINT (Lapys)
+                    // Keys --- CHECKPOINT (Lapys)
+                    // Melt --- CHECKPOINT (Lapys)
+                    // Prototype --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> The `__proto__` property.
+                    // Prototype Chain --- CHECKPOINT (Lapys)
+                    // Undefine --- CHECKPOINT (Lapys)
+                    // Values --- CHECKPOINT (Lapys)
+
+                // String > Prototype
+                    // To HTML --- CHECKPOINT (Lapys)
+                    // Trim --- CHECKPOINT (Lapys)
+                    // Trim End --- CHECKPOINT (Lapys)
+                    // Trim Left --- CHECKPOINT (Lapys)
+                    // Trim Right --- CHECKPOINT (Lapys)
+                    // Trim Start --- CHECKPOINT (Lapys)
+
+                /* Global */
+                    // Application --- CHECKPOINT (Lapys)
+                    // Array --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
+                    // Boolean
+                        // AND --- CHECKPOINT (Lapys)
+                        // NAND --- CHECKPOINT (Lapys)
+                        // NOR --- CHECKPOINT (Lapys)
+                        // NOT --- CHECKPOINT (Lapys)
+                        // OR --- CHECKPOINT (Lapys)
+                        // XNOR --- CHECKPOINT (Lapys)
+                        // XOR --- CHECKPOINT (Lapys)
+
+                    // Boolean --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
+                    // Browser --- CHECKPOINT (Lapys)
+                    // Check --- CHECKPOINT (Lapys)
+                    // Chain --- CHECKPOINT (Lapys)
+                    // Copy --- CHECKPOINT (Lapys)
+                    // Create Attribute --- CHECKPOINT (Lapys)
+                    // Create Document Fragment --- CHECKPOINT (Lapys)
+                    // Create Element --- CHECKPOINT (Lapys)
+                    // Cut --- CHECKPOINT (Lapys)
+                    // Download --- CHECKPOINT (Lapys)
+                    // [Is] Execute[-able] --- CHECKPOINT (Lapys)
+                    // File --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
+                    // Float --- CHECKPOINT (Lapys)
+                    // Free Input --- CHECKPOINT (Lapys)
+                    // Function --- NOTE (Lapys) -> Not the constructor.
+                        // Extend --- CHECKPOINT (Lapys)
+                    // Global This --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Does not always match the global object.
+                    // Integer --- CHECKPOINT (Lapys)
+                    // Interval --- CHECKPOINT (Lapys)
+                    /* Lapys Development Kit --- CHECKPOINT (Lapys) */
+                    // Length --- CHECKPOINT (Lapys)
+                    // Mathematics --- CHECKPOINT (Lapys)
+                    // Maximum --- CHECKPOINT (Lapys)
+                    // [Get] Maximum [Object] --- CHECKPOINT (Lapys)
+                    // Minimum --- CHECKPOINT (Lapys)
+                    // [Get] Minimum [Object] --- CHECKPOINT (Lapys)
+                    // Momentum Scroll By --- CHECKPOINT (Lapys)
+                    // Momentum Scroll Into View --- CHECKPOINT (Lapys)
+                    // Momentum Scroll To --- CHECKPOINT (Lapys)
+                    // Now --- CHECKPOINT (Lapys)
+                    // Number --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
+                    // Object
+                        // Concatenate --- CHECKPOINT (Lapys)
+                        // Define Property --- CHECKPOINT (Lapys)
+                        // Flatten --- CHECKPOINT (Lapys)
+                        // Get Depth --- CHECKPOINT (Lapys)
+                        // Get Own Property Descriptor --- CHECKPOINT (Lapys)
+                        // Get Own Property Descriptors --- CHECKPOINT (Lapys)
+                        // Get Own Property Names --- CHECKPOINT (Lapys)
+                        // Get Own Property Symbols --- CHECKPOINT (Lapys)
+                        // Get Own Property Values --- CHECKPOINT (Lapys)
+                        // Get Prototype Of --- CHECKPOINT (Lapys)
+                        // Keys --- CHECKPOINT (Lapys)
+                        // Port --- CHECKPOINT (Lapys)
+                        // Set Prototype Of --- CHECKPOINT (Lapys)
+                        // Watch --- CHECKPOINT (Lapys)
+
+                    // Once --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Run a function once.
+                    // On Attribute Added --- CHECKPOINT (Lapys)
+                    // On Attribute Change --- CHECKPOINT (Lapys)
+                    // On Attribute Count Change --- CHECKPOINT (Lapys)
+                    // On Attribute Removed --- CHECKPOINT (Lapys)
+                    // On DOM Change --- CHECKPOINT (Lapys)
+                    // On DOM Node Added --- CHECKPOINT (Lapys)
+                    // On DOM Node Count Change --- CHECKPOINT (Lapys)
+                    // On DOM Node Removed --- CHECKPOINT (Lapys)
+                    // On DOM Ready --- CHECKPOINT (Lapys)
+                    // On Element Added --- CHECKPOINT (Lapys)
+                    // On Element Change --- CHECKPOINT (Lapys)
+                    // On Element Count Change --- CHECKPOINT (Lapys)
+                    // On Element Removed --- CHECKPOINT (Lapys)
+                    // On Node Added --- CHECKPOINT (Lapys)
+                    // On Node Count Change --- CHECKPOINT (Lapys)
+                    // On Node Removed --- CHECKPOINT (Lapys)
+                    // On Property Added --- CHECKPOINT (Lapys)
+                    // On Property Change --- CHECKPOINT (Lapys)
+                    // On Property Count Change --- CHECKPOINT (Lapys)
+                    // On Property Removed --- CHECKPOINT (Lapys)
+                    // Paste --- CHECKPOINT (Lapys)
+                    // Print --- CHECKPOINT (Lapys)
+                    // Random --- CHECKPOINT (Lapys)
+                    // Random Set --- CHECKPOINT (Lapys)
+                    // Regular Expression --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
+                    // Repeat --- CHECKPOINT (Lapys)
+                    // String --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
+                    // Strict[ly Watch] Input --- CHECKPOINT (Lapys)
+                    // Symbol --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
+                    // Timeout --- CHECKPOINT (Lapys)
+                    // When --- CHECKPOINT (Lapys)
+                    // $a  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Parent Nodes Recursively (Ancestors) By Query Selector
+                    // $c  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Elements By Class Attribute Value
+                    // $d  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Immediate Children (Descendants) By Query Selector
+                    // $i  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Elements By ID Attribute Value
+                    // $n  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Next Sibling Nodes By Query Selector
+                    // $p  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Previous Sibling Nodes By Query Selector
+                    // $t  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Elements By Tag Name
+                    // $$  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Nodes By Query Selector
+        }
+
+        /* Terminate --- CHECKPOINT (Lapys) */
+        function Terminate() {}
+
+        /* Update --- CHECKPOINT (Lapys) */
+        function Update() {}
+
+    /* Initiate
+            --- NOTE ---
+                #Lapys:
+                    - Update the LapysJS object.
+                    - Modify object prototypes (e.g.: `Array.prototype`, `Function.prototype` e.t.c.)
+                        while adding polyfills for missing modern features.
+                    - Initiate global functions and objects (e.g.: `array`, `func` e.t.c.)
+    */
+    try { LDKF.objectPrototypeDefineProperty(LapysJS.processingDuration, "initiate", {value: LDKF.functionPrototypeMeasure(Initiate)}) }
+    catch (error) { LDKF.throwLapysJSInitiateError("Error initializing library:\n\t\r" + LDKF.errorPrototypeGetMessage(error)) }
+
+    /* Update
+            --- NOTE ---
+                #Lapys:
+                    - Integrate LapysJS components (e.g.: `Accordion`, `Tooltip`) during runtime.
+                    - Integrate LapysJS features during runtime.
+    */
+    try { LDKF.objectPrototypeDefineProperty(LapysJS.processingDuration, "update", {value: LDKF.functionPrototypeMeasure(Update)}) }
+    catch (error) { LDKF.throwLapysJSInitiateError("Error integrating library runtime:\n\t\r" + LDKF.errorPrototypeGetMessage(error)) }
+
+    /* Terminate
+            --- NOTE ---
+                #Lapys:
+                    - Notify user of the state of the library and library installation completion.
+    */
+    try {
+        // ...
+        LDKF.objectPrototypeDefineProperty(LapysJS.processingDuration, "terminate", {value: LDKF.functionPrototypeMeasure(Terminate)});
+            LDKF.consoleLog("Processing Duration = ", LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate)
+            LDKF.consoleLog('\n');
+        LDKF.consoleGroupEnd()
+    }
+    catch (error) { LDKF.throwLapysJSInitiateError("Error completing library installation:\n\t\r" + LDKF.errorPrototypeGetMessage(error)) }
 
     // Return
     return +0
