@@ -103,14 +103,14 @@
                 LapysDevelopmentKit.Constants.Number.Infinity = 1 / +0;
                 LapysDevelopmentKit.Constants.Number.NaN = +0 / +0;
 
-                // Keywords > (...) --- NOTE (Lapys) -> Store the keyword strings as arrays because older browsers defer to the `String.prototype.charAt` method rather than syntactic string indexing (i.e.: the `[]` operation).
+                // Keywords > ... --- NOTE (Lapys) -> Store the keyword strings as arrays because older browsers defer to the `String.prototype.charAt` method rather than syntactic string indexing (i.e.: the `[]` operation).
                 LapysDevelopmentKit.Constants.Keywords["extends"] = ['e', 'x', 't', 'e', 'n', 'd', 's'];
                 LapysDevelopmentKit.Constants.Keywords.nativeFunctionCodes = [
                     ['[', 'C', 'o', 'm', 'm', 'a', 'n', 'd', ' ', 'L', 'i', 'n', 'e', ' ', 'A', 'P', 'I', ']'],
                     ['[', 'n', 'a', 't', 'i', 'v', 'e', ' ', 'c', 'o', 'd', 'e', ']']
                 ];
 
-                // String > (...)
+                // String > ...
                 LapysDevelopmentKit.Constants.String.alphabets = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
                 LapysDevelopmentKit.Constants.String.binary = ['0', '1'];
                 LapysDevelopmentKit.Constants.String.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -259,7 +259,7 @@
 
                                 // (Loop > )Update > Array
                                 LDKF.arrayPrototypeShiftRight(array, length - 1, STRICT = true);
-                                while ((iterator -= 1) != halfLength) { array[iterator - 1] = arguments[iterator]; array[length - iterator - 1] = arguments[length - iterator] }
+                                while ((iterator -= 1) ^ halfLength) { array[iterator - 1] = arguments[iterator]; array[length - iterator - 1] = arguments[length - iterator] }
                             }
 
                             // Return
@@ -332,7 +332,7 @@
                                 var arrayIterator = LDKF.arrayPrototypeLength(arguments[length - iterator]);
 
                                 // Loop > Update > Array (Iterator)
-                                while (arrayIterator) { arrayIterator -= 1; array[arrayLength - arrayIterator - 1] = arguments[length - iterator][arrayIterator] }
+                                while (arrayIterator) { arrayIterator -= 1; array[arrayLength + arrayIterator] = arguments[length - iterator][arrayIterator] }
 
                                 // Update > Array Length --- NOTE (Lapys) -> Request for the new length of the array.
                                 arrayLength = LDKF.arrayPrototypeLength(array)
@@ -366,7 +366,7 @@
                                     // Logic
                                     if (index < arrayLength) {
                                         // Loop > Update > Array
-                                        while (index != arrayLength) array[index] = array[index += 1];
+                                        while (index ^ arrayLength) array[index] = array[index += 1];
 
                                         // Update > Array Length
                                         arrayLength -= 1
@@ -427,7 +427,7 @@
                                             var arrayIterator = index, cutLength = length - index;
 
                                             // (Loop > )Update > Array (Iterator)
-                                            while (arrayIterator != arrayLength) { array[arrayIterator] = array[arrayIterator + cutLength + 1]; arrayIterator += 1 }
+                                            while (arrayIterator ^ arrayLength) { array[arrayIterator] = array[arrayIterator + cutLength + 1]; arrayIterator += 1 }
                                             LDKF.arrayPrototypeResize(array, arrayLength == cutLength + index ? index : arrayLength - cutLength - 1)
                                         }
                                     }
@@ -489,7 +489,7 @@
                                 var length = LDKF.getArgumentsLength(arguments), iterator = length;
 
                                 // Update > Boolean
-                                boolean = length != 1;
+                                boolean = length ^ 1;
 
                                 // Loop
                                 while (boolean && (iterator -= 1)) {
@@ -539,7 +539,7 @@
                                 var filterLength = +0;
 
                                 // Loop > Update > Filter Length
-                                while (filterLength != arrayLength && filter.call(array, filterLength, array[filterLength])) filterLength += 1;
+                                while (filterLength ^ arrayLength && filter.call(array, filterLength, array[filterLength])) filterLength += 1;
 
                                 // Update > Array
                                 LDKF.arrayPrototypeCutLeft(array, filterLength)
@@ -650,7 +650,7 @@
                                 var arrayIterator = +0;
 
                                 // Loop
-                                while (arrayIterator != arrayLength) {
+                                while (arrayIterator ^ arrayLength) {
                                     // Initialization > Element
                                     var element = array[arrayIterator];
 
@@ -662,7 +662,7 @@
                                             subarrayLength = LDKF.arrayPrototypeLength(subarray), subarrayIterator = subarrayLength;
 
                                         // Loop > Update > (Sub Array Iterator, Array)
-                                        while ((arrayIndex -= 1) != arrayIterator) array[arrayIndex + subarrayLength - 1] = array[arrayIndex];
+                                        while ((arrayIndex -= 1) ^ arrayIterator) array[arrayIndex + subarrayLength - 1] = array[arrayIndex];
                                         while (subarrayIterator) { subarrayIterator -= 1; array[arrayIterator + subarrayIterator] = subarray[subarrayIterator] }
 
                                         // Update > Array Length
@@ -693,7 +693,7 @@
                                     // Initialization > (Array Iterator, Handler)
                                     var arrayIterator = arrayLength, handler = arguments[length - iterator];
 
-                                    // Loop > (...)
+                                    // Loop > ...
                                     while (arrayIterator) { arrayIterator -= 1; handler.call(array, arrayLength - arrayIterator - 1, array[arrayLength - arrayIterator - 1]) }
                                 }
                             }
@@ -751,7 +751,7 @@
                                         quarterArrayLength = LDKM.int(halfArrayLength / 2);
 
                                     // Loop
-                                    while (arrayIterator != quarterArrayLength) {
+                                    while (arrayIterator ^ quarterArrayLength) {
                                         // Update > Array Iterator
                                         arrayIterator -= 1;
 
@@ -794,7 +794,7 @@
                                         index = +0, indexes = [];
 
                                     // Loop
-                                    while (arrayIterator != quarterArrayLength) {
+                                    while (arrayIterator ^ quarterArrayLength) {
                                         // Update > (Array Iterator, Indexes)
                                         arrayIterator -= 1;
                                         indexes[+0] = arrayLength - arrayIterator - 1;
@@ -853,7 +853,7 @@
                                 var arrayIterator = arrayLength;
 
                                 // Loop > Update > Array (Iterator)
-                                while (arrayIterator != index) { arrayIterator -= 1; array[arrayIterator + 1] = array[arrayIterator] }
+                                while (arrayIterator ^ index) { arrayIterator -= 1; array[arrayIterator + 1] = array[arrayIterator] }
                             }
 
                             // Update > Array
@@ -888,7 +888,7 @@
                                         var arrayIterator = arrayLength, insertionLength = insertLength - insertIndex;
 
                                         // Loop > Update > Array (Iterator)
-                                        while (arrayIterator != insertIndex) { arrayIterator -= 1; array[arrayIterator + insertionLength + 1] = array[arrayIterator] }
+                                        while (arrayIterator ^ insertIndex) { arrayIterator -= 1; array[arrayIterator + insertionLength + 1] = array[arrayIterator] }
                                     }
                                 }
 
@@ -1024,7 +1024,7 @@
 
                             // Logic
                             if (ARRAY_LENGTH || iterator == LDKF.arrayPrototypeLength(arrayB)) {
-                                // Loop > (...); Return
+                                // Loop > ...; Return
                                 while (iterator) { iterator -= 1; if (arrayA[iterator] !== arrayB[iterator]) return false }
                                 return true
                             }
@@ -1094,7 +1094,7 @@
                                 padLength = arguments[argumentsLength - 1],
                                 pattern = [], patternIterator = +0, patternLength = argumentsLength - 2;
 
-                            // (Loop > )Update > (...)
+                            // (Loop > )Update > ...
                             while (argumentsLength -= 1) pattern[argumentsLength - 1] = arguments[argumentsLength];
                             LDKF.arrayPrototypeShiftRight(array, padLength, STRICT = true);
                             while (padLength) { array[arrayIterator] = pattern[patternIterator]; arrayIterator += 1; padLength -= 1; ((patternIterator += 1) == patternLength) && (patternIterator = +0) }
@@ -1110,7 +1110,7 @@
                                 padLength = arguments[argumentsLength - 1],
                                 pattern = [], patternIterator = +0, patternLength = argumentsLength - 2;
 
-                            // Loop > Update > (...)
+                            // Loop > Update > ...
                             while (argumentsLength -= 1) pattern[argumentsLength - 1] = arguments[argumentsLength];
                             while (padLength) { array[arrayLength] = pattern[patternIterator]; arrayLength += 1; padLength -= 1; ((patternIterator += 1) == patternLength) && (patternIterator = +0) }
 
@@ -1766,7 +1766,7 @@
                                 halfArrayLength = LDKM.int(arrayLength / 2);
 
                             // Loop
-                            while (arrayIterator != halfArrayLength) {
+                            while (arrayIterator ^ halfArrayLength) {
                                 // Initialization > Element
                                 var element = array[arrayIterator -= 1];
 
@@ -1880,17 +1880,17 @@
                                         arrayLength = length - index + 1;
 
                                         // Loop > Update > Array (Iterator)
-                                        while (arrayIterator != arrayLength) { array[arrayIterator] = array[arrayIterator + index]; arrayIterator += 1 }
+                                        while (arrayIterator ^ arrayLength) { array[arrayIterator] = array[arrayIterator + index]; arrayIterator += 1 }
 
                                         // Update > Array
                                         LDKF.arrayPrototypeResize(array, arrayLength)
                                     }
 
                                     else if (index > length) {
-                                        // (Loop > )Update > (...)
+                                        // (Loop > )Update > ...
                                         (index > arrayLength - 1) && (index = arrayLength - 1);
                                         arrayLength = (arrayLength - index) + length + 1;
-                                        while (length != index + 2) { length += 1; array[length] = array[arrayIterator + index]; arrayIterator += 1 }
+                                        while (length ^ index + 2) { length += 1; array[length] = array[arrayIterator + index]; arrayIterator += 1 }
 
                                         // Update > Array
                                         LDKF.arrayPrototypeResize(array, arrayLength)
@@ -1998,7 +1998,7 @@
                                                 iterator = +0, priority = -1;
 
                                             // Loop
-                                            while (!~priority && (iterator != elementAStringLength && iterator != elementBStringLength)) {
+                                            while (!~priority && (iterator ^ elementAStringLength && iterator ^ elementBStringLength)) {
                                                 // Initialization > Element (A, B) String Character Index (Is Invalid)
                                                 var elementAStringCharacterIndex = LDKF.arrayPrototypeIndexFromFront(LDKC.String.sortableCharacters, LDKF.stringPrototypeCharacterAt(elementAString, iterator), STRICT = 64),
                                                         elementAStringCharacterIndexIsInvalid = !~elementAStringCharacterIndex,
@@ -2008,12 +2008,12 @@
                                                 // Update > (Priority, Iterator)
                                                 priority = ~elementBStringCharacterIndex;
                                                 (elementAStringCharacterIndex == elementBStringCharacterIndex) ||
-                                                (priority = +(elementAStringCharacterIndex != sorter(elementAStringCharacterIndex, elementBStringCharacterIndex, STRICT = true)));
+                                                (priority = +(elementAStringCharacterIndex ^ sorter(elementAStringCharacterIndex, elementBStringCharacterIndex, STRICT = true)));
                                                 iterator += 1
                                             }
 
                                             // Update > Priority
-                                            ~priority || (priority = +(iterator != elementAStringLength))
+                                            ~priority || (priority = +(iterator ^ elementAStringLength))
                                         }
 
                                         // Update > Priority Element
@@ -2118,7 +2118,7 @@
                                 var trimLength = +0;
 
                                 // Loop > Update > Trim Length
-                                while (trimLength != arrayLength && array[trimLength] === element) trimLength += 1;
+                                while (trimLength ^ arrayLength && array[trimLength] === element) trimLength += 1;
 
                                 // Update > Array
                                 LDKF.arrayPrototypeCutLeft(array, trimLength)
@@ -2166,7 +2166,7 @@
                         // Initialization > Array
                         var array = [];
 
-                        // Logic > (...)
+                        // Logic > ...
                         if (USE_LENGTH_PROPERTY) LDKF.arrayPrototypeResize(array, length, STRICT = USE_LENGTH_PROPERTY);
                         else while (length) array[length -= 1] = undefined;
 
@@ -2249,7 +2249,7 @@
                             }
 
                             // Loop > Update > Function Head Source
-                            while (functionBodySourceIndex != sourceLength) { functionBodySource += LDKF.stringPrototypeCharacterAt(source, functionBodySourceIndex); functionBodySourceIndex += 1 }
+                            while (functionBodySourceIndex ^ sourceLength) { functionBodySource += LDKF.stringPrototypeCharacterAt(source, functionBodySourceIndex); functionBodySourceIndex += 1 }
 
                             // Return
                             return functionBodySource
@@ -2296,27 +2296,26 @@
                                         // Update > Function Head Source
                                         functionHeadSource += character;
 
-                                        // Logic > Update > (...)
+                                        // Logic > Update > ...
                                         switch (character) {
                                             case '(': iterator += 1; hasIndexedFunctionSourceHead || (hasIndexedFunctionSourceHead = true); break;
                                             case ')': iterator -= 1
                                         }
 
-                                        // Logic > (...) --- NOTE (Lapys) -> Iterator serves a different purpose at this point of code.
+                                        // Logic > ... --- NOTE (Lapys) -> Iterator serves a different purpose at this point of code.
                                         if (hasIndexedFunctionSourceHead && !iterator) { iterator = index; this.stop() }
                                     }, STRICT = false, STRICT = true);
 
-                                    // [Additive Source] Logic
-                                        // [Arrow]
-                                        if (LDKF.functionPrototypeIsArrow(routine, STRICT = source))
-                                            // Loop
-                                            LDKF.iterateSource(source, function(character, index) {
-                                                // Update > Function Head Source
-                                                functionHeadSource += character;
+                                    // Logic
+                                    if (LDKF.functionPrototypeIsArrow(routine, STRICT = source))
+                                        // Loop
+                                        LDKF.iterateSource(source, function(character, index) {
+                                            // Update > Function Head Source
+                                            functionHeadSource += character;
 
-                                                // Target > Stop
-                                                (character == '>' && LDKF.stringPrototypeCharacterAt(source, index - 1) == '=') && this.stop()
-                                            }, STRICT = false, STRICT = true, STRICT = iterator)
+                                            // Target > Stop
+                                            (character == '>' && LDKF.stringPrototypeCharacterAt(source, index - 1) == '=') && this.stop()
+                                        }, STRICT = false, STRICT = true, STRICT = iterator + 1)
                                 }
 
                                 else if (LDKF.functionPrototypeIsArrow(routine, STRICT = source)) {
@@ -2377,13 +2376,13 @@
                                     var lookupSyntaxIterator = +0;
 
                                     // Loop > Update > Lookup Iterator
-                                    while (lookupSyntaxIterator != lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
+                                    while (lookupSyntaxIterator ^ lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
                                         lookupSyntaxIterator += 1;
 
                                     // Logic
                                     if (lookupSyntaxIterator == lookupSyntaxLength) {
                                         // Update > Is Extended Class
-                                        isExtendedClass = true;
+                                        isExtendedClass = !LDKF.stringPrototypeIsVariableCharacter(LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator));
 
                                         // Target > Stop
                                         this.stop()
@@ -2448,7 +2447,7 @@
                                         lookupSyntaxIterator = +0, lookupSyntaxLength = lookupSyntaxesLengths[lookupSyntaxesIterator];
 
                                     // Loop > Update > Lookup Syntax Iterator
-                                    while (lookupSyntaxIterator != lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
+                                    while (lookupSyntaxIterator ^ lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
                                         lookupSyntaxIterator += 1;
 
                                     // Logic
@@ -2516,8 +2515,104 @@
                             return functionName
                         };
 
-                        // Parameters --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.functionPrototypeParameters = function functionPrototypeParameters(routine, SOURCE_STRING) {};
+                        // Parameters --- UPDATE REQUIRED (Lapys) -> Stress-test eventually.
+                        LapysDevelopmentKit.Functions.functionPrototypeParameters = function functionPrototypeParameters(routine, SOURCE_STRING) {
+                            // Initialization > (Function (Parameters) Source, Iterator, Source)
+                            var functionParametersSource = "",
+                                iterator = +0, parameters = [],
+                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Logic
+                            if (LDKF.functionPrototypeIsClass(routine, STRICT = source)) {
+                                // Initialization > (Function Body Source, Lookup Syntax (Length))
+                                var functionBodySource = LDKF.functionPrototypeBody(routine, STRICT = source),
+                                    lookupSyntax = ['c', 'o', 'n', 's', 't', 'r', 'u', 'c', 't', 'o', 'r'],
+                                    lookupSyntaxLength = 11;
+
+                                // Loop
+                                LDKF.iterateSource(functionBodySource, function(character, index) {
+                                    // Logic
+                                    if (character == lookupSyntax[+0]) {
+                                        // Initialization > Lookup Syntax Iterator
+                                        var lookupSyntaxIterator = 1;
+
+                                        // Loop > Update > Lookup Syntax Iterator
+                                        while (lookupSyntaxIterator ^ lookupSyntaxLength && LDKF.stringPrototypeCharacterAt(functionBodySource, index + lookupSyntaxIterator) == lookupSyntax[lookupSyntaxIterator])
+                                            lookupSyntaxIterator += 1;
+
+                                        // Logic
+                                        if (lookupSyntaxIterator == lookupSyntaxLength) {
+                                            // Logic
+                                            if (!LDKF.stringPrototypeIsVariableCharacter(LDKF.stringPrototypeCharacterAt(functionBodySource, index + lookupSyntaxIterator))) {
+                                                // Initialization > (Lookup Syntax Index From Front, Syntax Group Depth)
+                                                var lookupSyntaxIndexFromFront = index + lookupSyntaxIterator, syntaxGroupDepth = +0;
+
+                                                // Loop
+                                                LDKF.iterateSource(functionBodySource, function(character, index) {
+                                                    // Logic > (Update > Syntax Group Depth; ...)
+                                                    switch (character) { case '(': syntaxGroupDepth += 1; break; case ')': syntaxGroupDepth -= 1 }
+                                                    if (character == ')' && !syntaxGroupDepth) { iterator = index; this.stop() }
+                                                }, STRICT = true, STRICT = true, STRICT = lookupSyntaxIndexFromFront - 1, STRICT = true);
+
+                                                // Loop
+                                                while (iterator ^ lookupSyntaxIndexFromFront) {
+                                                    // Initialization > Character
+                                                    var character = LDKF.stringPrototypeCharacterAt(functionBodySource, iterator -= 1);
+
+                                                    // Update > Function Parameters Source
+                                                    (iterator == lookupSyntaxIndexFromFront && character == '(') || (functionParametersSource = character + functionParametersSource)
+                                                }
+                                            }
+
+                                            // Target > Stop
+                                            this.stop()
+                                        }
+                                    }
+                                }, STRICT = true, STRICT = true)
+                            }
+
+                            else {
+                                // Initialization > Function Head Source (Index)
+                                var functionHeadSource = LDKF.functionPrototypeHead(routine, STRICT = source), functionHeadSourceIndex = +0;
+
+                                // Logic
+                                if (LDKF.stringPrototypeFirst(functionHeadSource) != '(' && LDKF.functionPrototypeIsArrow(routine, STRICT = source))
+                                    // Loop
+                                    LDKF.iterateSource(functionHeadSource, function(character, index) {
+                                        // Logic > ...
+                                        if (character == '>' && LDKF.stringPrototypeCharacterAt(functionHeadSource, index - 1) == '=') { iterator = index - 2; this.stop() }
+                                    }, STRICT = true, STRICT = true);
+
+                                else {
+                                    // Initialization > Syntax Group Depth
+                                    var syntaxGroupDepth = +0;
+
+                                    // Loop
+                                    LDKF.iterateSource(functionHeadSource, function(character, index) {
+                                        // Logic > ...
+                                        if (character == '(') { functionHeadSourceIndex = index; iterator = index - 1; this.stop() }
+                                    }, STRICT = true, STRICT = true);
+
+                                    LDKF.iterateSource(functionHeadSource, function(character, index) {
+                                        // Logic > (Update > Syntax Group Depth; ...)
+                                        switch (character) { case '(': syntaxGroupDepth += 1; break; case ')': syntaxGroupDepth -= 1 }
+                                        if (character == ')' && !syntaxGroupDepth) { iterator = index; this.stop() }
+                                    }, STRICT = true, STRICT = true, STRICT = iterator)
+                                }
+
+                                // Loop
+                                while (iterator ^ functionHeadSourceIndex) {
+                                    // Initialization > Character
+                                    var character = LDKF.stringPrototypeCharacterAt(functionHeadSource, iterator -= 1);
+
+                                    // Update > Function Parameters Source
+                                    (iterator == functionHeadSourceIndex && character == '(') || (functionParametersSource = character + functionParametersSource)
+                                }
+                            }
+
+                            // Return
+                            return functionParametersSource
+                        };
 
                         // Parameters Length
                         LapysDevelopmentKit.Functions.functionPrototypeParametersLength = function functionPrototypeParametersLength(routine, SOURCE_STRING) { return LDKF.arrayPrototypeLength(LDKF.functionPrototypeParameters(routine, SOURCE_STRING)) };
@@ -2594,7 +2689,7 @@
                         --- WARN (Lapys) -> The handler is executed with `value, key` arguments rather than the reverse (`key, value`)
                             because this use-case (iterating through source code) is not publicly available to the library user (unless Debug Mode is enabled).
                 */
-                LapysDevelopmentKit.Functions.iterateSource = function iterateSource(source, handler, IGNORE, IS_FUNCTION, STARTING_ITERATION_INDEX) {
+                LapysDevelopmentKit.Functions.iterateSource = function iterateSource(source, handler, IGNORE, IS_FUNCTION, STARTING_ITERATION_INDEX, PARSE_FROM_STARTING_ITERATION_INDEX) {
                     // Initialization > (Has Indexed Function Source (Body, Head), Source (Length, Iterator))
                     var hasIndexedFunctionSourceBody = !IS_FUNCTION,
                         hasIndexedFunctionSourceHead = !IS_FUNCTION;
@@ -2626,8 +2721,12 @@
                         // Allow Syntax Parsing --- NOTE (Lapys) -> Ignore syntax within comments, strings and so on.
                         var allowSyntaxParsing = true,
 
+                        // Forced Starting Source Iteration Index
+                        forcedStartingSourceIterationIndex = PARSE_FROM_STARTING_ITERATION_INDEX ? STARTING_ITERATION_INDEX : +0,
+
                         // Source (Length, Iterator)
-                        sourceLength = LDKF.stringPrototypeLength(source) - STARTING_ITERATION_INDEX, sourceIterator = sourceLength,
+                        sourceLength = LDKF.stringPrototypeLength(source) - forcedStartingSourceIterationIndex,
+                        sourceIterator = sourceLength,
 
                         // Syntax Groups (Length) --- NOTE (Lapys) -> Use an array to represent the depth of a syntax group (e.g.: `[]` has a depth of 1, `[[]]` has a depth of 2)
                         syntaxGroups = [], syntaxGroupsLength = +0,
@@ -2641,17 +2740,17 @@
                     while (sourceIterator) {
                         // Initialization > (Skip Iteration For, Source Index, Character)
                         var skipIterationFor = null,
-                            sourceIndex = (sourceLength - (sourceIterator -= 1) - 1) + STARTING_ITERATION_INDEX,
+                            sourceIndex = (sourceLength - (sourceIterator -= 1) - 1) + forcedStartingSourceIterationIndex,
                             character = LDKF.stringPrototypeCharacterAt(source, sourceIndex);
 
                         // Logic
                         if (allowSyntaxParsing) {
-                            // Logic > (...)
+                            // Logic > ...
                             if (character == '/') {
                                 // Initialization > Next Character
                                 var nextCharacter = LDKF.stringPrototypeCharacterAt(source, sourceIndex + 1);
 
-                                // Logic > Update > (...)
+                                // Logic > Update > ...
                                 if (nextCharacter == '*') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "multiline-comment"; syntaxGroupsLength += 1 }
                                 else if (nextCharacter == '/') { allowSyntaxParsing = false; syntaxGroups[syntaxGroupsLength] = "singleline-comment"; syntaxGroupsLength += 1 }
                             }
@@ -2665,13 +2764,13 @@
 
                             else if (currentSyntaxGroup == "object-literal" && (character == '}')) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
                             else if (character == '{')
-                                // Logic > Update > (...)
+                                // Logic > Update > ...
                                 if (IS_FUNCTION && !hasIndexedFunctionSourceBody) hasIndexedFunctionSourceBody = true;
                                 else { syntaxGroups[syntaxGroupsLength] = "object-literal"; syntaxGroupsLength += 1 }
 
                             else if (currentSyntaxGroup == "syntax-group" && (character == ')')) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
                             else if (character == '(')
-                                // Logic > Update > (...)
+                                // Logic > Update > ...
                                 if (IS_FUNCTION && !hasIndexedFunctionSourceHead) hasIndexedFunctionSourceHead = true;
                                 else { syntaxGroups[syntaxGroupsLength] = "syntax-group"; syntaxGroupsLength += 1 }
                         }
@@ -2701,7 +2800,7 @@
                                 ) && (allowSyntaxParsing = true)
                             }
 
-                            // Logic > Update > (...)
+                            // Logic > Update > ...
                             if (allowSyntaxParsing) { skipIterationFor = currentSyntaxGroup; syntaxGroupsLength -= 1 }
                         }
 
@@ -2709,7 +2808,7 @@
                         currentSyntaxGroup = syntaxGroupsLength ? syntaxGroups[syntaxGroupsLength - 1] : null;
 
                         // Handler
-                        (
+                        (!STARTING_ITERATION_INDEX || sourceIndex > STARTING_ITERATION_INDEX) && ((
                             (IGNORE.comments.multiline && (currentSyntaxGroup == "multiline-comment" || skipIterationFor == "multiline-comment")) ||
                             (IGNORE.comments.singleline && (currentSyntaxGroup == "singleline-comment" || skipIterationFor == "singleline-comment")) ||
                             (IGNORE.delimiters.arrays && (currentSyntaxGroup == "array-literal" || skipIterationFor == "array-literal")) ||
@@ -2724,7 +2823,7 @@
                                 (currentSyntaxGroup == "single-quote-string-literal" || skipIterationFor == "single-quote-string-literal")
                             ) ||
                             (IGNORE.delimiters.strings.templates && (currentSyntaxGroup == "template-string" || skipIterationFor == "template-string"))
-                        ) || handler.call(ITERATOR, character, sourceIndex)
+                        ) || handler.call(ITERATOR, character, sourceIndex))
                     }
                 };
 
@@ -2863,7 +2962,7 @@
                                     // Logic
                                     if (recordedDepthTreeLength) {
                                         // Loop --- NOTE (Lapys) -> Record all references after iterating through them.
-                                        while (recordedDepthTreeIterator != recordedDepthTreeLength) {
+                                        while (recordedDepthTreeIterator ^ recordedDepthTreeLength) {
                                             // Update > Recorded References
                                             recordedReferences[recordedReferencesLength] = depthTree[recordedDepthTreeIterator];
 
@@ -2879,7 +2978,7 @@
                                     // Update > Recorded Depth Tree Length
                                     recordedDepthTreeLength = depthTreeLength
                                 }
-                            } while (depthTreeIterator != recordedDepthTreeLength && !hasRecursiveReference);
+                            } while (depthTreeIterator ^ recordedDepthTreeLength && !hasRecursiveReference);
 
                             // Update > Depth
                             hasRecursiveReference && (depth = LDKC.Number.Infinity);
@@ -2957,7 +3056,7 @@
                             var cut = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
 
                             // Logic > Loop > Update > (Cut, Length)
-                            if (stringLength && length < stringLength) while (length != stringLength) { cut += LDKF.stringPrototypeCharacterAt(string, length); length += 1 }
+                            if (stringLength && length < stringLength) while (length ^ stringLength) { cut += LDKF.stringPrototypeCharacterAt(string, length); length += 1 }
 
                             // Return
                             return cut
@@ -3009,6 +3108,9 @@
 
                         // Is Upper --- CHECKPOINT (Lapys)
                         // Is Upper Character --- CHECKPOINT (Lapys)
+                        // Is Variable Character
+                        LapysDevelopmentKit.Functions.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.variableCharacters, string, STRICT = 64) };
+
                         // Is Variable Identifier --- CHECKPOINT (Lapys)
 
                         // Last
@@ -3030,9 +3132,9 @@
                             if (stringLength)
                                 // Logic
                                 if (index < length + 1 && index < stringLength + 1) {
-                                    // (Loop > )Update > (...)
+                                    // (Loop > )Update > ...
                                     (length > stringLength - 1) && (length = stringLength - 1);
-                                    while (index != length + 1) { slice += string[index]; index += 1 }
+                                    while (index ^ length + 1) { slice += string[index]; index += 1 }
                                 }
 
                                 else if (index > length) {
@@ -3081,7 +3183,7 @@
                                         var trimLength = LDKF.arrayPrototypeLength(trim), trimIterator = trimLength;
 
                                         // Loop
-                                        while (cutLength != stringLength && trimIterator)
+                                        while (cutLength ^ stringLength && trimIterator)
                                             // Loop
                                             while (trimIterator) {
                                                 // Initialization > (Trim Element) (Iterator, Length)
@@ -3091,7 +3193,7 @@
                                                 // Logic
                                                 if (trimElementLength < stringLength - cutLength + 1)
                                                     // Loop
-                                                    while (trimElementIterator != trimElementLength) {
+                                                    while (trimElementIterator ^ trimElementLength) {
                                                         // Logic > Update > (Cut Length, Trim Iterator)
                                                         if (LDKF.stringPrototypeCharacterAt(string, cutLength) == LDKF.stringPrototypeCharacterAt(trimElement, trimElementIterator)) { cutLength += 1; trimIterator = trimLength }
 
@@ -3139,7 +3241,7 @@
                                         var trimLength = LDKF.arrayPrototypeLength(trim), trimIterator = trimLength;
 
                                         // Loop
-                                        while (cutLength != stringLength && trimIterator)
+                                        while (cutLength ^ stringLength && trimIterator)
                                             // Loop
                                             while (trimIterator) {
                                                 // Initialization > (Trim Element) (Iterator, Length)
@@ -3358,7 +3460,7 @@
                             tmp = 0x811C9DC5 >>> +0 /* NOTE (Lapys) -> Un-sign the number within a specific range. */;
 
                         // Loop
-                        while (iterator != length) {
+                        while (iterator ^ length) {
                             // Update > (..., Iterator)
                             tmp = LDKM.imul(tmp ^ LDKF.stringPrototypeCharacterCodeAt(seed, iterator), 0x1000193);
                             iterator += 1
@@ -3366,7 +3468,7 @@
 
                         // Return
                         return function seeder() {
-                            // Update > (...)
+                            // Update > ...
                             tmp += tmp << 13; tmp ^= tmp >>> 7;
                             tmp += tmp << 3; tmp ^= tmp >>> 17;
 
@@ -3413,7 +3515,7 @@
                         // Initialization > Difference
                         var difference = end - start;
 
-                        // Logic > (...)
+                        // Logic > ...
                         if (index < start) { while (LDKM.abs(start - index) > difference) index += difference; return end - LDKM.abs(start - index) }
                         else if (index > end) { while (LDKM.abs(end - index) > difference) index -= difference; return start + LDKM.abs(end - index) }
                     }
@@ -3495,6 +3597,7 @@
                     // Get Own Property Descriptor --- CHECKPOINT (Lapys)
                     // Get Own Property Names --- CHECKPOINT (Lapys)
                     // Get Own Property Symbols --- CHECKPOINT (Lapys)
+
                     // Get Prototype Of
                     LapysDevelopmentKit.Objects.objectGetPrototypeOf = (function() {
                         // Initialization > Method
