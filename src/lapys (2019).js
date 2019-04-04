@@ -6396,7 +6396,7 @@
                     return false
                 };
 
-                // Query Object Constructor Native Method --- WARN (Lapys) -> For `Object` methodS only.
+                // Query Object Constructor Native Method --- WARN (Lapys) -> For `Object` methods only.
                 LapysDevelopmentKit.test.queryObjectConstructorNativeMethod = function queryObjectConstructorNativeMethod(propertyName, propertyValueTester) {
                     // Initialization > Query
                     var query = {
@@ -8290,7 +8290,7 @@
                     else LDKF.error.nativeToEnvironment("`setTimeout` function")
                 })();
 
-                // Set
+                // Source Buffer List
                 LapysDevelopmentKit.objects.sourceBufferList = LDKT.queryObjectNativeConstructor(GLOBAL, "SourceBufferList");
                     // Prototype
                     LapysDevelopmentKit.objects.sourceBufferListPrototype = LDKF.objectPrototypeGetProperty(LDKO.sourceBufferList, "prototype");
