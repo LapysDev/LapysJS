@@ -2216,6 +2216,9 @@
                     // Get Message
                     LapysDevelopmentKit.Functions.errorPrototypeGetMessage = function errorPrototypeGetMessage() {};
 
+                // Evaluate
+                LapysDevelopmentKit.Functions.eval = function eval(source) { return LDKO.eval.call(GLOBAL, source) };
+
                 // Function
                     // Prototype
                         // Body [Source]
@@ -2228,7 +2231,7 @@
                             // Logic
                             if (LDKF.functionPrototypeIsArrow(routine, STRICT = source) && LDKF.stringPrototypeLast(source) != '}')
                                 // Update > Function Body Source Index
-                                functionBodySourceIndex = LDKF.stringPrototypeLength(LDKF.functionPrototypeHead(routine, STRICT = source));
+                                functionBodySourceIndex = LDKF.stringPrototypeLength(LDKF.functionPrototypeHead(routine, STRICT = source)) + (LDKF.stringPrototypeFirst(source) == '(');
 
                             else {
                                 // Initialization > (Source (Length, Iterator), Syntax Group Depth)
@@ -2516,10 +2519,11 @@
                         };
 
                         // Parameters --- UPDATE REQUIRED (Lapys) -> Stress-test eventually.
-                        LapysDevelopmentKit.Functions.functionPrototypeParameters = function functionPrototypeParameters(routine, SOURCE_STRING) {
-                            // Initialization > (Function (Parameters) Source, Iterator, Source)
+                        LapysDevelopmentKit.Functions.functionPrototypeParameters = function functionPrototypeParameters(routine, SOURCE_STRING, EVALUATE_PARAMETER_VALUES) {
+                            // Initialization > (Function Parameters Source, Iterator, Parameters (Iterator), Source)
                             var functionParametersSource = "",
-                                iterator = +0, parameters = [],
+                                iterator = +0,
+                                parameters = [], parametersIterator = +0,
                                 source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
                             // Logic
@@ -2610,8 +2614,124 @@
                                 }
                             }
 
+                            // Loop
+                            functionParametersSource && LDKF.iterateSource(functionParametersSource, function(character, index) {
+                                // Logic > Update > (Has Multiple Parameters, Parameters (Iterator))
+                                if (character == ',') { parameters[parametersIterator] = index; parametersIterator += 1 }
+                            }, STRICT = true).then(function(length) {
+                                // Update > Parameters (Iterator)
+                                parameters[parametersIterator] = length; parametersIterator += 1
+                            });
+
+                            // Loop
+                            while (parametersIterator) {
+                                // Update > Parameters Iterator
+                                parametersIterator -= 1;
+
+                                // Initialization > (Former Parameter Iterator, Is Destructured Rest Parameter Source, Parameter (Iterator, Source (Length)))
+                                var formerParameterIterator = parametersIterator ? parameters[parametersIterator - 1] : 0,
+                                    isDestructuredRestParameterSource = false,
+                                    parameterIterator = parameters[parametersIterator],
+                                    parameterSource = "",
+                                    parameterSourceLength = parameterIterator - formerParameterIterator;
+
+                                // Loop > Update > Parameter Source
+                                while (parameterIterator != formerParameterIterator + !!parametersIterator)
+                                    parameterSource = LDKF.stringPrototypeCharacterAt(functionParametersSource, parameterIterator -= 1) + parameterSource;
+
+                                // Initialization > ((Has Indexed) Parameter (Name, Value) Source, Parameter Value Source Iterator)
+                                var hasIndexedParameterNameSource = false, parameterNameSource = "",
+                                    hasIndexedParameterValueSource = false, parameterValueSource = "", parameterValueSourceIterator = +0;
+
+                                // Loop
+                                LDKF.iterateSource(parameterSource, function(character, index) {
+                                    // Logic
+                                    if (hasIndexedParameterNameSource) {
+                                        // Logic > (Update > Parameter Value Source Iterator; Target > Stop)
+                                        if (character == '=') { parameterValueSourceIterator = index; this.stop() }
+                                    }
+
+                                    else if (character == '.' && LDKF.stringPrototypeCharacterAt(parameterSource, index + 1) == '.' && LDKF.stringPrototypeCharacterAt(parameterSource, index + 2) == '.') {
+                                        // Loop
+                                        LDKF.iterateSource(parameterSource, function(character) {
+                                            // Logic > (Update > Is Destructured Rest Parameter Source; Target > Stop)
+                                            if (character == '[') { isDestructuredRestParameterSource = true; this.stop() }
+                                        }, STRICT = {comments: true}, STRICT = false, STRICT = index + 2, STRICT = true);
+
+                                        // Logic
+                                        if (isDestructuredRestParameterSource) {
+                                            // Update > (Parameter Name Source, Parameter Value Source Iterator)
+                                            parameterNameSource = parameterSource;
+                                            parameterValueSourceIterator = parameterSourceLength - 1;
+
+                                            // Target > Stop
+                                            this.stop()
+                                        }
+
+                                        else {
+                                            // (Update > Parameter Name Source; Target > Jump)
+                                            parameterNameSource += "...";
+                                            this.jump(2)
+                                        }
+                                    }
+
+                                    else if (character == ' ' || character == '\n' || LDKF.stringPrototypeIsVariableCharacter(character))
+                                        // Update > Parameter Name Source
+                                        parameterNameSource += character;
+
+                                    else
+                                        // Update > Has Indexed Parameter Name Source
+                                        hasIndexedParameterNameSource = true
+                                }, STRICT = true);
+
+                                // Update > Parameter Name Source
+                                parameterNameSource = LDKF.stringPrototypeTrim(LDKF.removeFromSource(parameterNameSource, {comments: true}));
+
+                                // Loop
+                                LDKF.iterateSource(parameterSource, function(character, index) {
+                                    // Logic
+                                    if (hasIndexedParameterValueSource) {
+                                        // Update > Parameter Value Source Iterator
+                                        parameterValueSourceIterator = index;
+
+                                        // Loop
+                                        while (parameterValueSourceIterator ^ parameterSourceLength) {
+                                            // Initialization > Character
+                                            var character = LDKF.stringPrototypeCharacterAt(parameterSource, parameterValueSourceIterator += 1);
+
+                                            // Update > Parameter Value Source
+                                            character ? parameterValueSource += character : parameterValueSourceIterator = parameterSourceLength
+                                        }
+
+                                        // Target > Stop
+                                        this.stop()
+                                    }
+
+                                    else
+                                        // Update > Has Indexed Parameter Value Source
+                                        hasIndexedParameterValueSource = character == '='
+                                }, STRICT = true, STRICT = false, STRICT = parameterValueSourceIterator, STRICT = true);
+
+                                // Update > Parameters --- REDACT (Lapys)
+                                parameters[parametersIterator] = {
+                                    name: parameterNameSource, source: LDKF.stringPrototypeTrim(parameterSource),
+                                    toString: function toString() { return parameterSource },
+                                    type: LDKF.stringPrototypeBeginsWith(parameterNameSource, "...") ? (isDestructuredRestParameterSource ? "destructured-rest" : "rest") : "default"
+                                };
+
+                                // Logic
+                                if (EVALUATE_PARAMETER_VALUES)
+                                    // Error Handling > Update > Parameters
+                                    try { parameters[parametersIterator].value = LDKF.eval(parameterValueSource) }
+                                    catch (error) { parameters[parametersIterator].value = error }
+
+                                else
+                                    // Update > Parameters
+                                    parameters[parametersIterator].valueSource = parameterValueSource
+                            }
+
                             // Return
-                            return functionParametersSource
+                            return parameters
                         };
 
                         // Parameters Length
@@ -2686,6 +2806,7 @@
                 /* Iterate Source [String]
                         --- NOTE (Lapys) -> Iterate through JavaScript source syntax.
                             - The `this` object for the Handler points to an Iterator object.
+                            - Returns the Iterator object.
                         --- WARN (Lapys) -> The handler is executed with `value, key` arguments rather than the reverse (`key, value`)
                             because this use-case (iterating through source code) is not publicly available to the library user (unless Debug Mode is enabled).
                 */
@@ -2734,7 +2855,21 @@
                             currentSyntaxGroup = null,
 
                         // Iterator --- REDACT
-                        ITERATOR = {stop: function stop() { sourceIterator = +0 }};
+                        ITERATOR = {
+                            jump: function jump(index) { sourceIterator -= index; (sourceIterator < 0) && (sourceIterator = 0); }, // NOTE (Lapys) -> Jump by a certain Index.
+                            oniterationend: null,
+                            stop: function stop() { sourceIterator = +0 },
+                            then: function then(handler) {
+                                // Event > Iterator > Iteration End
+                                ITERATOR.oniterationend = handler;
+
+                                // Iterator > On Iteration End
+                                sourceIterator || LDKF.isNull(ITERATOR.oniterationend) || ITERATOR.oniterationend(sourceLength);
+
+                                // Deletion
+                                delete ITERATOR.then
+                            }
+                        };
 
                     // Loop --- UPDATE REQUIRED (Lapys) -> The logic for this loop could do with some legible compacting.
                     while (sourceIterator) {
@@ -2825,13 +2960,19 @@
                             (IGNORE.delimiters.strings.templates && (currentSyntaxGroup == "template-string" || skipIterationFor == "template-string"))
                         ) || handler.call(ITERATOR, character, sourceIndex))
                     }
+
+                    // Update > Source Length
+                    sourceLength += forcedStartingSourceIterationIndex;
+
+                    // Iterator > On Iteration End
+                    sourceIterator || LDKF.isNull(ITERATOR.oniterationend) || ITERATOR.oniterationend(sourceLength);
+
+                    // Return
+                    return ITERATOR
                 };
 
                 /* Number */
                     // Prototype
-                        // Is Equal
-                        LapysDevelopmentKit.Functions.numberPrototypeIsEqual = function numberPrototypeIsEqual(numberA, numberB) { return !(numberA ^ numberB) };
-
                         // Is Even
                         LapysDevelopmentKit.Functions.numberPrototypeIsEven = function numberPrototypeIsEven(number) { return !(number & 1) && LDKF.numberPrototypeIsInteger(number) };
 
@@ -3019,8 +3160,14 @@
                         // Prototype
                         LapysDevelopmentKit.Functions.objectPrototypePrototype = function objectPrototypePrototype(object) { return LDKF.objectGetPrototypeOf(object) };
 
+                // Remove From Source --- NOTE (Lapys) -> Alternative way to get ignored syntaxes from the `LapysDevelopmentKit.Functions.iterateSource` method`s `IGNORE` flag parameter.
+                LapysDevelopmentKit.Functions.removeFromSource = function removeFromSource(source, options, IS_FUNCTION, STARTING_ITERATION_INDEX, PARSE_FROM_STARTING_ITERATION_INDEX) { var stream = ""; LDKF.iterateSource(source, function(character) { stream += character }, STRICT = options, STRICT = IS_FUNCTION, STRICT = STARTING_ITERATION_INDEX, STRICT = PARSE_FROM_STARTING_ITERATION_INDEX); return stream };
+
                 /* String */
                     // Prototype
+                        // Begins With
+                        LapysDevelopmentKit.Functions.stringPrototypeBeginsWith = function stringPrototypeBeginsWith(string, substring) { return LDKF.stringPrototypeSlice(string, +0, LDKF.stringPrototypeLength(substring) - 1) == substring };
+
                         // Character At --- NOTE (Lapys) -> Slower than array-like indexing because legacy environments do support such.
                         LapysDevelopmentKit.Functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) { return LDKF.getArgumentsLength(arguments) > 1 ? (LDKT.canParseStrings() ? LDKO.stringPrototypeCharacterAt.call(string, index) || string[index] || null : string[index] || null) : null };
 
@@ -3924,6 +4071,16 @@
 
                 // Element --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
+
+                // Evaluate --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Objects.eval = (function() {
+                    // Initialization > Method
+                    var method = eval;
+
+                    // Logic > ...
+                    if (LDKT.objectPrototypeIsNativeMethodOfObject(GLOBAL, "eval", STRICT = method)) return method;
+                    else LDKF.throwFeatureNotNativeError("`eval` function")
+                })();
 
                 // Event --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
