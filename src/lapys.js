@@ -19,10 +19,10 @@
                 -- Node.js (runtime)
                 -- Safari (browser)
 
-            - The library makes an effort to use only native features of JavaScript to allow for interoperable compatibility with legacy environments
+            - The library makes an effort to use only native features of JavaScript to allow for interoperable compatibility with legacy & modern environments
                 and also avoids over-use (if any) of specific vendor (or engine-dependent) features.
 
-                This is mainly due to subtle inconsistencies in the adaptation of the ECMAScript standards for JavaScript in web browsers and other run-times.
+                This is mainly due to subtle inconsistencies in the adaptation of the ECMAScript standards for JavaScript in web browsers and other runtimes.
                 (Hence the need for fallbacks, polyfills, shims and shivs (and HTML conditional comments)).
 
                 This is also to implement the design standards of the Lapys Development Kit into JavaScript by defining its core concepts and mechanics:
@@ -37,13 +37,14 @@
     --- RULES ---
         #Lapys:
             - All functions, modules, statements and variables must be lexicographically ordered (if possible).
-            - All non-universal features are banned e.g.: Arrow functions, class objects, spread operators and so on.
-            - Default and REST parameters are disallowed.
+            - All non-universal features are banned e.g.: Arrow functions, class objects, destructuring operators, spread operators and so on.
             - Due to the ECMAScript standard supporting negative zero, all positive integer zeros must be prefixed with the addition operator: `+`.
+            - Defer to conditional operators (e.g.: `&&`, `||`, e.t.c.) for single-expression condition-based code instead of control structures (e.g.: `if (...) { ... }`, `switch (...) { ... }` e.t.c.)
+            - Use the XOR operator (i.e.: `^`) instead of the inverse comparison operator (i.e.: `!=`) for integer values.
 
     --- UPDATE REQUIRED ---
         #Lapys:
-            - Target development environments (these environments may lack a core & modern JavaScript feature or not work for some other reasons..):
+            - Target development environments (these environments may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
                 -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- Netscape 2 & Netscape 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- others...
@@ -3302,10 +3303,55 @@
                             return cut
                         };
 
+                        // Ends With
+                        LapysDevelopmentKit.Functions.stringPrototypeEndsWith = function stringPrototypeEndsWith(string, substring) { var stringLength = LDKF.stringPrototypeLength(string); return LDKF.stringPrototypeSlice(string, stringLength - LDKF.stringPrototypeLength(substring), stringLength) == substring };
+
                         // First
                         LapysDevelopmentKit.Functions.stringPrototypeFirst = function stringPrototypeFirst(string) { return LDKF.stringPrototypeCharacterAt(string, +0) };
 
-                        // Includes --- CHECKPOINT (Lapys)
+                        // Includes
+                        LapysDevelopmentKit.Functions.stringPrototypeIncludes = function stringPrototypeIncludes(string, substring) {
+                            // Initialization > (String, Substring) Length
+                            var stringLength = LDKF.stringPrototypeLength(string),
+                                substringLength = LDKF.stringPrototypeLength(substring);
+
+                            // Logic
+                            if (stringLength == substringLength)
+                                // Return
+                                return string == substring;
+
+                            else if (stringLength > substringLength) {
+                                // Initialization > String Iterator
+                                var stringIterator = stringLength;
+
+                                // Loop
+                                while (stringIterator) {
+                                    // Initialization > Substring Iterator
+                                    var substringIterator = substringLength - 1;
+
+                                    // Update > String Iterator
+                                    stringIterator -= 1;
+
+                                    // Loop > Update > (String, Substring) Iterator
+                                    while (
+                                        stringIterator && substringIterator &&
+                                        LDKF.stringPrototypeCharacterAt(string, stringIterator) == LDKF.stringPrototypeCharacterAt(substring, substringIterator)
+                                    ) { stringIterator -= 1; substringIterator -= 1 }
+
+                                    // Logic > Return
+                                    if (!substringIterator && LDKF.stringPrototypeCharacterAt(string, stringIterator) == LDKF.stringPrototypeFirst(substring))
+                                        return true
+                                }
+
+                                // Return
+                                return false
+                            }
+
+                            else
+                                // Return
+                                return false
+                        };
+
                         // Index --- CHECKPOINT (Lapys)
                         // Is DOM Element Tag Name --- CHECKPOINT (Lapys)
                         // Is Alphabet --- CHECKPOINT (Lapys)
@@ -3618,58 +3664,48 @@
                     return ((numberAMinimum * numberBMinimum) + (((numberAMaximum * numberBMinimum + numberAMinimum * numberBMaximum) << 16) >>> +0) | +0)
                 };
 
-                // Maximum --- NOTE (Lapys) -> Slower than the native `Math.max` method.
+                // Maximum
                 LapysDevelopmentKit.Mathematics.max = function max() {
-                    // Initialization > (Iterator, Maximum)
-                    var iterator = LDKF.getArgumentsLength(arguments), maximum = iterator ? arguments[0] : null;
+                    // Initialization > Iterator
+                    var iterator = LDKF.getArgumentsLength(arguments);
 
-                    // Loop
-                    while (iterator && ~iterator) {
-                        // Initialization > Number A
-                        var numberA = arguments[iterator -= 1];
+                    // Logic
+                    if (iterator) {
+                        // Initialization > Maximum
+                        var maximum = arguments[0];
 
-                        // Logic
-                        if (iterator) {
-                            // Initialization > Number B
-                            var numberB = arguments[iterator -= 1];
+                        // Loop > Update > Maximum
+                        while (iterator -= 1) (maximum < arguments[iterator]) && (maximum = arguments[iterator]);
 
-                            // Update > Number A (Lapys) -> Re-purpose Number A.
-                            numberA = numberA > numberB ? numberA : numberB
-                        }
-
-                        // Update > Maximum
-                        maximum = maximum > numberA ? maximum : numberA
+                        // Return
+                        return maximum
                     }
 
-                    // Return
-                    return maximum
+                    else
+                        // Return
+                        return null
                 };
 
-                // Minimum --- NOTE (Lapys) -> Slower than the native `Math.min` method.
+                // Minimum
                 LapysDevelopmentKit.Mathematics.min = function min() {
-                    // Initialization > (Iterator, Maximum)
-                    var iterator = LDKF.getArgumentsLength(arguments), minimum = iterator ? arguments[0] : null;
+                    // Initialization > Iterator
+                    var iterator = LDKF.getArgumentsLength(arguments);
 
-                    // Loop
-                    while (iterator && ~iterator) {
-                        // Initialization > Number A
-                        var numberA = arguments[iterator -= 1];
+                    // Logic
+                    if (iterator) {
+                        // Initialization > Minimum
+                        var minimum = arguments[0];
 
-                        // Logic
-                        if (iterator) {
-                            // Initialization > Number B
-                            var numberB = arguments[iterator -= 1];
+                        // Loop > Update > Minimum
+                        while (iterator -= 1) (arguments[iterator] < minimum) && (minimum = arguments[iterator]);
 
-                            // Update > Number A (Lapys) -> Re-purpose Number A.
-                            numberA = numberA < numberB ? numberA : numberB
-                        }
-
-                        // Update > Minimum
-                        minimum = minimum < numberA ? minimum : numberA
+                        // Return
+                        return minimum
                     }
 
-                    // Return
-                    return minimum
+                    else
+                        // Return
+                        return null
                 };
 
                 // Random
