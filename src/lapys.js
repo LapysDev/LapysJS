@@ -3168,6 +3168,8 @@
 
                         // Prototype
                         LapysDevelopmentKit.Functions.objectPrototypePrototype = function objectPrototypePrototype(object) { return LDKF.objectGetPrototypeOf(object) };
+                            // Has Own Property
+                            LapysDevelopmentKit.Functions.objectPrototypeHasOwnProperty = function objectPrototypeHasOwnProperty(object, propertyName) { return LDKO.objectPrototypeHasOwnProperty.call(object, propertyName) };
 
                 // Remove From Source --- NOTE (Lapys) -> Alternative way to get ignored syntaxes from the `LapysDevelopmentKit.Functions.iterateSource` method`s `IGNORE` flag parameter.
                 LapysDevelopmentKit.Functions.removeFromSource = function removeFromSource(source, options, IS_FUNCTION, STARTING_ITERATION_INDEX, PARSE_FROM_STARTING_ITERATION_INDEX) { var stream = ""; LDKF.iterateSource(source, function(character) { stream += character }, STRICT = options, STRICT = IS_FUNCTION, STRICT = STARTING_ITERATION_INDEX, STRICT = PARSE_FROM_STARTING_ITERATION_INDEX); return stream };
@@ -3756,7 +3758,7 @@
                             // Return
                             return method;
 
-                        else if (LDKF.isVoid(method))
+                        else if (!LDKF.objectPrototypeHasProperty(LDKO.object, "create") || LDKF.isVoid(method))
                             // Return
                             return function create(url) {
                                 // Initialization > (Object, Constructor)
@@ -3787,19 +3789,41 @@
 
                         else
                             // Error
-                            LDKF.throwFeatureNotNativeError("`Object.getPrototypeOf` method")
+                            LDKF.throwFeatureNotNativeError("`Object.create` method")
                     })();
 
                     // Define Getter --- CHECKPOINT (Lapys)
                     // Define Property --- CHECKPOINT (Lapys)
                     // Define Setter --- CHECKPOINT (Lapys)
                     // Get Own Property Descriptor --- CHECKPOINT (Lapys)
+                    // Get Own Property Names --- CHECKPOINT (Lapys)
                     LapysDevelopmentKit.Objects.objectGetOwnPropertyNames = (function() {
                         // Initialization > Method
                         var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyNames", STRICT = true);
+
+                        // Logic
+                        if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.object, "getOwnPropertyNames", STRICT = method))
+                            // Return
+                            return method;
+
+                        else if (!LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertyNames") || LDKF.isVoid(method))
+                            // Return
+                            return function getOwnPropertyNames(object) {
+                                // Initialization > Property Names (Length)
+                                var propertyNames = [], propertyNamesLength = 0;
+
+                                // Loop > Update > Property Names
+                                for (var propertyName in object) LDKF.objectPrototypeHasOwnProperty(object, propertyName) && (propertyNames[(propertyNamesLength += 1) - 1] = propertyName);
+
+                                // Return
+                                return propertyNames
+                            };
+
+                        else
+                            // Error
+                            LDKF.throwFeatureNotNativeError("`Object.getOwnPropertyNames` method")
                     })();
 
-                    // Get Own Property Names --- CHECKPOINT (Lapys)
                     // Get Own Property Symbols --- CHECKPOINT (Lapys)
 
                     // Get Prototype Of
@@ -3812,7 +3836,7 @@
                             // Return
                             return method;
 
-                        else if (LDKF.isVoid(method)) {
+                        else if (!LDKF.objectPrototypeHasProperty(LDKO.object, "getPrototypeOf") || LDKF.isVoid(method)) {
                             // Function > Request Prototype Of --- WARN (Lapys) -> We trust the user has not corrupted the Object`s `constructor` property.
                             function requestPrototypeOf(object) {
                                 // Error Handling
@@ -3855,7 +3879,31 @@
                     // Keys --- CHECKPOINT (Lapys)
                     // Lookup Getter --- CHECKPOINT (Lapys)
                     // Lookup Setter --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Fortunately, the `prototype` property of constructors (or functions) are immutable.
+                    // Prototype --- NOTE (Lapys) -> Fortunately, the `prototype` property of constructors (or functions) are immutable.
+                    LDKO.objectPrototype = LDKO.object.prototype;
+                        // Has Own Property
+                        LapysDevelopmentKit.Objects.objectPrototypeHasOwnProperty = (function() {
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "hasOwnProperty", STRICT = true);
+
+                            // Logic
+                            if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.objectPrototype, "hasOwnProperty", STRICT = method))
+                                // Return
+                                return method;
+
+                            else if (!LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "hasOwnProperty") || LDKF.isVoid(method))
+                                // Return
+                                return function hasOwnProperty(propertyName) {
+                                    // Loop > Logic > Return; Return
+                                    for (var currentPropertyName in this) if (currentPropertyName === propertyName) return true;
+                                    return false
+                                };
+
+                            else
+                                // Error
+                                LDKF.throwFeatureNotNativeError("`Object.hasOwnProperty` method")
+                        })();
+
                     // Set Prototype Of --- CHECKPOINT (Lapys) --- CITE (Lapys) -> `https://gist.github.com/edoardocavazza/47246856759f2273e48b`
 
             /* Constants --- NOTE (Lapys) -> Constants are derived from objects. */
