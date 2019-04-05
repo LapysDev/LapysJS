@@ -2757,8 +2757,8 @@
                     // Click --- CHECKPOINT (Lapys)
                     // Focus --- CHECKPOINT (Lapys)
 
-                // Is Array --- CHECKPOINT (Lapys)
-                LapysDevelopmentKit.Functions.isArray = function isArray(arg) { return arg instanceof Array };
+                // Is Array
+                LapysDevelopmentKit.Functions.isArray = function isArray(arg) { return LDKF.objectPrototypeIsOfConstructor(arg, LDKO.array, STRICT = true) && LDKF.isNull(LDKF.objectGetPrototypeOf(LDKF.objectGetPrototypeOf(LDKF.objectGetPrototypeOf(arg)))) };
 
                 // Is Boolean
                 LapysDevelopmentKit.Functions.isBoolean = function isBoolean(arg) { return typeof arg == "boolean" };
@@ -2799,6 +2799,9 @@
 
                 // Is Symbol
                 LapysDevelopmentKit.Functions.isSymbol = function isSymbol(arg) { return typeof arg == "symbol" };
+
+                // Is Type Error --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Functions.isTypeError = function isTypeError(arg) { return true };
 
                 // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern development environments.
                 LapysDevelopmentKit.Functions.isVoid = function isVoid(arg) { return typeof arg == "undefined" };
@@ -2996,7 +2999,7 @@
                     };
 
                     // Get Prototype Of
-                    LapysDevelopmentKit.Functions.objectGetPrototypeOf = function objectGetPrototypeOf(object) { return LDKO.objectPrototypeOf(object) }
+                    LapysDevelopmentKit.Functions.objectGetPrototypeOf = function objectGetPrototypeOf(object) { return LDKO.objectGetPrototypeOf(object) }
 
                     // Has Same Inheritance
                     LapysDevelopmentKit.Functions.objectHasSameInheritance = function objectHasSameInheritance(objectA, objectB) { return LDKF.objectPrototypeConstructor(objectA) === LDKF.objectPrototypeConstructor(objectB) && LDKF.objectPrototypePrototype(objectA) === LDKF.objectPrototypePrototype(objectB) };
@@ -3126,6 +3129,12 @@
 
                             // Return
                             return depth
+                        };
+
+                        // Get Property [By Name]
+                        LapysDevelopmentKit.Functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, propertyName, SILENCE_EXCEPTIONS) {
+                            try { return object[propertyName] }
+                            catch (error) { if (!SILENCE_EXCEPTIONS) throw error }
                         };
 
                         // Has Property [By Name]
@@ -3689,7 +3698,7 @@
                     // Character At --- NOTE (Lapys) -> This method is critical to most of LapysJS` functionality.
                     LapysDevelopmentKit.Objects.stringPrototypeCharacterAt = (function() {
                         // Initialization > Method
-                        var method = "".charAt;
+                        var method = LDKF.objectPrototypeGetProperty("", "charAt", STRICT = true);
 
                         // Logic > ...
                         if (
@@ -3702,7 +3711,7 @@
                     // Character Code At
                     LapysDevelopmentKit.Objects.stringPrototypeCharacterCodeAt = (function() {
                         // Initialization > Method
-                        var method = "".charCodeAt;
+                        var method = LDKF.objectPrototypeGetProperty("", "charCodeAt", STRICT = true);
 
                         // Logic > ...
                         if (
@@ -3712,10 +3721,10 @@
                         else LDKF.throwFeatureNotNativeError("`String.prototype.charAt` method")
                     })();
 
-                // Object --- UPDATE REQUIRED (Lapys) -> Is there a "safe" way to collect this value?
+                // Object --- WARN (Lapys) -> We trust the user has not changed the prototype-based `constructor` property for object literals.
                 LapysDevelopmentKit.Objects.object = (function() {
                     // Initialization > Constructor
-                    var constructor = ANY.constructor;
+                    var constructor = LDKF.objectPrototypeGetProperty(ANY, "constructor", STRICT = true);
 
                     // Logic > ...
                     if (
@@ -3737,43 +3746,106 @@
                     ) return constructor;
                     else LDKF.throwFeatureNotNativeError("`Object` constructor")
                 })();
-                    // Create --- CHECKPOINT (Lapys)
+                    // Create
+                    LapysDevelopmentKit.Objects.objectCreate = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKO.object, "create", STRICT = true);
+
+                        // Logic
+                        if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.object, "create", STRICT = method))
+                            // Return
+                            return method;
+
+                        else if (LDKF.isVoid(method))
+                            // Return
+                            return function create(url) {
+                                // Initialization > (Object, Constructor)
+                                var object = new function() {}, constructor = LDKF.objectPrototypeGetProperty(object, "constructor", STRICT = true);
+
+                                // Logic
+                                    // NOTE (Lapys) -> Return non-identified prototype-based object.
+                                    if (LDKF.objectPrototypeIsOfConstructor(object, constructor)) {
+                                        // Modification > Constructor > Prototype
+                                        constructor.prototype = url;
+
+                                        // Return
+                                        return new constructor
+                                    }
+
+                                    // NOTE (Lapys) -> Return identified (in this case `constructor`) prototype-based object.
+                                    else {
+                                        // Update > Constructor
+                                        constructor = function() {};
+
+                                        // Modification > Constructor > Prototype
+                                        constructor.prototype = url;
+
+                                        // Return
+                                        return new constructor
+                                    }
+                            };
+
+                        else
+                            // Error
+                            LDKF.throwFeatureNotNativeError("`Object.getPrototypeOf` method")
+                    })();
+
                     // Define Getter --- CHECKPOINT (Lapys)
                     // Define Property --- CHECKPOINT (Lapys)
                     // Define Setter --- CHECKPOINT (Lapys)
                     // Get Own Property Descriptor --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Objects.objectGetOwnPropertyNames = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyNames", STRICT = true);
+                    })();
+
                     // Get Own Property Names --- CHECKPOINT (Lapys)
                     // Get Own Property Symbols --- CHECKPOINT (Lapys)
 
                     // Get Prototype Of
                     LapysDevelopmentKit.Objects.objectGetPrototypeOf = (function() {
                         // Initialization > Method
-                        var method = LDKO.object.getPrototypeOf;
+                        var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getPrototypeOf", STRICT = true);
 
                         // Logic
                         if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.object, "getPrototypeOf", STRICT = method))
                             // Return
                             return method;
 
-                        else if (LDKF.isVoid(method) && LDKC.has___proto___Property)
-                            // Return
-                            return function getPrototypeOf(object) {
-                                // Initialization > Prototype
-                                var prototype = object.__proto__;
-
-                                // Logic
-                                if (LDKF.isVoid(prototype)) {
+                        else if (LDKF.isVoid(method)) {
+                            // Function > Request Prototype Of --- WARN (Lapys) -> We trust the user has not corrupted the Object`s `constructor` property.
+                            function requestPrototypeOf(object) {
+                                // Error Handling
+                                try {
                                     // Initialization > Constructor
                                     var constructor = object.constructor;
 
-                                    // Update > Prototype
-                                    LDKF.objectPrototypeIsOfConstructor(object, constructor, STRICT = true) && (prototype = constructor.prototype)
-                                }
+                                    // Return
+                                    return LDKF.objectPrototypeIsOfConstructor(object, constructor, STRICT = true) ? constructor.prototype : null
+                                    } catch (error) {}
 
-                                // Logic > ...
-                                if (typeof prototype == "object") return prototype;
-                                else LDKF.throwTypeError("Object prototype must be an object itself")
-                            };
+                                // Return
+                                return null
+                            }
+
+                            // Return
+                            return LDKC.has___proto___Property ?
+                                function getPrototypeOf(object) {
+                                    // Initialization > Prototype
+                                    var prototype;
+
+                                    // Error Handling > Update > Prototype
+                                    try { prototype = object.__proto__ } catch (error) {}
+
+                                    // Update > Prototype
+                                    LDKF.isVoid(prototype) && (prototype = requestPrototypeOf(object));
+
+                                    // Logic > ...
+                                    if (typeof prototype == "object") return prototype;
+                                    else LDKF.throwTypeError("Object prototype must be an object itself")
+                                } :
+                                function getPrototypeOf(object) { return requestPrototypeOf(object) }
+                        }
 
                         else
                             // Error
