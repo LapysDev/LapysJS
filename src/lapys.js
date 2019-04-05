@@ -64,7 +64,7 @@
 
         // Lapys Development Kit --- REDACT --- UPDATE REQUIRED (Lapys) -> From quick inspection, re-asses the global `LapysJS` object differently.
         LapysDevelopmentKit = {
-            Constants: {Keywords: {}, Number: {}, Objects: {}, String: {}},
+            Constants: {Assertions: {}, Keywords: {}, Number: {}, Objects: {}, String: {}},
             Data: {},
             Environment: {Data: {}, Type: null, State: "OK", Vendors: []},
             Functions: {},
@@ -2989,14 +2989,39 @@
                         LapysDevelopmentKit.Functions.numberPrototypeIsOdd = function numberPrototypeIsOdd(number) { return (number & 1) && LDKF.numberPrototypeIsInteger(number) };
 
                 /* Object */
-                    // Get Own Non-Getter-Setter Property Names --- CHECKPOINT (Lapys)
+                    // Create
+                    LapysDevelopmentKit.Functions.objectCreate = function objectCreate(url) { return LDKO.objectCreate(url) };
+
+                    // Get Own Non-Getter-Setter Property Names
                     LapysDevelopmentKit.Functions.objectGetOwnNonGetterSetterPropertyNames = function objectGetOwnNonGetterSetterPropertyNames(object) {
+                        // Initialization > ((Property Names) (Iterator, Length), Non-Getter-Setter Property Names (Length))
+                        var propertyNames = LDKF.objectGetOwnPropertyNames(object),
+                            propertyNamesIterator = LDKF.arrayPrototypeLength(propertyNames), propertyNamesLength = propertyNamesIterator,
+                            nonGetterSetterPropertyNames = [], nonGetterSetterPropertyNamesLength = 0;
+
+                        // Loop
+                        while (propertyNamesIterator) {
+                            // Initialization > Property (Name, Descriptor)
+                            var propertyName = propertyNames[propertyNamesLength - (propertyNamesIterator -= 1) - 1],
+                                propertyDescriptor = LDKF.objectGetOwnPropertyDescriptor(object, propertyName);
+
+                            // Update > Non-Getter-Setter Property Names
+                            (LDKF.objectPrototypeHasProperty(propertyDescriptor, "get") || LDKF.objectPrototypeHasProperty(propertyDescriptor, "set")) ||
+                            (nonGetterSetterPropertyNames[(nonGetterSetterPropertyNamesLength += 1) - 1] = propertyName)
+                        }
+
                         // Return
-                        return Array.prototype.concat.call([], Object.getOwnPropertyNames(object), Object.getOwnPropertySymbols(object)).filter(function(propertyName) {
-                            var descriptor = Object.getOwnPropertyDescriptor(object, propertyName);
-                            return !LDKF.objectPrototypeHasProperty(descriptor, "get") && !LDKF.objectPrototypeHasProperty(descriptor, "set")
-                        })
+                        return nonGetterSetterPropertyNames
                     };
+
+                    // Get Own Property Descriptor
+                    LapysDevelopmentKit.Functions.objectGetOwnPropertyDescriptor = function objectGetOwnPropertyDescriptor(object, propertyName) { return LDKO.objectGetOwnPropertyDescriptor(object, propertyName) };
+
+                    // Get Own Property Names
+                    LapysDevelopmentKit.Functions.objectGetOwnPropertyNames = function objectGetOwnPropertyNames(object) { return LDKO.objectGetOwnPropertyNames(object) };
+
+                    // Get Own Property Symbols
+                    LapysDevelopmentKit.Functions.objectGetOwnPropertySymbols = function objectGetOwnPropertySymbols(object) { return LDKO.objectGetOwnPropertySymbols(object) };
 
                     // Get Prototype Of
                     LapysDevelopmentKit.Functions.objectGetPrototypeOf = function objectGetPrototypeOf(object) { return LDKO.objectGetPrototypeOf(object) }
@@ -3133,12 +3158,20 @@
 
                         // Get Property [By Name]
                         LapysDevelopmentKit.Functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, propertyName, SILENCE_EXCEPTIONS) {
+                            // Error Handling > ...
                             try { return object[propertyName] }
                             catch (error) { if (!SILENCE_EXCEPTIONS) throw error }
                         };
 
                         // Has Property [By Name]
-                        LapysDevelopmentKit.Functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, propertyName) { return propertyName in object };
+                        LapysDevelopmentKit.Functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, propertyName, SILENCE_EXCEPTIONS) {
+                            // Error Handling > ...
+                            try { return propertyName in object }
+                            catch (error) { if (!SILENCE_EXCEPTIONS) throw error }
+
+                            // Return
+                            return false
+                        };
 
                         // Is Of Constructor
                         LapysDevelopmentKit.Functions.objectPrototypeIsOfConstructor = function objectPrototypeIsOfConstructor(object, constructor, ASSERT_BY_CONSTRUCTOR_VALUE) {
@@ -3792,11 +3825,59 @@
                             LDKF.throwFeatureNotNativeError("`Object.create` method")
                     })();
 
-                    // Define Getter --- CHECKPOINT (Lapys)
                     // Define Property --- CHECKPOINT (Lapys)
-                    // Define Setter --- CHECKPOINT (Lapys)
-                    // Get Own Property Descriptor --- CHECKPOINT (Lapys)
-                    // Get Own Property Names --- CHECKPOINT (Lapys)
+
+                    // Get Own Property Descriptor
+                    LapysDevelopmentKit.Objects.objectGetOwnPropertyDescriptor = (function() {
+                        // Initialization > Method (Has Legacy Functionality)
+                        var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyDescriptor", STRICT = true),
+                            methodHasLegacyFunctionality = false;
+
+                        // Logic
+                        if (
+                            LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.object, "getOwnPropertyDescriptor", STRICT = method) &&
+                            (function() { var methodIsStandard = true; try { method({}, "") } catch (error) { methodHasLegacyFunctionality = LDKF.isTypeError(error); methodIsStandard = false } return methodIsStandard })()
+                        )
+                            // Return
+                            return method;
+
+                        else if (!LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertyDescriptor") || LDKF.isVoid(method))
+                            // Return
+                            return function getOwnPropertyDescriptor(object, propertyName) {
+                                // Initialization > Descriptor
+                                var descriptor = null;
+
+                                // Logic > Error Handling > (Update > Descriptor)
+                                if (methodHasLegacyFunctionality) try { descriptor = method(object, propertyName) } catch (error) {}
+
+                                // Logic
+                                if (LDKF.isNull(descriptor)) {
+                                    // Initialization > (Accessor, Is (Enumerable, Getter Or Setter), Mutator)
+                                    var accessor = null,
+                                        isEnumerable = LDKF.arrayPrototypeIncludes(LDKF.objectGetOwnPropertyNames(object), propertyName),
+                                        isGetterOrSetter = false,
+                                        mutator = null;
+
+                                    // Update > (Accessor, Mutator)
+                                    LDKC.Assertions.has___lookupGetter___Method && (accessor = LDKF.objectPrototype___lookupGetter___.call(object, propertyName));
+                                    LDKC.Assertions.has___lookupSetter___Method && (mutator = LDKF.objectPrototype___lookupSetter___.call(object, propertyName));
+
+                                    // Return
+                                    return !LDKF.isNull(accessor) || LDKF.isNull(mutator) ?
+                                        {configurable: null, enumerable: isEnumerable, get: accessor || undefined, set: mutator || undefined} :
+                                        {configurable: null, enumerable: isEnumerable, value: object[propertyName], writable: null}
+                                }
+
+                                // Return
+                                return descriptor
+                            };
+
+                        else
+                            // Error
+                            LDKF.throwFeatureNotNativeError("`Object.getOwnPropertyDescriptor` method")
+                    })();
+
+                    // Get Own Property Names
                     LapysDevelopmentKit.Objects.objectGetOwnPropertyNames = (function() {
                         // Initialization > Method
                         var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertyNames", STRICT = true);
@@ -3813,7 +3894,7 @@
                                 var propertyNames = [], propertyNamesLength = 0;
 
                                 // Loop > Update > Property Names
-                                for (var propertyName in object) LDKF.objectPrototypeHasOwnProperty(object, propertyName) && (propertyNames[(propertyNamesLength += 1) - 1] = propertyName);
+                                for (var propertyName in object) LDKF.objectPrototypeHasOwnProperty(object, propertyName) && LDKF.isString(propertyName) && (propertyNames[(propertyNamesLength += 1) - 1] = propertyName);
 
                                 // Return
                                 return propertyNames
@@ -3824,7 +3905,33 @@
                             LDKF.throwFeatureNotNativeError("`Object.getOwnPropertyNames` method")
                     })();
 
-                    // Get Own Property Symbols --- CHECKPOINT (Lapys)
+                    // Get Own Property Symbols
+                    LapysDevelopmentKit.Objects.objectGetOwnPropertySymbols = (function() {
+                        // Initialization > Method
+                        var method = LDKF.objectPrototypeGetProperty(LDKO.object, "getOwnPropertySymbols", STRICT = true);
+
+                        // Logic
+                        if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.object, "getOwnPropertySymbols", STRICT = method))
+                            // Return
+                            return method;
+
+                        else if (!LDKF.objectPrototypeHasProperty(LDKO.object, "getOwnPropertySymbols") || LDKF.isVoid(method))
+                            // Return
+                            return function getOwnPropertySymbols() {
+                                // Initialization > Property Symbols (Length)
+                                var propertySymbols = [], propertySymbolsLength = 0;
+
+                                // Loop > Update > Property Symbols
+                                for (var propertySymbol in object) LDKF.objectPrototypeHasOwnProperty(object, propertySymbol) && LDKF.isSymbol(propertySymbol) && (propertySymbols[(propertySymbolsLength += 1) - 1] = propertySymbol);
+
+                                // Return
+                                return propertySymbols
+                            };
+
+                        else
+                            // Error
+                            LDKF.throwFeatureNotNativeError("`Object.getOwnPropertySymbols` method")
+                    })();
 
                     // Get Prototype Of
                     LapysDevelopmentKit.Objects.objectGetPrototypeOf = (function() {
@@ -3877,10 +3984,28 @@
                     })();
 
                     // Keys --- CHECKPOINT (Lapys)
-                    // Lookup Getter --- CHECKPOINT (Lapys)
-                    // Lookup Setter --- CHECKPOINT (Lapys)
                     // Prototype --- NOTE (Lapys) -> Fortunately, the `prototype` property of constructors (or functions) are immutable.
                     LDKO.objectPrototype = LDKO.object.prototype;
+                        // `__defineGetter__`
+                        LapysDevelopmentKit.Objects.objectPrototype___defineGetter___ = (function() {
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "__defineGetter__", STRICT = true);
+
+                            // Logic > Return
+                            if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.objectPrototype, "__defineGetter__", STRICT = method))
+                                return method
+                        })();
+
+                        // `__defineSetter__`
+                        LapysDevelopmentKit.Objects.objectPrototype___defineSetter___ = (function() {
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "__defineSetter__", STRICT = true);
+
+                            // Logic > Return
+                            if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.objectPrototype, "__defineSetter__", STRICT = method))
+                                return method
+                        })();
+
                         // Has Own Property
                         LapysDevelopmentKit.Objects.objectPrototypeHasOwnProperty = (function() {
                             // Initialization > Method
@@ -3901,18 +4026,47 @@
 
                             else
                                 // Error
-                                LDKF.throwFeatureNotNativeError("`Object.hasOwnProperty` method")
+                                LDKF.throwFeatureNotNativeError("`Object.prototype.hasOwnProperty` method")
+                        })();
+
+                        // `__lookupGetter__`
+                        LapysDevelopmentKit.Objects.objectPrototype___lookupGetter___ = (function() {
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "__lookupGetter__", STRICT = true);
+
+                            // Logic > Return
+                            if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.objectPrototype, "__lookupGetter__", STRICT = method))
+                                return method
+                        })();
+
+                        // `__lookupSetter__`
+                        LapysDevelopmentKit.Objects.objectPrototype___lookupSetter___ = (function() {
+                            // Initialization > Method
+                            var method = LDKF.objectPrototypeGetProperty(LDKO.objectPrototype, "__lookupSetter__", STRICT = true);
+
+                            // Logic > Return
+                            if (LDKT.objectPrototypeIsNativeMethodOfObject(LDKO.objectPrototype, "__lookupSetter__", STRICT = method))
+                                return method
                         })();
 
                     // Set Prototype Of --- CHECKPOINT (Lapys) --- CITE (Lapys) -> `https://gist.github.com/edoardocavazza/47246856759f2273e48b`
 
             /* Constants --- NOTE (Lapys) -> Constants are derived from objects. */
-                // Has Define Getter Method --- CHECKPOINT (Lapys)
-                // Has Define Setter Method --- CHECKPOINT (Lapys)
-                // Has Lookup Getter Method --- CHECKPOINT (Lapys)
-                // Has Lookup Setter Method --- CHECKPOINT (Lapys)
-                // Has `__proto__` Property --- CHECKPOINT (Lapys)
-                // Is Browser Environment --- CHECKPOINT (Lapys)
+                // Assertions
+                    // Has `__defineGetter__` Method
+                    LapysDevelopmentKit.Constants.Assertions.has___defineGetter___Method = LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "__defineGetter__", STRICT = true) && LDKF.isFunction(LDKO.objectPrototype___defineGetter___);
+
+                    // Has `__defineSetter__` Method
+                    LapysDevelopmentKit.Constants.Assertions.has___defineSetter___Method = LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "__defineSetter__", STRICT = true) && LDKF.isFunction(LDKO.objectPrototype___defineSetter___);
+
+                    // Has `__lookupGetter__` Method
+                    LapysDevelopmentKit.Constants.Assertions.has___lookupGetter___Method = LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "__lookupGetter__", STRICT = true) && LDKF.isFunction(LDKO.objectPrototype___lookupGetter___);
+
+                    // Has `__lookupSetter__` Method
+                    LapysDevelopmentKit.Constants.Assertions.has___lookupSetter___Method = LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "__lookupSetter__", STRICT = true) && LDKF.isFunction(LDKO.objectPrototype___lookupSetter___);
+
+                    // Has `__proto__` Property --- CHECKPOINT (Lapys)
+                    // Is Browser Environment --- CHECKPOINT (Lapys)
 
             /* Objects --- NOTE (Lapys) -> Collect a myriad of native JavaScript values. */
                 // Abort Error --- CHECKPOINT (Lapys)
