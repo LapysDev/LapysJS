@@ -734,90 +734,55 @@
                                         - There might be performance loss when getting the focus points (e.g.: Half-Array Length) for the statement checks.
                                         - Each iteration might perform redundant & repeated checks; Even if the checks are accounted for, that will still result in minor performance drops.
                         */
-                        LapysDevelopmentKit.Functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element, ARRAY_LENGTH) {
-                            // Initialization > Array Length
-                            var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+                        // GRADIENT SEARCHING
+                        LapysDevelopmentKit.Functions.arrayPrototypeIterate = function arrayPrototypeIterate(array, handler, iterationStopCount, ARRAY_LENGTH) {
+                            var length = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
 
-                            // Logic
-                            if (arrayLength)
-                                // Logic
-                                if (arrayLength == 1)
-                                    // Return
-                                    return array[+0] === element;
+                            if (length)
+                                if (length == 1)
+                                    handler.call(array, +0, array[+0]);
 
                                 else {
-                                    // Initialization > (Array Iterator, Half Array Length, Quarter Array Length)
-                                    var arrayIterator = arrayLength,
-                                        halfArrayLength = LDKM.int(arrayLength / 2),
-                                        quarterArrayLength = LDKM.int(halfArrayLength / 2);
+                                    var iterator = length;
 
-                                    // Loop
-                                    while (arrayIterator ^ quarterArrayLength) {
-                                        // Update > Array Iterator
-                                        arrayIterator -= 1;
+                                    if (iterationStopCount == 1)
+                                        while (iterator) handler.call(array, iterator -= 1, array[iterator]);
 
-                                        // Logic
-                                        if (
-                                            array[arrayLength - arrayIterator - 1] === element ||
-                                            ((arrayIterator - halfArrayLength) > -1 && array[arrayIterator - halfArrayLength] === element) ||
-                                            (halfArrayLength + (arrayLength - arrayIterator - 1) < arrayLength && array[halfArrayLength + (arrayLength - arrayIterator - 1)] === element) ||
-                                            array[arrayIterator] === element
-                                        )
-                                            // Return
-                                            return true
+                                    else {
+                                        (iterationStopCount > length) && (iterationStopCount = length);
+
+                                        var hasRedundantIterations = !(length % iterationStopCount),
+                                            iterationStops = LDKF.arrayPrototypeBuild(LDKM.step(length, iterationStopCount, STRICT = true), function(index, element) { return LDKM.int(element) }),
+                                            iterationStopsLength = iterationStopCount;
+
+                                        iterator -= iterationStops[1] + hasRedundantIterations;
+                                        iterationStops[+0] = +0;
+
+                                        if (~iterator)
+                                            while (iterator) {
+                                                var iterationStopsIterator = iterationStopsLength;
+
+                                                iterator -= 1;
+
+                                                while (iterationStopsIterator) {
+                                                    var iterationStop = iterationStops[iterationStopsIterator -= 1];
+                                                    console.log("ITERATION STOP [" + iterationStop + "]: ", iterator + iterationStop);
+                                                    handler.call(array, iterator, iterator + iterationStop)
+                                                }
+
+                                                console.log('\n')
+                                            }
                                     }
                                 }
 
-                            // Return
-                            return false
+                            return array
                         };
+
+                        // Includes --- CHECKPOINT
+                        LapysDevelopmentKit.Functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element, ARRAY_LENGTH, SEARCH_RANGE) { return false };
 
                         // Index
                         LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element, ARRAY_LENGTH) { return LDKF.arrayPrototypeIndexFromBack(array, element, STRICT = ARRAY_LENGTH) };
-
-                        // Index From --- NOTE (Lapys) -> Utilizes the same techniques used in the `LapysDevelopmentKit.Functions.arrayPrototypeIncludes` method to assert an index from either the beginning, end or middle of the Array.
-                        LapysDevelopmentKit.Functions.arrayPrototypeIndexFrom = function arrayPrototypeIndexFrom(array, element, ARRAY_LENGTH) {
-                            // Initialization > Array Length
-                            var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
-
-                            // Logic
-                            if (arrayLength)
-                                // Logic
-                                if (arrayLength == 1)
-                                    // Return
-                                    return array[+0] === element ? +0 : -1;
-
-                                else {
-                                    // Initialization > (Array Iterator, Half Array Length, Quarter Array Length, Index(es))
-                                    var arrayIterator = arrayLength,
-                                        halfArrayLength = LDKM.int(arrayLength / 2),
-                                        quarterArrayLength = LDKM.int(halfArrayLength / 2),
-                                        index = +0, indexes = [];
-
-                                    // Loop
-                                    while (arrayIterator ^ quarterArrayLength) {
-                                        // Update > (Array Iterator, Indexes)
-                                        arrayIterator -= 1;
-                                        indexes[+0] = arrayLength - arrayIterator - 1;
-                                        indexes[1] = arrayIterator - halfArrayLength;
-                                        indexes[2] = halfArrayLength + (arrayLength - arrayIterator - 1);
-                                        indexes[3] = arrayIterator;
-
-                                        // Logic
-                                        if (
-                                            ((array[indexes[+0]] === element) && (index = 1)) ||
-                                            (indexes[1] > -1 && ((array[indexes[1]] === element) && (index = 2))) ||
-                                            ((indexes[2] < arrayLength) && ((array[indexes[2]] === element) && (index = 3))) ||
-                                            ((array[indexes[3]] === element) && (index = 4))
-                                        )
-                                            // Return
-                                            return indexes[index - 1]
-                                    }
-                                }
-
-                            // Return
-                            return -1
-                        };
 
                         // Index From Back
                         LapysDevelopmentKit.Functions.arrayPrototypeIndexFromBack = function arrayPrototypeIndexFromBack(array, element, ARRAY_LENGTH) {
@@ -1139,7 +1104,7 @@
                                 var index, iterator = length;
 
                                 // Loop > Loop > Update > Array (Length)
-                                while (iterator -= 1) while (~(index = LDKF.arrayPrototypeIndexFrom(array, arguments[length - iterator], STRICT = arrayLength))) { LDKF.arrayPrototypeCutAt(array, index, STRICT = arrayLength); arrayLength -= 1 }
+                                while (iterator -= 1) while (~(index = LDKF.arrayPrototypeIndexFromBack(array, arguments[length - iterator], STRICT = arrayLength))) { LDKF.arrayPrototypeCutAt(array, index, STRICT = arrayLength); arrayLength -= 1 }
                             }
 
                             // Return
@@ -1481,7 +1446,7 @@
                                 var index;
 
                                 // Loop > Update > Array
-                                while (~(index = LDKF.arrayPrototypeIndexFrom(array, element)))
+                                while (~(index = LDKF.arrayPrototypeIndexFromBack(array, element)))
                                     array[index] = replacementElement
                             }
 
@@ -3311,45 +3276,65 @@
 
                         // Includes
                         LapysDevelopmentKit.Functions.stringPrototypeIncludes = function stringPrototypeIncludes(string, substring) {
-                            // Initialization > (String, Substring) Length
-                            var stringLength = LDKF.stringPrototypeLength(string),
+                            var stringIncludesSubstring = false,
+                                stringLength = LDKF.stringPrototypeLength(string),
                                 substringLength = LDKF.stringPrototypeLength(substring);
 
                             // Logic
                             if (stringLength == substringLength)
                                 // Return
-                                return string == substring;
+                                stringIncludesSubstring = string == substring;
 
                             else if (stringLength > substringLength) {
                                 // Initialization > String Iterator
-                                var stringIterator = stringLength;
+                                var
+                                    indexFunctions = [
+                                        function(index, length) { return length - index - 1 },
+                                        function(index, length) {},
+                                        function(index, length) {},
+                                        function(index) { return index }
+                                    ],
+                                    halfStringLength = 2,
+                                    quarterStringLength = 2,
+                                    stringIterator = stringLength;
 
                                 // Loop
-                                while (stringIterator) {
-                                    // Initialization > Substring Iterator
-                                    var substringIterator = substringLength - 1;
+                                while (!stringIncludesSubstring && stringIterator) {
+                                    var substringIterator = substringLength;
 
-                                    // Update > String Iterator
                                     stringIterator -= 1;
 
-                                    // Loop > Update > (String, Substring) Iterator
-                                    while (
-                                        stringIterator && substringIterator &&
-                                        LDKF.stringPrototypeCharacterAt(string, stringIterator) == LDKF.stringPrototypeCharacterAt(substring, substringIterator)
-                                    ) { stringIterator -= 1; substringIterator -= 1 }
+                                    if (LDKF.stringPrototypeCharacterAt(string, stringLength - stringIterator - 1) == LDKF.stringPrototypeFirst(substring))
+                                        if (substringLength == 1)
+                                            stringIncludesSubstring = true;
 
-                                    // Logic > Return
-                                    if (!substringIterator && LDKF.stringPrototypeCharacterAt(string, stringIterator) == LDKF.stringPrototypeFirst(substring))
-                                        return true
+                                        else {
+                                            substringIterator -= 1;
+
+                                            while (
+                                                stringIterator && substringIterator &&
+                                                LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1) == LDKF.stringPrototypeCharacterAt(substring, substringLength - (substringIterator -= 1) - 1)
+                                            ) continue;
+                                            stringIncludesSubstring = !substringIterator && LDKF.stringPrototypeCharacterAt(string, stringLength - stringIterator - 1) == LDKF.stringPrototypeCharacterAt(substring, substringLength - substringIterator - 1)
+                                        }
+
+                                    else if (LDKF.stringPrototypeCharacterAt(string, stringIterator) == LDKF.stringPrototypeCharacterAt(substring, substringIterator - 1))
+                                        if (substringLength == 1)
+                                            stringIncludesSubstring = true;
+
+                                        else {
+                                            substringIterator -= 1;
+
+                                            while (
+                                                stringIterator && substringIterator &&
+                                                LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) == LDKF.stringPrototypeCharacterAt(substring, substringIterator -= 1)
+                                            ) continue;
+                                            stringIncludesSubstring = !substringIterator && LDKF.stringPrototypeCharacterAt(string, stringIterator) == LDKF.stringPrototypeFirst(substring)
+                                        }
                                 }
-
-                                // Return
-                                return false
                             }
 
-                            else
-                                // Return
-                                return false
+                            return stringIncludesSubstring
                         };
 
                         // Index --- CHECKPOINT (Lapys)
@@ -3777,6 +3762,40 @@
                         if (index < start) { while (LDKM.abs(start - index) > difference) index += difference; return end - LDKM.abs(start - index) }
                         else if (index > end) { while (LDKM.abs(end - index) > difference) index -= difference; return start + LDKM.abs(end - index) }
                     }
+                };
+
+                // Step --- NOTE (Lapys) -> Return a set of the multiples of Number divided by the Count lower than or equal to the Number.
+                LapysDevelopmentKit.Mathematics.step = function step(number, count, REVERSE_STEPPING_ORDER) {
+                    // Initialization > (Difference, Steps)
+                    var difference = number / count, steps = [];
+
+                    // Logic
+                    if (REVERSE_STEPPING_ORDER) {
+                        // Initialization > Has Stopped
+                        var hasStepped = false;
+
+                        // Loop
+                        while (count) {
+                            // Update > (Steps, Has Stopped)
+                            steps[count -= 1] = (hasStepped && steps[count + 1]) + difference;
+                            hasStepped || (hasStepped = true)
+                        }
+                    }
+
+                    else {
+                        // Initialization > Steps Index
+                        var stepsIndex = 0;
+
+                        // Loop
+                        while (count) {
+                            // Update > (Steps, Count, Steps Index)
+                            steps[stepsIndex] = (stepsIndex && steps[stepsIndex - 1]) + difference;
+                            count -= 1; stepsIndex += 1
+                        }
+                    }
+
+                    // Return
+                    return steps
                 };
 
                 // Unsign
