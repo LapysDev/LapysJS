@@ -98,7 +98,7 @@
         LDKT = LapysDevelopmentKit.Test;
 
     /* Modification */
-        /* Lapys Development Kit */
+        /* Lapys Development Kit --- NOTE (Lapys) -> Building and integrating the LDK into JavaScript might be a major part of the LapysJS library. */
             /* Constants --- REDACT */
                 // Number > (Infinity, Not-A-Number)
                 LapysDevelopmentKit.Constants.Number.Infinity = 1 / +0;
@@ -4167,7 +4167,7 @@
                                 // ...; Error
                                 LDKF.isFunction(LDKO.objectPrototype___proto___Mutator) ?
                                     LDKO.objectPrototype___proto___Mutator.call(object, prototype) :
-                                    LDKF.throwFeatureNotAvailableError('`' + LDKF.functionPrototypeName(arguments.callee) + "` cannot be executed because some features are not available")
+                                    LDKF.throwFeatureNotAvailableError("`Object.setPrototypeOf` cannot be executed because some features are not available")
                             };
 
                         else
