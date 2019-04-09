@@ -178,6 +178,9 @@
                         // Routine
                         LapysDevelopmentKit.Data.HandlerPrototype.routine = null;
 
+                /* Iterator */
+                LapysDevelopmentKit.Data.Iterator = function Iterator() {};
+
                 /* Frame */
                 LapysDevelopmentKit.Data.Frame = function Frame() {};
                     // Prototype
@@ -721,65 +724,20 @@
                             return array
                         };
 
-                        /* Includes
-                                --- NOTE ---
-                                    #Lapys: This is faster than `O(n)` searches because statement evaluation is quicker than sentinel iteration in most (if not all) sequential programming languages.
-                                        - At every iteration, 4 elements are checked at once, allowing higher certainty per iteration than single-element checks.
-                                        - Because of this multiple-element check, the loop that indexes through the Array performs less work
-                                            and there's less overhead for using sentinel iteration against statement evaluation.
-                                        - This method is more performant than linear searches at `4` to `2^n` element checks per iteration.
+                        // Includes
+                        LapysDevelopmentKit.Functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element, ARRAY_LENGTH) {
+                            // Initialization > Array (Includes, Length)
+                            var arrayIncludes = false, arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
 
-                                --- WARN ---
-                                    #Lapys: A linear end-to-end search will still be more efficient in it's own domain.
-                                        - There might be performance loss when getting the focus points (e.g.: Half-Array Length) for the statement checks.
-                                        - Each iteration might perform redundant & repeated checks; Even if the checks are accounted for, that will still result in minor performance drops.
-                        */
-                        // GRADIENT SEARCHING
-                        LapysDevelopmentKit.Functions.arrayPrototypeIterate = function arrayPrototypeIterate(array, handler, iterationStopCount, ARRAY_LENGTH) {
-                            var length = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+                            // Loop > Target > Stop
+                            LDKF.arrayPrototypeIterate(
+                                array, function(index, element) { (arrayIncludes = arrayIncludes === element) && this.stop() },
+                                arrayLength / LDKM.lowestCommonFactor(arrayLength), STRICT = arrayLength
+                            );
 
-                            if (length)
-                                if (length == 1)
-                                    handler.call(array, +0, array[+0]);
-
-                                else {
-                                    var iterator = length;
-
-                                    if (iterationStopCount == 1)
-                                        while (iterator) handler.call(array, iterator -= 1, array[iterator]);
-
-                                    else {
-                                        (iterationStopCount > length) && (iterationStopCount = length);
-
-                                        var hasRedundantIterations = !(length % iterationStopCount),
-                                            iterationStops = LDKF.arrayPrototypeBuild(LDKM.step(length, iterationStopCount, STRICT = true), function(index, element) { return LDKM.int(element) }),
-                                            iterationStopsLength = iterationStopCount;
-
-                                        iterator -= iterationStops[1] + hasRedundantIterations;
-                                        iterationStops[+0] = +0;
-
-                                        if (~iterator)
-                                            while (iterator) {
-                                                var iterationStopsIterator = iterationStopsLength;
-
-                                                iterator -= 1;
-
-                                                while (iterationStopsIterator) {
-                                                    var iterationStop = iterationStops[iterationStopsIterator -= 1];
-                                                    console.log("ITERATION STOP [" + iterationStop + "]: ", iterator + iterationStop);
-                                                    handler.call(array, iterator, iterator + iterationStop)
-                                                }
-
-                                                console.log('\n')
-                                            }
-                                    }
-                                }
-
-                            return array
+                            // Return
+                            return arrayIncludes
                         };
-
-                        // Includes --- CHECKPOINT
-                        LapysDevelopmentKit.Functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(array, element, ARRAY_LENGTH, SEARCH_RANGE) { return false };
 
                         // Index
                         LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element, ARRAY_LENGTH) { return LDKF.arrayPrototypeIndexFromBack(array, element, STRICT = ARRAY_LENGTH) };
@@ -955,6 +913,78 @@
 
                         // Is Superset
                         LapysDevelopmentKit.Functions.arrayPrototypeIsSuperset = function arrayPrototypeIsSuperset(array, superset) { return LDKF.arrayPrototypeIsSubset(superset, array) };
+
+                        // Iterate --- NOTE (Lapys) -> Gradient-Stop searching...
+                        LapysDevelopmentKit.Functions.arrayPrototypeIterate = function arrayPrototypeIterate(array, handler, iterationStopCount, ARRAY_LENGTH) {
+                            // Initialization > Array Length
+                            var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+
+                            // Logic
+                            if (arrayLength) {
+                                // Initialization > Iterator
+                                var ITERATOR = new LDKD.Iterator;
+
+                                // Logic
+                                if (arrayLength == 1) {
+                                    // Modification > Iterator > Stop
+                                    ITERATOR.stop = function stop() {};
+
+                                    // Handler
+                                    handler.call(ITERATOR, +0, array[+0])
+                                }
+
+                                else {
+                                    // Initialization > Array Iterator
+                                    var arrayIterator = arrayLength;
+
+                                    // Modification > Iterator > Stop
+                                    ITERATOR.stop = function stop() { arrayIterator = +0 };
+
+                                    // Logic
+                                    if (iterationStopCount == 1 || iterationStopCount == arrayLength || LDKF.getArgumentsLength(arguments) < 4)
+                                        // Loop > Update > Handler
+                                        while (arrayIterator)
+                                            handler.call(ITERATOR, arrayIterator -= 1, array[arrayIterator]);
+
+                                    else {
+                                        // Update > Iteration Stop Count
+                                        (iterationStopCount > arrayLength) && (iterationStopCount = arrayLength);
+
+                                        // Initialization > (Has Redundant Iterations, Iteration Stops (Length))
+                                        var hasRedundantIterations = arrayLength % iterationStopCount,
+                                            iterationStops = LDKF.arrayPrototypeBuild(LDKM.step(arrayLength, iterationStopCount, STRICT = true), function(index, element) { return LDKM.int(element) }),
+                                            iterationStopsLength = iterationStopCount;
+
+                                        // Update > (Iterator, Iteration Stops)
+                                        arrayIterator -= iterationStops[1];
+                                        iterationStops[+0] = +0;
+
+                                        // Logic
+                                        if (~arrayIterator)
+                                            // Loop
+                                            while (arrayIterator) {
+                                                // Initialization > Iteration Stops Iterator
+                                                var iterationStopsIterator = iterationStopsLength;
+
+                                                // Update > Iterator
+                                                arrayIterator -= 1;
+
+                                                // Loop
+                                                while (iterationStopsIterator) {
+                                                    // Initialization > Index
+                                                    var index = arrayIterator + iterationStops[iterationStopsIterator -= 1];
+
+                                                    // Handler
+                                                    handler.call(ITERATOR, index, array[index])
+                                                }
+                                            }
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return array
+                        };
 
                         // Last
                         LapysDevelopmentKit.Functions.arrayPrototypeLast = function arrayPrototypeLast(array) {
@@ -2943,16 +2973,108 @@
                 /* Number */
                     // Prototype
                         // Is Even
-                        LapysDevelopmentKit.Functions.numberPrototypeIsEven = function numberPrototypeIsEven(number) { return !(number & 1) && LDKF.numberPrototypeIsInteger(number) };
+                        LapysDevelopmentKit.Functions.numberPrototypeIsEven = function numberPrototypeIsEven(number, PROCESS_AS_INTEGERS) { return number && !(number & 1) && (PROCESS_AS_INTEGERS || LDKF.numberPrototypeIsInteger(number)) };
 
-                        // Is Integer --- UPDATE REQUIRED (Lapys) -> Use bitwise operators.
+                        // Is Integer
                         LapysDevelopmentKit.Functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(number) { return number == LDKM.int(number) };
 
                         // Is Negative Zero
                         LapysDevelopmentKit.Functions.numberPrototypeIsNegativeZero = function numberPrototypeIsNegativeZero(number) { return LDKF.objectIs(number, -0) };
 
+                        // Is Non-Integer
+                        LapysDevelopmentKit.Functions.numberPrototypeIsNonInteger = function numberPrototypeIsNonInteger(number) { return !LDKF.numberPrototypeIsInteger(number) };
+
+                        // Is Non-Prime
+                        LapysDevelopmentKit.Functions.numberPrototypeIsNonPrime = function numberPrototypeIsNonPrime(number, PROCESS_AS_INTEGERS) { return !LDKF.numberPrototypeIsPrime(number, PROCESS_AS_INTEGERS) };
+
                         // Is Odd
-                        LapysDevelopmentKit.Functions.numberPrototypeIsOdd = function numberPrototypeIsOdd(number) { return (number & 1) && LDKF.numberPrototypeIsInteger(number) };
+                        LapysDevelopmentKit.Functions.numberPrototypeIsOdd = function numberPrototypeIsOdd(number, PROCESS_AS_INTEGERS) { return number && (number & 1) && (PROCESS_AS_INTEGERS || LDKF.numberPrototypeIsInteger(number)) };
+
+                        // Is Prime
+                        LapysDevelopmentKit.Functions.numberPrototypeIsPrime = function numberPrototypeIsPrime(number, PROCESS_AS_INTEGERS) {
+                            // Logic
+                            if (number) {
+                                // Logic
+                                if (number == 1 || number == 2)
+                                    // Return
+                                    return false;
+
+                                else if (!PROCESS_AS_INTEGERS && LDKF.numberPrototypeIsNonInteger(number))
+                                    return null;
+
+                                else if (number && possibleFactor ^ number) {
+                                    // Initialization > (Is Non Prime, Possible Factor)
+                                    var isNonPrime = true, possibleFactor = 1;
+
+                                    // Loop > Update > Is Non Prime
+                                    while (isNonPrime && (possibleFactor += 1) ^ number)
+                                        (number % possibleFactor) || (isNonPrime = false);
+
+                                    // Return
+                                    return isNonPrime
+                                }
+                            }
+
+                            else
+                                // Return
+                                return false
+                        };
+
+                        // is Positive Zero
+                        LapysDevelopmentKit.Functions.numberPrototypeIsPositiveZero = function numberPrototypeIsPositiveZero(number) { return LDKF.objectIs(number, +0) };
+
+                        // is Positive
+                        LapysDevelopmentKit.Functions.numberPrototypeIsPositive = function numberPrototypeIsPositive(number) { return number > +0 || LDKF.numberPrototypeIsPositiveZero(number) };
+
+                        // is Positive Integer
+                        LapysDevelopmentKit.Functions.numberPrototypeIsPositiveInteger = function numberPrototypeIsPositiveInteger(number) { return LDKF.numberPrototypeIsInteger(number) && LDKF.numberPrototypeIsPositive(number) };
+
+                        // Lowest Common Factor --- WARN (Lapys) -> Positive real numbers only.
+                        LapysDevelopmentKit.Functions.numberPrototypeLowestCommonFactor = function numberPrototypeLowestCommonFactor(number) {
+                            // Logic
+                            if (LDKF.numberPrototypeIsPositiveInteger(number)) {
+                                // Logic
+                                if (!number || number == 1 || number == 2)
+                                    // Return
+                                    return number;
+
+                                else if (LDKF.numberPrototypeIsEven(number))
+                                    // Return
+                                    return 2;
+
+                                else if (LDKF.numberPrototypeIsPrime(number))
+                                    // Return
+                                    return number;
+
+                                else {
+                                    // Initialization > (Factor, Lowest Common Factor Found)
+                                    var factor = 2, lowestCommonFactorFound = false;
+
+                                    // Loop
+                                    while (!lowestCommonFactorFound && factor ^ number) {
+                                        // Initialization > (Multiplier, Product)
+                                        var multiplier = 1, product = null;
+
+                                        // Logic
+                                        if (!(number % factor)) {
+                                            // Loop > Update > Multiplier; Update > Lowest Common Factor Found
+                                            while ((product = (factor * multiplier)) < number) multiplier += 1;
+                                            (product ^ number) || (lowestCommonFactorFound = true)
+                                        }
+
+                                        // Update > Factor
+                                        factor += !lowestCommonFactorFound
+                                    }
+
+                                    // Return
+                                    return factor
+                                }
+                            }
+
+                            else
+                                // Return
+                                return null
+                        };
 
                 /* Object */
                     // Create
