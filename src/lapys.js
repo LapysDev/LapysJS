@@ -3483,6 +3483,8 @@
                         // First
                         LapysDevelopmentKit.Functions.stringPrototypeFirst = function stringPrototypeFirst(string) { return LDKF.stringPrototypeCharacterAt(string, +0) };
 
+                        // German --- CHECKPOINT (Lapys)
+
                         // Includes
                         LapysDevelopmentKit.Functions.stringPrototypeIncludes = function stringPrototypeIncludes(string, substring, STRING_LENGTH, SUBSTRING_LENGTH) {
                             // Initialization > (String, Substring) Length
@@ -3868,6 +3870,8 @@
 
                         // Is Variable Identifier --- CHECKPOINT (Lapys)
 
+                        // Kebab --- CHECKPOINT (Lapys)
+
                         // Last
                         LapysDevelopmentKit.Functions.stringPrototypeLast = function stringPrototypeLast(string, STRING_LENGTH) { return LDKF.stringPrototypeCharacterAt(string, (STRING_LENGTH || LDKF.stringPrototypeLength(string)) - 1) };
 
@@ -3896,6 +3900,7 @@
 
                         // Remove All --- CHECKPOINT (Lapys)
                         // Replace All --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeReplaceAll = function stringPrototypeReplaceAll(string, substring, replacement) {};
 
                         // Slice
                         LapysDevelopmentKit.Functions.stringPrototypeSlice = function stringPrototypeSlice(string, index, length, STRING_LENGTH) {
