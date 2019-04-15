@@ -50,7 +50,7 @@
                 -- others...
 */
 (function Main() {
-    /* Constants --- REDACT */
+    /* Constants > ... --- REDACT (Lapys) */
     var AUTHOR = "Lapys",
         DESCRIPTION = "LapysJS is an intuitive, minimalist web library for quick development.",
         URL = "https://www.github.com/LapysDev/LapysJS",
@@ -63,7 +63,7 @@
         // Global --- NOTE (Lapys) -> The global object of the current environment.
         GLOBAL = null,
 
-        // Lapys Development Kit --- REDACT --- UPDATE REQUIRED (Lapys) -> From quick inspection, re-asses the global `LapysJS` object differently.
+        // Lapys Development Kit --- REDACT (Lapys) --- UPDATE REQUIRED (Lapys) -> From quick inspection, re-asses the global `LapysJS` object differently.
         LapysDevelopmentKit = {
             Constants: {Assertions: {}, Keywords: {}, Number: {}, Objects: {}, String: {}},
             Data: {},
