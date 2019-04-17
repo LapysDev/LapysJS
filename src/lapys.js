@@ -3900,7 +3900,12 @@
 
                         // Remove All --- CHECKPOINT (Lapys)
                         // Replace All --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.stringPrototypeReplaceAll = function stringPrototypeReplaceAll(string, substring, replacement) {};
+                        LapysDevelopmentKit.Functions.stringPrototypeReplaceAll = function stringPrototypeReplaceAll(string, substring, replacement) {
+                            if (LDKF.isString(replacement)) {
+                                var replacementString = replacement;
+                                replacement = function() { return replacementString }
+                            }
+                        };
 
                         // Slice
                         LapysDevelopmentKit.Functions.stringPrototypeSlice = function stringPrototypeSlice(string, index, length, STRING_LENGTH) {
