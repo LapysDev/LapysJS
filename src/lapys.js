@@ -3890,7 +3890,7 @@
                         };
 
                         // Instance Of
-                        LapysDevelopmentKit.Functions.objectPrototypeIsInstanceOfConstructor = function objectPrototypeIsInstanceOfConstructor(object, constructor) { return LDKF.isConstructible(object) && LDKF.isFunction(constructor) && object instanceof constructor };
+                        LapysDevelopmentKit.Functions.objectPrototypeIsInstanceOfConstructor = function objectPrototypeIsInstanceOfConstructor(object, constructor, ARGUMENTS_ARE_VALID) { return (ARGUMENTS_ARE_VALID || (LDKF.isConstructible(object) && LDKF.isFunction(constructor))) && object instanceof constructor };
 
                         // Is Of Constructor
                         LapysDevelopmentKit.Functions.objectPrototypeIsOfConstructor = function objectPrototypeIsOfConstructor(object, constructor, ASSERT_BY_CONSTRUCTOR_VALUE) {
@@ -3901,13 +3901,13 @@
                             if (isOfConstructor)
                                 // Logic > Update > Is Of Constructor
                                 switch (typeof object) {
-                                    case "boolean": isOfConstructor = constructor === LDKO.boolean;
-                                    case "function": isOfConstructor = constructor === LDKO["function"];
-                                    case "number": isOfConstructor = constructor === LDKO.number;
-                                    case "string": isOfConstructor = constructor === LDKO.string;
-                                    case "symbol": isOfConstructor = constructor === LDKO.symbol;
-                                    case "undefined": isOfConstructor = false;
-                                    default: isOfConstructor = LDKF.objectPrototypeIsInstanceOfConstructor(object, constructor)
+                                    case "boolean": isOfConstructor = constructor === LDKO.boolean; break;
+                                    case "function": isOfConstructor = constructor === LDKO["function"]; break;
+                                    case "number": isOfConstructor = constructor === LDKO.number; break;
+                                    case "string": isOfConstructor = constructor === LDKO.string; break;
+                                    case "symbol": isOfConstructor = constructor === LDKO.symbol; break;
+                                    case "undefined": isOfConstructor = false; break;
+                                    default: isOfConstructor = LDKF.objectPrototypeIsInstanceOfConstructor(object, constructor, STRICT = true)
                                 }
 
                             // Logic
@@ -5336,8 +5336,14 @@
                         return consideration
                     };
 
-                    // Is Native Constructor Of Object
-                    LapysDevelopmentKit.Test.objectPrototypeIsNativeConstructorOfObject = function objectPrototypeIsNativeConstructorOfObject(object, propertyName, CONSTRUCTOR, ASSERT_BY_CONSTRUCTOR_VALUE) { return LDKT.objectPrototypeIsNativeMethodOfObject(object, propertyName, STRICT = CONSTRUCTOR) && LDKF.objectPrototypeIsOfConstructor(object, CONSTRUCTOR || object[propertyName], STRICT = ASSERT_BY_CONSTRUCTOR_VALUE) };
+                    // Is Native Constructor Of Object --- NOTE (Lapys) -> Is there any way to improve this test?
+                    LapysDevelopmentKit.Test.objectPrototypeIsNativeConstructorOfObject = function objectPrototypeIsNativeConstructorOfObject(object, propertyName, CONSTRUCTOR, ASSERT_BY_CONSTRUCTOR_VALUE) {
+                        // Initialization > Constructor
+                        var constructor = CONSTRUCTOR || LDKF.objectPrototypeGetProperty(object, propertyName);
+
+                        // Return
+                        return LDKT.objectPrototypeIsNativeMethodOfObject(object, propertyName, STRICT = constructor)
+                    };
 
                     // Is Native Method Of Object
                     LapysDevelopmentKit.Test.objectPrototypeIsNativeMethodOfObject = function objectPrototypeIsNativeMethodOfObject(object, propertyName, METHOD) {
@@ -6024,9 +6030,8 @@
                 function LapysJS() {}
                     // Prototype
                     LapysJS.prototype = constructor.prototype;
-                        // ...
+                        // Temporary Data
                         LapysJS.prototype.tmp = {};
-                        LapysJS.prototype.version = VERSION;
 
                 // Constant > LapysJS
                 var LAPYS_JS = new LapysJS;
@@ -6035,6 +6040,9 @@
 
                     // Processing Duration
                     LAPYS_JS.processingDuration = {};
+
+                    // Version
+                    LAPYS_JS.version = VERSION;
 
                 // Definition > LapysJS
                 try { LDKF.objectDefineProperty(GLOBAL, "LapysJS", {configurable: false, enumerable: false, value: LAPYS_JS, writable: false}) }
@@ -6065,7 +6073,7 @@
                     // Capture Stack Trace
                     LapysDevelopmentKit.Objects.errorCaptureStackTrace = LDKT.considerNativeMethodOfObject(LDKO.error, "captureStackTrace", STRICT = null).requestForNativeMethod();
                         // ...
-                        LapysJS.evaluationScope.errorCaptureStackTrace = LDKO.errorCaptureStackTrace;
+                        LapysJS.evaluationScope.errorCaptureStackTrace = LDKF.errorCaptureStackTrace;
 
                     // Prototype
                     LapysDevelopmentKit.Objects.errorPrototype = LDKO.error.prototype;
@@ -6117,11 +6125,15 @@
                     // Prototype
                     LapysDevelopmentKit.Objects.arrayPrototype = LDKF.getPropertyByName(LDKO.array, "prototype");
 
-                // Attribute --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // Attribute
+                LapysDevelopmentKit.Objects.attr = LDKT.considerNativeConstructorOfObject(GLOBAL, "Attr").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.attrPrototype = LDKF.getPropertyByName(LDKO.attr, "prototype");
 
-                // Audio Parameter Map --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // Audio Parameter Map
+                LapysDevelopmentKit.Objects.audioParamMap = LDKT.considerNativeConstructorOfObject(GLOBAL, "AudioParamMap").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.audioParamMapPrototype = LDKF.getPropertyByName(LDKO.audioParamMap, "prototype");
 
                 // Boolean
                 LapysDevelopmentKit.Objects.boolean = LDKT.considerNativeConstructorOfObject(GLOBAL, "Boolean", STRICT = null, STRICT = "`Boolean` constructor").requestForNativeConstructor();
@@ -6692,8 +6704,12 @@
                 GLOBAL["LDKT"] = LapysDevelopmentKit.Test
             }
 
-            // Warn --- NOTE (Lapys) -> Warn about missing properties such as `__defineGetter__` (or `__defineSetter__`) or `__proto__`.
-            (LDKF.isVoid(LDKO.activeXObject) && LDKF.isVoid(LDKO.xmlHttpRequest)) && LDKF.throwFeatureNotAvailableError("`ActiveXObject` or `XMLHttpRequest` constructor");
+            // Logic
+            if (LDKC.Assertions.isBrowserEnvironment) {
+                // Warn --- CHECKPOINT (Lapys)
+                (LDKC.Assertions.has_ActiveXObject_Constructor && LDKC.Assertions.has_XMLHttpRequest_Constructor) &&
+                LDKF.throwFeatureNotAvailableError("`ActiveXObject` or `XMLHttpRequest` constructor")
+            }
 
             /* Modification */
                 /* LapysJS */
