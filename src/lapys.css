@@ -711,6 +711,12 @@
         vertical-align: middle
     }
 
+    /* <pre> */
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word
+    }
+
     /* <sub> */
     sub { margin-bottom: -50% }
 
