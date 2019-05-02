@@ -70,7 +70,10 @@
             Constants: {Assertions: {}, Keywords: {}, Number: {}, Objects: {}, String: {}},
             Data: {},
             Environment: {Data: {}, Type: null, State: "OK", Vendors: []},
-            Functions: {},
+            Functions: {
+                // NOTE (Lapys) -> Fortunately, `Arguments` store their own length.
+                getArgumentsLength: function getArgumentsLength(argumentsObject) { return argumentsObject.length }
+            },
             Information: {
                 Messages: {Debugging: {}, Error: {}},
                 Settings: {DebugMode: null, PublicMode: null}
@@ -136,7 +139,9 @@
                     // Prototype
                     LapysDevelopmentKit.Data.ClockPrototype = LDKD.Clock.prototype;
                         // Check
-                        LapysDevelopmentKit.Data.ClockPrototype.check = function check(condition, ontrue, onfalse) {};
+                        LapysDevelopmentKit.Data.ClockPrototype.check = function check(condition, ontrue, onfalse) {
+
+                        };
 
                         /* Thread
                                 --- UPDATE REQUIRED ---
@@ -174,6 +179,7 @@
                                 frame.data.hasDelay = LDKF.toBoolean(delay);
                                 frame.data.hasPlayed = false;
                                 frame.data.interruptted = false;
+                                frame.data.recursive = false;
 
                                 // ID
                                 frame.id = delay ? // NOTE (Lapys) -> Do not use the `LapysDevelopmentKit.Data.ClockPrototype.stop` method here. It is faster to stop the frame using inline statements than an independent function call.
@@ -184,14 +190,11 @@
                             return frame
                         };
 
-                        // Timestamp
+                        // Timestamp --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Data.ClockPrototype.timestamp = function timestamp() {};
 
                         // Stop
                         LapysDevelopmentKit.Data.ClockPrototype.stop = function stop(frame) {
-                            // Initialization > Frame Has Delay
-                            var frameHasDelay = LDKF.toNumber(LDKF.objectPrototypeGetProperty(frame.data, "hasDelay", STRICT = true));
-
                             // Logic
                             if (LDKF.objectPrototypeGetProperty(frame.data, "hasPlayed", STRICT = true))
                                 // Return
@@ -202,7 +205,9 @@
                                 var frameID = LDKF.toNumber(frame.id);
 
                                 // ...; Modification > (Frame > Data) > (Has Played, Interrupted)
-                                frameHasDelay ? LDKF.clearTimeout(frameID) : LDKF.cancelAnimationFrame(frameID);
+                                LDKF.toNumber(LDKF.objectPrototypeGetProperty(frame.data, "hasDelay", STRICT = true)) ?
+                                    (LDKF.objectPrototypeGetProperty(frame.data, "recursive", STRICT = true) ? LDKF.clearInterval : LDKF.clearTimeout).call(LDKF, frameID) :
+                                    LDKF.cancelAnimationFrame(frameID);
                                 frame.data.hasPlayed = true;
                                 frame.data.interruptted = true;
 
@@ -212,7 +217,28 @@
                         };
 
                         // Wind
-                        LapysDevelopmentKit.Data.ClockPrototype.wind = function wind(frameAction, interval) {};
+                        LapysDevelopmentKit.Data.ClockPrototype.wind = function wind(frameAction, interval) {
+                            // Update > Interval
+                            interval = LDKF.toNumber(interval);
+
+                            // Initialization > Frame
+                            var frame = new LDKD.Frame(frameAction);
+
+                            // Modification > Frame
+                                // Data > ...
+                                frame.data.hasDelay = LDKF.toBoolean(interval);
+                                frame.data.hasPlayed = false;
+                                frame.data.interruptted = false;
+                                frame.data.recursive = true;
+
+                                // ID
+                                frame.id = interval ?
+                                    LDKF.setInterval(function() { LDKF.objectPrototypeGetProperty(frame.data, "hasPlayed", STRICT = true) || frame.play() }, interval) :
+                                    LDKF.requestAnimationFrame(function tick() { if (!LDKF.objectPrototypeGetProperty(frame.data, "hasPlayed", STRICT = true)) { frame.play(); frame.id = LDKF.requestAnimationFrame(tick) } });
+
+                            // Return
+                            return frame
+                        };
 
                 /* Component --- CHECKPOINT (Lapys) */
                     // Prototype --- CHECKPOINT (Lapys)
@@ -522,12 +548,55 @@
                             return string
                         };
 
-                /* Handler --- NOTE (Lapys) -> Autonomous wrapper for function handlers. */
-                LapysDevelopmentKit.Data.Handler = function Handler() {};
+                /* Handler
+                        --- NOTE (Lapys) -> Autonomous wrapper for function handlers.
+                        --- WARN (Lapys) -> Though the constructor is treated as able to create genuine JavaScript functors, it does not.
+                */
+                LapysDevelopmentKit.Data.Handler = function Handler(routine) {
+                    // Initialization > Handler
+                    var handler = this;
+
+                    // Logic
+                    if (LDKF.getArgumentsLength(arguments))
+                        // Logic > ...
+                        if (LDKF.isNull(routine) || LDKF.isFunction(routine)) handler.routine = routine;
+                        else LDKF.throwTypeError("Constructor argument must be a function or `null`.");
+
+                    // Return
+                    return handler
+                };
                     // Prototype
                     LapysDevelopmentKit.Data.HandlerPrototype = LDKD.Handler.prototype;
+                        // Apply
+                        LapysDevelopmentKit.Data.HandlerPrototype.apply = function apply(target, argumentsObject) { return LDKF.isNull(this.routine) ? undefined : LDKF.functionPrototypeApply(this.routine, target, argumentsObject) };
+
+                        // Call
+                        LapysDevelopmentKit.Data.HandlerPrototype.call = function call(target, argument) {
+                            // Logic
+                            if (LDKF.isNull(this.routine))
+                                // Return
+                                return undefined;
+
+                            else {
+                                // Initialization > (Arguments, Iterator)
+                                var args = [], iterator = LDKF.getArgumentsLength(arguments);
+
+                                // Logic > Loop > Update > (Iterator, Arguments)
+                                if (iterator) while (iterator -= 1) args[iterator - 1] = arguments[iterator];
+
+                                // Return
+                                return LDKF.functionPrototypeApply(this.routine, target, args)
+                            }
+                        };
+
+                        // Invoke
+                        LapysDevelopmentKit.Data.HandlerPrototype.invoke = function invoke(argument) { return LDKF.isNull(this.routine) ? undefined : LDKF.functionPrototypeApply(this.routine, this, arguments) };
+
                         // Routine
                         LapysDevelopmentKit.Data.HandlerPrototype.routine = null;
+
+                        // Value Of
+                        LapysDevelopmentKit.Data.HandlerPrototype.valueOf = function valueOf() { return this.routine };
 
                 /* Iterator --- NOTE (Lapys) -> General-purpose iteration object (mainly for semantics, really...) */
                 LapysDevelopmentKit.Data.Iterator = function Iterator() {};
@@ -569,7 +638,19 @@
                         LapysDevelopmentKit.Data.FramePrototype.updateCurrentTick = function updateCurrentTick() { this.currentTick = this.currentTick ^ 0x1FFFFFFFFFFFFE ? +0 : this.currentTick + 1; return this };
 
                 /* Observer */
-                LapysDevelopmentKit.Data.Observer = function Observer(condition, ontrue, onfalse) {};
+                LapysDevelopmentKit.Data.Observer = function Observer(condition, ontrue, onfalse) {
+                    var observer = this;
+
+                    observer.condition = new LDKD.Handler(LDKF.getArgumentsLength(arguments) ? condition : null);
+                    observer.observe = function observe() {
+                        if (observer.ontrue()) {}
+                        else if (observer.onfalse()) {}
+                    };
+                    observer.onfalse = new LDKD.Handler(LDKF.getArgumentsLength(arguments) > 2 ? onfalse : null);
+                    observer.ontrue = new LDKD.Handler(LDKF.getArgumentsLength(arguments) > 1 ? ontrue : null);
+
+                    return observer
+                };
                     // Prototype
                     LapysDevelopmentKit.Data.ObserverPrototype = LDKD.Observer.prototype;
                         // Condition
@@ -2672,6 +2753,9 @@
                 // Cancel Animation Frame
                 LapysDevelopmentKit.Functions.cancelAnimationFrame = function cancelAnimationFrame(frameID) { return LDKF.functionPrototypeCall(LDKO.cancelAnimationFrame, GLOBAL, frameID) };
 
+                // Clear Interval
+                LapysDevelopmentKit.Functions.clearInterval = function clearInterval(intervalID) { return LDKO.clearIntervalCall === LDKO.functionPrototypeCall ? LDKF.functionPrototypeCall(LDKO.clearInterval, GLOBAL, intervalID) : LDKO.clearInterval(intervalID) };
+
                 // Clear Timeout
                 LapysDevelopmentKit.Functions.clearTimeout = function clearTimeout(timeoutID) { return LDKO.clearTimeoutCall === LDKO.functionPrototypeCall ? LDKF.functionPrototypeCall(LDKO.clearTimeout, GLOBAL, timeoutID) : LDKO.clearTimeout(timeoutID) };
 
@@ -2824,7 +2908,7 @@
                 // Function
                     // Prototype
                         // Apply
-                        LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(routine, target, argumentList) { return LDKO.functionPrototypeApply.apply(routine, [target, argumentList]) };
+                        LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(routine, target, argumentsObject) { return LDKO.functionPrototypeApply.apply(routine, [target, argumentsObject]) };
 
                         // Body [Source]
                         LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING, REMOVE_DELIMITERS, TRIM_SOURCE) {
@@ -2901,8 +2985,8 @@
                             // Initialization > (Arguments, Iterator)
                             var args = [], iterator = LDKF.getArgumentsLength(arguments) - 2;
 
-                            // Loop > Update > (Iterator, Arguments)
-                            while (iterator) { iterator -= 1; args[iterator] = arguments[iterator + 2] }
+                            // Logic > Loop > Update > (Iterator, Arguments)
+                            if (LDKF.numberPrototypeIsPositive(iterator)) while (iterator) { iterator -= 1; args[iterator] = arguments[iterator + 2] }
 
                             // Return
                             return LDKF.functionPrototypeApply(routine, target, args)
@@ -3435,9 +3519,6 @@
                                 return source
                             }
                         };
-
-                // Get Arguments Length --- NOTE (Lapys) -> Argument objects store their own length.
-                LapysDevelopmentKit.Functions.getArgumentsLength = function getArgumentsLength(argumentsObject) { return argumentsObject.length };
 
                 // Get Property By Name --- WARN (Lapys) -> Defer to the `LapysDevelopmentKit.Functions.objectPrototypeGetProperty` method instead.
                 LapysDevelopmentKit.Functions.getPropertyByName = function getPropertyByName(object, propertyName) { return object ? object[propertyName] : undefined };
@@ -4124,6 +4205,9 @@
 
                 // Request Animation Frame
                 LapysDevelopmentKit.Functions.requestAnimationFrame = function requestAnimationFrame(frame) { return LDKF.functionPrototypeCall(LDKO.requestAnimationFrame, GLOBAL, frame) };
+
+                // Set Interval
+                LapysDevelopmentKit.Functions.setInterval = function setInterval(handler, interval) { return LDKO.setIntervalCall === LDKO.functionPrototypeCall ? LDKF.functionPrototypeCall(LDKO.setInterval, GLOBAL, handler, interval) : LDKO.setInterval(handler, interval) };
 
                 // Set Timeout
                 LapysDevelopmentKit.Functions.setTimeout = function setTimeout(handler, delay) { return LDKO.setTimeoutCall === LDKO.functionPrototypeCall ? LDKF.functionPrototypeCall(LDKO.setTimeout, GLOBAL, handler, delay) : LDKO.setTimeout(handler, delay) };
@@ -5421,8 +5505,9 @@
 
             /* Information */
                 // Messages
-                    // Debugging > (Prefix, Suffix)
-                    LapysDevelopmentKit.Information.Messages.Debugging.Prefix = "[LapysJS v" + VERSION + "] ->\n\t";
+                    // Debugging > (Vendor String, Prefix, Suffix)
+                    LapysDevelopmentKit.Information.Messages.Debugging.VendorString = "[LapysJS v" + VERSION + ']';
+                    LapysDevelopmentKit.Information.Messages.Debugging.Prefix = LDKI.Messages.Debugging.VendorString + " ->\n\t";
                     LapysDevelopmentKit.Information.Messages.Debugging.Suffix = '\n';
 
                     // Error > ... --- REDACT
@@ -6192,6 +6277,12 @@
                         // Temporary Data
                         LapysJS.prototype.tmp = {};
 
+                        // To String
+                        LapysJS.prototype.toString = function toString() { return LDKI.Messages.Debugging.VendorString };
+
+                        // Value Of
+                        LapysJS.prototype.valueOf = function valueOf() { return LapysJS.prototype.toString.call(this) };
+
                 // Constant > LapysJS
                 var LAPYS_JS = new LapysJS;
                     // Get Arguments Length
@@ -6361,6 +6452,11 @@
                         LapysDevelopmentKit.Objects.cancelAnimationFrame = cancelAnimationFrame;
                         LapysDevelopmentKit.Objects.requestAnimationFrame = requestAnimationFrame
                 })();
+
+                // Clear Interval
+                LapysDevelopmentKit.Objects.clearInterval = LDKT.considerNativeMethodOfObject(GLOBAL, "clearInterval", STRICT = null, STRICT = "`clearInterval` function").requestForNativeMethod();
+                    // Call
+                    LapysDevelopmentKit.Objects.clearIntervalCall = LDKT.considerNativeMethodOfObject(LDKO.clearInterval, "call", STRICT = null, STRICT = "`clearInterval.call` method").requestForNativeMethod();
 
                 // Clear Timeout
                 LapysDevelopmentKit.Objects.clearTimeout = LDKT.considerNativeMethodOfObject(GLOBAL, "clearTimeout", STRICT = null, STRICT = "`clearTimeout` function").requestForNativeMethod();
@@ -6766,6 +6862,11 @@
                 // Selection --- CHECKPOINT (Lapys)
                 // Set --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
+
+                // Set Interval
+                LapysDevelopmentKit.Objects.setInterval = LDKT.considerNativeMethodOfObject(GLOBAL, "setInterval", STRICT = null, STRICT = "`setInterval` function").requestForNativeMethod();
+                    // Call
+                    LapysDevelopmentKit.Objects.setIntervalCall = LDKT.considerNativeMethodOfObject(LDKO.setInterval, "call", STRICT = null, STRICT = "`setInterval.call` method").requestForNativeMethod();
 
                 // Set Timeout
                 LapysDevelopmentKit.Objects.setTimeout = LDKT.considerNativeMethodOfObject(GLOBAL, "setTimeout", STRICT = null, STRICT = "`setTimeout` function").requestForNativeMethod();
