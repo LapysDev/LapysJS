@@ -140,7 +140,19 @@
                     LapysDevelopmentKit.Data.ClockPrototype = LDKD.Clock.prototype;
                         // Check
                         LapysDevelopmentKit.Data.ClockPrototype.check = function check(condition, ontrue, onfalse) {
+                            // Initialization > (Clock, Frame, Observer, Length)
+                            var clock = this,
+                                observer = new LDKD.Observer,
+                                frame = clock.wind(function() { observer.inference ? clock.stop(frame) : observer.observe() }),
+                                length = LDKF.getArgumentsLength(arguments);
 
+                            // Modification > Observer > (Condition, On (False, True))
+                            observer.condition = new LDKD.Handler(length ? condition : null);
+                            observer.onfalse = new LDKD.Handler(length > 2 ? onfalse : null);
+                            observer.ontrue = new LDKD.Handler(length > 1 ? ontrue : null);
+
+                            // Return
+                            return clock
                         };
 
                         /* Thread
@@ -639,16 +651,15 @@
 
                 /* Observer */
                 LapysDevelopmentKit.Data.Observer = function Observer(condition, ontrue, onfalse) {
-                    var observer = this;
+                    // Initialization > (Length, Observer)
+                    var length = LDKF.getArgumentsLength(arguments), observer = this;
 
-                    observer.condition = new LDKD.Handler(LDKF.getArgumentsLength(arguments) ? condition : null);
-                    observer.observe = function observe() {
-                        if (observer.ontrue()) {}
-                        else if (observer.onfalse()) {}
-                    };
-                    observer.onfalse = new LDKD.Handler(LDKF.getArgumentsLength(arguments) > 2 ? onfalse : null);
-                    observer.ontrue = new LDKD.Handler(LDKF.getArgumentsLength(arguments) > 1 ? ontrue : null);
+                    // Modification > Observer > (Condition, On (False, True))
+                    observer.condition = new LDKD.Handler(length ? condition : null);
+                    observer.onfalse = new LDKD.Handler(length > 2 ? onfalse : null);
+                    observer.ontrue = new LDKD.Handler(length > 1 ? ontrue : null);
 
+                    // Return
                     return observer
                 };
                     // Prototype
@@ -660,7 +671,7 @@
                         LapysDevelopmentKit.Data.ObserverPrototype.inference = null;
 
                         // Observe
-                        LapysDevelopmentKit.Data.ObserverPrototype.observe = function observe() {};
+                        LapysDevelopmentKit.Data.ObserverPrototype.observe = function observe() { (this.inference = LDKF.toBoolean(this.condition.invoke())) ? this.ontrue.invoke() : this.onfalse.invoke(); return this };
 
                         // On False
                         LapysDevelopmentKit.Data.ObserverPrototype.onfalse = new LDKD.Handler;
@@ -2910,7 +2921,7 @@
                         // Apply
                         LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(routine, target, argumentsObject) { return LDKO.functionPrototypeApply.apply(routine, [target, argumentsObject]) };
 
-                        // Body [Source]
+                        // Body [Source] --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING, REMOVE_DELIMITERS, TRIM_SOURCE) {
                             // Initialization > (Function Body Source (Index), Source (Length))
                             var functionBodySource = "", functionBodySourceIndex = -1,
@@ -3004,7 +3015,7 @@
                                 LDKF.functionPrototypeIsGenerator(routine, STRICT = source)
                         };
 
-                        // Head [Source]
+                        // Head [Source] --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.functionPrototypeHead = function functionPrototypeHead(routine, SOURCE_STRING) {
                             // Initialization > Function Head (Source)
                             var functionHeadSource = "", source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
@@ -3095,6 +3106,20 @@
                         };
 
                         // Is Asynchronous --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.functionPrototypeIsAsynchronous = function functionPrototypeIsAsynchronous(routine, SOURCE_STRING) {
+                            // Initialization > (Is Asynchronous, Source)
+                            var isAsynchronous = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Loop
+                            LDKF.functionPrototypeSourceBeginsWith_async_Keyword(routine, STRICT = source) &&
+                            LDKF.iterateSource(source, function(character) { switch (character) { case '(': isAsynchronous = true; this.stop(); break; case '*': this.stop() } }, STRICT = true, STRICT = true, STRICT = 8);
+
+                            // Return
+                            return isAsynchronous
+                        };
+
+                        // Is Asynchronous Generator Function --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.functionPrototypeIsAsynchronousGenerator = function functionPrototypeIsAsynchronousGenerator(routine, SOURCE_STRING) {};
 
                         // Is Class
                         LapysDevelopmentKit.Functions.functionPrototypeIsClass = function functionPrototypeIsClass(routine, SOURCE_STRING) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.stringPrototypeFirst(source) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's' };
@@ -3133,22 +3158,25 @@
                             return isExtendedClass
                         };
 
-                        // Is Default
+                        // Is Default --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.functionPrototypeIsDefault = function functionPrototypeIsDefault(routine, SOURCE_STRING) {
                             // Initialization > (Is Default, Source)
-                            var isDefault = false,
-                                hasIndexedFunctionSourceHead = false,
-                                source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+                            var isDefault = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
                             // Loop
                             LDKF.functionPrototypeSourceBeginsWith_function_Keyword(routine, STRICT = source) &&
-                            LDKF.iterateSource(source, function(character) { switch (character) { case '(': isDefault = true; this.stop(); break; case '*': this.stop() } }, STRICT = true, STRICT = true, STRICT = 8);
+                            LDKF.iterateSource(source, function(character) {
+                                switch (character) {
+                                    case '(': isDefault = true; this.stop(); break;
+                                    case '*': isDefault = false; this.stop()
+                                }
+                            }, STRICT = true, STRICT = true, STRICT = 8);
 
                             // Return
                             return isDefault
                         };
 
-                        // Is Generator
+                        // Is Generator --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.functionPrototypeIsGenerator = function functionPrototypeIsGenerator(routine, SOURCE_STRING) {
                             // Initialization > (Is Generator, Source)
                             var isGenerator = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
@@ -3209,7 +3237,7 @@
                         // Measure --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.functionPrototypeMeasure = function functionPrototypeMeasure(routine) { routine() };
 
-                        // Name
+                        // Name --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.functionPrototypeName = function functionPrototypeName(routine, SOURCE_STRING) {
                             // Initialization > (Source, Function (Head Source, Name), Uses `function` Keyword)
                             var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
@@ -3387,7 +3415,7 @@
                         // Parameters Length --- NOTE (Lapys) -> Unfortunately, the `Function.prototype.length` property does not defer the length toward non-default parameters.
                         LapysDevelopmentKit.Functions.functionPrototypeParametersLength = function functionPrototypeParametersLength(routine, SOURCE_STRING) { return LDKF.functionPrototypeParameters(routine, SOURCE_STRING).length || +0 };
 
-                        // Parameters Source --- UPDATE REQUIRED (Lapys) -> Stress-test eventually.
+                        // Parameters Source --- CHECKPOINT (Lapys) --- UPDATE REQUIRED (Lapys) -> Stress-test eventually.
                         LapysDevelopmentKit.Functions.functionPrototypeParametersSource = function functionPrototypeParametersSource(routine, SOURCE_STRING) {
                             // Initialization > (Function Parameters (Source), Iterator)
                             var functionParametersSource = "",
@@ -3484,6 +3512,15 @@
 
                             // Return
                             return functionParametersSource
+                        };
+
+                        // Source Begins With `async` Keyword
+                        LapysDevelopmentKit.Functions.functionPrototypeSourceBeginsWith_async_Keyword = function functionPrototypeSourceBeginsWith_async_Keyword(routine, SOURCE_STRING) {
+                            // Initialization > Source
+                            var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Return
+                            return LDKF.stringPrototypeFirst(source) == 'a' && LDKF.stringPrototypeCharacterAt(source, 1) == 's' && LDKF.stringPrototypeCharacterAt(source, 2) == 'y' && LDKF.stringPrototypeCharacterAt(source, 3) == 'n' && LDKF.stringPrototypeCharacterAt(source, 4) == 'c'
                         };
 
                         // Source Begins With `function` Keyword
@@ -6443,7 +6480,7 @@
                                 requestAnimationFrame === requestAnimationFrameFallback
                             )
                         ) {
-                            // Update > (Cancel, Request) Animation Frame --- CHECKPOINT (Lapys)
+                            // Update > (Cancel, Request) Animation Frame
                             cancelAnimationFrame = cancelAnimationFrameFallback;
                             requestAnimationFrame = requestAnimationFrameFallback
                         }
