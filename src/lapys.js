@@ -619,10 +619,10 @@
                     var frame = this, length = LDKF.getArgumentsLength(arguments);
 
                     // Modification > Frame
-                        // Actions --- NOTE (Lapys) -> The functions called when the frame performs an event.
-                        frame.actions = LDKF.arrayPrototypeClone(arguments, STRICT = length);
+                        // Events --- NOTE (Lapys) -> The functions called when the frame performs an event.
+                        frame.events = LDKF.arrayPrototypeClone(arguments, STRICT = length);
                             // Count
-                            frame.actionsCount = length;
+                            frame.eventsCount = length;
 
                         // Current Tick, Data, ID
                         frame.currentTick = +0;
@@ -634,17 +634,17 @@
                 };
                     // Prototype
                     LapysDevelopmentKit.Data.FramePrototype = LDKD.Frame.prototype;
-                        // Add Action
-                        LapysDevelopmentKit.Data.FramePrototype.addAction = function addAction(routine) { this.actions[this.actionsCount] = routine; this.actionsCount += 1; return this };
+                        // Add Event
+                        LapysDevelopmentKit.Data.FramePrototype.addEvent = function addEvent(routine) { this.events[this.eventsCount] = routine; this.eventsCount += 1; return this };
 
-                        // Clear Actions
-                        LapysDevelopmentKit.Data.FramePrototype.clearActions = function clearActions() { this.actionsCount = +0; return this };
+                        // Clear Events
+                        LapysDevelopmentKit.Data.FramePrototype.clearEvents = function clearEvents() { this.eventsCount = +0; return this };
 
                         // Play
-                        LapysDevelopmentKit.Data.FramePrototype.play = function play() { var length = this.actionsCount; if (length) if (length ^ 1) { var actions = this.actions, iterator = length; while (iterator) actions[length - (iterator -= 1) - 1].apply(this, arguments) } else { this.actions[+0].apply(this, arguments) } return this };
+                        LapysDevelopmentKit.Data.FramePrototype.play = function play() { var length = this.eventsCount; if (length) if (length ^ 1) { var events = this.events, iterator = length; while (iterator) events[length - (iterator -= 1) - 1].apply(this, arguments) } else { this.events[+0].apply(this, arguments) } return this };
 
-                        // Remove Actions
-                        LapysDevelopmentKit.Data.FramePrototype.removeAction = function removeAction(routine) { LDKF.arrayPrototypeRemoveFrom(this.actions, routine); return this };
+                        // Remove Event
+                        LapysDevelopmentKit.Data.FramePrototype.removeEvent = function removeEvent(routine) { LDKF.arrayPrototypeRemoveFrom(this.events, routine); return this };
 
                         // Update Current Tick
                         LapysDevelopmentKit.Data.FramePrototype.updateCurrentTick = function updateCurrentTick() { this.currentTick = this.currentTick ^ 0x1FFFFFFFFFFFFE ? +0 : this.currentTick + 1; return this };
@@ -940,7 +940,7 @@
                                     // Initialization > ((Array, Stop) Length, Array Iterator)
                                     var arrayLength = LDKF.arrayPrototypeLength(array),
                                         stopLength = LDKM.int(arrayLength / 4, STRICT = true),
-                                        arrayIterator = arrayLength - (stopLength * 3);
+                                        arrayIterator = arrayLength - ((stopLength * 3) - 1);
 
                                     // Update > Handler
                                     handler = arguments[length - iterator];
@@ -1055,7 +1055,7 @@
                             if (arrayLength) {
                                 var arrayIndex = -1,
                                     stopLength = LDKM.int(arrayLength / 4, STRICT = true),
-                                    arrayIterator = arrayLength - (stopLength * 3);
+                                    arrayIterator = arrayLength - ((stopLength * 3) - 1);
 
                                 var stopIndexes = [];
 
@@ -1256,7 +1256,7 @@
                                 else {
                                     // Initialization > (Stop Length, Array Iterator)
                                     var stopLength = LDKM.int(arrayLength / 4, STRICT = true),
-                                        arrayIterator = arrayLength - (stopLength * 3);
+                                        arrayIterator = arrayLength - ((stopLength * 3) - 1);
 
                                     // Loop
                                     while (arrayIterator) {
@@ -1294,7 +1294,7 @@
                                 // Initialization > (Array (Index, Iterator), Stop Length)
                                 var arrayIndex = -1,
                                     stopLength = LDKM.int(arrayLength / 4, STRICT = true),
-                                    arrayIterator = arrayLength - (stopLength * 3);
+                                    arrayIterator = arrayLength - ((stopLength * 3) - 1);
 
                                 // Initialization > Stop Indexes
                                 var stopIndexes = [];
@@ -2490,7 +2490,7 @@
                                     // Initialization > ((Array, Stop) Length, Array Iterator)
                                     var arrayLength = LDKF.arrayPrototypeLength(array),
                                         stopLength = LDKM.int(arrayLength / 4, STRICT = true),
-                                        arrayIterator = arrayLength - (stopLength * 3);
+                                        arrayIterator = arrayLength - ((stopLength * 3) - 1);
 
                                     // Update > Handler
                                     handler = arguments[length - iterator];
@@ -4438,7 +4438,7 @@
                             else if (substringLength == 1) {
                                 // Initialization > (Stop Length, String Iterator)
                                 var stopLength = LDKM.int(stringLength / 4, STRICT = true),
-                                    stringIterator = stringLength - (stopLength * 3);
+                                    stringIterator = stringLength - ((stopLength * 3) - 1);
 
                                 // Loop
                                 while (stringIterator) {
@@ -4532,7 +4532,7 @@
                                 // Initialization > (Stop Length, String (Index, Iterator))
                                 var stopLength = LDKM.int(stringLength / 4, STRICT = true),
                                     stringIndex = -1,
-                                    stringIterator = stringLength - (stopLength * 3);
+                                    stringIterator = stringLength - ((stopLength * 3) - 1);
 
                                 // Initialization > Stop Indexes
                                 var stopIndexes = [];
