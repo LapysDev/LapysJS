@@ -1,15 +1,11 @@
 /** Function > Main
     @author: Lapys Dev Team
-    @description: LapysJS is an intuitive, minimalist web library for quick development.
+    @description: LapysJS is a general-purpose, minimalist, semantic JavaScript library.
     @version: 0.0.8
     @url: https://www.github.com/LapysDev/LapysJS
 
     --- NOTE ---
         #Lapys:
-            - Supported environment standards:
-                -- ECMAScript 2, 3rd Edition (1999) - current...
-                -- JavaScript v1.3 - current...
-
             - Supported development environments:
                 -- Android (browser)
                 -- Internet Explorer 5 - 11 (browser)
@@ -19,6 +15,10 @@
                 -- Mozilla Firefox (browser)
                 -- Node.js (runtime)
                 -- Safari (browser)
+
+            - Supported environment standards:
+                -- ECMAScript 2, 3rd Edition (1999) - current...
+                -- JavaScript v1.3 - current...
 
             - The library makes an effort to use only native features of JavaScript to allow for interoperable compatibility with legacy & modern environments
                 and also avoids over-use (if any) of specific vendor (or engine-dependent) features.
@@ -42,6 +42,7 @@
             - Due to the ECMAScript standard supporting negative zero, all positive integer zeros must be prefixed with the addition operator: `+`.
             - Defer to conditional operators (e.g.: `&&`, `||`, e.t.c.) for single-expression condition-based code instead of control structures (e.g.: `if (...) { ... }`, `switch (...) { ... }` e.t.c.)
             - Inline functions are only allowed to prevent creating variables that are semantically out of context.
+            - Object property names can not be labeled `constructor`.
             - Use the XOR operator (i.e.: `^`) instead of the inverse comparison operator (i.e.: `!=`) for integer values.
 
     --- UPDATE REQUIRED ---
@@ -54,7 +55,7 @@
 (function Main() {
     /* Constants > ... --- REDACT (Lapys) */
     var AUTHOR = "Lapys",
-        DESCRIPTION = "LapysJS is an intuitive, minimalist web library for quick development.",
+        DESCRIPTION = "LapysJS is a general-purpose, minimalist, semantic JavaScript library.",
         URL = "https://www.github.com/LapysDev/LapysJS",
         VERSION = "0.0.8";
 
@@ -179,12 +180,12 @@
                         };
 
                         // Tick --- NOTE (Lapys) -> Frames can have the same ID but not the same state.
-                        LapysDevelopmentKit.Data.ClockPrototype.tick = function tick(frameAction, delay) {
+                        LapysDevelopmentKit.Data.ClockPrototype.tick = function tick(frameEvent, delay) {
                             // Update > Delay
                             delay = LDKF.toNumber(delay);
 
                             // Initialization > Frame
-                            var frame = new LDKD.Frame(frameAction);
+                            var frame = new LDKD.Frame(frameEvent);
 
                             // Modification > Frame
                                 // Data > ...
@@ -202,8 +203,8 @@
                             return frame
                         };
 
-                        // Timestamp --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Data.ClockPrototype.timestamp = function timestamp() {};
+                        // Timestamp
+                        LapysDevelopmentKit.Data.ClockPrototype.timestamp = function timestamp() { return LDKC.has_Performance_Constructor ? LDKO.performancePrototypeNow.call(LDKC.Objects.performance) : LDKO.dateNow.call(LDKO.date) };
 
                         // Stop
                         LapysDevelopmentKit.Data.ClockPrototype.stop = function stop(frame) {
@@ -229,12 +230,12 @@
                         };
 
                         // Wind
-                        LapysDevelopmentKit.Data.ClockPrototype.wind = function wind(frameAction, interval) {
+                        LapysDevelopmentKit.Data.ClockPrototype.wind = function wind(frameEvent, interval) {
                             // Update > Interval
                             interval = LDKF.toNumber(interval);
 
                             // Initialization > Frame
-                            var frame = new LDKD.Frame(frameAction);
+                            var frame = new LDKD.Frame(frameEvent);
 
                             // Modification > Frame
                                 // Data > ...
@@ -467,6 +468,84 @@
 
                             // Return
                             return considered.method
+                        };
+
+                        // Request For Native Object --- NOTE (Lapys) -> Ironic, for distinguishing the native state of child objects of their parents is infeasible.
+                        LapysDevelopmentKit.Data.ConsiderationPrototype.requestForNativeObject = function requestForNativeObject() {
+                            // Initialization > (Consideration, Considered)
+                            var consideration = this, considered = consideration.data;
+
+                            // Logic
+                            if (LDKI.Settings.PublicMode) {
+                                // Initialization > (Iterator, Child Object Is Available)
+                                var iterator = LDKF.arrayPrototypeLength(consideration.forcedConditions),
+                                    childObjectIsAvailable = LDKF.isConstructible(considered.childObject);
+
+                                // Loop > Logic > ...
+                                while (iterator) if (!consideration.forcedConditions[iterator -= 1].call(consideration, considered.childObject)) { iterator = +0; childObjectIsAvailable = false }
+
+                                // Error
+                                LDKI.Settings.IgnoreMissingFeatures || (childObjectIsAvailable || (
+                                    considered.THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR &&
+                                    LDKF.throwFeatureNotAvailableError(considered.THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR)
+                                ))
+                            }
+
+                            else {
+                                // Initialization > (Child Object Is Native, Iterator)
+                                var childObjectIsNative = true, iterator = LDKF.arrayPrototypeLength(consideration.conditions);
+
+                                // Loop > Update > Child Object Is Native
+                                while (childObjectIsNative && iterator) childObjectIsNative = consideration.conditions[iterator -= 1].call(consideration, considered.childObject);
+
+                                // Logic
+                                if (childObjectIsNative) {
+                                    // Update > Iterator
+                                    iterator = LDKF.arrayPrototypeLength(consideration.forcedConditions);
+
+                                    // Loop > Update > Child Object Is Native
+                                    while (childObjectIsNative && iterator) childObjectIsNative = consideration.forcedConditions[iterator -= 1].call(consideration, considered.childObject);
+                                }
+
+                                // Logic
+                                if (!childObjectIsNative) {
+                                    // Initialization > Iterator
+                                    var iterator = LDKF.arrayPrototypeLength(consideration.alternateConditions);
+
+                                    // Loop > Update > Child Object Is Native
+                                    while (!childObjectIsNative && iterator) childObjectIsNative = consideration.alternateConditions[iterator -= 1].call(consideration, considered.childObject);
+
+                                    // Logic
+                                    if (!childObjectIsNative && !LDKF.objectPrototypeHasProperty(considered.object, considered.propertyName)) {
+                                        // Initialization > Length
+                                        var length = LDKF.arrayPrototypeLength(consideration.conditionalFallbacks);
+
+                                        // Update > Iterator
+                                        iterator = length;
+
+                                        // Loop
+                                        while (!childObjectIsNative && iterator) {
+                                            // Initialization > Conditional Fallback
+                                            var conditionalFallback = consideration.conditionalFallbacks[length - (iterator -= 1) - 1];
+
+                                            // Logic > ...
+                                            if (!LDKF.objectPrototypeHasProperty(conditionalFallback, "condition") || conditionalFallback.condition.call(consideration, considered.childObject)) {
+                                                considered.childObject = conditionalFallback.value;
+                                                childObjectIsNative = true
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Error
+                                LDKI.Settings.IgnoreMissingFeatures || (childObjectIsNative || (
+                                    considered.THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR &&
+                                    LDKF.throwFeatureNotNativeError(considered.THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR)
+                                ))
+                            }
+
+                            // Return
+                            return considered.childObject
                         };
 
                 /* Function Parameter --- NOTE (Lapys) -> Placeholder structure to represent function parameters. */
@@ -2771,17 +2850,45 @@
                 LapysDevelopmentKit.Functions.clearTimeout = function clearTimeout(timeoutID) { return LDKO.clearTimeoutCall === LDKO.functionPrototypeCall ? LDKF.functionPrototypeCall(LDKO.clearTimeout, GLOBAL, timeoutID) : LDKO.clearTimeout(timeoutID) };
 
                 // Console
-                    // Group --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Functions.consoleGroup = function consoleGroup() {};
+                    // Group
+                    LapysDevelopmentKit.Functions.consoleGroup = function consoleGroup() {
+                        // Error Handling > Return
+                        try { return LDKC.Objects.consoleGroup.apply(LDKC.Objects.console, arguments) }
+                        catch (error) {}
 
-                    // Group End --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Functions.consoleGroupEnd = function consoleGroupEnd() {};
+                        // Return
+                        return LDKC.Objects.consoleGroup(LDKF.arrayPrototypeJoin(arguments, ' '))
+                    };
 
-                    // Log --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Functions.consoleLog = function consoleLog() {};
+                    // Group End
+                    LapysDevelopmentKit.Functions.consoleGroupEnd = function consoleGroupEnd() {
+                        // Error Handling > ...
+                        try { return LDKC.Objects.consoleGroupEnd.call(LDKC.Objects.console) }
+                        catch (error) {}
 
-                    // Warn --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Functions.consoleWarn = function consoleWarn() {};
+                        // Return
+                        return LDKC.Objects.consoleGroupEnd()
+                    };
+
+                    // Log
+                    LapysDevelopmentKit.Functions.consoleLog = function consoleLog() {
+                        // Error Handling > Return
+                        try { return LDKC.Objects.consoleLog.apply(LDKC.Objects.console, arguments) }
+                        catch (error) {}
+
+                        // Return
+                        return LDKC.Objects.consoleLog(LDKF.arrayPrototypeJoin(arguments, ' '))
+                    };
+
+                    // Warn
+                    LapysDevelopmentKit.Functions.consoleWarn = function consoleWarn() {
+                        // Error Handling > Return
+                        try { return LDKC.Objects.consoleWarn.apply(LDKC.Objects.console, arguments) }
+                        catch (error) {}
+
+                        // Return
+                        return LDKC.Objects.consoleWarn(LDKF.arrayPrototypeJoin(arguments, ' '))
+                    };
 
                 // Create Custom Error Constructor --- NOTE (Lapys) -> Examples include: `FeatureError`, `LapysJSError` and so on.
                 LapysDevelopmentKit.Functions.createCustomErrorConstructor = function createCustomErrorConstructor(customErrorName, baseConstructor, BASE_CONSTRUCTOR_SOURCE) {
@@ -2914,14 +3021,14 @@
                         };
 
                 // Evaluate
-                LapysDevelopmentKit.Functions.eval = function eval(source, STRICT_EVALUATION) { STRICT_EVALUATION || (source = "(function() { return " + source + " })()"); return LDKO.eval.call(GLOBAL, source) };
+                LapysDevelopmentKit.Functions.eval = function evaluate(source, STRICT_EVALUATION) { STRICT_EVALUATION || (source = "(function() { return " + source + " })()"); return LDKO.eval.call(GLOBAL, source) };
 
                 // Function
                     // Prototype
                         // Apply
                         LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(routine, target, argumentsObject) { return LDKO.functionPrototypeApply.apply(routine, [target, argumentsObject]) };
 
-                        // Body [Source] --- CHECKPOINT (Lapys)
+                        // Body [Source]
                         LapysDevelopmentKit.Functions.functionPrototypeBody = function functionPrototypeBody(routine, SOURCE_STRING, REMOVE_DELIMITERS, TRIM_SOURCE) {
                             // Initialization > (Function Body Source (Index), Source (Length))
                             var functionBodySource = "", functionBodySourceIndex = -1,
@@ -3015,7 +3122,7 @@
                                 LDKF.functionPrototypeIsGenerator(routine, STRICT = source)
                         };
 
-                        // Head [Source] --- CHECKPOINT (Lapys)
+                        // Head [Source]
                         LapysDevelopmentKit.Functions.functionPrototypeHead = function functionPrototypeHead(routine, SOURCE_STRING) {
                             // Initialization > Function Head (Source)
                             var functionHeadSource = "", source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
@@ -3093,33 +3200,37 @@
                             var isArrow = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
                             // Loop
-                            LDKF.iterateSource(source, function(character, index) {
-                                // Update > Is Arrow
-                                (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') && (isArrow = true);
-
-                                // Target > Stop
-                                isArrow && this.stop()
-                            }, STRICT = true, STRICT = false);
+                            LDKF.iterateSource(source, function(character, index) { (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') && (isArrow = true); isArrow && this.stop() }, STRICT = true, STRICT = false);
 
                             // Return
                             return isArrow
                         };
 
-                        // Is Asynchronous --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.functionPrototypeIsAsynchronous = function functionPrototypeIsAsynchronous(routine, SOURCE_STRING) {
-                            // Initialization > (Is Asynchronous, Source)
-                            var isAsynchronous = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+                        // Is Asynchronous Default
+                        LapysDevelopmentKit.Functions.functionPrototypeIsAsynchronousDefault = function functionPrototypeIsAsynchronousDefault(routine, SOURCE_STRING) {
+                            // Initialization > (Is Default, Source)
+                            var isDefault = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
                             // Loop
                             LDKF.functionPrototypeSourceBeginsWith_async_Keyword(routine, STRICT = source) &&
-                            LDKF.iterateSource(source, function(character) { switch (character) { case '(': isAsynchronous = true; this.stop(); break; case '*': this.stop() } }, STRICT = true, STRICT = true, STRICT = 8);
+                            LDKF.iterateSource(source, function(character) { switch (character) { case '(': isDefault = true; this.stop(); break; case '*': isDefault = false; this.stop() } }, STRICT = true, STRICT = true, STRICT = 8);
 
                             // Return
-                            return isAsynchronous
+                            return isDefault
                         };
 
-                        // Is Asynchronous Generator Function --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.functionPrototypeIsAsynchronousGenerator = function functionPrototypeIsAsynchronousGenerator(routine, SOURCE_STRING) {};
+                        // Is Asynchronous Generator
+                        LapysDevelopmentKit.Functions.functionPrototypeIsAsynchronousGenerator = function functionPrototypeIsAsynchronousGenerator(routine, SOURCE_STRING) {
+                            // Initialization > (Is Generator, Source)
+                            var isGenerator = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
+
+                            // Loop
+                            LDKF.functionPrototypeSourceBeginsWith_async_Keyword(routine, STRICT = source) &&
+                            LDKF.iterateSource(source, function(character) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true, STRICT = false, STRICT = 8);
+
+                            // Return
+                            return isGenerator
+                        };
 
                         // Is Class
                         LapysDevelopmentKit.Functions.functionPrototypeIsClass = function functionPrototypeIsClass(routine, SOURCE_STRING) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.stringPrototypeFirst(source) == 'c' && LDKF.stringPrototypeCharacterAt(source, 1) == 'l' && LDKF.stringPrototypeCharacterAt(source, 2) == 'a' && LDKF.stringPrototypeCharacterAt(source, 3) == 's' && LDKF.stringPrototypeCharacterAt(source, 4) == 's' };
@@ -3158,7 +3269,7 @@
                             return isExtendedClass
                         };
 
-                        // Is Default --- CHECKPOINT (Lapys)
+                        // Is Default
                         LapysDevelopmentKit.Functions.functionPrototypeIsDefault = function functionPrototypeIsDefault(routine, SOURCE_STRING) {
                             // Initialization > (Is Default, Source)
                             var isDefault = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
@@ -3176,7 +3287,7 @@
                             return isDefault
                         };
 
-                        // Is Generator --- CHECKPOINT (Lapys)
+                        // Is Generator --- NOTE (Lapys) -> The generator should not be asynchronous.
                         LapysDevelopmentKit.Functions.functionPrototypeIsGenerator = function functionPrototypeIsGenerator(routine, SOURCE_STRING) {
                             // Initialization > (Is Generator, Source)
                             var isGenerator = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
@@ -3234,10 +3345,19 @@
                         // Is User-Defined
                         LapysDevelopmentKit.Functions.functionPrototypeIsUserDefined = function functionPrototypeIsUserDefined(routine, SOURCE_STRING) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return !LDKF.functionPrototypeIsNative(routine, STRICT = source) };
 
-                        // Measure --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.functionPrototypeMeasure = function functionPrototypeMeasure(routine) { routine() };
+                        // Measure
+                        LapysDevelopmentKit.Functions.functionPrototypeMeasure = function functionPrototypeMeasure(routine) {
+                            // Initialization > Timestamp
+                            var timestamp = LDKC.Objects.clock.timestamp();
 
-                        // Name --- CHECKPOINT (Lapys)
+                            // [Routine]
+                            routine();
+
+                            // Return --- NOTE (Lapys) -> Under the assumption that later received timestamps are accurate and a greater value than former.
+                            return LDKC.Objects.clock.timestamp() - timestamp
+                        };
+
+                        // Name
                         LapysDevelopmentKit.Functions.functionPrototypeName = function functionPrototypeName(routine, SOURCE_STRING) {
                             // Initialization > (Source, Function (Head Source, Name), Uses `function` Keyword)
                             var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
@@ -3415,7 +3535,7 @@
                         // Parameters Length --- NOTE (Lapys) -> Unfortunately, the `Function.prototype.length` property does not defer the length toward non-default parameters.
                         LapysDevelopmentKit.Functions.functionPrototypeParametersLength = function functionPrototypeParametersLength(routine, SOURCE_STRING) { return LDKF.functionPrototypeParameters(routine, SOURCE_STRING).length || +0 };
 
-                        // Parameters Source --- CHECKPOINT (Lapys) --- UPDATE REQUIRED (Lapys) -> Stress-test eventually.
+                        // Parameters Source --- UPDATE REQUIRED (Lapys) -> Stress-test eventually.
                         LapysDevelopmentKit.Functions.functionPrototypeParametersSource = function functionPrototypeParametersSource(routine, SOURCE_STRING) {
                             // Initialization > (Function Parameters (Source), Iterator)
                             var functionParametersSource = "",
@@ -3827,7 +3947,7 @@
                         currentSyntaxGroup = syntaxGroupsLength ? syntaxGroups[syntaxGroupsLength - 1] : null;
 
                         // Handler
-                        (!STARTING_ITERATION_INDEX || sourceIndex > STARTING_ITERATION_INDEX) && ((
+                        (!STARTING_ITERATION_INDEX || sourceIndex == STARTING_ITERATION_INDEX || sourceIndex > STARTING_ITERATION_INDEX) && ((
                             (IGNORE.comments.multiline && (currentSyntaxGroup == "multiline-comment" || skipIterationFor == "multiline-comment")) ||
                             (IGNORE.comments.singleline && (currentSyntaxGroup == "singleline-comment" || skipIterationFor == "singleline-comment")) ||
                             (IGNORE.delimiters.arrays && (currentSyntaxGroup == "array-literal" || skipIterationFor == "array-literal")) ||
@@ -5574,27 +5694,47 @@
 
                     // Consider Native Constructor Of Object
                     LapysDevelopmentKit.Test.considerNativeConstructorOfObject = function considerNativeConstructorOfObject(object, propertyName, CONSTRUCTOR, THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR) {
+                        // Initialization > (Consideration, Considered)
+                        var consideration = new LDKD.Consideration, considered = consideration.data;
+
+                        // Modification > Considered > ...
+                        considered.constructorRoutine = CONSTRUCTOR || LDKF.objectPrototypeGetProperty(object, propertyName, STRICT = true);
+                        considered.object = object;
+                        considered.propertyName = propertyName;
+                        considered.THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR = THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR;
+
                         // Return
-                        return new LDKD.Consideration({
-                            constructorRoutine: CONSTRUCTOR || LDKF.objectPrototypeGetProperty(object, propertyName, STRICT = true),
-                            object: object,
-                            propertyName: propertyName,
-                            THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR: THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR
-                        })
+                        return consideration
                     };
 
                     // Consider Native Method Of Object
                     LapysDevelopmentKit.Test.considerNativeMethodOfObject = function considerNativeMethodOfObject(object, propertyName, METHOD, THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR) {
-                        // Initialization > Consideration
-                        var consideration = new LDKD.Consideration({
-                            method: METHOD || LDKF.objectPrototypeGetProperty(object, propertyName, STRICT = true),
-                            object: object,
-                            propertyName: propertyName,
-                            THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR: THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR
-                        });
+                        // Initialization > (Consideration, Considered)
+                        var consideration = new LDKD.Consideration, considered = consideration.data;
 
-                        // Update > ...
+                        // Modification > Considered > ...
+                        considered.method = METHOD || LDKF.objectPrototypeGetProperty(object, propertyName, STRICT = true);
+                        considered.object = object;
+                        considered.propertyName = propertyName;
+                        considered.THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR = THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR;
+
+                        // Update > (((Lapys Development Kit > Storage) > Registry) > Consideration > Of Native Method Of Object)
                         LDKF.arrayPrototypeAddElementToFront(LDKS.Registry.Consideration.OfNativeMethodOfObject, consideration);
+
+                        // Return
+                        return consideration
+                    };
+
+                    // Consider Native Object Of Object
+                    LapysDevelopmentKit.Test.considerNativeObjectOfObject = function considerNativeObjectOfObject(object, propertyName, OBJECT, THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR) {
+                        // Initialization > (Consideration, Considered)
+                        var consideration = new LDKD.Consideration, considered = consideration.data;
+
+                        // Modification > Considered > ...
+                        considered.childObject = OBJECT || LDKF.objectPrototypeGetProperty(object, propertyName, STRICT = true);
+                        considered.object = object;
+                        considered.propertyName = propertyName;
+                        considered.THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR = THROWN_FEATURE_STRING_ON_METHOD_NOT_NATIVE_ERROR;
 
                         // Return
                         return consideration
@@ -5706,6 +5846,9 @@
                         // Return
                         return null
                 };
+
+                // Percentage
+                LapysDevelopmentKit.Mathematics.perc = function perc(base, exponent) { return LDKF.getArgumentsLength(arguments) == 1 ? base / 100 : base * (exponent / 100) };
 
                 // Random
                 LapysDevelopmentKit.Mathematics.random = function random() { return LDKM.random.randomizer() };
@@ -6358,7 +6501,7 @@
                     return constructor
                 })();
                     // Capture Stack Trace
-                    LapysDevelopmentKit.Objects.errorCaptureStackTrace = LDKT.considerNativeMethodOfObject(LDKO.error, "captureStackTrace", STRICT = null).requestForNativeMethod();
+                    LapysDevelopmentKit.Objects.errorCaptureStackTrace = LDKT.considerNativeMethodOfObject(LDKO.error, "captureStackTrace").requestForNativeMethod();
                         // ...
                         LapysJS.evaluationScope.errorCaptureStackTrace = LDKF.errorCaptureStackTrace;
 
@@ -6406,7 +6549,7 @@
                     // Prototype
                     LapysDevelopmentKit.Objects.activeXObjectPrototype = LDKF.getPropertyByName(LDKO.activeXObject, "prototype");
 
-                // Array --- NOTE (Lapys) -> Best to explicitly request for the `Array` constructor than implicitly retrieve it via other means (e.g.: `[].constructor` e.t.c.).
+                // Array --- NOTE (Lapys) -> Best to explicitly request for the `Array` constructor than implicitly retrieve it via alternate means (e.g.: `[].constructor` e.t.c.).
                 LapysDevelopmentKit.Objects.array = LDKT.considerNativeConstructorOfObject(GLOBAL, "Array", STRICT = null, STRICT = "`Array` constructor").requestForNativeConstructor();
                     // Prototype
                     LapysDevelopmentKit.Objects.arrayPrototype = LDKF.getPropertyByName(LDKO.array, "prototype");
@@ -6503,11 +6646,25 @@
                 // Clock
                 LapysDevelopmentKit.Constants.Objects.clock = new LDKD.Clock;
 
+                // Console --- NOTE (Lapys) -> Internet Explorer v10 and v11 define the `Console` constructor within it`s JavaScript engine.
+                LapysDevelopmentKit.Objects.console = LDKT.considerNativeConstructorOfObject(GLOBAL, "Console").requestForNativeConstructor();
+                    // ...
+                    LapysDevelopmentKit.Constants.Assertions.has_Console_Constructor = LDKF.isNonVoid(LDKO.console);
+
                 // Console
-                    // Group --- CHECKPOINT (Lapys)
-                    // Group End --- CHECKPOINT (Lapys)
-                    // Log --- CHECKPOINT (Lapys)
-                    // Warn --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Constants.Objects.console = LDKT.considerNativeObjectOfObject(GLOBAL, "console")
+                    .addCondition(function(object) { return !LDKC.Assertions.has_Console_Constructor || LDKF.objectPrototypeIsOfConstructor(LDKC.Objects.console, LDKO.console) })
+                    .requestForNativeObject();
+
+                    // Group (End)
+                    LapysDevelopmentKit.Constants.Objects.consoleGroup = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "group", STRICT = null, STRICT = "`console.group` method").requestForNativeMethod();
+                    LapysDevelopmentKit.Constants.Objects.consoleGroupEnd = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "groupEnd", STRICT = null, STRICT = "`console.groupEnd` method").requestForNativeMethod();
+
+                    // Log
+                    LapysDevelopmentKit.Constants.Objects.consoleLog = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "log", STRICT = null, STRICT = "`console.log` method").requestForNativeMethod();
+
+                    // Warn
+                    LapysDevelopmentKit.Constants.Objects.consoleWarn = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "warn", STRICT = null, STRICT = "`console.warn` method").requestForNativeMethod();
 
                 // Constraint Error
                 LapysDevelopmentKit.Objects.constraintError = LDKT.considerNativeConstructorOfObject(GLOBAL, "ConstraintError").requestForNativeConstructor();
@@ -6515,20 +6672,37 @@
                 // Constraint Not Satisfied Error
                 LapysDevelopmentKit.Objects.constraintNotSatisfiedError = LDKT.considerNativeConstructorOfObject(GLOBAL, "ConstraintNotSatisfiedError").requestForNativeConstructor();
 
-                // CSS Numeric Array --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // CSS Numeric Array
+                LapysDevelopmentKit.Objects.cssNumericArray = LDKT.considerNativeConstructorOfObject(GLOBAL, "CSSNumericArray").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.cssNumericArrayPrototype = LDKF.getPropertyByName(LDKO.cssNumericArray, "prototype");
 
-                // CSS Rule List --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // CSS Rule List
+                LapysDevelopmentKit.Objects.cssRuleList = LDKT.considerNativeConstructorOfObject(GLOBAL, "CSSRuleList").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.cssRuleListPrototype = LDKF.getPropertyByName(LDKO.cssRuleList, "prototype");
 
-                // CSS Style Declaration --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // CSS Style Declaration
+                LapysDevelopmentKit.Objects.cssStyleDeclaration = LDKT.considerNativeConstructorOfObject(GLOBAL, "CSSStyleDeclaration").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.cssStyleDeclarationPrototype = LDKF.getPropertyByName(LDKO.cssStyleDeclaration, "prototype");
 
-                // Custom Element Registry --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
-                        // Define --- CHECKPOINT (Lapys)
+                // Custom Element Registry
+                LapysDevelopmentKit.Objects.customElementRegistry = LDKT.considerNativeConstructorOfObject(GLOBAL, "CustomElementRegistry").requestForNativeConstructor();
+                    // ...
+                    LapysDevelopmentKit.Constants.Assertions.has_CustomElementRegistry_Constructor = LDKF.isNonVoid(LDKO.customElementRegistry);
 
-                // Custom Elements --- CHECKPOINT (Lapys)
+                    // Prototype
+                    LapysDevelopmentKit.Objects.customElementRegistryPrototype = LDKF.getPropertyByName(LDKO.customElementRegistry, "prototype");
+                        // Define
+                        LapysDevelopmentKit.Objects.customElementRegistryPrototypeDefine = LapysDevelopmentKit.Constants.Assertions.has_CustomElementRegistry_Constructor ?
+                            LDKT.considerNativeMethodOfObject(LDKO.customElementRegistryPrototype, "define", STRICT = null, STRICT = "`CustomElementRegistry.prototype.define` method").requestForNativeMethod() :
+                            undefined;
+
+                // Custom Elements
+                LapysDevelopmentKit.Constants.Objects.customElements = LDKT.considerNativeObjectOfObject(GLOBAL, "customElements")
+                    .addCondition(function(object) { return !LDKC.Assertions.has_CustomElementRegistry_Constructor || LDKF.objectPrototypeIsOfConstructor(object, LDKO.customElementRegistry) })
+                    .requestForNativeObject();
 
                 // Data Error
                 LapysDevelopmentKit.Objects.dataError = LDKT.considerNativeConstructorOfObject(GLOBAL, "DataError").requestForNativeConstructor();
@@ -6536,20 +6710,31 @@
                 // Data Clone Error
                 LapysDevelopmentKit.Objects.dataCloneError = LDKT.considerNativeConstructorOfObject(GLOBAL, "DataCloneError").requestForNativeConstructor();
 
-                // Data Transfer Item List --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // Data Transfer Item List
+                LapysDevelopmentKit.Objects.dataTransferItemList = LDKT.considerNativeConstructorOfObject(GLOBAL, "DataTransferItemList").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.dataTransferItemListPrototype = LDKF.getPropertyByName(LDKO.dataTransferItemList, "prototype");
 
-                // Date --- CHECKPOINT (Lapys)
-                    // Now --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // Date
+                LapysDevelopmentKit.Objects.date = LDKT.considerNativeConstructorOfObject(GLOBAL, "Date", STRICT = null, STRICT = "`Date` constructor").requestForNativeConstructor();
+                    // Now
+                    LapysDevelopmentKit.Objects.dateNow = LDKT.considerNativeMethodOfObject(LDKO.date, "now", STRICT = null, STRICT = "`Date.now` method")
+                        .addCondition(function(method) { var returnValue = method.call(LDKO.date); return LDKF.isNumber(returnValue) && LDKF.numberPrototypeIsPositiveInteger(returnValue) })
+                        .requestForNativeMethod();
 
                 // Devices Not Found Error
                 LapysDevelopmentKit.Objects.devicesNotFoundError = LDKT.considerNativeConstructorOfObject(GLOBAL, "DevicesNotFoundError").requestForNativeConstructor();
 
-                // Document --- CHECKPOINT (Lapys)
+                // Document
+                LapysDevelopmentKit.Objects.document = LDKT.considerNativeConstructorOfObject(GLOBAL, "Document", STRICT = null, STRICT = "`Document` constructor").requestForNativeConstructor();
+                LapysDevelopmentKit.Constants.Objects.document = LDKT.considerNativeObjectOfObject(GLOBAL, "document")
+                    .addCondition(function(object) { return LDKF.objectPrototypeIsOfConstructor(object, LDKO.document) })
+                    .requestForNativeObject();
                     // Create Element --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
-                        // Register Element --- CHECKPOINT (Lapys)
+                    // Prototype
+                    LapysDevelopmentKit.Objects.documentPrototype = LDKF.getPropertyByName(LDKO.document, "prototype");
+                        // Register Element
+                        LapysDevelopmentKit.Objects.documentPrototypeRegisterElement = LDKT.considerNativeMethodOfObject(LDKO.documentPrototype, "registerElement").requestForNativeMethod();
 
                 // Document Fragment --- CHECKPOINT (Lapys)
                 // Document Type --- CHECKPOINT (Lapys)
@@ -6561,7 +6746,9 @@
                 // DOM Exception
                 LapysDevelopmentKit.Objects.domException = LDKT.considerNativeConstructorOfObject(GLOBAL, "DOMException").requestForNativeConstructor();
 
-                // DOM Rectangle --- CHECKPOINT (Lapys)
+                // DOM Rectangle
+                LapysDevelopmentKit.Objects.domRect = LDKT.considerNativeConstructorOfObject(GLOBAL, "DOMRect").requestForNativeConstructor();
+
                 // DOM Rectangle List --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
                         // Item --- CHECKPOINT (Lapys)
@@ -6852,9 +7039,22 @@
                 // Over-Constrained Error --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
 
-                // Performance --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
-                        // Now --- CHECKPOINT (Lapys)
+                // Performance
+                LapysDevelopmentKit.Objects.performance = LDKT.considerNativeConstructorOfObject(GLOBAL, "Performance").requestForNativeConstructor();
+                    // ...
+                    LapysDevelopmentKit.Constants.Assertions.has_Performance_Constructor = LDKF.isNonVoid(LDKO.performance);
+
+                    // Prototype
+                    LapysDevelopmentKit.Objects.performancePrototype = LDKF.getPropertyByName(LDKO.performance, "prototype");
+                        // Now
+                        LapysDevelopmentKit.Objects.performancePrototypeNow = LDKC.Assertions.has_Performance_Constructor ?
+                            LDKT.considerNativeMethodOfObject(LDKO.performancePrototype, "now", STRICT = null, STRICT = "`performance.now` method").requestForNativeMethod() :
+                            undefined;
+
+                // Performance
+                LapysDevelopmentKit.Constants.Objects.performance = LDKT.considerNativeObjectOfObject(GLOBAL, "performance")
+                    .addCondition(function(object) { return !LDKC.Assertions.has_Performance_Constructor || LDKF.objectPrototypeIsOfConstructor(object, LDKO.performance) })
+                    .requestForNativeObject();
 
                 // Permission Denied Error --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
@@ -7070,7 +7270,7 @@
             // Logic
             if (LDKC.Assertions.isBrowserEnvironment) {
                 // Warn --- CHECKPOINT (Lapys)
-                (LDKC.Assertions.has_ActiveXObject_Constructor && LDKC.Assertions.has_XMLHttpRequest_Constructor) &&
+                (LDKC.Assertions.has_ActiveXObject_Constructor || LDKC.Assertions.has_XMLHttpRequest_Constructor) ||
                 LDKF.throwFeatureNotAvailableError("`ActiveXObject` or `XMLHttpRequest` constructor")
             }
 
@@ -7098,6 +7298,7 @@
                         // HTML Conditional Elements --- CHECKPOINT (Lapys)
                         // HTML Include Elements --- CHECKPOINT (Lapys)
                         // Script Attribute --- CHECKPOINT (Lapys)
+                    // Public Mode --- CHECKPOINT (Lapys)
 
                 // Array --- NOTE (Lapys) -> From here, most of these modifications will be polyfills or added features.
                     // Distinct --- CHECKPOINT (Lapys)
@@ -7271,7 +7472,10 @@
     try {
         // ...
         LDKF.objectDefineProperty(LapysJS.processingDuration, "terminate", {value: LDKF.functionPrototypeMeasure(Terminate)});
-            LDKF.consoleLog("Processing Duration = ", LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate)
+
+        // Print
+        LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "https://www.lapys.dev/projects/LapysJS");
+            LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate);
             LDKF.consoleLog('\n');
         LDKF.consoleGroupEnd()
     } catch (error) { var message = LDKF.errorPrototypeGetMessage(error); message = LDKF.isNull(message) ? "" : ":\n\t\r" + message; LDKF.throwInitiatePhaseError("Error completing library installation" + message) }
