@@ -12,13 +12,16 @@
         #Lapys:
             - Supported environment standards:
                 -- ..
+            - Most of this library was designed from user agent stylesheet (with their polyfills) defined in various modern browsers,
+                but it also takes on its own unique approach to design.
             - Over its years of development, the library is still a bare-bones version of what it could be.
 
     --- RULES ---
         #Lapys:
             - Do not repeat CSS style declarations.
             - Maximum significant figures for CSS floating-point measurements is 6.
-            - Utilize only print-friendly units for hexadecimal values (e.g.: `3`, `6`, `9`, `A`, `C`, `F`)
+            - Utilize only print-friendly units for hexadecimal values (e.g.: `3`, `6`, `9`, `A`, `C`, `F`),
+                otherwise utilize other color codes.
 
     --- UPDATE REQUIRED ---
         #Lapys:
@@ -34,8 +37,9 @@
         img:not(picture > img), picture, video { filter: invert(100%) }
     }
 
-    /* Namespace */
+    /* Namespace ---  NOTE (Lapys) -> Set default namespace to HTML. */
     @namespace "http://www.w3.org/1999/xhtml";
+    @namespace xul url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
 
     /* Page */
     @page {
@@ -47,11 +51,28 @@
 
 /* DOM Elements */
     /* All */
-    * { box-sizing: inherit }
-        /* Pseudo > (After, Before) */
-        ::after, ::before { box-sizing: inherit }
+    * {
+        box-decoration-break: inherit;
+        box-sizing: inherit
+    }
+        /* @media > Print */
+        @media print { * { -webkit-columns: auto !important } }
+
+        /* Pseudo */
+            /* (After, Before) */
+            ::after, ::before { box-sizing: inherit }
+
+            /* Webkit : Input Placeholder */
+            ::-webkit-input-placeholder {
+                color: #A9A9A9;
+                pointer-events: none !important;
+                -webkit-text-security: none
+            }
 
         /* States */
+            /* Focus */
+            :focus { outline: auto }
+
             /* Link */
             :link { text-decoration: none }
 
@@ -62,11 +83,878 @@
                 text-shadow: initial
             }
 
-    /* <body> */
-    body {
-        box-decoration-break: slice
+    /* (All > <h1>), <blockquote>, <dir>, <dl>, <figure>, <h3>, <menu>, <ol>, <p>, <ul> */
+    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1,
+    blockquote, dir, dl, figure, h3, menu, ol, p, ul {
+        -webkit-margin-after: 16px;
+        -webkit-margin-before: 16px
+    }
+
+    /* <a> */
+        /* States */
+            /* Webkit : Any Link */
+            a:-webkit-any-link { text-decoration: none }
+
+    /* <a>, <input>, <textarea> */
+    a:-webkit-any-link, input, textarea { cursor: auto }
+
+    /* <address>, <cite>, <dfn>, <i>, <em>, <var> */
+    address, cite, dfn, i, em, var { font-style: italic }
+
+    /* <address>, <article>, <aside>, <blockquote>, <body>, <center>, <dd>, <details>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <form>, <frame>, <frameset>, <header>, <hgroup>, <hr>, <html>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <layer>, <legend>, <listing>, <main>, <menu>, <nav>, <ol>, <optgroup>, <option>, <p>, <plaintext>, <pre>, <rt>, <section>, <summary>, <ul>, <xmp> */
+    address,
+    article, aside,
+    blockquote,
+    body,
+    center,
+    dd, details, dir, div, dl, dt,
+    fieldset, figcaption, figure, footer, form, frame, frameset,
+    header, hgroup, hr, html, h1, h2, h3, h4, h5, h6,
+    input[type=range i]::-webkit-media-slider-thumb, input[type=search i]::-webkit-search-cancel-button, input[type=search i]::-webkit-search-decoration, input[type=search i]::-webkit-search-results-decoration, input[type=search i]::-webkit-slider-runnable-track, input[type=search i]::-webkit-slider-thumb, input[type=range i]::-webkit-slider-runnable-track,
+    layer, legend, listing,
+    main, menu,
+    nav,
+    ol, optgroup, option,
+    p, plaintext, pre,
+    ruby > rt,
+    section, summary,
+    ul,
+    xmp { display: block }
+
+    /* <area> */
+    area { cursor: pointer }
+
+    /* <area>, <map>, <output> */
+    area, map, output { display: inline }
+
+    /* <b>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <th>, <strong> */
+    b, h1, h2, h3, h4, h5, h6, th, strong { font-weight: bold }
+
+    /* <bdi>, <output> */
+    bdi, output { unicode-bidi: isolate }
+
+    /* <bdo> */
+    bdo { unicode-bidi: bidi-override }
+
+    /* <big> */
+    big { font-size: larger }
+
+    /* <blockquote>, <dd>, <figure> */
+    blockquote, dd, figure {
+        -webkit-margin-end: 40px;
+        -webkit-margin-start: 40px
+    }
+
+    /* <body> --- NOTE (Lapys) -> Remove the margin from the `<body>` element. */
+    body { font-size: 16px }
+        /* States */
+            /* Webkit : Full Page Media */
+            body:-webkit-full-page-media { background-color: #000000 }
+
+    /* <body>, <button>, <input>, <keygen>, <select>, <textarea> */
+    body, button,
+    input,
+    keygen, keygen::-webkit-keygen-select,
+    input[type=file i]::webkit-file-upload-button,
+    select,
+    textarea {
+        margin: 0
+    }
+
+    /* <body>, <embed>, <html>, <iframe>, <input>, <object> */
+    body:focus,
+    embed:focus,
+    html:focus,
+    iframe:focus,
+    input[readonly]:focus,
+    object:focus { outline: none }
+
+    /* <button> */
+    button { -webkit-appearance: button }
+
+    /* <button>, <input> */
+    button,
+    input[type=button i],
+    input[type=file i]::-webkit-file-upload-button,
+    input[type=reset i],
+    input[type=submit i] {
+        background-color: rgb(221, 221, 221);
+        border: 2px outset rgb(221, 221, 221);
+        padding: 2px 6px 3px 6px
+    }
+
+    button:active,
+    input[type=button i]:active,
+    input[type=file i]:active::-webkt-file-upload-button,
+    input[type=reset i]:active,
+    input[type=submit i]:active { border-style: inset }
+
+    button:disabled:active,
+    input[type=button i]:disabled:active,
+    input[type=file i]:disabled:active::-webkt-file-upload-button,
+    input[type=reset i]:disabled:active,
+    input[type=submit i]:disabled:active { border-style: outset }
+
+    /* <button>, <caption>, <input> */
+    button,
+    input[type=button i],
+    input[type=file i]::-webkit-file-upload-button,
+    input[type=reset i],
+    input[type=submit i],
+    table > caption { text-align: center }
+
+    /* <button>, <input>, <select> */
+    button, input, select { color: #000000 }
+    button,
+    input[type=button i],
+    input[type=file i]::-webkit-file-upload-button,
+    input[type=reset i],
+    input[type=submit i],
+    select:-internal-list-box { align-items: flex-start }
+
+    /* <button>, <input>, <label>, <select> */
+    button,
+    input[type=button i],
+    input[type=file i]::-webkit-file-upload-button,
+    input[type=reset i],
+    input[type=submit i],
+    input::-webkit-inner-spin-button,
+    label,
+    select { cursor: default }
+
+    /* <button>, <input>, <keygen>, <optgroup>, <select>( > <option>) */
+    button:disabled,
+    input[type=button i]:disabled,
+    input[type=file i]:disabled::-webkit-file-upload-button,
+    input[type=reset i]:disabled,
+    input[type=submit i]:disabled,
+    keygen:disabled,
+    optgroup:disabled,
+    select:disabled,
+    select[disabled] > option { color: #808080 }
+
+    /* <button>, <input>, <keygen>, <select>, <textarea> */
+    button, input, keygen, select, textarea {
+        color: initial;
+        font: -webkit-small-control;
+        letter-spacing: normal;
+        text-indent: 0;
+        text-shadow: none;
+        text-transform: none;
+        text-rendering: optimizeLegibility;
+        word-spacing: normal
+    }
+
+    /* <button>, <input>, <keygen>, <rt>, <select>, <textarea> */
+    button, input, keygen, rt, select, textarea { line-height: normal }
+    button, input, keygen, ruby > rt, select, textarea { text-align: start }
+
+    /* <button>, <input>, <keygen>, <meter>, <progress>, <select>, <textarea> */
+    button, input, keygen, meter, progress, select, textarea { -webkit-writing-mode: horizontal-tb !important }
+
+    /* <button>, <input>, <keygen>, <marquee>, <meter>, <progress>, <select>, <summary>, <textarea> */
+    button,
+    input, input::-webkit-calender-picker-indicator, input::-webkit-clear-button, input::-webkit-inner-spin-button,
+    keygen,
+    marquee,
+    meter,
+    progress,
+    select,
+    summary::-webkit-details-marker,
+    textarea { display: inline-block }
+
+    /* <button>, <html>, <input>, <meter>, <progress>, <select> */
+    button,
+    html,
+    input[type=button i],
+    input[type=checkbox i],
+    input[type=color i]::-webkit-color-swatch-wrapper,
+    input[type=file i]::-webkit-file-upload-button,
+    input[type=radio i],
+    input[type=range i]::-webkit-media-slider-container,
+    input[type=range i]::-webkit-media-slider-thumb,
+    input[type=range i]::-webkit-slider-container,
+    input[type=range i]::-webkit-slider-runnable-track,
+    input[type=range i]::-webkit-slider-thumb,
+    input[type=reset i],
+    input[type=search i],
+    input[type=submit i],
+    meter,
+    meter::-webkit-meter-bar,
+    meter::-webkit-meter-even-less-good-value,
+    meter::-webkit-meter-optimum-value,
+    meter::-webkit-meter-suboptimum-value,
+    progress,
+    progress::-webkit-progress-bar,
+    progress::-webkit-progress-value,
+    select { box-sizing: border-box }
+
+    /* <code>, <kbd>, <listing>, <plaintext>, <pre>, <samp>, <tt>, <xmp> */
+    code, kbd, listing, plaintext, pre, samp, tt, xmp { font-family: monospace }
+
+    /* <datalist>, <dialog>, <head>, <input>, <link>, <meta>, <noframes>, <param>, <rp>, <script>, <style>, <template>, <title> --- NOTE (Lapys) -> Children of the `<head>` element and itself are hidden. */
+    datalist,
+    dialog:not([open]),
+    head,
+    input[type=hidden i],
+    link,
+    meta,
+    noframes,
+    param,
+    ruby > rp,
+    script,
+    style,
+    template,
+    title { display: none }
+
+    /* <del>, <s>, <strike> */
+    del, s, strike { text-decoration: line-through }
+
+    /* <dialog> */
+    dialog {
+        background-color: #FFFFFF;
+        border-style: solid;
+        color: #000000;
+        height: -webkit-fit-content;
+        margin: auto;
+        padding: 16px;
+        position: absolute;
+        width: -webkit-fit-content
+    }
+
+    dialog,
+    dialog::backdrop { left: 0; right: 0 }
+        /* Pseudo > Backdrop */
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, .1);
+            bottom: 0;
+            position: fixed;
+            top: 0
+        }
+
+    /* <dir>, <menu>, <ul> */
+    dir, menu, ul { list-style-type: circle }
+
+    /* <dir>, <menu>, <ol>, <ul> */
+    dir, menu, ol, ul { -webkit-padding-start: 40px }
+
+    /* <dl>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <p> */
+    dl, h1, h2, h3, h4, h5, h6, p {
+        -webkit-margin-end: 0;
+        -webkit-margin-start: 0
+    }
+
+    /* <fieldset> */
+    fieldset {
+        border: 2px groove #C0C0C0;
+        min-width: -webkit-min-content;
+        -webkit-margin-end: 2px;
+        -webkit-margin-start: 2px;
+        -webkit-padding-after: 10px;
+        -webkit-padding-before: 10px;
+        -webkit-padding-end: 12px;
+        -webkit-padding-start: 12px
+    }
+
+    /* <form> */
+    form { margin-top: 0 }
+
+    /* <frameset>, <tbody>, <tfoot>, <thead>, <tr> */
+    frameset,
+    table > tbody,
+    table > tfoot,
+    table > thead,
+    table > tr { border-color: inherit }
+
+    /* <hr> */
+    hr {
+        border-style: solid;
+        border-width: 1px;
+        -webkit-margin-after: 8px;
+        -webkit-margin-before: 8px;
+        -webkit-margin-end: auto;
+        -webkit-margin-start: auto
     }
 
     /* <html> */
-    html { box-sizing: border-box; *behavior: url(resources/htc/box-sizing.htc) }
+    html {
+        box-decoration-break: slice;
+        *behavior: url(resources/htc/box-sizing.htc)
+    }
 
+    /* <h1> */
+    h1 {
+        font-size: 200%;
+        -webkit-margin-after: 10.72px;
+        -webkit-margin-before: 10.72px
+    }
+
+    :-webkit-any(article, aside, nav, section) h1 {
+        font-size: 150%;
+        -webkit-margin-after: 13.28px;
+        -webkit-margin-before: 13.28px
+    }
+
+    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 { font-size: 117% }
+
+    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+        font-size: 100%;
+        -webkit-margin-after: 21.28px;
+        -webkit-margin-before: 21.28px
+    }
+
+    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+        font-size: 83%;
+        -webkit-margin-after: 26.72px;
+        -webkit-margin-before: 26.72px
+    }
+
+    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+        font-size: 67%;
+        -webkit-margin-after: 37.28px;
+        -webkit-margin-before: 37.28px
+    }
+
+    /* <h2> */
+    h2 {
+        font-size: 150%;
+        -webkit-margin-after: 13.28px;
+        -webkit-margin-before: 13.28px
+    }
+
+    /* <h3> */
+    h3 { font-size: 117% }
+
+    /* <h4> */
+    h4 {
+        font-size: 100%;
+        -webkit-margin-after: 21.28px;
+        -webkit-margin-before: 21.28px
+    }
+
+    /* <h5> */
+    h5 {
+        font-size: 83%;
+        -webkit-margin-after: 26.72px;
+        -webkit-margin-before: 26.72px
+    }
+
+    /* <h6> */
+    h6 {
+        font-size: 67%;
+        -webkit-margin-after: 37.28px;
+        -webkit-margin-before: 37.28px
+    }
+
+    /* <iframe>, <input> */
+    iframe, input { border: 2px inset }
+
+    /* <input> */
+    input {
+        padding: 1px;
+        -webkit-appearance: textfield
+    }
+    input[type=button i],
+    input[type=reset i],
+    input[type=submit i] { -webkit-appearance: push-button }
+    input[type=button i],
+    input[type=reset i],
+    input[type=submit i],
+    input::-webkit-inner-spin-button { -webkit-user-select: none }
+    input[type=checkbox i] { -webkit-appearance: checkbox }
+    input[type=checkbox i],
+    input[type=radio i] {
+        background-color: initial;
+        border: initial;
+        margin: 3px 3.695315ex;
+        padding: initial;
+        -webkit-appearance: radio
+    }
+    input[type=color i] {
+        background-color: #DDDDDD;
+        border: 1px solid #A9A9A9;
+        height: 23px;
+        padding: 1px 2px;
+        width: 44px;
+        -webkit-appearance: square-button
+    }
+    input[type=color i][list] {
+        height: 23px;
+        width: 88px;
+        -webkit-appearance: menulist
+    }
+    input[type=file i] {
+        align-items: baseline;
+        color: inherit;
+        text-align: start !important
+    }
+    input[type=file i], input[type=hidden i], input[type=image i] {
+        background-color: initial;
+        -webkit-appearance: initial
+    }
+    input[type=file i], input[type=hidden i], input[type=image i], input[type=range i] {
+        border: initial;
+        padding: initial
+    }
+    input[type=password i] { -webkit-text-security: circle !important }
+    input[type=range i] {
+        color: #909090;
+        margin: 2px;
+        -webkit-appearance: slider-horizontal
+    }
+    input[type=search i] { -webkit-appearance: searchfield }
+        /* Pseudo */
+            /* Webkit : Calender Picker Indicator */
+            input::-webkit-calender-picker-indicator { padding: 2.72px 5.44px }
+                /* States > Hover */
+                input::-webkit-calender-picker-indicator:hover { background-color: #CCCCCC }
+
+            /* Webkit : (Calender Picker Indicator, Clear Button, Inner Spin Button, Search Cancel Button) */
+            input::-webkit-calender-picker-indicator,
+            input::-webkit-clear-button,
+            input::-webkit-inner-spin-button,
+            input[type=search i]::-webkit-search-cancel-button {
+                opacity: 0;
+                pointer-events: none;
+                -webkit-appearance: searchfield-cancel-button
+            }
+
+            /* Webkit : (Clear Button, Inner Spin Button, Search Cancel Button, Search (Results) Decoration) */
+            input::-webkit-clear-button,
+            input::-webkit-inner-spin-button,
+            input[type=search i]::-webkit-search-cancel-button,
+            input[type=search i]::-webkit-search-decoration,
+            input[type=search i]::-webkit-search-results-decoration { flex: none }
+
+            /* Webkit : Color Swatch */
+            input[type=color i]::-webkit-color-swatch {
+                background-color: #000000;
+                border: 1px solid #999999
+            }
+
+            input[type=color i][list]::-webkit-color-swatch { border-color: #000000 }
+
+            /* Webkit : (Color Swatch, (Media) Slider Container, Slider Runnable Track) */
+            input[type=color i]::-webkit-color-swatch,
+            input[type=range i]::-webkit-media-slider-container,
+            input[type=range i]::-webkit-slider-container,
+            input[type=range i]::-webkit-slider-runnable-track {
+                flex: 1;
+                min-width: 0
+            }
+
+            /* Webkit : Color Swatch Wrapper */
+            input[type=color i]::-webkit-color-swatch-wrapper { padding: 4px 2px }
+
+            input[type=color i][list]::-webkit-color-swatch-wrapper {
+                padding-left: 8px;
+                padding-right: 24px
+            }
+
+            /* Webkit : (Color Swatch Wrapper, (Media) Slider Container, Text Field Decoration Container) */
+            input::-webkit-textfield-decoration-container,
+            input[type=color i]::-webkit-color-swatch-wrapper,
+            input[type=range i]::-webkit-media-slider-container,
+            input[type=range i]::-webkit-slider-container { display: flex }
+
+            /* Webkit : File Upload Button */
+            input[type=file i]::webkit-file-upload-button {
+                font-size: inherit;
+                -webkit-appearance: push-button
+            }
+
+            /* Webkit : Inner Spin Button */
+            input::-webkit-inner-spin-button {
+                align-self: stretch;
+                -webkit-appearance: inner-spin-button
+            }
+
+            /* Webkit : Input Placeholder */
+            input::-webkit-input-placeholder {
+                overflow: hidden;
+                word-wrap: normal
+            }
+
+            /* Webkit : ((Media) Slider Container, Text Field Decoration Container) */
+            input::-webkit-textfield-decoration-container,
+            input[type=range i]::-webkit-media-slider-container,
+            input[type=range i]::-webkit-slider-container { content: none !important }
+            input[type=search i]::-webkit-textfield-decoration-container { direction: ltr }
+
+            /* Webkit : (Media) Slider Thumb */
+            input[type=range i]::-webkit-media-slider-thumb,
+            input[type=range i]::-webkit-slider-thumb {
+                -webkit-appearance: sliderthumb-horizontal
+            }
+
+            /* Webkit : Search Cancel Button */
+            input[type=search i]::-webkit-search-cancel-button {
+                -webkit-margin-start: 1px
+            }
+
+            /* Webkit : Search Decoration */
+            input[type=search i]::-webkit-search-decoration {
+                -webkit-appearance: searchfield-decoration
+            }
+
+            /* Webkit : Search (Results) Decoration */
+            input[type=search i]::-webkit-search-decoration,
+            input[type=search i]::-webkit-search-results-decoration {
+                margin: auto 0;
+                -webkit-align-self: flex-start
+            }
+
+            /* Webkit : Search Results Decoration */
+            input[type=search i]::-webkit-search-results-decoration {
+                -webkit-appearance: searchfield-results-decoration
+            }
+
+            /* Webkit : Slider Runnable Track */
+            input[type=range i]::-webkit-slider-runnable-track { -webkit-align-self: center }
+
+        /* States */
+            /* Disabled > Pseudo > Webkit : (Calender Picker Indicator, (Clear, Inner Spin) Button) */
+            input:disabled::-webkit-calender-picker-indicator,
+            input[readonly]:disabled::-webkit-calender-picker-indicator,
+            input[type=date i]:disabled::-webkit-clear-button,
+            input[type=date i]:disabled::-webkit-inner-spin-button,
+            input[type=date i][readonly]:disabled::-webkit-clear-button,
+            input[type=date i][readonly]:disabled::-webkit-inner-spin-button,
+            input[type=datetime-local i]:disabled::-webkit-clear-button,
+            input[type=datetime-local i]:disabled::-webkit-inner-spin-button,
+            input[type=datetime-local i][readonly]:disabled::-webkit-clear-button,
+            input[type=datetime-local i][readonly]:disabled::-webkit-inner-spin-button,
+            input[type=month i]:disabled::-webkit-clear-button,
+            input[type=month i]:disabled::-webkit-inner-spin-button,
+            input[type=month i][readonly]:disabled::-webkit-clear-button,
+            input[type=month i][readonly]:disabled::-webkit-inner-spin-button,
+            input[type=week i]:disabled::-webkit-clear-button,
+            input[type=week i]:disabled::-webkit-inner-spin-button,
+            input[type=week i][readonly]:disabled::-webkit-clear-button,
+            input[type=week i][readonly]:disabled::-webkit-inner-spin-button { visibility: hidden }
+
+            /* Enabled > States > Read-Write > States > (Webkit : Any)( > Pseudo > Webkit : (Clear Button, Inner Spin Button, Search Cancel Button)) */
+            input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-calender-picker-indicator,
+            input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-clear-button,
+            input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-inner-spin-button,
+            input[type=search i]:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-search-cancel-button {
+                opacity: 1;
+                pointer-events: auto
+            }
+
+            /* Focus */
+            input[type=button i]:focus,
+            input[type=checkbox i]:focus,
+            input[type=file i]:focus,
+            input[type=file i]:focus::-webkit-file-upload-button,
+            input[type=hidden i]:focus,
+            input[type=image i]:focus,
+            input[type=radio i]:focus,
+            input[type=reset i]:focus,
+            input[type=search i]:focus,
+            input[type=submit i]:focus { outline-offset: 0 }
+
+    /* <input>, <select> */
+    input::-webkit-textfield-decoration-container,
+    input[type=range i]::-webkit-media-slider-container,
+    input[type=range i]::-webkit-slider-container,
+    select { align-items: center }
+
+    /* <input>, <summary> */
+    input::-webkit-calender-picker-indicator,
+    summary::-webkit-details-marker {
+        height: 10.56px;
+        width: 10.56px
+    }
+
+    /* <input>, <textarea> */
+    input, textarea { -webkit-user-select: text }
+
+    /* <input>, <meter>, <progress> */
+    input[type=color i]::-webkit-color-swatch-wrapper,
+    meter::-webkit-meter-bar,
+    meter::-webkit-meter-even-less-good-value,
+    meter::-webkit-meter-inner-element,
+    meter::-webkit-meter-optimum-value,
+    meter::-webkit-meter-suboptimum-value,
+    progress::-webkit-progress-bar,
+    progress::-webkit-progress-inner-element,
+    progress::-webkit-progress-value { height: 100% }
+
+    input[type=color i]::-webkit-color-swatch-wrapper,
+    meter::-webkit-meter-bar,
+    meter::-webkit-meter-inner-element,
+    progress::-webkit-progress-bar,
+    progress::-webkit-progress-inner-element,
+    progress::-webkit-progress-value { width: 100% }
+
+    input::-webkit-calender-picker-indicator,
+    input::-webkit-clear-button,
+    input[type=color i]::-webkit-color-swatch,
+    input[type=color i]::-webkit-color-swatch-wrapper,
+    input::-webkit-input-placeholder,
+    input::-webkit-inner-spin-button,
+    input[type=file i]::webkit-file-upload-button,
+    input[type=range i]::-webkit-media-slider-container,
+    input[type=range i]::-webkit-media-slider-thumb,
+    input[type=range i]::-webkit-slider-container,
+    input[type=range i]::-webkit-slider-thumb,
+    input[type=search i]::-webkit-search-cancel-button,
+    input[type=search i]::-webkit-search-decoration,
+    input[type=search i]::-webkit-search-results-decoration,
+    input::-webkit-textfield-decoration-container,
+    meter::-webkit-meter-bar,
+    meter::-webkit-even-less-good-value,
+    meter::-webkit-meter-inner-element,
+    meter::-webkit-meter-optimum-value,
+    meter::-webkit-meter-suboptimum-value,
+    progress::-webkit-progress-value { -webkit-user-modify: read-only !important }
+
+    /* <input>, <nobr>, <select> */
+    input[type=file i]::webkit-file-upload-button,
+    nobr,
+    select:-internal-list-box { white-space: nowrap }
+
+    /* <input>, <select>, <textarea> */
+    input, select, textarea {
+        background-color: #FFFFFF;
+        -webkit-rtl-ordering: logical
+    }
+        /* Pseudo */
+            /* Webkit : Auto Fill */
+            input:-webkit-autofill,
+            select:-webkit-autofill,
+            textarea:-webkit-autofill {
+                background-color: #CCCCFF !important;
+                background-image: none !important;
+                color: initial !important
+            }
+
+    /* <input>, <keygen>, <select>, <textarea> */
+    input:focus,
+    keygen:focus,
+    select:focus,
+    textarea:focus { outline-offset: -2px }
+
+    /* <input>, <listing>, <plaintext>, <pre>, <option>, <select>, <xmp> */
+    input::-webkit-input-placeholder,
+    input[type=button i],
+    input[type=reset i],
+    input[type=submit i],
+    listing,
+    plaintext, pre,
+    option,
+    select,
+    xmp { white-space: pre }
+
+    /* <ins>, <u> */
+    ins, u { text-decoration: underline }
+
+    /* <keygen>, <select> */
+    keygen, select { border-radius: 5px }
+
+    /* <legend> */
+    legend {
+        border: none;
+        -webkit-padding-end: 2px;
+        -webkit-padding-start: 2px
+    }
+
+    /* <li> */
+    li {
+        display: list-item;
+        text-align: -webkit-match-parent
+    }
+
+    /* <mark> */
+    mark {
+        background-color: #FFFF33;
+        color: #000000
+    }
+
+    /* <meter> */
+    meter {
+        width: 80px;
+        -webkit-appearance: meter
+    }
+        /* Pseudo */
+            /* Webkit : Meter Bar */
+            meter::-webkit-meter-bar { background-color: #CCCCCC }
+
+            /* Webkit : Meter Even Less Good Value --- NOTE (Lapys) -> Bad. */
+            meter::-webkit-meter-even-less-good-value { background-color: #FF3333 }
+
+            /* Webkit : Meter Optimum Value --- NOTE (Lapys) -> Good. */
+            meter::-webkit-meter-optimum-value { background-color: #66FF66 }
+
+            /* Webkit : Meter Sub-Optimum Value --- NOTE (Lapys) -> Average. */
+            meter::-webkit-meter-suboptimum-value { background-color: #FFFF66 }
+
+    /* <meter>, <progress> */
+    meter, progress {
+        height: 16px;
+        vertical-align: -3.2px
+    }
+
+    meter::-webkit-meter-inner-element,
+    progress::-webkit-progress-inner-element { -webkit-appearance: inherit }
+
+    /* <listing>, <plaintext>, <pre>, <xmp> */
+    listing, plaintext, pre, xmp { margin: 16px 0 }
+
+    /* <ol> */
+    ol { list-style-type: decimal }
+
+    /* <ol>, <ul> */
+        /* <ol>, <ul> */
+        ol ol, ol ul, ul ol, ul ul {
+            -webkit-margin-after: 0;
+            -webkit-margin-before: 0
+        }
+
+        /* <ul> */
+        ol ul, ul ul { list-style-type: disc }
+            /* <ul> */
+            ol ol ul, ol ul ul, ul ol ul, ul ul ul { list-style-type: square }
+
+    /* <optgroup> */
+    optgroup { font-weight: bolder }
+
+    /* <option> */
+    option {
+        font-weight: normal;
+        min-height: 19.2px;
+        padding: 0 2px 1px 2px
+    }
+        /* States > Internal Spatial Navigation Focus */
+        option:-internal-spatial-navigation-focus {
+            outline: 1px dashed #000000;
+            outline-offset: -1px
+        }
+
+    /* <progress> */
+    progress {
+        width: 160px;
+        -webkit-appearance: progress-bar
+    }
+        /* Pseudo */
+            /* Webkit : Progress Bar */
+            progress::-webkit-progress-bar { background-color: #808080 }
+
+            /* Webkit : Progress Inner Element */
+            progress::-webkit-progress-inner-element { -webkit-user-modify: read-only }
+
+            /* Webkit : Progress Value */
+            progress::-webkit-progress-value { background-color: #00CC00 }
+
+    /* <ruby> */
+        /* <rt> */
+        ruby > rt { font-size: 50% }
+
+    /* <ruby>, <rt> */
+    ruby, rt { text-indent: 0 }
+
+    /* <rt> */
+    rt { -webkit-text-emphasis: none }
+
+    /* <select> */
+    select { -webkit-appearance: menulist }
+        /* Not > (States > Internal List Box) */
+        select:not(:-internal-list-box) { overflow: visible !important }
+
+        /* States > Internal List Box */
+        select:-internal-list-box {
+            border: 1px inset #808080;
+            border-radius: initial;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            vertical-align: text-bottom;
+            -webkit-appearance: listbox;
+            -webkit-user-select: none
+        }
+
+        /* <hr> */
+        select:internal-list-box hr { border-style: none }
+
+        /* <option> */
+            /* Pseudo > Before */
+            select:-internal-list-box optgroup option:before { content: "\00a0\00a0\00a0\00a0" }
+
+            /* States > Checked( > States > Disabled) */
+            select:-internal-list-box:disabled option:checked,
+            select:-internal-list-box option:checked:disabled { color: #808080 !important }
+
+        /* <option>, <optgroup> */
+        select:-internal-list-box optgroup,
+        select:-internal-list-box option { line-height: initial !important }
+
+    /* <select>, <textarea> */
+    select, textarea { border: 1px solid }
+
+    /* <small>, <sub>, <sup> */
+    small, sub, sup { font-size: smaller }
+
+    /* <sub> */
+    sub { vertical-align: sub }
+
+    /* <summary> */
+    summary { -webkit-margin-end: 6.4px }
+
+    /* <sup> */
+    sup { vertical-align: super }
+
+    /* <table> */
+    table {
+        border-collapse: separate;
+        border-color: gray;
+        border-spacing: 2px;
+        display: table
+    }
+        /* <caption> */
+        table > caption { display: table-caption }
+
+        /* <col> */
+        table > col { display: table-column }
+
+        /* <colgroup> */
+        table > colgroup { display: table-column-group }
+
+        /* <tbody> */
+        table > tbody { display: table-row-group }
+
+        /* <tbody>, <tfoot>, <thead>, <tr> */
+        table > tbody,
+        table > tfoot,
+        table > thead,
+        table > tr { vertical-align: middle }
+
+        /* <td>, <th> */
+        table > td,
+        table > th {
+            display: table-cell;
+            vertical-align: inherit
+        }
+
+        /* <tfoot> */
+        table > tfoot { display: table-footer-group }
+
+        /* <thead> */
+        table > thead { display: table-header-group }
+
+        /* <tr> */
+        table > tr { display: table-row }
+
+    /* <textarea> */
+    textarea {
+        flex-direction: column;
+        padding: 2px;
+        resize: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        -webkit-appearance: textarea
+    }
+
+    textarea[dir=auto i] { unicode-bidi: plaintext }
+
+    /* <video> */
+    video { object-fit: contain }
