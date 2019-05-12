@@ -76,6 +76,19 @@
             /* Link */
             :link { text-decoration: none }
 
+            /* Mozilla : Has Direction Attribute */
+            :-moz-has-dir-attr { unicode-bidi: isolate }
+
+            /* Mozilla : Direction Attribute Left-To-Right */
+            :moz-dir-attr-ltr { direction: ltr }
+
+            /* Mozilla : Direction Attribute Right-To-Left */
+            :moz-dir-attr-rtl { direction: rtl }
+
+            /* Mozilla : Direction Attribute Like Automatic > States > Direction */
+            :moz-dir-attr-like-auto:dir(ltr) { direction: ltr }
+            :moz-dir-attr-like-auto:dir(rtl) { direction: rtl }
+
             /* Selection --- NOTE (Lapys) -> Define this to subtly push the developer to customize this. */
             ::selection {
                 background-color: #0066FF;
@@ -100,6 +113,23 @@
 
     /* <address>, <cite>, <dfn>, <i>, <em>, <var> */
     address, cite, dfn, i, em, var { font-style: italic }
+
+    /* <address>, <article>, <aside>, <bdi>, <blockquote>, <body>, <caption>, <center>, <col>, <colgroup>, <dd>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <form>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <header>, <hgroup>, <hr>, <html>, <legend>, <li>, <listing>, <main>, <marquee>, <menu>, <nav>, <noframes>, <ol>, <output>, <p>, <plaintext>, <pre>, <section>, <summary>, <table>, <tbody>, <td>, <tfoot>, <th>, <thead>, <tr>, <ul>, <xmp> */
+    address, article, aside,
+    bdi, blockquote, body,
+    caption, center, col, colgroup,
+    dd, dir, div, dl, dt,
+    fieldset, figcaption, figure, footer, form,
+    h1, h2, h3, h4, h5, h6, header, hgroup, hr, html,
+    legend, li, listing,
+    main, marquee, menu,
+    nav, noframes,
+    ol, output,
+    p, plaintext, pre,
+    section, summary,
+    table, tbody, td, tfoot, th, thead, tr,
+    ul,
+    xmp { unicode-bidi: isolate }
 
     /* <address>, <article>, <aside>, <blockquote>, <body>, <center>, <dd>, <details>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <form>, <frame>, <frameset>, <header>, <hgroup>, <hr>, <html>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <layer>, <legend>, <listing>, <main>, <menu>, <nav>, <ol>, <optgroup>, <option>, <p>, <plaintext>, <pre>, <rt>, <section>, <summary>, <ul>, <xmp> */
     address,
@@ -130,14 +160,26 @@
     /* <b>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <th>, <strong> */
     b, h1, h2, h3, h4, h5, h6, th, strong { font-weight: bold }
 
-    /* <bdi>, <output> */
-    bdi, output { unicode-bidi: isolate }
-
     /* <bdo> */
     bdo { unicode-bidi: bidi-override }
+        /* States > Mozilla : Has Direction Attribute */
+        bdo:-moz-has-dir-attr { unicode-bidi: isolate-override }
 
     /* <big> */
     big { font-size: larger }
+
+    /* <blockquote> */
+    blockquote[type=cite] {
+        border-color: #3333FF;
+        border-inline-start: solid;
+        margin-inline-end: 0;
+        margin-inline-start: 0;
+        padding-inline-start: 16px
+    }
+
+    /* <blockquote>, <table> */
+    blockquote[type=cite],
+    table[rules] { border-width: thin }
 
     /* <blockquote>, <dd>, <figure> */
     blockquote, dd, figure {
@@ -145,7 +187,27 @@
         -webkit-margin-start: 40px
     }
 
-    /* <body> --- NOTE (Lapys) -> Remove the margin from the `<body>` element. */
+    /* <blockquote>, <figure> */
+    blockquote, figure {
+        margin-inline-end: 40px;
+        margin-inline-start: 40px
+    }
+
+    /* <blockquote>, <dl>, <figure>, <h1>, <listing>, <multicol>, <p>, <plaintext>, <pre>, <xmp> */
+    blockquote,
+    dl,
+    figure,
+    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
+    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1,
+    listing,
+    multicol,
+    p, plaintext, pre,
+    xmp {
+        margin-block-end: 16px;
+        margin-block-start: 16px
+    }
+
+    /* <body> */
     body { font-size: 16px }
         /* States */
             /* Webkit : Full Page Media */
@@ -155,11 +217,8 @@
     body, button,
     input,
     keygen, keygen::-webkit-keygen-select,
-    input[type=file i]::webkit-file-upload-button,
     select,
-    textarea {
-        margin: 0
-    }
+    textarea { margin: 0 }
 
     /* <body>, <embed>, <html>, <iframe>, <input>, <object> */
     body:focus,
@@ -195,14 +254,6 @@
     input[type=reset i]:disabled:active,
     input[type=submit i]:disabled:active { border-style: outset }
 
-    /* <button>, <caption>, <input> */
-    button,
-    input[type=button i],
-    input[type=file i]::-webkit-file-upload-button,
-    input[type=reset i],
-    input[type=submit i],
-    table > caption { text-align: center }
-
     /* <button>, <input>, <select> */
     button, input, select { color: #000000 }
     button,
@@ -211,6 +262,15 @@
     input[type=reset i],
     input[type=submit i],
     select:-internal-list-box { align-items: flex-start }
+
+    /* <button>, <caption>, <center>, <input> */
+    button,
+    center,
+    input[type=button i],
+    input[type=file i]::-webkit-file-upload-button,
+    input[type=reset i],
+    input[type=submit i],
+    table > caption { text-align: center }
 
     /* <button>, <input>, <label>, <select> */
     button,
@@ -238,16 +298,20 @@
         color: initial;
         font: -webkit-small-control;
         letter-spacing: normal;
-        text-indent: 0;
         text-shadow: none;
         text-transform: none;
         text-rendering: optimizeLegibility;
         word-spacing: normal
     }
 
+    /* <button>, <input>, <keygen>, <ruby>, <rt>, <select>, <textarea> */
+    button, input, keygen, ruby, rt, select, textarea { text-indent: 0 }
+
     /* <button>, <input>, <keygen>, <rt>, <select>, <textarea> */
     button, input, keygen, rt, select, textarea { line-height: normal }
-    button, input, keygen, ruby > rt, select, textarea { text-align: start }
+
+    /* <button>, <input>, <keygen>, <rt>, <select>, <table>, <textarea> */
+    button, input, keygen, ruby > rt, select, table[align=right] textarea { text-align: start }
 
     /* <button>, <input>, <keygen>, <meter>, <progress>, <select>, <textarea> */
     button, input, keygen, meter, progress, select, textarea { -webkit-writing-mode: horizontal-tb !important }
@@ -309,6 +373,9 @@
 
     /* <del>, <s>, <strike> */
     del, s, strike { text-decoration: line-through }
+
+    /* <dd> */
+    dd { margin-inline-start: 40px }
 
     /* <dialog> */
     dialog {
@@ -385,30 +452,41 @@
     /* <h1> */
     h1 {
         font-size: 200%;
+        margin-block-end: 10.72px;
+        margin-block-start: 10.72px;
         -webkit-margin-after: 10.72px;
         -webkit-margin-before: 10.72px
     }
 
+    :-moz-any(article, aside, nav, section) h1,
     :-webkit-any(article, aside, nav, section) h1 {
         font-size: 150%;
+        margin-block-end: 13.28px;
+        margin-block-start: 13.28px;
         -webkit-margin-after: 13.28px;
         -webkit-margin-before: 13.28px
     }
 
-    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 { font-size: 117% }
+    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
+    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+        font-size: 117%
+    }
 
+    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
     :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
         font-size: 100%;
         -webkit-margin-after: 21.28px;
         -webkit-margin-before: 21.28px
     }
 
+    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
     :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
         font-size: 83%;
         -webkit-margin-after: 26.72px;
         -webkit-margin-before: 26.72px
     }
 
+    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
     :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
         font-size: 67%;
         -webkit-margin-after: 37.28px;
@@ -560,6 +638,7 @@
             /* Webkit : File Upload Button */
             input[type=file i]::webkit-file-upload-button {
                 font-size: inherit;
+                margin: 0;
                 -webkit-appearance: push-button
             }
 
@@ -766,6 +845,12 @@
         text-align: -webkit-match-parent
     }
 
+    /* <listing> */
+    listing { font-size: medium }
+
+    /* <listing>, <plaintext>, <pre>, <xmp> */
+    listing, plaintext, pre, xmp { margin: 16px 0 }
+
     /* <mark> */
     mark {
         background-color: #FFFF33;
@@ -799,8 +884,8 @@
     meter::-webkit-meter-inner-element,
     progress::-webkit-progress-inner-element { -webkit-appearance: inherit }
 
-    /* <listing>, <plaintext>, <pre>, <xmp> */
-    listing, plaintext, pre, xmp { margin: 16px 0 }
+    /* <pre>, <span> */
+    pre[_moz_quote=true], span[_moz_quote=true] { color: #3333FF }
 
     /* <ol> */
     ol { list-style-type: decimal }
@@ -850,9 +935,6 @@
     /* <ruby> */
         /* <rt> */
         ruby > rt { font-size: 50% }
-
-    /* <ruby>, <rt> */
-    ruby, rt { text-indent: 0 }
 
     /* <rt> */
     rt { -webkit-text-emphasis: none }
@@ -910,6 +992,8 @@
         border-spacing: 2px;
         display: table
     }
+    table[align=left] { float: left }
+    table[align=right] { float: right }
         /* <caption> */
         table > caption { display: table-caption }
 
@@ -953,8 +1037,10 @@
         word-wrap: break-word;
         -webkit-appearance: textarea
     }
-
     textarea[dir=auto i] { unicode-bidi: plaintext }
+        /* States > Mozilla : Direction Attribute Like Auto */
+        pre:-moz-dir-attr-like-auto,
+        textarea:-moz-dir-attr-like-auto { unicode-bidi: plaintext }
 
     /* <video> */
     video { object-fit: contain }
