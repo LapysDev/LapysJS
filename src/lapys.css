@@ -1,4 +1,4 @@
-/** CSS At-Rules
+/**
     @author: Lapys Dev Team
     @description: LapysCSS is a subset of LapysJS that focuses on the visual augmentation of its JavaScript counterpart.
     @version: 0.0.5
@@ -28,1019 +28,1394 @@
             - `behavior` properties` `url` value should be relative to the documents their injected from, not this current stylesheet.
             - Support vendor prefixes at end of development.
 */
-    /* Character-Set Encoding */
-    @charset "UTF-8";
+/* [Universal Features] */
+    /* CSS At-Rules */
+        /* Character-Set Encoding */
+        @charset "UTF-8";
 
-    /* Media */
-    @media (inverted-colors) {
-        /* <img>, <picture>, <video> */
-        img:not(picture > img), picture, video { filter: invert(100%) }
-    }
-
-    /* Namespace ---  NOTE (Lapys) -> Set default namespace to HTML. */
-    @namespace "http://www.w3.org/1999/xhtml";
-    @namespace xul url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
-
-    /* Page */
-    @page {
-        border-width: 0;
-        margin: auto;
-        padding: 0;
-        size: auto
-    }
-
-/* DOM Elements */
-    /* All */
-    * {
-        box-decoration-break: inherit;
-        box-sizing: inherit
-    }
-        /* @media > Print */
-        @media print { * { -webkit-columns: auto !important } }
-
-        /* Pseudo */
-            /* (After, Before) */
-            ::after, ::before { box-sizing: inherit }
-
-            /* Webkit : Input Placeholder */
-            ::-webkit-input-placeholder {
-                color: #A9A9A9;
-                pointer-events: none !important;
-                -webkit-text-security: none
-            }
-
-        /* States */
-            /* Focus */
-            :focus { outline: auto }
-
-            /* Link */
-            :link { text-decoration: none }
-
-            /* Mozilla : Has Direction Attribute */
-            :-moz-has-dir-attr { unicode-bidi: isolate }
-
-            /* Mozilla : Direction Attribute Left-To-Right */
-            :moz-dir-attr-ltr { direction: ltr }
-
-            /* Mozilla : Direction Attribute Right-To-Left */
-            :moz-dir-attr-rtl { direction: rtl }
-
-            /* Mozilla : Direction Attribute Like Automatic > States > Direction */
-            :moz-dir-attr-like-auto:dir(ltr) { direction: ltr }
-            :moz-dir-attr-like-auto:dir(rtl) { direction: rtl }
-
-            /* Selection --- NOTE (Lapys) -> Define this to subtly push the developer to customize this. */
-            ::selection {
-                background-color: #0066FF;
-                color: #FFFFFF;
-                text-shadow: initial
-            }
-
-    /* (All > <h1>), <blockquote>, <dir>, <dl>, <figure>, <h3>, <menu>, <ol>, <p>, <ul> */
-    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1,
-    blockquote, dir, dl, figure, h3, menu, ol, p, ul {
-        -webkit-margin-after: 16px;
-        -webkit-margin-before: 16px
-    }
-
-    /* <a> */
-        /* States */
-            /* Webkit : Any Link */
-            a:-webkit-any-link { text-decoration: none }
-
-    /* <a>, <input>, <textarea> */
-    a:-webkit-any-link, input, textarea { cursor: auto }
-
-    /* <address>, <cite>, <dfn>, <i>, <em>, <var> */
-    address, cite, dfn, i, em, var { font-style: italic }
-
-    /* <address>, <article>, <aside>, <bdi>, <blockquote>, <body>, <caption>, <center>, <col>, <colgroup>, <dd>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <form>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <header>, <hgroup>, <hr>, <html>, <legend>, <li>, <listing>, <main>, <marquee>, <menu>, <nav>, <noframes>, <ol>, <output>, <p>, <plaintext>, <pre>, <section>, <summary>, <table>, <tbody>, <td>, <tfoot>, <th>, <thead>, <tr>, <ul>, <xmp> */
-    address, article, aside,
-    bdi, blockquote, body,
-    caption, center, col, colgroup,
-    dd, dir, div, dl, dt,
-    fieldset, figcaption, figure, footer, form,
-    h1, h2, h3, h4, h5, h6, header, hgroup, hr, html,
-    legend, li, listing,
-    main, marquee, menu,
-    nav, noframes,
-    ol, output,
-    p, plaintext, pre,
-    section, summary,
-    table, tbody, td, tfoot, th, thead, tr,
-    ul,
-    xmp { unicode-bidi: isolate }
-
-    /* <address>, <article>, <aside>, <blockquote>, <body>, <center>, <dd>, <details>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <form>, <frame>, <frameset>, <header>, <hgroup>, <hr>, <html>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <layer>, <legend>, <listing>, <main>, <menu>, <nav>, <ol>, <optgroup>, <option>, <p>, <plaintext>, <pre>, <rt>, <section>, <summary>, <ul>, <xmp> */
-    address,
-    article, aside,
-    blockquote,
-    body,
-    center,
-    dd, details, dir, div, dl, dt,
-    fieldset, figcaption, figure, footer, form, frame, frameset,
-    header, hgroup, hr, html, h1, h2, h3, h4, h5, h6,
-    input[type=range i]::-webkit-media-slider-thumb, input[type=search i]::-webkit-search-cancel-button, input[type=search i]::-webkit-search-decoration, input[type=search i]::-webkit-search-results-decoration, input[type=search i]::-webkit-slider-runnable-track, input[type=search i]::-webkit-slider-thumb, input[type=range i]::-webkit-slider-runnable-track,
-    layer, legend, listing,
-    main, menu,
-    nav,
-    ol, optgroup, option,
-    p, plaintext, pre,
-    ruby > rt,
-    section, summary,
-    ul,
-    xmp { display: block }
-
-    /* <area> */
-    area { cursor: pointer }
-
-    /* <area>, <map>, <output> */
-    area, map, output { display: inline }
-
-    /* <b>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <th>, <strong> */
-    b, h1, h2, h3, h4, h5, h6, th, strong { font-weight: bold }
-
-    /* <bdo> */
-    bdo { unicode-bidi: bidi-override }
-        /* States > Mozilla : Has Direction Attribute */
-        bdo:-moz-has-dir-attr { unicode-bidi: isolate-override }
-
-    /* <big> */
-    big { font-size: larger }
-
-    /* <blockquote> */
-    blockquote[type=cite] {
-        border-color: #3333FF;
-        border-inline-start: solid;
-        margin-inline-end: 0;
-        margin-inline-start: 0;
-        padding-inline-start: 16px
-    }
-
-    /* <blockquote>, <table> */
-    blockquote[type=cite],
-    table[rules] { border-width: thin }
-
-    /* <blockquote>, <dd>, <figure> */
-    blockquote, dd, figure {
-        -webkit-margin-end: 40px;
-        -webkit-margin-start: 40px
-    }
-
-    /* <blockquote>, <figure> */
-    blockquote, figure {
-        margin-inline-end: 40px;
-        margin-inline-start: 40px
-    }
-
-    /* <blockquote>, <dl>, <figure>, <h1>, <listing>, <multicol>, <p>, <plaintext>, <pre>, <xmp> */
-    blockquote,
-    dl,
-    figure,
-    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
-    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1,
-    listing,
-    multicol,
-    p, plaintext, pre,
-    xmp {
-        margin-block-end: 16px;
-        margin-block-start: 16px
-    }
-
-    /* <body> */
-    body { font-size: 16px }
-        /* States */
-            /* Webkit : Full Page Media */
-            body:-webkit-full-page-media { background-color: #000000 }
-
-    /* <body>, <button>, <input>, <keygen>, <select>, <textarea> */
-    body, button,
-    input,
-    keygen, keygen::-webkit-keygen-select,
-    select,
-    textarea { margin: 0 }
-
-    /* <body>, <embed>, <html>, <iframe>, <input>, <object> */
-    body:focus,
-    embed:focus,
-    html:focus,
-    iframe:focus,
-    input[readonly]:focus,
-    object:focus { outline: none }
-
-    /* <button> */
-    button { -webkit-appearance: button }
-
-    /* <button>, <input> */
-    button,
-    input[type=button i],
-    input[type=file i]::-webkit-file-upload-button,
-    input[type=reset i],
-    input[type=submit i] {
-        background-color: rgb(221, 221, 221);
-        border: 2px outset rgb(221, 221, 221);
-        padding: 2px 6px 3px 6px
-    }
-
-    button:active,
-    input[type=button i]:active,
-    input[type=file i]:active::-webkt-file-upload-button,
-    input[type=reset i]:active,
-    input[type=submit i]:active { border-style: inset }
-
-    button:disabled:active,
-    input[type=button i]:disabled:active,
-    input[type=file i]:disabled:active::-webkt-file-upload-button,
-    input[type=reset i]:disabled:active,
-    input[type=submit i]:disabled:active { border-style: outset }
-
-    /* <button>, <input>, <select> */
-    button, input, select { color: #000000 }
-    button,
-    input[type=button i],
-    input[type=file i]::-webkit-file-upload-button,
-    input[type=reset i],
-    input[type=submit i],
-    select:-internal-list-box { align-items: flex-start }
-
-    /* <button>, <caption>, <center>, <input> */
-    button,
-    center,
-    input[type=button i],
-    input[type=file i]::-webkit-file-upload-button,
-    input[type=reset i],
-    input[type=submit i],
-    table > caption { text-align: center }
-
-    /* <button>, <input>, <label>, <select> */
-    button,
-    input[type=button i],
-    input[type=file i]::-webkit-file-upload-button,
-    input[type=reset i],
-    input[type=submit i],
-    input::-webkit-inner-spin-button,
-    label,
-    select { cursor: default }
-
-    /* <button>, <input>, <keygen>, <optgroup>, <select>( > <option>) */
-    button:disabled,
-    input[type=button i]:disabled,
-    input[type=file i]:disabled::-webkit-file-upload-button,
-    input[type=reset i]:disabled,
-    input[type=submit i]:disabled,
-    keygen:disabled,
-    optgroup:disabled,
-    select:disabled,
-    select[disabled] > option { color: #808080 }
-
-    /* <button>, <input>, <keygen>, <select>, <textarea> */
-    button, input, keygen, select, textarea {
-        color: initial;
-        font: -webkit-small-control;
-        letter-spacing: normal;
-        text-shadow: none;
-        text-transform: none;
-        text-rendering: optimizeLegibility;
-        word-spacing: normal
-    }
-
-    /* <button>, <input>, <keygen>, <ruby>, <rt>, <select>, <textarea> */
-    button, input, keygen, ruby, rt, select, textarea { text-indent: 0 }
-
-    /* <button>, <input>, <keygen>, <rt>, <select>, <textarea> */
-    button, input, keygen, rt, select, textarea { line-height: normal }
-
-    /* <button>, <input>, <keygen>, <rt>, <select>, <table>, <textarea> */
-    button, input, keygen, ruby > rt, select, table[align=right] textarea { text-align: start }
-
-    /* <button>, <input>, <keygen>, <meter>, <progress>, <select>, <textarea> */
-    button, input, keygen, meter, progress, select, textarea { -webkit-writing-mode: horizontal-tb !important }
-
-    /* <button>, <input>, <keygen>, <marquee>, <meter>, <progress>, <select>, <summary>, <textarea> */
-    button,
-    input, input::-webkit-calender-picker-indicator, input::-webkit-clear-button, input::-webkit-inner-spin-button,
-    keygen,
-    marquee,
-    meter,
-    progress,
-    select,
-    summary::-webkit-details-marker,
-    textarea { display: inline-block }
-
-    /* <button>, <html>, <input>, <meter>, <progress>, <select> */
-    button,
-    html,
-    input[type=button i],
-    input[type=checkbox i],
-    input[type=color i]::-webkit-color-swatch-wrapper,
-    input[type=file i]::-webkit-file-upload-button,
-    input[type=radio i],
-    input[type=range i]::-webkit-media-slider-container,
-    input[type=range i]::-webkit-media-slider-thumb,
-    input[type=range i]::-webkit-slider-container,
-    input[type=range i]::-webkit-slider-runnable-track,
-    input[type=range i]::-webkit-slider-thumb,
-    input[type=reset i],
-    input[type=search i],
-    input[type=submit i],
-    meter,
-    meter::-webkit-meter-bar,
-    meter::-webkit-meter-even-less-good-value,
-    meter::-webkit-meter-optimum-value,
-    meter::-webkit-meter-suboptimum-value,
-    progress,
-    progress::-webkit-progress-bar,
-    progress::-webkit-progress-value,
-    select { box-sizing: border-box }
-
-    /* <code>, <kbd>, <listing>, <plaintext>, <pre>, <samp>, <tt>, <xmp> */
-    code, kbd, listing, plaintext, pre, samp, tt, xmp { font-family: monospace }
-
-    /* <datalist>, <dialog>, <head>, <input>, <link>, <meta>, <noframes>, <param>, <rp>, <script>, <style>, <template>, <title> --- NOTE (Lapys) -> Children of the `<head>` element and itself are hidden. */
-    datalist,
-    dialog:not([open]),
-    head,
-    input[type=hidden i],
-    link,
-    meta,
-    noframes,
-    param,
-    ruby > rp,
-    script,
-    style,
-    template,
-    title { display: none }
-
-    /* <del>, <s>, <strike> */
-    del, s, strike { text-decoration: line-through }
-
-    /* <dd> */
-    dd { margin-inline-start: 40px }
-
-    /* <dialog> */
-    dialog {
-        background-color: #FFFFFF;
-        border-style: solid;
-        color: #000000;
-        height: -webkit-fit-content;
-        margin: auto;
-        padding: 16px;
-        position: absolute;
-        width: -webkit-fit-content
-    }
-
-    dialog,
-    dialog::backdrop { left: 0; right: 0 }
-        /* Pseudo > Backdrop */
-        dialog::backdrop {
-            background-color: rgba(0, 0, 0, .1);
-            bottom: 0;
-            position: fixed;
-            top: 0
+        /* Media */
+        @media (inverted-colors) {
+            /* <img>, <picture>, <video> */
+            img:not(picture > img), picture, video { filter: invert(100%) }
         }
 
-    /* <dir>, <menu>, <ul> */
-    dir, menu, ul { list-style-type: circle }
-
-    /* <dir>, <menu>, <ol>, <ul> */
-    dir, menu, ol, ul { -webkit-padding-start: 40px }
-
-    /* <dl>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <p> */
-    dl, h1, h2, h3, h4, h5, h6, p {
-        -webkit-margin-end: 0;
-        -webkit-margin-start: 0
-    }
-
-    /* <fieldset> */
-    fieldset {
-        border: 2px groove #C0C0C0;
-        min-width: -webkit-min-content;
-        -webkit-margin-end: 2px;
-        -webkit-margin-start: 2px;
-        -webkit-padding-after: 10px;
-        -webkit-padding-before: 10px;
-        -webkit-padding-end: 12px;
-        -webkit-padding-start: 12px
-    }
-
-    /* <form> */
-    form { margin-top: 0 }
-
-    /* <frameset>, <tbody>, <tfoot>, <thead>, <tr> */
-    frameset,
-    table > tbody,
-    table > tfoot,
-    table > thead,
-    table > tr { border-color: inherit }
-
-    /* <hr> */
-    hr {
-        border-style: solid;
-        border-width: 1px;
-        -webkit-margin-after: 8px;
-        -webkit-margin-before: 8px;
-        -webkit-margin-end: auto;
-        -webkit-margin-start: auto
-    }
-
-    /* <html> */
-    html {
-        box-decoration-break: slice;
-        *behavior: url(resources/htc/box-sizing.htc)
-    }
-
-    /* <h1> */
-    h1 {
-        font-size: 200%;
-        margin-block-end: 10.72px;
-        margin-block-start: 10.72px;
-        -webkit-margin-after: 10.72px;
-        -webkit-margin-before: 10.72px
-    }
-
-    :-moz-any(article, aside, nav, section) h1,
-    :-webkit-any(article, aside, nav, section) h1 {
-        font-size: 150%;
-        margin-block-end: 13.28px;
-        margin-block-start: 13.28px;
-        -webkit-margin-after: 13.28px;
-        -webkit-margin-before: 13.28px
-    }
-
-    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
-    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
-        font-size: 117%
-    }
-
-    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
-    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
-        font-size: 100%;
-        -webkit-margin-after: 21.28px;
-        -webkit-margin-before: 21.28px
-    }
-
-    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
-    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
-        font-size: 83%;
-        -webkit-margin-after: 26.72px;
-        -webkit-margin-before: 26.72px
-    }
-
-    :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
-    :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
-        font-size: 67%;
-        -webkit-margin-after: 37.28px;
-        -webkit-margin-before: 37.28px
-    }
-
-    /* <h2> */
-    h2 {
-        font-size: 150%;
-        -webkit-margin-after: 13.28px;
-        -webkit-margin-before: 13.28px
-    }
-
-    /* <h3> */
-    h3 { font-size: 117% }
-
-    /* <h4> */
-    h4 {
-        font-size: 100%;
-        -webkit-margin-after: 21.28px;
-        -webkit-margin-before: 21.28px
-    }
-
-    /* <h5> */
-    h5 {
-        font-size: 83%;
-        -webkit-margin-after: 26.72px;
-        -webkit-margin-before: 26.72px
-    }
-
-    /* <h6> */
-    h6 {
-        font-size: 67%;
-        -webkit-margin-after: 37.28px;
-        -webkit-margin-before: 37.28px
-    }
-
-    /* <iframe>, <input> */
-    iframe, input { border: 2px inset }
-
-    /* <input> */
-    input {
-        padding: 1px;
-        -webkit-appearance: textfield
-    }
-    input[type=button i],
-    input[type=reset i],
-    input[type=submit i] { -webkit-appearance: push-button }
-    input[type=button i],
-    input[type=reset i],
-    input[type=submit i],
-    input::-webkit-inner-spin-button { -webkit-user-select: none }
-    input[type=checkbox i] { -webkit-appearance: checkbox }
-    input[type=checkbox i],
-    input[type=radio i] {
-        background-color: initial;
-        border: initial;
-        margin: 3px 3.695315ex;
-        padding: initial;
-        -webkit-appearance: radio
-    }
-    input[type=color i] {
-        background-color: #DDDDDD;
-        border: 1px solid #A9A9A9;
-        height: 23px;
-        padding: 1px 2px;
-        width: 44px;
-        -webkit-appearance: square-button
-    }
-    input[type=color i][list] {
-        height: 23px;
-        width: 88px;
-        -webkit-appearance: menulist
-    }
-    input[type=file i] {
-        align-items: baseline;
-        color: inherit;
-        text-align: start !important
-    }
-    input[type=file i], input[type=hidden i], input[type=image i] {
-        background-color: initial;
-        -webkit-appearance: initial
-    }
-    input[type=file i], input[type=hidden i], input[type=image i], input[type=range i] {
-        border: initial;
-        padding: initial
-    }
-    input[type=password i] { -webkit-text-security: circle !important }
-    input[type=range i] {
-        color: #909090;
-        margin: 2px;
-        -webkit-appearance: slider-horizontal
-    }
-    input[type=search i] { -webkit-appearance: searchfield }
-        /* Pseudo */
-            /* Webkit : Calender Picker Indicator */
-            input::-webkit-calender-picker-indicator { padding: 2.72px 5.44px }
-                /* States > Hover */
-                input::-webkit-calender-picker-indicator:hover { background-color: #CCCCCC }
-
-            /* Webkit : (Calender Picker Indicator, Clear Button, Inner Spin Button, Search Cancel Button) */
-            input::-webkit-calender-picker-indicator,
-            input::-webkit-clear-button,
-            input::-webkit-inner-spin-button,
-            input[type=search i]::-webkit-search-cancel-button {
-                opacity: 0;
-                pointer-events: none;
-                -webkit-appearance: searchfield-cancel-button
-            }
-
-            /* Webkit : (Clear Button, Inner Spin Button, Search Cancel Button, Search (Results) Decoration) */
-            input::-webkit-clear-button,
-            input::-webkit-inner-spin-button,
-            input[type=search i]::-webkit-search-cancel-button,
-            input[type=search i]::-webkit-search-decoration,
-            input[type=search i]::-webkit-search-results-decoration { flex: none }
-
-            /* Webkit : Color Swatch */
-            input[type=color i]::-webkit-color-swatch {
-                background-color: #000000;
-                border: 1px solid #999999
-            }
-
-            input[type=color i][list]::-webkit-color-swatch { border-color: #000000 }
-
-            /* Webkit : (Color Swatch, (Media) Slider Container, Slider Runnable Track) */
-            input[type=color i]::-webkit-color-swatch,
-            input[type=range i]::-webkit-media-slider-container,
-            input[type=range i]::-webkit-slider-container,
-            input[type=range i]::-webkit-slider-runnable-track {
-                flex: 1;
-                min-width: 0
-            }
-
-            /* Webkit : Color Swatch Wrapper */
-            input[type=color i]::-webkit-color-swatch-wrapper { padding: 4px 2px }
-
-            input[type=color i][list]::-webkit-color-swatch-wrapper {
-                padding-left: 8px;
-                padding-right: 24px
-            }
-
-            /* Webkit : (Color Swatch Wrapper, (Media) Slider Container, Text Field Decoration Container) */
-            input::-webkit-textfield-decoration-container,
-            input[type=color i]::-webkit-color-swatch-wrapper,
-            input[type=range i]::-webkit-media-slider-container,
-            input[type=range i]::-webkit-slider-container { display: flex }
-
-            /* Webkit : File Upload Button */
-            input[type=file i]::webkit-file-upload-button {
-                font-size: inherit;
-                margin: 0;
-                -webkit-appearance: push-button
-            }
-
-            /* Webkit : Inner Spin Button */
-            input::-webkit-inner-spin-button {
-                align-self: stretch;
-                -webkit-appearance: inner-spin-button
-            }
-
-            /* Webkit : Input Placeholder */
-            input::-webkit-input-placeholder {
-                overflow: hidden;
-                word-wrap: normal
-            }
-
-            /* Webkit : ((Media) Slider Container, Text Field Decoration Container) */
-            input::-webkit-textfield-decoration-container,
-            input[type=range i]::-webkit-media-slider-container,
-            input[type=range i]::-webkit-slider-container { content: none !important }
-            input[type=search i]::-webkit-textfield-decoration-container { direction: ltr }
-
-            /* Webkit : (Media) Slider Thumb */
-            input[type=range i]::-webkit-media-slider-thumb,
-            input[type=range i]::-webkit-slider-thumb {
-                -webkit-appearance: sliderthumb-horizontal
-            }
-
-            /* Webkit : Search Cancel Button */
-            input[type=search i]::-webkit-search-cancel-button {
-                -webkit-margin-start: 1px
-            }
-
-            /* Webkit : Search Decoration */
-            input[type=search i]::-webkit-search-decoration {
-                -webkit-appearance: searchfield-decoration
-            }
-
-            /* Webkit : Search (Results) Decoration */
-            input[type=search i]::-webkit-search-decoration,
-            input[type=search i]::-webkit-search-results-decoration {
-                margin: auto 0;
-                -webkit-align-self: flex-start
-            }
-
-            /* Webkit : Search Results Decoration */
-            input[type=search i]::-webkit-search-results-decoration {
-                -webkit-appearance: searchfield-results-decoration
-            }
-
-            /* Webkit : Slider Runnable Track */
-            input[type=range i]::-webkit-slider-runnable-track { -webkit-align-self: center }
-
-        /* States */
-            /* Disabled > Pseudo > Webkit : (Calender Picker Indicator, (Clear, Inner Spin) Button) */
-            input:disabled::-webkit-calender-picker-indicator,
-            input[readonly]:disabled::-webkit-calender-picker-indicator,
-            input[type=date i]:disabled::-webkit-clear-button,
-            input[type=date i]:disabled::-webkit-inner-spin-button,
-            input[type=date i][readonly]:disabled::-webkit-clear-button,
-            input[type=date i][readonly]:disabled::-webkit-inner-spin-button,
-            input[type=datetime-local i]:disabled::-webkit-clear-button,
-            input[type=datetime-local i]:disabled::-webkit-inner-spin-button,
-            input[type=datetime-local i][readonly]:disabled::-webkit-clear-button,
-            input[type=datetime-local i][readonly]:disabled::-webkit-inner-spin-button,
-            input[type=month i]:disabled::-webkit-clear-button,
-            input[type=month i]:disabled::-webkit-inner-spin-button,
-            input[type=month i][readonly]:disabled::-webkit-clear-button,
-            input[type=month i][readonly]:disabled::-webkit-inner-spin-button,
-            input[type=week i]:disabled::-webkit-clear-button,
-            input[type=week i]:disabled::-webkit-inner-spin-button,
-            input[type=week i][readonly]:disabled::-webkit-clear-button,
-            input[type=week i][readonly]:disabled::-webkit-inner-spin-button { visibility: hidden }
-
-            /* Enabled > States > Read-Write > States > (Webkit : Any)( > Pseudo > Webkit : (Clear Button, Inner Spin Button, Search Cancel Button)) */
-            input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-calender-picker-indicator,
-            input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-clear-button,
-            input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-inner-spin-button,
-            input[type=search i]:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-search-cancel-button {
-                opacity: 1;
-                pointer-events: auto
-            }
-
-            /* Focus */
-            input[type=button i]:focus,
-            input[type=checkbox i]:focus,
-            input[type=file i]:focus,
-            input[type=file i]:focus::-webkit-file-upload-button,
-            input[type=hidden i]:focus,
-            input[type=image i]:focus,
-            input[type=radio i]:focus,
-            input[type=reset i]:focus,
-            input[type=search i]:focus,
-            input[type=submit i]:focus { outline-offset: 0 }
-
-    /* <input>, <select> */
-    input::-webkit-textfield-decoration-container,
-    input[type=range i]::-webkit-media-slider-container,
-    input[type=range i]::-webkit-slider-container,
-    select { align-items: center }
-
-    /* <input>, <summary> */
-    input::-webkit-calender-picker-indicator,
-    summary::-webkit-details-marker {
-        height: 10.56px;
-        width: 10.56px
-    }
-
-    /* <input>, <textarea> */
-    input, textarea { -webkit-user-select: text }
-
-    /* <input>, <meter>, <progress> */
-    input[type=color i]::-webkit-color-swatch-wrapper,
-    meter::-webkit-meter-bar,
-    meter::-webkit-meter-even-less-good-value,
-    meter::-webkit-meter-inner-element,
-    meter::-webkit-meter-optimum-value,
-    meter::-webkit-meter-suboptimum-value,
-    progress::-webkit-progress-bar,
-    progress::-webkit-progress-inner-element,
-    progress::-webkit-progress-value { height: 100% }
-
-    input[type=color i]::-webkit-color-swatch-wrapper,
-    meter::-webkit-meter-bar,
-    meter::-webkit-meter-inner-element,
-    progress::-webkit-progress-bar,
-    progress::-webkit-progress-inner-element,
-    progress::-webkit-progress-value { width: 100% }
-
-    input::-webkit-calender-picker-indicator,
-    input::-webkit-clear-button,
-    input[type=color i]::-webkit-color-swatch,
-    input[type=color i]::-webkit-color-swatch-wrapper,
-    input::-webkit-input-placeholder,
-    input::-webkit-inner-spin-button,
-    input[type=file i]::webkit-file-upload-button,
-    input[type=range i]::-webkit-media-slider-container,
-    input[type=range i]::-webkit-media-slider-thumb,
-    input[type=range i]::-webkit-slider-container,
-    input[type=range i]::-webkit-slider-thumb,
-    input[type=search i]::-webkit-search-cancel-button,
-    input[type=search i]::-webkit-search-decoration,
-    input[type=search i]::-webkit-search-results-decoration,
-    input::-webkit-textfield-decoration-container,
-    meter::-webkit-meter-bar,
-    meter::-webkit-even-less-good-value,
-    meter::-webkit-meter-inner-element,
-    meter::-webkit-meter-optimum-value,
-    meter::-webkit-meter-suboptimum-value,
-    progress::-webkit-progress-value { -webkit-user-modify: read-only !important }
-
-    /* <input>, <nobr>, <select> */
-    input[type=file i]::webkit-file-upload-button,
-    nobr,
-    select:-internal-list-box { white-space: nowrap }
-
-    /* <input>, <select>, <textarea> */
-    input, select, textarea {
-        background-color: #FFFFFF;
-        -webkit-rtl-ordering: logical
-    }
-        /* Pseudo */
-            /* Webkit : Auto Fill */
-            input:-webkit-autofill,
-            select:-webkit-autofill,
-            textarea:-webkit-autofill {
-                background-color: #CCCCFF !important;
-                background-image: none !important;
-                color: initial !important
-            }
-
-    /* <input>, <keygen>, <select>, <textarea> */
-    input:focus,
-    keygen:focus,
-    select:focus,
-    textarea:focus { outline-offset: -2px }
-
-    /* <input>, <listing>, <plaintext>, <pre>, <option>, <select>, <xmp> */
-    input::-webkit-input-placeholder,
-    input[type=button i],
-    input[type=reset i],
-    input[type=submit i],
-    listing,
-    plaintext, pre,
-    option,
-    select,
-    xmp { white-space: pre }
-
-    /* <ins>, <u> */
-    ins, u { text-decoration: underline }
-
-    /* <keygen>, <select> */
-    keygen, select { border-radius: 5px }
-
-    /* <legend> */
-    legend {
-        border: none;
-        -webkit-padding-end: 2px;
-        -webkit-padding-start: 2px
-    }
-
-    /* <li> */
-    li {
-        display: list-item;
-        text-align: -webkit-match-parent
-    }
-
-    /* <listing> */
-    listing { font-size: medium }
-
-    /* <listing>, <plaintext>, <pre>, <xmp> */
-    listing, plaintext, pre, xmp { margin: 16px 0 }
-
-    /* <mark> */
-    mark {
-        background-color: #FFFF33;
-        color: #000000
-    }
-
-    /* <meter> */
-    meter {
-        width: 80px;
-        -webkit-appearance: meter
-    }
-        /* Pseudo */
-            /* Webkit : Meter Bar */
-            meter::-webkit-meter-bar { background-color: #CCCCCC }
-
-            /* Webkit : Meter Even Less Good Value --- NOTE (Lapys) -> Bad. */
-            meter::-webkit-meter-even-less-good-value { background-color: #FF3333 }
-
-            /* Webkit : Meter Optimum Value --- NOTE (Lapys) -> Good. */
-            meter::-webkit-meter-optimum-value { background-color: #66FF66 }
-
-            /* Webkit : Meter Sub-Optimum Value --- NOTE (Lapys) -> Average. */
-            meter::-webkit-meter-suboptimum-value { background-color: #FFFF66 }
-
-    /* <meter>, <progress> */
-    meter, progress {
-        height: 16px;
-        vertical-align: -3.2px
-    }
-
-    meter::-webkit-meter-inner-element,
-    progress::-webkit-progress-inner-element { -webkit-appearance: inherit }
-
-    /* <pre>, <span> */
-    pre[_moz_quote=true], span[_moz_quote=true] { color: #3333FF }
-
-    /* <ol> */
-    ol { list-style-type: decimal }
-
-    /* <ol>, <ul> */
-        /* <ol>, <ul> */
-        ol ol, ol ul, ul ol, ul ul {
-            -webkit-margin-after: 0;
-            -webkit-margin-before: 0
+        /* Namespace ---  NOTE (Lapys) -> Set default namespace to HTML. */
+        @namespace "http://www.w3.org/1999/xhtml";
+        @namespace xul url(http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul);
+
+        /* Page */
+        @page {
+            border-width: 0;
+            margin: auto;
+            padding: 0;
+            size: auto
         }
 
-        /* <ul> */
-        ol ul, ul ul { list-style-type: disc }
-            /* <ul> */
-            ol ol ul, ol ul ul, ul ol ul, ul ul ul { list-style-type: square }
+    /* DOM Elements */
+        /* All */
+        * {
+            box-decoration-break: inherit;
+            box-sizing: inherit
+        }
+            /* @media > Print */
+            @media print { * { -webkit-columns: auto !important } }
 
-    /* <optgroup> */
-    optgroup { font-weight: bolder }
+            /* Pseudo */
+                /* (After, Before) */
+                ::after, ::before { box-sizing: inherit }
 
-    /* <option> */
-    option {
-        font-weight: normal;
-        min-height: 19.2px;
-        padding: 0 2px 1px 2px
-    }
-        /* States > Internal Spatial Navigation Focus */
-        option:-internal-spatial-navigation-focus {
-            outline: 1px dashed #000000;
-            outline-offset: -1px
+                /* Cue */
+                ::cue {
+                    background-color: rgba(0, 0, 0, .8);
+                    font-family: sans-serif;
+                    color: #FFFFFF;
+                    white-space: pre-line
+                }
+
+                /* Webkit : Full Screen Ancestor */
+                    /* Not > <iframe> */
+                    :-webkit-full-screen-ancestor:not(iframe) {
+                        clip: none !important;
+                        opacity: 1 !important;
+                        z-index: auto !important;
+                        -webkit-box-reflect: none !important;
+                        -webkit-filter: none !important;
+                        -webkit-mask: none !important;
+                        -webkit-perspective: none !important;
+                        -webkit-transform: none !important;
+                        -webkit-transform-style: flat !important
+                    }
+
+                /* Webkit : Input Placeholder */
+                ::-webkit-input-placeholder {
+                    color: #A9A9A9;
+                    pointer-events: none !important;
+                    -webkit-text-security: none
+                }
+
+            /* States */
+                /* Focus */
+                :focus { outline: auto }
+
+                /* Link */
+                :link { text-decoration: none }
+
+                /* Mozilla : Direction Attribute Left-To-Right */
+                :moz-dir-attr-ltr { direction: ltr }
+
+                /* Mozilla : Direction Attribute Right-To-Left */
+                :moz-dir-attr-rtl { direction: rtl }
+
+                /* Mozilla : Direction Attribute Like Automatic > States > Direction */
+                :moz-dir-attr-like-auto:dir(ltr) { direction: ltr }
+                :moz-dir-attr-like-auto:dir(rtl) { direction: rtl }
+
+                /* Root > Pseudo > (Webkit : Full Screen (...)) */
+                :root:-webkit-full-screen-ancestor,
+                :root:-webkit-full-screen-document:not(:-webkit-full-screen) { overflow: hidden !important }
+
+                /* Selection --- NOTE (Lapys) -> Define this to subtly push the developer to customize this. */
+                ::selection {
+                    background-color: #0066FF;
+                    color: #FFFFFF;
+                    text-shadow: initial
+                }
+
+                /* Webkit : Full Screen */
+                :-webkit-full-screen {
+                    background-color: #FFFFFF;
+                    z-index: 2147483647 /* NOTE (Lapys) -> Maximum Z layer. */
+                }
+
+            /* <dir>, <dl>, <menu>, <ol>, <ul> */
+            :moz-any(dir, dl, menu, ol, ul) dir,
+            :moz-any(dir, dl, menu, ol, ul) dl,
+            :moz-any(dir, dl, menu, ol, ul) menu,
+            :moz-any(dir, dl, menu, ol, ul) ol,
+            :moz-any(dir, dl, menu, ol, ul) ul {
+                margin-block-end: 0;
+                margin-block-start: 0
+            }
+
+        /* (All > <h1>), <blockquote>, <dir>, <dl>, <figure>, <h3>, <menu>, <ol>, <p>, <ul> */
+        :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1,
+        blockquote, dir, dl, figure, h3, menu, ol, p, ul {
+            -webkit-margin-after: 16px;
+            -webkit-margin-before: 16px
         }
 
-    /* <progress> */
-    progress {
-        width: 160px;
-        -webkit-appearance: progress-bar
-    }
-        /* Pseudo */
-            /* Webkit : Progress Bar */
-            progress::-webkit-progress-bar { background-color: #808080 }
+        /* (Any > States > (Mozilla : Has Direction Attribute)), (<img>, <input>) > States > (Mozilla : User Disabled) > Pseudo > Before */
+        :-moz-has-dir-attr,
+        img:-moz-broken::before, input:-moz-broken::before,
+        img:-moz-user-disabled::before, input:-moz-user-disabled::before { unicode-bidi: isolate }
 
-            /* Webkit : Progress Inner Element */
-            progress::-webkit-progress-inner-element { -webkit-user-modify: read-only }
+        /* <a> */
+            /* States */
+                /* Webkit : Any Link */
+                a:-webkit-any-link { text-decoration: none }
 
-            /* Webkit : Progress Value */
-            progress::-webkit-progress-value { background-color: #00CC00 }
+        /* <a>, <input>, <textarea> */
+        a:-webkit-any-link, input, textarea { cursor: auto }
 
-    /* <ruby> */
-        /* <rt> */
-        ruby > rt { font-size: 50% }
+        /* <abbr>, <acronym> */
+        abbr[title], acronym[title] { text-decoration: dotted underline }
 
-    /* <rt> */
-    rt { -webkit-text-emphasis: none }
+        /* <address>, <cite>, <dfn>, <i>, <em>, <var> */
+        address, cite, dfn, i, em, var { font-style: italic }
 
-    /* <select> */
-    select { -webkit-appearance: menulist }
-        /* Not > (States > Internal List Box) */
-        select:not(:-internal-list-box) { overflow: visible !important }
+        /* <address>, <article>, <aside>, <bdi>, <blockquote>, <body>, <caption>, <center>, <col>, <colgroup>, <dd>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <form>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <header>, <hgroup>, <hr>, <html>, <legend>, <li>, <listing>, <main>, <marquee>, <menu>, <nav>, <noframes>, <ol>, <output>, <p>, <plaintext>, <pre>, <section>, <summary>, <rb>, <ruby>, <rt>, <rtc>, <table>, <tbody>, <td>, <tfoot>, <th>, <thead>, <tr>, <ul>, <xmp> */
+        address, article, aside,
+        bdi, blockquote, body,
+        caption, center, col, colgroup,
+        dd, dir, div, dl, dt,
+        fieldset, figcaption, figure, footer, form,
+        h1, h2, h3, h4, h5, h6, header, hgroup, hr, html,
+        legend, li, listing,
+        main, marquee, menu,
+        nav, noframes,
+        ol, output,
+        p, plaintext, pre,
+        section, summary,
+        rb, ruby, rt, rtc,
+        table, tbody, td, tfoot, th, thead, tr,
+        ul,
+        xmp { unicode-bidi: isolate }
 
-        /* States > Internal List Box */
-        select:-internal-list-box {
-            border: 1px inset #808080;
-            border-radius: initial;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            vertical-align: text-bottom;
-            -webkit-appearance: listbox;
-            -webkit-user-select: none
+        /* <address>, <article>, <aside>, <blockquote>, <body>, <center>, <dd>, <details>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <form>, <frame>, <frameset>, <header>, <hgroup>, <hr>, <html>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <layer>, <legend>, <listing>, <main>, <menu>, <nav>, <ol>, <optgroup>, <option>, <p>, <plaintext>, <pre>, <rt>, <section>, <summary>, <ul>, <xmp> */
+        address,
+        article, aside,
+        blockquote,
+        body,
+        center,
+        dd, details, dir, div, dl, dt,
+        fieldset, figcaption, figure, footer, form, frame, frameset,
+        header, hgroup, hr, html, h1, h2, h3, h4, h5, h6,
+        input::-webkit-input-speech-button, input[type=range i]::-webkit-media-slider-thumb, input[type=search i]::-webkit-search-cancel-button, input[type=search i]::-webkit-search-decoration, input[type=search i]::-webkit-search-results-decoration, input[type=search i]::-webkit-slider-runnable-track, input[type=search i]::-webkit-slider-thumb, input[type=range i]::-webkit-slider-runnable-track,
+        layer, legend, listing,
+        main, menu,
+        nav,
+        ol, optgroup, option,
+        p, plaintext, pre,
+        ruby > rt,
+        section, summary,
+        ul,
+        xmp { display: block }
+
+        /* <area> */
+        area { cursor: pointer }
+
+        /* <area>, <map>, <output> */
+        area, map, output { display: inline }
+
+        /* <area>, <embed>, <form>, <img>, <input>, <menu>, <object> */
+        area,
+        embed:-moz-suppressed,
+        tbody > form:-moz-is-html,
+        tfoot > form:-moz-is-html,
+        thead > form:-moz-is-html,
+        table > form:-moz-is-html,
+        table > tr > form:-moz-is-html,
+        img:-moz-suppressed,
+        input:-moz-suppressed,
+        form > menu[type=context],
+        object:-moz-suppressed { display: none !important }
+
+        /* <audio> */
+        audio[controls] { writing-mode: horizontal-tb !important }
+
+        /* <audio>, <base>, <basefont>, <datalist>, <dialog>, <head>, <input>, <link>, <meta>, <noframes>, <param>, <rp>, <script>, <style>, <template>, <title> --- NOTE (Lapys) -> Children of the `<head>` element and itself are hidden. */
+        audio:not([controls]),
+        base, basefont,
+        datalist,
+        dialog:not([open]),
+        head,
+        input[type=hidden i],
+        link,
+        meta,
+        noembed,
+        noframes,
+        param,
+        rp,
+        script,
+        style,
+        template,
+        title { display: none }
+
+        /* <b>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <th>, <strong> */
+        b, h1, h2, h3, h4, h5, h6, th, strong { font-weight: bold }
+
+        /* <bdo> */
+        bdo { unicode-bidi: bidi-override }
+            /* States > Mozilla : Has Direction Attribute */
+            bdo:-moz-has-dir-attr { unicode-bidi: isolate-override }
+
+        /* <big> */
+        big { font-size: larger }
+
+        /* <blockquote> */
+        blockquote[type=cite] {
+            border-color: #3333FF;
+            border-inline-start: solid;
+            margin-inline-end: 0;
+            margin-inline-start: 0;
+            padding-inline-start: 16px
         }
 
-        /* <hr> */
-        select:internal-list-box hr { border-style: none }
+        /* <blockquote>, <table>, <td>, <th> */
+        blockquote[type=cite],
+        table[rules],
+        table[rules]:not([rules=""]) > * > tr > td,
+        table[rules]:not([rules=""]) > * > tr > th,
+        table[rules]:not([rules=""]) > td,
+        table[rules]:not([rules=""]) > th,
+        table[rules]:not([rules=""]) > tr > td,
+        table[rules]:not([rules=""]) > tr > th,
+        table[rules][rules=all] > * > td,
+        table[rules][rules=all] > * > th,
+        table[rules][rules=all] > * > tr > td,
+        table[rules][rules=all] > * > tr > th,
+        table[rules][rules=all] > td,
+        table[rules][rules=all] > th,
+        table:-moz-table-border-nonzero > td,
+        table:-moz-table-border-nonzero > th,
+        table:-moz-table-border-nonzero > * > td,
+        table:-moz-table-border-nonzero > * > th,
+        table:-moz-table-border-nonzero > * > tr > td,
+        table:-moz-table-border-nonzero > * > tr > th, { border-width: thin }
 
-        /* <option> */
-            /* Pseudo > Before */
-            select:-internal-list-box optgroup option:before { content: "\00a0\00a0\00a0\00a0" }
+        /* <blockquote>, <dd>, <figure> */
+        blockquote, dd, figure {
+            -webkit-margin-end: 40px;
+            -webkit-margin-start: 40px
+        }
 
-            /* States > Checked( > States > Disabled) */
-            select:-internal-list-box:disabled option:checked,
-            select:-internal-list-box option:checked:disabled { color: #808080 !important }
+        /* <blockquote>, <figure> */
+        blockquote, figure {
+            margin-inline-end: 40px;
+            margin-inline-start: 40px
+        }
 
-        /* <option>, <optgroup> */
-        select:-internal-list-box optgroup,
-        select:-internal-list-box option { line-height: initial !important }
+        /* <blockquote>, <dir>, <dl>, <figure>, <h1>, <listing>, <menu>, <multicol>, <ol>, <p>, <plaintext>, <pre>, <ul>, <xmp> */
+        blockquote,
+        dir, dl,
+        figure,
+        :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
+        :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1,
+        listing,
+        menu,
+        multicol,
+        ol,
+        p, plaintext, pre,
+        ul,
+        xmp {
+            margin-block-end: 16px;
+            margin-block-start: 16px
+        }
 
-    /* <select>, <textarea> */
-    select, textarea { border: 1px solid }
+        /* <body> */
+        body { font-size: 16px }
+            /* States */
+                /* Webkit : Full Page Media */
+                body:-webkit-full-page-media { background-color: #000000 }
 
-    /* <small>, <sub>, <sup> */
-    small, sub, sup { font-size: smaller }
+        /* <body>, <button>, <input>, <keygen>, <select>, <textarea> */
+        body, button,
+        input,
+        keygen, keygen::-webkit-keygen-select,
+        select,
+        textarea { margin: 0 }
 
-    /* <sub> */
-    sub { vertical-align: sub }
+        /* <body>, <embed>, <html>, <iframe>, <input>, <object> */
+        body:focus,
+        embed:focus,
+        html:focus,
+        iframe:focus,
+        input[readonly]:focus,
+        object:focus { outline: none }
 
-    /* <summary> */
-    summary { -webkit-margin-end: 6.4px }
+        /* <button> */
+        button { -webkit-appearance: button }
 
-    /* <sup> */
-    sup { vertical-align: super }
+        /* <button>, <input> */
+        button,
+        input[type=button i],
+        input[type=file i]::-webkit-file-upload-button,
+        input[type=reset i],
+        input[type=submit i] {
+            background-color: rgb(221, 221, 221);
+            border: 2px outset rgb(221, 221, 221);
+            padding: 2px 6px 3px 6px
+        }
 
-    /* <table> */
-    table {
-        border-collapse: separate;
-        border-color: gray;
-        border-spacing: 2px;
-        display: table
-    }
-    table[align=left] { float: left }
-    table[align=right] { float: right }
-        /* <caption> */
-        table > caption { display: table-caption }
+        /* <button>, <input>, <select> */
+        button, input, select { color: #000000 }
+        button,
+        input[type=button i],
+        input[type=file i]::-webkit-file-upload-button,
+        input[type=reset i],
+        input[type=submit i],
+        select:-internal-list-box { align-items: flex-start }
 
-        /* <col> */
-        table > col { display: table-column }
+        /* <button>, <input>, <table> */
+        button:disabled:active,
+        input[type=button i]:disabled:active,
+        input[type=file i]:disabled:active::-webkt-file-upload-button,
+        input[type=reset i]:disabled:active,
+        input[type=submit i]:disabled:active,
+        table[frame=box],
+        table[frame=border],
+        table[rules] { border-style: outset }
 
-        /* <colgroup> */
-        table > colgroup { display: table-column-group }
+        /* <button>, <input>, <table>, <td>, <th> */
+        button:active,
+        input[type=button i]:active,
+        input[type=file i]:active::-webkt-file-upload-button,
+        input[type=reset i]:active,
+        input[type=submit i]:active,
+        table:moz-table-border-nonzero > td,
+        table:moz-table-border-nonzero > th,
+        table:moz-table-border-nonzero > * > td,
+        table:moz-table-border-nonzero > * > th,
+        table:moz-table-border-nonzero > * > tr > td,
+        table:moz-table-border-nonzero > * > tr > th { border-style: inset }
 
-        /* <tbody> */
-        table > tbody { display: table-row-group }
+        /* <button>, <caption>, <center>, <input> */
+        button,
+        center,
+        input[type=button i],
+        input[type=file i]::-webkit-file-upload-button,
+        input[type=reset i],
+        input[type=submit i],
+        table > caption { text-align: center }
 
-        /* <tbody>, <tfoot>, <thead>, <tr> */
+        /* <button>, <input>, <label>, <select> */
+        button,
+        input[type=button i],
+        input[type=file i]::-webkit-file-upload-button,
+        input[type=reset i],
+        input[type=submit i],
+        input::-webkit-inner-spin-button,
+        label,
+        select { cursor: default }
+
+        /* <button>, <input>, <keygen>, <optgroup>, <select>( > <option>) */
+        button:disabled,
+        input[type=button i]:disabled,
+        input[type=file i]:disabled::-webkit-file-upload-button,
+        input[type=reset i]:disabled,
+        input[type=submit i]:disabled,
+        keygen:disabled,
+        optgroup:disabled,
+        select:disabled,
+        select[disabled] > option { color: #909090 }
+
+        /* <button>, <input>, <keygen>, <select>, <textarea> */
+        button, input, keygen, select, textarea { text-rendering: optimizeLegibility }
+
+        /* <button>, <input>, <keygen>, <rt>, <select>, <textarea> */
+        button, input, keygen, rt, select, textarea { line-height: normal }
+
+        /* <button>, <input>, <isindex>, <keygen>, <select>, <textarea> */
+        button, input, isindex, keygen, select, textarea {
+            color: initial;
+            letter-spacing: normal;
+            text-align: -webkit-auto;
+            text-indent: 0;
+            text-shadow: none;
+            text-transform: none;
+            word-spacing: normal
+        }
+
+        /* <button>, <input>, <keygen>, <ruby>, <rt>, <select>, <textarea> */
+        button, input, keygen, ruby, rt, select, textarea { text-indent: 0 }
+
+        /* <button>, <input>, <keygen>, <rt>, <select>, <table>, <textarea> */
+        button, input, keygen, ruby > rt, select, table[align=right] textarea { text-align: start }
+
+        /* <button>, <input>, <keygen>, <meter>, <progress>, <select>, <textarea> */
+        button, input, keygen, meter, progress, select, textarea { -webkit-writing-mode: horizontal-tb !important }
+
+        /* <button>, <input>, <isindex>, <keygen>, <meter>, <progress>, <select>, <textarea> */
+        button, input, isindex, keygen, meter, progress, select, textarea { -webkit-block-flow: tb !important }
+
+        /* <button>, <input>, <keygen>, <marquee>, <meter>, <progress>, <select>, <summary>, <textarea> */
+        button,
+        input, input::-webkit-calender-picker-indicator, input::-webkit-clear-button, input::-webkit-inner-spin-button,
+        keygen,
+        marquee,
+        meter,
+        progress,
+        select,
+        summary::-webkit-details-marker,
+        textarea { display: inline-block }
+
+        /* <button>, <html>, <input>, <meter>, <progress>, <select> */
+        button,
+        html,
+        input[type=button i],
+        input[type=checkbox i],
+        input[type=color i]::-webkit-color-swatch-wrapper,
+        input[type=file i]::-webkit-file-upload-button,
+        input[type=radio i],
+        input[type=range i]::-webkit-media-slider-container,
+        input[type=range i]::-webkit-media-slider-thumb,
+        input[type=range i]::-webkit-slider-container,
+        input[type=range i]::-webkit-slider-runnable-track,
+        input[type=range i]::-webkit-slider-thumb,
+        input[type=reset i],
+        input[type=search i],
+        input[type=submit i],
+        meter,
+        meter::-webkit-meter-bar,
+        meter::-webkit-meter-even-less-good-value,
+        meter::-webkit-meter-optimum-value,
+        meter::-webkit-meter-suboptimum-value,
+        progress,
+        progress::-webkit-progress-bar,
+        progress::-webkit-progress-value,
+        select { box-sizing: border-box }
+
+        /* <canvas> */
+        canvas { -moz-user-select: none }
+
+        /* <code>, <kbd>, <listing>, <plaintext>, <pre>, <samp>, <tt>, <xmp> */
+        code, kbd, listing, plaintext, pre, samp, tt, xmp { font-family: monospace }
+
+        /* <del>, <s>, <strike> */
+        del, s, strike { text-decoration: line-through }
+
+        /* <dd> */
+        dd { margin-inline-start: 40px }
+
+        /* <details> */
+            /* <summary> */
+                /* Content */
+                details > summary:first-of-type > * | * { list-style-type: initial }
+
+                /* States > (First Of Type(, Mozilla : Native Anonymous)) */
+                details > summary:first-of-type,
+                details > summary:-moz-native-anonymous {
+                    counter-increment: list-item 0;
+                    list-style: disclosure-closed inside
+                }
+
+                details[open] > summary:first-of-type,
+                details[open] > summary:-moz-native-anonymous { list-style-type: disclosure-open }
+
+        /* <dialog> */
+        dialog {
+            background-color: #FFFFFF;
+            border-color: initial;
+            border-image: initial;
+            border-style: initial;
+            border-width: initial;
+            color: #000000;
+            height: -webkit-fit-content;
+            inset-inline-end: 0;
+            inset-inline-start: 0;
+            margin: auto;
+            padding: 16px;
+            position: absolute;
+            width: fit-content
+        }
+
+        dialog,
+        dialog::backdrop { left: 0; right: 0 }
+            /* Pseudo > Backdrop */
+            dialog::backdrop {
+                background-color: rgba(0, 0, 0, .1);
+                bottom: 0;
+                position: fixed;
+                top: 0
+            }
+
+        /* <dialog>, <hr>, <table> */
+        dialog,
+        hr,
+        table[rules][rules=all] > * > td,
+        table[rules][rules=all] > * > th,
+        table[rules][rules=all] > * > tr > td,
+        table[rules][rules=all] > * > tr > th,
+        table[rules][rules=all] > td,
+        table[rules][rules=all] > th {
+            border-style: solid
+        }
+
+        /* <dir>, <menu>, <ul> */
+        :moz-any(dir, menu, ol, ul) dir,
+        :moz-any(dir, menu, ol, ul) menu,
+        :moz-any(dir, menu, ol, ul) ul,
+        dir,
+        menu,
+        ul { list-style-type: circle }
+
+        /* <dir>, <menu>, <ol>, <ul> */
+        dir, menu, ol, ul {
+            padding-inline-start: 40px;
+            -webkit-padding-start: 40px
+        }
+
+        /* <dl>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <p> */
+        dl, h1, h2, h3, h4, h5, h6, p {
+            -webkit-margin-end: 0;
+            -webkit-margin-start: 0
+        }
+
+        /* <embed>, <img>, <input>, <object> > States > (Mozilla : Suppressed) */
+        embed:-moz-suppressed
+        img:-moz-suppressed,
+        input:-moz-suppressed,
+        object:-moz-suppressed { visibility: hidden !important }
+
+        /* <fieldset> */
+        fieldset {
+            border: 2px groove #C0C0C0;
+            min-width: -webkit-min-content;
+            -webkit-margin-end: 2px;
+            -webkit-margin-start: 2px;
+            -webkit-padding-after: 10px;
+            -webkit-padding-before: 10px;
+            -webkit-padding-end: 12px;
+            -webkit-padding-start: 12px
+        }
+
+        /* <form> */
+        form { margin-top: 0 }
+
+        /* <frame> */
+        frame { border-radius: 0 !important }
+
+        /* <frameset> */
+        frameset { border: none !important }
+
+        /* <frameset>, <video>, ... */
+        frameset,
+        video:-webkit-full-screen,
+        * | ::-moz-html-canvas-content { display: block !important }
+
+        /* <frameset>, <spacer> */
+        frameset, spacer { float: none !important }
+
+        /* <frameset>, <spacer>, <video> */
+        frameset, spacer, video:-webkit-full-screen { position: static !important }
+
+        /* <frameset>, <tbody>, <tfoot>, <thead>, <tr> */
+        frameset,
         table > tbody,
         table > tfoot,
         table > thead,
-        table > tr { vertical-align: middle }
+        table > tr,
+        table[bordercolor] > * > tr,
+        table[bordercolor] > * > tr > td,
+        table[bordercolor] > * > tr > th,
+        table[bordercolor] > col,
+        table[bordercolor] > colgroup,
+        table[bordercolor] > tbody,
+        table[bordercolor] > tfoot,
+        table[bordercolor] > thead,
+        table[bordercolor] > tr,
+        table[bordercolor] > tr > td,
+        table[bordercolor] > tr > th { border-color: inherit }
 
-        /* <td>, <th> */
-        table > td,
-        table > th {
-            display: table-cell;
-            vertical-align: inherit
+        /* <hr> */
+        hr {
+            border: 1px inset;
+            border-width: 1px;
+            box-sizing: content-box;
+            color: #909090;
+            margin-block-end: 8px;
+            margin-block-start: 8px;
+            -moz-float-edge: margin-box;
+            -webkit-margin-after: 8px;
+            -webkit-margin-before: 8px;
+            -webkit-margin-end: auto;
+            -webkit-margin-start: auto
+        }
+        hr[size=1] { border-style: solid none none none }
+
+        /* <hr>, <table> */
+        hr,
+        table[align=center] > caption {
+            margin-inline-end: auto;
+            margin-inline-start: auto
         }
 
-        /* <tfoot> */
-        table > tfoot { display: table-footer-group }
+        /* <html> */
+        html {
+            box-decoration-break: slice;
+            *behavior: url(resources/htc/box-sizing.htc)
+        }
 
-        /* <thead> */
-        table > thead { display: table-header-group }
+        /* <h1> */
+        h1 {
+            font-size: 200%;
+            margin-block-end: 10.72px;
+            margin-block-start: 10.72px;
+            -webkit-margin-after: 10.72px;
+            -webkit-margin-before: 10.72px
+        }
 
-        /* <tr> */
-        table > tr { display: table-row }
+        :-moz-any(article, aside, nav, section) h1,
+        :-webkit-any(article, aside, nav, section) h1 {
+            font-size: 150%;
+            margin-block-end: 13.28px;
+            margin-block-start: 13.28px;
+            -webkit-margin-after: 13.28px;
+            -webkit-margin-before: 13.28px
+        }
 
-    /* <textarea> */
-    textarea {
-        flex-direction: column;
-        padding: 2px;
-        resize: auto;
-        white-space: pre-wrap;
-        word-wrap: break-word;
-        -webkit-appearance: textarea
-    }
-    textarea[dir=auto i] { unicode-bidi: plaintext }
-        /* States > Mozilla : Direction Attribute Like Auto */
-        pre:-moz-dir-attr-like-auto,
-        textarea:-moz-dir-attr-like-auto { unicode-bidi: plaintext }
+        :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
+        :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+            font-size: 117%
+        }
 
-    /* <video> */
-    video { object-fit: contain }
+        :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
+        :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+            font-size: 100%;
+            -webkit-margin-after: 21.28px;
+            -webkit-margin-before: 21.28px
+        }
+
+        :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
+        :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+            font-size: 83%;
+            -webkit-margin-after: 26.72px;
+            -webkit-margin-before: 26.72px
+        }
+
+        :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) :-moz-any(article, aside, nav, section) h1,
+        :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) :-webkit-any(article, aside, nav, section) h1 {
+            font-size: 67%;
+            -webkit-margin-after: 37.28px;
+            -webkit-margin-before: 37.28px
+        }
+
+        /* <h2> */
+        h2 {
+            font-size: 150%;
+            -webkit-margin-after: 13.28px;
+            -webkit-margin-before: 13.28px
+        }
+
+        /* <h3> */
+        h3 { font-size: 117% }
+
+        /* <h4> */
+        h4 {
+            font-size: 100%;
+            -webkit-margin-after: 21.28px;
+            -webkit-margin-before: 21.28px
+        }
+
+        /* <h5> */
+        h5 {
+            font-size: 83%;
+            -webkit-margin-after: 26.72px;
+            -webkit-margin-before: 26.72px
+        }
+
+        /* <h6> */
+        h6 {
+            font-size: 67%;
+            -webkit-margin-after: 37.28px;
+            -webkit-margin-before: 37.28px
+        }
+
+        /* <iframe> */
+            /* States */
+                /* Fullscreen */
+                iframe:fullscreen {
+                    border: none !important;
+                    padding: unset !important
+                }
+
+                /* Webkit : Full Screen */
+                iframe:-webkit-full-screen {
+                    border: 0 !important;
+                    left: 0 !important;
+                    padding: 0 !important;
+                    position: fixed !important;
+                    top: 0 !important
+                }
+
+        /* <iframe>, <input> */
+        iframe, input { border: 2px inset }
+
+        /* <iframe>, <video> */
+        iframe:-webkit-full-screen,
+        video:-webkit-full-screen {
+            height: 100% !important;
+            margin: 0 !important;
+            width: 100% !important
+        }
+
+        /* <img> --- NOTE (Lapys) -> Responsiveness settings. */
+        img:-webkit-full-screen {
+            max-width: 100%;
+            width: auto
+        }
+
+        /* <img>, <input> */
+            /* States > (Mozilla : Broken) > Pseudo > Before */
+            img:-moz-broken::before, input:-moz-broken::before,
+            img:-moz-user-disabled::before, input:-moz-user-disabled::before { content: -moz-alt-content !important }
+
+        /* <img>, <object> */
+        img[usemap], object[usemap] { color: #6666FF }
+
+        /* <img>, <input>, <meter>, <progress> */
+        img:-webkit-full-screen,
+        input[type=color i]::-webkit-color-swatch-wrapper,
+        meter::-webkit-meter-bar,
+        meter::-webkit-meter-even-less-good-value,
+        meter::-webkit-meter-inner-element,
+        meter::-webkit-meter-optimum-value,
+        meter::-webkit-meter-suboptimum-value,
+        progress::-webkit-progress-bar,
+        progress::-webkit-progress-inner-element,
+        progress::-webkit-progress-value { height: 100% }
+
+        /* <input> */
+        input[type=button i],
+        input[type=reset i],
+        input[type=submit i] { -webkit-appearance: push-button }
+        input[type=button i],
+        input[type=reset i],
+        input[type=submit i],
+        input::-webkit-inner-spin-button { -webkit-user-select: none }
+        input[type=checkbox i] {
+            background-color: rgba(255, 255, 255, .01);
+            -webkit-appearance: checkbox
+        }
+        input[type=checkbox i],
+        input[type=radio i] {
+            background-color: initial;
+            border: initial;
+            margin: 3px 3.695315ex;
+            padding: initial;
+            -webkit-appearance: radio
+        }
+        input[type=color i] {
+            background-color: #DDDDDD;
+            border: 1px solid #A9A9A9;
+            height: 23px;
+            padding: 1px 2px;
+            width: 44px;
+            -webkit-appearance: square-button
+        }
+        input[type=color i][list] {
+            height: 23px;
+            width: 88px;
+            -webkit-appearance: menulist
+        }
+        input[type=file i] {
+            align-items: baseline;
+            color: inherit;
+            text-align: start !important
+        }
+        input[type=file i], input[type=hidden i], input[type=image i] {
+            background-color: initial;
+            -webkit-appearance: initial
+        }
+        input[type=file i], input[type=hidden i], input[type=image i], input[type=range i] {
+            border: initial;
+            padding: initial
+        }
+        input[type=password i] { -webkit-text-security: circle !important }
+        input[type=range i] {
+            color: #909090;
+            margin: 2px;
+            -webkit-appearance: slider-horizontal
+        }
+        input[type=search i] { -webkit-appearance: searchfield }
+            /* Pseudo */
+                /* Webkit : Calender Picker Indicator */
+                input::-webkit-calender-picker-indicator { padding: 2.72px 5.44px }
+                    /* States > Hover */
+                    input::-webkit-calender-picker-indicator:hover { background-color: #CCCCCC }
+
+                /* Webkit : (Calender Picker Indicator, Clear Button, Inner Spin Button, Search Cancel Button) */
+                input::-webkit-calender-picker-indicator,
+                input::-webkit-clear-button,
+                input::-webkit-inner-spin-button,
+                input[type=search i]::-webkit-search-cancel-button {
+                    opacity: 0;
+                    pointer-events: none;
+                    -webkit-appearance: searchfield-cancel-button
+                }
+
+                /* Webkit : (Clear Button, Inner Spin Button, Search Cancel Button, Search (Results) Decoration) */
+                input::-webkit-clear-button,
+                input::-webkit-inner-spin-button,
+                input[type=search i]::-webkit-search-cancel-button,
+                input[type=search i]::-webkit-search-decoration,
+                input[type=search i]::-webkit-search-results-decoration { flex: none }
+
+                /* Webkit : Color Swatch */
+                input[type=color i]::-webkit-color-swatch {
+                    background-color: #000000;
+                    border: 1px solid #999999
+                }
+
+                input[type=color i][list]::-webkit-color-swatch { border-color: #000000 }
+
+                /* Webkit : (Color Swatch, (Media) Slider Container, Slider Runnable Track) */
+                input[type=color i]::-webkit-color-swatch,
+                input[type=range i]::-webkit-media-slider-container,
+                input[type=range i]::-webkit-slider-container,
+                input[type=range i]::-webkit-slider-runnable-track {
+                    flex: 1;
+                    min-width: 0
+                }
+
+                /* Webkit : Color Swatch Wrapper */
+                input[type=color i]::-webkit-color-swatch-wrapper { padding: 4px 2px }
+
+                input[type=color i][list]::-webkit-color-swatch-wrapper {
+                    padding-left: 8px;
+                    padding-right: 24px
+                }
+
+                /* Webkit : (Color Swatch Wrapper, (Media) Slider Container, Text Field Decoration Container) */
+                input::-webkit-textfield-decoration-container,
+                input[type=color i]::-webkit-color-swatch-wrapper,
+                input[type=range i]::-webkit-media-slider-container,
+                input[type=range i]::-webkit-slider-container { display: flex }
+
+                /* Webkit : File Upload Button */
+                input[type=file i]::webkit-file-upload-button {
+                    font-size: inherit;
+                    margin: 0;
+                    -webkit-appearance: push-button
+                }
+
+                /* Webkit : Inner Spin Button */
+                input::-webkit-inner-spin-button {
+                    align-self: stretch;
+                    -webkit-appearance: inner-spin-button
+                }
+
+                /* Webkit : Input Placeholder */
+                input::-webkit-input-placeholder {
+                    overflow: hidden;
+                    word-wrap: normal
+                }
+
+                /* Webkit : Input Speech Button */
+                input::-webkit-input-speech-button {
+                    vertical-align: top;
+                    -webkit-appearance: -webkit-input-speech-button;
+                    -webkit-box-flex: 0
+                }
+
+                /* Webkit : ((Media) Slider Container, Text Field Decoration Container) */
+                input::-webkit-textfield-decoration-container,
+                input[type=range i]::-webkit-media-slider-container,
+                input[type=range i]::-webkit-slider-container { content: none !important }
+                input[type=search i]::-webkit-textfield-decoration-container { direction: ltr }
+
+                /* Webkit : (Media) Slider Thumb */
+                input[type=range i]::-webkit-media-slider-thumb,
+                input[type=range i]::-webkit-slider-thumb {
+                    -webkit-appearance: sliderthumb-horizontal
+                }
+
+                /* Webkit : Search Cancel Button */
+                input[type=search i]::-webkit-search-cancel-button {
+                    -webkit-margin-start: 1px
+                }
+
+                /* Webkit : Search Decoration */
+                input[type=search i]::-webkit-search-decoration {
+                    -webkit-appearance: searchfield-decoration
+                }
+
+                /* Webkit : Search (Results) Decoration */
+                input[type=search i]::-webkit-search-decoration,
+                input[type=search i]::-webkit-search-results-decoration {
+                    margin: auto 0;
+                    -webkit-align-self: flex-start
+                }
+
+                /* Webkit : Search Results Decoration */
+                input[type=search i]::-webkit-search-results-decoration {
+                    -webkit-appearance: searchfield-results-decoration
+                }
+
+                /* Webkit : Slider Runnable Track */
+                input[type=range i]::-webkit-slider-runnable-track { -webkit-align-self: center }
+
+            /* States */
+                /* Disabled > Pseudo > Webkit : (Calender Picker Indicator, (Clear, Inner Spin) Button) */
+                input:disabled::-webkit-calender-picker-indicator,
+                input[readonly]:disabled::-webkit-calender-picker-indicator,
+                input[type=date i]:disabled::-webkit-clear-button,
+                input[type=date i]:disabled::-webkit-inner-spin-button,
+                input[type=date i][readonly]:disabled::-webkit-clear-button,
+                input[type=date i][readonly]:disabled::-webkit-inner-spin-button,
+                input[type=datetime-local i]:disabled::-webkit-clear-button,
+                input[type=datetime-local i]:disabled::-webkit-inner-spin-button,
+                input[type=datetime-local i][readonly]:disabled::-webkit-clear-button,
+                input[type=datetime-local i][readonly]:disabled::-webkit-inner-spin-button,
+                input[type=month i]:disabled::-webkit-clear-button,
+                input[type=month i]:disabled::-webkit-inner-spin-button,
+                input[type=month i][readonly]:disabled::-webkit-clear-button,
+                input[type=month i][readonly]:disabled::-webkit-inner-spin-button,
+                input[type=week i]:disabled::-webkit-clear-button,
+                input[type=week i]:disabled::-webkit-inner-spin-button,
+                input[type=week i][readonly]:disabled::-webkit-clear-button,
+                input[type=week i][readonly]:disabled::-webkit-inner-spin-button { visibility: hidden }
+
+                /* Enabled > States > Read-Write > States > (Webkit : Any)( > Pseudo > Webkit : (Clear Button, Inner Spin Button, Search Cancel Button)) */
+                input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-calender-picker-indicator,
+                input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-clear-button,
+                input:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-inner-spin-button,
+                input[type=search i]:enabled:read-write:-webkit-any(:focus, :hover)::-webkit-search-cancel-button {
+                    opacity: 1;
+                    pointer-events: auto
+                }
+
+                /* Focus */
+                input[type=button i]:focus,
+                input[type=checkbox i]:focus,
+                input[type=file i]:focus,
+                input[type=file i]:focus::-webkit-file-upload-button,
+                input[type=hidden i]:focus,
+                input[type=image i]:focus,
+                input[type=radio i]:focus,
+                input[type=reset i]:focus,
+                input[type=search i]:focus,
+                input[type=submit i]:focus { outline-offset: 0 }
+
+        /* <input>, <select> */
+        input::-webkit-textfield-decoration-container,
+        input[type=range i]::-webkit-media-slider-container,
+        input[type=range i]::-webkit-slider-container,
+        select { align-items: center }
+
+        /* <input>, <summary> */
+        input::-webkit-calender-picker-indicator,
+        summary::-webkit-details-marker {
+            height: 10.56px;
+            width: 10.56px
+        }
+
+        /* <input>, <textarea> */
+        input, textarea { -webkit-user-select: text }
+
+        /* <input>, <td> */
+        input, table td { padding: 1px }
+
+        input[type=color i]::-webkit-color-swatch-wrapper,
+        meter::-webkit-meter-bar,
+        meter::-webkit-meter-inner-element,
+        progress::-webkit-progress-bar,
+        progress::-webkit-progress-inner-element,
+        progress::-webkit-progress-value { width: 100% }
+
+        input::-webkit-calender-picker-indicator,
+        input::-webkit-clear-button,
+        input[type=color i]::-webkit-color-swatch,
+        input[type=color i]::-webkit-color-swatch-wrapper,
+        input::-webkit-input-placeholder,
+        input::-webkit-inner-spin-button,
+        input[type=file i]::webkit-file-upload-button,
+        input[type=range i]::-webkit-media-slider-container,
+        input[type=range i]::-webkit-media-slider-thumb,
+        input[type=range i]::-webkit-slider-container,
+        input[type=range i]::-webkit-slider-thumb,
+        input[type=search i]::-webkit-search-cancel-button,
+        input[type=search i]::-webkit-search-decoration,
+        input[type=search i]::-webkit-search-results-decoration,
+        input::-webkit-textfield-decoration-container,
+        meter::-webkit-meter-bar,
+        meter::-webkit-even-less-good-value,
+        meter::-webkit-meter-inner-element,
+        meter::-webkit-meter-optimum-value,
+        meter::-webkit-meter-suboptimum-value,
+        progress::-webkit-progress-value { -webkit-user-modify: read-only !important }
+
+        /* <input>, <isindex>, <textarea> */
+        input, input[type=password], input[type=range], input[type=search],
+        isindex,
+        textarea {
+            -webkit-appearance: textfield;
+            -webkit-border-radius: 5px
+        }
+
+        /* <input>, <select>, <textarea> */
+        input, select, textarea {
+            background-color: #FFFFFF;
+            -webkit-rtl-ordering: logical
+        }
+            /* Pseudo */
+                /* Webkit : Auto Fill */
+                input:-webkit-autofill,
+                select:-webkit-autofill,
+                textarea:-webkit-autofill {
+                    background-color: #CCCCFF !important;
+                    background-image: none !important;
+                    color: initial !important
+                }
+
+        /* <input>, <keygen>, <select>, <textarea> */
+        input:focus,
+        keygen:focus,
+        select:focus,
+        textarea:focus { outline-offset: -2px }
+
+        /* <input>, <nobr>, <rb>, <rt>, <rtc>, <select> */
+        input[type=file i]::webkit-file-upload-button,
+        nobr,
+        rb, rt, rtc,
+        select:-internal-list-box { white-space: nowrap }
+
+        /* <input>, <listing>, <plaintext>, <pre>, <option>, <select>, <xmp> */
+        input::-webkit-input-placeholder,
+        input[type=button i],
+        input[type=reset i],
+        input[type=submit i],
+        listing,
+        plaintext, pre,
+        option,
+        select,
+        xmp { white-space: pre }
+
+        /* <ins>, <u> */
+        ins, u { text-decoration: underline }
+
+        /* <keygen> */
+            /* Pseudo > (Webkit : Key Generator Select) */
+            keygen::-webkit-keygen-select { margin: 0 }
+
+        /* <keygen>, <select> */
+        keygen, select {
+            border-radius: 5px;
+            -webkit-border-radius: 5px
+        }
+
+        /* <legend> */
+        legend {
+            border: none;
+            -webkit-padding-end: 2px;
+            -webkit-padding-start: 2px
+        }
+
+        /* <li> */
+        li { text-align: match-parent }
+
+        /* <li>, <summary> */
+        li,
+        details > summary:first-of-type,
+        details > summary:-moz-native-anonymous { display: list-item }
+
+        /* <listing> */
+        listing { font-size: medium }
+
+        /* <listing>, <plaintext>, <pre>, <xmp> */
+        listing, plaintext, pre, xmp { margin: 16px 0 }
+
+        /* <mark> */
+        mark {
+            background-color: #FFFF33;
+            color: #000000
+        }
+
+        /* <marquee> */
+        marquee {
+            inline-size: -moz-available;
+            overflow: -webkit-marquee;
+            vertical-align: text-bottom
+        }
+
+        marquee[direction=down],
+        marquee[direction=up] { block-size: 200px }
+
+        /* <marquee>, <select> */
+        marquee,
+        select:-internal-list-box { text-align: start }
+
+        /* <meter> */
+        meter {
+            width: 80px;
+            -webkit-appearance: meter
+        }
+            /* Pseudo */
+                /* Webkit : Meter Bar */
+                meter::-webkit-meter-bar { background-color: #CCCCCC }
+
+                /* Webkit : Meter Even Less Good Value --- NOTE (Lapys) -> Bad. */
+                meter::-webkit-meter-even-less-good-value { background-color: #FF3333 }
+
+                /* Webkit : Meter Optimum Value --- NOTE (Lapys) -> Good. */
+                meter::-webkit-meter-optimum-value { background-color: #66FF66 }
+
+                /* Webkit : Meter Sub-Optimum Value --- NOTE (Lapys) -> Average. */
+                meter::-webkit-meter-suboptimum-value { background-color: #FFFF66 }
+
+        /* <menu>, <ol>, <ul> */
+        menu, ol, ul {
+            counter-reset: list-item;
+            -moz-list-reversed: false
+        }
+
+        /* <meter>, <progress> */
+        meter, progress {
+            height: 16px;
+            vertical-align: -3.2px
+        }
+
+        meter::-webkit-meter-inner-element,
+        progress::-webkit-progress-inner-element { -webkit-appearance: inherit }
+
+        /* <ol> */
+        ol { list-style-type: decimal }
+        ol[reversed] { -moz-list-reversed: true }
+
+        /* <ol>, <ul> */
+            /* <ol>, <ul> */
+            ol ol, ol ul, ul ol, ul ul {
+                -webkit-margin-after: 0;
+                -webkit-margin-before: 0
+            }
+
+            /* <ul> */
+            ol ul, ul ul { list-style-type: disc }
+                /* Content */
+                :-moz-any(dir, menu, ol, ul) :-moz-any(dir, menu, ol, ul) dir,
+                :-moz-any(dir, menu, ol, ul) :-moz-any(dir, menu, ol, ul) menu,
+                :-moz-any(dir, menu, ol, ul) :-moz-any(dir, menu, ol, ul) ul,
+                ol ol ul,
+                ol ul ul,
+                ul ol ul,
+                ul ul ul { list-style-type: square }
+
+        /* <optgroup> */
+        optgroup { font-weight: bolder }
+
+        /* <option> */
+        option {
+            font-weight: normal;
+            min-height: 19.2px;
+            padding: 0 2px 1px 2px
+        }
+            /* States > Internal Spatial Navigation Focus */
+            option:-internal-spatial-navigation-focus {
+                outline: 1px dashed #000000;
+                outline-offset: -1px
+            }
+
+        /* <pre>, <span> */
+        pre[_moz_quote=true], span[_moz_quote=true] { color: #3333FF }
+
+        /* <progress> */
+        progress {
+            width: 160px;
+            -webkit-appearance: progress-bar
+        }
+            /* Pseudo */
+                /* Webkit : Progress Bar */
+                progress::-webkit-progress-bar { background-color: #909090 }
+
+                /* Webkit : Progress Inner Element */
+                progress::-webkit-progress-inner-element { -webkit-user-modify: read-only }
+
+                /* Webkit : Progress Value */
+                progress::-webkit-progress-value { background-color: #00CC00 }
+
+        /* <q> */
+            /* Pseudo > (After, Before) */
+            q:after { content: close-quote }
+            q:before { content: open-quote }
+
+        /* <rb> */
+        rb { display: ruby-base }
+
+        /* <ruby> */
+        ruby { display: ruby }
+
+        /* <rt> */
+        rt { -webkit-text-emphasis: none }
+
+        /* <rt>, <rtc> */
+        rt, rtc {
+            font-size: 50%;
+            font-variant-east-asian: ruby;
+            line-height: 1;
+            text-emphasis: none;
+            -moz-min-font-size-ratio: 50%
+        }
+            /* States > Language --- NOTE (Lapys) -> Bopomofo settings. */
+            rt:lang(zh), rtc:lang(zh) { ruby-align: center }
+            rt:lang(zh-TW), rtc:lang(zh-TW) {
+                font-size: 30%;
+                -moz-min-font-size-ratio: 30%
+            }
+
+        /* <rtc> */
+        rtc { display: ruby-text-container }
+            /* <rt> */
+            rtc > rt { font-size: unset }
+
+        /* <select> */
+        select { -webkit-appearance: menulist }
+            /* Not > (States > Internal List Box) */
+            select:not(:-internal-list-box) { overflow: visible !important }
+
+            /* States > Internal List Box */
+            select:-internal-list-box {
+                border: 1px inset #909090;
+                border-radius: initial;
+                overflow-x: hidden;
+                overflow-y: scroll;
+                -webkit-appearance: listbox;
+                -webkit-user-select: none
+            }
+
+            /* <hr>, <td>, <th> */
+            select:internal-list-box hr,
+            table[rules]:not([rules=""]) > td,
+            table[rules]:not([rules=""]) > th,
+            table[rules]:not([rules=""]) > tr > td,
+            table[rules]:not([rules=""]) > tr > th,
+            table[rules]:not([rules=""]) > * > tr > td,
+            table[rules]:not([rules=""]) > * > tr > th { border-style: none }
+
+            /* <option> */
+                /* Pseudo > Before */
+                select:-internal-list-box optgroup option:before { content: "\00a0\00a0\00a0\00a0" }
+
+                /* States > Checked( > States > Disabled) */
+                select:-internal-list-box:disabled option:checked,
+                select:-internal-list-box option:checked:disabled { color: #909090 !important }
+
+            /* <option>, <optgroup> */
+            select:-internal-list-box optgroup,
+            select:-internal-list-box option { line-height: initial !important }
+
+        /* <select>, <textarea> */
+        select, textarea { border: 1px solid }
+
+        /* <slot> --- CITE (Lapys) -> Shadow DOM v1: https://drafts.csswg.org/css-scoping/#slots-in-shadow-tree */
+        slot { display: contents }
+
+        /* <small>, <sub>, <sup> */
+        small, sub, sup { font-size: smaller }
+
+        /* <sub> */
+        sub { vertical-align: sub }
+
+        /* <summary> */
+        summary { -webkit-margin-end: 6.4px }
+
+        /* <sup> */
+        sup { vertical-align: super }
+
+        /* <table> */
+        table {
+            border-collapse: separate;
+            border-color: gray;
+            border-spacing: 2px;
+            display: table
+        }
+        table[align=center] > caption[align=left]:dir(ltr),
+        table[align=center] > caption[align=right]:dir(rtl) { margin-inline-end: 0 }
+        table[align=center] > caption[align=left]:dir(rtl),
+        table[align=center] > caption[align=right]:dir(ltr) { margin-inline-start: 0 }
+        table[align=left] { float: left }
+        table[align=right] { float: right }
+        table[frame] { border: thin hidden }
+        table[frame=above] { border-style: outset hidden hidden hidden }
+        table[frame=below] { border-style: hidden hidden outset hidden }
+        table[frame=hsides] { border-style: outset hidden }
+        table[frame=lhs] { border-style: hidden hidden hidden outset }
+        table[frame=rhs] { border-style: hidden outset hidden hidden }
+        table[frame=void] { border-style: hidden }
+        table[frame=vsides] { border-style: hidden outset }
+        table[rules]:not([rules=""]):not([rules=none]) { border-collapse: collapse }
+        table[rules][rules=cols] > * > tr > td,
+        table[rules][rules=cols] > tr > td,
+        table[rules][rules=cols] > * > tr > th,
+        table[rules][rules=cols] > tr > th,
+        table[rules][rules=groups] > colgroup,
+        table[rules][rules=groups] > tbody,
+        table[rules][rules=groups] > tfoot,
+        table[rules][rules=groups] > thead,
+        table[rules][rules=rows] > * > tr,
+        table[rules][rules=rows] > tr {
+            border-block-end-style: solid;
+            border-block-start-style: solid;
+            border-block-end-width: thin;
+            border-block-start-width: thin
+        }
+            /* <caption> */
+            table > caption { display: table-caption }
+
+            /* <col> */
+            table > col { display: table-column }
+
+            /* <colgroup> */
+            table > colgroup { display: table-column-group }
+
+            /* <tbody> */
+            table > tbody { display: table-row-group }
+
+            /* <tbody>, <tfoot>, <thead>, <tr> */
+            table > tbody,
+            table > tfoot,
+            table > thead,
+            table > tr { vertical-align: middle }
+
+            /* <td> */
+            table td { text-align: unset }
+
+            /* <td>, <th> */
+            table td, table th { display: table-cell }
+
+            /* <tfoot> */
+            table > tfoot { display: table-footer-group }
+
+            /* <thead> */
+            table > thead { display: table-header-group }
+
+            /* <tr> */
+            table > tr { display: table-row }
+
+        /* <textarea> */
+        textarea {
+            flex-direction: column;
+            padding: 2px;
+            resize: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            -webkit-appearance: textarea;
+            -webkit-box-orient: vertical;
+            -webkit-line-break: after-white-space;
+            -webkit-nbsp-mode: space
+        }
+        textarea[dir=auto i] { unicode-bidi: plaintext }
+            /* States > Mozilla : Direction Attribute Like Auto */
+            pre:-moz-dir-attr-like-auto,
+            textarea:-moz-dir-attr-like-auto { unicode-bidi: plaintext }
+
+        /* <video> */
+        video { object-fit: contain }
+            /* States > (Webkit : Full Screen) */
+            video:-webkit-full-screen {
+                background-color: transparent !important;
+                -webkit-box-flex: 1 !important
+            }
+
+            /* <img> */
+                /* States > Mozilla : Native Anonymous */
+                video > img:-moz-native-anonymous {
+                    object-fit: inherit !important;
+                    object-position: inherit !important
+                }
+
+        /* ... */
+        object:-moz-any(:-moz-broken, :moz-user-disabled) > * | *,
+        table td,
+        table th { vertical-align: inherit }
+
+        * | ::-moz-html-canvas-content { transform: translate(0) !important }
