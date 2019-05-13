@@ -10,8 +10,6 @@
 
     --- NOTE ---
         #Lapys:
-            - Supported environment standards:
-                -- ..
             - Most of this library was designed from user agent stylesheet (with their polyfills) defined in various modern browsers,
                 but it also takes on its own unique approach to design.
             - Over its years of development, the library is still a bare-bones version of what it could be.
@@ -1907,9 +1905,7 @@
             }
 
             /* Active */
-            button:active {
-                background-color: #999999
-            }
+            button:active { background-color: #999999 }
 
     /* <input> */
     input {
