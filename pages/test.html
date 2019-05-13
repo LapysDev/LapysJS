@@ -9,6 +9,9 @@
         <!-- LapysJS Stylesheet -->
         <link href=../src/lapys.css media=all rel=stylesheet type=text/css>
 
+        <!-- Document Stylesheet -->
+        <style media=all type=text/css> * { outline: 1px solid #FF0000 } </style>
+
     <!-- Document Title -->
     <title> LapysJS | Testing Room </title>
 </head>
@@ -23,17 +26,129 @@
 
     <!-- Main -->
     <main>
-        <!-- Header -->
-        <h1 role=header> Testing Room </h1>
+        <p role=description> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
 
-        <!-- Description -->
-        <p role=description> Hello, World! </p>
+        <hgroup role=container>
+            <h1 role=header> Heading Level 1 </h1>
+            <h2 role=subheader> Heading Level 2 </h2>
+            <h3 role=subsubheader> Heading Level 3 </h3>
+            <h4 role=subsubsubheader> Heading Level 4 </h4>
+            <h5 role=subsubsubsubheader> Heading Level 5 </h5>
+            <h6 role=subsubsubsubsubheader> Heading Level 6 </h6>
+        </hgroup>
 
-        <!-- Input -->
-        <input placeholder="Input Placeholder" role=input type=text>
+        <canvas> </canvas>
+        <img src=../assets/img/png/logo.png style="height: 65px; width: 65px">
 
-        <!-- Submit -->
-        <button role=submit> SUBMIT </button>
+        <section role=container>
+            <a> Hyperlink </a> <br>
+            <a href=""> Hyperlink </a> <br>
+            <a href="https://www.hyperlink.com"> Hyperlink </a> <br>
+
+            <b> Emboldened Text </b> <br>
+            <strong> Emboldened Text </strong> <br>
+
+            <i> Emphasized Text </i> <br>
+            <em> Emphasized Text </em> <br>
+
+            <code> console.log("Hello, World!") </code> <br>
+            <kbd> TEXT INPUT </kbd> <br>
+
+            <del> Deleted Text </del> <br>
+            <ins> Inserted Text </ins> <br>
+            <mark> Marked Text </mark> <br>
+            <pre> Pre-formatted Text </pre> <br>
+            <q> Quoted Text </q> <br>
+            <time> 5:36 PM 5/13/2019 </time> <br>
+
+            <blockquote> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </blockquote>
+
+            <ul> <li> List Item A </li> <li> List Item B </li> <li> List Item C </li> </ul>
+
+            <meter max=100 min=0 value=75> </meter> <br>
+            <progress max=100 min=0 value=75> </progress> <br>
+
+            <details>
+                <summary> Details Summary </summary>
+                <div> Details content&hellip; </div>
+            </details> <br>
+
+            <select>
+                <option> Option A </option>
+                <optgroup>
+                    <option> Sub-Option A </option>
+                    <option> Sub-Option B </option>
+                    <option> Sub-Option C </option>
+                </optgroup>
+                <option> Option C </option>
+            </select> <br>
+
+            <button role=button> Button </button> <br>
+
+            <textarea> Hello, World! </textarea>
+        </section>
+
+        <form>
+            <legend role=header> Legend </legend>
+
+            <fieldset role=container>
+                <div> <label> Button </label> <input role=button type=button value=Button> </div>
+                <hr>
+                <div> <label> Check Box </label> <input role=button type=checkbox> </div>
+                <hr>
+                <div> <label> Color </label> <input role=input type=color> </div>
+                <hr>
+                <div> <label> Date </label> <input role=input type=date> </div>
+                <hr>
+                <div> <label> Date Time Local </label> <input role=input type=datetime-local> </div>
+                <hr>
+                <div> <label> Email </label> <input role=input type=email> </div>
+                <hr>
+                <div> <label> File </label> <input role=input type=file> </div>
+                <hr>
+                <div> <label> Hidden </label> <input type=hidden> </div>
+                <hr>
+                <div> <label> Image </label> <input role=image type=image> </div>
+                <hr>
+                <div> <label> Month </label> <input role=input type=month> </div>
+                <hr>
+                <div> <label> Number </label> <input role=input type=number> </div>
+                <hr>
+                <div> <label> Password </label> <input role=input type=password> </div>
+                <hr>
+                <div> <label> Radio </label> <input role=button type=radio> </div>
+                <hr>
+                <div> <label> Range </label> <input role=input type=range> </div>
+                <hr>
+                <div> <label> Reset </label> <input role=button type=reset value=Reset> </div>
+                <hr>
+                <div> <label> Search </label> <input placeholder="Placeholder Search" role=input type=search> </div>
+                <hr>
+                <div> <label> Submit </label> <input role=button type=submit value=Submit> </div>
+                <hr>
+                <div> <label> Telephone </label> <input role=input type=tel> </div>
+                <hr>
+                <div> <label> Text </label> <input placeholder="Placeholder Text" role=input type=text> </div>
+                <hr>
+                <div> <label> Time </label> <input role=input type=time> </div>
+                <hr>
+                <div> <label> URL </label> <input role=input type=url> </div>
+                <hr>
+                <div> <label> Week </label> <input role=input type=week> </div>
+            </fieldset>
+        </form>
+
+        <iframe src=#> </iframe>
+
+        <audio> </audio>
+        <video> </video>
+
+        <table>
+            <caption> Table Caption </caption>
+            <thead> <tr> <th> Table Head </th> </tr> </thead>
+            <tbody> <tr> <th> Table Header Cell </th> <td> Table Cell A </td> <td> Table Cell B </td> <td> Table Cell C </td> </tr> </tbody>
+            <tfoot> <tr> <td> Table Footer </td> </tr> </tfoot>
+        </table>
     </main>
 </body>
 </html>

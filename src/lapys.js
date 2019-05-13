@@ -5340,7 +5340,7 @@
                         // To Debugging Message
                         LapysDevelopmentKit.Functions.stringPrototypeToDebuggingMessage = function stringPrototypeToDebuggingMessage(string) { return LDKI.Messages.Debugging.Prefix + string + LDKI.Messages.Debugging.Suffix };
 
-                        // Trim
+                        // Trim --- NOTE (Lapys) -> Also trims null termination characters (e.g.: `\0`) by default as well.
                         LapysDevelopmentKit.Functions.stringPrototypeTrim = function stringPrototypeTrim(string, substring) {
                             // Update > Arguments
                             arguments[+0] = LDKF.stringPrototypeTrimRight.apply(LDKF, arguments);
@@ -5401,7 +5401,7 @@
 
                             else
                                 // Update > Trimmed
-                                trimmed = LDKF.stringPrototypeTrimLeft(trimmed, [' ', '\n']);
+                                trimmed = LDKF.stringPrototypeTrimLeft(trimmed, [' ', '\0', '\n']);
 
                             // Return
                             return trimmed
@@ -5451,7 +5451,7 @@
 
                             else
                                 // Update > Trimmed
-                                trimmed = LDKF.stringPrototypeTrimRight(trimmed, [' ', '\n']);
+                                trimmed = LDKF.stringPrototypeTrimRight(trimmed, [' ', '\0', '\n']);
 
                             // Return
                             return trimmed

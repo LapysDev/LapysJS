@@ -1549,6 +1549,9 @@
                 outline-offset: -1px
             }
 
+        /* <p> */
+        p { orphans: 3; widows: 3 }
+
         /* <pre>, <span> */
         pre[_moz_quote=true], span[_moz_quote=true] { color: #3333FF }
 
@@ -1877,8 +1880,7 @@
 
         * | ::-moz-html-canvas-content { transform: translate(0) !important }
 
-/* [Math ML] --- UPDATE REQUIRED (Lapys) -> Support for Math ML components. */
-/* [Custom Features] --- CHECKPOINT (Lapys) */
+/* [Custom Features] --- UPDATE REQUIRED (Lapys) -> Remove redundant CSS declaration or syntax. */
     /* <button> */
     button {
         background-color: transparent;
@@ -1891,11 +1893,39 @@
     }
         /* States */
             /* Focus */
-            button:focus { outline: none }
+            button:focus {
+                box-shadow: 0 3px 3px 0 rgba(0, 0, 0, .3);
+                outline: none
+            }
 
-            /* Hover */
+            /* Focus, Hover */
+            button:focus,
             button:hover {
                 background-color: #AAAAAA;
                 border-color: #AAAAAA;
                 color: #FFFFFF;
             }
+
+            /* Active */
+            button:active {
+                background-color: #999999
+            }
+
+    /* <input> */
+    input {
+        background-color: transparent;
+        border: 1px solid #999999;
+        color: #666666;
+        padding: 5px 8.25px
+    }
+        /* States */
+            /* Focus */
+            input:focus {
+                outline: none
+            }
+
+    /* <p> */
+    p {
+        margin-left: 8px;
+        margin-right: 8px
+    }
