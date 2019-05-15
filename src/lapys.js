@@ -4968,158 +4968,162 @@
                         LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.alphabets, string, STRICT = 52) };
 
                         // Is Character Encoding --- CHECKPOINT (Lapys)
-                        // Is Color --- UPDATE REQUIRED (Lapys) -> Update to browser standards. --- WARN (Lapys) -> Tests only for the lower-cased versions of color names supported by web browsers.
-                        LapysDevelopmentKit.Functions.stringPrototypeIsColor = function stringPrototypeIsColor(string) {
+                        /* Is Color
+                            --- UPDATE REQUIRED (Lapys) -> Update to browser standards.
+                            --- WARN (Lapys) -> Tests only for the lower-cased versions of color names supported by web browsers.
+                        */
+                        LapysDevelopmentKit.Functions.stringPrototypeIsColor = function stringPrototypeIsColor(string, TEST_FOR_COLOR_CODES) {
                             // Update > String
                             string = LDKF.stringPrototypeToLowerCase(string);
 
                             // Return
-                            return string == "aliceblue" ||
-                                string == "antiquewhite" ||
-                                string == "aqua" ||
-                                string == "aquamarine" ||
-                                string == "azure" ||
-                                string == "beige" ||
-                                string == "bisque" ||
-                                string == "black" ||
-                                string == "blanchedalmond" ||
-                                string == "blue" ||
-                                string == "blueviolet" ||
-                                string == "brown" ||
-                                string == "burlywood" ||
-                                string == "cadetblue" ||
-                                string == "chartreuse" ||
-                                string == "chocolate" ||
-                                string == "coral" ||
-                                string == "cornflowerblue" ||
-                                string == "cornsilk" ||
-                                string == "crimson" ||
-                                string == "cyan" ||
-                                string == "darkblue" ||
-                                string == "darkcyan" ||
-                                string == "darkgoldenrod" ||
-                                string == "darkgray" ||
-                                string == "darkgrey" ||
-                                string == "darkkhaki" ||
-                                string == "darkmagenta" ||
-                                string == "darkolivegreen" ||
-                                string == "darkorange" ||
-                                string == "darkorchid" ||
-                                string == "darkred" ||
-                                string == "darksalmon" ||
-                                string == "darkseagreen" ||
-                                string == "darkslateblue" ||
-                                string == "darkslategray" ||
-                                string == "darkslategrey" ||
-                                string == "darkturquoise" ||
-                                string == "darkviolet" ||
-                                string == "deeppink" ||
-                                string == "deepskyblue" ||
-                                string == "dimgray" ||
-                                string == "dimgrey" ||
-                                string == "dodgerblue" ||
-                                string == "firebrick" ||
-                                string == "floralwhite" ||
-                                string == "forestgreen" ||
-                                string == "fuchsia" ||
-                                string == "gainsboro" ||
-                                string == "ghostwhite" ||
-                                string == "gold" ||
-                                string == "goldenrod" ||
-                                string == "gray" ||
-                                string == "grey" ||
-                                string == "green" ||
-                                string == "greenyellow" ||
-                                string == "honeydew" ||
-                                string == "hotpink" ||
-                                string == "indianred" ||
-                                string == "indigo" ||
-                                string == "ivory" ||
-                                string == "khaki" ||
-                                string == "lavender" ||
-                                string == "lavenderblush" ||
-                                string == "lawngreen" ||
-                                string == "lemonchiffon" ||
-                                string == "lightblue" ||
-                                string == "lightcoral" ||
-                                string == "lightcyan" ||
-                                string == "lightgoldenrodyellow" ||
-                                string == "lightgray" ||
-                                string == "lightgrey" ||
-                                string == "lightgreen" ||
-                                string == "lightpink" ||
-                                string == "lightsalmon" ||
-                                string == "lightseagreen" ||
-                                string == "lightskyblue" ||
-                                string == "lightslategray" ||
-                                string == "lightslategrey" ||
-                                string == "lightsteelblue" ||
-                                string == "lightyellow" ||
-                                string == "lime" ||
-                                string == "limegreen" ||
-                                string == "linen" ||
-                                string == "magenta" ||
-                                string == "maroon" ||
-                                string == "mediumaquamarine" ||
-                                string == "mediumblue" ||
-                                string == "mediumorchid" ||
-                                string == "mediumpurple" ||
-                                string == "mediumseagreen" ||
-                                string == "mediumspringgreen" ||
-                                string == "mediumturquoise" ||
-                                string == "mediumvioletred" ||
-                                string == "midnightblue" ||
-                                string == "mintcream" ||
-                                string == "mistyrose" ||
-                                string == "moccasin" ||
-                                string == "navajowhite" ||
-                                string == "navy" ||
-                                string == "oldlace" ||
-                                string == "olive" ||
-                                string == "olivedrab" ||
-                                string == "orange" ||
-                                string == "orangered" ||
-                                string == "orchid" ||
-                                string == "palegoldenrod" ||
-                                string == "palegreen" ||
-                                string == "paleturquoise" ||
-                                string == "palevioletred" ||
-                                string == "papayawhip" ||
-                                string == "peachpuff" ||
-                                string == "peru" ||
-                                string == "pink" ||
-                                string == "plum" ||
-                                string == "powderblue" ||
-                                string == "purple" ||
-                                string == "rebeccapurple" ||
-                                string == "red" ||
-                                string == "rosybrown" ||
-                                string == "royalblue" ||
-                                string == "saddlebrown" ||
-                                string == "salmon" ||
-                                string == "sandybrown" ||
-                                string == "seagreen" ||
-                                string == "seashell" ||
-                                string == "sienna" ||
-                                string == "silver" ||
-                                string == "skyblue" ||
-                                string == "slateblue" ||
-                                string == "slategray" ||
-                                string == "slategrey" ||
-                                string == "snow" ||
-                                string == "springgreen" ||
-                                string == "steelblue" ||
-                                string == "tan" ||
-                                string == "teal" ||
-                                string == "thistle" ||
-                                string == "tomato" ||
-                                string == "turquoise" ||
-                                string == "violet" ||
-                                string == "wheat" ||
-                                string == "white" ||
-                                string == "whitesmoke" ||
-                                string == "yellow" ||
-                                string == "yellowgreen" ||
+                            return (string == "aliceblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f0f8ff"))) ||
+                                (string == "antiquewhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#faebd7"))) ||
+                                (string == "aqua" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00ffff"))) ||
+                                (string == "aquamarine" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#7fffd4"))) ||
+                                (string == "azure" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f0ffff"))) ||
+                                (string == "beige" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f5f5dc"))) ||
+                                (string == "bisque" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffe4c4"))) ||
+                                (string == "black" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#000000"))) ||
+                                (string == "blanchedalmond" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffebcd"))) ||
+                                (string == "blue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#0000ff"))) ||
+                                (string == "blueviolet" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#8a2be2"))) ||
+                                (string == "brown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#a52a2a"))) ||
+                                (string == "burlywood" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#deb887"))) ||
+                                (string == "cadetblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#5f9ea0"))) ||
+                                (string == "chartreuse" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#7fff00"))) ||
+                                (string == "chocolate" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#d2691e"))) ||
+                                (string == "coral" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff7f50"))) ||
+                                (string == "cornflowerblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#6495ed"))) ||
+                                (string == "cornsilk" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fff8dc"))) ||
+                                (string == "crimson" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#dc143c"))) ||
+                                (string == "cyan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00ffff"))) ||
+                                (string == "darkblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00008b"))) ||
+                                (string == "darkcyan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#008b8b"))) ||
+                                (string == "darkgoldenrod" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#b8860b"))) ||
+                                (string == "darkgray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#a9a9a9"))) ||
+                                (string == "darkgrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#a9a9a9"))) ||
+                                (string == "darkkhaki" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#006400"))) ||
+                                (string == "darkmagenta" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#bdb76b"))) ||
+                                (string == "darkolivegreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#8b008b"))) ||
+                                (string == "darkorange" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#556b2f"))) ||
+                                (string == "darkorchid" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff8c00"))) ||
+                                (string == "darkred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#9932cc"))) ||
+                                (string == "darksalmon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#8b0000"))) ||
+                                (string == "darkseagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#e9967a"))) ||
+                                (string == "darkslateblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#8fbc8f"))) ||
+                                (string == "darkslategray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#483d8b"))) ||
+                                (string == "darkslategrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#2f4f4f"))) ||
+                                (string == "darkturquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#2f4f4f"))) ||
+                                (string == "darkviolet" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00ced1"))) ||
+                                (string == "deeppink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#9400d3"))) ||
+                                (string == "deepskyblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff1493"))) ||
+                                (string == "dimgray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00bfff"))) ||
+                                (string == "dimgrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#696969"))) ||
+                                (string == "dodgerblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#696969"))) ||
+                                (string == "firebrick" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#1e90ff"))) ||
+                                (string == "floralwhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#b22222"))) ||
+                                (string == "forestgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fffaf0"))) ||
+                                (string == "fuchsia" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#228b22"))) ||
+                                (string == "gainsboro" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff00ff"))) ||
+                                (string == "ghostwhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#dcdcdc"))) ||
+                                (string == "gold" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f8f8ff"))) ||
+                                (string == "goldenrod" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffd700"))) ||
+                                (string == "gray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#daa520"))) ||
+                                (string == "grey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#808080"))) ||
+                                (string == "green" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#808080"))) ||
+                                (string == "greenyellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#008000"))) ||
+                                (string == "honeydew" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#adff2f"))) ||
+                                (string == "hotpink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f0fff0"))) ||
+                                (string == "indianred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff69b4"))) ||
+                                (string == "indigo" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#cd5c5c"))) ||
+                                (string == "ivory" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#4b0082"))) ||
+                                (string == "khaki" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fffff0"))) ||
+                                (string == "lavender" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f0e68c"))) ||
+                                (string == "lavenderblush" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#e6e6fa"))) ||
+                                (string == "lawngreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fff0f5"))) ||
+                                (string == "lemonchiffon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#7cfc00"))) ||
+                                (string == "lightblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fffacd"))) ||
+                                (string == "lightcoral" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#add8e6"))) ||
+                                (string == "lightcyan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f08080"))) ||
+                                (string == "lightgoldenrodyellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#eoffff"))) ||
+                                (string == "lightgray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fafad2"))) ||
+                                (string == "lightgrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#d3d3d3"))) ||
+                                (string == "lightgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#90ee90"))) ||
+                                (string == "lightpink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffb6c1"))) ||
+                                (string == "lightsalmon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffa07a"))) ||
+                                (string == "lightseagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#20b2aa"))) ||
+                                (string == "lightskyblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#87cefa"))) ||
+                                (string == "lightslategray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#778899"))) ||
+                                (string == "lightslategrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#778899"))) ||
+                                (string == "lightsteelblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#b0c4de"))) ||
+                                (string == "lightyellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffffe0"))) ||
+                                (string == "lime" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00ff00"))) ||
+                                (string == "limegreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#32cd32"))) ||
+                                (string == "linen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#faf0e6"))) ||
+                                (string == "magenta" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff00ff"))) ||
+                                (string == "maroon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#800000"))) ||
+                                (string == "mediumaquamarine" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#66cdaa"))) ||
+                                (string == "mediumblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#0000cd"))) ||
+                                (string == "mediumorchid" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ba55d3"))) ||
+                                (string == "mediumpurple" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#9370db"))) ||
+                                (string == "mediumseagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#3cb371"))) ||
+                                (string == "mediumslateblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#7b68ee"))) ||
+                                (string == "mediumspringgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00fa9a"))) ||
+                                (string == "mediumturquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#48d1cc"))) ||
+                                (string == "mediumvioletred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#c71585"))) ||
+                                (string == "midnightblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#191970"))) ||
+                                (string == "mintcream" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f5fffa"))) ||
+                                (string == "mistyrose" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffe4e1"))) ||
+                                (string == "moccasin" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffe4b5"))) ||
+                                (string == "navajowhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffdead"))) ||
+                                (string == "navy" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#000080"))) ||
+                                (string == "oldlace" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fdf5e6"))) ||
+                                (string == "olive" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#808000"))) ||
+                                (string == "olivedrab" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#6b8e23"))) ||
+                                (string == "orange" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffa500"))) ||
+                                (string == "orangered" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff4500"))) ||
+                                (string == "orchid" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#da70d6"))) ||
+                                (string == "palegoldenrod" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#eee8aa"))) ||
+                                (string == "palegreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#98fb98"))) ||
+                                (string == "paleturquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#afeeee"))) ||
+                                (string == "palevioletred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#db7093"))) ||
+                                (string == "papayawhip" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffefd5"))) ||
+                                (string == "peachpuff" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffdab9"))) ||
+                                (string == "peru" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#cd853f"))) ||
+                                (string == "pink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffc0cb"))) ||
+                                (string == "plum" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#dda0dd"))) ||
+                                (string == "powderblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#b0e0e6"))) ||
+                                (string == "purple" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#800080"))) ||
+                                (string == "rebeccapurple" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#663399"))) ||
+                                (string == "red" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff0000"))) ||
+                                (string == "rosybrown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#bc8f8f"))) ||
+                                (string == "royalblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#4169e1"))) ||
+                                (string == "saddlebrown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#8b4513"))) ||
+                                (string == "salmon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fa8072"))) ||
+                                (string == "sandybrown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f4a460"))) ||
+                                (string == "seagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#2f8b57"))) ||
+                                (string == "seashell" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fff5ee"))) ||
+                                (string == "sienna" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#a0522d"))) ||
+                                (string == "silver" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#c0c0c0"))) ||
+                                (string == "skyblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#87ceeb"))) ||
+                                (string == "slateblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#6a5acd"))) ||
+                                (string == "slategray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#708090"))) ||
+                                (string == "slategrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#708090"))) ||
+                                (string == "snow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#fffafa"))) ||
+                                (string == "springgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#00ff7f"))) ||
+                                (string == "steelblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#4682b4"))) ||
+                                (string == "tan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#d2b48c"))) ||
+                                (string == "teal" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#008080"))) ||
+                                (string == "thistle" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#d8bfd8"))) ||
+                                (string == "tomato" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ff6347"))) ||
+                                (string == "turquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#40e0d0"))) ||
+                                (string == "violet" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ee82ee"))) ||
+                                (string == "wheat" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f5deb3"))) ||
+                                (string == "white" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffffff"))) ||
+                                (string == "whitesmoke" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#f5f5f5"))) ||
+                                (string == "yellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#ffff00"))) ||
+                                (string == "yellowgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "rgb()" || string == "rgba(, 1)" || string == "#9acd32")))
                         };
 
                         // Is Color Code --- NOTE (Lapys) -> Any color or color code.
@@ -5133,6 +5137,8 @@
                                 (LDKF.stringPrototypeIsHSLColor(string) || LDKF.stringPrototypeIsHSLAColor(string))
                                 (LDKF.stringPrototypeIsRGBColor(string) || LDKF.stringPrototypeIsRGBAColor(string))
                         };
+
+                        // Is CMYK Color --- CHECKPOINT (Lapys)
 
                         // Is Digit
                         LapysDevelopmentKit.Functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.digits, string, STRICT = 10) };
