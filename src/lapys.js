@@ -4968,18 +4968,169 @@
                         LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.alphabets, string, STRICT = 52) };
 
                         // Is Character Encoding --- CHECKPOINT (Lapys)
-                        // Is CMYK Color --- CHECKPOINT (Lapys)
-                        // Is Color --- CHECKPOINT (Lapys)
+                        // Is Color --- UPDATE REQUIRED (Lapys) -> Update to browser standards. --- WARN (Lapys) -> Tests only for the lower-cased versions of color names supported by web browsers.
+                        LapysDevelopmentKit.Functions.stringPrototypeIsColor = function stringPrototypeIsColor(string) {
+                            // Update > String
+                            string = LDKF.stringPrototypeToLowerCase(string);
+
+                            // Return
+                            return string == "aliceblue" ||
+                                string == "antiquewhite" ||
+                                string == "aqua" ||
+                                string == "aquamarine" ||
+                                string == "azure" ||
+                                string == "beige" ||
+                                string == "bisque" ||
+                                string == "black" ||
+                                string == "blanchedalmond" ||
+                                string == "blue" ||
+                                string == "blueviolet" ||
+                                string == "brown" ||
+                                string == "burlywood" ||
+                                string == "cadetblue" ||
+                                string == "chartreuse" ||
+                                string == "chocolate" ||
+                                string == "coral" ||
+                                string == "cornflowerblue" ||
+                                string == "cornsilk" ||
+                                string == "crimson" ||
+                                string == "cyan" ||
+                                string == "darkblue" ||
+                                string == "darkcyan" ||
+                                string == "darkgoldenrod" ||
+                                string == "darkgray" ||
+                                string == "darkgrey" ||
+                                string == "darkkhaki" ||
+                                string == "darkmagenta" ||
+                                string == "darkolivegreen" ||
+                                string == "darkorange" ||
+                                string == "darkorchid" ||
+                                string == "darkred" ||
+                                string == "darksalmon" ||
+                                string == "darkseagreen" ||
+                                string == "darkslateblue" ||
+                                string == "darkslategray" ||
+                                string == "darkslategrey" ||
+                                string == "darkturquoise" ||
+                                string == "darkviolet" ||
+                                string == "deeppink" ||
+                                string == "deepskyblue" ||
+                                string == "dimgray" ||
+                                string == "dimgrey" ||
+                                string == "dodgerblue" ||
+                                string == "firebrick" ||
+                                string == "floralwhite" ||
+                                string == "forestgreen" ||
+                                string == "fuchsia" ||
+                                string == "gainsboro" ||
+                                string == "ghostwhite" ||
+                                string == "gold" ||
+                                string == "goldenrod" ||
+                                string == "gray" ||
+                                string == "grey" ||
+                                string == "green" ||
+                                string == "greenyellow" ||
+                                string == "honeydew" ||
+                                string == "hotpink" ||
+                                string == "indianred" ||
+                                string == "indigo" ||
+                                string == "ivory" ||
+                                string == "khaki" ||
+                                string == "lavender" ||
+                                string == "lavenderblush" ||
+                                string == "lawngreen" ||
+                                string == "lemonchiffon" ||
+                                string == "lightblue" ||
+                                string == "lightcoral" ||
+                                string == "lightcyan" ||
+                                string == "lightgoldenrodyellow" ||
+                                string == "lightgray" ||
+                                string == "lightgrey" ||
+                                string == "lightgreen" ||
+                                string == "lightpink" ||
+                                string == "lightsalmon" ||
+                                string == "lightseagreen" ||
+                                string == "lightskyblue" ||
+                                string == "lightslategray" ||
+                                string == "lightslategrey" ||
+                                string == "lightsteelblue" ||
+                                string == "lightyellow" ||
+                                string == "lime" ||
+                                string == "limegreen" ||
+                                string == "linen" ||
+                                string == "magenta" ||
+                                string == "maroon" ||
+                                string == "mediumaquamarine" ||
+                                string == "mediumblue" ||
+                                string == "mediumorchid" ||
+                                string == "mediumpurple" ||
+                                string == "mediumseagreen" ||
+                                string == "mediumspringgreen" ||
+                                string == "mediumturquoise" ||
+                                string == "mediumvioletred" ||
+                                string == "midnightblue" ||
+                                string == "mintcream" ||
+                                string == "mistyrose" ||
+                                string == "moccasin" ||
+                                string == "navajowhite" ||
+                                string == "navy" ||
+                                string == "oldlace" ||
+                                string == "olive" ||
+                                string == "olivedrab" ||
+                                string == "orange" ||
+                                string == "orangered" ||
+                                string == "orchid" ||
+                                string == "palegoldenrod" ||
+                                string == "palegreen" ||
+                                string == "paleturquoise" ||
+                                string == "palevioletred" ||
+                                string == "papayawhip" ||
+                                string == "peachpuff" ||
+                                string == "peru" ||
+                                string == "pink" ||
+                                string == "plum" ||
+                                string == "powderblue" ||
+                                string == "purple" ||
+                                string == "rebeccapurple" ||
+                                string == "red" ||
+                                string == "rosybrown" ||
+                                string == "royalblue" ||
+                                string == "saddlebrown" ||
+                                string == "salmon" ||
+                                string == "sandybrown" ||
+                                string == "seagreen" ||
+                                string == "seashell" ||
+                                string == "sienna" ||
+                                string == "silver" ||
+                                string == "skyblue" ||
+                                string == "slateblue" ||
+                                string == "slategray" ||
+                                string == "slategrey" ||
+                                string == "snow" ||
+                                string == "springgreen" ||
+                                string == "steelblue" ||
+                                string == "tan" ||
+                                string == "teal" ||
+                                string == "thistle" ||
+                                string == "tomato" ||
+                                string == "turquoise" ||
+                                string == "violet" ||
+                                string == "wheat" ||
+                                string == "white" ||
+                                string == "whitesmoke" ||
+                                string == "yellow" ||
+                                string == "yellowgreen" ||
+                        };
+
                         // Is Color Code --- NOTE (Lapys) -> Any color or color code.
                         LapysDevelopmentKit.Functions.stringPrototypeIsColorCode = function stringPrototypeIsColorCode(string, STRING_LENGTH) {
                             // Initialization > String Length
                             var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
 
                             // Return
-                            return LDKF.stringPrototypeIsCMYKColor(string) ||
-                                LDKF.stringPrototypteIsColor(string) ||
+                            return LDKF.stringPrototypteIsColor(string) ||
                                 LDKF.stringPrototypeIsHexadecimalColor(string, STRICT = stringLength) ||
-                                LDKF.stringPrototypeIsHSLColor(string) ||
+                                (LDKF.stringPrototypeIsHSLColor(string) || LDKF.stringPrototypeIsHSLAColor(string))
                                 (LDKF.stringPrototypeIsRGBColor(string) || LDKF.stringPrototypeIsRGBAColor(string))
                         };
 
@@ -5013,6 +5164,7 @@
                         LapysDevelopmentKit.Functions.stringPrototypeIsHexadecimalDigit = function stringPrototypeIsHexadecimalDigit(string) { return string == 'a' || string == 'A' || string == 'b' || string == 'B' || string == 'c' || string == 'C' || string == 'd' || string == 'D' || string == 'e' || string == 'E' || string == 'f' || string == 'F' || LDKF.stringPrototypeIsDigit(string) };
 
                         // Is HSL Color --- CHECKPOINT (Lapys)
+                        // Is HSLA Color --- CHECKPOINT (Lapys)
 
                         // Is Lower
                         LapysDevelopmentKit.Functions.stringPrototypeIsLower = function stringPrototypeIsLower(string, STRING_LENGTH) {
