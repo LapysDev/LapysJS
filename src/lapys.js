@@ -1218,7 +1218,7 @@
                                     var index;
 
                                     // Loop > Logic > Return --- NOTE (Lapys) -> This works because the `for...in` loop iteration is ordered.
-                                    for (index in array) if (LDKF.stringPrototypeIsNumericInteger(index)) return array[LDKF.toNumber(index)]
+                                    for (index in array) if (LDKF.stringPrototypeIsNumericInteger(index) && LDKF.numberPrototypeIsPositiveInteger(LDKF.toNumber(index))) return array[LDKF.toNumber(index)]
                                 }
 
                                 else
@@ -1613,7 +1613,7 @@
                                         var index = indexes[indexesIterator -= 1];
 
                                         // Logic > Return
-                                        if (LDKF.stringPrototypeIsNumericInteger(index)) return array[LDKF.toNumber(index)]
+                                        if (LDKF.stringPrototypeIsNumericInteger(index) && LDKF.numberPrototypeIsPositiveInteger(LDKF.toNumber(index))) return array[LDKF.toNumber(index)]
                                     }
                                 }
 
@@ -4511,32 +4511,46 @@
 
                         // Cut Left
                         LapysDevelopmentKit.Functions.stringPrototypeCutLeft = function stringPrototypeCutLeft(string, length, STRING_LENGTH) {
-                            // Initialization > (Cut, String Length)
-                            var cut = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+                            // Logic
+                            if (length) {
+                                // Initialization > (Cut, String Length)
+                                var cut = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
 
-                            // Logic > Loop > Update > (Cut, Length)
-                            if (stringLength && length < stringLength) while (length ^ stringLength) { cut += LDKF.stringPrototypeCharacterAt(string, length); length += 1 }
+                                // Logic > Loop > Update > (Cut, Length)
+                                if (stringLength && length < stringLength) while (length ^ stringLength) { cut += LDKF.stringPrototypeCharacterAt(string, length); length += 1 }
 
-                            // Return
-                            return cut
+                                // Return
+                                return cut
+                            }
+
+                            else
+                                // Return
+                                return string
                         };
 
                         // Cut Right
                         LapysDevelopmentKit.Functions.stringPrototypeCutRight = function stringPrototypeCutRight(string, length, STRING_LENGTH) {
-                            // Initialization > (Cut, String Length)
-                            var cut = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
-
                             // Logic
-                            if (stringLength && length < stringLength) {
-                                // Update > Length
-                                length = stringLength - length;
+                            if (length) {
+                                // Initialization > (Cut, String Length)
+                                var cut = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
 
-                                // Loop > Update > Cut
-                                while (length) cut = LDKF.stringPrototypeCharacterAt(string, length -= 1) + cut
+                                // Logic
+                                if (stringLength && length < stringLength) {
+                                    // Update > Length
+                                    length = stringLength - length;
+
+                                    // Loop > Update > Cut
+                                    while (length) cut = LDKF.stringPrototypeCharacterAt(string, length -= 1) + cut
+                                }
+
+                                // Return
+                                return cut
                             }
 
-                            // Return
-                            return cut
+                            else
+                                // Return
+                                return string
                         };
 
                         // Cut Through
@@ -4968,6 +4982,9 @@
                         LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.alphabets, string, STRICT = 52) };
 
                         // Is Character Encoding --- CHECKPOINT (Lapys)
+                        // Is CMYK Color --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeIsCMYKColor = function stringPrototypeIsCMYKColor(string) {};
+
                         /* Is Color
                             --- NOTE (Lapys) -> The color codes do not match up to their counterparts due to human error.
                             --- UPDATE REQUIRED (Lapys) -> Update to browser standards.
@@ -4977,154 +4994,191 @@
                             // Update > String
                             string = LDKF.stringPrototypeLower(string);
 
-                            // Return
-                            return (string == "aliceblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(240, 248, 255)" || string == "rgba(240, 248, 255, 1)" || string == "#f0f8ff"))) ||
-                                (string == "antiquewhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(250, 235, 215)" || string == "rgba(250, 235, 215, 1)" || string == "#faebd7"))) ||
-                                (string == "aqua" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 255, 255)" || string == "rgba(0, 255, 255, 1)" || string == "#00ffff"))) ||
-                                (string == "aquamarine" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(127, 255, 212)" || string == "rgba(127, 255, 212, 1)" || string == "#7fffd4"))) ||
-                                (string == "azure" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(240, 255, 255)" || string == "rgba(240, 255, 255, 1)" || string == "#f0ffff"))) ||
-                                (string == "beige" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(245, 245, 220)" || string == "rgba(245, 245, 220, 1)" || string == "#f5f5dc"))) ||
-                                (string == "bisque" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 228, 196)" || string == "rgba(255, 228, 196, 1)" || string == "#ffe4c4"))) ||
-                                (string == "black" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 0, 0)" || string == "rgba(0, 0, 0, 1)" || string == "#000000"))) ||
-                                (string == "blanchedalmond" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 235, 205)" || string == "rgba(255, 235, 205, 1)" || string == "#ffebcd"))) ||
-                                (string == "blue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 0, 255)" || string == "rgba(0, 0, 255, 1)" || string == "#0000ff"))) ||
-                                (string == "blueviolet" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(138, 43, 226)" || string == "rgba(138, 43, 226, 1)" || string == "#8a2be2"))) ||
-                                (string == "brown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(165, 42, 42)" || string == "rgba(165, 42, 42, 1)" || string == "#a52a2a"))) ||
-                                (string == "burlywood" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(222, 184, 135)" || string == "rgba(222, 184, 135, 1)" || string == "#deb887"))) ||
-                                (string == "cadetblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(95, 158, 160)" || string == "rgba(95, 158, 160, 1)" || string == "#5f9ea0"))) ||
-                                (string == "chartreuse" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(127, 255, 0)" || string == "rgba(127, 255, 0, 1)" || string == "#7fff00"))) ||
-                                (string == "chocolate" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(210, 105, 30)" || string == "rgba(210, 105, 30, 1)" || string == "#d2691e"))) ||
-                                (string == "coral" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 127, 80)" || string == "rgba(255, 127, 80, 1)" || string == "#ff7f50"))) ||
-                                (string == "cornflowerblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(100, 149, 237)" || string == "rgba(100, 149, 237, 1)" || string == "#6495ed"))) ||
-                                (string == "cornsilk" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 248, 220)" || string == "rgba(255, 248, 220, 1)" || string == "#fff8dc"))) ||
-                                (string == "crimson" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(220, 20, 60)" || string == "rgba(220, 20, 60, 1)" || string == "#dc143c"))) ||
-                                (string == "cyan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 255, 255)" || string == "rgba(0, 255, 255, 1)" || string == "#00ffff"))) ||
-                                (string == "darkblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 0, 139)" || string == "rgba(0, 0, 139, 1)" || string == "#00008b"))) ||
-                                (string == "darkcyan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 139, 139)" || string == "rgba(0, 139, 139, 1)" || string == "#008b8b"))) ||
-                                (string == "darkgoldenrod" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(184, 134, 11)" || string == "rgba(184, 134, 11, 1)" || string == "#b8860b"))) ||
-                                (string == "darkgray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(169, 169, 169)" || string == "rgba(169, 169, 169, 1)" || string == "#a9a9a9"))) ||
-                                (string == "darkgrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(169, 169, 169)" || string == "rgba(169, 169, 169, 1)" || string == "#a9a9a9"))) ||
-                                (string == "darkkhaki" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 100, 0)" || string == "rgba(0, 100, 0, 1)" || string == "#006400"))) ||
-                                (string == "darkmagenta" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(189, 183, 107)" || string == "rgba(189, 183, 107, 1)" || string == "#bdb76b"))) ||
-                                (string == "darkolivegreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(139, 0, 139)" || string == "rgba(139, 0, 139, 1)" || string == "#8b008b"))) ||
-                                (string == "darkorange" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(86, 107, 47)" || string == "rgba(86, 107, 47, 1)" || string == "#556b2f"))) ||
-                                (string == "darkorchid" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 140, 0)" || string == "rgba(255, 140, 0, 1)" || string == "#ff8c00"))) ||
-                                (string == "darkred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(153, 50, 204)" || string == "rgba(153, 50, 204, 1)" || string == "#9932cc"))) ||
-                                (string == "darksalmon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(139, 0, 0)" || string == "rgba(139, 0, 0, 1)" || string == "#8b0000"))) ||
-                                (string == "darkseagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(233, 150, 122)" || string == "rgba(233, 150, 122, 1)" || string == "#e9967a"))) ||
-                                (string == "darkslateblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(143, 188, 143)" || string == "rgba(143, 188, 143, 1)" || string == "#8fbc8f"))) ||
-                                (string == "darkslategray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(72, 61, 139)" || string == "rgba(72, 61, 139, 1)" || string == "#483d8b"))) ||
-                                (string == "darkslategrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(47, 79, 79)" || string == "rgba(47, 79, 79, 1)" || string == "#2f4f4f"))) ||
-                                (string == "darkturquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(47, 79, 79)" || string == "rgba(47, 79, 79, 1)" || string == "#2f4f4f"))) ||
-                                (string == "darkviolet" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 206, 209)" || string == "rgba(0, 206, 209, 1)" || string == "#00ced1"))) ||
-                                (string == "deeppink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(148, 0, 211)" || string == "rgba(148, 0, 211, 1)" || string == "#9400d3"))) ||
-                                (string == "deepskyblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 20, 147)" || string == "rgba(255, 20, 147, 1)" || string == "#ff1493"))) ||
-                                (string == "dimgray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 191, 255)" || string == "rgba(0, 191, 255, 1)" || string == "#00bfff"))) ||
-                                (string == "dimgrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(105, 105, 105)" || string == "rgba(105, 105, 105, 1)" || string == "#696969"))) ||
-                                (string == "dodgerblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(105, 105, 105)" || string == "rgba(105, 105, 105, 1)" || string == "#696969"))) ||
-                                (string == "firebrick" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(30, 144, 255)" || string == "rgba(30, 144, 255, 1)" || string == "#1e90ff"))) ||
-                                (string == "floralwhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(178, 34, 34)" || string == "rgba(178, 34, 34, 1)" || string == "#b22222"))) ||
-                                (string == "forestgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 250, 240)" || string == "rgba(255, 250, 240, 1)" || string == "#fffaf0"))) ||
-                                (string == "fuchsia" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(34, 139, 34)" || string == "rgba(34, 139, 34, 1)" || string == "#228b22"))) ||
-                                (string == "gainsboro" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 0, 255)" || string == "rgba(255, 0, 255, 1)" || string == "#ff00ff"))) ||
-                                (string == "ghostwhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(220, 220, 220)" || string == "rgba(220, 220, 220, 1)" || string == "#dcdcdc"))) ||
-                                (string == "gold" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(248, 248, 255)" || string == "rgba(248, 248, 255, 1)" || string == "#f8f8ff"))) ||
-                                (string == "goldenrod" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 215, 0)" || string == "rgba(255, 215, 0, 1)" || string == "#ffd700"))) ||
-                                (string == "gray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(218, 165, 32)" || string == "rgba(218, 165, 32, 1)" || string == "#daa520"))) ||
-                                (string == "grey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(128, 128, 128)" || string == "rgba(128, 128, 128, 1)" || string == "#808080"))) ||
-                                (string == "green" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(128, 128, 128)" || string == "rgba(128, 128, 128, 1)" || string == "#808080"))) ||
-                                (string == "greenyellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 128, 0)" || string == "rgba(0, 128, 0, 1)" || string == "#008000"))) ||
-                                (string == "honeydew" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(173, 255, 47)" || string == "rgba(173, 255, 47, 1)" || string == "#adff2f"))) ||
-                                (string == "hotpink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(240, 255, 240)" || string == "rgba(240, 255, 240, 1)" || string == "#f0fff0"))) ||
-                                (string == "indianred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 105, 180)" || string == "rgba(255, 105, 180, 1)" || string == "#ff69b4"))) ||
-                                (string == "indigo" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(205, 92, 92)" || string == "rgba(205, 92, 92, 1)" || string == "#cd5c5c"))) ||
-                                (string == "ivory" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(75, 0, 130)" || string == "rgba(75, 0, 130, 1)" || string == "#4b0082"))) ||
-                                (string == "khaki" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 255, 240)" || string == "rgba(255, 255, 240, 1)" || string == "#fffff0"))) ||
-                                (string == "lavender" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(240, 230, 140)" || string == "rgba(240, 230, 140, 1)" || string == "#f0e68c"))) ||
-                                (string == "lavenderblush" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(230, 230, 250)" || string == "rgba(230, 230, 250, 1)" || string == "#e6e6fa"))) ||
-                                (string == "lawngreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 240, 245)" || string == "rgba(255, 240, 245, 1)" || string == "#fff0f5"))) ||
-                                (string == "lemonchiffon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(124, 252, 0)" || string == "rgba(124, 252, 0, 1)" || string == "#7cfc00"))) ||
-                                (string == "lightblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 250, 205)" || string == "rgba(255, 250, 205, 1)" || string == "#fffacd"))) ||
-                                (string == "lightcoral" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(173, 216, 230)" || string == "rgba(173, 216, 230, 1)" || string == "#add8e6"))) ||
-                                (string == "lightcyan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(240, 128, 128)" || string == "rgba(240, 128, 128, 1)" || string == "#f08080"))) ||
-                                (string == "lightgoldenrodyellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(224, 255, 255)" || string == "rgba(224, 255, 255, 1)" || string == "#eoffff"))) ||
-                                (string == "lightgray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(250, 250, 210)" || string == "rgba(250, 250, 210, 1)" || string == "#fafad2"))) ||
-                                (string == "lightgrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(211, 211, 211)" || string == "rgba(211, 211, 211, 1)" || string == "#d3d3d3"))) ||
-                                (string == "lightgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(144, 238, 144)" || string == "rgba(144, 238, 144, 1)" || string == "#90ee90"))) ||
-                                (string == "lightpink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 182, 193)" || string == "rgba(255, 182, 193, 1)" || string == "#ffb6c1"))) ||
-                                (string == "lightsalmon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 160, 122)" || string == "rgba(255, 160, 122, 1)" || string == "#ffa07a"))) ||
-                                (string == "lightseagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(32, 178, 170)" || string == "rgba(32, 178, 170, 1)" || string == "#20b2aa"))) ||
-                                (string == "lightskyblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(135, 206, 250)" || "rgba(135, 206, 250, 1)" || string == "#87cefa"))) ||
-                                (string == "lightslategray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(119, 136, 153)" || "rgba(119, 136, 153, 1)" || string == "#778899"))) ||
-                                (string == "lightslategrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(119, 136, 153)" || "rgba(119, 136, 153, 1)" || string == "#778899"))) ||
-                                (string == "lightsteelblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(176, 196, 222)" || "rgba(176, 196, 222, 1)" || string == "#b0c4de"))) ||
-                                (string == "lightyellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 255, 224)" || string == "rgba(255, 255, 224, 1)" || string == "#ffffe0"))) ||
-                                (string == "lime" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 255, 0)" || string == "rgba(0, 255, 0, 1)" || string == "#00ff00"))) ||
-                                (string == "limegreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(50, 205, 50)" || string == "rgba(50, 205, 50, 1)" || string == "#32cd32"))) ||
-                                (string == "linen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(250, 240, 230)" || string == "rgba(250, 240, 230, 1)" || string == "#faf0e6"))) ||
-                                (string == "magenta" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 0, 255)" || string == "rgba(255, 0, 255, 1)" || string == "#ff00ff"))) ||
-                                (string == "maroon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(128, 0, 0)" || string == "rgba(128, 0, 0, 1)" || string == "#800000"))) ||
-                                (string == "mediumaquamarine" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(102, 205, 170)" || string == "rgba(102, 205, 170, 1)" || string == "#66cdaa"))) ||
-                                (string == "mediumblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 0, 205)" || string == "rgba(0, 0, 205, 1)" || string == "#0000cd"))) ||
-                                (string == "mediumorchid" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(186, 85, 211)" || string == "rgba(186, 85, 211, 1)" || string == "#ba55d3"))) ||
-                                (string == "mediumpurple" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(147, 112, 219)" || string == "rgba(147, 112, 219, 1)" || string == "#9370db"))) ||
-                                (string == "mediumseagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(60, 179, 113)" || string == "rgba(60, 179, 113, 1)" || string == "#3cb371"))) ||
-                                (string == "mediumslateblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(123, 104, 238)" || string == "rgba(123, 104, 238, 1)" || string == "#7b68ee"))) ||
-                                (string == "mediumspringgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 250, 154)" || string == "rgba(0, 250, 154, 1)" || string == "#00fa9a"))) ||
-                                (string == "mediumturquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(72, 209, 204)" || string == "rgba(72, 209, 204, 1)" || string == "#48d1cc"))) ||
-                                (string == "mediumvioletred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(199, 21, 133)" || string == "rgba(199, 21, 133, 1)" || string == "#c71585"))) ||
-                                (string == "midnightblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(25, 25, 112)" || string == "rgba(25, 25, 112, 1)" || string == "#191970"))) ||
-                                (string == "mintcream" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(245, 255, 250)" || string == "rgba(245, 255, 250, 1)" || string == "#f5fffa"))) ||
-                                (string == "mistyrose" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 228, 225)" || string == "rgba(255, 228, 225, 1)" || string == "#ffe4e1"))) ||
-                                (string == "moccasin" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 228, 181)" || string == "rgba(255, 228, 181, 1)" || string == "#ffe4b5"))) ||
-                                (string == "navajowhite" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 222, 173)" || string == "rgba(255, 222, 173, 1)" || string == "#ffdead"))) ||
-                                (string == "navy" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 0, 128)" || string == "rgba(0, 0, 128, 1)" || string == "#000080"))) ||
-                                (string == "oldlace" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(253, 245, 230)" || string == "rgba(253, 245, 230, 1)" || string == "#fdf5e6"))) ||
-                                (string == "olive" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(128, 128, 0)" || string == "rgba(128, 128, 0, 1)" || string == "#808000"))) ||
-                                (string == "olivedrab" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(107, 142, 35)" || string == "rgba(107, 142, 35, 1)" || string == "#6b8e23"))) ||
-                                (string == "orange" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 165, 0)" || string == "rgba(255, 165, 0, 1)" || string == "#ffa500"))) ||
-                                (string == "orangered" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 69, 0)" || string == "rgba(255, 69, 0, 1)" || string == "#ff4500"))) ||
-                                (string == "orchid" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(218, 112, 214)" || string == "rgba(218, 112, 214, 1)" || string == "#da70d6"))) ||
-                                (string == "palegoldenrod" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(238, 232, 170)" || string == "rgba(238, 232, 170, 1)" || string == "#eee8aa"))) ||
-                                (string == "palegreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(152, 75, 152)" || string == "rgba(152, 75, 152, 1)" || string == "#98fb98"))) ||
-                                (string == "paleturquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(175, 238, 238)" || string == "rgba(175, 238, 238, 1)" || string == "#afeeee"))) ||
-                                (string == "palevioletred" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(219, 112, 147)" || string == "rgba(219, 112, 147, 1)" || string == "#db7093"))) ||
-                                (string == "papayawhip" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 239, 213)" || string == "rgba(255, 239, 213, 1)" || string == "#ffefd5"))) ||
-                                (string == "peachpuff" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 218, 185)" || string == "rgba(255, 218, 185, 1)" || string == "#ffdab9"))) ||
-                                (string == "peru" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(205, 133, 63)" || string == "rgba(205, 133, 63, 1)" || string == "#cd853f"))) ||
-                                (string == "pink" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 192, 203)" || string == "rgba(255, 192, 203, 1)" || string == "#ffc0cb"))) ||
-                                (string == "plum" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(221, 160, 221)" || string == "rgba(221, 160, 221, 1)" || string == "#dda0dd"))) ||
-                                (string == "powderblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(176, 224, 230)" || string == "rgba(176, 224, 230, 1)" || string == "#b0e0e6"))) ||
-                                (string == "purple" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(128, 0, 128)" || string == "rgba(128, 0, 128, 1)" || string == "#800080"))) ||
-                                (string == "rebeccapurple" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(102, 51, 153)" || string == "rgba(102, 51, 153, 1)" || string == "#663399"))) ||
-                                (string == "red" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 0, 0)" || string == "rgba(255, 0, 0, 1)" || string == "#ff0000"))) ||
-                                (string == "rosybrown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(188, 143, 143)" || string == "rgba(188, 143, 143, 1)" || string == "#bc8f8f"))) ||
-                                (string == "royalblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(65, 105, 225)" || string == "rgba(65, 105, 225, 1)" || string == "#4169e1"))) ||
-                                (string == "saddlebrown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(139, 69, 19)" || string == "rgba(139, 69, 19, 1)" || string == "#8b4513"))) ||
-                                (string == "salmon" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(250, 128, 114)" || string == "rgba(250, 128, 114, 1)" || string == "#fa8072"))) ||
-                                (string == "sandybrown" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(244, 164, 96)" || string == "rgba(244, 164, 96, 1)" || string == "#f4a460"))) ||
-                                (string == "seagreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(47, 139, 87)" || string == "rgba(47, 139, 87, 1)" || string == "#2f8b57"))) ||
-                                (string == "seashell" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 245, 238)" || string == "rgba(255, 245, 238, 1)" || string == "#fff5ee"))) ||
-                                (string == "sienna" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(160, 82, 45)" || string == "rgba(160, 82, 45, 1)" || string == "#a0522d"))) ||
-                                (string == "silver" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(192, 192, 192)" || string == "rgba(192, 192, 192, 1)" || string == "#c0c0c0"))) ||
-                                (string == "skyblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(135, 206, 235)" || string == "rgba(135, 206, 235, 1)" || string == "#87ceeb"))) ||
-                                (string == "slateblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(106, 90, 205)" || string == "rgba(106, 90, 205, 1)" || string == "#6a5acd"))) ||
-                                (string == "slategray" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(112, 128, 144)" || string == "rgba(112, 128, 144, 1)" || string == "#708090"))) ||
-                                (string == "slategrey" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(112, 128, 144)" || string == "rgba(112, 128, 144, 1)" || string == "#708090"))) ||
-                                (string == "snow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 250, 250)" || string == "rgba(255, 250, 250, 1)" || string == "#fffafa"))) ||
-                                (string == "springgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 255, 127)" || string == "rgba(0, 255, 127, 1)" || string == "#00ff7f"))) ||
-                                (string == "steelblue" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(70, 130, 180)" || string == "rgba(70, 130, 180, 1)" || string == "#4682b4"))) ||
-                                (string == "tan" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(210, 180, 140)" || string == "rgba(210, 180, 140, 1)" || string == "#d2b48c"))) ||
-                                (string == "teal" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(0, 128, 128)" || string == "rgba(0, 128, 128, 1)" || string == "#008080"))) ||
-                                (string == "thistle" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(216, 191, 216)" || string == "rgba(216, 191, 216, 1)" || string == "#d8bfd8"))) ||
-                                (string == "tomato" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 99, 71)" || string == "rgba(255, 99, 71, 1)" || string == "#ff6347"))) ||
-                                (string == "turquoise" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(64, 224, 208)" || string == "rgba(64, 224, 208, 1)" || string == "#40e0d0"))) ||
-                                (string == "violet" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(238, 130, 238)" || string == "rgba(238, 130, 238, 1)" || string == "#ee82ee"))) ||
-                                (string == "wheat" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(245, 222, 179)" || string == "rgba(245, 222, 179, 1)" || string == "#f5deb3"))) ||
-                                (string == "white" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 255, 255)" || string == "rgba(255, 255, 255, 1)" || string == "#ffffff"))) ||
-                                (string == "whitesmoke" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(245, 245, 245)" || string == "rgba(245, 245, 245, 1)" || string == "#f5f5f5"))) ||
-                                (string == "yellow" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(255, 255, 0)" || string == "rgba(255, 255, 0, 1)" || string == "#ffff00"))) ||
-                                (string == "yellowgreen" || (TEST_FOR_COLOR_CODES && (string == "cmyk()" || string == "hsl()" || string == "hsla(, 1)" || string == "rgb(154, 205, 50)" || string == "rgba(154, 205, 50, 1)" || string == "#9acd32")))
+                            /* Return
+                                    --- CHECKPOINT ---
+                                        #Lapys: Missing syntax codes:
+                                            - `cmyk(x% y% z% a%)`
+                                            - `cmyk(x%, y%, z%, a%)`
+
+                                            - `hsl(x y% z%)`
+                                            - `hsl(x, y%, z%)`
+                                            - `hsl(Xdeg Y% Z%)`
+                                            - `hsl(Xdeg, Y%, Z%)`
+                                            - `hsl(Xrad Y% Z%)`
+                                            - `hsl(Xrad, Y%, Z%)`
+                                            - `hsl(Xturn Y% Z%)`
+                                            - `hsl(Xturn, Y%, Z%)`
+                                            - `hsla(x y% z% / A)`
+                                            - `hsla(x y% z% / A%)`
+                                            - `hsla(x, y%, z%, A)`
+                                            - `hsla(x, y%, z%, A%)`
+                                            - `hsla(Xdeg Y% Z% / A)`
+                                            - `hsla(Xdeg Y% Z% / A%)`
+                                            - `hsla(Xdeg, Y%, Z%, A)`
+                                            - `hsla(Xdeg, Y%, Z%, A%)`
+                                            - `hsla(Xrad Y% Z% / A)`
+                                            - `hsla(Xrad Y% Z% / A%)`
+                                            - `hsla(Xrad, Y%, Z%, A)`
+                                            - `hsla(Xrad, Y%, Z%, A%)`
+                                            - `hsla(Xturn Y% Z% / A)`
+                                            - `hsla(Xturn Y% Z% / A%)`
+                                            - `hsla(Xturn, Y%, Z%, A)`
+                                            - `hsla(Xturn, Y%, Z%, A%)`
+
+                                            - `rgb(x, y, z)`
+                                            - `rgb(x% y% z%)`
+                                            - `rgba(x y z / a)`
+                                            - `rgba(x y z / a%)`
+                                            - `rgba(x% y% z% / a%)`
+                                            - `rgba(x%, y%, z%, a%)`
+                            */
+                            return (string == "aliceblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(240, 248, 255)" || string == "rgba(240, 248, 255, 1)" || string == "#f0f8ff"))) ||
+                                (string == "antiquewhite" || (TEST_FOR_COLOR_CODES && (string == "rgb(250, 235, 215)" || string == "rgba(250, 235, 215, 1)" || string == "#faebd7"))) ||
+                                (string == "aqua" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 255, 255)" || string == "rgba(0, 255, 255, 1)" || string == "#00ffff"))) ||
+                                (string == "aquamarine" || (TEST_FOR_COLOR_CODES && (string == "rgb(127, 255, 212)" || string == "rgba(127, 255, 212, 1)" || string == "#7fffd4"))) ||
+                                (string == "azure" || (TEST_FOR_COLOR_CODES && (string == "rgb(240, 255, 255)" || string == "rgba(240, 255, 255, 1)" || string == "#f0ffff"))) ||
+                                (string == "beige" || (TEST_FOR_COLOR_CODES && (string == "rgb(245, 245, 220)" || string == "rgba(245, 245, 220, 1)" || string == "#f5f5dc"))) ||
+                                (string == "bisque" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 228, 196)" || string == "rgba(255, 228, 196, 1)" || string == "#ffe4c4"))) ||
+                                (string == "black" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 0, 0)" || string == "rgba(0, 0, 0, 1)" || string == "#000000"))) ||
+                                (string == "blanchedalmond" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 235, 205)" || string == "rgba(255, 235, 205, 1)" || string == "#ffebcd"))) ||
+                                (string == "blue" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 0, 255)" || string == "rgba(0, 0, 255, 1)" || string == "#0000ff"))) ||
+                                (string == "blueviolet" || (TEST_FOR_COLOR_CODES && (string == "rgb(138, 43, 226)" || string == "rgba(138, 43, 226, 1)" || string == "#8a2be2"))) ||
+                                (string == "brown" || (TEST_FOR_COLOR_CODES && (string == "rgb(165, 42, 42)" || string == "rgba(165, 42, 42, 1)" || string == "#a52a2a"))) ||
+                                (string == "burlywood" || (TEST_FOR_COLOR_CODES && (string == "rgb(222, 184, 135)" || string == "rgba(222, 184, 135, 1)" || string == "#deb887"))) ||
+                                (string == "cadetblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(95, 158, 160)" || string == "rgba(95, 158, 160, 1)" || string == "#5f9ea0"))) ||
+                                (string == "chartreuse" || (TEST_FOR_COLOR_CODES && (string == "rgb(127, 255, 0)" || string == "rgba(127, 255, 0, 1)" || string == "#7fff00"))) ||
+                                (string == "chocolate" || (TEST_FOR_COLOR_CODES && (string == "rgb(210, 105, 30)" || string == "rgba(210, 105, 30, 1)" || string == "#d2691e"))) ||
+                                (string == "coral" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 127, 80)" || string == "rgba(255, 127, 80, 1)" || string == "#ff7f50"))) ||
+                                (string == "cornflowerblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(100, 149, 237)" || string == "rgba(100, 149, 237, 1)" || string == "#6495ed"))) ||
+                                (string == "cornsilk" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 248, 220)" || string == "rgba(255, 248, 220, 1)" || string == "#fff8dc"))) ||
+                                (string == "crimson" || (TEST_FOR_COLOR_CODES && (string == "rgb(220, 20, 60)" || string == "rgba(220, 20, 60, 1)" || string == "#dc143c"))) ||
+                                (string == "cyan" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 255, 255)" || string == "rgba(0, 255, 255, 1)" || string == "#00ffff"))) ||
+                                (string == "darkblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 0, 139)" || string == "rgba(0, 0, 139, 1)" || string == "#00008b"))) ||
+                                (string == "darkcyan" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 139, 139)" || string == "rgba(0, 139, 139, 1)" || string == "#008b8b"))) ||
+                                (string == "darkgoldenrod" || (TEST_FOR_COLOR_CODES && (string == "rgb(184, 134, 11)" || string == "rgba(184, 134, 11, 1)" || string == "#b8860b"))) ||
+                                (string == "darkgray" || (TEST_FOR_COLOR_CODES && (string == "rgb(169, 169, 169)" || string == "rgba(169, 169, 169, 1)" || string == "#a9a9a9"))) ||
+                                (string == "darkgrey" || (TEST_FOR_COLOR_CODES && (string == "rgb(169, 169, 169)" || string == "rgba(169, 169, 169, 1)" || string == "#a9a9a9"))) ||
+                                (string == "darkkhaki" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 100, 0)" || string == "rgba(0, 100, 0, 1)" || string == "#006400"))) ||
+                                (string == "darkmagenta" || (TEST_FOR_COLOR_CODES && (string == "rgb(189, 183, 107)" || string == "rgba(189, 183, 107, 1)" || string == "#bdb76b"))) ||
+                                (string == "darkolivegreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(139, 0, 139)" || string == "rgba(139, 0, 139, 1)" || string == "#8b008b"))) ||
+                                (string == "darkorange" || (TEST_FOR_COLOR_CODES && (string == "rgb(86, 107, 47)" || string == "rgba(86, 107, 47, 1)" || string == "#556b2f"))) ||
+                                (string == "darkorchid" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 140, 0)" || string == "rgba(255, 140, 0, 1)" || string == "#ff8c00"))) ||
+                                (string == "darkred" || (TEST_FOR_COLOR_CODES && (string == "rgb(153, 50, 204)" || string == "rgba(153, 50, 204, 1)" || string == "#9932cc"))) ||
+                                (string == "darksalmon" || (TEST_FOR_COLOR_CODES && (string == "rgb(139, 0, 0)" || string == "rgba(139, 0, 0, 1)" || string == "#8b0000"))) ||
+                                (string == "darkseagreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(233, 150, 122)" || string == "rgba(233, 150, 122, 1)" || string == "#e9967a"))) ||
+                                (string == "darkslateblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(143, 188, 143)" || string == "rgba(143, 188, 143, 1)" || string == "#8fbc8f"))) ||
+                                (string == "darkslategray" || (TEST_FOR_COLOR_CODES && (string == "rgb(72, 61, 139)" || string == "rgba(72, 61, 139, 1)" || string == "#483d8b"))) ||
+                                (string == "darkslategrey" || (TEST_FOR_COLOR_CODES && (string == "rgb(47, 79, 79)" || string == "rgba(47, 79, 79, 1)" || string == "#2f4f4f"))) ||
+                                (string == "darkturquoise" || (TEST_FOR_COLOR_CODES && (string == "rgb(47, 79, 79)" || string == "rgba(47, 79, 79, 1)" || string == "#2f4f4f"))) ||
+                                (string == "darkviolet" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 206, 209)" || string == "rgba(0, 206, 209, 1)" || string == "#00ced1"))) ||
+                                (string == "deeppink" || (TEST_FOR_COLOR_CODES && (string == "rgb(148, 0, 211)" || string == "rgba(148, 0, 211, 1)" || string == "#9400d3"))) ||
+                                (string == "deepskyblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 20, 147)" || string == "rgba(255, 20, 147, 1)" || string == "#ff1493"))) ||
+                                (string == "dimgray" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 191, 255)" || string == "rgba(0, 191, 255, 1)" || string == "#00bfff"))) ||
+                                (string == "dimgrey" || (TEST_FOR_COLOR_CODES && (string == "rgb(105, 105, 105)" || string == "rgba(105, 105, 105, 1)" || string == "#696969"))) ||
+                                (string == "dodgerblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(105, 105, 105)" || string == "rgba(105, 105, 105, 1)" || string == "#696969"))) ||
+                                (string == "firebrick" || (TEST_FOR_COLOR_CODES && (string == "rgb(30, 144, 255)" || string == "rgba(30, 144, 255, 1)" || string == "#1e90ff"))) ||
+                                (string == "floralwhite" || (TEST_FOR_COLOR_CODES && (string == "rgb(178, 34, 34)" || string == "rgba(178, 34, 34, 1)" || string == "#b22222"))) ||
+                                (string == "forestgreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 250, 240)" || string == "rgba(255, 250, 240, 1)" || string == "#fffaf0"))) ||
+                                (string == "fuchsia" || (TEST_FOR_COLOR_CODES && (string == "rgb(34, 139, 34)" || string == "rgba(34, 139, 34, 1)" || string == "#228b22"))) ||
+                                (string == "gainsboro" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 0, 255)" || string == "rgba(255, 0, 255, 1)" || string == "#ff00ff"))) ||
+                                (string == "ghostwhite" || (TEST_FOR_COLOR_CODES && (string == "rgb(220, 220, 220)" || string == "rgba(220, 220, 220, 1)" || string == "#dcdcdc"))) ||
+                                (string == "gold" || (TEST_FOR_COLOR_CODES && (string == "rgb(248, 248, 255)" || string == "rgba(248, 248, 255, 1)" || string == "#f8f8ff"))) ||
+                                (string == "goldenrod" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 215, 0)" || string == "rgba(255, 215, 0, 1)" || string == "#ffd700"))) ||
+                                (string == "gray" || (TEST_FOR_COLOR_CODES && (string == "rgb(218, 165, 32)" || string == "rgba(218, 165, 32, 1)" || string == "#daa520"))) ||
+                                (string == "grey" || (TEST_FOR_COLOR_CODES && (string == "rgb(128, 128, 128)" || string == "rgba(128, 128, 128, 1)" || string == "#808080"))) ||
+                                (string == "green" || (TEST_FOR_COLOR_CODES && (string == "rgb(128, 128, 128)" || string == "rgba(128, 128, 128, 1)" || string == "#808080"))) ||
+                                (string == "greenyellow" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 128, 0)" || string == "rgba(0, 128, 0, 1)" || string == "#008000"))) ||
+                                (string == "honeydew" || (TEST_FOR_COLOR_CODES && (string == "rgb(173, 255, 47)" || string == "rgba(173, 255, 47, 1)" || string == "#adff2f"))) ||
+                                (string == "hotpink" || (TEST_FOR_COLOR_CODES && (string == "rgb(240, 255, 240)" || string == "rgba(240, 255, 240, 1)" || string == "#f0fff0"))) ||
+                                (string == "indianred" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 105, 180)" || string == "rgba(255, 105, 180, 1)" || string == "#ff69b4"))) ||
+                                (string == "indigo" || (TEST_FOR_COLOR_CODES && (string == "rgb(205, 92, 92)" || string == "rgba(205, 92, 92, 1)" || string == "#cd5c5c"))) ||
+                                (string == "ivory" || (TEST_FOR_COLOR_CODES && (string == "rgb(75, 0, 130)" || string == "rgba(75, 0, 130, 1)" || string == "#4b0082"))) ||
+                                (string == "khaki" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 255, 240)" || string == "rgba(255, 255, 240, 1)" || string == "#fffff0"))) ||
+                                (string == "lavender" || (TEST_FOR_COLOR_CODES && (string == "rgb(240, 230, 140)" || string == "rgba(240, 230, 140, 1)" || string == "#f0e68c"))) ||
+                                (string == "lavenderblush" || (TEST_FOR_COLOR_CODES && (string == "rgb(230, 230, 250)" || string == "rgba(230, 230, 250, 1)" || string == "#e6e6fa"))) ||
+                                (string == "lawngreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 240, 245)" || string == "rgba(255, 240, 245, 1)" || string == "#fff0f5"))) ||
+                                (string == "lemonchiffon" || (TEST_FOR_COLOR_CODES && (string == "rgb(124, 252, 0)" || string == "rgba(124, 252, 0, 1)" || string == "#7cfc00"))) ||
+                                (string == "lightblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 250, 205)" || string == "rgba(255, 250, 205, 1)" || string == "#fffacd"))) ||
+                                (string == "lightcoral" || (TEST_FOR_COLOR_CODES && (string == "rgb(173, 216, 230)" || string == "rgba(173, 216, 230, 1)" || string == "#add8e6"))) ||
+                                (string == "lightcyan" || (TEST_FOR_COLOR_CODES && (string == "rgb(240, 128, 128)" || string == "rgba(240, 128, 128, 1)" || string == "#f08080"))) ||
+                                (string == "lightgoldenrodyellow" || (TEST_FOR_COLOR_CODES && (string == "rgb(224, 255, 255)" || string == "rgba(224, 255, 255, 1)" || string == "#eoffff"))) ||
+                                (string == "lightgray" || (TEST_FOR_COLOR_CODES && (string == "rgb(250, 250, 210)" || string == "rgba(250, 250, 210, 1)" || string == "#fafad2"))) ||
+                                (string == "lightgrey" || (TEST_FOR_COLOR_CODES && (string == "rgb(211, 211, 211)" || string == "rgba(211, 211, 211, 1)" || string == "#d3d3d3"))) ||
+                                (string == "lightgreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(144, 238, 144)" || string == "rgba(144, 238, 144, 1)" || string == "#90ee90"))) ||
+                                (string == "lightpink" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 182, 193)" || string == "rgba(255, 182, 193, 1)" || string == "#ffb6c1"))) ||
+                                (string == "lightsalmon" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 160, 122)" || string == "rgba(255, 160, 122, 1)" || string == "#ffa07a"))) ||
+                                (string == "lightseagreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(32, 178, 170)" || string == "rgba(32, 178, 170, 1)" || string == "#20b2aa"))) ||
+                                (string == "lightskyblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(135, 206, 250)" || "rgba(135, 206, 250, 1)" || string == "#87cefa"))) ||
+                                (string == "lightslategray" || (TEST_FOR_COLOR_CODES && (string == "rgb(119, 136, 153)" || "rgba(119, 136, 153, 1)" || string == "#778899"))) ||
+                                (string == "lightslategrey" || (TEST_FOR_COLOR_CODES && (string == "rgb(119, 136, 153)" || "rgba(119, 136, 153, 1)" || string == "#778899"))) ||
+                                (string == "lightsteelblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(176, 196, 222)" || "rgba(176, 196, 222, 1)" || string == "#b0c4de"))) ||
+                                (string == "lightyellow" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 255, 224)" || string == "rgba(255, 255, 224, 1)" || string == "#ffffe0"))) ||
+                                (string == "lime" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 255, 0)" || string == "rgba(0, 255, 0, 1)" || string == "#00ff00"))) ||
+                                (string == "limegreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(50, 205, 50)" || string == "rgba(50, 205, 50, 1)" || string == "#32cd32"))) ||
+                                (string == "linen" || (TEST_FOR_COLOR_CODES && (string == "rgb(250, 240, 230)" || string == "rgba(250, 240, 230, 1)" || string == "#faf0e6"))) ||
+                                (string == "magenta" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 0, 255)" || string == "rgba(255, 0, 255, 1)" || string == "#ff00ff"))) ||
+                                (string == "maroon" || (TEST_FOR_COLOR_CODES && (string == "rgb(128, 0, 0)" || string == "rgba(128, 0, 0, 1)" || string == "#800000"))) ||
+                                (string == "mediumaquamarine" || (TEST_FOR_COLOR_CODES && (string == "rgb(102, 205, 170)" || string == "rgba(102, 205, 170, 1)" || string == "#66cdaa"))) ||
+                                (string == "mediumblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 0, 205)" || string == "rgba(0, 0, 205, 1)" || string == "#0000cd"))) ||
+                                (string == "mediumorchid" || (TEST_FOR_COLOR_CODES && (string == "rgb(186, 85, 211)" || string == "rgba(186, 85, 211, 1)" || string == "#ba55d3"))) ||
+                                (string == "mediumpurple" || (TEST_FOR_COLOR_CODES && (string == "rgb(147, 112, 219)" || string == "rgba(147, 112, 219, 1)" || string == "#9370db"))) ||
+                                (string == "mediumseagreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(60, 179, 113)" || string == "rgba(60, 179, 113, 1)" || string == "#3cb371"))) ||
+                                (string == "mediumslateblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(123, 104, 238)" || string == "rgba(123, 104, 238, 1)" || string == "#7b68ee"))) ||
+                                (string == "mediumspringgreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 250, 154)" || string == "rgba(0, 250, 154, 1)" || string == "#00fa9a"))) ||
+                                (string == "mediumturquoise" || (TEST_FOR_COLOR_CODES && (string == "rgb(72, 209, 204)" || string == "rgba(72, 209, 204, 1)" || string == "#48d1cc"))) ||
+                                (string == "mediumvioletred" || (TEST_FOR_COLOR_CODES && (string == "rgb(199, 21, 133)" || string == "rgba(199, 21, 133, 1)" || string == "#c71585"))) ||
+                                (string == "midnightblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(25, 25, 112)" || string == "rgba(25, 25, 112, 1)" || string == "#191970"))) ||
+                                (string == "mintcream" || (TEST_FOR_COLOR_CODES && (string == "rgb(245, 255, 250)" || string == "rgba(245, 255, 250, 1)" || string == "#f5fffa"))) ||
+                                (string == "mistyrose" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 228, 225)" || string == "rgba(255, 228, 225, 1)" || string == "#ffe4e1"))) ||
+                                (string == "moccasin" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 228, 181)" || string == "rgba(255, 228, 181, 1)" || string == "#ffe4b5"))) ||
+                                (string == "navajowhite" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 222, 173)" || string == "rgba(255, 222, 173, 1)" || string == "#ffdead"))) ||
+                                (string == "navy" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 0, 128)" || string == "rgba(0, 0, 128, 1)" || string == "#000080"))) ||
+                                (string == "oldlace" || (TEST_FOR_COLOR_CODES && (string == "rgb(253, 245, 230)" || string == "rgba(253, 245, 230, 1)" || string == "#fdf5e6"))) ||
+                                (string == "olive" || (TEST_FOR_COLOR_CODES && (string == "rgb(128, 128, 0)" || string == "rgba(128, 128, 0, 1)" || string == "#808000"))) ||
+                                (string == "olivedrab" || (TEST_FOR_COLOR_CODES && (string == "rgb(107, 142, 35)" || string == "rgba(107, 142, 35, 1)" || string == "#6b8e23"))) ||
+                                (string == "orange" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 165, 0)" || string == "rgba(255, 165, 0, 1)" || string == "#ffa500"))) ||
+                                (string == "orangered" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 69, 0)" || string == "rgba(255, 69, 0, 1)" || string == "#ff4500"))) ||
+                                (string == "orchid" || (TEST_FOR_COLOR_CODES && (string == "rgb(218, 112, 214)" || string == "rgba(218, 112, 214, 1)" || string == "#da70d6"))) ||
+                                (string == "palegoldenrod" || (TEST_FOR_COLOR_CODES && (string == "rgb(238, 232, 170)" || string == "rgba(238, 232, 170, 1)" || string == "#eee8aa"))) ||
+                                (string == "palegreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(152, 75, 152)" || string == "rgba(152, 75, 152, 1)" || string == "#98fb98"))) ||
+                                (string == "paleturquoise" || (TEST_FOR_COLOR_CODES && (string == "rgb(175, 238, 238)" || string == "rgba(175, 238, 238, 1)" || string == "#afeeee"))) ||
+                                (string == "palevioletred" || (TEST_FOR_COLOR_CODES && (string == "rgb(219, 112, 147)" || string == "rgba(219, 112, 147, 1)" || string == "#db7093"))) ||
+                                (string == "papayawhip" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 239, 213)" || string == "rgba(255, 239, 213, 1)" || string == "#ffefd5"))) ||
+                                (string == "peachpuff" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 218, 185)" || string == "rgba(255, 218, 185, 1)" || string == "#ffdab9"))) ||
+                                (string == "peru" || (TEST_FOR_COLOR_CODES && (string == "rgb(205, 133, 63)" || string == "rgba(205, 133, 63, 1)" || string == "#cd853f"))) ||
+                                (string == "pink" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 192, 203)" || string == "rgba(255, 192, 203, 1)" || string == "#ffc0cb"))) ||
+                                (string == "plum" || (TEST_FOR_COLOR_CODES && (string == "rgb(221, 160, 221)" || string == "rgba(221, 160, 221, 1)" || string == "#dda0dd"))) ||
+                                (string == "powderblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(176, 224, 230)" || string == "rgba(176, 224, 230, 1)" || string == "#b0e0e6"))) ||
+                                (string == "purple" || (TEST_FOR_COLOR_CODES && (string == "rgb(128, 0, 128)" || string == "rgba(128, 0, 128, 1)" || string == "#800080"))) ||
+                                (string == "rebeccapurple" || (TEST_FOR_COLOR_CODES && (string == "rgb(102, 51, 153)" || string == "rgba(102, 51, 153, 1)" || string == "#663399"))) ||
+                                (string == "red" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 0, 0)" || string == "rgba(255, 0, 0, 1)" || string == "#ff0000"))) ||
+                                (string == "rosybrown" || (TEST_FOR_COLOR_CODES && (string == "rgb(188, 143, 143)" || string == "rgba(188, 143, 143, 1)" || string == "#bc8f8f"))) ||
+                                (string == "royalblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(65, 105, 225)" || string == "rgba(65, 105, 225, 1)" || string == "#4169e1"))) ||
+                                (string == "saddlebrown" || (TEST_FOR_COLOR_CODES && (string == "rgb(139, 69, 19)" || string == "rgba(139, 69, 19, 1)" || string == "#8b4513"))) ||
+                                (string == "salmon" || (TEST_FOR_COLOR_CODES && (string == "rgb(250, 128, 114)" || string == "rgba(250, 128, 114, 1)" || string == "#fa8072"))) ||
+                                (string == "sandybrown" || (TEST_FOR_COLOR_CODES && (string == "rgb(244, 164, 96)" || string == "rgba(244, 164, 96, 1)" || string == "#f4a460"))) ||
+                                (string == "seagreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(47, 139, 87)" || string == "rgba(47, 139, 87, 1)" || string == "#2f8b57"))) ||
+                                (string == "seashell" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 245, 238)" || string == "rgba(255, 245, 238, 1)" || string == "#fff5ee"))) ||
+                                (string == "sienna" || (TEST_FOR_COLOR_CODES && (string == "rgb(160, 82, 45)" || string == "rgba(160, 82, 45, 1)" || string == "#a0522d"))) ||
+                                (string == "silver" || (TEST_FOR_COLOR_CODES && (string == "rgb(192, 192, 192)" || string == "rgba(192, 192, 192, 1)" || string == "#c0c0c0"))) ||
+                                (string == "skyblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(135, 206, 235)" || string == "rgba(135, 206, 235, 1)" || string == "#87ceeb"))) ||
+                                (string == "slateblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(106, 90, 205)" || string == "rgba(106, 90, 205, 1)" || string == "#6a5acd"))) ||
+                                (string == "slategray" || (TEST_FOR_COLOR_CODES && (string == "rgb(112, 128, 144)" || string == "rgba(112, 128, 144, 1)" || string == "#708090"))) ||
+                                (string == "slategrey" || (TEST_FOR_COLOR_CODES && (string == "rgb(112, 128, 144)" || string == "rgba(112, 128, 144, 1)" || string == "#708090"))) ||
+                                (string == "snow" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 250, 250)" || string == "rgba(255, 250, 250, 1)" || string == "#fffafa"))) ||
+                                (string == "springgreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 255, 127)" || string == "rgba(0, 255, 127, 1)" || string == "#00ff7f"))) ||
+                                (string == "steelblue" || (TEST_FOR_COLOR_CODES && (string == "rgb(70, 130, 180)" || string == "rgba(70, 130, 180, 1)" || string == "#4682b4"))) ||
+                                (string == "tan" || (TEST_FOR_COLOR_CODES && (string == "rgb(210, 180, 140)" || string == "rgba(210, 180, 140, 1)" || string == "#d2b48c"))) ||
+                                (string == "teal" || (TEST_FOR_COLOR_CODES && (string == "rgb(0, 128, 128)" || string == "rgba(0, 128, 128, 1)" || string == "#008080"))) ||
+                                (string == "thistle" || (TEST_FOR_COLOR_CODES && (string == "rgb(216, 191, 216)" || string == "rgba(216, 191, 216, 1)" || string == "#d8bfd8"))) ||
+                                (string == "tomato" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 99, 71)" || string == "rgba(255, 99, 71, 1)" || string == "#ff6347"))) ||
+                                (string == "turquoise" || (TEST_FOR_COLOR_CODES && (string == "rgb(64, 224, 208)" || string == "rgba(64, 224, 208, 1)" || string == "#40e0d0"))) ||
+                                (string == "violet" || (TEST_FOR_COLOR_CODES && (string == "rgb(238, 130, 238)" || string == "rgba(238, 130, 238, 1)" || string == "#ee82ee"))) ||
+                                (string == "wheat" || (TEST_FOR_COLOR_CODES && (string == "rgb(245, 222, 179)" || string == "rgba(245, 222, 179, 1)" || string == "#f5deb3"))) ||
+                                (string == "white" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 255, 255)" || string == "rgba(255, 255, 255, 1)" || string == "#ffffff"))) ||
+                                (string == "whitesmoke" || (TEST_FOR_COLOR_CODES && (string == "rgb(245, 245, 245)" || string == "rgba(245, 245, 245, 1)" || string == "#f5f5f5"))) ||
+                                (string == "yellow" || (TEST_FOR_COLOR_CODES && (string == "rgb(255, 255, 0)" || string == "rgba(255, 255, 0, 1)" || string == "#ffff00"))) ||
+                                (string == "yellowgreen" || (TEST_FOR_COLOR_CODES && (string == "rgb(154, 205, 50)" || string == "rgba(154, 205, 50, 1)" || string == "#9acd32")))
                         };
 
                         // Is Color Code --- NOTE (Lapys) -> Any color or color code.
@@ -5134,44 +5188,47 @@
 
                             // Return
                             return LDKF.stringPrototypteIsColor(string) ||
+                                LDKF.stringPrototypeIsCMYKColor(string) ||
                                 LDKF.stringPrototypeIsHexadecimalColor(string, STRICT = stringLength) ||
                                 (LDKF.stringPrototypeIsHSLColor(string) || LDKF.stringPrototypeIsHSLAColor(string))
-                                (LDKF.stringPrototypeIsRGBColor(string) || LDKF.stringPrototypeIsRGBAColor(string))
+                                (LDKF.stringPrototypeIsRGBColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsRGBAColor(string, STRICT = stringLength))
                         };
-
-                        // Is CMYK Color --- CHECKPOINT (Lapys)
 
                         // Is Digit
                         LapysDevelopmentKit.Functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.digits, string, STRICT = 10) };
 
+                        // Is Empty
+                        LapysDevelopmentKit.Functions.stringPrototypeIsEmpty = function stringPrototypeIsEmpty(string) { return !string };
+
                         // Is Hexadecimal Color
                         LapysDevelopmentKit.Functions.stringPrototypeIsHexadecimalColor = function stringPrototypeIsHexadecimalColor(string, STRING_LENGTH) {
                             // Initialization > String Length
-                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+                            var stringLength = stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
 
-                            // Return
-                            return LDKF.stringPrototypeFirst(string) == '#' &&
+                            // Return --- MINIFY (Lapys) -> Not sure if this is really minified.
+                            return LDKF.stringPrototypeFirst(string) == '#' && (
                                 LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 1)) &&
                                 LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 2)) &&
-                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 3)) &&
-                                (stringLength == 4 || (
-                                    LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 4)) &&
-                                    LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 5)) &&
-                                    LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 6)) &&
-                                    (stringLength == 7 || (
-                                        LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 7)) &&
-                                        LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 8)) &&
-                                        LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 9)) &&
-                                        stringLength == 10
-                                    ))
-                                ))
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 3))
+                            ) && ((stringLength == 4) || ((
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 4))
+                            ) && ((stringLength == 5) || ((
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 5)) &&
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 6))
+                            ) && ((stringLength == 7) || ((
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 7)) &&
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 8))
+                            ) && (stringLength == 9)))))))
                         };
 
                         // Is Hexadecimal Digit
                         LapysDevelopmentKit.Functions.stringPrototypeIsHexadecimalDigit = function stringPrototypeIsHexadecimalDigit(string) { return string == 'a' || string == 'A' || string == 'b' || string == 'B' || string == 'c' || string == 'C' || string == 'd' || string == 'D' || string == 'e' || string == 'E' || string == 'f' || string == 'F' || LDKF.stringPrototypeIsDigit(string) };
 
                         // Is HSL Color --- CHECKPOINT (Lapys)
-                        // Is HSLA Color --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeIsHSLColor = function stringPrototypeIsHSLColor(string, TEST_FOR_ALPHA) {};
+
+                        // Is HSLA Color
+                        LapysDevelopmentKit.Functions.stringPrototypeIsHSLAColor = function stringPrototypeIsHSLAColor(string) { return LDKF.stringPrototypeIsHSLColor(string, STRICT = true) };
 
                         // Is Lower
                         LapysDevelopmentKit.Functions.stringPrototypeIsLower = function stringPrototypeIsLower(string, STRING_LENGTH) {
@@ -5188,175 +5245,424 @@
                         // Is Lower Character
                         LapysDevelopmentKit.Functions.stringPrototypeIsLowerCharacter = function stringPrototypeIsLowerCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.lowercaseAlphabets, string, STRICT = 26) };
 
-                        // Is Numeric Decimal --- WARN (Lapys) -> Does not evaluate the String source, rather it asserts if the String contains a single (not multiple) decimal point.
-                        LapysDevelopmentKit.Functions.stringPrototypeIsNumericDecimal = function stringPrototypeIsNumericDecimal(string, STRING_LENGTH) {
-                            // Logic
-                            if (LDKF.stringPrototypeFirst(string) == '.')
-                                // Return
-                                return LDKF.stringPrototypeIsNumericDecimal('0' + string, STRICT = STRING_LENGTH);
+                        /* Is Numeric Decimal
+                                --- NOTE (Lapys) -> If the String begins with a decimal, it is assumed the source is a zero-point decimal.
+                                --- WARN (Lapys) -> Does not evaluate the String source, rather it asserts if the String contains a single (not multiple) decimal point.
+                                --- WARN (Lapys) -> Tolerates leading/ trailing zeros.
+                        */
+                        LapysDevelopmentKit.Functions.stringPrototypeIsNumericDecimal = function stringPrototypeIsNumericDecimal(string, STRING_LENGTH, TEST_FOR_SCIENTIFIC_NOTATION) {
+                            // Initialization > (Has Indexed (Trim After) Sign, String ((Cut) Length, Is Numeric Decimal, Iterator))
+                            var hasIndexedSign = false, hasIndexedTrimAfterSign = false,
+                                stringCutLength = +0,
+                                stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIsNumericDecimal = !!stringLength,
+                                stringIterator = stringLength;
 
-                            else {
-                                // Initialization > String Length
-                                var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+                            // Loop
+                            while (stringIsNumericDecimal && stringIterator) {
+                                // Initialization > Character
+                                var character = LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
 
                                 // Logic
-                                if (stringLength && LDKF.stringPrototypeLast(string, STRICT = stringLength) != '.') {
-                                    // Initialization > (Decimal Point Index, Is Numeric Decimal, String Iterator)
-                                    var decimalPointIndex = -1,
-                                        isNumericDecimal = true,
-                                        stringIterator = stringLength;
+                                if (character == ' ' || character == '\n' || character == '\0') {
+                                    // Update > (Has Indexed Trim After Sign, String Cut Length)
+                                    hasIndexedTrimAfterSign = hasIndexedSign;
+                                    stringCutLength += 1
+                                }
 
-                                    // Loop > Update > Decimal Point Index
-                                    while (isNumericDecimal && stringIterator)
-                                        (LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) == '.') && (decimalPointIndex = ~decimalPointIndex ? isNumericDecimal = false : stringIterator);
-
-                                    // Update > Is Numeric Decimal
-                                    ~decimalPointIndex || (isNumericDecimal = false);
-
+                                else if (character == '-')
                                     // Logic
-                                    if (isNumericDecimal) {
-                                        // Update > String Iterator
-                                        stringIterator = stringLength;
+                                    if (hasIndexedTrimAfterSign)
+                                        // Update > String Is Numeric Decimal
+                                        stringIsNumericDecimal = false;
 
-                                        // Loop
-                                        while (isNumericDecimal && stringIterator) {
-                                            // Update > String Iterator
-                                            stringIterator -= 1;
-
-                                            // Logic > Update > Is Numeric Decimal
-                                            if ((decimalPointIndex ^ stringIterator) && !LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, stringIterator))) isNumericDecimal = false;
-                                            else if (!stringIterator) isNumericDecimal = true
-                                        }
+                                    else {
+                                        // Update > (Has Indexed Sign, String Cut Length)
+                                        hasIndexedSign = true;
+                                        stringCutLength += 1
                                     }
 
-                                    // Return
-                                    return isNumericDecimal
+                                else
+                                    // String Iterator
+                                    stringIterator = +0
+                            }
+
+                            // Logic
+                            if (stringIsNumericDecimal) {
+                                // Update > String Length
+                                stringLength -= stringCutLength;
+
+                                // Logic
+                                if (stringLength) {
+                                    // Update > String (Iterator)
+                                    string = LDKF.stringPrototypeCutLeft(string, stringCutLength);
+                                    stringIterator = stringLength;
+
+                                    // Logic
+                                    if (LDKF.stringPrototypeFirst(string) == '.') {
+                                        // Update > (String) (Iterator, Length)
+                                        string = '0' + string;
+                                        stringIterator += 1;
+                                        stringLength += 1
+                                    }
+
+                                    // Logic
+                                    if (LDKF.stringPrototypeLast(string, STRICT = stringLength) == '.')
+                                        // Update > String Is Numeric Decimal
+                                        stringIsNumericDecimal = false;
+
+                                    else {
+                                        // Initialization > Decimal Point Index
+                                        var decimalPointIndex = -1;
+
+                                        // Loop > Update > Decimal Point Index
+                                        while (stringIsNumericDecimal && stringIterator)
+                                            (LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) == '.') && (decimalPointIndex = ~decimalPointIndex ? stringIsNumericDecimal = false : stringIterator);
+
+                                        // Update > String Is Numeric Decimal
+                                        ~decimalPointIndex || (stringIsNumericDecimal = false);
+
+                                        // Logic
+                                        if (stringIsNumericDecimal)
+                                            // Logic
+                                            if (!LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeFirst(string)) || !LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeLast(string, STRICT = stringLength)))
+                                                // Update > String Is Numeric Decimal
+                                                stringIsNumericDecimal = false;
+
+                                            else {
+                                                // Initialization > Has Indexed Scientific Notation
+                                                var hasIndexedScientificNotation = false;
+
+                                                // Update > String Iterator
+                                                stringIterator = stringLength;
+
+                                                // Loop
+                                                while (stringIsNumericDecimal && stringIterator) {
+                                                    // Initialization > Character
+                                                    var character = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1);
+
+                                                    // Logic
+                                                    if (TEST_FOR_SCIENTIFIC_NOTATION) {
+                                                        // Logic
+                                                        if (character == 'e') {
+                                                            // Update > (Is Numeric Decimal, Has Indexed Scientific Notation)
+                                                            (hasIndexedScientificNotation || (stringIterator == decimalPointIndex || stringIterator < decimalPointIndex)) && (stringIsNumericDecimal = false);
+                                                            hasIndexedScientificNotation = true
+                                                        }
+                                                    }
+
+                                                    // Logic > Update > String Is Numeric Decimal
+                                                    if (
+                                                        (decimalPointIndex ^ stringIterator) &&
+                                                        ((TEST_FOR_SCIENTIFIC_NOTATION ? character != 'e' : true) && !LDKF.stringPrototypeIsDigit(character))
+                                                    ) stringIsNumericDecimal = false;
+                                                    else if (!stringIterator) stringIsNumericDecimal = true
+                                                }
+                                            }
+                                    }
                                 }
 
                                 else
-                                    // Return
-                                    return false
+                                    // Update > String Is Numeric Decimal
+                                    stringIsNumericDecimal = false
                             }
-                        };
-
-                        // Is Numeric Integer
-                        LapysDevelopmentKit.Functions.stringPrototypeIsNumericInteger = function stringPrototypeIsNumericInteger(string, STRING_LENGTH) {
-                            // Initialization > String (Length, Iterator)
-                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string), stringIterator = stringLength;
-
-                            // Loop > Logic > Return
-                            while (stringIterator) if (!LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1))) return false;
 
                             // Return
-                            return !!stringLength
+                            return stringIsNumericDecimal
+                        };
+
+                        // Is Numeric Integer --- WARN (Lapys) -> Tolerates leading/ trailing zeros.
+                        LapysDevelopmentKit.Functions.stringPrototypeIsNumericInteger = function stringPrototypeIsNumericInteger(string, STRING_LENGTH) {
+                            // Initialization > (Has Indexed (Trim After) Sign, String ((Cut) Length, Is Numeric Integer, Iterator))
+                            var hasIndexedSign = false, hasIndexedTrimAfterSign = false,
+                                stringCutLength = +0,
+                                stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIsNumericInteger = !!stringLength,
+                                stringIterator = stringLength;
+
+                            // Loop
+                            while (stringIsNumericInteger && stringIterator) {
+                                // Initialization > Character
+                                var character = LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
+
+                                // Logic
+                                if (character == ' ' || character == '\n' || character == '\0') {
+                                    // Update > (Has Indexed Trim After Sign, String Cut Length)
+                                    hasIndexedTrimAfterSign = hasIndexedSign;
+                                    stringCutLength += 1
+                                }
+
+                                else if (character == '-')
+                                    // Logic
+                                    if (hasIndexedTrimAfterSign)
+                                        // Update > String Is Numeric Integer
+                                        stringIsNumericInteger = false;
+
+                                    else {
+                                        // Update > (Has Indexed Sign, String Cut Length)
+                                        hasIndexedSign = true;
+                                        stringCutLength += 1
+                                    }
+
+                                else
+                                    // Update > String Iterator
+                                    stringIterator = +0
+                            }
+
+                            // Logic
+                            if (stringIsNumericInteger) {
+                                // Update > String Length
+                                stringLength -= stringCutLength;
+
+                                // Logic
+                                if (stringLength) {
+                                    // Update > String (Iterator)
+                                    string = LDKF.stringPrototypeCutLeft(string, stringCutLength);
+                                    stringIterator = stringLength;
+
+                                    // Loop > Update > String Is Numeric Integer
+                                    while (stringIsNumericInteger && stringIterator)
+                                        stringIsNumericInteger = LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1))
+                                }
+
+                                else
+                                    // Update > String Is Numeric Integer
+                                    stringIsNumericInteger = false
+                            }
+
+                            // Return
+                            return stringIsNumericInteger
                         };
 
                         // Is RGB Color
-                        LapysDevelopmentKit.Functions.stringPrototypeIsRGBColor = function stringPrototypeIsRGBColor(string, TEST_FOR_ALPHA) {
-                            // Initialization > String (Iterator, Is RGB Color)
-                            var stringIterator = +0,
-                                stringIsRGBColor = LDKF.stringPrototypeFirst(string) == 'r' &&
-                                LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == 'g' &&
-                                LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == 'b';
+                        LapysDevelopmentKit.Functions.stringPrototypeIsRGBColor = function stringPrototypeIsRGBColor(string, STRING_LENGTH, TEST_FOR_ALPHA) {
+                            // Initialization > String (Index, Length, Is RGB Color)
+                            var stringIndex = +0,
+                                stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIsRGBColor = stringLength > 5 && (
+                                    LDKF.stringPrototypeFirst(string) == 'r' &&
+                                    LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 'g' &&
+                                    LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 'b'
+                                );
 
                             // Logic
                             if (stringIsRGBColor) {
-                                TEST_FOR_ALPHA && (stringIsRGBColor = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == 'a');
-                                stringIsRGBColor && (stringIsRGBColor = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == '(')
-                            }
+                                // Update > Test For Alpha
+                                TEST_FOR_ALPHA = !!TEST_FOR_ALPHA;
 
-                            // Logic
-                            if (stringIsRGBColor) {
-                                // Initialization > (Color Range Source, Has Indexed Color Range Delimiter, Character)
-                                var colorRangeSource = "",
-                                    hasIndexedColorRangeDelimiter = false,
-                                    character = LDKF.stringPrototypeCharacterAt(string, stringIterator);
+                                // Update > String Is RGB Color
+                                TEST_FOR_ALPHA && (stringIsRGBColor = LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 'a');
+                                stringIsRGBColor && (stringIsRGBColor = LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == '(');
 
-                                // Loop --- NOTE (Lapys) -> Test for the Red color range.
-                                while (character && !hasIndexedColorRangeDelimiter && stringIterator) {
-                                    // Update > (Character, (Has Indexed Color Range Delimiter | Color Range Source))
-                                    character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
-                                    character == ',' ? hasIndexedColorRangeDelimiter = true : colorRangeSource += character
-                                }
+                                // Logic
+                                if (stringIsRGBColor) {
+                                    // Initialization > (Color ((Range) ((Delimiter(s)) (Length), Ranges (Length))), Is Indexing (Color Range, Trim), String Iterator)
+                                    var colorRange = "",
+                                        colorRangeDelimiter = "",
+                                        colorRangeDelimiters = [],
+                                        colorRangeDelimitersLength = +0,
+                                        colorRanges = [],
+                                        colorRangesLength = +0,
+                                        isIndexingColorRange = true,
+                                        isIndexingTrim = false,
+                                        stringIterator = stringLength - (stringIndex + 1);
 
-                                // Update > Color Range Source
-                                colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
-
-                                if (LDKF.stringPrototypeIsNumericInteger(colorRangeSource)) {
-                                    // Update > (Color Range Source, Has Indexed Color Range Delimiter)
-                                    colorRangeSource = "";
-                                    hasIndexedColorRangeDelimiter = false;
-
-                                    // Loop --- NOTE (Lapys) -> Test for the Green color range.
-                                    while (character && !hasIndexedColorRangeDelimiter && stringIterator) {
-                                        // Update > (Character, (Has Indexed Color Range Delimiter | Color Range Source))
-                                        character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
-                                        character == ',' ? hasIndexedColorRangeDelimiter = true : colorRangeSource += character
-                                    }
-
-                                    // Update > Color Range Source
-                                    colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
-
-                                    // Logic
-                                    if (LDKF.stringPrototypeIsNumericInteger(colorRangeSource)) {
-                                        // Update > Color Range Source
-                                        colorRangeSource = "";
+                                    // Loop
+                                    while (stringIterator -= 1) {
+                                        // Initialization > Character
+                                        var character = LDKF.stringPrototypeCharacterAt(string, stringLength - stringIterator - 1);
 
                                         // Logic
-                                        if (TEST_FOR_ALPHA) {
-                                            // Update > Has Indexed Color Range Delimiter
-                                            hasIndexedColorRangeDelimiter = false;
-
-                                            // Loop --- NOTE (Lapys) -> Test for the Blue color range.
-                                            while (character && !hasIndexedColorRangeDelimiter && stringIterator) {
-                                                // Update > (Character, (Has Indexed Color Range Delimiter | Color Range Source))
-                                                character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
-                                                character == ',' ? hasIndexedColorRangeDelimiter = true : colorRangeSource += character
-                                            }
-
-                                            // Update > Color Range Source
-                                            colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
+                                        if (character == 'e' || character == '.' || character == '%' || LDKF.stringPrototypeIsDigit(character)) {
+                                            // Update > Color Range
+                                            colorRange += character;
 
                                             // Logic
-                                            if (LDKF.stringPrototypeIsNumericInteger(colorRangeSource)) {
-                                                // Initialization > Alpha Source
-                                                var alphaSource = "";
+                                            if (!isIndexingColorRange) {
+                                                // Update >  (Color Range Delimiter(s), Is Indexing Color Range)
+                                                colorRangeDelimiters[colorRangeDelimitersLength] = colorRangeDelimiter;
+                                                colorRangeDelimitersLength += 1;
 
-                                                // Loop > Update > Character --- NOTE (Lapys) -> Test for the Alpha unit.
-                                                while (character && stringIterator) {
-                                                    character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
-                                                    character == ')' ? stringIterator = +0 : alphaSource += character
-                                                }
-
-                                                // Update > (Alpha Source, String Is RGB[A] Color)
-                                                alphaSource = LDKF.stringPrototypeTrim(alphaSource);
-                                                stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(alphaSource) || (
-                                                    LDKF.stringPrototypeIsNumericDecimal(alphaSource) && LDKF.stringPrototypeFirst(alphaSource) == '0'
-                                                )
+                                                colorRangeDelimiter = "";
+                                                isIndexingColorRange = true
                                             }
+
+                                            // Update > Is Indexing Trim
+                                            isIndexingTrim = false
                                         }
 
-                                        else {
-                                            // Loop > Update > Character --- NOTE (Lapys) -> Test for the Blue color range.
-                                            while (character && stringIterator) {
-                                                character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
-                                                character == ')' ? stringIterator = +0 : colorRangeSource += character
-                                            }
+                                        else if (character == ' ' || character == ',' || character == '\n') {
+                                            // Logic
+                                            if (stringLength - stringIterator - 1 == stringIndex + 1)
+                                                // Update > Is Indexing Trim
+                                                isIndexingTrim = true;
 
-                                            // Update > (Color Range Source, String Is RGB Color)
-                                            colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
-                                            stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(colorRangeSource)
+                                            else if (!isIndexingTrim) {
+                                                // Update > Color Range Delimiter
+                                                colorRangeDelimiter += character;
+
+                                                // Logic
+                                                if (isIndexingColorRange) {
+                                                    // Update > ((Color Range(s)) Length, Is Indexing Color Range)
+                                                    colorRanges[colorRangesLength] = colorRange;
+                                                    colorRangesLength += 1;
+
+                                                    colorRange = "";
+                                                    isIndexingColorRange = false
+                                                }
+                                            }
                                         }
                                     }
 
-                                    else
-                                        // Update > String Is RGB Color
-                                        stringIsRGBColor = false
-                                }
+                                    // Logic > Update > Color Ranges (lENGTH)
+                                    if (colorRange) { colorRanges[colorRangesLength] = colorRange; colorRangesLength += 1 }
 
-                                else
                                     // Update > String Is RGB Color
-                                    stringIsRGBColor = false
+                                    stringIsRGBColor = (colorRangesLength == (3 + TEST_FOR_ALPHA) && colorRangeDelimitersLength == (2 + TEST_FOR_ALPHA)) &&
+                                        (!colorRangeDelimiter || LDKF.stringPrototypeIsEmpty(LDKF.stringPrototypeTrim(colorRangeDelimiter)));
+
+                                    // Logic
+                                    if (stringIsRGBColor) {
+                                        // Initialization > Color Range Delimiters Iterator
+                                        var colorRangeDelimitersIterator = colorRangeDelimitersLength;
+
+                                        // Loop
+                                        while (stringIsRGBColor && colorRangeDelimitersIterator) {
+                                            // Update > Color Range Delimiter
+                                            colorRangeDelimiter = colorRangeDelimiters[colorRangeDelimitersIterator -= 1];
+
+                                            // Initialization > Color Range Delimiter (Trim, Is Valid)
+                                            var colorRangeDelimiterTrim = LDKF.stringPrototypeTrim(colorRangeDelimiter, [' ', '\n']),
+                                                colorRangeDelimiterIsValid = colorRangeDelimiterTrim == ',' || colorRangeDelimiterTrim == '/';
+
+                                            // Logic
+                                            if (colorRangeDelimiterIsValid)
+                                                // Update > Color Range Delimiters
+                                                colorRangeDelimiters[colorRangeDelimitersIterator] = colorRangeDelimiterTrim;
+
+                                            else {
+                                                // Initialization > Color Range Delimiter Iterator
+                                                var colorRangeDelimiterIterator = LDKF.stringPrototypeLength(colorRangeDelimiter);
+
+                                                // Loop --- NOTE (Lapys) -> Check if the Color Range Delimiter is made of white-space (or newlines) alone.
+                                                while (colorRangeDelimiterIterator) {
+                                                    // Initialization > Color Range Delimiter Character
+                                                    var colorRangeDelimiterCharacter = LDKF.stringPrototypeCharacterAt(colorRangeDelimiter, colorRangeDelimiterIterator -= 1);
+
+                                                    // Logic
+                                                    if (colorRangeDelimiterCharacter != ' ' && colorRangeDelimiterCharacter != '\n') {
+                                                        // Update > Color Range Delimiter (Is Valid, Iterator)
+                                                        colorRangeDelimiterIsValid = false;
+                                                        colorRangeDelimiterIterator = +0
+                                                    }
+
+                                                    else if (!colorRangeDelimiterIterator && (colorRangeDelimiterCharacter == ' ' || colorRangeDelimiterCharacter == '\n')) {
+                                                        // Update > Color Range (Delimiters, Delimiter Is Void)
+                                                        colorRangeDelimiters[colorRangeDelimitersIterator] = ' ';
+                                                        colorRangeDelimiterIsValid = true
+                                                    }
+                                                }
+                                            }
+
+                                            // Update > String Is RGB Color
+                                            stringIsRGBColor = colorRangeDelimiterIsValid
+                                        }
+
+                                        // Logic
+                                        if (stringIsRGBColor) {
+                                            // Update > String Is RGB Color
+                                            stringIsRGBColor = (colorRangeDelimiters[+0] == ' ' && colorRangeDelimiters[1] == ' ' && (!TEST_FOR_ALPHA || colorRangeDelimiters[2] == '/')) ||
+                                                (colorRangeDelimiters[+0] == ',' && colorRangeDelimiters[1] == ',' && (!TEST_FOR_ALPHA || colorRangeDelimiters[2] == ','));
+
+                                            // Logic
+                                            if (stringIsRGBColor) {
+                                                // Initialization > Color (Range Type, Ranges Iterator)
+                                                var colorRangeType = null,
+                                                    colorRangesIterator = colorRangesLength;
+
+                                                // Loop
+                                                while (stringIsRGBColor && colorRangesIterator) {
+                                                    // Logic
+                                                    if (colorRangesIterator == colorRangesLength && TEST_FOR_ALPHA) {
+                                                        // Initialization > Alpha Range (Length)
+                                                        var alphaRange = LDKF.stringPrototypeTrim(colorRanges[colorRangesIterator -= 1], [' ', '\n']),
+                                                            alphaRangeLength = LDKF.stringPrototypeLength(alphaRange);
+
+                                                        // Logic
+                                                        if (LDKF.stringPrototypeLast(alphaRange, STRICT = alphaRangeLength) == '%') {
+                                                            // Update > (Alpha Range (Length), String Is RGB Color)
+                                                            alphaRange = LDKF.stringPrototypeCutRight(alphaRange, 1, STRICT = alphaRangeLength);
+                                                            alphaRangeLength -= 1;
+                                                            stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(alphaRange, STRICT = alphaRangeLength) ||
+                                                                LDKF.stringPrototypeIsNumericDecimal(alphaRange, STRICT = alphaRangeLength, STRICT = true);
+
+                                                            // Logic > Update > (Alpha Range (Length), String Is RGB Color)
+                                                            if (stringIsRGBColor) {
+                                                                alphaRange = LDKF.toNumber(alphaRange);
+                                                                stringIsRGBColor = alphaRange > -1 && alphaRange <= 100 && !LDKF.objectIs(alphaRange, -0)
+                                                            }
+                                                        }
+
+                                                        else {
+                                                            // Logic
+                                                            if (LDKF.stringPrototypeFirst(alphaRange) == '0') {
+                                                                // Update > Alpha Range (Length)
+                                                                alphaRange = '0' + LDKF.stringPrototypeTrimLeft(alphaRange, '0');
+                                                                alphaRangeLength = LDKF.stringPrototypeLength(alphaRange)
+                                                            }
+
+                                                            // Update > String Is RGB Color
+                                                            stringIsRGBColor = alphaRange == '1' || ((
+                                                                LDKF.stringPrototypeFirst(alphaRange) == '.' ||
+                                                                (LDKF.stringPrototypeFirst(alphaRange) == '0' && LDKF.stringPrototypeCharacterAt(alphaRange, 1) == '.')
+                                                            ) && LDKF.stringPrototypeIsNumericDecimal(alphaRange, STRICT = alphaRangeLength))
+                                                        }
+                                                    }
+
+                                                    else {
+                                                        // Initialization > Color Range (Length)
+                                                        var colorRange = LDKF.stringPrototypeTrim(colorRanges[colorRangesIterator -= 1]),
+                                                            colorRangeLength = LDKF.stringPrototypeLength(colorRange);
+
+                                                        // Logic
+                                                        if (LDKF.stringPrototypeLast(colorRange, STRICT = colorRangeLength) == '%')
+                                                            // Logic
+                                                            if (colorRangeType == "unit")
+                                                                // Update >  String Is RGB Color
+                                                                stringIsRGBColor = false;
+
+                                                            else {
+                                                                // Update > (Color Range (Length, Type), String Is RGB Color)
+                                                                colorRange = LDKF.stringPrototypeCutRight(colorRange, 1, STRICT = colorRangeLength);
+                                                                colorRangeLength -= 1;
+                                                                colorRangeType = "ratio";
+                                                                stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(colorRange, STRICT = colorRangeLength) ||
+                                                                    LDKF.stringPrototypeIsNumericDecimal(colorRange, STRICT = colorRangeLength, STRICT = true);
+
+                                                                // Logic > Update > (Color Range (Length), String Is RGB Color)
+                                                                if (stringIsRGBColor) {
+                                                                    colorRange = LDKF.toNumber(colorRange);
+                                                                    stringIsRGBColor = colorRange > -1 && colorRange <= 100 && !LDKF.objectIs(colorRange, -0)
+                                                                }
+                                                            }
+
+                                                        else
+                                                            // Logic
+                                                            if (colorRangeType == "ratio")
+                                                                // Update > String Is RGB Color
+                                                                stringIsRGBColor = false;
+
+                                                            else {
+                                                                // Update > (Color Range Type, String Is RGB Color) --- MINIFY (Lapys) -> Faster than logical testing.
+                                                                colorRangeType = "unit";
+                                                                stringIsRGBColor = colorRange == '0' || colorRange == '1' || colorRange == '2' || colorRange == '3' || colorRange == '4' || colorRange == '5' || colorRange == '6' || colorRange == '7' || colorRange == '8' || colorRange == '9' || colorRange == "10" || colorRange == "11" || colorRange == "12" || colorRange == "13" || colorRange == "14" || colorRange == "15" || colorRange == "16" || colorRange == "17" || colorRange == "18" || colorRange == "19" || colorRange == "20" || colorRange == "21" || colorRange == "22" || colorRange == "23" || colorRange == "24" || colorRange == "25" || colorRange == "26" || colorRange == "27" || colorRange == "28" || colorRange == "29" || colorRange == "30" || colorRange == "31" || colorRange == "32" || colorRange == "33" || colorRange == "34" || colorRange == "35" || colorRange == "36" || colorRange == "37" || colorRange == "38" || colorRange == "39" || colorRange == "40" || colorRange == "41" || colorRange == "42" || colorRange == "43" || colorRange == "44" || colorRange == "45" || colorRange == "46" || colorRange == "47" || colorRange == "48" || colorRange == "49" || colorRange == "50" || colorRange == "51" || colorRange == "52" || colorRange == "53" || colorRange == "54" || colorRange == "55" || colorRange == "56" || colorRange == "57" || colorRange == "58" || colorRange == "59" || colorRange == "60" || colorRange == "61" || colorRange == "62" || colorRange == "63" || colorRange == "64" || colorRange == "65" || colorRange == "66" || colorRange == "67" || colorRange == "68" || colorRange == "69" || colorRange == "70" || colorRange == "71" || colorRange == "72" || colorRange == "73" || colorRange == "74" || colorRange == "75" || colorRange == "76" || colorRange == "77" || colorRange == "78" || colorRange == "79" || colorRange == "80" || colorRange == "81" || colorRange == "82" || colorRange == "83" || colorRange == "84" || colorRange == "85" || colorRange == "86" || colorRange == "87" || colorRange == "88" || colorRange == "89" || colorRange == "90" || colorRange == "91" || colorRange == "92" || colorRange == "93" || colorRange == "94" || colorRange == "95" || colorRange == "96" || colorRange == "97" || colorRange == "98" || colorRange == "99" || colorRange == "100" || colorRange == "101" || colorRange == "102" || colorRange == "103" || colorRange == "104" || colorRange == "105" || colorRange == "106" || colorRange == "107" || colorRange == "108" || colorRange == "109" || colorRange == "110" || colorRange == "111" || colorRange == "112" || colorRange == "113" || colorRange == "114" || colorRange == "115" || colorRange == "116" || colorRange == "117" || colorRange == "118" || colorRange == "119" || colorRange == "120" || colorRange == "121" || colorRange == "122" || colorRange == "123" || colorRange == "124" || colorRange == "125" || colorRange == "126" || colorRange == "127" || colorRange == "128" || colorRange == "129" || colorRange == "130" || colorRange == "131" || colorRange == "132" || colorRange == "133" || colorRange == "134" || colorRange == "135" || colorRange == "136" || colorRange == "137" || colorRange == "138" || colorRange == "139" || colorRange == "140" || colorRange == "141" || colorRange == "142" || colorRange == "143" || colorRange == "144" || colorRange == "145" || colorRange == "146" || colorRange == "147" || colorRange == "148" || colorRange == "149" || colorRange == "150" || colorRange == "151" || colorRange == "152" || colorRange == "153" || colorRange == "154" || colorRange == "155" || colorRange == "156" || colorRange == "157" || colorRange == "158" || colorRange == "159" || colorRange == "160" || colorRange == "161" || colorRange == "162" || colorRange == "163" || colorRange == "164" || colorRange == "165" || colorRange == "166" || colorRange == "167" || colorRange == "168" || colorRange == "169" || colorRange == "170" || colorRange == "171" || colorRange == "172" || colorRange == "173" || colorRange == "174" || colorRange == "175" || colorRange == "176" || colorRange == "177" || colorRange == "178" || colorRange == "179" || colorRange == "180" || colorRange == "181" || colorRange == "182" || colorRange == "183" || colorRange == "184" || colorRange == "185" || colorRange == "186" || colorRange == "187" || colorRange == "188" || colorRange == "189" || colorRange == "190" || colorRange == "191" || colorRange == "192" || colorRange == "193" || colorRange == "194" || colorRange == "195" || colorRange == "196" || colorRange == "197" || colorRange == "198" || colorRange == "199" || colorRange == "200" || colorRange == "201" || colorRange == "202" || colorRange == "203" || colorRange == "204" || colorRange == "205" || colorRange == "206" || colorRange == "207" || colorRange == "208" || colorRange == "209" || colorRange == "210" || colorRange == "211" || colorRange == "212" || colorRange == "213" || colorRange == "214" || colorRange == "215" || colorRange == "216" || colorRange == "217" || colorRange == "218" || colorRange == "219" || colorRange == "220" || colorRange == "221" || colorRange == "222" || colorRange == "223" || colorRange == "224" || colorRange == "225" || colorRange == "226" || colorRange == "227" || colorRange == "228" || colorRange == "229" || colorRange == "230" || colorRange == "231" || colorRange == "232" || colorRange == "233" || colorRange == "234" || colorRange == "235" || colorRange == "236" || colorRange == "237" || colorRange == "238" || colorRange == "239" || colorRange == "240" || colorRange == "241" || colorRange == "242" || colorRange == "243" || colorRange == "244" || colorRange == "245" || colorRange == "246" || colorRange == "247" || colorRange == "248" || colorRange == "249" || colorRange == "250" || colorRange == "251" || colorRange == "252" || colorRange == "253" || colorRange == "254" || colorRange == "255"
+                                                            }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
                             // Return
@@ -5364,7 +5670,7 @@
                         };
 
                         // Is RGBA Color
-                        LapysDevelopmentKit.Functions.stringPrototypeIsRGBAColor = function stringPrototypeIsRGBAColor(string) { return LDKF.stringPrototypeIsRGBColor(string, STRICT = true) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsRGBAColor = function stringPrototypeIsRGBAColor(string, STRING_LENGTH) { return LDKF.stringPrototypeIsRGBColor(string, STRICT = STRING_LENGTH, STRICT = true) };
 
                         // Is Upper
                         LapysDevelopmentKit.Functions.stringPrototypeIsUpper = function stringPrototypeIsUpper(string, STRING_LENGTH) {
