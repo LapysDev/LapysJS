@@ -3117,6 +3117,8 @@
 
                             // Return --- NOTE (Lapys) -> Test all function types and assert if the Routine conforms to any type.
                             return LDKF.functionPrototypeIsArrow(routine, STRICT = source) ||
+                                LDKF.functionPrototypeIsAsynchronousDefault(routine, STRICT = source) ||
+                                LDKF.functionPrototypeIsAsynchronousGenerator(routine, STRICT = source) ||
                                 LDKF.functionPrototypeIsClass(routine, STRICT = source) ||
                                 LDKF.functionPrototypeIsDefault(routine, STRICT = source) ||
                                 LDKF.functionPrototypeIsGenerator(routine, STRICT = source)
@@ -3138,11 +3140,11 @@
                             }
 
                             else {
-                                // Initialization > Uses `function` Keyword
-                                var uses_function_Keyword = LDKF.functionPrototypeSourceBeginsWith_function_Keyword(routine, STRICT = source);
+                                // Initialization > Begins With Keyword
+                                var beginsWithKeyword = LDKF.functionPrototypeSourceBeginsWith_async_Keyword(routine, STRICT = source) || LDKF.functionPrototypeSourceBeginsWith_function_Keyword(routine, STRICT = source);
 
                                 // Logic
-                                if (uses_function_Keyword || LDKF.stringPrototypeFirst(source) == '(') {
+                                if (beginsWithKeyword || LDKF.stringPrototypeFirst(source) == '(') {
                                     // Initialization > Iterator
                                     var hasIndexedFunctionSourceHead = false, iterator = +0;
 
@@ -3305,38 +3307,45 @@
                             // Initialization > (Is Native, Source)
                             var isNative = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
-                            // Initialization > (Lookup Syntaxes) (Length(s))
-                            var lookupSyntaxes = LDKC.Keywords.nativeFunctionCodes,
-                                lookupSyntaxesLengths = [18, 13], // NOTE (Lapys) -> Basically, mapping `LapysDevelopmentKit.Constants.Keywords.nativeFunctionCodes` to its elements' lengths.
-                                lookupSyntaxesLength = 2;
-
-                            // Loop
-                            LDKF.iterateSource(source, function(character, index) {
-                                // Initialization > Lookup Syntaxes Iterator
-                                var lookupSyntaxesIterator = lookupSyntaxesLength;
+                            // Logic
+                            if (LDKF.functionPrototypeHasStandardSource(routine, STRICT = source)) {
+                                // Initialization > (Lookup Syntaxes) (Length(s))
+                                var lookupSyntaxes = LDKC.Keywords.nativeFunctionCodes,
+                                    lookupSyntaxesLengths = [18, 13], // NOTE (Lapys) -> Basically, mapping `LapysDevelopmentKit.Constants.Keywords.nativeFunctionCodes` to its elements' lengths.
+                                    lookupSyntaxesLength = 2;
 
                                 // Loop
-                                while (lookupSyntaxesIterator) {
-                                    // Update > Lookup Syntaxes Iterator
-                                    lookupSyntaxesIterator -= 1;
+                                LDKF.iterateSource(source, function(character, index) {
+                                    // Initialization > Lookup Syntaxes Iterator
+                                    var lookupSyntaxesIterator = lookupSyntaxesLength;
 
-                                    // Initialization > (Lookup Syntax) (Iterator, Length)
-                                    var lookupSyntax = lookupSyntaxes[lookupSyntaxesIterator],
-                                        lookupSyntaxIterator = +0, lookupSyntaxLength = lookupSyntaxesLengths[lookupSyntaxesIterator];
+                                    // Loop
+                                    while (lookupSyntaxesIterator) {
+                                        // Update > Lookup Syntaxes Iterator
+                                        lookupSyntaxesIterator -= 1;
 
-                                    // Loop > Update > Lookup Syntax Iterator
-                                    while (lookupSyntaxIterator ^ lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
-                                        lookupSyntaxIterator += 1;
+                                        // Initialization > (Lookup Syntax) (Iterator, Length)
+                                        var lookupSyntax = lookupSyntaxes[lookupSyntaxesIterator],
+                                            lookupSyntaxIterator = +0, lookupSyntaxLength = lookupSyntaxesLengths[lookupSyntaxesIterator];
 
-                                    // Logic
-                                    if (lookupSyntaxIterator == lookupSyntaxLength) {
-                                        // Update > (Is Native, Lookup Syntaxes Iterator)
-                                        isNative = true;
-                                        lookupSyntaxesIterator = +0;
-                                        this.stop()
+                                        // Loop > Update > Lookup Syntax Iterator
+                                        while (lookupSyntaxIterator ^ lookupSyntaxLength && lookupSyntax[lookupSyntaxIterator] == (lookupSyntaxIterator ? LDKF.stringPrototypeCharacterAt(source, index + lookupSyntaxIterator) : character))
+                                            lookupSyntaxIterator += 1;
+
+                                        // Logic
+                                        if (lookupSyntaxIterator == lookupSyntaxLength) {
+                                            // Update > (Is Native, Lookup Syntaxes Iterator)
+                                            isNative = true;
+                                            lookupSyntaxesIterator = +0;
+                                            this.stop()
+                                        }
                                     }
-                                }
-                            }, STRICT = {comments: true, delimiters: {arrays: false, objects: true, strings: true, syntax: true}}, STRICT = true);
+                                }, STRICT = {comments: true, delimiters: {arrays: false, objects: true, strings: true, syntax: true}}, STRICT = true)
+                            }
+
+                            else
+                                // Update > Is Native
+                                isNative = true;
 
                             // Return
                             return isNative
@@ -3359,19 +3368,19 @@
 
                         // Name
                         LapysDevelopmentKit.Functions.functionPrototypeName = function functionPrototypeName(routine, SOURCE_STRING) {
-                            // Initialization > (Source, Function (Head Source, Name), Uses `function` Keyword)
+                            // Initialization > (Source, Function (Head Source, Name), Begins With Keyword)
                             var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine),
                                 functionHeadSource = LDKF.functionPrototypeHead(routine, STRICT = source),
                                 functionName = "",
-                                uses_function_Keyword = LDKF.functionPrototypeSourceBeginsWith_function_Keyword(routine, STRICT = source);
+                                beginsWithKeyword = LDKF.functionPrototypeSourceBeginsWith_async_Keyword(routine, STRICT = source) || LDKF.functionPrototypeSourceBeginsWith_function_Keyword(routine, STRICT = source);
 
                             // Logic
-                            if (uses_function_Keyword)
+                            if (beginsWithKeyword)
                                 // Loop
                                 LDKF.iterateSource(source, function(character, index) {
                                     // Target > Stop; Update > Function Name
-                                    character == '(' ? this.stop() : (character == ' ' || character == '\n') || (functionName += character)
-                                }, STRICT = true, STRICT = true, STRICT = 8);
+                                    character == '(' ? this.stop() : (LDKF.stringPrototypeIsVariableCharacter(character) && (functionName += character))
+                                }, STRICT = true, STRICT = true, STRICT = LDKF.stringPrototypeIndexFromBack(source, "function", STRICT = null, STRICT = 8) + 8);
 
                             else if (LDKF.functionPrototypeIsClass(routine, STRICT = source)) {
                                 // Initialization > Has Indexed Function Source Name
@@ -3666,11 +3675,11 @@
                                 return "";
 
                             else {
-                                // Initialization > Source
-                                var source = LDKF.stringPrototypeTrim(LDKF.toString(routine));
+                                // Initialization > Source (Length)
+                                var source = LDKF.stringPrototypeTrim(LDKF.toString(routine)), sourceLength = LDKF.stringPrototypeLength(source);
 
                                 // Update > Source
-                                (LDKF.stringPrototypeFirst(source) == '(' && LDKF.stringPrototypeLast(source) == ')') && (source = LDKF.stringPrototypeCut(source, 1));
+                                (LDKF.stringPrototypeFirst(source) == '(' && LDKF.stringPrototypeLast(source, STRICT = sourceLength) == ')') && (source = LDKF.stringPrototypeCut(source, 1, STRICT = sourceLength));
 
                                 // Return
                                 return source
@@ -3705,8 +3714,14 @@
                 // Is Constructible
                 LapysDevelopmentKit.Functions.isConstructible = function isConstructible(argument) { return !LDKF.isNonConstructible(argument) };
 
+                // Is Document-Like
+                LapysDevelopmentKit.Functions.isDocumentLike = function isDocumentLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.document) };
+
                 // Is Error-Like
-                LapysDevelopmentKit.Functions.isErrorLike = function isErrorLike(argument) { return LDKF.objectPrototypeIsInstanceOfConstructor(argument, LDKO.error) };
+                LapysDevelopmentKit.Functions.isErrorLike = function isErrorLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.error) };
+
+                // Is Element-Like
+                LapysDevelopmentKit.Functions.isElementLike = function isElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.element) };
 
                 // Is Function
                 LapysDevelopmentKit.Functions.isFunction = function isFunction(argument, EVALUATE_PRIMITIVE_TYPE_ONLY) {
@@ -3739,6 +3754,18 @@
                         return false
                 };
 
+                // Is HTML All Collection-Like
+                LapysDevelopmentKit.Functions.isHTMLAllCollectionLike = function isHTMLAllCollectionLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlAllCollection) };
+
+                // Is HTML Body Element-Like
+                LapysDevelopmentKit.Functions.isHTMLBodyElementLike = function isHTMLBodyElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlBodyElement) };
+
+                // Is HTML Collection-Like
+                LapysDevelopmentKit.Functions.isHTMLCollectionLike = function isHTMLCollectionLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlCollection) };
+
+                // Is HTML Frame Set Element-Like
+                LapysDevelopmentKit.Functions.isHTMLFrameSetElementLike = function isHTMLFrameSetElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlFrameSetElementLike) };
+
                 // Is Non-Constructible
                 LapysDevelopmentKit.Functions.isNonConstructible = function isNonConstructible(argument) { return LDKF.isNull(argument) || LDKF.isVoid(argument) };
 
@@ -3753,6 +3780,9 @@
 
                 // Is Number-Like
                 LapysDevelopmentKit.Functions.isNumberLike = function isNumberLike(argument) { return LDKF.isBoolean(argument) || LDKF.isNumber(argument) };
+
+                // Is Object-Like
+                LapysDevelopmentKit.Functions.isObjectLike = function isObjectLike(argument) { return typeof argument == "object" };
 
                 // Is String
                 LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
@@ -3809,8 +3839,8 @@
 
                 /* Iterate Source [String]
                         --- NOTE (Lapys) -> Iterate through JavaScript source syntax.
-                            - The `this` object for the Handler points to an Iterator object.
-                            - Returns the Iterator object.
+                            - The `this` object for the Handler points to an `Iterator` object.
+                            - Returns an `Iterator` object.
                         --- WARN (Lapys) -> The handler is executed with `value, key` arguments rather than the reverse (`key, value`)
                             because this use-case (iterating through source code) is not publicly available to the library user (unless Debug Mode is enabled).
                 */
@@ -3983,7 +4013,10 @@
                         // Is Integer
                         LapysDevelopmentKit.Functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(number) { return number == LDKM.int(number) };
 
-                        // is Negative
+                        // Is Not-A-Number --- NOTE (Lapys) -> Fortunately, `NaN` is the only JavaScript value that does not compare with itself.
+                        LapysDevelopmentKit.Functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(number) { return number !== number };
+
+                        // Is Negative
                         LapysDevelopmentKit.Functions.numberPrototypeIsNegative = function numberPrototypeIsNegative(number) { return number < -0 || LDKF.numberPrototypeIsNegativeZero(number) };
 
                         // Is Negative Zero
@@ -4240,6 +4273,18 @@
                             return depth
                         };
 
+                        // Every
+                        LapysDevelopmentKit.Functions.objectPrototypeEvery = function objectPrototypeEvery(object) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.getArgumentsLength(arguments);
+
+                            // Loop > Logic > Return
+                            while (iterator ^ 1) if (!arguments[iterator -= 1](object)) return false;
+
+                            // Return
+                            return true
+                        };
+
                         // Get Property [By Name]
                         LapysDevelopmentKit.Functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, propertyName, SILENCE_EXCEPTIONS) {
                             // Error Handling > ...
@@ -4261,7 +4306,7 @@
                         };
 
                         // Instance Of
-                        LapysDevelopmentKit.Functions.objectPrototypeIsInstanceOfConstructor = function objectPrototypeIsInstanceOfConstructor(object, constructor, ARGUMENTS_ARE_VALID) { return (ARGUMENTS_ARE_VALID || (LDKF.isConstructible(object) && LDKF.isFunction(constructor))) && object instanceof constructor };
+                        LapysDevelopmentKit.Functions.objectPrototypeInstanceOf = function objectPrototypeInstanceOf(object, constructor, ARGUMENTS_ARE_VALID) { return (ARGUMENTS_ARE_VALID || (LDKF.isConstructible(object) && LDKF.isFunction(constructor))) && object instanceof constructor };
 
                         // Is Of Constructor
                         LapysDevelopmentKit.Functions.objectPrototypeIsOfConstructor = function objectPrototypeIsOfConstructor(object, constructor, ASSERT_BY_CONSTRUCTOR_VALUE) {
@@ -4278,13 +4323,13 @@
                                     case "string": isOfConstructor = constructor === LDKO.string; break;
                                     case "symbol": isOfConstructor = constructor === LDKO.symbol; break;
                                     case "undefined": isOfConstructor = false; break;
-                                    default: isOfConstructor = LDKF.objectPrototypeIsInstanceOfConstructor(object, constructor, STRICT = true)
+                                    default: isOfConstructor = LDKF.objectPrototypeInstanceOf(object, constructor, STRICT = true)
                                 }
 
                             // Logic
                             if (ASSERT_BY_CONSTRUCTOR_VALUE)
                                 // Error Handling > Update > Is Of Constructor
-                                try { isOfConstructor = isOfConstructor && LDKF.objectPrototypeIsInstanceOfConstructor(new constructor, constructor) }
+                                try { isOfConstructor = isOfConstructor && LDKF.objectPrototypeInstanceOf(new constructor, constructor) }
                                 catch (error) { LDKF.isTypeError(error) || (isOfConstructor = false) }
 
                             // Return
@@ -4333,6 +4378,18 @@
 
                             // Return
                             return object
+                        };
+
+                        // Some
+                        LapysDevelopmentKit.Functions.objectPrototypeSome = function objectPrototypeSome(object) {
+                            // Initialization > Iterator
+                            var iterator = LDKF.getArgumentsLength(arguments);
+
+                            // Loop > Logic > Return
+                            while (iterator ^ 1) if (arguments[iterator -= 1](object)) return true;
+
+                            // Return
+                            return false
                         };
 
                     // Set Prototype Of
@@ -4910,8 +4967,52 @@
                         // Is Alphabet
                         LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.alphabets, string, STRICT = 52) };
 
+                        // Is Character Encoding --- CHECKPOINT (Lapys)
+                        // Is CMYK Color --- CHECKPOINT (Lapys)
+                        // Is Color --- CHECKPOINT (Lapys)
+                        // Is Color Code --- NOTE (Lapys) -> Any color or color code.
+                        LapysDevelopmentKit.Functions.stringPrototypeIsColorCode = function stringPrototypeIsColorCode(string, STRING_LENGTH) {
+                            // Initialization > String Length
+                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Return
+                            return LDKF.stringPrototypeIsCMYKColor(string) ||
+                                LDKF.stringPrototypteIsColor(string) ||
+                                LDKF.stringPrototypeIsHexadecimalColor(string, STRICT = stringLength) ||
+                                LDKF.stringPrototypeIsHSLColor(string) ||
+                                (LDKF.stringPrototypeIsRGBColor(string) || LDKF.stringPrototypeIsRGBAColor(string))
+                        };
+
                         // Is Digit
                         LapysDevelopmentKit.Functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.digits, string, STRICT = 10) };
+
+                        // Is Hexadecimal Color
+                        LapysDevelopmentKit.Functions.stringPrototypeIsHexadecimalColor = function stringPrototypeIsHexadecimalColor(string, STRING_LENGTH) {
+                            // Initialization > String Length
+                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Return
+                            return LDKF.stringPrototypeFirst(string) == '#' &&
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 1)) &&
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 2)) &&
+                                LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 3)) &&
+                                (stringLength == 4 || (
+                                    LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 4)) &&
+                                    LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 5)) &&
+                                    LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 6)) &&
+                                    (stringLength == 7 || (
+                                        LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 7)) &&
+                                        LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 8)) &&
+                                        LDKF.stringPrototypeIsHexadecimalDigit(LDKF.stringPrototypeCharacterAt(string, 9)) &&
+                                        stringLength == 10
+                                    ))
+                                ))
+                        };
+
+                        // Is Hexadecimal Digit
+                        LapysDevelopmentKit.Functions.stringPrototypeIsHexadecimalDigit = function stringPrototypeIsHexadecimalDigit(string) { return string == 'a' || string == 'A' || string == 'b' || string == 'B' || string == 'c' || string == 'C' || string == 'd' || string == 'D' || string == 'e' || string == 'E' || string == 'f' || string == 'F' || LDKF.stringPrototypeIsDigit(string) };
+
+                        // Is HSL Color --- CHECKPOINT (Lapys)
 
                         // Is Lower
                         LapysDevelopmentKit.Functions.stringPrototypeIsLower = function stringPrototypeIsLower(string, STRING_LENGTH) {
@@ -4928,17 +5029,183 @@
                         // Is Lower Character
                         LapysDevelopmentKit.Functions.stringPrototypeIsLowerCharacter = function stringPrototypeIsLowerCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.lowercaseAlphabets, string, STRICT = 26) };
 
+                        // Is Numeric Decimal --- WARN (Lapys) -> Does not evaluate the String source, rather it asserts if the String contains a single (not multiple) decimal point.
+                        LapysDevelopmentKit.Functions.stringPrototypeIsNumericDecimal = function stringPrototypeIsNumericDecimal(string, STRING_LENGTH) {
+                            // Logic
+                            if (LDKF.stringPrototypeFirst(string) == '.')
+                                // Return
+                                return LDKF.stringPrototypeIsNumericDecimal('0' + string, STRICT = STRING_LENGTH);
+
+                            else {
+                                // Initialization > String Length
+                                var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                                // Logic
+                                if (stringLength && LDKF.stringPrototypeLast(string, STRICT = stringLength) != '.') {
+                                    // Initialization > (Decimal Point Index, Is Numeric Decimal, String Iterator)
+                                    var decimalPointIndex = -1,
+                                        isNumericDecimal = true,
+                                        stringIterator = stringLength;
+
+                                    // Loop > Update > Decimal Point Index
+                                    while (isNumericDecimal && stringIterator)
+                                        (LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) == '.') && (decimalPointIndex = ~decimalPointIndex ? isNumericDecimal = false : stringIterator);
+
+                                    // Update > Is Numeric Decimal
+                                    ~decimalPointIndex || (isNumericDecimal = false);
+
+                                    // Logic
+                                    if (isNumericDecimal) {
+                                        // Update > String Iterator
+                                        stringIterator = stringLength;
+
+                                        // Loop
+                                        while (isNumericDecimal && stringIterator) {
+                                            // Update > String Iterator
+                                            stringIterator -= 1;
+
+                                            // Logic > Update > Is Numeric Decimal
+                                            if ((decimalPointIndex ^ stringIterator) && !LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, stringIterator))) isNumericDecimal = false;
+                                            else if (!stringIterator) isNumericDecimal = true
+                                        }
+                                    }
+
+                                    // Return
+                                    return isNumericDecimal
+                                }
+
+                                else
+                                    // Return
+                                    return false
+                            }
+                        };
+
                         // Is Numeric Integer
                         LapysDevelopmentKit.Functions.stringPrototypeIsNumericInteger = function stringPrototypeIsNumericInteger(string, STRING_LENGTH) {
-                            // Initialization > String Iterator
-                            var stringIterator = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+                            // Initialization > String (Length, Iterator)
+                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string), stringIterator = stringLength;
 
                             // Loop > Logic > Return
                             while (stringIterator) if (!LDKF.stringPrototypeIsDigit(LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1))) return false;
 
                             // Return
-                            return true
+                            return !!stringLength
                         };
+
+                        // Is RGB Color
+                        LapysDevelopmentKit.Functions.stringPrototypeIsRGBColor = function stringPrototypeIsRGBColor(string, TEST_FOR_ALPHA) {
+                            // Initialization > String (Iterator, Is RGB Color)
+                            var stringIterator = +0,
+                                stringIsRGBColor = LDKF.stringPrototypeFirst(string) == 'r' &&
+                                LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == 'g' &&
+                                LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == 'b';
+
+                            // Logic
+                            if (stringIsRGBColor) {
+                                TEST_FOR_ALPHA && (stringIsRGBColor = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == 'a');
+                                stringIsRGBColor && (stringIsRGBColor = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1) == '(')
+                            }
+
+                            // Logic
+                            if (stringIsRGBColor) {
+                                // Initialization > (Color Range Source, Has Indexed Color Range Delimiter, Character)
+                                var colorRangeSource = "",
+                                    hasIndexedColorRangeDelimiter = false,
+                                    character = LDKF.stringPrototypeCharacterAt(string, stringIterator);
+
+                                // Loop --- NOTE (Lapys) -> Test for the Red color range.
+                                while (character && !hasIndexedColorRangeDelimiter && stringIterator) {
+                                    // Update > (Character, (Has Indexed Color Range Delimiter | Color Range Source))
+                                    character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
+                                    character == ',' ? hasIndexedColorRangeDelimiter = true : colorRangeSource += character
+                                }
+
+                                // Update > Color Range Source
+                                colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
+
+                                if (LDKF.stringPrototypeIsNumericInteger(colorRangeSource)) {
+                                    // Update > (Color Range Source, Has Indexed Color Range Delimiter)
+                                    colorRangeSource = "";
+                                    hasIndexedColorRangeDelimiter = false;
+
+                                    // Loop --- NOTE (Lapys) -> Test for the Green color range.
+                                    while (character && !hasIndexedColorRangeDelimiter && stringIterator) {
+                                        // Update > (Character, (Has Indexed Color Range Delimiter | Color Range Source))
+                                        character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
+                                        character == ',' ? hasIndexedColorRangeDelimiter = true : colorRangeSource += character
+                                    }
+
+                                    // Update > Color Range Source
+                                    colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
+
+                                    // Logic
+                                    if (LDKF.stringPrototypeIsNumericInteger(colorRangeSource)) {
+                                        // Update > Color Range Source
+                                        colorRangeSource = "";
+
+                                        // Logic
+                                        if (TEST_FOR_ALPHA) {
+                                            // Update > Has Indexed Color Range Delimiter
+                                            hasIndexedColorRangeDelimiter = false;
+
+                                            // Loop --- NOTE (Lapys) -> Test for the Blue color range.
+                                            while (character && !hasIndexedColorRangeDelimiter && stringIterator) {
+                                                // Update > (Character, (Has Indexed Color Range Delimiter | Color Range Source))
+                                                character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
+                                                character == ',' ? hasIndexedColorRangeDelimiter = true : colorRangeSource += character
+                                            }
+
+                                            // Update > Color Range Source
+                                            colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
+
+                                            // Logic
+                                            if (LDKF.stringPrototypeIsNumericInteger(colorRangeSource)) {
+                                                // Initialization > Alpha Source
+                                                var alphaSource = "";
+
+                                                // Loop > Update > Character --- NOTE (Lapys) -> Test for the Alpha unit.
+                                                while (character && stringIterator) {
+                                                    character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
+                                                    character == ')' ? stringIterator = +0 : alphaSource += character
+                                                }
+
+                                                // Update > (Alpha Source, String Is RGB[A] Color)
+                                                alphaSource = LDKF.stringPrototypeTrim(alphaSource);
+                                                stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(alphaSource) || (
+                                                    LDKF.stringPrototypeIsNumericDecimal(alphaSource) && LDKF.stringPrototypeFirst(alphaSource) == '0'
+                                                )
+                                            }
+                                        }
+
+                                        else {
+                                            // Loop > Update > Character --- NOTE (Lapys) -> Test for the Blue color range.
+                                            while (character && stringIterator) {
+                                                character = LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
+                                                character == ')' ? stringIterator = +0 : colorRangeSource += character
+                                            }
+
+                                            // Update > (Color Range Source, String Is RGB Color)
+                                            colorRangeSource = LDKF.stringPrototypeTrim(colorRangeSource);
+                                            stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(colorRangeSource)
+                                        }
+                                    }
+
+                                    else
+                                        // Update > String Is RGB Color
+                                        stringIsRGBColor = false
+                                }
+
+                                else
+                                    // Update > String Is RGB Color
+                                    stringIsRGBColor = false
+                            }
+
+                            // Return
+                            return stringIsRGBColor
+                        };
+
+                        // Is RGBA Color
+                        LapysDevelopmentKit.Functions.stringPrototypeIsRGBAColor = function stringPrototypeIsRGBAColor(string) { return LDKF.stringPrototypeIsRGBColor(string, STRICT = true) };
 
                         // Is Upper
                         LapysDevelopmentKit.Functions.stringPrototypeIsUpper = function stringPrototypeIsUpper(string, STRING_LENGTH) {
@@ -5687,7 +5954,65 @@
                     // Public Mode --- NOTE (Lapys) -> Prevents security testing for native JavaScript features before integration into the Lapys Development Kit if set to `true`.
                     LapysDevelopmentKit.Information.Settings.PublicMode = !!LDK.tmp.settings.publicMode;
 
-            /* Test */
+            /* Test
+                    --- NOTE ---
+                        #Lapys:
+                            All type-testing methods (e.g.: `LapysDevelopmentKit.Test.isDocumentLike`) here are poorly defined because
+                            they only defer to the properties of the proposed Argument to be tested.
+            */
+                // Is Document-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isDocumentLike = function isDocumentLike(argument) {
+                    // Return
+                    return LDKF.isDocument(argument) || (
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "activeElement", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
+                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "addEventListener", STRICT = true)) &&
+                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "adoptNode", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "alinkColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKT.isHTMLAllCollectionLike(LDKF.objectPrototypeGetProperty(argument, "all", STRICT = true)) &&
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "anchors", STRICT = true)) &&
+                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "applets", STRICT = true)) &&
+                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "attachEvent", STRICT = true)) &&
+                        LDKF.objectPrototypeHasProperty(argument, "attributes", STRICT = true) &&
+                        LDKF.objectPrototypeGetProperty(argument, "ATTRIBUTE_NODE", STRICT = true) === 2 &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "body", STRICT = true), LDKT.isHTMLBodyElementLike, LDKT.isHTMLFrameSetElementElementLike, LDKF.isNull) &&
+                        LDKF.objectPrototypeGetProperty(argument, "ATTRIBUTE_NODE", STRICT = true) === 4 &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "characterSet", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "charset", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding)
+                    )
+                };
+
+                // Is Element-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isElementLike = function isElementLike(argument) {
+                    // Return
+                    return true
+                };
+
+                // Is HTML All Collection-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isHTMLAllCollectionLike = function isHTMLAllCollectionLike(argument) {
+                    // Return
+                    return true
+                };
+
+                // Is HTML Body Element-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isHTMLBodyElementLike = function isHTMLBodyElementLike(argument) {
+                    // Return
+                    return true
+                };
+
+                // Is HTML Collection-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isHTMLCollectionLike = function isHTMLCollectionLike(argument) {
+                    // Return
+                    return true
+                };
+
+                // Is HTML Frame Set Element-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isHTMLFrameSetElementLike = function isHTMLFrameSetElementLike(argument) {
+                    // Return
+                    return true
+                };
+
                 // Object > Prototype
                     // Can Parse Strings
                     LapysDevelopmentKit.Test.canParseStrings = function canParseStrings() { return LDKF.isFunction(LDKO.stringPrototypeCharacterAt, STRICT = true) };
@@ -6012,11 +6337,11 @@
                         // Error Handling
                         try {
                             // Update > Constructor Is Native --- NOTE (Lapys) -> Test all literals to naïvely confirm.
-                            constructorIsNative = (function(array) { return typeof array == "object" })(constructor([])) &&
-                                (function(boolean) { return typeof boolean == "object" && LDKF.isNumber(boolean - +0) })(constructor(false)) &&
-                                (function(number) { return typeof number == "object" && LDKF.isNumber(number - +0) })(constructor(+0)) &&
-                                (function(string) { return typeof string == "object" && LDKF.isString(string + "") })(constructor("")) &&
-                                (function(regularExpression) { return typeof regularExpression == "object" })(constructor(/(?:)/)) &&
+                            constructorIsNative = (function(array) { return LDKF.isObjectLike(array) })(constructor([])) &&
+                                (function(boolean) { return LDKF.isObjectLike(boolean) && LDKF.isNumber(boolean - +0) })(constructor(false)) &&
+                                (function(number) { return LDKF.isObjectLike(number) && LDKF.isNumber(number - +0) })(constructor(+0)) &&
+                                (function(string) { return LDKF.isObjectLike(string) && LDKF.isString(string + "") })(constructor("")) &&
+                                (function(regularExpression) { return LDKF.isObjectLike(regularExpression) })(constructor(/(?:)/)) &&
                                 (function(routine) { return LDKF.isFunction(routine) })(constructor(function() {}))
                         } catch (error) {}
 
@@ -6058,7 +6383,7 @@
                                         LDKF.isVoid(prototype) && (prototype = requestPrototypeOf(object));
 
                                         // Logic > ...
-                                        if (typeof prototype == "object") return prototype;
+                                        if (LDKF.isObjectLike(prototype)) return prototype;
                                         else LDKF.throwTypeError("Object prototype must be an object itself")
                                     } :
                                     function getPrototypeOf(object) { return requestPrototypeOf(object) }
@@ -6392,18 +6717,18 @@
                         // Error Handling
                         try {
                             // Update > Method Is Standard
-                            methodIsStandard = (function(array) { return typeof array == "object" })(method([])) &&
+                            methodIsStandard = (function(array) { return LDKF.isObjectLike(array) })(method([])) &&
                                 (function(boolean) { return LDKF.isBoolean(boolean) })(method(false)) &&
                                 (function(number) { return LDKF.isNumber(number) })(method(+0)) &&
                                 (function(string) { return LDKF.isString(string) })(method("\"\"")) &&
-                                (function(regularExpression) { return typeof regularExpression == "object" })(method(/(?:)/)) &&
+                                (function(regularExpression) { return LDKF.isObjectLike(regularExpression) })(method(/(?:)/)) &&
                                 (function(routine) { return LDKF.isFunction(routine, STRICT = true) })(method(function() {})) &&
                                 (function(evaluatedSource) { return LDKF.isVoid(evaluatedSource) })(method()) &&
                                 (function(evaluatedSource) { return LDKF.isVoid(evaluatedSource) })(method("")) &&
-                                (function(evaluatedSource) { return typeof evaluatedSource == "object" })(method("[]")) &&
+                                (function(evaluatedSource) { return LDKF.isObjectLike(evaluatedSource) })(method("[]")) &&
                                 (function(evaluatedSource) { return LDKF.isBoolean(evaluatedSource) })(method("false")) &&
                                 (function(evaluatedSource) { return LDKF.isNumber(evaluatedSource) })(method("+0")) &&
-                                (function(evaluatedSource) { return typeof evaluatedSource == "object" })(method("/(?:)/")) &&
+                                (function(evaluatedSource) { return LDKF.isObjectLike(evaluatedSource) })(method("/(?:)/")) &&
                                 (function(evaluatedSource) { return LDKF.isFunction(evaluatedSource, STRICT = true) })(method("(function() { return function() {} })()"))
                         } catch (error) {}
 
@@ -6430,7 +6755,7 @@
                     LapysDevelopmentKit.Constants.Assertions.has___lookupSetter___Method = LDKF.objectPrototypeHasProperty(LDKO.objectPrototype, "__lookupSetter__", STRICT = true) && LDKF.isFunction(LDKO.objectPrototype___lookupSetter___);
 
                     // Has `__proto__` Property
-                    LapysDevelopmentKit.Constants.Assertions.has___proto___Property = LDKF.objectPrototypeHasProperty(ANY, "__proto__", STRICT = true) && typeof LDKF.objectPrototypeGetProperty(ANY, "__proto__", STRICT = true) == "object";
+                    LapysDevelopmentKit.Constants.Assertions.has___proto___Property = LDKF.objectPrototypeHasProperty(ANY, "__proto__", STRICT = true) && LDKF.isObjectLike(LDKF.objectPrototypeGetProperty(ANY, "__proto__", STRICT = true));
 
                     // Is ... Environment
                     LapysDevelopmentKit.Constants.Assertions.isAngularEnvironment = LDKF.arrayPrototypeHas(LDKE.Vendors, "Angular");
@@ -6725,12 +7050,21 @@
                 // Devices Not Found Error
                 LapysDevelopmentKit.Objects.devicesNotFoundError = LDKT.considerNativeConstructorOfObject(GLOBAL, "DevicesNotFoundError").requestForNativeConstructor();
 
-                // Document
-                LapysDevelopmentKit.Objects.document = LDKT.considerNativeConstructorOfObject(GLOBAL, "Document", STRICT = null, STRICT = "`Document` constructor").requestForNativeConstructor();
+                // Document --- NOTE (Lapys) -> Unfortunately, not all environments support the `Document` constructor.
+                LapysDevelopmentKit.Objects.document = LDKT.considerNativeConstructorOfObject(GLOBAL, "Document")
+                    .addAlternateCondition(function(constructorRoutine) {
+                        // Return
+                        return (
+                            LDKF.isObjectLike(constructorRoutine) &&
+                            LDKF.numberPrototypeIsNaN(LDKF.toNumber(constructorRoutine)) && LDKF.toString(constructorRoutine) == "[object Document]"
+                        ) && LDKT.isDocumentLike(constructorRoutine)
+                    })
+                    .requestForNativeConstructor();
                 LapysDevelopmentKit.Constants.Objects.document = LDKT.considerNativeObjectOfObject(GLOBAL, "document")
                     .addCondition(function(object) { return LDKF.objectPrototypeIsOfConstructor(object, LDKO.document) })
                     .requestForNativeObject();
                     // Create Element --- CHECKPOINT (Lapys)
+
                     // Prototype
                     LapysDevelopmentKit.Objects.documentPrototype = LDKF.getPropertyByName(LDKO.document, "prototype");
                         // Register Element
@@ -6847,6 +7181,8 @@
                 // HTML Form Controls Collection --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
                         // Item --- CHECKPOINT (Lapys)
+
+                // HTML Frame Set Element --- CHECKPOINT (Lapys)
 
                 // HTML Head Element --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
