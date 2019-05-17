@@ -975,7 +975,77 @@
                         };
 
                         // Depth
-                        LapysDevelopmentKit.Functions.arrayPrototypeDepth = function arrayPrototypeDepth(array) { return LDKF.objectPrototypeDepth(array) };
+                        LapysDevelopmentKit.Functions.arrayPrototypeDepth = function arrayPrototypeDepth(array, ARRAY_LENGTH) {
+                            // Initialization > (Array Iterator, Depth, Tree (Length))
+                            var arrayIterator = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array),
+                                depth = 1,
+                                tree = [], treeLength = +0;
+
+                            // Loop
+                            while (arrayIterator) {
+                                // Initialization > Element
+                                var element = array[arrayIterator -= 1];
+
+                                // Logic
+                                if (LDKF.isArray(element)) {
+                                    // Initialization > Element Iterator
+                                    var elementIterator = LDKF.arrayPrototypeLength(element);
+
+                                    // Loop
+                                    while (elementIterator) {
+                                        // Update > Tree (Length)
+                                        tree[treeLength] = element[elementIterator -= 1];
+                                        treeLength += 1
+                                    }
+                                }
+
+                                // Logic
+                                if (!arrayIterator && treeLength) {
+                                    // Initialization > (Has Deeper Layer, Tree Iterator)
+                                    var hasDeeperLayer = false, treeIterator = treeLength;
+
+                                    // Loop
+                                    do {
+                                        // Initialization > Sub Tree (Length)
+                                        var subtree = [], subtreeLength = +0;
+
+                                        // Update > (Depth, Has Deeper Layer, Tree Iterator)
+                                        depth += 1;
+                                        hasDeeperLayer = false;
+                                        treeIterator = treeLength;
+
+                                        // Loop
+                                        while (treeIterator) {
+                                            // Initialization > Sub Array
+                                            var subarray = tree[treeIterator -= 1];
+
+                                            // Logic
+                                            if (LDKF.isArray(subarray)) {
+                                                // Initialization > Sub Array Iterator
+                                                var subarrayIterator = LDKF.arrayPrototypeLength(subarray);
+
+                                                // Update > Has Deeper Layer
+                                                hasDeeperLayer = true;
+
+                                                // Loop
+                                                while (subarrayIterator) {
+                                                    // Update > Sub Tree (Length)
+                                                    subtree[subtreeLength] = subarray[subarrayIterator -= 1];
+                                                    subtreeLength += 1
+                                                }
+                                            }
+                                        }
+
+                                        // Update > Tree (Length)
+                                        tree = subtree;
+                                        treeLength = subtreeLength
+                                    } while (hasDeeperLayer)
+                                }
+                            }
+
+                            // Return
+                            return depth
+                        };
 
                         // Distinct --- NOTE (Lapys) -> Does not manipulate the specified Array.
                         LapysDevelopmentKit.Functions.arrayPrototypeDistinct = function arrayPrototypeDistinct(array, ARRAY_LENGTH) {
@@ -1222,7 +1292,7 @@
                                     var index;
 
                                     // Loop > Logic > Return --- NOTE (Lapys) -> This works because the `for...in` loop iteration is ordered.
-                                    for (index in array) if (LDKF.stringPrototypeIsNumericInteger(index) && LDKF.numberPrototypeIsPositiveInteger(LDKF.toNumber(index))) return array[LDKF.toNumber(index)]
+                                    for (index in array) if (LDKF.stringPrototypeIsPositiveNumericInteger(index)) return array[LDKF.toNumber(index)]
                                 }
 
                                 else
@@ -1548,6 +1618,22 @@
                             return instances
                         };
 
+                        // Is
+                        LapysDevelopmentKit.Functions.arrayPrototypeIs = function arrayPrototypeIs(arrayA, arrayB, ARRAY_LENGTH) {
+                            // Initialization > Iterator
+                            var iterator = ARRAY_LENGTH || LDKF.arrayPrototypeLength(arrayA);
+
+                            // Logic
+                            if (ARRAY_LENGTH || iterator == LDKF.arrayPrototypeLength(arrayB)) {
+                                // Loop > ...; Return
+                                while (iterator) { iterator -= 1; if (arrayA[iterator] !== arrayB[iterator]) return false }
+                                return true
+                            }
+
+                            // Return
+                            return false
+                        };
+
                         // Is Subset
                         LapysDevelopmentKit.Functions.arrayPrototypeIsSubset = function arrayPrototypeIsSubset(array, subset) {
                             // Initialization > (Array, Subset) Length
@@ -1617,7 +1703,7 @@
                                         var index = indexes[indexesIterator -= 1];
 
                                         // Logic > Return
-                                        if (LDKF.stringPrototypeIsNumericInteger(index) && LDKF.numberPrototypeIsPositiveInteger(LDKF.toNumber(index))) return array[LDKF.toNumber(index)]
+                                        if (LDKF.stringPrototypeIsPositiveNumericInteger(index)) return array[LDKF.toNumber(index)]
                                     }
                                 }
 
@@ -1640,7 +1726,7 @@
                             // Logic
                             if (ARRAY_LENGTH || iterator == LDKF.arrayPrototypeLength(arrayB)) {
                                 // Loop > ...; Return
-                                while (iterator) { iterator -= 1; if (arrayA[iterator] !== arrayB[iterator]) return false }
+                                while (iterator) { iterator -= 1; if (LDKF.objectPrototypeValueOf(arrayA[iterator]) != LDKF.objectPrototypeValueOf(arrayB[iterator])) return false }
                                 return true
                             }
 
@@ -1737,7 +1823,7 @@
                         };
 
                         // Random
-                        LapysDevelopmentKit.Functions.arrayPrototypeRandom = function arrayPrototypeRandom(array) { return array[LDKF.arrayPrototypeRandomIndex(array)] };
+                        LapysDevelopmentKit.Functions.arrayPrototypeRandom = function arrayPrototypeRandom(array, ARRAY_LENGTH) { return array[LDKF.arrayPrototypeRandomIndex(array, STRICT = ARRAY_LENGTH)] };
 
                         // Random Index
                         LapysDevelopmentKit.Functions.arrayPrototypeRandomIndex = function arrayPrototypeRandomIndex(array, ARRAY_LENGTH) { return LDKM.int(LDKM.random() * (ARRAY_LENGTH || LDKF.arrayPrototypeLength(array))) };
@@ -4945,6 +5031,72 @@
                                 return -1
                         };
 
+                        // Instance
+                        LapysDevelopmentKit.Functions.stringPrototypeInstance = function stringPrototypeInstance(string, substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                            // Initialization > (Instance, String (Length, Iterator), Substring Length)
+                            var instance = {count: +0, instances: []},
+                                stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIterator = stringLength,
+                                substringLength = SUBSTRING_LENGTH || LDKF.stringPrototypeLength(substring);
+
+                            // Logic
+                            if (substringLength)
+                                // Logic
+                                if (substringLength == 1) {
+                                    // Loop
+                                    while (stringIterator)
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1) == substring) {
+                                            // Update > (Instance > ...)
+                                            instance.instances[instance.count] = stringLength - stringIterator - 1;
+                                            instance.count += 1
+                                        }
+                                }
+
+                                else {
+                                    // Loop
+                                    while (stringIterator)
+                                        // Logic
+                                        if (stringIterator == substringLength - 1)
+                                            // Update > String Iterator
+                                            stringIterator = +0;
+
+                                        else if (LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1) == LDKF.stringPrototypeFirst(substring)) {
+                                            // Initialization > (String Index, Substring Iterator)
+                                            var stringIndex = stringLength - stringIterator - 1,
+                                                substringIterator = substringLength - 1;
+
+                                            // Loop
+                                            while (substringIterator) {
+                                                // Update > Substring Iterator
+                                                substringIterator -= 1;
+
+                                                // Logic
+                                                if (LDKF.stringPrototypeCharacterAt(string, stringIndex + (substringLength - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(substring, substringLength - substringIterator - 1))
+                                                    // Update > Substring Iterator
+                                                    substringIterator = +0;
+
+                                                else if (!substringIterator && LDKF.stringPrototypeCharacterAt(string, stringIndex + (substringLength - 1)) == LDKF.stringPrototypeLast(substring, STRICT = substringLength)) {
+                                                    // Update > (Instance > ...)
+                                                    instance.instances[instance.count] = stringIndex;
+                                                    instance.count += 1
+                                                }
+                                            }
+                                        }
+                                }
+
+                            else
+                                // Loop
+                                while (stringIterator) {
+                                    // Update > (Instance > ...)
+                                    instance.instances[instance.count] = stringLength - (stringIterator -= 1) - 1;
+                                    instance.count += 1
+                                }
+
+                            // Return
+                            return instance
+                        };
+
                         // Is DOM Element Tag Name
                         LapysDevelopmentKit.Functions.stringPrototypeIsDOMElementTagName = function stringPrototypeIsDOMElementTagName(string, STRING_LENGTH, USE_NATIVE_FEATURES) {
                             // Logic
@@ -4988,8 +5140,159 @@
                         // Is Character Encoding --- MINIFY (Lapys) -> Hexadecimal is asserted as valid encoding.`
                         LapysDevelopmentKit.Functions.stringPrototypeIsCharacterEncoding = function stringPrototypeIsCharacterEncoding(string, STRING_LENGTH) { string = LDKF.stringPrototypeLower(LDKF.stringPrototypeRemoveAll(string, ' ', STRICT = STRING_LENGTH, STRICT = 1)); return string == "ascii" || string == "cp1047" || string == "cp37" || string == "cp437" || string == "cp720" || string == "cp737" || string == "cp850" || string == "cp852" || string == "cp855" || string == "cp857" || string == "cp858" || string == "cp860" || string == "cp861" || string == "cp862" || string == "cp863" || string == "cp865" || string == "cp866" || string == "cp869" || string == "cp872" || string == "cp930" || string == "euc-jis-2004" || string == "euc-jp" || string == "euc-kr" || string == "gbk" || string == "gb18030" || string == "gb2312" || string == "hexadecimal" || string == "hkscs" || string == "iso8859-1" || string == "iso8859-10" || string == "iso8859-11" || string == "iso8859-13" || string == "iso8859-14" || string == "iso8859-15" || string == "iso8859-16" || string == "iso8859-2" || string == "iso8859-3" || string == "iso8859-5" || string == "iso8859-6" || string == "iso8859-7" || string == "iso8859-8" || string == "iso8859-9" || string == "iso-2022-jp" || string == "iso-2022-jp-2004" || string == "iso-2022-kr" || string == "ksx1001" || string == "macroman" || string == "shift_jis-2004" || string == "shiftjis" || string == "utf-16" || string == "utf-32" || string == "utf-8" || string == "windows-1250" || string == "windows-1251" || string == "windows-1252" || string == "windows-1253" || string == "windows-1254" || string == "windows-1255" || string == "windows-1256" || string == "windows-1257" || string == "windows-1258" };
 
-                        // Is CMYK Color --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> There is no drafted support for a `CMYKA` color code standard.
-                        LapysDevelopmentKit.Functions.stringPrototypeIsCMYKColor = function stringPrototypeIsCMYKColor(string) {};
+                        // Is CMYK Color --- NOTE (Lapys) -> There is no drafted support for a `CMYKA` color code standard.
+                        LapysDevelopmentKit.Functions.stringPrototypeIsCMYKColor = function stringPrototypeIsCMYKColor(string, STRING_LENGTH) {
+                            // Initialization > String (Length, Is CMYK Color)
+                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIsCMYKColor = (stringLength && (stringLength ^ 1) && (stringLength ^ 2) && (stringLength ^ 3) && (stringLength ^ 4) && (stringLength ^ 5) && (stringLength ^ 6) && (stringLength ^ 7) && (stringLength ^ 8) && (stringLength ^ 9) && (stringLength ^ 10) && (stringLength ^ 11) && (stringLength ^ 12)) && (
+                                    LDKF.stringPrototypeFirst(string) == 'c' &&
+                                    LDKF.stringPrototypeCharacterAt(string, 1) == 'm' &&
+                                    LDKF.stringPrototypeCharacterAt(string, 2) == 'y' &&
+                                    LDKF.stringPrototypeCharacterAt(string, 3) == 'k' &&
+                                    LDKF.stringPrototypeCharacterAt(string, 4) == '('
+                                );
+
+                            // Logic
+                            if (stringIsCMYKColor) {
+                                // Initialization > (Color ((Range) (Delimiter, Delimiters (Length)), Ranges (Length)), String Iterator)
+                                var colorRange = "",
+                                    colorRangeDelimiter = "",
+                                    colorRangeDelimiters = [],
+                                    colorRangeDelimitersLength = +0,
+                                    colorRanges = [],
+                                    colorRangesLength = +0,
+                                    stringIterator = stringLength - 5;
+
+                                // Loop
+                                while (stringIterator) {
+                                    // Initialization > Character
+                                    var character = LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
+
+                                    // Logic
+                                    if (character == ')') {
+                                        // Initialization > Delimiter
+                                        var delimiter = character;
+
+                                        // Loop > Update > Delimiter
+                                        while (stringIterator) delimiter += LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
+
+                                        // Update > String Is CMYK Color
+                                        stringIsCMYKColor = LDKF.stringPrototypeTrimRight(delimiter) == ')'
+                                    }
+
+                                    else if (character == ',' || character == ' ' || character == '\n') {
+                                        // Update > Color Range Delimiter
+                                        colorRangeDelimiter += character;
+
+                                        // Logic
+                                        if (colorRange) {
+                                            // Update > (Color Ranges (Length), Color Range)
+                                            colorRanges[colorRangesLength] = colorRange;
+                                            colorRange = "";
+                                            colorRangesLength += 1
+                                        }
+                                    }
+
+                                    else {
+                                        // Update > Color Range
+                                        colorRange += character;
+
+                                        // Logic
+                                        if (colorRangeDelimiter) {
+                                            // Update > (Color Delimiters (Length), Color Delimiter)
+                                            colorRangeDelimiters[colorRangeDelimitersLength] = colorRangeDelimiter;
+                                            colorRangeDelimiter = "";
+                                            colorRangeDelimitersLength += 1
+                                        }
+                                    }
+                                }
+
+                                // Logic
+                                if (stringIsCMYKColor) {
+                                    // Logic > Update > ...
+                                    if (colorRange) { colorRanges[colorRangesLength] = colorRange; colorRangesLength += 1 }
+                                    if (colorRangeDelimiter) { colorRangeDelimiters[colorRangeDelimitersLength] = colorRangeDelimiter; colorRangeDelimitersLength += 1 }
+
+                                    // Update > String Is CMYK Color
+                                    stringIsCMYKColor = colorRangesLength == 4 && colorRangeDelimitersLength == 3;
+
+                                    // Logic
+                                    if (stringIsCMYKColor) {
+                                        // Initialization > Color Range Delimiters Iterator
+                                        var colorRangeDelimitersIterator = colorRangeDelimitersLength;
+
+                                        // Loop
+                                        while (colorRangeDelimitersIterator) {
+                                            // Update > Color Range Delimiter
+                                            colorRangeDelimiter = LDKF.stringPrototypeTrim(colorRangeDelimiters[colorRangeDelimitersIterator -= 1], [' ', '\n']);
+
+                                            // Logic > Update > Color Range Delimiters
+                                            if (colorRangeDelimiter == ',') colorRangeDelimiters[colorRangeDelimitersIterator] = ',';
+                                            else if (!colorRangeDelimiter) colorRangeDelimiters[colorRangeDelimitersIterator] = ' '
+                                        }
+
+                                        // Update > String Is CMYK Color
+                                        stringIsCMYKColor = (colorRangeDelimiters[+0] == ',' && colorRangeDelimiters[1] == ',' && colorRangeDelimiters[2] == ',') ||
+                                            (colorRangeDelimiters[+0] == ' ' && colorRangeDelimiters[1] == ' ' && colorRangeDelimiters[2] == ' ');
+
+                                        // Logic
+                                        if (stringIsCMYKColor) {
+                                            // Initialization > (Color Range Type, Color Range Iterator)
+                                            var colorRangeType = null,
+                                                colorRangesIterator = colorRangesLength;
+
+                                            // Loop
+                                            while (stringIsCMYKColor && colorRangesIterator) {
+                                                // Update > Color Range
+                                                colorRange = LDKF.stringPrototypeTrim(colorRanges[colorRangesIterator -= 1], [' ', '\n']);
+
+                                                // Initialization > Color Range Length
+                                                var colorRangeLength = LDKF.stringPrototypeLength(colorRange);
+
+                                                // Logic
+                                                if (LDKF.stringPrototypeLast(colorRange, STRICT = colorRangeLength) == '%')
+                                                    // Logic
+                                                    if (colorRangeType && colorRangeType != "ratio")
+                                                        // Update > String Is CMYK Color
+                                                        stringIsCMYKColor = false;
+
+                                                    else {
+                                                        // Update > ((Color Range) (Length, Type), String Is CMYK Color)
+                                                        colorRange = LDKF.stringPrototypeCutRight(colorRange, 1, STRICT = colorRangeLength);
+                                                        colorRangeLength -= 1;
+                                                        colorRangeType = "ratio";
+
+                                                        stringIsCYMKColor = LDKF.stringPrototypeIsPositiveNumericInteger(colorRange, STRICT = colorRangeLength) ||
+                                                            LDKF.stringPrototypeIsPositiveNumericDecimal(colorRange, STRICT = colorRangeLength);
+
+                                                        // Logic
+                                                        if (stringIsCMYKColor) {
+                                                            // Update > (Color Range, String Is CMYK Color)
+                                                            colorRange = LDKF.toNumber(colorRange);
+                                                            stringIsCMYKColor = colorRange > -1 && colorRange <= 100
+                                                        }
+                                                    }
+
+                                                else
+                                                    // Logic
+                                                    if (colorRangeType && colorRangeType != "unit")
+                                                        // Update > String Is CMYK Color
+                                                        stringIsCMYKColor = false;
+
+                                                    else {
+                                                        // Update > (Color Range Type, String Is CMYK Color)
+                                                        colorRangeType = "unit";
+                                                        stringIsCMYKColor = colorRange == '0' || colorRange == '1' || colorRange == '2' || colorRange == '3' || colorRange == '4' || colorRange == '5' || colorRange == '6' || colorRange == '7' || colorRange == '8' || colorRange == '9' || colorRange == "10" || colorRange == "11" || colorRange == "12" || colorRange == "13" || colorRange == "14" || colorRange == "15" || colorRange == "16" || colorRange == "17" || colorRange == "18" || colorRange == "19" || colorRange == "20" || colorRange == "21" || colorRange == "22" || colorRange == "23" || colorRange == "24" || colorRange == "25" || colorRange == "26" || colorRange == "27" || colorRange == "28" || colorRange == "29" || colorRange == "30" || colorRange == "31" || colorRange == "32" || colorRange == "33" || colorRange == "34" || colorRange == "35" || colorRange == "36" || colorRange == "37" || colorRange == "38" || colorRange == "39" || colorRange == "40" || colorRange == "41" || colorRange == "42" || colorRange == "43" || colorRange == "44" || colorRange == "45" || colorRange == "46" || colorRange == "47" || colorRange == "48" || colorRange == "49" || colorRange == "50" || colorRange == "51" || colorRange == "52" || colorRange == "53" || colorRange == "54" || colorRange == "55" || colorRange == "56" || colorRange == "57" || colorRange == "58" || colorRange == "59" || colorRange == "60" || colorRange == "61" || colorRange == "62" || colorRange == "63" || colorRange == "64" || colorRange == "65" || colorRange == "66" || colorRange == "67" || colorRange == "68" || colorRange == "69" || colorRange == "70" || colorRange == "71" || colorRange == "72" || colorRange == "73" || colorRange == "74" || colorRange == "75" || colorRange == "76" || colorRange == "77" || colorRange == "78" || colorRange == "79" || colorRange == "80" || colorRange == "81" || colorRange == "82" || colorRange == "83" || colorRange == "84" || colorRange == "85" || colorRange == "86" || colorRange == "87" || colorRange == "88" || colorRange == "89" || colorRange == "90" || colorRange == "91" || colorRange == "92" || colorRange == "93" || colorRange == "94" || colorRange == "95" || colorRange == "96" || colorRange == "97" || colorRange == "98" || colorRange == "99" || colorRange == "100" || colorRange == "101" || colorRange == "102" || colorRange == "103" || colorRange == "104" || colorRange == "105" || colorRange == "106" || colorRange == "107" || colorRange == "108" || colorRange == "109" || colorRange == "110" || colorRange == "111" || colorRange == "112" || colorRange == "113" || colorRange == "114" || colorRange == "115" || colorRange == "116" || colorRange == "117" || colorRange == "118" || colorRange == "119" || colorRange == "120" || colorRange == "121" || colorRange == "122" || colorRange == "123" || colorRange == "124" || colorRange == "125" || colorRange == "126" || colorRange == "127" || colorRange == "128" || colorRange == "129" || colorRange == "130" || colorRange == "131" || colorRange == "132" || colorRange == "133" || colorRange == "134" || colorRange == "135" || colorRange == "136" || colorRange == "137" || colorRange == "138" || colorRange == "139" || colorRange == "140" || colorRange == "141" || colorRange == "142" || colorRange == "143" || colorRange == "144" || colorRange == "145" || colorRange == "146" || colorRange == "147" || colorRange == "148" || colorRange == "149" || colorRange == "150" || colorRange == "151" || colorRange == "152" || colorRange == "153" || colorRange == "154" || colorRange == "155" || colorRange == "156" || colorRange == "157" || colorRange == "158" || colorRange == "159" || colorRange == "160" || colorRange == "161" || colorRange == "162" || colorRange == "163" || colorRange == "164" || colorRange == "165" || colorRange == "166" || colorRange == "167" || colorRange == "168" || colorRange == "169" || colorRange == "170" || colorRange == "171" || colorRange == "172" || colorRange == "173" || colorRange == "174" || colorRange == "175" || colorRange == "176" || colorRange == "177" || colorRange == "178" || colorRange == "179" || colorRange == "180" || colorRange == "181" || colorRange == "182" || colorRange == "183" || colorRange == "184" || colorRange == "185" || colorRange == "186" || colorRange == "187" || colorRange == "188" || colorRange == "189" || colorRange == "190" || colorRange == "191" || colorRange == "192" || colorRange == "193" || colorRange == "194" || colorRange == "195" || colorRange == "196" || colorRange == "197" || colorRange == "198" || colorRange == "199" || colorRange == "200" || colorRange == "201" || colorRange == "202" || colorRange == "203" || colorRange == "204" || colorRange == "205" || colorRange == "206" || colorRange == "207" || colorRange == "208" || colorRange == "209" || colorRange == "210" || colorRange == "211" || colorRange == "212" || colorRange == "213" || colorRange == "214" || colorRange == "215" || colorRange == "216" || colorRange == "217" || colorRange == "218" || colorRange == "219" || colorRange == "220" || colorRange == "221" || colorRange == "222" || colorRange == "223" || colorRange == "224" || colorRange == "225" || colorRange == "226" || colorRange == "227" || colorRange == "228" || colorRange == "229" || colorRange == "230" || colorRange == "231" || colorRange == "232" || colorRange == "233" || colorRange == "234" || colorRange == "235" || colorRange == "236" || colorRange == "237" || colorRange == "238" || colorRange == "239" || colorRange == "240" || colorRange == "241" || colorRange == "242" || colorRange == "243" || colorRange == "244" || colorRange == "245" || colorRange == "246" || colorRange == "247" || colorRange == "248" || colorRange == "249" || colorRange == "250" || colorRange == "251" || colorRange == "252" || colorRange == "253" || colorRange == "254" || colorRange == "255"
+                                                    }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return stringIsCMYKColor
+                        };
 
                         /* Is Color
                             --- MINIFY (Lapys)
@@ -5004,10 +5307,10 @@
                             var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
 
                             // Return
-                            return LDKF.stringPrototypteIsColor(string) ||
+                            return LDKF.stringPrototypeIsColor(string) ||
                                 LDKF.stringPrototypeIsCMYKColor(string) ||
                                 LDKF.stringPrototypeIsHexadecimalColor(string, STRICT = stringLength) ||
-                                (LDKF.stringPrototypeIsHSLColor(string) || LDKF.stringPrototypeIsHSLAColor(string))
+                                (LDKF.stringPrototypeIsHSLColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsHSLAColor(string, STRICT = stringLength)) ||
                                 (LDKF.stringPrototypeIsRGBColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsRGBAColor(string, STRICT = stringLength))
                         };
 
@@ -5041,8 +5344,165 @@
                         // Is Hexadecimal Digit
                         LapysDevelopmentKit.Functions.stringPrototypeIsHexadecimalDigit = function stringPrototypeIsHexadecimalDigit(string) { return string == 'a' || string == 'A' || string == 'b' || string == 'B' || string == 'c' || string == 'C' || string == 'd' || string == 'D' || string == 'e' || string == 'E' || string == 'f' || string == 'F' || LDKF.stringPrototypeIsDigit(string) };
 
-                        // Is HSL Color --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Honestly a lazy copy and variation of the `LapysDevelopmentKit.Functions.stringPrototypeIsRGBColor` method.
-                        LapysDevelopmentKit.Functions.stringPrototypeIsHSLColor = function stringPrototypeIsHSLColor(string, STRING_LENGTH, TEST_FOR_ALPHA) {};
+                        // Is HSL Color
+                        LapysDevelopmentKit.Functions.stringPrototypeIsHSLColor = function stringPrototypeIsHSLColor(string, STRING_LENGTH, TEST_FOR_ALPHA) {
+                            // Initialization > String (Index, Length, Is HSL Color)
+                            var stringIndex = +0,
+                                stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIsHSLColor = !!(stringLength && (stringLength ^ 1) && (stringLength ^ 2) && (stringLength ^ 3) && (stringLength ^ 4) && (stringLength ^ 5) && (stringLength ^ 6) && (stringLength ^ 7) && (stringLength ^ 8) && (stringLength ^ 9) && (stringLength ^ 10) && (stringLength ^ 11)) && (
+                                    LDKF.stringPrototypeFirst(string) == 'h' &&
+                                    LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 's' &&
+                                    LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 'l'
+                                );
+
+                            // Logic
+                            if (stringIsHSLColor) {
+                                // Update > Test For Alpha
+                                TEST_FOR_ALPHA = !!TEST_FOR_ALPHA;
+
+                                // Update > String Is HSL Color
+                                TEST_FOR_ALPHA && (stringIsHSLColor = LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 'a');
+                                stringIsHSLColor && (stringIsHSLColor = LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == '(');
+
+                                // Logic
+                                if (stringIsHSLColor) {
+                                    // Initialization > (Has Indexed Trim, Hue (Length), String Iterator)
+                                    var delimiter = null,
+                                        hasIndexedTrim = false,
+                                        hue = "", hueLength = +0,
+                                        stringIterator = stringLength - stringIndex - 1;
+
+                                    // Loop
+                                    while (stringIsHSLColor && stringIterator) {
+                                        // Initialization > Character
+                                        var character = LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
+
+                                        // Logic
+                                        if (hasIndexedTrim)
+                                            // Logic > Update > ...
+                                            if (character == ',' || character == ' ' || character == '\n') { delimiter = character == ',' ? "comma-separated" : "white-space"; stringIndex = stringIterator - 1; stringIterator = +0 }
+                                            else { hue += character; hueLength += 1 }
+
+                                        else {
+                                            // Update > (Has Indexed Trim, String Iterator)
+                                            hasIndexedTrim = character != ' ' && character != '\n';
+                                            stringIterator += 1
+                                        }
+                                    }
+
+                                    // Update > Hue
+                                    hue = LDKF.stringPrototypeTrimRight(hue, [' ', '\n']);
+
+                                    // Logic > Update > Hue --- MINIFY (Lapys)
+                                    if ((hueLength && (hueLength ^ 1) && (hueLength ^ 2) && (hueLength ^ 3)) && ((LDKF.stringPrototypeCharacterAt(hue, hueLength - 3) == 'd' && LDKF.stringPrototypeCharacterAt(hue, hueLength - 2) == 'e' && LDKF.stringPrototypeCharacterAt(hue, hueLength - 1) == 'g') || (LDKF.stringPrototypeCharacterAt(hue, hueLength - 3) == 'r' && LDKF.stringPrototypeCharacterAt(hue, hueLength - 2) == 'a' && LDKF.stringPrototypeLast(hue, STRICT = hueLength) == 'd'))) hue = LDKF.stringPrototypeCutRight(hue, 3, STRICT = hueLength);
+                                    else if ((hueLength && (hueLength ^ 1) && (hueLength ^ 2) && (hueLength ^ 3) && (hueLength ^ 4)) && (LDKF.stringPrototypeCharacterAt(hue, hueLength - 4) == 't' && LDKF.stringPrototypeCharacterAt(hue, hueLength - 3) == 'u' && LDKF.stringPrototypeCharacterAt(hue, hueLength - 2) == 'r' && LDKF.stringPrototypeLast(hue, STRICT = hueLength) == 'n')) hue = LDKF.stringPrototypeCutRight(hue, 4, STRICT = hueLength);
+
+                                    // Update > String Is HSL Color
+                                    stringIsHSLColor = hue && (LDKF.stringPrototypeIsPositiveNumericInteger(hue) || LDKF.stringPrototypeIsPositiveNumericDecimal(hue));
+
+                                    // Logic
+                                    if (stringIsHSLColor) {
+                                        // Initialization > (Has Indexed Delimiter, (Luminosity, Saturation) (Length))
+                                        var hasIndexedDelimiter = false,
+                                            luminosity = "", luminosityLength = +0,
+                                            saturation = "", saturationLength = +0;
+
+                                        // Update > (Has Indexed Trim, String Iterator)
+                                        hasIndexedTrim = false;
+                                        stringIterator = stringIndex;
+
+                                        // Loop
+                                        while (stringIsHSLColor && stringIterator) {
+                                            // Initialization > Character
+                                            var character = LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
+
+                                            // Logic
+                                            if (hasIndexedTrim) {
+                                                // Logic
+                                                if (hasIndexedDelimiter) {
+                                                    // Logic
+                                                    if (character == ')' || !stringIterator) {
+                                                        // Update > (Luminosity (Length), String Is HSL Color)
+                                                        luminosity = LDKF.stringPrototypeTrimRight(luminosity, [' ', '\n']);
+                                                        luminosityLength = LDKF.stringPrototypeLength(luminosity);
+                                                        luminosity = LDKF.stringPrototypeCutRight(luminosity, 1, STRICT = luminosityLength);
+                                                        luminosityLength -= 1;
+                                                        stringIsHSLColor = LDKF.stringPrototypeIsPositiveNumericInteger(luminosity, STRICT = luminosityLength) || LDKF.stringPrototypeIsPositiveNumericDecimal(luminosity, STRICT = luminosityLength);
+
+                                                        // Logic
+                                                        if (stringIsHSLColor) {
+                                                            // Update > (Luminosity, String Is HSL Color)
+                                                            luminosity = LDKF.toNumber(luminosity);
+                                                            stringIsHSLColor = luminosity > -1 && luminosity <= 100;
+
+                                                            // Logic
+                                                            if (stringIsHSLColor) {
+                                                                // (Loop > )Update > Delimiter
+                                                                delimiter = character;
+                                                                while (stringIterator) delimiter += LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
+                                                                delimiter = LDKF.stringPrototypeTrimRight(delimiter);
+
+                                                                // Update > String Is HSL Color
+                                                                stringIsHSLColor = delimiter == ')'
+                                                            }
+                                                        }
+                                                    }
+
+                                                    else {
+                                                        // Update > Luminosity
+                                                        luminosity += character;
+                                                        luminosityLength += 1
+                                                    }
+                                                }
+
+                                                else {
+                                                    // Logic
+                                                    if (character == ',' || character == ' ' || character == '\n') {
+                                                        // Update > String Is HSL Color
+                                                        stringIsHSLColor = (character == ',' && delimiter == "comma-separated") ||
+                                                            ((character == ' ' || character == '\n') && delimiter == "white-space");
+
+                                                        // Logic
+                                                        if (stringIsHSLColor) {
+                                                            // Update > (Has Indexed (Delimiter, Trim), Saturation (Length), String Is HSL Color)
+                                                            hasIndexedDelimiter = true;
+                                                            hasIndexedTrim = false;
+                                                            saturation = LDKF.stringPrototypeTrimRight(saturation, [' ', '\n']);
+                                                            saturationLength = LDKF.stringPrototypeLength(saturation);
+                                                            saturation = LDKF.stringPrototypeCutRight(saturation, 1, STRICT = saturationLength);
+                                                            saturationLength -= 1;
+                                                            stringIsHSLColor = LDKF.stringPrototypeIsPositiveNumericInteger(saturation, STRICT = saturationLength) || LDKF.stringPrototypeIsPositiveNumericDecimal(saturation, STRICT = saturationLength);
+
+                                                            // Logic
+                                                            if (stringIsHSLColor) {
+                                                                // Update > (Saturation, String Is HSL Color)
+                                                                saturation = LDKF.toNumber(saturation);
+                                                                stringIsHSLColor = saturation > -1 && saturation <= 100
+                                                            }
+                                                        }
+                                                    }
+
+                                                    else {
+                                                        // Update > Saturation (Length)
+                                                        saturation += character;
+                                                        saturationLength += 1
+                                                    }
+                                                }
+                                            }
+
+                                            else {
+                                                // Update > (Has Indexed Trim, String Iterator)
+                                                hasIndexedTrim = character != ' ' && character != '\n';
+                                                stringIterator += 2
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return stringIsHSLColor
+                        };
 
                         // Is HSLA Color
                         LapysDevelopmentKit.Functions.stringPrototypeIsHSLAColor = function stringPrototypeIsHSLAColor(string, STRING_LENGTH) { return LDKF.stringPrototypeIsHSLColor(string, STRICT = STRING_LENGTH, STRICT = true) };
@@ -5209,7 +5669,7 @@
                                     stringCutLength += 1
                                 }
 
-                                else if (character == '-')
+                                else if (character == '-' || character == '+')
                                     // Logic
                                     if (hasIndexedTrimAfterSign)
                                         // Update > String Is Numeric Integer
@@ -5251,12 +5711,30 @@
                             return stringIsNumericInteger
                         };
 
+                        // Is Positive Numeric Decimal
+                        LapysDevelopmentKit.Functions.stringPrototypeIsPositiveNumericDecimal = function stringPrototypeIsPositiveNumericDecimal(string, STRING_LENGTH, TEST_FOR_SCIENTIFIC_NOTATION) {
+                            // Initialization > String Length
+                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Return
+                            return !LDKF.stringPrototypeIsSignedOperator(string, STRICT = stringLength, STRICT = true) && LDKF.stringPrototypeIsNumericDecimal(string, STRICT = stringLength, STRICT = TEST_FOR_SCIENTIFIC_NOTATION)
+                        };
+
+                        // Is Positive Numeric Integer
+                        LapysDevelopmentKit.Functions.stringPrototypeIsPositiveNumericInteger = function stringPrototypeIsPositiveNumericInteger(string, STRING_LENGTH) {
+                            // Initialization > String Length
+                            var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Return
+                            return !LDKF.stringPrototypeIsSignedOperator(string, STRICT = stringLength, STRICT = true) && LDKF.stringPrototypeIsNumericInteger(string, STRICT = stringLength)
+                        };
+
                         // Is RGB Color --- NOTE (Lapys) -> It`s odd how the `rgb(...)` syntax is not treated as a function call but rather as a token.
                         LapysDevelopmentKit.Functions.stringPrototypeIsRGBColor = function stringPrototypeIsRGBColor(string, STRING_LENGTH, TEST_FOR_ALPHA) {
                             // Initialization > String (Index, Length, Is RGB Color)
                             var stringIndex = +0,
                                 stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
-                                stringIsRGBColor = stringLength > 5 && (
+                                stringIsRGBColor = !!(stringLength && (stringLength ^ 1) && (stringLength ^ 2) && (stringLength ^ 3) && (stringLength ^ 4) && (stringLength ^ 5) && (stringLength ^ 6) && (stringLength ^ 7) && (stringLength ^ 8) && (stringLength ^ 9)) && (
                                     LDKF.stringPrototypeFirst(string) == 'r' &&
                                     LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 'g' &&
                                     LDKF.stringPrototypeCharacterAt(string, stringIndex += 1) == 'b'
@@ -5417,7 +5895,7 @@
                                                                 alphaRange = LDKF.stringPrototypeCutRight(alphaRange, 1, STRICT = alphaRangeLength);
                                                                 alphaRangeLength -= 1;
                                                                 stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(alphaRange, STRICT = alphaRangeLength) ||
-                                                                    LDKF.stringPrototypeIsNumericDecimal(alphaRange, STRICT = alphaRangeLength, STRICT = true);
+                                                                    LDKF.stringPrototypeIsPositiveNumericDecimal(alphaRange, STRICT = alphaRangeLength, STRICT = true);
 
                                                                 // Logic > Update > (Alpha Range (Length), String Is RGB Color)
                                                                 if (stringIsRGBColor) {
@@ -5438,7 +5916,7 @@
                                                                 stringIsRGBColor = alphaRange == '1' || ((
                                                                     LDKF.stringPrototypeFirst(alphaRange) == '.' ||
                                                                     (LDKF.stringPrototypeFirst(alphaRange) == '0' && LDKF.stringPrototypeCharacterAt(alphaRange, 1) == '.')
-                                                                ) && LDKF.stringPrototypeIsNumericDecimal(alphaRange, STRICT = alphaRangeLength))
+                                                                ) && LDKF.stringPrototypeIsPositiveNumericDecimal(alphaRange, STRICT = alphaRangeLength))
                                                             }
                                                         }
 
@@ -5460,7 +5938,7 @@
                                                                     colorRangeLength -= 1;
                                                                     colorRangeType = "ratio";
                                                                     stringIsRGBColor = LDKF.stringPrototypeIsNumericInteger(colorRange, STRICT = colorRangeLength) ||
-                                                                        LDKF.stringPrototypeIsNumericDecimal(colorRange, STRICT = colorRangeLength, STRICT = true);
+                                                                        LDKF.stringPrototypeIsPositiveNumericDecimal(colorRange, STRICT = colorRangeLength, STRICT = true);
 
                                                                     // Logic > Update > (Color Range (Length), String Is RGB Color)
                                                                     if (stringIsRGBColor) {
@@ -5495,6 +5973,37 @@
 
                         // Is RGBA Color
                         LapysDevelopmentKit.Functions.stringPrototypeIsRGBAColor = function stringPrototypeIsRGBAColor(string, STRING_LENGTH) { return LDKF.stringPrototypeIsRGBColor(string, STRICT = STRING_LENGTH, STRICT = true) };
+
+                        /* Is Signed Operator
+                                --- NOTE ---
+                                    #Lapys:
+                                        - Tests a collection of `'-'` and `'+'` characters and evaluates if they become operator `'+'` mathematically.
+                                        - A `null` return means the String is malformed within this context.
+                        */
+                        LapysDevelopmentKit.Functions.stringPrototypeIsSignedOperator = function stringPrototypeIsSignedOperator(string, STRING_LENGTH, IS_EXPRESSION) {
+                            // Initialization > (Has Indexed Trim, Operator Is Malformed, String (Length, Is Signed, Iterator))
+                            var hasIndexedTrim = false,
+                                operatorIsMalformed = false,
+                                stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIsSigned = false,
+                                stringIterator = stringLength;
+
+                            // Loop
+                            while (!operatorIsMalformed && stringIterator) {
+                                // Initialization > Character
+                                var character = LDKF.stringPrototypeCharacterAt(string, stringLength - (stringIterator -= 1) - 1);
+
+                                // Update > Has Indexed Trim
+                                hasIndexedTrim = character != ' ' || character != '\n' || character != '\0';
+
+                                // Logic > Update > ...
+                                if (character == '-') stringIsSigned = !stringIsSigned;
+                                else if (character != '+' && (character != ' ' && character != '\n' && (hasIndexedTrim || character != '\0'))) operatorIsMalformed = true
+                            }
+
+                            // Return
+                            return operatorIsMalformed ? (IS_EXPRESSION ? stringIsSigned : null) : stringIsSigned
+                        };
 
                         // Is Upper
                         LapysDevelopmentKit.Functions.stringPrototypeIsUpper = function stringPrototypeIsUpper(string, STRING_LENGTH) {
