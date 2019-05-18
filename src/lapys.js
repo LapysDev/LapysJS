@@ -732,6 +732,12 @@
                         // Update Current Tick
                         LapysDevelopmentKit.Data.FramePrototype.updateCurrentTick = function updateCurrentTick() { this.currentTick = this.currentTick ^ 0x1FFFFFFFFFFFFE ? +0 : this.currentTick + 1; return this };
 
+                /* Pseudo Integer */
+                LapysDevelopmentKit.Data.PseudoInteger = function PseudoInteger() {};
+
+                /* Pseudo Number */
+                LapysDevelopmentKit.Data.PseudoNumber = function PseudoNumber() {};
+
                 /* Observer */
                 LapysDevelopmentKit.Data.Observer = function Observer(condition, ontrue, onfalse) {
                     // Initialization > (Length, Observer)
@@ -761,6 +767,18 @@
 
                         // On True
                         LapysDevelopmentKit.Data.ObserverPrototype.ontrue = new LDKD.Handler;
+
+                /* Ranged Number --- NOTE (Lapys) -> A number with limited byte-width. By the default, the number does not overflow. */
+                LapysDevelopmentKit.Data.RangedNumber = function RangedNumber() {};
+
+                /* Safe Array */
+                LapysDevelopmentKit.Data.SafeArray = function SafeArray() {};
+
+                /* Safe Integer */
+                LapysDevelopmentKit.Data.SafeInteger = function SafeInteger() {};
+
+                /* Safe Number */
+                LapysDevelopmentKit.Data.SafeNumber = function SafeNumber() {};
 
                 /* Scope */
                 LapysDevelopmentKit.Data.Scope = function Scope() {};
@@ -3874,6 +3892,9 @@
                 // Is Object-Like
                 LapysDevelopmentKit.Functions.isObjectLike = function isObjectLike(argument) { return typeof argument == "object" };
 
+                // Is Primitive
+                LapysDevelopmentKit.Functions.isPrimitive = function isPrimitive(argument) { return !LDKF.isObjectLike(argument) };
+
                 // Is String
                 LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
 
@@ -4365,11 +4386,11 @@
 
                         // Every
                         LapysDevelopmentKit.Functions.objectPrototypeEvery = function objectPrototypeEvery(object) {
-                            // Initialization > Iterator
-                            var iterator = LDKF.getArgumentsLength(arguments);
+                            // Initialization > (Length, Iterator)
+                            var length = LDKF.getArgumentsLength(arguments), iterator = length;
 
                             // Loop > Logic > Return
-                            while (iterator ^ 1) if (!arguments[iterator -= 1](object)) return false;
+                            while (iterator ^ 1) if (!arguments[length - (iterator -= 1)](object)) return false;
 
                             // Return
                             return true
@@ -4472,11 +4493,11 @@
 
                         // Some
                         LapysDevelopmentKit.Functions.objectPrototypeSome = function objectPrototypeSome(object) {
-                            // Initialization > Iterator
-                            var iterator = LDKF.getArgumentsLength(arguments);
+                            // Initialization > (Length, Iterator)
+                            var length = LDKF.getArgumentsLength(arguments), iterator = length;
 
                             // Loop > Logic > Return
-                            while (iterator ^ 1) if (arguments[iterator -= 1](object)) return true;
+                            while (iterator ^ 1) if (arguments[length - (iterator -= 1)](object)) return true;
 
                             // Return
                             return false
@@ -5313,6 +5334,9 @@
                                 (LDKF.stringPrototypeIsHSLColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsHSLAColor(string, STRICT = stringLength)) ||
                                 (LDKF.stringPrototypeIsRGBColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsRGBAColor(string, STRICT = stringLength))
                         };
+
+                        // Is Date --- UPDATE REQUIRED (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeIsDate = function stringPrototypeIsDate(string) { return true };
 
                         // Is Digit
                         LapysDevelopmentKit.Functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.digits, string, STRICT = 10) };
@@ -6351,9 +6375,11 @@
                         };
 
                         // Start
-                        LapysDevelopmentKit.Functions.stringPrototypeStart = function stringPrototypeStart(string) {
+                        LapysDevelopmentKit.Functions.stringPrototypeStart = function stringPrototypeStart(string, STRING_LENGTH) {
                             // Initialization > String (Start, Length, Iterator)
-                            var stringStart = "", stringLength = LDKF.stringPrototypeLength(string), stringIterator = stringLength;
+                            var stringStart = "",
+                                stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                stringIterator = stringLength;
 
                             // Loop
                             while (stringIterator) {
@@ -6400,6 +6426,15 @@
 
                             // Return
                             return swapped
+                        };
+
+                        // Title
+                        LapysDevelopmentKit.Functions.stringPrototypeTitle = function stringPrototypeTitle(string, STRING_LENGTH) {
+                            // Initialization > String Length
+                            var stringLength = (STRING_LENGTH || LDKF.stringPrototypeLength(string)) + 1;
+
+                            // Return
+                            return LDKF.stringPrototypeCutLeft(LDKF.stringPrototypeStart(' ' + string, STRICT = stringLength), 1, STRICT = stringLength)
                         };
 
                         // To Debugging Message
@@ -6761,24 +6796,65 @@
                 // Is Document-Like --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Test.isDocumentLike = function isDocumentLike(argument) {
                     // Return
-                    return LDKF.isDocument(argument) || (
+                    return LDKF.isDocumentLike(argument) || (
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "activeElement", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
-                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "addEventListener", STRICT = true)) &&
-                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "adoptNode", STRICT = true)) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "alinkColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "addEventListener", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "adoptNode", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "alinkColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
                         LDKT.isHTMLAllCollectionLike(LDKF.objectPrototypeGetProperty(argument, "all", STRICT = true)) &&
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "anchors", STRICT = true)) &&
-                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "applets", STRICT = true)) &&
-                        LDKF.isFunction(LDKF.objectPrototypeGetProperty(argument, "attachEvent", STRICT = true)) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "attachEvent", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
                         LDKF.objectPrototypeHasProperty(argument, "attributes", STRICT = true) &&
                         LDKF.objectPrototypeGetProperty(argument, "ATTRIBUTE_NODE", STRICT = true) === 2 &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "body", STRICT = true), LDKT.isHTMLBodyElementLike, LDKT.isHTMLFrameSetElementElementLike, LDKF.isNull) &&
                         LDKF.objectPrototypeGetProperty(argument, "ATTRIBUTE_NODE", STRICT = true) === 4 &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "characterSet", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "charset", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
-                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "childNodes", STRICT = true))
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "characterSet", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "charset", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
+                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "childNodes", STRICT = true)) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "close", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeGetProperty(argument, "COMMENT_NODE", STRICT = true) === 8 &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "compareDocumentPosition", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeHasProperty(argument, "compatible", STRICT = true) &&
+                        (function(propertyValue) { return propertyValue === "BackCompat" || propertyValue === "CSS1Compat" })(LDKF.objectPrototypeGetProperty(argument, "compatMode")) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "cookie")) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createAttribute", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createComment", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createDocumentFragment", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createElement", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createEventObject", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createStyleSheet", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createTextNode", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "defaultCharset", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
+                        (function(propertyValue) { return propertyValue === "Inherit" || propertyValue === "off" || propertyValue === "on" })(LDKF.objectPrototypeGetProperty(argument, "designMode")) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "detachEvent", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        (function(propertyValue) { return propertyValue === "ltr" || propertyValue === "rtl" })(LDKF.objectPrototypeGetProperty(argument, "dir")) &&
+                        LDKF.isObjectLike(LDKF.objectPrototypeGetProperty(argument, "doctype")) &&
+                        LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "documentElement")) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "documentMode"), LDKF.isNumber, LDKF.numberPrototypeIsPositiveInteger) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "domain"), LDKF.isNull, LDKF.isString) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "elementFromPoint", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "embeds", STRICT = true)) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "execCommandShowHelp", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileCreatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate, LDKF.stringPrototypeIsEmpty) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileModifiedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate, LDKF.stringPrototypeIsEmpty) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "fileSize", STRICT = true), LDKF.isNumber, LDKF.stringPrototypeIsPositiveNumericInteger) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileUpdatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate, LDKF.stringPrototypeIsEmpty) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fireEvent", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "firstChild")) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "forms")) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "getElementById", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "getElementsByName", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "hasFocus", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "images", STRICT = true))
                     )
                 };
 
@@ -7855,25 +7931,26 @@
                 // Devices Not Found Error
                 LapysDevelopmentKit.Objects.devicesNotFoundError = LDKT.considerNativeConstructorOfObject(GLOBAL, "DevicesNotFoundError").requestForNativeConstructor();
 
-                // Document --- NOTE (Lapys) -> Unfortunately, not all environments support the `Document` constructor.
+                // Document --- NOTE (Lapys) -> Unfortunately, not all web environments support the public `Document` constructor.
                 LapysDevelopmentKit.Objects.document = LDKT.considerNativeConstructorOfObject(GLOBAL, "Document")
+                    .addCondition(function() { return LDKC.Assertions.isBrowserEnvironment })
                     .addAlternateCondition(function(constructorRoutine) {
                         // Return
                         return (
                             LDKF.isObjectLike(constructorRoutine) &&
                             LDKF.numberPrototypeIsNaN(LDKF.toNumber(constructorRoutine)) && LDKF.toString(constructorRoutine) == "[object Document]"
-                        ) && LDKT.isDocumentLike(constructorRoutine)
+                        )
                     })
                     .requestForNativeConstructor();
                 LapysDevelopmentKit.Constants.Objects.document = LDKT.considerNativeObjectOfObject(GLOBAL, "document")
                     .addCondition(function(object) { return LDKF.objectPrototypeIsOfConstructor(object, LDKO.document) })
+                    .addAlternateCondition(function(object) { return LDKT.isDocumentLike(object) })
                     .requestForNativeObject();
                     // Create Element --- CHECKPOINT (Lapys)
 
                     // Prototype
                     LapysDevelopmentKit.Objects.documentPrototype = LDKF.getPropertyByName(LDKO.document, "prototype");
-                        // Register Element
-                        LapysDevelopmentKit.Objects.documentPrototypeRegisterElement = LDKT.considerNativeMethodOfObject(LDKO.documentPrototype, "registerElement").requestForNativeMethod();
+                        // Register Element --- CHECKPOINT (Lapys)
 
                 // Document Fragment --- CHECKPOINT (Lapys)
                 // Document Type --- CHECKPOINT (Lapys)
@@ -8457,9 +8534,13 @@
                     // Momentum Scroll To --- CHECKPOINT (Lapys)
 
                 // Function > Prototype --- CHECKPOINT (Lapys)
+                    // Inherit --- CHECKPOINT (Lapys)
 
                 // Object > Prototype
-                    // Define --- CHECKPOINT (Lapys)
+                    // Define [Property] --- CHECKPOINT (Lapys)
+                    // Define [Properties] --- CHECKPOINT (Lapys)
+                    // Define Constant --- CHECKPOINT (Lapys)
+                    // Define Constants --- CHECKPOINT (Lapys)
                     // Describe --- CHECKPOINT (Lapys)
                     // Free --- CHECKPOINT (Lapys)
                     // Freeze --- CHECKPOINT (Lapys)
@@ -8499,6 +8580,8 @@
                     // Create Document Fragment --- CHECKPOINT (Lapys)
                     // Create Element --- CHECKPOINT (Lapys)
                     // Cut --- CHECKPOINT (Lapys)
+                    // Document --- CHECKPOINT (Lapys)
+                        // File Size --- CHECKPOINT (Lapys)
                     // Download --- CHECKPOINT (Lapys)
                     // [Is] Execute[-able] --- CHECKPOINT (Lapys)
                     // File --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
@@ -8560,10 +8643,16 @@
                     // On Property Removed --- CHECKPOINT (Lapys)
                     // Paste --- CHECKPOINT (Lapys)
                     // Print --- CHECKPOINT (Lapys)
+                    // Pseudo Integer --- CHECKPOINT (Lapys)
+                    // Pseudo Number --- CHECKPOINT (Lapys)
                     // Random --- CHECKPOINT (Lapys)
                     // Random Set --- CHECKPOINT (Lapys)
+                    // Ranged Number --- CHECKPOINT (Lapys)
                     // Regular Expression --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
                     // Repeat --- CHECKPOINT (Lapys)
+                    // Safe Array --- CHECKPOINT (Lapys)
+                    // Safe Integer --- CHECKPOINT (Lapys)
+                    // Safe Number --- CHECKPOINT (Lapys)
                     // String --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
                     // Strict[ly Watch] Input --- CHECKPOINT (Lapys)
                     // Symbol --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Not the constructor.
