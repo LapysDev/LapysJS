@@ -59,7 +59,7 @@
 (function Main() {
     /* Constants > ... --- REDACT (Lapys) */
     var AUTHOR = "Lapys",
-        DESCRIPTION = "LapysJS is a general-purpose, minimalist, semantic JavaScript library.",
+        DESCRIPTION = "LapysJS is a general-purpose, minimalist, semantic JavaScript library",
         URL = "https://www.github.com/LapysDev/LapysJS",
         VERSION = "0.0.8";
 
@@ -3831,6 +3831,9 @@
                 // Is Element-Like
                 LapysDevelopmentKit.Functions.isElementLike = function isElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.element) };
 
+                // Is DOM Implementation-Like
+                LapysDevelopmentKit.Functions.isDOMImplementationLike = function isDOMImplementationLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.domImplementation) };
+
                 // Is Function
                 LapysDevelopmentKit.Functions.isFunction = function isFunction(argument, EVALUATE_PRIMITIVE_TYPE_ONLY) {
                     // Logic
@@ -3873,6 +3876,15 @@
 
                 // Is HTML Frame Set Element-Like
                 LapysDevelopmentKit.Functions.isHTMLFrameSetElementLike = function isHTMLFrameSetElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlFrameSetElementLike) };
+
+                // Is Location-Like
+                LapysDevelopmentKit.Functions.isLocationLike = function isLocationLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.location) };
+
+                // Is Node-Like
+                LapysDevelopmentKit.Functions.isNodeLike = function isNodeLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.node) };
+
+                // Is Node List-Like
+                LapysDevelopmentKit.Functions.isNodeListLike = function isNodeListLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.nodeList) };
 
                 // Is Non-Constructible
                 LapysDevelopmentKit.Functions.isNonConstructible = function isNonConstructible(argument) { return LDKF.isNull(argument) || LDKF.isVoid(argument) };
@@ -5335,7 +5347,7 @@
                                 (LDKF.stringPrototypeIsRGBColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsRGBAColor(string, STRICT = stringLength))
                         };
 
-                        // Is Date --- UPDATE REQUIRED (Lapys)
+                        // Is Date --- NOTE (Lapys) -> Confession: empty strings must also seen as dates. --- UPDATE REQUIRED (Lapys)
                         LapysDevelopmentKit.Functions.stringPrototypeIsDate = function stringPrototypeIsDate(string) { return true };
 
                         // Is Digit
@@ -6841,10 +6853,10 @@
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "execCommandShowHelp", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileCreatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate, LDKF.stringPrototypeIsEmpty) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileModifiedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate, LDKF.stringPrototypeIsEmpty) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileCreatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileModifiedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "fileSize", STRICT = true), LDKF.isNumber, LDKF.stringPrototypeIsPositiveNumericInteger) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileUpdatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate, LDKF.stringPrototypeIsEmpty) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileUpdatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fireEvent", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
                         LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "firstChild")) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
@@ -6854,8 +6866,31 @@
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "hasFocus", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "images", STRICT = true))
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "images", STRICT = true)) &&
+                        LDKT.isDOMImplementationLike(LDKF.objectPrototypeGetProperty(argument, "implementation", STRICT = true)) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "lastChild")) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "lastModified", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
+                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "linkColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "links")) &&
+                        LDKT.isLocationLike(LDKF.objectPrototypeGetProperty(argument, "location")) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "media")) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "mimeType")) &&
+                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "msCapsLockWarningOff")) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "nameProp")) &&
+                        (function(propertyValue) {
+                            return LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(propertyValue, "add", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                                LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(propertyValue, "item", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                                LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(propertyValue, "length", STRICT = true), LDKF.isNumber, LDKF.numberPrototypeIsPositiveInteger)
+                        })(LDKF.objectPrototypeGetProperty(argument, "namespaces", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nextSibling", STRICT = true), LDKF.isNull, LDKT.isNodeLike)
                     )
+                };
+
+                // Is DOM Implementation-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isDOMImplementationLike = function isDOMImplementationLike(argument) {
+                    // Return
+                    return true
                 };
 
                 // Is Element-Like --- CHECKPOINT (Lapys)
@@ -6884,6 +6919,18 @@
 
                 // Is HTML Frame Set Element-Like --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Test.isHTMLFrameSetElementLike = function isHTMLFrameSetElementLike(argument) {
+                    // Return
+                    return true
+                };
+
+                // Is Location-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isLocationLike = function isLocationLike(argument) {
+                    // Return
+                    return true
+                };
+
+                // Is Node-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isNodeLike = function isNodeLike(argument) {
                     // Return
                     return true
                 };
