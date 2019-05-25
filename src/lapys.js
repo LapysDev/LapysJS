@@ -1,4 +1,4 @@
-/** Function > Main
+/** Main
     @author: Lapys Dev Team
     @description: LapysJS is a general-purpose, minimalist, semantic JavaScript library.
     @version: 0.0.8
@@ -42,6 +42,7 @@
             - Due to the ECMAScript standard supporting negative zero, all positive integer zeros must be prefixed with the addition operator: `+`.
             - Defer to conditional operators (e.g.: `&&`, `||`, e.t.c.) for single-expression condition-based code instead of control structures (e.g.: `if (...) { ... }`, `switch (...) { ... }` e.t.c.)
             - Inline functions are only allowed to prevent creating variables that are semantically out of context.
+            - Global objects must be explicitly declared; Which is an IIFE design is used (to define private & public features of the library).
             - Object property names can not be labeled `constructor`.
             - Use the XOR operator (i.e.: `^`) instead of the inverse comparison operator (i.e.: `!=`) for integer values.
 
@@ -3916,7 +3917,7 @@
                 // Is Type Error
                 LapysDevelopmentKit.Functions.isTypeError = function isTypeError(argument) { return LDKF.objectPrototypeConstructor(argument) === LDKO.typeError };
 
-                // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern development environments.
+                // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern host environments.
                 LapysDevelopmentKit.Functions.isVoid = function isVoid(argument) { return typeof argument == "undefined" };
 
                 /* Iterate Object
