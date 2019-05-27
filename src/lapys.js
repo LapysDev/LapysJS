@@ -951,47 +951,8 @@
                             return array
                         };
 
-                        // Cut Through --- NOTE (Lapys) -> Similar to the `Array.prototype.slice` method.
-                        LapysDevelopmentKit.Functions.arrayPrototypeCutThrough = function arrayPrototypeCutThrough(array, index, length, ARRAY_LENGTH) {
-                            // Initialization > Array Length
-                            var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
-
-                            // Logic
-                            if (arrayLength) {
-                                // Logic
-                                if (index == length)
-                                    // Update > Array
-                                    LDKF.arrayPrototypeCutAt(array, index);
-
-                                else if (index < length && index < arrayLength) {
-                                    // Update > Length
-                                    (length > arrayLength) && (length = arrayLength);
-
-                                    // Logic
-                                    if (!index && length == arrayLength)
-                                        // Update > Array
-                                        LDKF.arrayPrototypeFree(array);
-
-                                    else {
-                                        // Initialization > (Array Iterator, Cut Length)
-                                        var arrayIterator = index, cutLength = length - index;
-
-                                        // (Loop > )Update > Array (Iterator)
-                                        while (arrayIterator ^ arrayLength) { array[arrayIterator] = array[arrayIterator + cutLength + 1]; arrayIterator += 1 }
-                                        LDKF.arrayPrototypeResize(array, arrayLength == cutLength + index ? index : arrayLength - cutLength - 1)
-                                    }
-                                }
-
-                                else {
-                                    // Update > Array
-                                    (index > arrayLength) || LDKF.arrayPrototypeCutThrough(array, index, arrayLength);
-                                    (length > arrayLength) || LDKF.arrayPrototypeCutThrough(array, +0, length)
-                                }
-                            }
-
-                            // Return
-                            return array
-                        };
+                        // Cut Through --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Similar to the `Array.prototype.slice` method.
+                        LapysDevelopmentKit.Functions.arrayPrototypeCutThrough = function arrayPrototypeCutThrough(array, index, length, ARRAY_LENGTH) {};
 
                         // Depth
                         LapysDevelopmentKit.Functions.arrayPrototypeDepth = function arrayPrototypeDepth(array, ARRAY_LENGTH) {
@@ -1542,56 +1503,8 @@
                             return array
                         };
 
-                        // Insert Through
-                        LapysDevelopmentKit.Functions.arrayPrototypeInsertThrough = function arrayPrototypeInsertThrough(array, patternElement, index, length) {
-                            // Initialization > (Array Length, Arguments (Length, Iterator), Insert (Index, Length), (Pattern) (Iterator, Length))
-                            var arrayLength = LDKF.arrayPrototypeLength(array),
-                                argumentsLength = LDKF.getArgumentsLength(arguments), argumentsIterator = argumentsLength - 2,
-                                insertIndex = arguments[argumentsLength - 2], insertLength = arguments[argumentsLength - 1],
-                                pattern = [], patternIterator = +0, patternLength = +0;
-
-                            // Loop > Update > Pattern (Length)
-                            while (argumentsIterator -= 1) { pattern[argumentsIterator - 1] = arguments[argumentsIterator]; patternLength += 1 }
-
-                            // Logic
-                            if (arrayLength) {
-                                // Logic
-                                if (insertIndex == insertLength)
-                                    // Update > Array
-                                    LDKF.arrayPrototypeInsertAt(array, pattern[+0], insertIndex);
-
-                                else if (insertIndex < insertLength) {
-                                    // Logic
-                                    if (insertIndex < arrayLength) {
-                                        // Initialization > (Array Iterator, Insertion Length)
-                                        var arrayIterator = arrayLength, insertionLength = insertLength - insertIndex;
-
-                                        // Loop > Update > Array (Iterator)
-                                        while (arrayIterator ^ insertIndex) { arrayIterator -= 1; array[arrayIterator + insertionLength + 1] = array[arrayIterator] }
-                                    }
-                                }
-
-                                else {
-                                    // Initialization > Arguments
-                                    var args = LDKF.arrayPrototypeConcatenate([array], pattern);
-
-                                    // Update > Array
-                                    LDKF.arrayPrototypeInsertThrough.apply(LDKF, LDKF.arrayPrototypeConcatenate([], args, [+0, insertLength]));
-                                    (insertIndex > arrayLength - 1) ? array[insertIndex] = pattern[+0] : LDKF.arrayPrototypeInsertThrough.apply(LDKF, LDKF.arrayPrototypeConcatenate([], args, [insertIndex, arrayLength - 1]))
-                                }
-                            }
-
-                            // Loop
-                            while (insertIndex < insertLength + 1) {
-                                // Update > (Array, Insert Index, Pattern Iterator)
-                                array[insertIndex] = pattern[patternIterator];
-                                insertIndex += 1;
-                                ((patternIterator += 1) == patternLength) && (patternIterator = +0)
-                            }
-
-                            // Return
-                            return array
-                        };
+                        // Insert Through --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.arrayPrototypeInsertThrough = function arrayPrototypeInsertThrough(array, patternElement, index, length) {};
 
                         // Instance
                         LapysDevelopmentKit.Functions.arrayPrototypeInstance = function arrayPrototypeInstance(array, ARRAY_LENGTH) {
@@ -2532,7 +2445,7 @@
                                 var element = array[arrayIterator -= 1];
 
                                 // Update > Array
-                                array[arrayIterator] = array[arrayLength - arrayIterator - 1]
+                                array[arrayIterator] = array[arrayLength - arrayIterator - 1];
                                 array[arrayLength - arrayIterator - 1] = element
                             }
 
@@ -4677,48 +4590,8 @@
                                 return string
                         };
 
-                        // Cut Through
-                        LapysDevelopmentKit.Functions.stringPrototypeCutThrough = function stringPrototypeCutThrough(string, index, length, STRING_LENGTH) {
-                            // Initialization > (Cut, String Length)
-                            var cut = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
-
-                            // Logic
-                            if (stringLength) {
-                                // Logic
-                                if (index == length)
-                                    // Update > String
-                                    string = LDKF.stringPrototypeCutAt(string, index);
-
-                                else if (index < length && index < stringLength) {
-                                    // Update > Length
-                                    (length > stringLength) && (length = stringLength);
-
-                                    // Logic
-                                    if (length ^ stringLength) {
-                                        // Initialization > String Iterator
-                                        var stringIterator = +0;
-
-                                        // Loop > Update > Cut
-                                        while (stringIterator ^ index) cut += LDKF.stringPrototypeCharacterAt(string, (stringIterator += 1) - 1);
-
-                                        // Update > String Iterator
-                                        stringIterator = index + length;
-
-                                        // Loop > Update > Cut
-                                        while (stringIterator ^ stringLength) cut += LDKF.stringPrototypeCharacterAt(string, (stringIterator += 1) - 1)
-                                    }
-                                }
-
-                                else {
-                                    // Update > String
-                                    (index > stringLength) || (string = LDKF.stringPrototypeCutThrough(string, index, stringLength));
-                                    (length > stringLength) || (string = LDKF.stringPrototypeCutThrough(string, +0, length))
-                                }
-                            }
-
-                            // Return
-                            return cut
-                        };
+                        // Cut Through --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeCutThrough = function stringPrototypeCutThrough(string, index, length, STRING_LENGTH) {};
 
                         // Ends With --- MINIFY (Lapys)
                         LapysDevelopmentKit.Functions.stringPrototypeEndsWith = function stringPrototypeEndsWith(string, substring, STRING_LENGTH, SUBSTRING_LENGTH) { if (substring) { var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string); return LDKF.stringPrototypeSlice(string, stringLength - (SUBSTRING_LENGTH || LDKF.stringPrototypeLength(substring)), stringLength, STRICT = stringLength) == substring } else return true };
