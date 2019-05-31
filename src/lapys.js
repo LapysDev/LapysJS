@@ -951,8 +951,39 @@
                             return array
                         };
 
-                        // Cut Through --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Similar to the `Array.prototype.slice` method.
-                        LapysDevelopmentKit.Functions.arrayPrototypeCutThrough = function arrayPrototypeCutThrough(array, index, length, ARRAY_LENGTH) {};
+                        // Cut Through --- NOTE (Lapys) -> Similar to the `Array.prototype.slice` method.
+                        LapysDevelopmentKit.Functions.arrayPrototypeCutThrough = function arrayPrototypeCutThrough(array, indexA, indexB, ARRAY_LENGTH) {
+                            // Initialization > Array Length
+                            var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+
+                            // Logic
+                            if (indexA == indexB)
+                                // Update > Array
+                                LDKF.arrayPrototypeCutAt(array, indexA, STRICT = arrayLength);
+
+                            else if (indexA < indexB) {
+                                // Logic
+                                if (indexA < arrayLength) {
+                                    // Update > Index B
+                                    (indexB > arrayLength - 1) && (indexB = arrayLength - 1);
+
+                                    // Initialization > (Index Difference, Array Iterator)
+                                    var indexDifference = (indexB - indexA) + 1,
+                                        arrayIterator = indexDifference;
+
+                                    // (Loop > )Update > ...
+                                    while (arrayIterator) { arrayIterator -= 1; array[indexA + (indexDifference - arrayIterator - 1)] = array[indexA + indexDifference + (indexDifference - arrayIterator - 1)] }
+                                    LDKF.arrayPrototypeResize(array, arrayLength - indexDifference)
+                                }
+                            }
+
+                            else
+                                // Update > Array
+                                ((indexA - indexB) ^ 1) && LDKF.arrayPrototypeCutThrough(array, indexB + 1, indexA - 1, STRICT = arrayLength);
+
+                            // Return
+                            return array
+                        };
 
                         // Depth
                         LapysDevelopmentKit.Functions.arrayPrototypeDepth = function arrayPrototypeDepth(array, ARRAY_LENGTH) {
@@ -1483,28 +1514,88 @@
                         };
 
                         // Insert At
-                        LapysDevelopmentKit.Functions.arrayPrototypeInsertAt = function arrayPrototypeInsertAt(array, element, index, ARRAY_LENGTH) {
+                        LapysDevelopmentKit.Functions.arrayPrototypeInsertAt = function arrayPrototypeInsertAt(array, index, element) {
                             // Initialization > Array Length
-                            var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+                            var length = LDKF.getArgumentsLength(arguments);
 
                             // Logic
-                            if (arrayLength && index < arrayLength) {
-                                // Initialization > Array Iterator
-                                var arrayIterator = arrayLength;
+                            if (length && (length ^ 1) && (length ^ 2)) {
+                                // Initialization > (Array (Length), Iterator)
+                                var arrayLength = LDKF.arrayPrototypeLength(array),
+                                    length = LDKF.getArgumentsLength(arguments) - 2,
+                                    iterator = length;
 
-                                // Loop > Update > Array (Iterator)
-                                while (arrayIterator ^ index) { arrayIterator -= 1; array[arrayIterator + 1] = array[arrayIterator] }
+                                // Logic
+                                if (index == arrayLength || index > arrayLength)
+                                    // Loop > Update > (Iterator, Array)
+                                    while (iterator) { iterator -= 1; array[index + iterator] = arguments[2 + iterator] }
+
+                                else {
+                                    // Initialization > Array Iterator
+                                    var arrayIterator = arrayLength;
+
+                                    // (Loop > )Update > ...
+                                    while (iterator) { iterator -= 1; array[arrayLength + iterator] = array[arrayLength - (length - iterator)] }
+                                    while (arrayIterator ^ index) { array[arrayIterator] = array[arrayIterator - length]; arrayIterator -= 1 }
+                                    iterator = length; while (iterator) { iterator -= 1; array[index + iterator] = arguments[2 + iterator] }
+                                }
                             }
-
-                            // Update > Array
-                            array[index] = element;
 
                             // Return
                             return array
                         };
 
-                        // Insert Through --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.arrayPrototypeInsertThrough = function arrayPrototypeInsertThrough(array, patternElement, index, length) {};
+                        // Insert Through --- WARN (Lapys) -> Index B must be greater than Index A.
+                        LapysDevelopmentKit.Functions.arrayPrototypeInsertThrough = function arrayPrototypeInsertThrough(array, indexA, indexB, element) {
+                            // Initialization > (Array) Length
+                            var arrayLength = LDKF.arrayPrototypeLength(array),
+                                length = LDKF.getArgumentsLength(arguments);
+
+                            // Logic
+                            if (indexA ^ indexB)
+                                // Logic
+                                if (indexB - indexA == length - 3) {
+                                    // Initialization > (Arguments, Iterator)
+                                    var args = [], iterator = length;
+
+                                    // Loop > Update > Arguments
+                                    while ((iterator -= 1) ^ 2) args[iterator - 3] = arguments[iterator];
+
+                                    // Update > Array
+                                    LDKF.arrayPrototypeInsertAt.apply(LDKF, LDKF.arrayPrototypeConcatenate([array, indexA], args))
+                                }
+
+                                else {
+                                    // Initialization > Index
+                                    var index = 3;
+
+                                    // Logic
+                                    if (indexA < indexB)
+                                        // Logic
+                                        if (indexA < arrayLength) {
+                                            // Initialization > (Index Difference, Iterator)
+                                            var indexDifference = indexB - indexA, iterator = arrayLength;
+
+                                            // Loop > Update > Array
+                                            while (iterator ^ indexA) array[(iterator + indexDifference) - 1] = array[iterator -= 1];
+
+                                            // (Loop > )Update > ...
+                                            iterator = indexA;
+                                            while (iterator ^ indexB) { array[iterator] = arguments[index]; index += 1; (index == length) && (index = 3); iterator += 1 }
+                                        }
+
+                                        else {
+                                            // Initialization > Iterator
+                                            var iterator = indexA;
+
+                                            // Loop > Update > ...
+                                            while (iterator ^ indexB) { array[iterator] = arguments[index]; index += 1; (index == length) && (index = 3); iterator += 1 }
+                                        }
+                                }
+
+                            // Return
+                            return array
+                        };
 
                         // Instance
                         LapysDevelopmentKit.Functions.arrayPrototypeInstance = function arrayPrototypeInstance(array, ARRAY_LENGTH) {
@@ -2453,7 +2544,59 @@
                             return array
                         };
 
-                        // Shift Left
+                        // Rotate Left --- NOTE (Lapys) -> Could have named it `LapysDevelopmentKit.Functions.arrayPrototypeRotateCounterClockwise` but that would be too long.
+                        LapysDevelopmentKit.Functions.arrayPrototypeRotateLeft = function arrayPrototypeRotateLeft(array, length, ARRAY_LENGTH) {
+                            // Logic
+                            if (length) {
+                                // Initialization > Array Length
+                                var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+
+                                // Loop > Update > Length
+                                while (length > arrayLength) length -= arrayLength;
+
+                                // Logic
+                                if (arrayLength ^ length) {
+                                    // Initialization > Array (Iterator, Slice)
+                                    var arrayIterator = length, arraySlice = [];
+
+                                    // (Loop > )Update > ...
+                                    arrayIterator = length; while (arrayIterator) { arrayIterator -= 1; arraySlice[arrayIterator] = array[arrayIterator] }
+                                    arrayIterator = arrayLength; while (arrayIterator ^ length) { arrayIterator -= 1; array[arrayLength - arrayIterator - 1] = array[arrayLength - arrayIterator + (length - 1)]  }
+                                    arrayIterator = length; while (arrayIterator) { arrayIterator -= 1; array[(arrayLength - length) + arrayIterator] = arraySlice[arrayIterator]; }
+                                }
+                            }
+
+                            // Return
+                            return array
+                        };
+
+                        // Rotate Right
+                        LapysDevelopmentKit.Functions.arrayPrototypeRotateRight = function arrayPrototypeRotateRight(array, length, ARRAY_LENGTH) {
+                            // Logic
+                            if (length) {
+                                // Initialization > Array Length
+                                var arrayLength = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+
+                                // Loop > Update > Length
+                                while (length > arrayLength) length -= arrayLength;
+
+                                // Logic
+                                if (arrayLength ^ length) {
+                                    // Initialization > Array (Iterator, Slice)
+                                    var arrayIterator = arrayLength, arraySlice = [];
+
+                                    // (Loop > )Update > ...
+                                    while (arrayIterator) { arrayIterator -= 1; arraySlice[length - arrayIterator - 1] = array[arrayLength - arrayIterator - 1] }
+                                    arrayIterator = arrayLength + 1; while (arrayIterator ^ length) { arrayIterator -= 1; array[arrayIterator - 1] = array[arrayIterator - length - 1] }
+                                    arrayIterator = length; while (arrayIterator) { arrayIterator -= 1; array[arrayIterator] = arraySlice[arrayIterator] }
+                                }
+                            }
+
+                            // Return
+                            return array
+                        };
+
+                        // Shift Left --- NOTE (Lapys) -> Move the elements of an array backward to replace its first elements.
                         LapysDevelopmentKit.Functions.arrayPrototypeShiftLeft = function arrayPrototypeShiftLeft(array, length, PERSIST_UNUSED_ELEMENTS) {
                             // Logic
                             if (length) {
@@ -2483,7 +2626,7 @@
                             return array
                         };
 
-                        // Shift Right
+                        // Shift Right --- NOTE (Lapys) -> Shift the elements of an array forward in index.
                         LapysDevelopmentKit.Functions.arrayPrototypeShiftRight = function arrayPrototypeShiftRight(array, length, PERSIST_UNUSED_ELEMENTS) {
                             // Logic
                             if (length) {
@@ -2530,7 +2673,7 @@
                         };
 
                         // Slice
-                        LapysDevelopmentKit.Functions.arrayPrototypeSlice = function arrayPrototypeSlice(array, index, length) {
+                        LapysDevelopmentKit.Functions.arrayPrototypeSlice = function arrayPrototypeSlice(array, indexA, indexB) {
                             // Initialization > Array Length
                             var arrayLength = LDKF.arrayPrototypeLength(array);
 
@@ -2540,31 +2683,37 @@
                                 var arrayIterator = +0;
 
                                 // Logic
-                                if (index > arrayLength - 1 && length > arrayLength - 1)
+                                if (indexA > arrayLength - 1 && indexB > arrayLength - 1)
                                     // Update > Array
                                     LDKF.arrayPrototypeFree(array);
 
                                 else {
-                                    // Update > Length
-                                    (length > arrayLength - 1) && (length = arrayLength - 1);
+                                    // Update > Index A
+                                    (indexB > arrayLength - 1) && (indexB = arrayLength - 1);
 
                                     // Logic
-                                    if (index < length + 1 && index < arrayLength + 1) {
+                                    if (indexA < indexB + 1 && indexA < arrayLength + 1) {
                                         // Update > Array Length
-                                        arrayLength = length - index + 1;
+                                        arrayLength = indexB - indexA + 1;
 
                                         // Loop > Update > Array (Iterator)
-                                        while (arrayIterator ^ arrayLength) { array[arrayIterator] = array[arrayIterator + index]; arrayIterator += 1 }
+                                        while (arrayIterator ^ arrayLength) { array[arrayIterator] = array[arrayIterator + indexA]; arrayIterator += 1 }
 
                                         // Update > Array
                                         LDKF.arrayPrototypeResize(array, arrayLength)
                                     }
 
-                                    else if (index > length) {
-                                        // (Loop > )Update > ...
-                                        (index > arrayLength - 1) && (index = arrayLength - 1);
-                                        arrayLength = (arrayLength - index) + length + 1;
-                                        while (length ^ index + 2) { length += 1; array[length] = array[arrayIterator + index]; arrayIterator += 1 }
+                                    else if (indexA > indexB) {
+                                        // Logic
+                                        if (indexA > arrayLength)
+                                            // Update > Array Length
+                                            arrayLength = indexB + 1;
+
+                                        else {
+                                            // (Loop > )Update > ...
+                                            arrayLength = (arrayLength - indexA) + indexB + 1;
+                                            while (indexB ^ indexA + 2) { indexB += 1; array[indexB] = array[arrayIterator + indexA]; arrayIterator += 1 }
+                                        }
 
                                         // Update > Array
                                         LDKF.arrayPrototypeResize(array, arrayLength)
@@ -3748,7 +3897,7 @@
                 // Is DOM Implementation-Like
                 LapysDevelopmentKit.Functions.isDOMImplementationLike = function isDOMImplementationLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.domImplementation) };
 
-                // Is Function
+                // Is Function --- NOTE (Lapys) -> For its variant methods, defer to the `LapysDevelopmentKit.functionPrototypeIs...` counterparts instead.
                 LapysDevelopmentKit.Functions.isFunction = function isFunction(argument, EVALUATE_PRIMITIVE_TYPE_ONLY) {
                     // Logic
                     if (typeof argument == "function")
@@ -3778,6 +3927,35 @@
                         // Return
                         return false
                 };
+                    // Is Asynchronous Function
+                    LapysDevelopmentKit.Functions.isAsynchronousFunction = function isAsynchronousFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && (LDKF.functionPrototypeIsAsynchronousDefault(routine, STRICT = source) || LDKF.functionPrototypeIsAsynchronousGenerator(routine, STRICT = source)) };
+
+                    // Is Asynchronous Default Function
+                    LapysDevelopmentKit.Functions.isAsynchronousDefaultFunction = function isAsynchronousDefaultFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsAsynchronousDefault(routine, STRICT = source) };
+
+                    // Is Asynchronous Generator Function
+                    LapysDevelopmentKit.Functions.isAsynchronousGeneratorFunction = function isAsynchronousGeneratorFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsAsynchronousGenerator(routine, STRICT = source) };
+
+                    // Is Arrow Function
+                    LapysDevelopmentKit.Functions.isArrowFunction = function isArrowFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsArrow(routine, STRICT = source) };
+
+                    // Is Class Function
+                    LapysDevelopmentKit.Functions.isClassFunction = function isClassFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsClass(routine, STRICT = source) };
+
+                    // Is Default Function
+                    LapysDevelopmentKit.Functions.isDefaultFunction = function isDefaultFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsDefault(routine, STRICT = source) };
+
+                    // Is Extended Class Function
+                    LapysDevelopmentKit.Functions.isExtendedClassFunction = function isExtendedClassFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsExtendedClass(routine, STRICT = source) };
+
+                    // Is Generator Function
+                    LapysDevelopmentKit.Functions.isGeneratorFunction = function isGeneratorFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsGenerator(routine, STRICT = source) };
+
+                    // Is Native Function
+                    LapysDevelopmentKit.Functions.isNativeFunction = function isNativeFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsNative(routine, STRICT = source) };
+
+                    // Is User-Defined Function
+                    LapysDevelopmentKit.Functions.isUserDefinedFunction = function isUserDefinedFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsUserDefined(routine, STRICT = source) };
 
                 // Is HTML All Collection-Like
                 LapysDevelopmentKit.Functions.isHTMLAllCollectionLike = function isHTMLAllCollectionLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlAllCollection) };
@@ -3823,6 +4001,11 @@
 
                 // Is String
                 LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
+                    // Is Character Encoding String --- NOTE (Lapys) -> Reminder, these variations are only for specific-use cases.
+                    LapysDevelopmentKit.Functions.isCharacterEncodingString = function isCharacterEncodingString(argument, STRING_LENGTH) { return LDKF.isString(argument) && LDKF.stringPrototypeIsCharacterEncoding(argument, STRICT = STRING_LENGTH) };
+
+                    // Is Color Code String
+                    LapysDevelopmentKit.Functions.isColorCodeString = function isColorCodeString(argument, STRING_LENGTH) { return LDKF.isString(argument) && LDKF.stringPrototypeIsColorCode(argument, STRICT = STRING_LENGTH) };
 
                 // Is Symbol
                 LapysDevelopmentKit.Functions.isSymbol = function isSymbol(argument) { return typeof argument == "symbol" };
@@ -4590,8 +4773,28 @@
                                 return string
                         };
 
-                        // Cut Through --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.stringPrototypeCutThrough = function stringPrototypeCutThrough(string, index, length, STRING_LENGTH) {};
+                        // Cut Through
+                        LapysDevelopmentKit.Functions.stringPrototypeCutThrough = function stringPrototypeCutThrough(string, indexA, indexB, STRING_LENGTH) {
+                            // Initialization > (Cut, String Length)
+                            var cut = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength) {
+                                // Initialization > String Iterator
+                                var stringIterator = +0;
+
+                                // (Loop > )Update > ...
+                                (indexA > stringLength) && (indexA = stringLength);
+                                while (stringIterator ^ indexA) cut += LDKF.stringPrototypeCharacterAt(string, (stringIterator += 1) - 1);
+
+                                // (Logic > )Update > ...
+                                stringIterator = indexB;
+                                if (stringIterator < stringLength) while (stringIterator ^ (stringLength - 1)) cut += LDKF.stringPrototypeCharacterAt(string, stringIterator += 1);
+                            }
+
+                            // Return
+                            return cut
+                        };
 
                         // Ends With --- MINIFY (Lapys)
                         LapysDevelopmentKit.Functions.stringPrototypeEndsWith = function stringPrototypeEndsWith(string, substring, STRING_LENGTH, SUBSTRING_LENGTH) { if (substring) { var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string); return LDKF.stringPrototypeSlice(string, stringLength - (SUBSTRING_LENGTH || LDKF.stringPrototypeLength(substring)), stringLength, STRICT = stringLength) == substring } else return true };
@@ -6155,23 +6358,23 @@
                         };
 
                         // Slice
-                        LapysDevelopmentKit.Functions.stringPrototypeSlice = function stringPrototypeSlice(string, index, length, STRING_LENGTH) {
+                        LapysDevelopmentKit.Functions.stringPrototypeSlice = function stringPrototypeSlice(string, indexA, indexB, STRING_LENGTH) {
                             // Initialization > (Slice, String Length)
                             var slice = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
 
                             // Logic
                             if (stringLength)
                                 // Logic
-                                if (index < length + 1 && index < stringLength + 1) {
+                                if (indexA < indexB + 1 && indexA < stringLength + 1) {
                                     // (Loop > )Update > ...
-                                    (length > stringLength - 1) && (length = stringLength - 1);
-                                    while (index ^ length + 1) { slice += string[index]; index += 1 }
+                                    (indexB > stringLength - 1) && (indexB = stringLength - 1);
+                                    while (indexA ^ indexB + 1) { slice += string[indexA]; indexA += 1 }
                                 }
 
-                                else if (index > length) {
+                                else if (indexA > indexB) {
                                     // Update > Slice
-                                    slice += LDKF.stringPrototypeSlice(string, +0, length > stringLength - 1 ? stringLength : length);
-                                    (index < stringLength) && (slice += LDKF.stringPrototypeSlice(string, index, stringLength))
+                                    slice += LDKF.stringPrototypeSlice(string, +0, indexB > stringLength - 1 ? stringLength : indexB);
+                                    (indexA < stringLength) && (slice += LDKF.stringPrototypeSlice(string, indexA, stringLength))
                                 }
 
                             // Return
@@ -6684,80 +6887,75 @@
                     // Return
                     return LDKF.isDocumentLike(argument) || (
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "activeElement", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "addEventListener", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "adoptNode", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "alinkColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "alinkColor", STRICT = true)) &&
                         LDKT.isHTMLAllCollectionLike(LDKF.objectPrototypeGetProperty(argument, "all", STRICT = true)) &&
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "anchors", STRICT = true)) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "applets", STRICT = true)) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "attachEvent", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "attachEvent", STRICT = true)) &&
                         LDKF.objectPrototypeHasProperty(argument, "attributes", STRICT = true) &&
-                        LDKF.objectPrototypeGetProperty(argument, "ATTRIBUTE_NODE", STRICT = true) === 2 &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true)) &&
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "body", STRICT = true), LDKT.isHTMLBodyElementLike, LDKT.isHTMLFrameSetElementElementLike, LDKF.isNull) &&
-                        LDKF.objectPrototypeGetProperty(argument, "ATTRIBUTE_NODE", STRICT = true) === 4 &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "characterSet", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "charset", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
+                        LDKF.isCharacterEncodingString(LDKF.objectPrototypeGetProperty(argument, "charset", STRICT = true)) &&
                         LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "childNodes", STRICT = true)) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "close", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeGetProperty(argument, "COMMENT_NODE", STRICT = true) === 8 &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "compareDocumentPosition", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "close", STRICT = true)) &&
                         LDKF.objectPrototypeHasProperty(argument, "compatible", STRICT = true) &&
                         (function(propertyValue) { return propertyValue === "BackCompat" || propertyValue === "CSS1Compat" })(LDKF.objectPrototypeGetProperty(argument, "compatMode")) &&
                         LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "cookie")) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createAttribute", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createComment", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createDocumentFragment", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createElement", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createEventObject", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createStyleSheet", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "createTextNode", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "defaultCharset", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsCharacterEncoding) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createComment", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createDocumentFragment", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createElement", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createEventObject", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createStyleSheet", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createTextNode", STRICT = true)) &&
+                        LDKF.isCharacterEncodingString(LDKF.objectPrototypeGetProperty(argument, "defaultCharset", STRICT = true)) &&
                         (function(propertyValue) { return propertyValue === "Inherit" || propertyValue === "off" || propertyValue === "on" })(LDKF.objectPrototypeGetProperty(argument, "designMode")) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "detachEvent", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        (function(propertyValue) { return propertyValue === "ltr" || propertyValue === "rtl" })(LDKF.objectPrototypeGetProperty(argument, "dir")) &&
-                        LDKF.isObjectLike(LDKF.objectPrototypeGetProperty(argument, "doctype")) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "detachEvent", STRICT = true)) &&
+                        (function(propertyValue) { return !propertyValue || propertyValue === "ltr" || propertyValue === "rtl" })(LDKF.objectPrototypeGetProperty(argument, "dir")) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "doctype"), LDKF.isNull, LDKF.isObjectLike) &&
                         LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "documentElement")) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "documentMode"), LDKF.isNumber, LDKF.numberPrototypeIsPositiveInteger) &&
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "domain"), LDKF.isNull, LDKF.isString) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "elementFromPoint", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "elementFromPoint", STRICT = true)) &&
                         LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "embeds", STRICT = true)) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "execCommandShowHelp", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "execCommandShowHelp", STRICT = true)) &&
+                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true)) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileCreatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileModifiedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "fileSize", STRICT = true), LDKF.isNumber, LDKF.stringPrototypeIsPositiveNumericInteger) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileUpdatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fireEvent", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "fireEvent", STRICT = true)) &&
                         LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "firstChild")) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true)) &&
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "forms")) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "getElementById", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "getElementsByName", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "hasFocus", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementById", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByName", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasFocus", STRICT = true)) &&
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "images", STRICT = true)) &&
                         LDKT.isDOMImplementationLike(LDKF.objectPrototypeGetProperty(argument, "implementation", STRICT = true)) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
                         LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "lastChild")) &&
                         LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "lastModified", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "linkColor", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsColorCode) &&
+                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "linkColor", STRICT = true)) &&
                         LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "links")) &&
                         LDKT.isLocationLike(LDKF.objectPrototypeGetProperty(argument, "location")) &&
                         LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "media")) &&
                         LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "mimeType")) &&
-                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "msCapsLockWarningOff")) &&
                         LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "nameProp")) &&
                         (function(propertyValue) {
-                            return LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(propertyValue, "add", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
-                                LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(propertyValue, "item", STRICT = true), LDKF.isFunction, LDKF.functionPrototypeIsNative) &&
+                            return LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(propertyValue, "add", STRICT = true)) &&
+                                LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(propertyValue, "item", STRICT = true)) &&
                                 LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(propertyValue, "length", STRICT = true), LDKF.isNumber, LDKF.numberPrototypeIsPositiveInteger)
                         })(LDKF.objectPrototypeGetProperty(argument, "namespaces", STRICT = true)) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nextSibling", STRICT = true), LDKF.isNull, LDKT.isNodeLike)
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nextSibling", STRICT = true), LDKF.isNull, LDKT.isNodeLike) &&
+                        LDKF.objectPrototypeGetProperty(argument, "nodeName", STRICT = true) == "#document" &&
+                        LDKF.objectPrototypeGetProperty(argument, "nodeType", STRICT = true) === 9 &&
+                        LDKF.isNull(LDKF.objectPrototypeGetProperty(argument, "nodeValue", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onactivate", STRICT = true), LDKF.isNull, LDKF.isFunction)
                     )
                 };
 
