@@ -48,6 +48,7 @@
 
     --- WARN ---
         #Lapys:
+            - The 'Ignore Missing Features` setting must be set to `true` to enable the library to work in legacy browsers like Internet Explorer.
             - The `LapysDevelopmentKit.Functions.stringPrototypeIsColor` method and `LapysDevelopmentKit.Objects.stringPrototypeCharacterCodeAt` polyfill are heavy in byte-size.
 
     --- UPDATE REQUIRED ---
@@ -502,6 +503,7 @@
 
                                 // Loop > Update > Child Object Is Native
                                 while (childObjectIsNative && iterator) childObjectIsNative = consideration.conditions[iterator -= 1].call(consideration, considered.childObject);
+
 
                                 // Logic
                                 if (childObjectIsNative) {
@@ -3999,13 +4001,19 @@
                 // Is Primitive
                 LapysDevelopmentKit.Functions.isPrimitive = function isPrimitive(argument) { return !LDKF.isObjectLike(argument) };
 
-                // Is String
+                // Is String --- NOTE (Lapys) -> Reminder, these variations are only for specific-use cases and also regard empty strings as valid.
                 LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
-                    // Is Character Encoding String --- NOTE (Lapys) -> Reminder, these variations are only for specific-use cases.
-                    LapysDevelopmentKit.Functions.isCharacterEncodingString = function isCharacterEncodingString(argument, STRING_LENGTH) { return LDKF.isString(argument) && LDKF.stringPrototypeIsCharacterEncoding(argument, STRICT = STRING_LENGTH) };
+                    // Is Character Encoding String
+                    LapysDevelopmentKit.Functions.isCharacterEncodingString = function isCharacterEncodingString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsCharacterEncoding(argument, STRICT = STRING_LENGTH)) };
 
                     // Is Color Code String
-                    LapysDevelopmentKit.Functions.isColorCodeString = function isColorCodeString(argument, STRING_LENGTH) { return LDKF.isString(argument) && LDKF.stringPrototypeIsColorCode(argument, STRICT = STRING_LENGTH) };
+                    LapysDevelopmentKit.Functions.isColorCodeString = function isColorCodeString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsColorCode(argument, STRICT = STRING_LENGTH)) };
+
+                    // Is Date String
+                    LapysDevelopmentKit.Functions.isDateString = function isDateString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsDate(argument, STRICT = STRING_LENGTH)) };
+
+                    // Is URL String
+                    LapysDevelopmentKit.Functions.isURLString = function isURLString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsURL(argument, STRICT = STRING_LENGTH)) };
 
                 // Is Symbol
                 LapysDevelopmentKit.Functions.isSymbol = function isSymbol(argument) { return typeof argument == "symbol" };
@@ -5424,7 +5432,7 @@
                                 (LDKF.stringPrototypeIsRGBColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsRGBAColor(string, STRICT = stringLength))
                         };
 
-                        // Is Date --- NOTE (Lapys) -> Confession: empty strings must also seen as dates. --- UPDATE REQUIRED (Lapys)
+                        // Is Date --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.stringPrototypeIsDate = function stringPrototypeIsDate(string) { return true };
 
                         // Is Digit
@@ -6132,6 +6140,9 @@
 
                         // Is Upper Character
                         LapysDevelopmentKit.Functions.stringPrototypeIsUpperCharacter = function stringPrototypeIsUpperCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.uppercaseAlphabets, string, STRICT = 26) };
+
+                        // Is URL --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeIsURL = function stringPrototypeIsURL(string) { return true };
 
                         // Is Variable Character
                         LapysDevelopmentKit.Functions.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.variableCharacters, string, STRICT = 64) };
@@ -6922,10 +6933,10 @@
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "execCommandShowHelp", STRICT = true)) &&
                         LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true)) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileCreatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileModifiedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
+                        LDKF.isDateString(LDKF.objectPrototypeGetProperty(argument, "fileCreatedDate", STRICT = true)) &&
+                        LDKF.isDateString(LDKF.objectPrototypeGetProperty(argument, "fileModifiedDate", STRICT = true)) &&
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "fileSize", STRICT = true), LDKF.isNumber, LDKF.stringPrototypeIsPositiveNumericInteger) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "fileUpdatedDate", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
+                        LDKF.isDateString(LDKF.objectPrototypeGetProperty(argument, "fileUpdatedDate", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "fireEvent", STRICT = true)) &&
                         LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "firstChild")) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true)) &&
@@ -6939,7 +6950,7 @@
                         LDKT.isDOMImplementationLike(LDKF.objectPrototypeGetProperty(argument, "implementation", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
                         LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "lastChild")) &&
-                        LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "lastModified", STRICT = true), LDKF.isString, LDKF.stringPrototypeIsDate) &&
+                        LDKF.isDateString(LDKF.objectPrototypeGetProperty(argument, "lastModified", STRICT = true)) &&
                         LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "linkColor", STRICT = true)) &&
                         LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "links")) &&
                         LDKT.isLocationLike(LDKF.objectPrototypeGetProperty(argument, "location")) &&
@@ -6952,10 +6963,72 @@
                                 LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(propertyValue, "length", STRICT = true), LDKF.isNumber, LDKF.numberPrototypeIsPositiveInteger)
                         })(LDKF.objectPrototypeGetProperty(argument, "namespaces", STRICT = true)) &&
                         LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nextSibling", STRICT = true), LDKF.isNull, LDKT.isNodeLike) &&
-                        LDKF.objectPrototypeGetProperty(argument, "nodeName", STRICT = true) == "#document" &&
+                        LDKF.objectPrototypeGetProperty(argument, "nodeName", STRICT = true) === "#document" &&
                         LDKF.objectPrototypeGetProperty(argument, "nodeType", STRICT = true) === 9 &&
                         LDKF.isNull(LDKF.objectPrototypeGetProperty(argument, "nodeValue", STRICT = true)) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onactivate", STRICT = true), LDKF.isNull, LDKF.isFunction)
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onactivate", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onafterupdate", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforeactivate", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforedeactivate", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforeeditfocus", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforeupdate", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondragstart", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncellchange", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onclick", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncontextmenu", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncontrolselect", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondataavailable", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondatasetchanged", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondatasetcomplete", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondblclick", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondeactivate", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onerrorupdate", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onfocusin", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onfocusout", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onhelp", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeydown", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeypress", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeyup", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousedown", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousemove", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseout", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseover", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseup", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousewheel", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onpropertychange", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onreadystatechange", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onrowenter", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onrowexit", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onrowsdelete", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onrowsinserted", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectionchange", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectstart", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onstop", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onstoragecommit", STRICT = true), LDKF.isNull, LDKF.isUserDefinedFunction) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "open", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ownerDocument", STRICT = true), LDKF.isNull, LDKF.isDocumentLike) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "parentNode", STRICT = true), LDKF.isNull, LDKT.isNodeLike) &&
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "plugins", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "previousSibling", STRICT = true), LDKF.isNull, LDKT.isNodeLike) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandEnabled", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandIndeterm", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandState", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandSupported", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandText", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandValue", STRICT = true)) &&
+                        (function(propertyValue) { return propertyValue === "complete" || propertyValue === "interactive" || propertyValue === "loading" })(LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "readyState", STRICT = true))) &&
+                        LDKF.isURLString(LDKF.objectPrototypeGetProperty(argument, "referrer", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeChild", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeNode", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "replaceChild", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "replaceNode", STRICT = true)) &&
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "scripts", STRICT = true)) &&
+                        LDKF.objectPrototypeHasProperty(argument, "styleSheets", STRICT = true) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "title", STRICT = true)) &&
+                        LDKF.isURLString(LDKF.objectPrototypeGetProperty(argument, "URL", STRICT = true)) &&
+                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "vlinkColor", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "write", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "writeln", STRICT = true))
                     )
                 };
 
