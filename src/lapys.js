@@ -130,6 +130,7 @@
                 LapysDevelopmentKit.Constants.String.binary = ['0', '1'];
                 LapysDevelopmentKit.Constants.String.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
                 LapysDevelopmentKit.Constants.String.hexadecimal = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'];
+                LapysDevelopmentKit.Constants.String.languageCodes = ["aa", "aar", "ab", "abk", "ace", "ach", "ada", "ady", "ae", "af", "afa", "afh", "afr", "ain", "ak", "aka", "akk", "alb", "ale", "alt", "am", "amh", "an", "ang", "anp", "apa", "ar", "ara", "arc", "arg", "arm", "arn", "arp", "art", "arw", "as", "asm", "ast", "ath", "aus", "av", "ava", "ave", "awa", "ay", "aym", "az", "aze", "ba", "bad", "bai", "bak", "bal", "bam", "ban", "baq", "bas", "bat", "be", "bej", "bel", "bem", "ben", "ber", "bg", "bh", "bho", "bi", "bih", "bik", "bis", "bla", "bm", "bn", "bnt", "bo", "bod", "bos", "br", "bra", "bre", "bs", "btk", "bua", "bug", "bul", "bur", "byn", "ca", "cad", "cai", "car", "cat", "cau", "ce", "ceb", "cel", "ces", "ch", "cha", "chb", "che", "chg", "chi", "chk", "chm", "chn", "cho", "chp", "chr", "chu", "chv", "chy", "cmc", "cnr", "co", "cop", "cor", "cos", "cpe", "cpf", "cpp", "cr", "cre", "crh", "crp", "cs", "csb", "cu", "cus", "cv", "cy", "cym", "cze", "da", "dak", "dan", "dar", "day", "de", "del", "den", "deu", "dgr", "din", "div", "doi", "dra", "dsb", "dua", "dum", "dut", "dv", "dyu", "dz", "dzo", "ee", "efi", "egy", "eka", "el", "ell", "elx", "en", "eng", "enm", "eo", "epo", "es", "est", "et", "eu", "eus", "ewe", "ewo", "fa", "fan", "fao", "fas", "fat", "ff", "fi", "fij", "fil", "fin", "fiu", "fj", "fo", "fon", "fr", "fra", "fre", "frm", "fro", "frr", "frs", "fry", "ful", "fur", "fy", "ga", "gaa", "gay", "gba", "gd", "gem", "geo", "ger", "gez", "gil", "gl", "gla", "gle", "glg", "glv", "gmh", "gn", "goh", "gon", "gor", "got", "grb", "grc", "gre", "grn", "gsw", "gu", "guj", "gv", "gwi", "ha", "hai", "hat", "hau", "haw", "he", "heb", "her", "hi", "hil", "him", "hin", "hit", "hmn", "hmo", "ho", "hr", "hrv", "hsb", "ht", "hu", "hun", "hup", "hy", "hye", "hz", "ia", "iba", "ibo", "ice", "id", "ido", "ie", "ii", "iii", "ijo", "ik", "iku", "ile", "ilo", "ina", "inc", "ind", "ine", "inh", "io", "ipk", "ira", "iro", "is", "isl", "it", "ita", "iu", "ja", "jav", "jbo", "jpn", "jpr", "jrb", "jv", "ka", "kaa", "kab", "kac", "kal", "kam", "kan", "kar", "kas", "kat", "kau", "kaw", "kaz", "kbd", "kg", "kha", "khi", "khm", "kho", "ki", "kik", "kin", "kir", "kj", "kk", "kl", "km", "kmb", "kn", "ko", "kok", "kom", "kon", "kor", "kos", "kpe", "kr", "krc", "krl", "kro", "kru", "ks", "ku", "kua", "kum", "kur", "kut", "kv", "kw", "ky", "la", "lad", "lah", "lam", "lao", "lat", "lav", "lb", "lezlim", "lg", "li", "lin", "lit", "ln", "lo", "lol", "loz", "lt", "ltz", "lu", "lua", "lub", "lug", "lui", "lun", "luo", "lus", "lv", "mac", "mad", "mag", "mah", "mai", "mak", "mal", "man", "mao", "map", "mar", "mas", "may", "mdf", "mdr", "men", "mg", "mga", "mh", "mi", "mic", "min", "mis", "mk", "mkd", "mkh", "ml", "mlg", "mlt", "mn", "mnc", "mnl", "mno", "moh", "mon", "mos", "mr", "mri", "ms", "msa", "mt", "mul", "mun", "mus", "mwl", "mwr", "my", "mya", "myn", "myv", "na", "nah", "nai", "nap", "nau", "nav", "nb", "nbl", "nd", "nde", "ndo", "nds", "ne", "nep", "new", "ng", "nia", "nic", "niu", "nl", "nld", "nn", "nno", "no", "nob", "nog", "non", "nor", "nqo", "nr", "nso", "nub", "nv", "nwc", "ny", "nya", "nym", "nyn", "nyo", "nzi", "oc", "oci", "oj", "oji", "om", "or", "ori", "orm", "os", "osa", "oss", "ota", "oto", "pa", "paa", "pag", "pal", "pam", "pan", "pap", "pau", "peo", "per", "phi", "phn", "pi", "pl", "pli", "pol", "pon", "por", "pra", "pro", "ps", "pt", "pus", "qaa", "qtz", "qu", "que", "raj", "rap", "rar", "rm", "rn", "ro", "roa", "roh", "rom", "ron", "ru", "rum", "run", "rup", "rus", "rw", "sa", "sad", "sag", "sah", "sai", "sal", "sam", "san", "sas", "sat", "sc", "scn", "sco", "sd", "sel", "sem", "sg", "sga", "sgn", "shn", "si", "sid", "sin", "sio", "sit", "sk", "sl", "sla", "slk", "slo", "slv", "sm", "sma", "sme", "smi", "smj", "smn", "smo", "sms", "sn", "sna", "snd", "snk", "so", "sog", "som", "son", "sot", "spa", "sq", "sqi", "sr", "srd", "srp", "srr", "ss", "ssa", "ssw", "st", "su", "suk", "sun", "sus", "sux", "sv", "sw", "swa", "swe", "sws", "syc", "syr", "ta", "tah", "tai", "tam", "tat", "te", "tel", "tem", "ter", "tet", "tg", "tgk", "tgl", "th", "tha", "ti", "tib", "tig", "tir", "tiv", "tk", "tkl", "tl", "tlh", "tli", "tmh", "tn", "to", "tog", "ton", "tpi", "tr", "ts", "tsi", "tsn", "tso", "tt", "tuk", "tum", "tup", "tur", "tut", "tvl", "tw", "twi", "ty", "tyv", "udm", "ug", "uga", "uig", "uk", "ukr", "umb", "und", "ur", "urd", "uz", "uzb", "vai", "venve", "vi", "vie", "vo", "vol", "vot", "wa", "wak", "wal", "war", "was", "wel", "wen", "wln", "wo", "wol", "xal", "xh", "xho", "yao", "yap", "yi", "yid", "yo", "yor", "ypk", "za", "zap", "zbl", "zen", "zgh", "zh", "zha", "zho", "znd", "zu", "zul", "zun", "zxx", "zza"];
                 LapysDevelopmentKit.Constants.String.lowercaseAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
                 LapysDevelopmentKit.Constants.String.octal = ['0', '1', '2', '3', '4', '5', '6', '7'];
                 LapysDevelopmentKit.Constants.String.uppercaseAlphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -3951,6 +3952,9 @@
                 // Is Location-Like
                 LapysDevelopmentKit.Functions.isLocationLike = function isLocationLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.location) };
 
+                // Is Named Node Map-Like
+                LapysDevelopmentKit.Functions.isNamedNodeMapLike = function isNamedNodeMapLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.namedNodeMap) };
+
                 // Is Node-Like
                 LapysDevelopmentKit.Functions.isNodeLike = function isNodeLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.node) };
 
@@ -3993,6 +3997,9 @@
 
                     // Is Date String
                     LapysDevelopmentKit.Functions.isDateString = function isDateString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsDate(argument, STRICT = STRING_LENGTH)) };
+
+                    // Is Language Code String
+                    LapysDevelopmentKit.Functions.isLanguageCodeString = function isLanguageCodeString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsLanguageCode(argument, STRICT = STRING_LENGTH)) };
 
                     // Is URL String
                     LapysDevelopmentKit.Functions.isURLString = function isURLString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsURL(argument, STRICT = STRING_LENGTH)) };
@@ -5613,6 +5620,9 @@
                         // Is HSLA Color
                         LapysDevelopmentKit.Functions.stringPrototypeIsHSLAColor = function stringPrototypeIsHSLAColor(string, STRING_LENGTH) { return LDKF.stringPrototypeIsHSLColor(string, STRICT = STRING_LENGTH, STRICT = true) };
 
+                        // Is Language Code
+                        LapysDevelopmentKit.Functions.stringPrototypeIsLanguageCode = function stringPrototypeIsLanguageCode(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.languageCodes, string, STRICT = 741) };
+
                         // Is Lower
                         LapysDevelopmentKit.Functions.stringPrototypeIsLower = function stringPrototypeIsLower(string, STRING_LENGTH) {
                             // Initialization > String Iterator
@@ -6908,7 +6918,7 @@
                         LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "embeds", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true)) &&
                         LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true)) &&
-                        LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "firstChild")) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "firstChild"), LDKF.isNull, LDKT.isNodeLike) &&
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "forms")) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementById", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByName", STRICT = true)) &&
@@ -6918,7 +6928,7 @@
                         LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "images", STRICT = true)) &&
                         LDKT.isDOMImplementationLike(LDKF.objectPrototypeGetProperty(argument, "implementation", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
-                        LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "lastChild")) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "lastChild"), LDKF.isNull, LDKT.isNodeLike) &&
                         LDKF.isDateString(LDKF.objectPrototypeGetProperty(argument, "lastModified", STRICT = true)) &&
                         LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "linkColor", STRICT = true)) &&
                         LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "links")) &&
@@ -7024,7 +7034,44 @@
                 LapysDevelopmentKit.Test.isHTMLBodyElementLike = function isHTMLBodyElementLike(argument) {
                     // Return
                     return LDKF.isHTMLBodyElementLike(argument) || (
-                        LDKF.isASCIICharacterString(LDKF.objectPrototypeGetProperty(argument, "accessKey", STRICT = true))
+                        LDKF.isASCIICharacterString(LDKF.objectPrototypeGetProperty(argument, "accessKey", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "aLink", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
+                        LDKT.isNamedNodeMapLike(LDKF.objectPrototypeGetProperty(argument, "attributes", STRICT = true)) &&
+                        LDKF.objectPrototypeHasProperty(argument, "background", STRICT = true) &&
+                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "blur", STRICT = true)) &&
+                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "childNodes", STRICT = true)) &&
+                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "children", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "className", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "click", STRICT = true)) &&
+                        LDKF.isPositiveIntegerNumber(LDKF.objectPrototypeGetProperty(argument, "clientHeight", STRICT = true)) &&
+                        LDKF.isPositiveIntegerNumber(LDKF.objectPrototypeGetProperty(argument, "clientLeft", STRICT = true)) &&
+                        LDKF.isPositiveIntegerNumber(LDKF.objectPrototypeGetProperty(argument, "clientTop", STRICT = true)) &&
+                        LDKF.isPositiveIntegerNumber(LDKF.objectPrototypeGetProperty(argument, "clientWidth", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "contains", STRICT = true)) &&
+                        (function(propertyValue) { return propertyValue === "false" || propertyValue === "inherit" || propertyValue === "true" })(LDKF.objectPrototypeGetProperty(argument, "contentEditable", STRICT = true)) &&
+                        (function(propertyValue) { return propertyValue === "auto" || propertyValue === "ltr" || propertyValue === "rtl" })(LDKF.objectPrototypeGetProperty(argument, "dir", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "firstChild"), LDKF.isNull, LDKT.isNodeLike) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getAttributeNode", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getBoundingClientRect", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getClientRects", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "id", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "innerHTML", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "innerText", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "insertAdjacentElement", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "insertAdjacentHTML", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "insertAdjacentText", STRICT = true)) &&
+                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
+                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "isContentEditable", STRICT = true)) &&
+                        LDKF.isLanguageCodeString(LDKF.objectPrototypeGetProperty(argument, "lang", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "lastChild"), LDKF.isNull, LDKT.isNodeLike)
                     )
                 };
 
@@ -7042,6 +7089,12 @@
 
                 // Is Location-Like --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Test.isLocationLike = function isLocationLike(argument) {
+                    // Return
+                    return true
+                };
+
+                // Is Named Node Map-Like --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Test.isNamedNodeMapLike = function isNamedNodeMapLike(argument) {
                     // Return
                     return true
                 };
