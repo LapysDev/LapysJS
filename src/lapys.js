@@ -126,6 +126,7 @@
 
                 // String > ...
                 LapysDevelopmentKit.Constants.String.alphabets = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
+                LapysDevelopmentKit.Constants.String.asciiCharacters = [' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', 'Ç', 'ü', 'é', 'â', 'ä', 'à', 'å', 'ç', 'ê', 'ë', 'è', 'ï', 'î', 'ì', 'Ä', 'Å', 'É', 'æ', 'Æ', 'ô', 'ö', 'ò', 'û', 'ù', 'ÿ', 'Ö', 'Ü', 'ø', '£', 'Ø', '×', 'ƒ', 'á', 'í', 'ó', 'ú', 'ñ', 'Ñ', 'ª', 'º', '¿', '®', '¬', '½', '¼', '¡', '«', '»', '░', '▒', '▓', '│', '┤', 'Á', 'Â', 'À', '©', '╣', '║', '╗', '╝', '¢', '¥', '┐', '└', '┴', '┬', '├', '─', '┼', 'ã', 'Ã', '╚', '╔', '╩', '╦', '╠', '═', '╬', '¤', 'ð', 'Ð', 'Ê', 'Ë', 'È', 'ı', 'Í', 'Î', 'Ï', '┘', '┌', '█', '▄', '¦', 'Ì', '▀', 'Ó', 'ß', 'Ô', 'Ò', 'õ', 'Õ', 'µ', 'þ', 'Þ', 'Ú', 'Û', 'Ù', 'ý', 'Ý', '¯', '´', '≡', '±', '‗', '¾', '¶', '§', '÷', '¸', '°', '¨', '·', '¹', '³', '²', '■', 'ñ', 'Ñ', '@', '¿', '?', '¡', '!', ':', '/', '\\', 'á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ä', 'ë', 'ï', 'ö', 'ü', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', '½', '¼', '¾', '¹', '³', '²', 'ƒ', '±', '×', '÷', '$', '£', '¥', '¢', '¤', '®', '©', 'ª', 'º', '°', '"', '\'', '(', ')', '[', ']', '{', '}', '«', '»', '\0', '\1', '\2', '\3', '\4', '\5', '\6', '\7', '\x08', '\x09', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x20', '\x21', '\x22', '\x23', '\x24', '\x25', '\x26', '\x27', '\x28', '\x29', '\x30', '\x31', '\u0127'];
                 LapysDevelopmentKit.Constants.String.binary = ['0', '1'];
                 LapysDevelopmentKit.Constants.String.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
                 LapysDevelopmentKit.Constants.String.hexadecimal = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'];
@@ -3899,7 +3900,7 @@
                 // Is DOM Implementation-Like
                 LapysDevelopmentKit.Functions.isDOMImplementationLike = function isDOMImplementationLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.domImplementation) };
 
-                // Is Function --- NOTE (Lapys) -> For its variant methods, defer to the `LapysDevelopmentKit.functionPrototypeIs...` counterparts instead.
+                // Is Function --- WARN (Lapys) -> All variations of this method must not be deferred to.
                 LapysDevelopmentKit.Functions.isFunction = function isFunction(argument, EVALUATE_PRIMITIVE_TYPE_ONLY) {
                     // Logic
                     if (typeof argument == "function")
@@ -3929,30 +3930,6 @@
                         // Return
                         return false
                 };
-                    // Is Asynchronous Function
-                    LapysDevelopmentKit.Functions.isAsynchronousFunction = function isAsynchronousFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && (LDKF.functionPrototypeIsAsynchronousDefault(routine, STRICT = source) || LDKF.functionPrototypeIsAsynchronousGenerator(routine, STRICT = source)) };
-
-                    // Is Asynchronous Default Function
-                    LapysDevelopmentKit.Functions.isAsynchronousDefaultFunction = function isAsynchronousDefaultFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsAsynchronousDefault(routine, STRICT = source) };
-
-                    // Is Asynchronous Generator Function
-                    LapysDevelopmentKit.Functions.isAsynchronousGeneratorFunction = function isAsynchronousGeneratorFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsAsynchronousGenerator(routine, STRICT = source) };
-
-                    // Is Arrow Function
-                    LapysDevelopmentKit.Functions.isArrowFunction = function isArrowFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsArrow(routine, STRICT = source) };
-
-                    // Is Class Function
-                    LapysDevelopmentKit.Functions.isClassFunction = function isClassFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsClass(routine, STRICT = source) };
-
-                    // Is Default Function
-                    LapysDevelopmentKit.Functions.isDefaultFunction = function isDefaultFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsDefault(routine, STRICT = source) };
-
-                    // Is Extended Class Function
-                    LapysDevelopmentKit.Functions.isExtendedClassFunction = function isExtendedClassFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsExtendedClass(routine, STRICT = source) };
-
-                    // Is Generator Function
-                    LapysDevelopmentKit.Functions.isGeneratorFunction = function isGeneratorFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsGenerator(routine, STRICT = source) };
-
                     // Is Native Function
                     LapysDevelopmentKit.Functions.isNativeFunction = function isNativeFunction(routine, SOURCE_STRING, EVALUATE_PRIMITIVE_TYPE_ONLY) { var source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine); return LDKF.isFunction(routine, STRICT = EVALUATE_PRIMITIVE_TYPE_ONLY) && LDKF.functionPrototypeIsNative(routine, STRICT = source) };
 
@@ -3989,8 +3966,10 @@
                 // Is Null
                 LapysDevelopmentKit.Functions.isNull = function isNull(argument) { return null === argument };
 
-                // Is Number
+                // Is Number --- WARN (Lapys) -> All variations of this method must not be deferred to.
                 LapysDevelopmentKit.Functions.isNumber = function isNumber(argument) { return typeof argument == "number" };
+                    // Is Positive Integer Number
+                    LapysDevelopmentKit.Functions.isPositiveIntegerNumber = function isPositiveIntegerNumber(argument) { return LDKF.isNumber(argument) && LDKF.numberPrototypeIsPositiveInteger(argument) };
 
                 // Is Number-Like
                 LapysDevelopmentKit.Functions.isNumberLike = function isNumberLike(argument) { return LDKF.isBoolean(argument) || LDKF.isNumber(argument) };
@@ -4001,8 +3980,11 @@
                 // Is Primitive
                 LapysDevelopmentKit.Functions.isPrimitive = function isPrimitive(argument) { return !LDKF.isObjectLike(argument) };
 
-                // Is String --- NOTE (Lapys) -> Reminder, these variations are only for specific-use cases and also regard empty strings as valid.
+                // Is String --- WARN (Lapys) -> All variations of this method must not be deferred to.
                 LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
+                    // Is ASCII Character String
+                    LapysDevelopmentKit.Functions.isASCIICharacterString = function isASCIICharacterString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsASCIICharacter(argument, STRICT = STRING_LENGTH)) };
+
                     // Is Character Encoding String
                     LapysDevelopmentKit.Functions.isCharacterEncodingString = function isCharacterEncodingString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsCharacterEncoding(argument, STRICT = STRING_LENGTH)) };
 
@@ -5215,45 +5197,11 @@
                             return instance
                         };
 
-                        // Is DOM Element Tag Name
-                        LapysDevelopmentKit.Functions.stringPrototypeIsDOMElementTagName = function stringPrototypeIsDOMElementTagName(string, STRING_LENGTH, USE_NATIVE_FEATURES) {
-                            // Logic
-                            if (USE_NATIVE_FEATURES) {
-                                // Initialization > Is DOM Element Tag Name
-                                var isDOMElementTagName = false;
-
-                                // Error Handling > ...
-                                try { LDKF.documentPrototypeCreateElement(LDKC.Objects.document, string); isDOMElementTagName = true }
-                                catch (error) {}
-
-                                // Return
-                                return isDOMElementTagName
-                            }
-
-                            else {
-                                // Initialization > String (Length, Iterator)
-                                var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
-                                    stringIterator = stringLength;
-
-                                // Loop
-                                while (stringIterator) {
-                                    // Initialization > Character
-                                    var character = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1);
-
-                                    // Logic > Return
-                                    if (!(
-                                        character == '_' || LDKF.stringPrototypeIsAlphabet(character) ||
-                                        (stringIterator && (character == '-' || LDKF.stringPrototypeIsDigit(character)))
-                                    )) return false
-                                }
-
-                                // Return
-                                return !!stringLength
-                            }
-                        };
-
                         // Is Alphabet
                         LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.alphabets, string, STRICT = 52) };
+
+                        // Is ASCII Character
+                        LapysDevelopmentKit.Functions.stringPrototypeIsASCIICharacter = function stringPrototypeIsASCIICharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.asciiCharacters, string, STRICT = 315) };
 
                         // Is Character Encoding --- MINIFY (Lapys) -> Hexadecimal is asserted as valid encoding.`
                         LapysDevelopmentKit.Functions.stringPrototypeIsCharacterEncoding = function stringPrototypeIsCharacterEncoding(string, STRING_LENGTH) { string = LDKF.stringPrototypeLower(LDKF.stringPrototypeRemoveAll(string, ' ', STRICT = STRING_LENGTH, STRICT = 1)); return string == "ascii" || string == "cp1047" || string == "cp37" || string == "cp437" || string == "cp720" || string == "cp737" || string == "cp850" || string == "cp852" || string == "cp855" || string == "cp857" || string == "cp858" || string == "cp860" || string == "cp861" || string == "cp862" || string == "cp863" || string == "cp865" || string == "cp866" || string == "cp869" || string == "cp872" || string == "cp930" || string == "euc-jis-2004" || string == "euc-jp" || string == "euc-kr" || string == "gbk" || string == "gb18030" || string == "gb2312" || string == "hexadecimal" || string == "hkscs" || string == "iso8859-1" || string == "iso8859-10" || string == "iso8859-11" || string == "iso8859-13" || string == "iso8859-14" || string == "iso8859-15" || string == "iso8859-16" || string == "iso8859-2" || string == "iso8859-3" || string == "iso8859-5" || string == "iso8859-6" || string == "iso8859-7" || string == "iso8859-8" || string == "iso8859-9" || string == "iso-2022-jp" || string == "iso-2022-jp-2004" || string == "iso-2022-kr" || string == "ksx1001" || string == "macroman" || string == "shift_jis-2004" || string == "shiftjis" || string == "utf-16" || string == "utf-32" || string == "utf-8" || string == "windows-1250" || string == "windows-1251" || string == "windows-1252" || string == "windows-1253" || string == "windows-1254" || string == "windows-1255" || string == "windows-1256" || string == "windows-1257" || string == "windows-1258" };
@@ -5437,6 +5385,43 @@
 
                         // Is Digit
                         LapysDevelopmentKit.Functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.digits, string, STRICT = 10) };
+
+                        // Is DOM Element Tag Name
+                        LapysDevelopmentKit.Functions.stringPrototypeIsDOMElementTagName = function stringPrototypeIsDOMElementTagName(string, STRING_LENGTH, USE_NATIVE_FEATURES) {
+                            // Logic
+                            if (USE_NATIVE_FEATURES) {
+                                // Initialization > Is DOM Element Tag Name
+                                var isDOMElementTagName = false;
+
+                                // Error Handling > ...
+                                try { LDKF.documentPrototypeCreateElement(LDKC.Objects.document, string); isDOMElementTagName = true }
+                                catch (error) {}
+
+                                // Return
+                                return isDOMElementTagName
+                            }
+
+                            else {
+                                // Initialization > String (Length, Iterator)
+                                var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                    stringIterator = stringLength;
+
+                                // Loop
+                                while (stringIterator) {
+                                    // Initialization > Character
+                                    var character = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1);
+
+                                    // Logic > Return
+                                    if (!(
+                                        character == '_' || LDKF.stringPrototypeIsAlphabet(character) ||
+                                        (stringIterator && (character == '-' || LDKF.stringPrototypeIsDigit(character)))
+                                    )) return false
+                                }
+
+                                // Return
+                                return !!stringLength
+                            }
+                        };
 
                         // Is Empty
                         LapysDevelopmentKit.Functions.stringPrototypeIsEmpty = function stringPrototypeIsEmpty(string) { return !string };
@@ -6982,28 +6967,65 @@
                     )
                 };
 
-                // Is DOM Implementation-Like --- CHECKPOINT (Lapys)
+                // Is DOM Implementation-Like
                 LapysDevelopmentKit.Test.isDOMImplementationLike = function isDOMImplementationLike(argument) {
                     // Return
-                    return true
+                    return LDKF.isDOMImplementationLike(argument) || (
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasFeature", STRICT = true))
+                    )
                 };
 
-                // Is Element-Like --- CHECKPOINT (Lapys)
+                // Is Element-Like
                 LapysDevelopmentKit.Test.isElementLike = function isElementLike(argument) {
                     // Return
-                    return true
+                    return LDKF.isElementLike(argument) || (
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "blur", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "click", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "contains", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getAttributeNode", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getBoundingClientRect", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getClientRects", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasAttributes", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertAdjacentElement", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertAdjacentHTML", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertAdjacentText", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "normalize", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "querySelector", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "querySelectorAll", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeAttributeNode", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeChild", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "replaceChild", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "scrollIntoView", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setAttributeNode", STRICT = true))
+                    )
                 };
 
-                // Is HTML All Collection-Like --- CHECKPOINT (Lapys)
+                // Is HTML All Collection-Like
                 LapysDevelopmentKit.Test.isHTMLAllCollectionLike = function isHTMLAllCollectionLike(argument) {
                     // Return
-                    return true
+                    return LDKF.isHTMLAllCollectionLike(argument) || (
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "item", STRICT = true)) &&
+                        LDKF.isPositiveIntegerNumber(LDKF.objectPrototypeGetProperty(argument, "length", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "namedItem", STRICT = true))
+                    )
                 };
 
                 // Is HTML Body Element-Like --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Test.isHTMLBodyElementLike = function isHTMLBodyElementLike(argument) {
                     // Return
-                    return true
+                    return LDKF.isHTMLBodyElementLike(argument) || (
+                        LDKF.isASCIICharacterString(LDKF.objectPrototypeGetProperty(argument, "accessKey", STRICT = true))
+                    )
                 };
 
                 // Is HTML Collection-Like --- CHECKPOINT (Lapys)
@@ -8004,15 +8026,31 @@
                     .addCondition(function(object) { return !LDKC.Assertions.has_Console_Constructor || LDKF.objectPrototypeIsOfConstructor(LDKC.Objects.console, LDKO.console) })
                     .requestForNativeObject();
 
-                    // Group (End)
-                    LapysDevelopmentKit.Constants.Objects.consoleGroup = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "group", STRICT = null, STRICT = "`console.group` method").requestForNativeMethod();
-                    LapysDevelopmentKit.Constants.Objects.consoleGroupEnd = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "groupEnd", STRICT = null, STRICT = "`console.groupEnd` method").requestForNativeMethod();
+                    // ...
+                    (function() {
+                        // Initialization > Former Source
+                        var formerSource = null;
 
-                    // Log
-                    LapysDevelopmentKit.Constants.Objects.consoleLog = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "log", STRICT = null, STRICT = "`console.log` method").requestForNativeMethod();
+                        // [Group]
+                        LapysDevelopmentKit.Constants.Objects.consoleGroup = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "group", STRICT = null, STRICT = "`console.group` method")
+                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); formerSource = source; return LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source) })
+                            .requestForNativeMethod();
 
-                    // Warn
-                    LapysDevelopmentKit.Constants.Objects.consoleWarn = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "warn", STRICT = null, STRICT = "`console.warn` method").requestForNativeMethod();
+                        // [Group End]
+                        LapysDevelopmentKit.Constants.Objects.consoleGroupEnd = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "groupEnd", STRICT = null, STRICT = "`console.groupEnd` method")
+                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
+                            .requestForNativeMethod();
+
+                        // [Log]
+                        LapysDevelopmentKit.Constants.Objects.consoleLog = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "log", STRICT = null, STRICT = "`console.log` method")
+                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
+                            .requestForNativeMethod();
+
+                        // [Warn]
+                        LapysDevelopmentKit.Constants.Objects.consoleWarn = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "warn", STRICT = null, STRICT = "`console.warn` method")
+                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
+                            .requestForNativeMethod()
+                    })();
 
                 // Constraint Error
                 LapysDevelopmentKit.Objects.constraintError = LDKT.considerNativeConstructorOfObject(GLOBAL, "ConstraintError").requestForNativeConstructor();
