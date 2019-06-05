@@ -114,8 +114,9 @@
     /* Modification */
         /* Lapys Development Kit --- NOTE (Lapys) -> Building and integrating the LDK into JavaScript may be a major part of the LapysJS library. */
             /* Constants */
-                // Number > (Infinity, Not-A-Number)
+                // Number > ...
                 LapysDevelopmentKit.Constants.Number.Infinity = 1 / +0;
+                LapysDevelopmentKit.Constants.Number.IntegerSize = 32;
                 LapysDevelopmentKit.Constants.Number.NaN = +0 / +0;
 
                 /* Keywords > ... --- NOTE (Lapys) -> Store the keyword strings as arrays because older browsers defer to the `String.prototype.charAt` method (which is not yet available)
@@ -133,7 +134,7 @@
                 LapysDevelopmentKit.Constants.String.binary = ['0', '1'];
                 LapysDevelopmentKit.Constants.String.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
                 LapysDevelopmentKit.Constants.String.hexadecimal = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'];
-                LapysDevelopmentKit.Constants.String.languageCodes = ["aa", "aar", "ab", "abk", "ace", "ach", "ada", "ady", "ae", "af", "afa", "afh", "afr", "ain", "ak", "aka", "akk", "alb", "ale", "alt", "am", "amh", "an", "ang", "anp", "apa", "ar", "ara", "arc", "arg", "arm", "arn", "arp", "art", "arw", "as", "asm", "ast", "ath", "aus", "av", "ava", "ave", "awa", "ay", "aym", "az", "aze", "ba", "bad", "bai", "bak", "bal", "bam", "ban", "baq", "bas", "bat", "be", "bej", "bel", "bem", "ben", "ber", "bg", "bh", "bho", "bi", "bih", "bik", "bis", "bla", "bm", "bn", "bnt", "bo", "bod", "bos", "br", "bra", "bre", "bs", "btk", "bua", "bug", "bul", "bur", "byn", "ca", "cad", "cai", "car", "cat", "cau", "ce", "ceb", "cel", "ces", "ch", "cha", "chb", "che", "chg", "chi", "chk", "chm", "chn", "cho", "chp", "chr", "chu", "chv", "chy", "cmc", "cnr", "co", "cop", "cor", "cos", "cpe", "cpf", "cpp", "cr", "cre", "crh", "crp", "cs", "csb", "cu", "cus", "cv", "cy", "cym", "cze", "da", "dak", "dan", "dar", "day", "de", "del", "den", "deu", "dgr", "din", "div", "doi", "dra", "dsb", "dua", "dum", "dut", "dv", "dyu", "dz", "dzo", "ee", "efi", "egy", "eka", "el", "ell", "elx", "en", "eng", "enm", "eo", "epo", "es", "est", "et", "eu", "eus", "ewe", "ewo", "fa", "fan", "fao", "fas", "fat", "ff", "fi", "fij", "fil", "fin", "fiu", "fj", "fo", "fon", "fr", "fra", "fre", "frm", "fro", "frr", "frs", "fry", "ful", "fur", "fy", "ga", "gaa", "gay", "gba", "gd", "gem", "geo", "ger", "gez", "gil", "gl", "gla", "gle", "glg", "glv", "gmh", "gn", "goh", "gon", "gor", "got", "grb", "grc", "gre", "grn", "gsw", "gu", "guj", "gv", "gwi", "ha", "hai", "hat", "hau", "haw", "he", "heb", "her", "hi", "hil", "him", "hin", "hit", "hmn", "hmo", "ho", "hr", "hrv", "hsb", "ht", "hu", "hun", "hup", "hy", "hye", "hz", "ia", "iba", "ibo", "ice", "id", "ido", "ie", "ii", "iii", "ijo", "ik", "iku", "ile", "ilo", "ina", "inc", "ind", "ine", "inh", "io", "ipk", "ira", "iro", "is", "isl", "it", "ita", "iu", "ja", "jav", "jbo", "jpn", "jpr", "jrb", "jv", "ka", "kaa", "kab", "kac", "kal", "kam", "kan", "kar", "kas", "kat", "kau", "kaw", "kaz", "kbd", "kg", "kha", "khi", "khm", "kho", "ki", "kik", "kin", "kir", "kj", "kk", "kl", "km", "kmb", "kn", "ko", "kok", "kom", "kon", "kor", "kos", "kpe", "kr", "krc", "krl", "kro", "kru", "ks", "ku", "kua", "kum", "kur", "kut", "kv", "kw", "ky", "la", "lad", "lah", "lam", "lao", "lat", "lav", "lb", "lezlim", "lg", "li", "lin", "lit", "ln", "lo", "lol", "loz", "lt", "ltz", "lu", "lua", "lub", "lug", "lui", "lun", "luo", "lus", "lv", "mac", "mad", "mag", "mah", "mai", "mak", "mal", "man", "mao", "map", "mar", "mas", "may", "mdf", "mdr", "men", "mg", "mga", "mh", "mi", "mic", "min", "mis", "mk", "mkd", "mkh", "ml", "mlg", "mlt", "mn", "mnc", "mnl", "mno", "moh", "mon", "mos", "mr", "mri", "ms", "msa", "mt", "mul", "mun", "mus", "mwl", "mwr", "my", "mya", "myn", "myv", "na", "nah", "nai", "nap", "nau", "nav", "nb", "nbl", "nd", "nde", "ndo", "nds", "ne", "nep", "new", "ng", "nia", "nic", "niu", "nl", "nld", "nn", "nno", "no", "nob", "nog", "non", "nor", "nqo", "nr", "nso", "nub", "nv", "nwc", "ny", "nya", "nym", "nyn", "nyo", "nzi", "oc", "oci", "oj", "oji", "om", "or", "ori", "orm", "os", "osa", "oss", "ota", "oto", "pa", "paa", "pag", "pal", "pam", "pan", "pap", "pau", "peo", "per", "phi", "phn", "pi", "pl", "pli", "pol", "pon", "por", "pra", "pro", "ps", "pt", "pus", "qaa", "qtz", "qu", "que", "raj", "rap", "rar", "rm", "rn", "ro", "roa", "roh", "rom", "ron", "ru", "rum", "run", "rup", "rus", "rw", "sa", "sad", "sag", "sah", "sai", "sal", "sam", "san", "sas", "sat", "sc", "scn", "sco", "sd", "sel", "sem", "sg", "sga", "sgn", "shn", "si", "sid", "sin", "sio", "sit", "sk", "sl", "sla", "slk", "slo", "slv", "sm", "sma", "sme", "smi", "smj", "smn", "smo", "sms", "sn", "sna", "snd", "snk", "so", "sog", "som", "son", "sot", "spa", "sq", "sqi", "sr", "srd", "srp", "srr", "ss", "ssa", "ssw", "st", "su", "suk", "sun", "sus", "sux", "sv", "sw", "swa", "swe", "sws", "syc", "syr", "ta", "tah", "tai", "tam", "tat", "te", "tel", "tem", "ter", "tet", "tg", "tgk", "tgl", "th", "tha", "ti", "tib", "tig", "tir", "tiv", "tk", "tkl", "tl", "tlh", "tli", "tmh", "tn", "to", "tog", "ton", "tpi", "tr", "ts", "tsi", "tsn", "tso", "tt", "tuk", "tum", "tup", "tur", "tut", "tvl", "tw", "twi", "ty", "tyv", "udm", "ug", "uga", "uig", "uk", "ukr", "umb", "und", "ur", "urd", "uz", "uzb", "vai", "venve", "vi", "vie", "vo", "vol", "vot", "wa", "wak", "wal", "war", "was", "wel", "wen", "wln", "wo", "wol", "xal", "xh", "xho", "yao", "yap", "yi", "yid", "yo", "yor", "ypk", "za", "zap", "zbl", "zen", "zgh", "zh", "zha", "zho", "znd", "zu", "zul", "zun", "zxx", "zza"];
+                LapysDevelopmentKit.Constants.String.languageCodes = ["aa", "aar", "ab", "abk", "ace", "ach", "ada", "ady", "ae", "af", "afa", "afh", "afr", "ain", "ak", "aka", "akk", "alb", "ale", "alt", "am", "amh", "an", "ang", "anp", "apa", "ar", "ara", "arc", "arg", "arm", "arn", "arp", "art", "arw", "as", "asm", "ast", "ath", "aus", "av", "ava", "ave", "awa", "ay", "aym", "az", "aze", "ba", "bad", "bai", "bak", "bal", "bam", "ban", "baq", "bas", "bat", "be", "bej", "bel", "bem", "ben", "ber", "bg", "bh", "bho", "bi", "bih", "bik", "bis", "bla", "bm", "bn", "bnt", "bo", "bod", "bos", "br", "bra", "bre", "bs", "btk", "bua", "bug", "bul", "bur", "byn", "ca", "cad", "cai", "car", "cat", "cau", "ce", "ceb", "cel", "ces", "ch", "cha", "chb", "che", "chg", "chi", "chk", "chm", "chn", "cho", "chp", "chr", "chu", "chv", "chy", "cmc", "cnr", "co", "cop", "cor", "cos", "cpe", "cpf", "cpp", "cr", "cre", "crh", "crp", "cs", "csb", "cu", "cus", "cv", "cy", "cym", "cze", "da", "dak", "dan", "dar", "day", "de", "del", "den", "deu", "dgr", "din", "div", "doi", "dra", "dsb", "dua", "dum", "dut", "dv", "dyu", "dz", "dzo", "ee", "efi", "egy", "eka", "el", "ell", "elx", "en", "eng", "enm", "eo", "epo", "es", "est", "et", "eu", "eus", "ewe", "ewo", "fa", "fan", "fao", "fas", "fat", "ff", "fi", "fij", "fil", "fin", "fiu", "fj", "fo", "fon", "fr", "fra", "fre", "frm", "fro", "frr", "frs", "fry", "ful", "fur", "fy", "ga", "gaa", "gay", "gba", "gd", "gem", "geo", "ger", "gez", "gil", "gl", "gla", "gle", "glg", "glv", "gmh", "gn", "goh", "gon", "gor", "got", "grb", "grc", "gre", "grn", "gsw", "gu", "guj", "gv", "gwi", "ha", "hai", "hat", "hau", "haw", "he", "heb", "her", "hi", "hil", "him", "hin", "hit", "hmn", "hmo", "ho", "hr", "hrv", "hsb", "ht", "hu", "hun", "hup", "hy", "hye", "hz", "ia", "iba", "ibo", "ice", "id", "ido", "ie", "ig", "ii", "iii", "ijo", "ik", "iku", "ile", "ilo", "ina", "inc", "ind", "ine", "inh", "io", "ipk", "ira", "iro", "is", "isl", "it", "ita", "iu", "ja", "jav", "jbo", "jpn", "jpr", "jrb", "jv", "ka", "kaa", "kab", "kac", "kal", "kam", "kan", "kar", "kas", "kat", "kau", "kaw", "kaz", "kbd", "kg", "kha", "khi", "khm", "kho", "ki", "kik", "kin", "kir", "kj", "kk", "kl", "km", "kmb", "kn", "ko", "kok", "kom", "kon", "kor", "kos", "kpe", "kr", "krc", "krl", "kro", "kru", "ks", "ku", "kua", "kum", "kur", "kut", "kv", "kw", "ky", "la", "lad", "lah", "lam", "lao", "lat", "lav", "lb", "lezlim", "lg", "li", "lin", "lit", "ln", "lo", "lol", "loz", "lt", "ltz", "lu", "lua", "lub", "lug", "lui", "lun", "luo", "lus", "lv", "mac", "mad", "mag", "mah", "mai", "mak", "mal", "man", "mao", "map", "mar", "mas", "may", "mdf", "mdr", "men", "mg", "mga", "mh", "mi", "mic", "min", "mis", "mk", "mkd", "mkh", "ml", "mlg", "mlt", "mn", "mnc", "mnl", "mno", "moh", "mon", "mos", "mr", "mri", "ms", "msa", "mt", "mul", "mun", "mus", "mwl", "mwr", "my", "mya", "myn", "myv", "na", "nah", "nai", "nap", "nau", "nav", "nb", "nbl", "nd", "nde", "ndo", "nds", "ne", "nep", "new", "ng", "nia", "nic", "niu", "nl", "nld", "nn", "nno", "no", "nob", "nog", "non", "nor", "nqo", "nr", "nso", "nub", "nv", "nwc", "ny", "nya", "nym", "nyn", "nyo", "nzi", "oc", "oci", "oj", "oji", "om", "or", "ori", "orm", "os", "osa", "oss", "ota", "oto", "pa", "paa", "pag", "pal", "pam", "pan", "pap", "pau", "pcm", "peo", "per", "phi", "phn", "pi", "pl", "pli", "pol", "pon", "por", "pra", "pro", "ps", "pt", "pus", "qaa", "qtz", "qu", "que", "raj", "rap", "rar", "rm", "rn", "ro", "roa", "roh", "rom", "ron", "ru", "rum", "run", "rup", "rus", "rw", "sa", "sad", "sag", "sah", "sai", "sal", "sam", "san", "sas", "sat", "sc", "scn", "sco", "sd", "sel", "sem", "sg", "sga", "sgn", "shn", "si", "sid", "sin", "sio", "sit", "sk", "sl", "sla", "slk", "slo", "slv", "sm", "sma", "sme", "smi", "smj", "smn", "smo", "sms", "sn", "sna", "snd", "snk", "so", "sog", "som", "son", "sot", "spa", "sq", "sqi", "sr", "srd", "srp", "srr", "ss", "ssa", "ssw", "st", "su", "suk", "sun", "sus", "sux", "sv", "sw", "swa", "swe", "sws", "syc", "syr", "ta", "tah", "tai", "tam", "tat", "te", "tel", "tem", "ter", "tet", "tg", "tgk", "tgl", "th", "tha", "ti", "tib", "tig", "tir", "tiv", "tk", "tkl", "tl", "tlh", "tli", "tmh", "tn", "to", "tog", "ton", "tpi", "tr", "ts", "tsi", "tsn", "tso", "tt", "tuk", "tum", "tup", "tur", "tut", "tvl", "tw", "twi", "ty", "tyv", "udm", "ug", "uga", "uig", "uk", "ukr", "umb", "und", "ur", "urd", "uz", "uzb", "vai", "venve", "vi", "vie", "vo", "vol", "vot", "wa", "wak", "wal", "war", "was", "wel", "wen", "wln", "wo", "wol", "xal", "xh", "xho", "yao", "yap", "yi", "yid", "yo", "yor", "ypk", "za", "zap", "zbl", "zen", "zgh", "zh", "zha", "zho", "znd", "zu", "zul", "zun", "zxx", "zza"];
                 LapysDevelopmentKit.Constants.String.lowercaseAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
                 LapysDevelopmentKit.Constants.String.octal = ['0', '1', '2', '3', '4', '5', '6', '7'];
                 LapysDevelopmentKit.Constants.String.uppercaseAlphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -1661,6 +1662,64 @@
                             return instances
                         };
 
+                        // Intersect --- NOTE (Lapys) -> Like a mathematical set operation.
+                        LapysDevelopmentKit.Functions.arrayPrototypeIntersect = function arrayPrototypeIntersect(arrayA, arrayB) {
+                            // Initialization > (Largest (Array Length, Arrays (Length)), Intersection (Length), Length, Iterator)
+                            var largestArrayLength = +0,
+                                largestArrays = [], largestArraysLength = +0,
+                                intersection = [], intersectionLength = +0,
+                                length = LDKF.getArgumentsLength(arguments), iterator = length;
+
+                            // Loop
+                            while (iterator) {
+                                // Initialization > Array (Length)
+                                var array = arguments[length - (iterator -= 1) - 1], arrayLength = LDKF.arrayPrototypeLength(array);
+
+                                // Update > Largest Array Length
+                                largestArrayLength = largestArrayLength - ((largestArrayLength - arrayLength) & ((largestArrayLength - arrayLength) >> (LDKC.Number.IntegerSize - 1)));
+
+                                // Logic --- NOTE (Lapys) -> There can be multiple largest arrays.
+                                if (arrayLength == largestArrayLength) {
+                                    // Update > Largest Arrays
+                                    largestArrays[largestArraysLength] = array;
+                                    largestArraysLength += 1
+                                }
+                            }
+
+                            // Initialization > Largest Arrays Iterator; Loop --- NOTE (Lapys) -> Loop through the largest arrays only to improve the speed of this algorithm.
+                            var largestArraysIterator = largestArraysLength;
+                            while (largestArraysIterator) {
+                                // Initialization > Largest Array (Iterator)
+                                var largestArray = largestArrays[largestArraysIterator -= 1], largestArrayIterator = largestArrayLength;
+
+                                // Loop
+                                while (largestArrayIterator) {
+                                    // Initialization > (Intersect, Largest Array Element)
+                                    var intersect = true, largestArrayElement = largestArray[largestArrayIterator -= 1];
+
+                                    // Update > Iterator; Loop --- NOTE (Lapys) -> Check if the other arrays specified contain the currently indexed Element.
+                                    iterator = length;
+                                    while (intersect && iterator) {
+                                        // Initialization > Array
+                                        var array = arguments[iterator -= 1];
+
+                                        // Update > Intersect
+                                        (array === largestArray) || (intersect = LDKF.arrayPrototypeIncludes(array, largestArrayElement))
+                                    }
+
+                                    // Logic
+                                    if (intersect && !LDKF.arrayPrototypeIncludes(intersection, largestArrayElement, STRICT = intersectionLength)) {
+                                        // Update > Intersection (Length)
+                                        intersection[intersectionLength] = largestArrayElement;
+                                        intersectionLength += 1
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return intersection
+                        };
+
                         // Is
                         LapysDevelopmentKit.Functions.arrayPrototypeIs = function arrayPrototypeIs(arrayA, arrayB, ARRAY_LENGTH) {
                             // Initialization > Iterator
@@ -2846,7 +2905,7 @@
                             // Logic
                             if (PROCESS_AS_INTEGERS)
                                 // Return
-                                return elementA - ((elementA - elementB) & LDKF.numberPrototypeShiftRightBy32Bits(elementB - elementA));
+                                return elementA - ((elementA - elementB) & LDKF.numberPrototypeShiftRight(elementB - elementA));
 
                             else {
                                 // Initialization > Element (A, B) Is Number-Like
@@ -3007,6 +3066,37 @@
 
                             // Return
                             return array
+                        };
+
+                        // Union --- NOTE (Lapys) -> Like a mathematical set operation; Unlike concatenation, it does not duplicate added elements and does not return the specified array.
+                        LapysDevelopmentKit.Functions.arrayPrototypeUnion = function arrayPrototypeUnion(arrayA, arrayB) {
+                            // Initialization > (Length, Iterator, Union (Length))
+                            var length = LDKF.getArgumentsLength(arguments), iterator = length,
+                                union = [], unionLength = +0;
+
+                            // Loop
+                            while (iterator) {
+                                // Initialization > Array (Iterator, Length)
+                                var array = arguments[length - (iterator -= 1) - 1],
+                                    arrayLength = LDKF.arrayPrototypeLength(array),
+                                    arrayIterator = arrayLength;
+
+                                // Loop
+                                while (arrayIterator) {
+                                    // Initialization > Element
+                                    var element = array[arrayLength - (arrayIterator -= 1) - 1];
+
+                                    // Logic
+                                    if (!LDKF.arrayPrototypeIncludes(union, element, STRICT = unionLength)) {
+                                        // Update > Union
+                                        union[unionLength] = element;
+                                        unionLength += 1
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return union
                         };
 
                     /* Size
@@ -3339,7 +3429,7 @@
                                     var hasIndexedFunctionSourceHead = false, iterator = +0;
 
                                     // Loop
-                                    LDKF.iterateSource(source, function(character, index) {
+                                    LDKF.iterateJavaScriptSource(source, function(character, index) {
                                         // Update > Function Head Source
                                         functionHeadSource += character;
 
@@ -3356,7 +3446,7 @@
                                     // Logic
                                     if (LDKF.functionPrototypeIsArrow(routine, STRICT = source))
                                         // Loop
-                                        LDKF.iterateSource(source, function(character, index) {
+                                        LDKF.iterateJavaScriptSource(source, function(character, index) {
                                             // Update > Function Head Source
                                             functionHeadSource += character;
 
@@ -3392,7 +3482,7 @@
                             var isArrow = false, source = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine);
 
                             // Loop
-                            LDKF.iterateSource(source, function(character, index) { (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') && (isArrow = true); isArrow && this.stop() }, STRICT = true, STRICT = false);
+                            LDKF.iterateJavaScriptSource(source, function(character, index) { (character == '=' && LDKF.stringPrototypeCharacterAt(source, index + 1) == '>') && (isArrow = true); isArrow && this.stop() }, STRICT = true, STRICT = false);
 
                             // Return
                             return isArrow
@@ -3405,7 +3495,7 @@
 
                             // Loop
                             LDKF.functionPrototypeSourceBeginsWith_async_Keyword(routine, STRICT = source) &&
-                            LDKF.iterateSource(source, function(character) { switch (character) { case '(': isDefault = true; this.stop(); break; case '*': isDefault = false; this.stop() } }, STRICT = true, STRICT = true, STRICT = 8);
+                            LDKF.iterateJavaScriptSource(source, function(character) { switch (character) { case '(': isDefault = true; this.stop(); break; case '*': isDefault = false; this.stop() } }, STRICT = true, STRICT = true, STRICT = 8);
 
                             // Return
                             return isDefault
@@ -3418,7 +3508,7 @@
 
                             // Loop
                             LDKF.functionPrototypeSourceBeginsWith_async_Keyword(routine, STRICT = source) &&
-                            LDKF.iterateSource(source, function(character) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true, STRICT = false, STRICT = 8);
+                            LDKF.iterateJavaScriptSource(source, function(character) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true, STRICT = false, STRICT = 8);
 
                             // Return
                             return isGenerator
@@ -3438,7 +3528,7 @@
                                 var lookupSyntax = LDKC.Keywords["extends"], lookupSyntaxLength = 7;
 
                                 // Loop
-                                LDKF.iterateSource(source, function(character, index) {
+                                LDKF.iterateJavaScriptSource(source, function(character, index) {
                                     // Initialization > Lookup Syntax Iterator
                                     var lookupSyntaxIterator = +0;
 
@@ -3468,7 +3558,7 @@
 
                             // Loop
                             LDKF.functionPrototypeSourceBeginsWith_function_Keyword(routine, STRICT = source) &&
-                            LDKF.iterateSource(source, function(character) {
+                            LDKF.iterateJavaScriptSource(source, function(character) {
                                 switch (character) {
                                     case '(': isDefault = true; this.stop(); break;
                                     case '*': isDefault = false; this.stop()
@@ -3486,7 +3576,7 @@
 
                             // Loop
                             LDKF.functionPrototypeSourceBeginsWith_function_Keyword(routine, STRICT = source) &&
-                            LDKF.iterateSource(source, function(character) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true, STRICT = false, STRICT = 8);
+                            LDKF.iterateJavaScriptSource(source, function(character) { if (character == '*') { isGenerator = true; this.stop() } }, STRICT = true, STRICT = false, STRICT = 8);
 
                             // Return
                             return isGenerator
@@ -3505,7 +3595,7 @@
                                     lookupSyntaxesLength = 2;
 
                                 // Loop
-                                LDKF.iterateSource(source, function(character, index) {
+                                LDKF.iterateJavaScriptSource(source, function(character, index) {
                                     // Initialization > Lookup Syntaxes Iterator
                                     var lookupSyntaxesIterator = lookupSyntaxesLength;
 
@@ -3567,7 +3657,7 @@
                             // Logic
                             if (beginsWithKeyword)
                                 // Loop
-                                LDKF.iterateSource(source, function(character, index) {
+                                LDKF.iterateJavaScriptSource(source, function(character, index) {
                                     // Target > Stop; Update > Function Name
                                     character == '(' ? this.stop() : (LDKF.stringPrototypeIsVariableCharacter(character) && (functionName += character))
                                 }, STRICT = true, STRICT = true, STRICT = LDKF.stringPrototypeIndexFromBack(source, "function", STRICT = null, STRICT = 8) + 8);
@@ -3577,7 +3667,7 @@
                                 var hasIndexedFunctionSourceName = false;
 
                                 // Loop
-                                LDKF.iterateSource(source, function(character, index) {
+                                LDKF.iterateJavaScriptSource(source, function(character, index) {
                                     // Logic
                                     if (hasIndexedFunctionSourceName)
                                         // Target > Stop
@@ -3612,7 +3702,7 @@
                                 functionParametersSource = LDKF.functionPrototypeParametersSource(routine, STRICT = source);
 
                             // Loop
-                            functionParametersSource && LDKF.iterateSource(functionParametersSource, function(character, index) {
+                            functionParametersSource && LDKF.iterateJavaScriptSource(functionParametersSource, function(character, index) {
                                 // Logic > Update > (Has Multiple Parameters, Parameters (Iterator))
                                 if (character == ',') { parameters[parametersIterator] = index; parametersIterator += 1 }
                             }, STRICT = true).then(function(length) {
@@ -3644,7 +3734,7 @@
                                     hasIndexedParameterValueSource = false, parameterValueSource = "", parameterValueSourceIterator = +0;
 
                                 // Loop
-                                LDKF.iterateSource(parameterSource, function(character, index) {
+                                LDKF.iterateJavaScriptSource(parameterSource, function(character, index) {
                                     // Logic
                                     if (hasIndexedParameterNameSource) {
                                         // Logic > (Update > Parameter Value Source Iterator; Target > Stop)
@@ -3653,7 +3743,7 @@
 
                                     else if (character == '.' && LDKF.stringPrototypeCharacterAt(parameterSource, index + 1) == '.' && LDKF.stringPrototypeCharacterAt(parameterSource, index + 2) == '.') {
                                         // Loop
-                                        LDKF.iterateSource(parameterSource, function(character) {
+                                        LDKF.iterateJavaScriptSource(parameterSource, function(character) {
                                             // Logic > (Update > Is Destructured Parameter Source; Target > Stop)
                                             if (character == '[') { isDestructuredParameterSource = true; this.stop() }
                                         }, STRICT = {comments: true}, STRICT = false, STRICT = index + 2, STRICT = true);
@@ -3688,7 +3778,7 @@
                                 parameterNameSource = LDKF.stringPrototypeTrim(LDKF.removeFromSource(parameterNameSource, {comments: true}));
 
                                 // Loop
-                                LDKF.iterateSource(parameterSource, function(character, index) {
+                                LDKF.iterateJavaScriptSource(parameterSource, function(character, index) {
                                     // Logic
                                     if (hasIndexedParameterValueSource) {
                                         // Update > Parameter Value Source Iterator
@@ -3749,7 +3839,7 @@
                                     lookupSyntaxLength = 11;
 
                                 // Loop
-                                LDKF.iterateSource(functionBodySource, function(character, index) {
+                                LDKF.iterateJavaScriptSource(functionBodySource, function(character, index) {
                                     // Logic
                                     if (character == lookupSyntax[+0]) {
                                         // Initialization > Lookup Syntax Iterator
@@ -3767,7 +3857,7 @@
                                                 var lookupSyntaxIndexFromFront = index + lookupSyntaxIterator, syntaxGroupDepth = +0;
 
                                                 // Loop
-                                                LDKF.iterateSource(functionBodySource, function(character, index) {
+                                                LDKF.iterateJavaScriptSource(functionBodySource, function(character, index) {
                                                     // Logic > (Update > Syntax Group Depth; ...)
                                                     switch (character) { case '(': syntaxGroupDepth += 1; break; case ')': syntaxGroupDepth -= 1 }
                                                     if (character == ')' && !syntaxGroupDepth) { iterator = index; this.stop() }
@@ -3797,7 +3887,7 @@
                                 // Logic
                                 if (LDKF.stringPrototypeFirst(functionHeadSource) != '(' && LDKF.functionPrototypeIsArrow(routine, STRICT = source))
                                     // Loop
-                                    LDKF.iterateSource(functionHeadSource, function(character, index) {
+                                    LDKF.iterateJavaScriptSource(functionHeadSource, function(character, index) {
                                         // Logic > ...
                                         if (character == '>' && LDKF.stringPrototypeCharacterAt(functionHeadSource, index - 1) == '=') { iterator = index - 2; this.stop() }
                                     }, STRICT = true, STRICT = true);
@@ -3807,12 +3897,12 @@
                                     var syntaxGroupDepth = +0;
 
                                     // Loop
-                                    LDKF.iterateSource(functionHeadSource, function(character, index) {
+                                    LDKF.iterateJavaScriptSource(functionHeadSource, function(character, index) {
                                         // Logic > ...
                                         if (character == '(') { functionHeadSourceIndex = index; iterator = index - 1; this.stop() }
                                     }, STRICT = true, STRICT = true);
 
-                                    LDKF.iterateSource(functionHeadSource, function(character, index) {
+                                    LDKF.iterateJavaScriptSource(functionHeadSource, function(character, index) {
                                         // Logic > (Update > Syntax Group Depth; ...)
                                         switch (character) { case '(': syntaxGroupDepth += 1; break; case ')': syntaxGroupDepth -= 1 }
                                         if (character == ')' && !syntaxGroupDepth) { iterator = index; this.stop() }
@@ -4025,6 +4115,9 @@
                     // Is Color Code String
                     LapysDevelopmentKit.Functions.isColorCodeString = function isColorCodeString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsColorCode(argument, STRICT = STRING_LENGTH)) };
 
+                    // Is CSS String
+                    LapysDevelopmentKit.Functions.isCSSSourceString = function isCSSSourceString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsCSSSource(argument, STRICT = STRING_LENGTH)) };
+
                     // Is Date String
                     LapysDevelopmentKit.Functions.isDateString = function isDateString(argument, STRING_LENGTH) { return LDKF.isString(argument) && (!argument || LDKF.stringPrototypeIsDate(argument, STRICT = STRING_LENGTH)) };
 
@@ -4043,55 +4136,14 @@
                 // Is Void --- NOTE (Lapys) -> Unfortunately, `HTMLAllCollection` objects are also seen as void in modern host environments.
                 LapysDevelopmentKit.Functions.isVoid = function isVoid(argument) { return typeof argument == "undefined" };
 
-                /* Iterate Object
-                        --- NOTE (Lapys) -> Index properties of an object.
-                            - The Handler is only called with an `Iterator` object and property identifier argument.
-
-                        --- WARN (Lapys) -> Exceptions thrown while iterating will be silently failed.
-                */
-                LapysDevelopmentKit.Functions.iterateObject = function iterateObject(object, handler, DEEP_SEARCH) {
-                    // Constant > Iterator
-                    var ITERATOR = new LDKD.Iterator;
-
-                    // Initialization > Stop Iteration
-                    var stopIteration = false;
-
-                    // Modification > Iterator > Stop
-                    ITERATOR.stop = function stop() { stopIteration = true };
-
-                    // Logic
-                    if (DEEP_SEARCH) {
-                        // Initialization > (Property (Names, Symbols)) (Length, Iterator)
-                        var propertyNames = LDKF.objectGetOwnPropertyNames(object),
-                                propertyNamesLength = LDKF.arrayPrototypeLength(propertyNames), propertyNamesIterator = propertyNamesLength,
-                            propertySymbols = LDKF.objectGetOwnPropertySymbols(object),
-                                propertySymbolsLength = LDKF.arrayPrototypeLength(propertySymbols), propertySymbolsIterator = propertySymbolsLength;
-
-                        // Loop > Handler
-                        while (!stopIteration && propertyNamesIterator) try { handler.call(ITERATOR, propertyNames[propertyNamesLength - (propertyNamesIterator -= 1) - 1]) } catch (error) {}
-                        while (!stopIteration && propertySymbolsIterator) try { handler.call(ITERATOR, propertySymbols[propertySymbolsLength - (propertySymbolsIterator -= 1) - 1]) } catch (error) {}
-                    }
-
-                    else {
-                        // Initialization > (Property Identifier, Stop Iteration)
-                        var propertyIdentifier, stopIteration = false;
-
-                        // Loop > Error Handling > Logic > ...
-                        for (propertyIdentifier in object) try { if (stopIteration) break; handler.call(ITERATOR, propertyIdentifier) } catch (error) {}
-                    }
-
-                    // Return
-                    return ITERATOR
-                };
-
-                /* Iterate Source [String]
+                /* Iterate [JavaScript] Source [String]
                         --- NOTE (Lapys) -> Iterate through JavaScript source syntax.
                             - The `this` object for the Handler points to an `Iterator` object.
                             - Returns an `Iterator` object.
                         --- WARN (Lapys) -> The handler is executed with `value, key` arguments rather than the reverse (`key, value`)
                             because this use-case (iterating through source code) is not publicly available to the library user (unless Debug Mode is enabled).
                 */
-                LapysDevelopmentKit.Functions.iterateSource = function iterateSource(source, handler, IGNORE, IS_FUNCTION, STARTING_ITERATION_INDEX, PARSE_FROM_STARTING_ITERATION_INDEX) {
+                LapysDevelopmentKit.Functions.iterateJavaScriptSource = function iterateJavaScriptSource(source, handler, IGNORE, IS_FUNCTION, STARTING_ITERATION_INDEX, PARSE_FROM_STARTING_ITERATION_INDEX) {
                     // Initialization > (Has Indexed Function Source (Body, Head), Source (Length, Iterator))
                     var hasIndexedFunctionSourceBody = !IS_FUNCTION,
                         hasIndexedFunctionSourceHead = !IS_FUNCTION;
@@ -4252,6 +4304,47 @@
                     return ITERATOR
                 };
 
+                /* Iterate Object
+                        --- NOTE (Lapys) -> Index properties of an object.
+                            - The Handler is only called with an `Iterator` object and property identifier argument.
+
+                        --- WARN (Lapys) -> Exceptions thrown while iterating will be silently failed.
+                */
+                LapysDevelopmentKit.Functions.iterateObject = function iterateObject(object, handler, DEEP_SEARCH) {
+                    // Constant > Iterator
+                    var ITERATOR = new LDKD.Iterator;
+
+                    // Initialization > Stop Iteration
+                    var stopIteration = false;
+
+                    // Modification > Iterator > Stop
+                    ITERATOR.stop = function stop() { stopIteration = true };
+
+                    // Logic
+                    if (DEEP_SEARCH) {
+                        // Initialization > (Property (Names, Symbols)) (Length, Iterator)
+                        var propertyNames = LDKF.objectGetOwnPropertyNames(object),
+                                propertyNamesLength = LDKF.arrayPrototypeLength(propertyNames), propertyNamesIterator = propertyNamesLength,
+                            propertySymbols = LDKF.objectGetOwnPropertySymbols(object),
+                                propertySymbolsLength = LDKF.arrayPrototypeLength(propertySymbols), propertySymbolsIterator = propertySymbolsLength;
+
+                        // Loop > Handler
+                        while (!stopIteration && propertyNamesIterator) try { handler.call(ITERATOR, propertyNames[propertyNamesLength - (propertyNamesIterator -= 1) - 1]) } catch (error) {}
+                        while (!stopIteration && propertySymbolsIterator) try { handler.call(ITERATOR, propertySymbols[propertySymbolsLength - (propertySymbolsIterator -= 1) - 1]) } catch (error) {}
+                    }
+
+                    else {
+                        // Initialization > (Property Identifier, Stop Iteration)
+                        var propertyIdentifier, stopIteration = false;
+
+                        // Loop > Error Handling > Logic > ...
+                        for (propertyIdentifier in object) try { if (stopIteration) break; handler.call(ITERATOR, propertyIdentifier) } catch (error) {}
+                    }
+
+                    // Return
+                    return ITERATOR
+                };
+
                 /* Number */
                     // Prototype
                         // Is Even
@@ -4315,7 +4408,7 @@
                         };
 
                         // To Signed 32-Bit Integer --- NOTE (Lapys) -> Hopefully, right-shifting causes sign extension.
-                        LapysDevelopmentKit.Functions.numberPrototypeShiftRightBy32Bits = function numberPrototypeShiftRightBy32Bits(number) { return number >> 31 };
+                        LapysDevelopmentKit.Functions.numberPrototypeShiftRight = function numberPrototypeShiftRight(number, length) { return number >> (LDKF.getArgumentsLength(arguments) > 1 ? length : LDKC.Number.IntegerSize - 1) };
 
                 /* Object */
                     // Create
@@ -4555,7 +4648,7 @@
                         // Instance Of
                         LapysDevelopmentKit.Functions.objectPrototypeInstanceOf = function objectPrototypeInstanceOf(object, constructor, ARGUMENTS_ARE_VALID) { return (ARGUMENTS_ARE_VALID || (LDKF.isConstructible(object) && LDKF.isFunction(constructor))) && object instanceof constructor };
 
-                        // Is Of Constructor
+                        // Is Of Constructor --- NOTE (Lapys) -> Basically the `LapysDevelopmentKit.Functions.objectPrototypeInstanceOf` method with a few extras.
                         LapysDevelopmentKit.Functions.objectPrototypeIsOfConstructor = function objectPrototypeIsOfConstructor(object, constructor, ASSERT_BY_CONSTRUCTOR_VALUE) {
                             // Initialization > Is Of Constructor
                             var isOfConstructor = LDKF.isConstructible(object) && LDKF.isFunction(constructor);
@@ -4642,8 +4735,8 @@
                     // Set Prototype Of
                     LapysDevelopmentKit.Functions.objectSetPrototypeOf = function objectSetPrototypeOf(object, prototype) { return LDKO.objectSetPrototypeOf(object, prototype) };
 
-                // Remove From Source --- NOTE (Lapys) -> Alternative way to get ignored syntaxes from the `LapysDevelopmentKit.Functions.iterateSource` method`s `IGNORE` flag parameter.
-                LapysDevelopmentKit.Functions.removeFromSource = function removeFromSource(source, options, IS_FUNCTION, STARTING_ITERATION_INDEX, PARSE_FROM_STARTING_ITERATION_INDEX) { var stream = ""; LDKF.iterateSource(source, function(character) { stream += character }, STRICT = options, STRICT = IS_FUNCTION, STRICT = STARTING_ITERATION_INDEX, STRICT = PARSE_FROM_STARTING_ITERATION_INDEX); return stream };
+                // Remove From Source --- NOTE (Lapys) -> Alternative way to get ignored syntaxes from the `LapysDevelopmentKit.Functions.iterateJavaScriptSource` method`s `IGNORE` flag parameter.
+                LapysDevelopmentKit.Functions.removeFromSource = function removeFromSource(source, options, IS_FUNCTION, STARTING_ITERATION_INDEX, PARSE_FROM_STARTING_ITERATION_INDEX) { var stream = ""; LDKF.iterateJavaScriptSource(source, function(character) { stream += character }, STRICT = options, STRICT = IS_FUNCTION, STRICT = STARTING_ITERATION_INDEX, STRICT = PARSE_FROM_STARTING_ITERATION_INDEX); return stream };
 
                 // Request Consideration Of Native Method Of Object By Conditional Fallback Value
                 LapysDevelopmentKit.Functions.requestConsiderationOfNativeMethodOfObjectByConditionalFallbackValue = function requestConsiderationOfNativeMethodOfObjectByConditionalFallbackValue(conditionalFallbackValue) {
@@ -4675,6 +4768,240 @@
 
                 /* String */
                     // Prototype
+                        // After
+                        LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFromBack(string, substring, STRICT = STRING_LENGTH) };
+
+                        // After From
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterFrom = function stringPrototypeAfterFrom(string, substring, STRING_LENGTH) {
+                            // Initialization > String (After, Length)
+                            var stringAfter = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength) {
+                                // Update > Substring
+                                LDKF.isString(substring) && (substring = [substring]);
+
+                                // Initialization > Substring (Includes Null Terminator Character, Iterator)
+                                var substringIncludesNullTerminatorCharacter = false, substringIterator = LDKF.arrayPrototypeLength(substring);
+
+                                // Loop
+                                while (substringIterator) {
+                                    // Initialization > (Substring Element, String Iterator)
+                                    var substringElement = substring[substringIterator -= 1],
+                                        substringElementLength = LDKF.stringPrototypeLength(substringElement),
+                                        stringIterator = LDKF.stringPrototypeIndexFrom(string, substringElement, STRICT = stringLength, STRICT = substringElementLength);
+
+                                    // Update > Substring Includes Null Terminator Character
+                                    substringIncludesNullTerminatorCharacter || (substringIncludesNullTerminatorCharacter = substringElement == '\0');
+
+                                    // Logic
+                                    if (~stringIterator) {
+                                        // (Loop > )Update > ...
+                                        stringIterator += substringElementLength - 1;
+                                        while (stringIterator ^ stringLength) { stringAfter += LDKF.stringPrototypeCharacterAt(string, stringIterator); stringIterator += 1 }
+                                        substringIterator = +0
+                                    }
+
+                                    else if (!substringIterator && substringIncludesNullTerminatorCharacter) { /* Some code here... */ }
+                                }
+                            }
+
+                            // Return
+                            return stringAfter
+                        };
+
+                        // After From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterFromBack = function stringPrototypeAfterFromBack(string, substring, STRING_LENGTH) {
+                            // Initialization > String (After, Length)
+                            var stringAfter = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength) {
+                                // Update > Substring
+                                LDKF.isString(substring) && (substring = [substring]);
+
+                                // Initialization > Substring (Includes Null Terminator Character, Iterator)
+                                var substringIncludesNullTerminatorCharacter = false, substringIterator = LDKF.arrayPrototypeLength(substring);
+
+                                // Loop
+                                while (substringIterator) {
+                                    // Initialization > (Substring Element, String Iterator)
+                                    var substringElement = substring[substringIterator -= 1],
+                                        substringElementLength = LDKF.stringPrototypeLength(substringElement),
+                                        stringIterator = LDKF.stringPrototypeIndexFromBack(string, substringElement, STRICT = stringLength, STRICT = substringElementLength);
+
+                                    // Update > Substring Includes Null Terminator Character
+                                    substringIncludesNullTerminatorCharacter || (substringIncludesNullTerminatorCharacter = substringElement == '\0');
+
+                                    // Logic
+                                    if (~stringIterator) {
+                                        // (Loop > )Update > ...
+                                        stringIterator += substringElementLength - 1;
+                                        while (stringIterator ^ stringLength) { stringAfter += LDKF.stringPrototypeCharacterAt(string, stringIterator); stringIterator += 1 }
+                                        substringIterator = +0
+                                    }
+
+                                    else if (!substringIterator && substringIncludesNullTerminatorCharacter)
+                                        // Update > String After
+                                        stringAfter = string
+                                }
+                            }
+
+                            // Return
+                            return stringAfter
+                        };
+
+                        // After From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterFromFront = function stringPrototypeAfterFromFront(string, substring, STRING_LENGTH) {
+                            // Initialization > String (After, Length)
+                            var stringAfter = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength) {
+                                // Update > Substring
+                                LDKF.isString(substring) && (substring = [substring]);
+
+                                // Initialization > Substring (Includes Null Terminator Character, Iterator)
+                                var substringIncludesNullTerminatorCharacter = false, substringIterator = LDKF.arrayPrototypeLength(substring);
+
+                                // Loop
+                                while (substringIterator) {
+                                    // Initialization > (Substring Element, String Iterator)
+                                    var substringElement = substring[substringIterator -= 1],
+                                        substringElementLength = LDKF.stringPrototypeLength(substringElement),
+                                        stringIterator = LDKF.stringPrototypeIndexFromFront(string, substringElement, STRICT = stringLength, STRICT = substringElementLength);
+
+                                    // Update > Substring Includes Null Terminator Character
+                                    substringIncludesNullTerminatorCharacter || (substringIncludesNullTerminatorCharacter = substringElement == '\0');
+
+                                    // Logic
+                                    if (~stringIterator) {
+                                        // (Loop > )Update > ...
+                                        stringIterator += substringElementLength - 1;
+                                        while (stringIterator ^ stringLength) { stringAfter += LDKF.stringPrototypeCharacterAt(string, stringIterator); stringIterator += 1 }
+                                        substringIterator = +0
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return stringAfter
+                        };
+
+                        // Before
+                        LapysDevelopmentKit.Functions.stringPrototypeBefore = function stringPrototypeBefore(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeBeforeFromBack(string, substring, STRICT = STRING_LENGTH) };
+
+                        // Before From
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeFrom = function stringPrototypeBeforeFrom(string, substring, STRING_LENGTH) {
+                            // Initialization > String (Before, Length)
+                            var stringBefore = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength) {
+                                // Update > Substring
+                                LDKF.isString(substring) && (substring = [substring]);
+
+                                // Initialization > Substring (Includes Null Terminator Character, Iterator)
+                                var substringIncludesNullTerminatorCharacter = false, substringIterator = LDKF.arrayPrototypeLength(substring);
+
+                                // Loop
+                                while (substringIterator) {
+                                    // Initialization > (Substring Element, String Iterator)
+                                    var substringElement = substring[substringIterator -= 1],
+                                        stringIterator = LDKF.stringPrototypeIndexFrom(string, substringElement, STRICT = stringLength);
+
+                                    // Update > Substring Includes Null Terminator Character
+                                    substringIncludesNullTerminatorCharacter || (substringIncludesNullTerminatorCharacter = substringElement == '\0');
+
+                                    // Logic
+                                    if (~stringIterator) {
+                                        // (Loop > )Update > ...
+                                        while (stringIterator) stringBefore = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) + stringBefore;
+                                        substringIterator = +0
+                                    }
+
+                                    else if (!substringIterator && substringIncludesNullTerminatorCharacter) { /* Some code here... */ }
+                                }
+                            }
+
+                            // Return
+                            return stringBefore
+                        };
+
+                        // Before From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeFromBack = function stringPrototypeBeforeFromBack(string, substring, STRING_LENGTH) {
+                            // Initialization > String (Before, Length)
+                            var stringBefore = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength) {
+                                // Update > Substring
+                                LDKF.isString(substring) && (substring = [substring]);
+
+                                // Initialization > Substring (Includes Null Terminator Character, Iterator)
+                                var substringIncludesNullTerminatorCharacter = false, substringIterator = LDKF.arrayPrototypeLength(substring);
+
+                                // Loop
+                                while (substringIterator) {
+                                    // Initialization > (Substring Element, String Iterator)
+                                    var substringElement = substring[substringIterator -= 1],
+                                        stringIterator = LDKF.stringPrototypeIndexFromBack(string, substringElement, STRICT = stringLength);
+
+                                    // Update > Substring Includes Null Terminator Character
+                                    substringIncludesNullTerminatorCharacter || (substringIncludesNullTerminatorCharacter = substringElement == '\0');
+
+                                    // Logic
+                                    if (~stringIterator) {
+                                        // (Loop > )Update > ...
+                                        while (stringIterator) stringBefore = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) + stringBefore;
+                                        substringIterator = +0
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return stringBefore
+                        };
+
+                        // Before From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeFromFront = function stringPrototypeBeforeFromFront(string, substring, STRING_LENGTH) {
+                            // Initialization > String (Before, Length)
+                            var stringBefore = "", stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                            // Logic
+                            if (stringLength) {
+                                // Update > Substring
+                                LDKF.isString(substring) && (substring = [substring]);
+
+                                // Initialization > Substring (Includes Null Terminator Character, Iterator)
+                                var substringIncludesNullTerminatorCharacter = false, substringIterator = LDKF.arrayPrototypeLength(substring);
+
+                                // Loop
+                                while (substringIterator) {
+                                    // Initialization > (Substring Element, String Iterator)
+                                    var substringElement = substring[substringIterator -= 1],
+                                        stringIterator = LDKF.stringPrototypeIndexFromFront(string, substringElement, STRICT = stringLength);
+
+                                    // Update > Substring Includes Null Terminator Character
+                                    substringIncludesNullTerminatorCharacter || (substringIncludesNullTerminatorCharacter = substringElement == '\0');
+
+                                    // Logic
+                                    if (~stringIterator) {
+                                        // (Loop > )Update > ...
+                                        while (stringIterator) stringBefore = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) + stringBefore;
+                                        substringIterator = +0
+                                    }
+
+                                    else if (!substringIterator && substringIncludesNullTerminatorCharacter)
+                                        // Update > String Before
+                                        stringBefore = string
+                                }
+                            }
+
+                            // Return
+                            return stringBefore
+                        };
+
                         // Begins With
                         LapysDevelopmentKit.Functions.stringPrototypeBeginsWith = function stringPrototypeBeginsWith(string, substring, STRING_LENGTH, SUBSTRING_LENGTH) { return substring ? LDKF.stringPrototypeSlice(string, +0, (SUBSTRING_LENGTH || LDKF.stringPrototypeLength(substring)) - 1, STRICT = STRING_LENGTH) == substring : true };
 
@@ -5417,6 +5744,9 @@
                                 (LDKF.stringPrototypeIsRGBColor(string, STRICT = stringLength) || LDKF.stringPrototypeIsRGBAColor(string, STRICT = stringLength))
                         };
 
+                        // Is CSS Source --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeIsCSSSource = function stringPrototypeIsCSSSource(string) { return true };
+
                         // Is Date --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.stringPrototypeIsDate = function stringPrototypeIsDate(string) { return true };
 
@@ -5649,6 +5979,9 @@
 
                         // Is HSLA Color
                         LapysDevelopmentKit.Functions.stringPrototypeIsHSLAColor = function stringPrototypeIsHSLAColor(string, STRING_LENGTH) { return LDKF.stringPrototypeIsHSLColor(string, STRICT = STRING_LENGTH, STRICT = true) };
+
+                        // Is JavaScript Source --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Functions.stringPrototypeIsJavaScriptSource = function stringPrototypeIsJavaScriptSource(string) { return true };
 
                         // Is Language Code
                         LapysDevelopmentKit.Functions.stringPrototypeIsLanguageCode = function stringPrototypeIsLanguageCode(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.languageCodes, string, STRICT = 741) };
@@ -6440,8 +6773,10 @@
 
                             // Logic
                             if (delimiter) {
-                                // Initialization > (Delimiter Length, String Index)
-                                var delimiterLength = DELIMITER_LENGTH || LDKF.stringPrototypeLength(delimiter), stringIndex = +0;
+                                // Initialization > (Delimiter Length, String (Includes Delimiter, Index))
+                                var delimiterLength = DELIMITER_LENGTH || LDKF.stringPrototypeLength(delimiter),
+                                    stringIncludesDelimiter = false,
+                                    stringIndex = +0;
 
                                 // Loop
                                 while (stringIterator) {
@@ -6461,7 +6796,8 @@
                                             // Initialization > Index
                                             var index = stringIndex + !!stringIndex, slice = "";
 
-                                            // Update > String Index
+                                            // Update > (Has Delimiter, String Index)
+                                            stringIncludesDelimiter || (stringIncludesDelimiter = true);
                                             stringIndex = stringLength - stringIterator - 1;
 
                                             // Loop > Update > (Slice, Index)
@@ -6475,17 +6811,23 @@
                                     }
                                 }
 
-                                // Logic
-                                if (stringIndex ^ stringLength - 1) {
-                                    // Initialization > Slice
-                                    var slice = "";
+                                if (stringIncludesDelimiter) {
+                                    // Logic
+                                    if (stringIndex ^ stringLength - 1) {
+                                        // Initialization > Slice
+                                        var slice = "";
 
-                                    // Loop > Update > Slice
-                                    while (stringIndex ^ stringLength - 1) slice += LDKF.stringPrototypeCharacterAt(string, stringIndex += 1);
+                                        // Loop > Update > Slice
+                                        while (stringIndex ^ stringLength - 1) slice += LDKF.stringPrototypeCharacterAt(string, stringIndex += 1);
 
-                                    // Update > Array
-                                    array[arrayLength] = slice
+                                        // Update > Array
+                                        array[arrayLength] = slice
+                                    }
                                 }
+
+                                else
+                                    // Update > Array
+                                    LDKF.arrayPrototypeFree(array, STRICT = true)
                             }
 
                             else
@@ -6913,114 +7255,95 @@
                     --- NOTE ---
                         #Lapys:
                             All type-testing methods (e.g.: `LapysDevelopmentKit.Test.isDocumentLike`) here are poorly defined because
-                            they only defer to the properties of the proposed Argument to be tested.
+                            they only defer to the properties of the proposed Argument to be tested (a.k.a.: Duck-typing (https://en.wikipedia.org/wiki/Duck_typing)).
 
                     --- WARN (Lapys) -> Only use these for special-case assertion.
             */
                 // Is Browser Environment --- WARN (Lapys) -> Used only as a reference object, not a routine.
                 LapysDevelopmentKit.Test.isBrowserEnvironment = function isBrowserEnvironment() { return LDKC.Assertions.isBrowserEnvironment };
 
-                // Is CSS Style Declaration-Like --- CHECKPOINT (Lapys)
+                // Is CSS Style Declaration-Like
                 LapysDevelopmentKit.Test.isCSSStyleDeclarationLike = function isCSSStyleDeclarationLike(argument) {
                     // Return
-                    return true
+                    return LDKF.isCSSStyleDeclarationLike(argument) || (LDKF.isCSSSourceString(LDKF.objectPrototypeGetProperty(argument, "cssText", STRICT = true)))
                 };
 
                 // Is Document-Like
                 LapysDevelopmentKit.Test.isDocumentLike = function isDocumentLike(argument, ASSERT_BY_RECURSION) {
                     // Return
                     return LDKF.isDocumentLike(argument) || (
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "activeElement", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
-                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "alinkColor", STRICT = true)) &&
-                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "anchors", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
-                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true)) &&
-                        (ASSERT_BY_RECURSION ? LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "body", STRICT = true), LDKT.isHTMLFrameSetElementElementLike, LDKT.isHTMLBodyElementLike, LDKF.isNull) : true) &&
-                        LDKF.isCharacterEncodingString(LDKF.objectPrototypeGetProperty(argument, "charset", STRICT = true)) &&
-                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "childNodes", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "close", STRICT = true)) &&
-                        (function(propertyValue) { return propertyValue === "BackCompat" || propertyValue === "CSS1Compat" })(LDKF.objectPrototypeGetProperty(argument, "compatMode")) &&
-                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "cookie")) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createAttribute", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createComment", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createDocumentFragment", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createElement", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createTextNode", STRICT = true)) &&
-                        (function(propertyValue) { return propertyValue === "inherit" || propertyValue === "Inherit" || propertyValue === "off" || propertyValue === "on" })(LDKF.objectPrototypeGetProperty(argument, "designMode")) &&
-                        (function(propertyValue) { return !propertyValue || propertyValue === "ltr" || propertyValue === "rtl" })(LDKF.objectPrototypeGetProperty(argument, "dir")) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "doctype"), LDKF.isObjectLike, LDKF.isNull) &&
-                        LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "documentElement")) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "domain"), LDKF.isString, LDKF.isNull) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "elementFromPoint", STRICT = true)) &&
-                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "embeds", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true)) &&
-                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true)) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "firstChild"), LDKT.isNodeLike, LDKF.isNull) &&
-                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "forms")) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementById", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByName", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasFocus", STRICT = true)) &&
-                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "images", STRICT = true)) &&
-                        LDKT.isDOMImplementationLike(LDKF.objectPrototypeGetProperty(argument, "implementation", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "lastChild"), LDKT.isNodeLike, LDKF.isNull) &&
-                        LDKF.isDateString(LDKF.objectPrototypeGetProperty(argument, "lastModified", STRICT = true)) &&
-                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "linkColor", STRICT = true)) &&
-                        LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "links")) &&
-                        LDKT.isLocationLike(LDKF.objectPrototypeGetProperty(argument, "location")) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nextSibling", STRICT = true), LDKT.isNodeLike, LDKF.isNull) &&
-                        LDKF.objectPrototypeGetProperty(argument, "nodeName", STRICT = true) === "#document" &&
-                        LDKF.objectPrototypeGetProperty(argument, "nodeType", STRICT = true) === 9 &&
-                        LDKF.isNull(LDKF.objectPrototypeGetProperty(argument, "nodeValue", STRICT = true)) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onclick", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncontextmenu", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondblclick", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondragstart", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeydown", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeypress", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeyup", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousedown", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousemove", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseout", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseover", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseup", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousewheel", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onreadystatechange", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectionchange", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectstart", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "open", STRICT = true)) &&
-                        (ASSERT_BY_RECURSION ? LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ownerDocument", STRICT = true), LDKT.isDocumentLike, LDKF.isNull) : true) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "parentNode", STRICT = true), LDKT.isNodeLike, LDKF.isNull) &&
-                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "plugins", STRICT = true)) &&
-                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "previousSibling", STRICT = true), LDKT.isNodeLike, LDKF.isNull) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandEnabled", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandIndeterm", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandState", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandSupported", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandValue", STRICT = true)) &&
-                        (function(propertyValue) { return propertyValue === "complete" || propertyValue === "interactive" || propertyValue === "loading" })(LDKF.objectPrototypeGetProperty(argument, "readyState", STRICT = true)) &&
-                        LDKF.isURLString(LDKF.objectPrototypeGetProperty(argument, "referrer", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeChild", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "replaceChild", STRICT = true)) &&
-                        LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "scripts", STRICT = true)) &&
-                        LDKF.objectPrototypeHasProperty(argument, "styleSheets", STRICT = true) &&
-                        LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "title", STRICT = true)) &&
-                        LDKF.isURLString(LDKF.objectPrototypeGetProperty(argument, "URL", STRICT = true)) &&
-                        LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "vlinkColor", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "write", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "writeln", STRICT = true))
+                        LDKT.isEventTargetLike(argument) &&
+                        LDKT.isNodeLike(argument, STRICT = ASSERT_BY_RECURSION, STRICT = ["nodeName", "nodeType", "nodeValue"]) && (
+                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "activeElement", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
+                            LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "alinkColor", STRICT = true)) &&
+                            LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "anchors", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
+                            LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true)) &&
+                            (ASSERT_BY_RECURSION ? LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "body", STRICT = true), LDKT.isHTMLFrameSetElementElementLike, LDKT.isHTMLBodyElementLike, LDKF.isNull) : true) &&
+                            LDKF.isCharacterEncodingString(LDKF.objectPrototypeGetProperty(argument, "charset", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "close", STRICT = true)) &&
+                            (function(propertyValue) { return propertyValue === "BackCompat" || propertyValue === "CSS1Compat" })(LDKF.objectPrototypeGetProperty(argument, "compatMode")) &&
+                            LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "cookie")) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createAttribute", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createComment", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createDocumentFragment", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createElement", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "createTextNode", STRICT = true)) &&
+                            (function(propertyValue) { return propertyValue === "inherit" || propertyValue === "Inherit" || propertyValue === "off" || propertyValue === "on" })(LDKF.objectPrototypeGetProperty(argument, "designMode")) &&
+                            (function(propertyValue) { return !propertyValue || propertyValue === "ltr" || propertyValue === "rtl" })(LDKF.objectPrototypeGetProperty(argument, "dir")) &&
+                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "doctype"), LDKF.isObjectLike, LDKF.isNull) &&
+                            LDKT.isElementLike(LDKF.objectPrototypeGetProperty(argument, "documentElement")) &&
+                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "domain"), LDKF.isString, LDKF.isNull) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "elementFromPoint", STRICT = true)) &&
+                            LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "embeds", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "execCommand", STRICT = true)) &&
+                            LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "fgColor", STRICT = true)) &&
+                            LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "forms")) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementById", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByName", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getElementsByTagName", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasChildNodes", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasFocus", STRICT = true)) &&
+                            LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "images", STRICT = true)) &&
+                            LDKT.isDOMImplementationLike(LDKF.objectPrototypeGetProperty(argument, "implementation", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
+                            LDKF.isDateString(LDKF.objectPrototypeGetProperty(argument, "lastModified", STRICT = true)) &&
+                            LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "linkColor", STRICT = true)) &&
+                            LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "links")) &&
+                            LDKT.isLocationLike(LDKF.objectPrototypeGetProperty(argument, "location")) &&
+                            LDKF.objectPrototypeGetProperty(argument, "nodeName", STRICT = true) === "#document" &&
+                            LDKF.objectPrototypeGetProperty(argument, "nodeType", STRICT = true) === 9 &&
+                            LDKF.isNull(LDKF.objectPrototypeGetProperty(argument, "nodeValue", STRICT = true)) &&
+                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onreadystatechange", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectionchange", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectstart", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "open", STRICT = true)) &&
+                            LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "plugins", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandEnabled", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandIndeterm", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandState", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandSupported", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "queryCommandValue", STRICT = true)) &&
+                            (function(propertyValue) { return propertyValue === "complete" || propertyValue === "interactive" || propertyValue === "loading" })(LDKF.objectPrototypeGetProperty(argument, "readyState", STRICT = true)) &&
+                            LDKF.isURLString(LDKF.objectPrototypeGetProperty(argument, "referrer", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeChild", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "replaceChild", STRICT = true)) &&
+                            LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "scripts", STRICT = true)) &&
+                            LDKF.objectPrototypeHasProperty(argument, "styleSheets", STRICT = true) &&
+                            LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "title", STRICT = true)) &&
+                            LDKF.isURLString(LDKF.objectPrototypeGetProperty(argument, "URL", STRICT = true)) &&
+                            LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "vlinkColor", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "write", STRICT = true)) &&
+                            LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "writeln", STRICT = true))
+                        )
                     )
                 };
 
                 // Is DOM Implementation-Like
                 LapysDevelopmentKit.Test.isDOMImplementationLike = function isDOMImplementationLike(argument) {
                     // Return
-                    return LDKF.isDOMImplementationLike(argument) || (
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasFeature", STRICT = true))
-                    )
+                    return LDKF.isDOMImplementationLike(argument) || (LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "hasFeature", STRICT = true)))
                 };
 
                 // Is Element-Like
@@ -7044,6 +7367,7 @@
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertAdjacentText", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "insertBefore", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "normalize", STRICT = true)) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "parentElement", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeAttribute", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeAttributeNode", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeChild", STRICT = true)) &&
@@ -7051,6 +7375,25 @@
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "scrollIntoView", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setAttribute", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setAttributeNode", STRICT = true))
+                    )
+                };
+
+                // Is Event Target-Like
+                LapysDevelopmentKit.Test.isEventTargetLike = function isEventTargetLike(argument) {
+                    // Return
+                    return (
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onclick", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondblclick", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondragstart", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeydown", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeypress", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeyup", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousedown", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousemove", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseout", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseover", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseup", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
+                        LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousewheel", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull)
                     )
                 };
 
@@ -7068,13 +7411,13 @@
                 LapysDevelopmentKit.Test.isHTMLBodyElementLike = function isHTMLBodyElementLike(argument, ASSERT_BY_RECURSION) {
                     // Return
                     return LDKF.isHTMLBodyElementLike(argument) || (
-                        LDKT.isElementLike(argument) && (
+                        LDKT.isElementLike(argument, STRICT = ASSERT_BY_RECURSION) &&
+                        LDKT.isNodeLike(argument, STRICT = ASSERT_BY_RECURSION, STRICT = ["nodeName", "nodeType", "nodeValue"]) && (
                             LDKF.isASCIICharacterString(LDKF.objectPrototypeGetProperty(argument, "accessKey", STRICT = true)) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "aLink", STRICT = true)) &&
                             LDKT.isNamedNodeMapLike(LDKF.objectPrototypeGetProperty(argument, "attributes", STRICT = true)) &&
                             LDKF.objectPrototypeHasProperty(argument, "background", STRICT = true) &&
                             LDKF.isColorCodeString(LDKF.objectPrototypeGetProperty(argument, "bgColor", STRICT = true)) &&
-                            LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "childNodes", STRICT = true)) &&
                             LDKT.isHTMLCollectionLike(LDKF.objectPrototypeGetProperty(argument, "children", STRICT = true)) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "className", STRICT = true)) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "clientHeight", STRICT = true)) &&
@@ -7083,15 +7426,12 @@
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "clientWidth", STRICT = true)) &&
                             (function(propertyValue) { return propertyValue === "false" || propertyValue === "inherit" || propertyValue === "true" })(LDKF.objectPrototypeGetProperty(argument, "contentEditable", STRICT = true)) &&
                             (function(propertyValue) { return !propertyValue || propertyValue === "auto" || propertyValue === "ltr" || propertyValue === "rtl" })(LDKF.objectPrototypeGetProperty(argument, "dir", STRICT = true)) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "firstChild"), LDKT.isNodeLike, LDKF.isNull) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "id", STRICT = true)) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "innerHTML", STRICT = true)) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "innerText", STRICT = true)) &&
                             LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "isContentEditable", STRICT = true)) &&
-                            LDKF.isLanguageCodeString(LDKF.objectPrototypeGetProperty(argument, "lang", STRICT = true)) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "lastChild"), LDKT.isNodeLike, LDKF.isNull) &&
+                            (function(propertyValue) { if (LDKF.isString(propertyValue)) if (LDKF.stringPrototypeIncludes(propertyValue, '-', STRICT = null, STRICT = 1)) return LDKF.stringPrototypeBeforeFromBack(propertyValue, '-'); else if (LDKF.stringPrototypeIncludes(propertyValue, ',', STRICT = null, STRICT = 1)) return LDKF.arrayPrototypeEvery(LDKF.arrayPrototypeBuild(LDKF.stringPrototypeSplit(propertyValue, ','), function(index, languageCode) { return LDKF.stringPrototypeTrim(languageCode) }), function(index, languageCode) { return LDKF.stringPrototypeIsLanguageCode(languageCode) }); else return LDKF.isLanguageCodeString(propertyValue); else return false })(LDKF.objectPrototypeGetProperty(argument, "lang", STRICT = true)) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "link", STRICT = true)) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nextSibling", STRICT = true), LDKT.isNodeLike, LDKF.isNull) &&
                             LDKF.objectPrototypeEvery(LDKF.objectPrototypeGetProperty(argument, "nodeName", STRICT = true), LDKF.stringPrototypeIsUpper, LDKF.stringPrototypeIsDOMElementTagName, LDKF.isString) &&
                             LDKF.objectPrototypeGetProperty(argument, "nodeType", STRICT = true) === 1 &&
                             LDKF.isNull(LDKF.objectPrototypeGetProperty(argument, "nodeValue", STRICT = true)) &&
@@ -7100,13 +7440,9 @@
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "offsetParent", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "offsetTop", STRICT = true)) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "offsetWidth", STRICT = true)) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onafterprint", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforecopy", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforecut", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforepaste", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforeprint", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforeunload", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onblur", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onclick", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncontextmenu", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncopy", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
@@ -7119,12 +7455,9 @@
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondragover", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondragstart", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ondrop", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onfocus", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onhashchange", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeydown", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeypress", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeyup", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onload", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousedown", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseenter", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseleave", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
@@ -7136,17 +7469,11 @@
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onoffline", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ononline", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onpaste", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onresize", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onscroll", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselect", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectstart", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onunload", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "outerHTML", STRICT = true)) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "outerText", STRICT = true)) &&
                             (ASSERT_BY_RECURSION ? LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ownerDocument", STRICT = true), LDKT.isDocumentLike, LDKF.isNull) : true) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "parentElement", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "parentNode", STRICT = true), LDKT.isNodeLike, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "previousSibling", STRICT = true), LDKT.isNodeLike, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "scroll", STRICT = true), LDKF.isString, LDKF.isNativeFunction) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "scrollHeight", STRICT = true)) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "scrollLeft", STRICT = true)) &&
@@ -7171,10 +7498,13 @@
                     )
                 };
 
-                // Is HTML Frame Set Element-Like --- CHECKPOINT (Lapys)
-                LapysDevelopmentKit.Test.isHTMLFrameSetElementLike = function isHTMLFrameSetElementLike(argument) {
+                // Is HTML Frame Set Element-Like
+                LapysDevelopmentKit.Test.isHTMLFrameSetElementLike = function isHTMLFrameSetElementLike(argument, ASSERT_BY_RECURSION) {
                     // Return
-                    return true
+                    return LDKF.isHTMLFrameSetElementLike(argument) || (
+                        LDKT.isElementLike(argument, STRICT = ASSERT_BY_RECURSION) &&
+                        LDKT.isNodeLike(argument, STRICT = ASSERT_BY_RECURSION, STRICT = ["nodeName", "nodeType", "nodeValue"])
+                    )
                 };
 
                 // Is Location-Like
@@ -7187,16 +7517,36 @@
                     )
                 };
 
-                // Is Named Node Map-Like --- CHECKPOINT (Lapys)
+                // Is Named Node Map-Like
                 LapysDevelopmentKit.Test.isNamedNodeMapLike = function isNamedNodeMapLike(argument) {
                     // Return
-                    return true
+                    return LDKF.isNamedNodeMapLike(argument) || (
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getNamedItem", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "item", STRICT = true)) &&
+                        LDKF.isPositiveIntegerNumber(LDKF.objectPrototypeGetProperty(argument, "length", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeNamedItem", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setNamedItem", STRICT = true))
+                    )
                 };
 
-                // Is Node-Like --- CHECKPOINT (Lapys)
-                LapysDevelopmentKit.Test.isNodeLike = function isNodeLike(argument) {
+                // Is Node-Like
+                LapysDevelopmentKit.Test.isNodeLike = function isNodeLike(argument, ASSERT_BY_RECURSION, IGNORE) {
+                    // Update > Ignore
+                    IGNORE || (IGNORE = ANY);
+
                     // Return
-                    return true
+                    return LDKF.isNodeLike(argument) || (
+                        (LDKF.arrayPrototypeIncludes(IGNORE, "childNodes") || LDKT.isNodeListLike(LDKF.objectPrototypeGetProperty(argument, "childNodes", STRICT = true))) &&
+                        (ASSERT_BY_RECURSION ? (LDKF.arrayPrototypeIncludes(IGNORE, "firstChild") || LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "firstChild"), LDKT.isNodeLike, LDKF.isNull)) : true) &&
+                        (ASSERT_BY_RECURSION ? (LDKF.arrayPrototypeIncludes(IGNORE, "nextSibling") || LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nextSibling", STRICT = true), LDKT.isNodeLike, LDKF.isNull)) : true) &&
+                        (LDKF.arrayPrototypeIncludes(IGNORE, "nodeName") || LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "nodeName", STRICT = true))) &&
+                        (LDKF.arrayPrototypeIncludes(IGNORE, "nodeType") || LDKF.isPositiveIntegerNumber(LDKF.objectPrototypeGetProperty(argument, "nodeType", STRICT = true))) &&
+                        (LDKF.arrayPrototypeIncludes(IGNORE, "nodeValue") || LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "nodeValue", STRICT = true), LDKF.isString, LDKF.isNull)) &&
+                        (ASSERT_BY_RECURSION ? (LDKF.arrayPrototypeIncludes(IGNORE, "lastChild") || LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "lastChild"), LDKT.isNodeLike, LDKF.isNull)) : true) &&
+                        (ASSERT_BY_RECURSION ? (LDKF.arrayPrototypeIncludes(IGNORE, "ownerDocument") || LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ownerDocument", STRICT = true), LDKT.isDocumentLike, LDKF.isNull)) : true) &&
+                        (LDKF.arrayPrototypeIncludes(IGNORE, "parentNode") || LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "parentNode", STRICT = true), LDKT.isElementLike, LDKT.isNodeLike, LDKF.isNull)) &&
+                        (ASSERT_BY_RECURSION ? (LDKF.arrayPrototypeIncludes(IGNORE, "previousSibling") || LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "previousSibling", STRICT = true), LDKT.isNodeLike, LDKF.isNull)) : true)
+                    )
                 };
 
                 // Is Node List-Like
@@ -7284,7 +7634,7 @@
                 // Absolute
                 LapysDevelopmentKit.Mathematics.abs = function abs(number, PROCESS_AS_INTEGERS) {
                     // Logic > ...
-                    if (PROCESS_AS_INTEGERS) { var mask = LDKF.numberPrototypeShiftRightBy32Bits(number); return (mask ^ number) - mask }
+                    if (PROCESS_AS_INTEGERS) { var mask = LDKF.numberPrototypeShiftRight(number); return (mask ^ number) - mask }
                     else return LDKF.numberPrototypeIsNegative(number) ? -number : number
                 };
 
@@ -7823,7 +8173,12 @@
                         })
                         .requestForNativeMethod();
 
-            /* Environment --- NOTE (Lapys) -> Fortunately, the `typeof` keyword does not assert `ReferenceError`'s. */
+            /* Environment
+                    --- NOTE (Lapys) -> Fortunately, the `typeof` keyword does not assert `ReferenceError`'s.
+                    --- UPDATE REQUIRED (Lapys) -> Assert the user agent into this namespace.
+                        Sources here: `https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browser` and
+                            `https://stackoverflow.com/questions/39120772/how-to-detect-safari-10-browser-in-javascript/39621764#39621764`
+            */
             (function() {
                 // Constant > Environment (Data)
                 var ENVIRONMENT = LapysDevelopmentKit.Environment,
@@ -7883,7 +8238,7 @@
                     if (typeof global != "undefined" && typeof module != "undefined" && LDKF.functionPrototypeTest(function() { var moduleExports = module.exports; return LDKF.toString(global) == "[object global]" && LDKF.objectPrototypeConstructor(global) === LDKO.object && typeof moduleExports == "object" && LDKF.toString(moduleExports) == "[object Object]" })) {
                         // Modification
                             // Environment > Type, Vendors
-                            ENVIRONMENT.Type = "runtime";
+                            ENVIRONMENT.Type || (ENVIRONMENT.Type = "runtime");
                             LDKF.arrayPrototypeAddElementToFront(ENVIRONMENT.Vendors, new LDKD.Vendor("Node.js"));
 
                             // Environment Data > Global(s)
