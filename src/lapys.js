@@ -4030,7 +4030,7 @@
                                 // Logic > Update > Argument Is Function
                                 switch (typeof argument) {
                                     case "object": argumentIsFunction = LDKF.functionPrototypeIsDefault(argument); break;
-                                    case "string": argumentIsFunction = argument === "[Interface prototype object]" || argument === "[object]"
+                                    case "string": argumentIsFunction = argument === "[Interface prototype object]" || argument === "[object]" || argument === "[object NodeList]"
                                 }
                         }
 
@@ -7352,7 +7352,6 @@
                     return LDKF.isElementLike(argument) || (
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "appendChild", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "blur", STRICT = true)) &&
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "click", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "cloneNode", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "contains", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "focus", STRICT = true)) &&
@@ -7413,7 +7412,6 @@
                     return LDKF.isHTMLBodyElementLike(argument) || (
                         LDKT.isElementLike(argument, STRICT = ASSERT_BY_RECURSION) &&
                         LDKT.isNodeLike(argument, STRICT = ASSERT_BY_RECURSION, STRICT = ["nodeName", "nodeType", "nodeValue"]) && (
-                            LDKF.isASCIICharacterString(LDKF.objectPrototypeGetProperty(argument, "accessKey", STRICT = true)) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "aLink", STRICT = true)) &&
                             LDKT.isNamedNodeMapLike(LDKF.objectPrototypeGetProperty(argument, "attributes", STRICT = true)) &&
                             LDKF.objectPrototypeHasProperty(argument, "background", STRICT = true) &&
@@ -7440,9 +7438,6 @@
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "offsetParent", STRICT = true), LDKT.isElementLike, LDKF.isNull) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "offsetTop", STRICT = true)) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "offsetWidth", STRICT = true)) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforecopy", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforecut", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onbeforepaste", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onclick", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncontextmenu", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "oncopy", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
@@ -7459,22 +7454,17 @@
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeypress", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onkeyup", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousedown", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseenter", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseleave", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousemove", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseout", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseover", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmouseup", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onmousewheel", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onoffline", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ononline", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onpaste", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselect", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "onselectstart", STRICT = true), LDKF.isUserDefinedFunction, LDKF.isNull) &&
                             LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "outerHTML", STRICT = true)) &&
-                            LDKF.isString(LDKF.objectPrototypeGetProperty(argument, "outerText", STRICT = true)) &&
                             (ASSERT_BY_RECURSION ? LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "ownerDocument", STRICT = true), LDKT.isDocumentLike, LDKF.isNull) : true) &&
-                            LDKF.objectPrototypeSome(LDKF.objectPrototypeGetProperty(argument, "scroll", STRICT = true), LDKF.isString, LDKF.isNativeFunction) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "scrollHeight", STRICT = true)) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "scrollLeft", STRICT = true)) &&
                             LDKF.isPositiveNumber(LDKF.objectPrototypeGetProperty(argument, "scrollTop", STRICT = true)) &&
@@ -7552,9 +7542,7 @@
                 // Is Node List-Like
                 LapysDevelopmentKit.Test.isNodeListLike = function isNodeListLike(argument) {
                     // Return
-                    return LDKF.isNodeListLike(argument) || (
-                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "item", STRICT = true))
-                    )
+                    return LDKF.isNodeListLike(argument) || (LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "item", STRICT = true)))
                 };
 
                 // Object > Prototype
