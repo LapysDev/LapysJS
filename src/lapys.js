@@ -42,6 +42,7 @@
             - All non-universal features are banned e.g.: Arrow functions, class objects, destructuring operators, spread operators and so on.
             - Due to the ECMAScript standard supporting negative zero, all positive integer zeros must be prefixed with the addition operator: `+`.
             - Defer to conditional operators (e.g.: `&&`, `||`, e.t.c.) for single-expression condition-based code instead of control structures (e.g.: `if (...) { ... }`, `switch (...) { ... }` e.t.c.)
+            - Explicitly differentiate between `-0` and `+0`, except in rare circumstances (e.g.: comparison asserts both).
             - Inline functions are only allowed to prevent creating variables that are semantically out of context.
             - Global objects must be explicitly declared; Which is an IIFE design is used (to define private & public features of the library).
             - Object property names can not be labeled `constructor`.
@@ -4003,11 +4004,17 @@
                 // Is Document-Like
                 LapysDevelopmentKit.Functions.isDocumentLike = function isDocumentLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.document) };
 
+                // Is Element-Like
+                LapysDevelopmentKit.Functions.isElementLike = function isElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.element) };
+
                 // Is Error-Like
                 LapysDevelopmentKit.Functions.isErrorLike = function isErrorLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.error) };
 
-                // Is Element-Like
-                LapysDevelopmentKit.Functions.isElementLike = function isElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.element) };
+                // Is Event-Like
+                LapysDevelopmentKit.Functions.isEventLike = function isEventLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.event) };
+
+                // Is Event Target-Like
+                LapysDevelopmentKit.Functions.isEventTargetLike = function isEventTargetLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.eventTarget) };
 
                 // Is DOM Implementation-Like
                 LapysDevelopmentKit.Functions.isDOMImplementationLike = function isDOMImplementationLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.domImplementation) };
@@ -7261,6 +7268,7 @@
                             they only defer to the properties of the proposed Argument to be tested (a.k.a.: Duck-typing (https://en.wikipedia.org/wiki/Duck_typing)).
 
                     --- WARN (Lapys) -> Only use these for special-case assertion.
+                        - Constructor properties are also not tested as well.
             */
                 // Is Browser Environment --- WARN (Lapys) -> Used only as a reference object, not a routine.
                 LapysDevelopmentKit.Test.isBrowserEnvironment = function isBrowserEnvironment() { return LDKC.Assertions.isBrowserEnvironment };
@@ -7377,6 +7385,31 @@
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "scrollIntoView", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setAttribute", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setAttributeNode", STRICT = true))
+                    )
+                };
+
+                // Is Event-Like
+                LapysDevelopmentKit.Test.isEventLike = function isEventLike(argument) {
+                    // Return
+                    return LDKF.isEventLike(argument) || (
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "getAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "removeAttribute", STRICT = true)) &&
+                        LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "setAttribute", STRICT = true))
+                    ) || (
+                        LDKF.objectPrototypeGetProperty(argument, "AT_TARGET", STRICT = true) === 2 &&
+                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "bubbles", STRICT = true)) &&
+                        LDKF.objectPrototypeGetProperty(argument, "BUBBLING_PHASE", STRICT = true) === 3 &&
+                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "cancelable", STRICT = true)) &&
+                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "cancelBubble", STRICT = true)) &&
+                        LDKF.objectPrototypeGetProperty(argument, "CAPTURING_PHASE", STRICT = true) === 1 &&
+                        LDKT.isEventTargetLike(LDKF.objectPrototypeGetProperty(argument, "currentTarget", STRICT = true)) &&
+                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "defaultPrevented", STRICT = true)) &&
+                        (function(propertyValue) { return propertyValue === 0 || propertyValue === 1 || propertyValue === 2 || propertyValue === 3 })(LDKF.objectPrototypeGetProperty(argument, "eventPhase", STRICT = true)) &&
+                        LDKF.isBoolean(LDKF.objectPrototypeGetProperty(argument, "isTrusted", STRICT = true)) &&
+                        LDKF.objectPrototypeHasProperty(argument, "srcElement", STRICT = true) &&
+                        LDKF.objectPrototypeHasProperty(argument, "target", STRICT = true) &&
+                        LDKF.objectPrototypeHasProperty(argument, "timeStamp", STRICT = true) &&
+                        LDKF.objectPrototypeHasProperty(argument, "type", STRICT = true)
                     )
                 };
 
