@@ -3209,6 +3209,73 @@
                         return LDKC.Objects.consoleWarn(LDKF.arrayPrototypeJoin(arguments, ' '))
                     };
 
+                // Create Class --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Legacy-compatible class object creation.
+                LapysDevelopmentKit.Functions.createClass = function createClass(options) {
+                    // Initialization > Class Object
+                    var classObject;
+
+                    // Update > Options
+                    LDKF.isFunction(options) && (options = {constructor: options});
+
+                    // Initialization > (Constructor, Name)
+                    var constructor = options.constructor,
+                        constructorSource = LDKF.functionPrototypeToSourceString(constructor),
+                        name = options.name || LDKF.functionPrototypeName(constructor, STRICT = constructorSource) || "";
+
+                    // Logic
+                    if (LDKC.Assertions.allows_class_Keyword)
+                        // Logic
+                        if (LDKF.functionPrototypeIsClass(constructor, STRICT = constructorSource))
+                            // Update > Class Object
+                            classObject = constructor;
+
+                        else
+                            // Update > Class Object
+                            classObject = LDKF.eval(LDKF.stringPrototypeRemoveAll("\
+                                class " + name + " {" +
+                                    (LDKF.functionPrototypeHasEmptyBody(constructor, STRICT = constructorSource) ?
+                                        "" :
+                                        "\n\
+                                        constructor(" + LDKF.functionPrototypeParametersSource(constructor, STRICT = constructorSource) + ") " +
+                                            (function(constructorBodySource) {
+                                                // Update > Constructor Body Source
+                                                (LDKF.stringPrototypeFirst(constructorBodySource) == '{' && LDKF.stringPrototypeLast(constructorBodySource) == '}') || (constructorBodySource = "{ " + constructorBodySource + " }");
+
+                                                // Return
+                                                return constructorBodySource
+                                            })(LDKF.functionPrototypeBody(constructor, STRICT = constructorSource)) +
+                                        "\n"
+                                    ) +
+                                "}\
+                            ", "                                ", STRICT = null, STRICT = 32));
+
+                    else {
+                        // Initialization > Invalid Construction Error Message
+                        var invalidConstructionErrorMessage = (name ? '`' + name + '`' : "Constructor") + " cannot be invoked without `new`";
+
+                        // Update > Class Object
+                        classObject = LDKF.eval(
+                            LDKF.functionPrototypeHead(constructor, STRICT = constructorSource) + ' ' +
+                            (LDKF.functionPrototypeHasEmptyBody(constructor, STRICT = constructorSource) ?
+                                "{ LapysJS.evaluationScope.objectPrototypeInstanceOf(this, LapysJS.evaluationScope.getArgumentsCallee(arguments), true) || LapysJS.evaluationScope.throwTypeError(\"" + invalidConstructionErrorMessage + "\") }" :
+                                (function(constructorBodySource) {
+                                    // Update > Constructor Body Source
+                                    (LDKF.stringPrototypeFirst(constructorBodySource) == '{' && LDKF.stringPrototypeLast(constructorBodySource) == '}') && (constructorBodySource = LDKF.stringPrototypeCut(constructorBodySource, 1));
+
+                                    // Return
+                                    return "{\nif (LapysJS.evaluationScope.objectPrototypeInstanceOf(this, LapysJS.evaluationScope.getArgumentsCallee(arguments), true)) {\n" + constructorBodySource + "\n} else LapysJS.evaluationScope.throwTypeError(\"" + invalidConstructionErrorMessage + "\")\n}"
+                                })(LDKF.functionPrototypeBody(constructor, STRICT = constructorSource))
+                            )
+                        )
+                    }
+
+                    // Return
+                    return classObject
+                };
+
+                // Create Function --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Reminiscent of the previous versions of LapysJS.
+                LapysDevelopmentKit.Functions.createFunction = function createFunction(options) {};
+
                 // Create Custom Error Constructor --- NOTE (Lapys) -> Examples include: `FeatureError`, `LapysJSError` and so on.
                 LapysDevelopmentKit.Functions.createCustomErrorConstructor = function createCustomErrorConstructor(customErrorName, baseConstructor, BASE_CONSTRUCTOR_SOURCE) {
                     // Initialization > (Base Constructor Source, Use `setPrototypeOf` Method)
@@ -3427,6 +3494,9 @@
                             // Return
                             return LDKF.functionPrototypeApply(routine, target, args)
                         };
+
+                        // Has Empty Body
+                        LapysDevelopmentKit.Functions.functionPrototypeHasEmptyBody = function functionPrototypeHasEmptyBody(routine, SOURCE_STRING) { return !LDKF.functionPrototypeBody(routine, STRICT = SOURCE_STRING || LDKF.functionPrototypeToSourceString(routine), STRICT = true, STRICT = true) };
 
                         // Has Standard Source
                         LapysDevelopmentKit.Functions.functionPrototypeHasStandardSource = function functionPrototypeHasStandardSource(routine, SOURCE_STRING) {
@@ -6802,7 +6872,7 @@
                                 return string
                         };
 
-                        // Replace From Front --- WARN (Lapys) -> Code duplication of the `LapysDevelopmentKit.Functions.stringPrototypeReplaceFrom` method.
+                        // Replace From Front --- CHECKPOINT (Lapys) -> Performs `LapysDevelopmentKit.Functions.stringPrototypeReplaceFromBack` instead. --- WARN (Lapys) -> Code duplication of the `LapysDevelopmentKit.Functions.stringPrototypeReplaceFrom` method.
                         LapysDevelopmentKit.Functions.stringPrototypeReplaceFromFront = function stringPrototypeReplaceFromFront(string, substring, replacer, STRING_LENGTH, SUBSTRING_LENGTH) {
                             // Initialization > ((String, Substring) Length, String Index)
                             var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
@@ -8457,8 +8527,11 @@
 
                 // Constant > (LapysJS, ...)
                 var LAPYS_JS = new LapysJS, VENDOR = new LDKD.Vendor("LapysJS", LAPYS_JS);
-                    // Evaluation Scope > Get Arguments Length
+                    // Evaluation Scope > ...
+                    LAPYS_JS.evaluationScope.getArgumentsCallee = LDKF.getArgumentsCallee;
                     LAPYS_JS.evaluationScope.getArgumentsLength = LDKF.getArgumentsLength;
+                    LAPYS_JS.evaluationScope.objectPrototypeInstanceOf = LDKF.objectPrototypeInstanceOf;
+                    LAPYS_JS.evaluationScope.throwTypeError = LDKF.throwTypeError;
 
                     // Load Vendor --- NOTE (Lapys) -> The capitalized parameters here are not argument flags, but rather constants.
                     LAPYS_JS.loadVendor = function $loadVendor(VENDOR_NAME, VENDOR_GLOBAL, handler, IGNORE_WARNING) {
