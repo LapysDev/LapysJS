@@ -45,6 +45,7 @@
             - Explicitly differentiate between `-0` and `+0`, except in rare circumstances (e.g.: comparison asserts both).
             - Inline functions are only allowed to prevent creating variables that are semantically out of context.
             - Global objects must be explicitly declared; Which is an IIFE design is used (to define private & public features of the library).
+            - Modules that allow public access to private features should be prefixed with the `$` character.
             - Object property names can not be labeled `constructor`.
             - Use the XOR operator (i.e.: `^`) instead of the inverse comparison operator (i.e.: `!=`) for integer values.
 
@@ -61,38 +62,64 @@
             - The `LapysDevelopmentKit.Functions.stringPrototypeIsColor` method and `LapysDevelopmentKit.Objects.stringPrototypeCharacterCodeAt` polyfill are heavy in byte-size.
 */
 +(function LapysJSMain() {
-    /* Constants > ... --- REDACT (Lapys) */
+    /* Constant > ... --- REDACT (Lapys) */
     var AUTHOR = "Lapys",
         DESCRIPTION = "LapysJS is a general-purpose, minimalist, semantic JavaScript library",
         URL = "https://www.github.com/LapysDev/LapysJS",
         VERSION = "0.0.8";
 
     /* Global */
-        // Any --- NOTE (Lapys) -> Unique object (only feasible within JavaScript environments; For transferring non-specific data).
+        // Any --- NOTE (Lapys) -> Unique weakly-typed object (only feasible within JavaScript environments; For transferring non-specific data).
         var ANY = {},
 
         // Global --- NOTE (Lapys) -> The global object of the current environment.
-        GLOBAL = null,
+        GLOBAL = this,
 
-        // Lapys Development Kit --- REDACT (Lapys)
-        LapysDevelopmentKit = {
-            Constants: {Assertions: {}, Keywords: {}, Number: {}, Objects: {}, String: {}},
-            Data: {},
-            Environment: {Data: {}, Type: null, State: "OK", Vendors: []},
-            Functions: {
-                // NOTE (Lapys) -> Fortunately, `Arguments` store their own length.
-                getArgumentsLength: function getArgumentsLength(argumentsObject) { return argumentsObject.length }
-            },
-            Information: {
-                Messages: {Debugging: {}, Error: {}},
-                Settings: {DebugMode: null, PublicMode: null}
-            },
-            Mathematics: {},
-            Objects: {},
-            Storage: {Records: {}, Registry: {}},
-            Test: {},
-            tmp: {}
-        },
+        // Lapys Development Kit
+        LapysDevelopmentKit = (function() {
+            // Class > Lapys Development Kit
+            function LapysDevelopmentKit() {};
+                // Temporary Data
+                LapysDevelopmentKit.prototype.tmp = {};
+
+            /* Definition > Lapys Development Kit */
+            var LapysDevelopmentKit = new LapysDevelopmentKit;
+                // Constants
+                LapysDevelopmentKit.Constants = {Assertions: {}, Keywords: {}, Number: {}, Objects: {}, String: {}};
+
+                // Data
+                LapysDevelopmentKit.Data = {};
+
+                // Environment
+                LapysDevelopmentKit.Environment = {Data: {}, Type: null, State: "OK", Vendors: []};
+
+                // Functions
+                LapysDevelopmentKit.Functions = {
+                    // NOTE (Lapys) -> Fortunately, `Arguments` store their own length.
+                    getArgumentsLength: function getArgumentsLength(argumentsObject) { return argumentsObject.length }
+                };
+
+                // Information
+                LapysDevelopmentKit.Information = {
+                    Messages: {Debugging: {}, Error: {}},
+                    Settings: {DebugMode: null, IgnoreMissingFeatures: false, PublicMode: null}
+                };
+
+                // Mathematics
+                LapysDevelopmentKit.Mathematics = {};
+
+                // Objects
+                LapysDevelopmentKit.Objects = {};
+
+                // Storage
+                LapysDevelopmentKit.Storage = {Records: {}, Registry: {}}
+
+                // Test
+                LapysDevelopmentKit.Test = {};
+
+            // Return
+            return LapysDevelopmentKit
+        })(),
 
         // Strict --- NOTE (Lapys) -> Cause alternative logical paths within a function or method. Also known as an argument flag.
         STRICT = false,
@@ -3142,6 +3169,16 @@
                         return LDKC.Objects.consoleGroup(LDKF.arrayPrototypeJoin(arguments, ' '))
                     };
 
+                    // Group Collapsed
+                    LapysDevelopmentKit.Functions.consoleGroupCollapsed = function consoleGroupCollapsed() {
+                        // Error Handling > Return
+                        try { return LDKC.Objects.consoleGroupCollapsed.apply(LDKC.Objects.console, arguments) }
+                        catch (error) {}
+
+                        // Return
+                        return LDKC.Objects.consoleGroupCollapsed(LDKF.arrayPrototypeJoin(arguments, ' '))
+                    };
+
                     // Group End
                     LapysDevelopmentKit.Functions.consoleGroupEnd = function consoleGroupEnd() {
                         // Error Handling > ...
@@ -4485,8 +4522,8 @@
                     LapysDevelopmentKit.Functions.objectIs = function objectIs(objectA, objectB) { return objectA === objectB ? +0 !== objectA || 1 / objectA == 1 / objectB: objectA !== objectA && objectB !== objectB };
 
                     // Prototype
-                        // Clone --- CHECKPOINT (Lapys)
-                        LapysDevelopmentKit.Functions.objectPrototypeClone = function objectPrototypeClone(object) {};
+                        // Clone --- CHECKPOINT (Lapys) --- UPDATE REQUIRED (Lapys) -> Must be extremely fast.
+                        LapysDevelopmentKit.Functions.objectPrototypeClone = function objectPrototypeClone(object, DEEP_CLONE, RECURSIVE_CLONE) { return object };
 
                         // Constructor
                         LapysDevelopmentKit.Functions.objectPrototypeConstructor = function objectPrototypeConstructor(object) {
@@ -4775,6 +4812,71 @@
 
                 /* String */
                     // Prototype
+                        // Abate
+                        LapysDevelopmentKit.Functions.stringPrototypeAbate = function stringPrototypeAbate(string, maximumStringLength, replacer, STRING_LENGTH) { return LDKF.stringPrototypeAbateFromFront(LDKF.stringPrototypeAbateFromBack(string, maximumStringLength, replacer, STRICT = STRING_LENGTH), maximumStringLength, replacer) };
+
+                        // Abate From Left --- NOTE (Lapys) -> This routine is kinda odd because it`s really only useful in pretty-printing.
+                        LapysDevelopmentKit.Functions.stringPrototypeAbateFromBack = function stringPrototypeAbateFromBack(string, maximumStringLength, replacer, STRING_LENGTH) {
+                            // Initialization > Abation --- NOTE (Lapys) -> Abation is not a valid English word.
+                            var abation = "";
+
+                            // Update > Replacer
+                            replacer || (replacer = "");
+
+                            // Logic
+                            if (maximumStringLength) {
+                                // Initialization > String (Length, Iterator)
+                                var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                    stringIterator = stringLength;
+
+                                // Loop
+                                while (stringIterator) {
+                                    // Update > String Iterator
+                                    stringIterator -= 1;
+
+                                    // Logic > Update > ...
+                                    if ((stringLength - stringIterator - 1) ^ maximumStringLength) abation = LDKF.stringPrototypeCharacterAt(string, stringIterator) + abation;
+                                    else { abation = (LDKF.isString(replacer) ? replacer : replacer.call(string)) + abation; stringIterator = +0 }
+                                }
+                            }
+
+                            else
+                                // Update > Abation
+                                abation = LDKF.isString(replacer) ? replacer : replacer.call(string);
+
+                            // Return
+                            return abation
+                        };
+
+                        // Abate From Right
+                        LapysDevelopmentKit.Functions.stringPrototypeAbateFromFront = function stringPrototypeAbateFromFront(string, maximumStringLength, replacer, STRING_LENGTH) {
+                            // Initialization > Abation
+                            var abation = "";
+
+                            // Update > Replacer
+                            replacer || (replacer = "");
+
+                            // Logic
+                            if (maximumStringLength) {
+                                // Initialization > String (Iterator, Length)
+                                var stringIterator = +0,
+                                    stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                                // Loop
+                                while (stringIterator ^ stringLength)
+                                    // Logic > Update > (Abation, String Iterator)
+                                    if (stringIterator ^ maximumStringLength) { abation += LDKF.stringPrototypeCharacterAt(string, stringIterator); stringIterator += 1 }
+                                    else { abation += LDKF.isString(replacer) ? replacer : replacer.call(string); stringIterator = stringLength }
+                            }
+
+                            else
+                                // Update > Abation
+                                abation = LDKF.isString(replacer) ? replacer : replacer.call(string);
+
+                            // Return
+                            return abation
+                        };
+
                         // After
                         LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFromBack(string, substring, STRICT = STRING_LENGTH) };
 
@@ -7117,6 +7219,12 @@
                     LDKF.consoleWarn(DEFER_FEATURE_STRING ? feature : LDKF.stringPrototypeToDebuggingMessage(LDKF.getArgumentsLength(arguments) ? feature : ""))
                 };
 
+                // Throw Public Access Allowed Warning --- NOTE (Lapys) -> Some private features of the library have become public.
+                LapysDevelopmentKit.Functions.throwPublicAccessAllowedWarning = function throwPublicAccessAllowedWarning() {
+                    // Console > Warn
+                    LDKF.consoleWarn(LDKF.stringPrototypeToDebuggingMessage("Public access to the private features of LapysJS has been allowed"))
+                };
+
                 // Throw Feature Not Native Error --- NOTE (Lapys) -> Feature tested as non-native.
                 LapysDevelopmentKit.Functions.throwFeatureNotNativeError = function throwFeatureNotNativeError(feature, DEFER_FEATURE_STRING) {
                     // Update > Feature
@@ -7253,13 +7361,13 @@
 
                 /* Settings */
                     // Debug Mode --- NOTE (Lapys) -> Allows global & public access to the Lapys Development Kit if set to `true`.
-                    LapysDevelopmentKit.Information.Settings.DebugMode = !!LDK.tmp.settings.debugMode;
+                    LapysDevelopmentKit.Information.Settings.DebugMode = !!LDK.tmp.settings.debug;
 
                     // Ignore Missing Features --- NOTE (Lapys) -> Prevent errors & warnings of non-available features being thrown.
-                    LapysDevelopmentKit.Information.Settings.IgnoreMissingFeatures = !!LDK.tmp.settings.ignoreMissingFeatures;
+                    LapysDevelopmentKit.Information.Settings.IgnoreMissingFeatures = !!LDK.tmp.settings.universal || !!LDK.tmp.settings.ignoreMissingFeatures;
 
                     // Public Mode --- NOTE (Lapys) -> Prevents spoof testing for native JavaScript features before integration into the Lapys Development Kit if set to `true`.
-                    LapysDevelopmentKit.Information.Settings.PublicMode = !!LDK.tmp.settings.publicMode;
+                    LapysDevelopmentKit.Information.Settings.PublicMode = !!LDK.tmp.settings.public;
 
             /* Test
                     --- NOTE ---
@@ -8204,12 +8312,9 @@
                             `https://stackoverflow.com/questions/39120772/how-to-detect-safari-10-browser-in-javascript/39621764#39621764`
             */
             (function() {
-                // Constant > Environment (Data)
+                // Initialization > (Is Browser) Environment
                 var ENVIRONMENT = LapysDevelopmentKit.Environment,
-                    ENVIRONMENT_DATA = ENVIRONMENT.Data;
-
-                // Initialization > Is Browser Environment
-                var isBrowserEnvironment = false;
+                    isBrowserEnvironment = false;
 
                 // Logic
                     // [Browser Environment]
@@ -8217,9 +8322,8 @@
                         // Update > Is Browser Environment
                         isBrowserEnvironment = true;
 
-                        // Modification > ...
+                        // Modification > Environment > Type
                         ENVIRONMENT.Type = "browser";
-                        ENVIRONMENT_DATA.global = window;
 
                         // Logic
                             // [Angular JS]
@@ -8263,21 +8367,11 @@
                         // Modification
                             // Environment > Type, Vendors
                             ENVIRONMENT.Type || (ENVIRONMENT.Type = "runtime");
-                            LDKF.arrayPrototypeAddElementToFront(ENVIRONMENT.Vendors, new LDKD.Vendor("Node.js"));
-
-                            // Environment Data > Global(s)
-                            ENVIRONMENT_DATA.global = global;
-                            ENVIRONMENT_DATA.globals = isBrowserEnvironment ? [global, module, window] : [global, module]
+                            LDKF.arrayPrototypeAddElementToFront(ENVIRONMENT.Vendors, new LDKD.Vendor("Node.js"))
                     }
 
-                // Update > Global
-                GLOBAL = LDKE.Data.global;
-
                 // Modification > ...
-                LapysDevelopmentKit.Constants.Assertions.isBrowserEnvironment = isBrowserEnvironment;
-
-                // Error
-                LDKF.isNonConstructible(GLOBAL) && LDKF.throwLapysJSError("Global object not found.")
+                LapysDevelopmentKit.Constants.Assertions.isBrowserEnvironment = isBrowserEnvironment
             })();
 
             /* Objects --- NOTE (Lapys) -> Test and define the `eval` function. */
@@ -8363,8 +8457,28 @@
 
                 // Constant > (LapysJS, ...)
                 var LAPYS_JS = new LapysJS, VENDOR = new LDKD.Vendor("LapysJS", LAPYS_JS);
-                    // Get Arguments Length
+                    // Evaluation Scope > Get Arguments Length
                     LAPYS_JS.evaluationScope.getArgumentsLength = LDKF.getArgumentsLength;
+
+                    // Load Vendor --- NOTE (Lapys) -> The capitalized parameters here are not argument flags, but rather constants.
+                    LAPYS_JS.loadVendor = function $loadVendor(VENDOR_NAME, VENDOR_GLOBAL, handler, IGNORE_WARNING) {
+                        // Logic
+                        if (LDKF.isString(VENDOR_NAME)) {
+                            // Update > ...
+                            LDKF.isConstructible(VENDOR_GLOBAL) || (VENDOR_GLOBAL = GLOBAL);
+                            LDKF.arrayPrototypeAddElementToFront(LDKE.Vendors, new LDKD.Vendor(VENDOR_NAME, VENDOR_GLOBAL));
+
+                            // Warn
+                            IGNORE_WARNING || LDKF.throwPublicAccessAllowedWarning();
+
+                            // Return
+                            return handler.call(VENDOR_GLOBAL, {private: LDKF.objectPrototypeClone(LapysDevelopmentKit, STRICT = true, STRICT = true)})
+                        }
+
+                        else
+                            // Error
+                            LDKF.throwTypeError("`\"" + LDKF.stringPrototypeAbateFromFront(LDKF.toString(VENDOR_NAME), 20, "...") + "\"` must be a string")
+                    };
 
                     // Processing Duration
                     LAPYS_JS.processingDuration = {};
@@ -8592,6 +8706,13 @@
                         LapysDevelopmentKit.Constants.Objects.consoleGroup = LDKF.isObjectLike(LDKO.consolePrototype) || LDKC.Assertions.has_console_Object ?
                             LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "group", STRICT = null, STRICT = "`console.group` method")
                                 .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); formerSource = source; return LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source) })
+                                .requestForNativeMethod() :
+                            undefined;
+
+                        // [Group Collapsed]
+                        LapysDevelopmentKit.Constants.Objects.consoleGroupCollapsed = LDKF.isObjectLike(LDKO.consolePrototype) || LDKC.Assertions.has_console_Object ?
+                            LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "groupCollapsed", STRICT = null, STRICT = "`console.groupCollapsed` method")
+                                .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
                                 .requestForNativeMethod() :
                             undefined;
 
@@ -9439,18 +9560,24 @@
         function Initiate() {
             // Logic
             if (LDKI.Settings.DebugMode) {
+                // Constant > Lapys Development Kit
+                var $LapysDevelopmentKit = LDKF.objectPrototypeClone(LapysDevelopmentKit, STRICT = true, STRICT = true);
+
+                // Warn
+                LDKF.throwPublicAccessAllowedWarning();
+
                 // Global > ...
-                GLOBAL.LapysDevelopmentKit = LapysDevelopmentKit;
-                GLOBAL["LDK"] = LapysDevelopmentKit;
-                GLOBAL["LDKC"] = LapysDevelopmentKit.Constants;
-                GLOBAL["LDKD"] = LapysDevelopmentKit.Data;
-                GLOBAL["LDKE"] = LapysDevelopmentKit.Environment;
-                GLOBAL["LDKF"] = LapysDevelopmentKit.Functions;
-                GLOBAL["LDKI"] = LapysDevelopmentKit.Information;
-                GLOBAL["LDKM"] = LapysDevelopmentKit.Mathematics;
-                GLOBAL["LDKO"] = LapysDevelopmentKit.Objects;
-                GLOBAL["LDKS"] = LapysDevelopmentKit.Storage;
-                GLOBAL["LDKT"] = LapysDevelopmentKit.Test
+                GLOBAL.LapysDevelopmentKit = $LapysDevelopmentKit;
+                GLOBAL["LDK"] = $LapysDevelopmentKit;
+                GLOBAL["LDKC"] = $LapysDevelopmentKit.Constants;
+                GLOBAL["LDKD"] = $LapysDevelopmentKit.Data;
+                GLOBAL["LDKE"] = $LapysDevelopmentKit.Environment;
+                GLOBAL["LDKF"] = $LapysDevelopmentKit.Functions;
+                GLOBAL["LDKI"] = $LapysDevelopmentKit.Information;
+                GLOBAL["LDKM"] = $LapysDevelopmentKit.Mathematics;
+                GLOBAL["LDKO"] = $LapysDevelopmentKit.Objects;
+                GLOBAL["LDKS"] = $LapysDevelopmentKit.Storage;
+                GLOBAL["LDKT"] = $LapysDevelopmentKit.Test
             }
 
             // Update > ...
@@ -9637,13 +9764,22 @@
                     // $p  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Previous Sibling Nodes By Query Selector
                     // $t  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Elements By Tag Name
                     // $$  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Nodes By Query Selector
+
+            // Return
+            return +0
         }
 
         /* Terminate --- CHECKPOINT (Lapys) */
-        function Terminate() {}
+        function Terminate() {
+            // Return
+            return +0
+        }
 
         /* Update --- CHECKPOINT (Lapys) */
-        function Update() {}
+        function Update() {
+            // Return
+            return +0
+        }
 
     /* Initiate
             --- NOTE ---
