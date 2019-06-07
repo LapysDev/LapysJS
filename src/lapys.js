@@ -7238,6 +7238,9 @@
                     LapysDevelopmentKit.Information.Messages.Error.NativeToEnvironmentSuffix = " must be native to this development environment";
 
                 /* Temporary Data */
+                    // DOM
+                    LapysDevelopmentKit.tmp.dom = {};
+
                     // Settings
                     LapysDevelopmentKit.tmp.settings = typeof LapysJS != "undefined" && LDKF.isConstructible(LapysJS) ? LapysJS : {};
 
@@ -8404,7 +8407,12 @@
                     // Update Phase Error
                     LapysDevelopmentKit.Data.UpdatePhaseError = LDKF.createCustomErrorConstructor("UpdatePhaseError", LDKD.PhaseError);
 
-            /* (Constants, Constants > ...), Data, Objects --- NOTE (Lapys) -> Collect a myriad of native JavaScript values. */
+            /* (Constants, Constants > ...), Data, Objects
+                    --- NOTE ---
+                        #Lapys:
+                            Collect a myriad of native JavaScript values.
+                            We`ll also consider essential Web APIs such as the DOM only come about in browser environments.
+            */
                 // Abort Error --- NOTE (Lapys) -> Internal (or non-common) JavaScript errors are not excluded from this list of values.
                 LapysDevelopmentKit.Objects.abortError = LDKT.considerNativeConstructorOfObject(GLOBAL, "AbortError").requestForNativeConstructor();
 
@@ -8531,10 +8539,16 @@
                     // ...
                     LapysDevelopmentKit.Constants.Assertions.has_Console_Constructor = LDKF.isNonVoid(LDKO.console);
 
+                    // Prototype
+                    LapysDevelopmentKit.Objects.consolePrototype = LDKF.getPropertyByName(LDKO.console, "prototype");
+
                 // Console
                 LapysDevelopmentKit.Constants.Objects.console = LDKT.considerNativeObjectOfObject(GLOBAL, "console")
                     .addCondition(function(object) { return !LDKC.Assertions.has_Console_Constructor || LDKF.objectPrototypeIsOfConstructor(LDKC.Objects.console, LDKO.console) })
                     .requestForNativeObject();
+
+                    // ...
+                    LapysDevelopmentKit.Constants.Assertions.has_console_Object = LDKF.isNonVoid(LDKC.Objects.console);
 
                     // ...
                     (function() {
@@ -8542,24 +8556,32 @@
                         var formerSource = null;
 
                         // [Group]
-                        LapysDevelopmentKit.Constants.Objects.consoleGroup = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "group", STRICT = null, STRICT = "`console.group` method")
-                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); formerSource = source; return LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source) })
-                            .requestForNativeMethod();
+                        LapysDevelopmentKit.Constants.Objects.consoleGroup = LDKF.isObjectLike(LDKO.consolePrototype) || LDKC.Assertions.has_console_Object ?
+                            LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "group", STRICT = null, STRICT = "`console.group` method")
+                                .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); formerSource = source; return LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source) })
+                                .requestForNativeMethod() :
+                            undefined;
 
                         // [Group End]
-                        LapysDevelopmentKit.Constants.Objects.consoleGroupEnd = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "groupEnd", STRICT = null, STRICT = "`console.groupEnd` method")
-                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
-                            .requestForNativeMethod();
+                        LapysDevelopmentKit.Constants.Objects.consoleGroupEnd = LDKF.isObjectLike(LDKO.consolePrototype) || LDKC.Assertions.has_console_Object ?
+                            LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "groupEnd", STRICT = null, STRICT = "`console.groupEnd` method")
+                                .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
+                                .requestForNativeMethod() :
+                            undefined;
 
                         // [Log]
-                        LapysDevelopmentKit.Constants.Objects.consoleLog = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "log", STRICT = null, STRICT = "`console.log` method")
-                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
-                            .requestForNativeMethod();
+                        LapysDevelopmentKit.Constants.Objects.consoleLog = LDKF.isObjectLike(LDKO.consolePrototype) || LDKC.Assertions.has_console_Object ?
+                            LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "log", STRICT = null, STRICT = "`console.log` method")
+                                .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
+                                .requestForNativeMethod() :
+                            undefined;
 
                         // [Warn]
-                        LapysDevelopmentKit.Constants.Objects.consoleWarn = LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "warn", STRICT = null, STRICT = "`console.warn` method")
-                            .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
-                            .requestForNativeMethod()
+                        LapysDevelopmentKit.Constants.Objects.consoleWarn = LDKF.isObjectLike(LDKO.consolePrototype) || LDKC.Assertions.has_console_Object ?
+                            LDKT.considerNativeMethodOfObject(LDKC.Objects.console, "warn", STRICT = null, STRICT = "`console.warn` method")
+                                .addAlternateCondition(function(method) { var source = LDKF.functionPrototypeToSourceString(method); return formerSource == source && (LDKF.functionPrototypeName(method, STRICT = source) == "__BROWSERTOOLS_CONSOLE_SAFEFUNC" && LDKF.functionPrototypeIsUserDefined(method, STRICT = source)) })
+                                .requestForNativeMethod() :
+                            undefined
                     })();
 
                 // Constraint Error
@@ -8602,7 +8624,7 @@
                     // Prototype
                     LapysDevelopmentKit.Objects.customElementRegistryPrototype = LDKF.getPropertyByName(LDKO.customElementRegistry, "prototype");
                         // Define
-                        LapysDevelopmentKit.Objects.customElementRegistryPrototypeDefine = LapysDevelopmentKit.Constants.Assertions.has_CustomElementRegistry_Constructor ?
+                        LapysDevelopmentKit.Objects.customElementRegistryPrototypeDefine = LDKF.isObjectLike(LDKO.customElementRegistryPrototype) ?
                             LDKT.considerNativeMethodOfObject(LDKO.customElementRegistryPrototype, "define", STRICT = null, STRICT = "`CustomElementRegistry.prototype.define` method").requestForNativeMethod() :
                             undefined;
 
@@ -8639,20 +8661,43 @@
                     .addAlternateCondition(function(constructorRoutine) { return LDKF.isObjectLike(constructorRoutine) && (LDKF.numberPrototypeIsNaN(LDKF.toNumber(constructorRoutine)) && LDKF.toString(constructorRoutine) == "[object Document]") })
                     .requestForNativeConstructor();
 
-                LapysDevelopmentKit.Constants.Objects.document = LDKT.considerNativeObjectOfObject(GLOBAL, "document") // NOTE (Lapys) -> At least the `document` object is consistent on web environments.
+                LapysDevelopmentKit.Constants.Objects.document = LDKT.considerNativeObjectOfObject(GLOBAL, "document", STRICT = null, STRICT = "`document` object") // NOTE (Lapys) -> At least the `document` object is consistent on ALL web environments.
                     .addCondition(LDKT.isBrowserEnvironment)
                     .addCondition(function(object) { return LDKF.objectPrototypeIsOfConstructor(object, LDKO.document) })
                     .addAlternateCondition(function(object) { return LDKT.isDocumentLike(object) })
                     .requestForNativeObject();
-                    // Create Element --- CHECKPOINT (Lapys)
+
+                    // ...
+                    LapysDevelopmentKit.Constants.Assertions.has_Document_Constructor = LDKF.isNonVoid(LDKO.document);
 
                     // Prototype
                     LapysDevelopmentKit.Objects.documentPrototype = LDKF.getPropertyByName(LDKO.document, "prototype");
-                        // Register Element --- CHECKPOINT (Lapys)
+                        // Create Element
+                        LapysDevelopmentKit.Objects.documentPrototypeCreateElement = LDKO.documentPrototype || LDKC.Objects.document ?
+                            LDKT.considerNativeMethodOfObject(LDKC.Assertions.has_Document_Constructor ? LDKO.documentPrototype : LDKC.Objects.document, "createElement", STRICT = null, STRICT = "`Document.prototype.createElement` method")
+                                .addCondition(LDKT.isBrowserEnvironment)
+                                .requestForNativeMethod() :
+                            undefined;
 
-                // Document Fragment --- CHECKPOINT (Lapys)
-                // Document Type --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                        // Register Element
+                        LapysDevelopmentKit.Objects.documentPrototypeRegisterElement = LDKO.documentPrototype || LDKC.Objects.document ?
+                            LDKT.considerNativeMethodOfObject(LDKC.Assertions.has_Document_Constructor ? LDKO.documentPrototype : LDKC.Objects.document, "registerElement", STRICT = null, STRICT = "`Document.prototype.registerElement` method")
+                                .addCondition(LDKT.isBrowserEnvironment)
+                                .requestForNativeMethod() :
+                            undefined;
+
+                // Document Fragment
+                LapysDevelopmentKit.Objects.documentFragment = LDKT.considerNativeConstructorOfObject(GLOBAL, "DocumentFragment")
+                    .addCondition(LDKT.isBrowserEnvironment)
+                    .requestForNativeConstructor();
+
+                // Document Type
+                LapysDevelopmentKit.Objects.documentType = LDKT.considerNativeConstructorOfObject(GLOBAL, "DocumentType")
+                    .addCondition(LDKT.isBrowserEnvironment)
+                    .requestForNativeConstructor();
+
+                    // Prototype
+                    LapysDevelopmentKit.Objects.documentTypePrototype = LDKF.getPropertyByName(LDKO.documentType, "prototype");
 
                 // DOM Error
                 LapysDevelopmentKit.Objects.domError = LDKT.considerNativeConstructorOfObject(GLOBAL, "DOMError")
@@ -8669,37 +8714,131 @@
                     .addCondition(LDKT.isBrowserEnvironment)
                     .requestForNativeConstructor();
 
-                // DOM Rectangle List --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
-                        // Item --- CHECKPOINT (Lapys)
+                // DOM Rectangle List
+                LapysDevelopmentKit.Objects.domRectList = LDKT.considerNativeConstructorOfObject(GLOBAL, "DOMRectList")
+                    .addCondition(LDKT.isBrowserEnvironment)
+                    .requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.domRectListPrototype = LDKF.getPropertyByName(LDKO.domRectList, "prototype");
+                        // Item
+                        LapysDevelopmentKit.Objects.domRectListPrototypeItem = LDKF.isObjectLike(LDKO.domRectListPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.domRectListPrototype, "item").requestForNativeMethod() :
+                            undefined;
 
-                // DOM String List --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
-                        // Item --- CHECKPOINT (Lapys)
+                // DOM String List
+                LapysDevelopmentKit.Objects.domStringList = LDKT.considerNativeConstructorOfObject(GLOBAL, "DOMStringList")
+                    .addCondition(LDKT.isBrowserEnvironment)
+                    .requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.domStringListPrototype = LDKF.getPropertyByName(LDKO.domStringList, "prototype");
+                        // Item
+                        LapysDevelopmentKit.Objects.domStringListPrototypeItem = LDKF.isObjectLike(LDKO.domStringListPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.domStringListPrototype, "item").requestForNativeMethod() :
+                            undefined;
 
-                // DOM Token List --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
-                        // Item --- CHECKPOINT (Lapys)
+                // DOM Token List
+                LapysDevelopmentKit.Objects.domTokenList = LDKT.considerNativeConstructorOfObject(GLOBAL, "DOMTokenList")
+                    .addCondition(LDKT.isBrowserEnvironment)
+                    .requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.domTokenListPrototype = LDKF.getPropertyByName(LDKO.domTokenList, "prototype");
+                        // Item
+                        LapysDevelopmentKit.Objects.domTokenListPrototypeItem = LDKF.isObjectLike(LDKO.domTokenListPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.domTokenListPrototype, "item").requestForNativeMethod() :
+                            undefined;
 
-                // Element --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
-                        // Get Attribute --- CHECKPOINT (Lapys)
-                        // Get Attribute Node --- CHECKPOINT (Lapys)
-                        // Get Bounding Client Rectangle --- CHECKPOINT (Lapys)
-                        // Get Client Rectangles --- CHECKPOINT (Lapys)
-                        // Get Elements By Tag Name --- CHECKPOINT (Lapys)
-                        // Has Attribute --- CHECKPOINT (Lapys)
-                        // Has Attributes --- CHECKPOINT (Lapys)
-                        // Insert Adjacent Element --- CHECKPOINT (Lapys)
-                        // Insert Adjacent HTML --- CHECKPOINT (Lapys)
-                        // Insert Adjacent Text --- CHECKPOINT (Lapys)
-                        // Remove Attribute --- CHECKPOINT (Lapys)
-                        // Remove Attribute Node --- CHECKPOINT (Lapys)
-                        // Set Attribute --- CHECKPOINT (Lapys)
-                        // Set Attribute Node --- CHECKPOINT (Lapys)
+                // Encoding Error
+                LapysDevelopmentKit.Objects.encodingError = LDKT.considerNativeConstructorOfObject(GLOBAL, "EncodingError").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.encodingErrorPrototype = LDKF.getPropertyByName(LDKO.encodingError, "prototype");
 
-                // Encoding Error --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // Element
+                LapysDevelopmentKit.Objects.element = LDKT.considerNativeConstructorOfObject(GLOBAL, "Element")
+                    .addCondition(LDKT.isBrowserEnvironment)
+                    .addAlternateCondition(function(constructorRoutine) { return LDKF.isObjectLike(constructorRoutine) && (LDKF.numberPrototypeIsNaN(LDKF.toNumber(constructorRoutine)) && LDKF.toString(constructorRoutine) == "[object Element]") })
+                    .requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.elementPrototype = LDKF.getPropertyByName(LDKO.element, "prototype");
+                        // Get Attribute
+                        LapysDevelopmentKit.Objects.elementPrototypeGetAttribute = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "getAttribute", STRICT = null, STRICT = "`Element.prototype.getAttribute` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Get Attribute Node
+                        LapysDevelopmentKit.Objects.elementPrototypeGetAttributeNode = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "getAttributeNode", STRICT = null, STRICT = "`Element.prototype.getAttributeNode` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Get Bounding Client Rectangle
+                        LapysDevelopmentKit.Objects.elementPrototypeGetBoundingClientRect = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "getBoundingClientRect", STRICT = null, STRICT = "`Element.prototype.getBoundingClientRect` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Get Client Rectangles
+                        LapysDevelopmentKit.Objects.elementPrototypeGetClientRects = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "getClientRects", STRICT = null, STRICT = "`Element.prototype.getClientRects` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Get Elements By Tag Name
+                        LapysDevelopmentKit.Objects.elementPrototypeGetElementsByTagName = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "getElementsByTagName", STRICT = null, STRICT = "`Element.prototype.getElementsByTagName` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Has Attribute
+                        LapysDevelopmentKit.Objects.elementPrototypeHasAttribute = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "hasAttribute", STRICT = null, STRICT = "`Element.prototype.hasAttribute` method")
+                                .addConditionalFallback({ // NOTE (Lapys) -> If the old DOM 3 Core specification is not adhered, the fallback value is valid.
+                                    condition: function(method) { return !LDKF.objectPrototypeHasProperty(LDKO.elementPrototype, "hasAttribute") || LDKF.isVoid(method) },
+                                    value: function hasAttribute(attributeName) { return !LDKF.isNull(LDKF.elementPrototypeGetAttribute(attributeName))  }
+                                })
+                                .requestForNativeMethod() :
+                            undefined;
+
+                        // Has Attribute Node
+                        LapysDevelopmentKit.Objects.elementPrototypeHasAttributeNode = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "hasAttributeNode", STRICT = null, STRICT = "`Element.prototype.hasAttributeNode` method")
+                                .addConditionalFallback({
+                                    condition: function(method) { return !LDKF.objectPrototypeHasProperty(LDKO.elementPrototype, "hasAttributeNode") || LDKF.isVoid(method) },
+                                    value: function hasAttribute(attributeName) { return !LDKF.isNull(LDKF.elementPrototypeGetAttributeNode(attributeName))  }
+                                })
+                                .requestForNativeMethod() :
+                            undefined;
+
+                        // Insert Adjacent Element
+                        LapysDevelopmentKit.Objects.elementPrototypeInsertAdjacentElement = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "insertAdjacentElement", STRICT = null, STRICT = "`Element.prototype.insertAdjacentElement` method")
+                                .requestForNativeMethod() :
+                            undefined;
+
+                        // Insert Adjacent HTML
+                        LapysDevelopmentKit.Objects.elementPrototypeInsertAdjacentHTML = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "insertAdjacentHTML", STRICT = null, STRICT = "`Element.prototype.insertAdjacentHTML` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Insert Adjacent Text
+                        LapysDevelopmentKit.Objects.elementPrototypeInsertAdjacentText = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "insertAdjacentText", STRICT = null, STRICT = "`Element.prototype.insertAdjacentText` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Remove Attribute
+                        LapysDevelopmentKit.Objects.elementPrototypeRemoveAttribute = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "removeAttribute", STRICT = null, STRICT = "`Element.prototype.removeAttribute` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Remove Attribute Node
+                        LapysDevelopmentKit.Objects.elementPrototypeRemoveAttributeNode = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "removeAttributeNode", STRICT = null, STRICT = "`Element.prototype.removeAttributeNode` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Set Attribute
+                        LapysDevelopmentKit.Objects.elementPrototypeSetAttribute = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "setAttribute", STRICT = null, STRICT = "`Element.prototype.setAttribute` method").requestForNativeMethod() :
+                            undefined;
+
+                        // Set Attribute Node
+                        LapysDevelopmentKit.Objects.elementPrototypeSetAttributeNode = LDKF.isObjectLike(LDKO.elementPrototype) ?
+                            LDKT.considerNativeMethodOfObject(LDKO.elementPrototype, "setAttributeNode", STRICT = null, STRICT = "`Element.prototype.setAttributeNode` method").requestForNativeMethod() :
+                            undefined;
 
                 // Function
                 LapysDevelopmentKit.Objects["function"] = LDKT.considerNativeConstructorOfObject(GLOBAL, "Function", STRICT = null, STRICT = "`Function` constructor").requestForNativeConstructor();
@@ -8709,8 +8848,10 @@
                         LapysDevelopmentKit.Objects.functionPrototypeApply = LDKT.considerNativeMethodOfObject(LDKO.functionPrototype, "apply", STRICT = null, STRICT = "`Function.prototype.apply` method").requestForNativeMethod();
                         LapysDevelopmentKit.Objects.functionPrototypeCall = LDKT.considerNativeMethodOfObject(LDKO.functionPrototype, "call", STRICT = null, STRICT = "`Function.prototype.call` method").requestForNativeMethod();
 
-                // Evaluation Error --- CHECKPOINT (Lapys)
-                    // Prototype --- CHECKPOINT (Lapys)
+                // Evaluation Error
+                LapysDevelopmentKit.Objects.evalError = LDKT.considerNativeConstructorOfObject(GLOBAL, "EvalError").requestForNativeConstructor();
+                    // Prototype
+                    LapysDevelopmentKit.Objects.evalErrorPrototype = LDKF.getPropertyByName(LDKO.evalError, "prototype");
 
                 // Event --- CHECKPOINT (Lapys)
                     // Prototype --- CHECKPOINT (Lapys)
@@ -9418,10 +9559,14 @@
         LDKF.objectDefineProperty(LapysJS.processingDuration, "valueOf", {value: function valueOf() { return LapysJS.processingDuration.initiate + LapysJS.processingDuration.update + LapysJS.processingDuration.terminate }});
 
         // Print
-        LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "https://www.lapys.dev/projects/LapysJS");
-            LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.valueOf());
-            LDKF.consoleLog('\n');
-        LDKF.consoleGroupEnd()
+        if (LDKC.Assertions.has_console_Object) {
+            LDKF.consoleGroup("LapysJS v" + VERSION + " | " + "https://www.lapys.dev/projects/LapysJS");
+                LDKF.consoleLog("Processing Duration =", LapysJS.processingDuration.valueOf());
+                LDKF.consoleLog('\n');
+            LDKF.consoleGroupEnd()
+        }
+
+        else { /* Some code here... */ }
     } catch (error) { var message = LDKF.errorPrototypeGetMessage(error); message = LDKF.isNull(message) ? "" : ":\n\t\r" + message; LDKF.throwInitiatePhaseError("Error completing library installation" + message) }
 
     // Return
