@@ -4461,7 +4461,7 @@
                 LapysDevelopmentKit.Functions.isHTMLBodyElementLike = function isHTMLBodyElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlBodyElement) };
 
                 // Is HTML Collection-Like
-                LapysDevelopmentKit.Functions.isHTMLCollectionLike = function isHTMLCollectionLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlCollection) };
+                LapysDevelopmentKit.Functions.isHTMLCollectionLike = function isHTMLCollectionLike(argument, ASSERT_BY_CONSTRUCTOR_VALUE) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlCollection) || (!ASSERT_BY_CONSTRUCTOR_VALUE && !LDKC.Assertions.has_HTMLCollection_Constructor && LDKT.isHTMLCollectionLike(argument)) };
 
                 // Is HTML Frame Set Element-Like
                 LapysDevelopmentKit.Functions.isHTMLFrameSetElementLike = function isHTMLFrameSetElementLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.htmlFrameSetElementLike) };
@@ -8101,7 +8101,7 @@
                 // Is HTML Collection-Like
                 LapysDevelopmentKit.Test.isHTMLCollectionLike = function isHTMLCollectionLike(argument) {
                     // Return
-                    return LDKF.isHTMLCollectionLike(argument) || (
+                    return LDKF.isHTMLCollectionLike(argument, STRICT = true) || (
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "item", STRICT = true)) &&
                         LDKF.isNativeFunction(LDKF.objectPrototypeGetProperty(argument, "namedItem", STRICT = true))
                     )
@@ -9591,10 +9591,13 @@
 
                 // HTML Collection
                 LapysDevelopmentKit.Objects.htmlCollection = LDKT.objectPrototypeConsiderNativeConstructorOfObject(GLOBAL, "HTMLCollection").requestForNativeConstructor();
+                    // ...
+                    LapysDevelopmentKit.Constants.Assertions.has_HTMLCollection_Constructor = LDKF.isNonVoid(LDKO.htmlCollection);
+
                     // Prototype
                     LapysDevelopmentKit.Objects.htmlCollectionPrototype = LDKF.getPropertyByName(LDKO.htmlCollection, "prototype");
                         // Item
-                        LapysDevelopmentKit.Objects.htmlCollectionPrototypeItem = LDKT.objectPrototypeConsiderNativeMethodOfObject(LDKF.isObjectLike(LDKO.htmlCollectionPrototype) ? LDKO.htmlCollectionPrototype : {"item": undefined}, "item", STRICT = null, STRICT = "`HTMLCollection.prototype.item` method")
+                        LapysDevelopmentKit.Objects.htmlCollectionPrototypeItem = LDKT.objectPrototypeConsiderNativeMethodOfObject(LDKF.isObjectLike(LDKO.htmlCollectionPrototype) ? LDKO.htmlCollectionPrototype : {}, "item", STRICT = null, STRICT = "`HTMLCollection.prototype.item` method")
                             .addConditionalFallback({condition: function(method) { console.log(2019); return LDKF.isVoid(method) }, value: function item(index) { return this[index] || null } })
                             .requestForNativeMethod();
 
