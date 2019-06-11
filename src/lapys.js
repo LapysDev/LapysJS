@@ -9,6 +9,7 @@
             - Details:
                 -- Average Cumulative Processing Duration: 250ms
                 -- Average File Upload Speed: 70ms
+                -- Average Phase Processing Duration: 12.5ms
                 -- Supported Development Environments:
                         --- Android (browser)
                         --- Internet Explorer 5 - 11 (browser)
@@ -57,6 +58,7 @@
     --- UPDATE REQUIRED ---
         #Lapys:
             - Also check for vendor-specific features.
+            - Utilize the `LapysDevelopmentKit.Functions.functionPrototypeApply` and `LapysDevelopmentKit.Functions.functionPrototypeCall` methods where possible.
             - Target development environments (these environments may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
                 -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- Netscape Navigator 2 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
@@ -112,43 +114,7 @@
                         // Initialization > Constructor
                         var constructor = (LDKF.getArgumentsLength(arguments) == 2 ? CONSTRUCTOR : null) || LDKO.array;
 
-                        // Function
-                            /* Lock
-                                --- NOTE (Lapys) -> Parse the properties of a LapysJS array-like constructor to be constant.
-                                --- WARN (Lapys) -> The properties can still be re-defined using the `Object.defineProperty` method.
-                            */
-                            function lock(arrayLike, ARRAY_LIKE_LENGTH) {
-                                // Logic
-                                if (!LDKF.isNativeArrayLike(arrayLike)) {
-                                    // Initialization > Array-Like (Length, Iterator)
-                                    var arrayLikeLength = ARRAY_LIKE_LENGTH || LDKM.int(LDKF.toNumber(LDKF.objectPrototypeGetProperty(arrayLike, "length", STRICT = true))),
-                                        arrayLikeIterator = arrayLikeLength;
-
-                                    // Modification > Array-Like > Length
-                                    LDKF.objectDefineProperty(arrayLike, "length", {configurable: true, enumerable: false, value: arrayLikeLength, writable: false});
-
-                                    // Loop > Update > Array-Like (Iterator)
-                                    while (arrayLikeIterator) { arrayLikeIterator -= 1; LDKF.objectDefineProperty(arrayLike, arrayLikeIterator, {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(arrayLike, arrayLikeIterator, STRICT = true), writable: false}) }
-                                }
-                            }
-
-                            // Unlock --- NOTE (Lapys) -> Parse the properties of a LapysJS array-like constructor to be mutable.
-                            function unlock(arrayLike, ARRAY_LIKE_LENGTH) {
-                                // Logic
-                                if (!LDKF.isNativeArrayLike(arrayLike)) {
-                                    // Initialization > Array-Like (Length, Iterator)
-                                    var arrayLikeLength = ARRAY_LIKE_LENGTH || LDKM.int(LDKF.toNumber(LDKF.objectPrototypeGetProperty(arrayLike, "length", STRICT = true))),
-                                        arrayLikeIterator = arrayLikeLength;
-
-                                    // Modification > Array-Like > Length
-                                    LDKF.objectDefineProperty(arrayLike, "length", {configurable: true, enumerable: false, value: arrayLikeLength, writable: true});
-
-                                    // Loop > Update > Array-Like (Iterator)
-                                    while (arrayLikeIterator) { arrayLikeIterator -= 1; LDKF.objectDefineProperty(arrayLike, arrayLikeIterator, {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(arrayLike, arrayLikeIterator, STRICT = true), writable: true}) }
-                                }
-                            }
-
-                        // Modification > Prototype --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Apart from not being constructed from the `Array` structure, the properties are also enumerable.
+                        // Modification > Prototype --- CHECKPOINT (Lapys) -> Do not forget to add the new `Array.prototype` properties --- NOTE (Lapys) -> Apart from not being constructed from the `Array` structure, the properties are also enumerable.
                             // Length
                             prototype.length = +null;
 
@@ -176,146 +142,190 @@
                                     LDKF.objectPrototypeSetProperty(concatenation, "length", concatenationLength, STRICT = true)
                                 }
 
-                                // Lock > Target
-                                lock(concatenation, STRICT = concatenationLength);
+                                // Update > Target
+                                LDKF.arrayLikePrototypeLock(concatenation, STRICT = concatenationLength);
 
                                 // Return
                                 return concatenation
                             };
 
-                            // Copy Within
+                            // Copy Within --- CHECKPOINT (Lapys)
                             prototype.copyWithin = function copyWithin(target, start, end) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Entries
+                            // Entries --- CHECKPOINT (Lapys)
                             prototype.entries = function entries() {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
                             // Every
                             prototype.every = function every(callback, target) {
-                                lock(this);
+                                // Initialization > Array-Like (Length, Iterator)
+                                var arrayLikeLength = LDKF.arrayLikePrototypeLength(this),
+                                    arrayLikeIterator = arrayLikeLength;
+
+                                // Update > Target
+                                (LDKF.getArgumentsLength(arguments) > 1) || (target = this);
+
+                                // Loop
+                                while (arrayLikeIterator) {
+                                    // Initialization > Array-Like Index
+                                    var arrayLikeIndex = arrayLikeLength - (arrayLikeIterator -= 1) - 1;
+
+                                    // Logic > Return
+                                    if (!callback.call(target, LDKF.arrayLikePrototypeElementAt(this, LDKF.arrayLikePrototypeElementAt(this, arrayLikeIndex), arrayLikeIndex, this)));
+                                        return false
+                                }
+
+                                // Lock
+                                LDKF.arrayLikePrototypeLock(this);
+
+                                // Return
+                                return true
                             };
 
                             // Fill
                             prototype.fill = function fill(value, start, end) {
-                                lock(this);
+                                // Initialization > (Array-Like) Length
+                                var arrayLikeLength = LDKF.arrayLikePrototypeLength(this), length = LDKF.getArgumentsLength(arguments);
+
+                                // Update > Start
+                                (length > 1) || (start = +0);
+
+                                // Logic
+                                if (LDKF.numberPrototypeIsPositive(start)) {
+                                    // Update > (End, Start)
+                                    (length > 2) || (end = arrayLikeLength);
+                                    (end > arrayLikeLength) && (end = arrayLikeLength);
+                                    LDKF.numberPrototypeIsNegative(end) && (end = LDKM.abs(end));
+
+                                    end = LDKM.int(end); start = LDKM.int(start);
+
+                                    // Loop > Update > Array-Like
+                                    while (end ^ start) LDKF.arrayLikePrototypeSetIndex(arrayLike, end -= 1, value);
+                                }
+
+                                // Update > Target
+                                LDKF.arrayLikePrototypeLock(this);
+
+                                // Return
+                                return this
                             };
 
-                            // Find
+                            // Find --- CHECKPOINT (Lapys)
                             prototype.find = function find(predicate, target) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Find Index
+                            // Find Index --- CHECKPOINT (Lapys)
                             prototype.findIndex = function findIndex(predicate, target) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Flat
+                            // Flat --- CHECKPOINT (Lapys)
                             prototype.flat = function flat() {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Flat Map
+                            // Flat Map --- CHECKPOINT (Lapys)
                             prototype.flatMap = function flatMap(callback, target) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // For Each
+                            // For Each --- CHECKPOINT (Lapys)
                             prototype.forEach = function forEach(callback, target) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Includes
+                            // Includes --- CHECKPOINT (Lapys)
                             prototype.includes = function includes(element, startIndex) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Index Of
+                            // Index Of --- CHECKPOINT (Lapys)
                             prototype.indexOf = function indexOf(element, startIndex) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Join
+                            // Join --- CHECKPOINT (Lapys)
                             prototype.join = function join(separator) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Keys
+                            // Keys --- CHECKPOINT (Lapys)
                             prototype.keys = function keys() {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Last Index Of
+                            // Last Index Of --- CHECKPOINT (Lapys)
                             prototype.lastIndexOf = function lastIndexOf(element, startIndex) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Map
+                            // Map --- CHECKPOINT (Lapys)
                             prototype.map = function map(callback, target) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Pop
+                            // Pop --- CHECKPOINT (Lapys)
                             prototype.pop = function pop() {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Push
+                            // Push --- CHECKPOINT (Lapys)
                             prototype.push = function push(items) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Reduce
+                            // Reduce --- CHECKPOINT (Lapys)
                             prototype.reduce = function reduce(callback, value) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Reduce Right
+                            // Reduce Right --- CHECKPOINT (Lapys)
                             prototype.reduceRight = function reduceRight(callback, value) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Reverse
+                            // Reverse --- CHECKPOINT (Lapys)
                             prototype.reverse = function reverse() {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Shift
+                            // Shift --- CHECKPOINT (Lapys)
                             prototype.shift = function shift() {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Slice
+                            // Slice --- CHECKPOINT (Lapys)
                             prototype.slice = function slice(start, end) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Some
+                            // Some --- CHECKPOINT (Lapys)
                             prototype.some = function some(callback, target) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Sort
+                            // Sort --- CHECKPOINT (Lapys)
                             prototype.sort = function sort(comparator) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Splice
+                            // Splice --- CHECKPOINT (Lapys)
                             prototype.splice = function splice(start, deleteCount, items) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Unshift
+                            // Unshift --- CHECKPOINT (Lapys)
                             prototype.unshift = function unshift(items) {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Values
+                            // Values --- CHECKPOINT (Lapys)
                             prototype.values = function values() {
-                                lock(this);
+                                LDKF.arrayLikePrototypeLock(this)
                             };
 
                         // Return
@@ -663,7 +673,7 @@
                                     var conditionalFallback = consideration.conditionalFallbacks[length - (iterator -= 1) - 1];
 
                                     // Modification > Considered > Method
-                                    !LDKF.objectPrototypeHasProperty(conditionalFallback, "condition") || conditionalFallback.condition.call(consideration, considered.method) && (considered.method = conditionalFallback.value);
+                                    !LDKF.objectPrototypeHasProperty(conditionalFallback, "condition") || conditionalFallback.condition.call(consideration, considered.method, considered.object) && (considered.method = conditionalFallback.value);
 
                                     // Update > Method Is Available
                                     methodIsAvailable = LDKF.isConstructible(considered.method)
@@ -722,7 +732,7 @@
                                             var conditionalFallback = consideration.conditionalFallbacks[length - (iterator -= 1) - 1];
 
                                             // Logic
-                                            if (!LDKF.objectPrototypeHasProperty(conditionalFallback, "condition") || conditionalFallback.condition.call(consideration, considered.method)) {
+                                            if (!LDKF.objectPrototypeHasProperty(conditionalFallback, "condition") || conditionalFallback.condition.call(consideration, considered.method, considered.object)) {
                                                 // Modification > Considered > Method
                                                 considered.method = conditionalFallback.value;
 
@@ -804,7 +814,7 @@
                                             var conditionalFallback = consideration.conditionalFallbacks[length - (iterator -= 1) - 1];
 
                                             // Logic > ...
-                                            if (!LDKF.objectPrototypeHasProperty(conditionalFallback, "condition") || conditionalFallback.condition.call(consideration, considered.childObject)) {
+                                            if (!LDKF.objectPrototypeHasProperty(conditionalFallback, "condition") || conditionalFallback.condition.call(consideration, considered.childObject, considered.object)) {
                                                 considered.childObject = conditionalFallback.value;
                                                 childObjectIsNative = true
                                             }
@@ -962,14 +972,14 @@
 
                 /* Frame --- NOTE (Lapys) -> A unit of time. */
                 LapysDevelopmentKit.Data.Frame = function Frame() {
-                    // Initialization > (Frame, Length)
-                    var frame = this, length = LDKF.getArgumentsLength(arguments);
+                    // Initialization > Frame
+                    var frame = this;
 
                     // Modification > Frame
                         // Events --- NOTE (Lapys) -> The functions called when the frame performs an event.
-                        frame.events = LDKF.arrayPrototypeClone(arguments, STRICT = length);
+                        frame.events = LDKF.toArray(arguments);
                             // Count
-                            frame.eventsCount = length;
+                            frame.eventsCount = LDKF.getArgumentsLength(arguments);
 
                         // Current Tick, Data, ID
                         frame.currentTick = +0;
@@ -3383,12 +3393,72 @@
                         else return arrayLike[index]
                     };
 
+                    // First
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeFirst = function arrayLikePrototypeFirst(arrayLike) {
+                        // Return
+                        return LDKF.isArray(arrayLike) ? LDKF.arrayPrototypeFirst(arrayLike) : LDKF.arrayLikePrototypeElementAt(arrayLike, +0)
+                    };
+
+                    // Last
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeLast = function arrayLikePrototypeLast(arrayLike, ARRAY_LIKE_LENGTH) {
+                        // Logic
+                        if (LDKF.isArray(arrayLike))
+                            // Return
+                            return LDKF.arrayPrototypeLast(arrayLike, STRICT = ARRAY_LIKE_LENGTH);
+
+                        else {
+                            // Initialization > Array-Like Length
+                            var arrayLikeLength = ARRAY_LIKE_LENGTH || LDKF.arrayLikePrototypeLength(arrayLike);
+
+                            // Return
+                            return LDKF.arrayLikePrototypeElementAt(arrayLike, ~arrayLikeLength ? arrayLikeLength - 1 : arrayLikeLength)
+                        }
+                    };
+
                     // Length --- CHECKPOINT (Lapys)
                     LapysDevelopmentKit.Functions.arrayLikePrototypeLength = function arrayLikePrototypeLength(arrayLike) {
                         // Logic > Return
                         if (LDKF.isArray(arrayLike)) return LDKF.arrayPrototypeLength(arrayLike);
                         else if (LDKF.isHTMLCollectionLike(arrayLike)) return LDKF.htmlCollectionPrototypeLength(arrayLike);
                         else { try { return LDKM.int(LDKF.toNumber(arrayLike.length)) } catch (error) {} return LDKC.Number.NaN }
+                    };
+
+                    /* Lock
+                            --- NOTE (Lapys) -> Parse the properties of a LapysJS array-like constructor to be constant.
+                            --- WARN (Lapys) -> The properties can still be re-defined using the `Object.defineProperty` method.
+                    */
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeLock = function arrayLikePrototypeLock(arrayLike, ARRAY_LIKE_LENGTH) {
+                        // Logic
+                        if (!LDKF.isNativeArrayLike(arrayLike)) {
+                            // Initialization > Array-Like (Length, Iterator)
+                            var arrayLikeLength = ARRAY_LIKE_LENGTH || LDKM.int(LDKF.toNumber(LDKF.objectPrototypeGetProperty(arrayLike, "length", STRICT = true))),
+                                arrayLikeIterator = arrayLikeLength;
+
+                            // Modification > Array-Like > Length
+                            LDKF.objectDefineProperty(arrayLike, "length", {configurable: true, enumerable: false, value: arrayLikeLength, writable: false});
+
+                            // Loop > Update > Array-Like (Iterator)
+                            while (arrayLikeIterator) { arrayLikeIterator -= 1; LDKF.objectDefineProperty(arrayLike, arrayLikeIterator, {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(arrayLike, arrayLikeIterator, STRICT = true), writable: false}) }
+                        }
+                    };
+
+                    // Set Index --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeSetIndex = function arrayLikePrototypeSetIndex(arrayLike, index, element) { arrayLike[index] = element; return element };
+
+                    // Unlock --- NOTE (Lapys) -> Parse the properties of a LapysJS array-like constructor to be mutable.
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeUnlock = function arrayLikePrototypeUnlock(arrayLike, ARRAY_LIKE_LENGTH) {
+                        // Logic
+                        if (!LDKF.isNativeArrayLike(arrayLike)) {
+                            // Initialization > Array-Like (Length, Iterator)
+                            var arrayLikeLength = ARRAY_LIKE_LENGTH || LDKM.int(LDKF.toNumber(LDKF.objectPrototypeGetProperty(arrayLike, "length", STRICT = true))),
+                                arrayLikeIterator = arrayLikeLength;
+
+                            // Modification > Array-Like > Length
+                            LDKF.objectDefineProperty(arrayLike, "length", {configurable: true, enumerable: false, value: arrayLikeLength, writable: true});
+
+                            // Loop > Update > Array-Like (Iterator)
+                            while (arrayLikeIterator) { arrayLikeIterator -= 1; LDKF.objectDefineProperty(arrayLike, arrayLikeIterator, {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(arrayLike, arrayLikeIterator, STRICT = true), writable: true}) }
+                        }
                     };
 
                 // Cancel Animation Frame
@@ -3601,26 +3671,44 @@
                         })()
                 };
 
-                // Element > Prototype
-                    // Add To Attribute --- CHECKPOINT (Lapys)
-                    // Add To Class --- CHECKPOINT (Lapys)
-                    // Get Attribute --- CHECKPOINT (Lapys)
-                    // Get Attribute Node --- CHECKPOINT (Lapys)
-                    // Has Attribute --- CHECKPOINT (Lapys)
-                    // Has Attribute Node --- CHECKPOINT (Lapys)
-                    // Has Attributes --- CHECKPOINT (Lapys)
-                    // Has In Attribute --- CHECKPOINT (Lapys)
-                    // Has In Class --- CHECKPOINT (Lapys)
-                    // Remove Attribute --- CHECKPOINT (Lapys)
-                    // Remove Attribute Node --- CHECKPOINT (Lapys)
-                    // Remove From Attribute --- CHECKPOINT (Lapys)
-                    // Remove From Class --- CHECKPOINT (Lapys)
-                    // Replace Attribute --- CHECKPOINT (Lapys)
-                    // Replace Attribute Node --- CHECKPOINT (Lapys)
-                    // Replace From Attribute --- CHECKPOINT (Lapys)
-                    // Replace From Class --- CHECKPOINT (Lapys)
-                    // Set Attribute --- CHECKPOINT (Lapys)
-                    // Set Attribute Node --- CHECKPOINT (Lapys)
+                // Document > Prototype --- CHECKPOINT (Lapys)
+                    // Get Elements By Class Name
+                    LapysDevelopmentKit.Functions.documentPrototypeGetElementsByClassName = function documentPrototypeGetElementsByClassName(classAttributeValue, DOCUMENT) { return LDKO.documentPrototypeGetElementsByClassName.call(DOCUMENT || LDKC.Objects.document, classAttributeValue) };
+
+                    // Get Elements By Tag Name
+                    LapysDevelopmentKit.Functions.documentPrototypeGetElementsByTagName = function documentPrototypeGetElementsByTagName(tagName, DOCUMENT) { return LDKO.documentPrototypeGetElementsByTagName.call(DOCUMENT || LDKC.Objects.document, tagName) };
+
+                    // Query Selector
+                    LapysDevelopmentKit.Functions.documentPrototypeQuerySelector = function documentPrototypeQuerySelector(cssSelectorSource, DOCUMENT) { return LDKO.documentPrototypeQuerySelector.call(DOCUMENT || LDKC.Objects.document, cssSelectorSource) };
+
+                    // Query Selector All
+                    LapysDevelopmentKit.Functions.documentPrototypeQuerySelectorAll = function documentPrototypeQuerySelectorAll(cssSelectorSource, DOCUMENT) { return LDKO.documentPrototypeQuerySelectorAll.call(DOCUMENT || LDKC.Objects.document, cssSelectorSource) };
+
+                // Element > Prototype --- CHECKPOINT (Lapys)
+                    // Get Attribute
+                    LapysDevelopmentKit.Functions.elementPrototypeGetAttribute = function elementPrototypeGetAttribute(element, attributeName) { return LDKO.elementPrototypeGetAttribute.call(element, attributeName) };
+
+                    // Get Attribute Node
+                    LapysDevelopmentKit.Functions.elementPrototypeGetAttributeNode = function elementPrototypeGetAttributeNode(element, attributeName) { return LDKO.elementPrototypeGetAttributeNode.call(element, attributeName) };
+
+                    // Has Attribute
+                    LapysDevelopmentKit.Functions.elementPrototypeHasAttribute = function elementPrototypeHasAttribute(element, attributeName) { return LDKO.elementPrototypeHasAttribute.call(element, attributeName) };
+
+                    // Has Attribute Node
+                    LapysDevelopmentKit.Functions.elementPrototypeHasAttributeNode = function elementPrototypeHasAttributeNode(element, attributeName) { return LDKO.elementPrototypeHasAttributeNode.call(element, attributeName) };
+
+                    // Remove Attribute
+                    LapysDevelopmentKit.Functions.elementPrototypeRemoveAttribute = function elementPrototypeRemoveAttribute(element, attributeName) { return LDKO.elementPrototypeRemoveAttribute.call(element, attributeName) };
+
+                    // Remove Attribute Node
+                    LapysDevelopmentKit.Functions.elementPrototypeRemoveAttributeNode = function elementPrototypeRemoveAttributeNode(element, attributeName) { return LDKO.elementPrototypeRemoveAttributeNode.call(element, attributeName) };
+
+                    // Set Attribute
+                    LapysDevelopmentKit.Functions.elementPrototypeSetAttribute = function elementPrototypeSetAttribute(element, attributeName, attributeValue) { return LDKO.elementPrototypeSetAttribute.call(element, attributeName, attributeValue) };
+
+                    // Set Attribute Node
+                    LapysDevelopmentKit.Functions.elementPrototypeSetAttributeNode = function elementPrototypeSetAttributeNode(element, attributeName, attributeValue) { return LDKO.elementPrototypeSetAttributeNode.call(element, attributeName, attributeValue) };
+
 
                 // Error
                     // Capture Stack Trace --- WARN (Lapys) -> This method does nothing if some native features are unavailable.
@@ -4332,27 +4420,151 @@
                 // Get Arguments Callee
                 LapysDevelopmentKit.Functions.getArgumentsCallee = function getArgumentsCallee(argumentsObject) { return argumentsObject.callee };
 
-                // Get HTML Elements By Class Attribute [Value] --- CHECKPOINT (Lapys)
-                LapysDevelopmentKit.Functions.getHTMLElementsByClassAttribute = function getHTMLElementsByClassAttribute(classAttributeValue, DOCUMENT, IGNORE_WHITESPACE_DELIMITATION) { return new LDKD.NodeList };
+                // Get DOM Nodes
+                LapysDevelopmentKit.Functions.getDOMNodes = function getDOMNodes(accessor, identifier, modifier, DOCUMENT) {
+                    // Initialization > (Length, Document, List (Length), (Nodes) (Iterator, Length))
+                    var length = LDKF.getArgumentsLength(arguments),
+                        document = arguments[length - 1],
+                        list = new LDKD.NodeList, listLength = +0,
+                        nodes = null, nodesIterator = null, nodesLength = null;
 
-                // Get HTML Elements By Tag Name --- CHECKPOINT (Lapys)
-                LapysDevelopmentKit.Functions.getHTMLElementsByTagName = function getHTMLElementsByTagName(tagName, DOCUMENT) {
-                    // Initialization > (HTML Collection (Length, Iterator), List)
-                    var htmlCollection = LDKO.documentPrototypeGetElementsByTagName.call(DOCUMENT || LDKC.Objects.document, tagName),
-                        htmlCollectionLength = LDKF.htmlCollectionPrototypeLength(htmlCollection),
-                        htmlCollectionIterator = htmlCollectionLength,
-                        list = new LDKD.NodeList;
+                    // Modification > List > Length
+                    LDKF.objectPrototypeSetProperty(list, "length", listLength, STRICT = true);
 
-                    // (Loop > )Update > (HTML Collection Iterator, List)
-                    while (htmlCollectionIterator) { htmlCollectionIterator -= 1; list[htmlCollectionIterator] = LDKF.htmlCollectionPrototypeItem(htmlCollection, htmlCollectionIterator) }
-                    list.length = htmlCollectionLength;
+                    // Update > (Identifier, Modifier)
+                    identifier = LDKF.isArrayLike(identifier) ? LDKF.toArray(identifier) : [identifier];
+                    modifier = length > 2 ? (LDKF.isArrayLike(modifier) ? LDKF.toArray(modifier) : [modifier]) : [];
 
-                    // Return
-                    return list
+                    // Initialization > Identifier (Length, Iterator)
+                    var identifierLength = LDKF.arrayLikePrototypeLength(identifier),
+                        identifierIterator = identifierLength,
+                        modifierLength = length > 2 ? LDKF.arrayLikePrototypeLength(modifier) : +0;
+
+                    // Loop
+                    while (identifierIterator) {
+                        // Initialization > Identifier Element
+                        var identifierElement = LDKF.arrayLikePrototypeElementAt(identifier, identifierLength - (identifierIterator -= 1) - 1);
+
+                        // Logic --- NOTE (Lapys) -> Do nothing if the specified identifier is falsy (with the exception of strings).
+                        if (identifierElement || LDKF.isString(identifierElement)) {
+                            // Update > (Nodes) (Length, Iterator)
+                            nodes = accessor.call(LDKF, LDKF.toString(identifierElement), STRICT = document);
+                            nodesLength = LDKF.arrayLikePrototypeLength(nodes);
+                            nodesIterator = nodesLength;
+
+                            // Loop > Update > (Nodes Iterator, List)
+                            while (nodesIterator) { nodesIterator -= 1; LDKF.objectPrototypeSetProperty(list, LDKF.toString(listLength + nodesIterator), LDKF.arrayLikePrototypeElementAt(nodes, nodesIterator), STRICT = true) }
+
+                            // Modification > List > Length
+                            LDKF.objectPrototypeSetProperty(list, "length", listLength += nodesLength, STRICT = true)
+                        }
+                    }
+
+                    // Logic
+                    if (modifierLength) {
+                        // Function > Modify
+                        function modify(modifier) {
+                            // Logic
+                            if (modifier == "all") { LDKF.arrayLikePrototypeLock(list); return list }
+                            else if (modifier == "first") return listLength ? LDKF.objectPrototypeGetProperty(list, '0', STRICT = true) : null;
+                            else if (modifier == "last") return listLength ? LDKF.objectPrototypeGetProperty(list, LDKF.toString(listLength - 1), STRICT = true) : null;
+                            else if (LDKF.isPositiveIntegerNumber(modifier)) return modifier < listLength ? LDKF.objectPrototypeGetProperty(list, LDKF.toString(modifier), STRICT = true) : null;
+                            else LDKF.throwTypeError("Invalid modifier: `" + LDKF.toPrettyString(modifier) + "`")
+                        }
+
+                        // Logic
+                        if (modifierLength == 1)
+                            // Return
+                            return modify(LDKF.arrayLikePrototypeFirst(modifier));
+
+                        else {
+                            // Initialization > (Modifications (Length), Modified List (Length), Modifier Iterator)
+                            var modifications = [], modificationsLength = +0,
+                                modifiedList = new LDKD.NodeList, modifiedListLength = +0,
+                                modifierIterator = modifierLength;
+
+                            // Modification > Modified List > Length
+                            LDKF.objectPrototypeSetProperty(modifiedList, "length", modifiedListLength, STRICT = true);
+
+                            // Loop
+                            while (modifierIterator) {
+                                // Update > Modifications (Length)
+                                modifications[modificationsLength] = modify(LDKF.arrayLikePrototypeElementAt(modifier, modifierLength - (modifierIterator -= 1) - 1));
+                                modificationsLength += 1
+                            }
+
+                            // Initialization > Modifications Iterator
+                            var modificationsIterator = modificationsLength;
+
+                            // Loop
+                            while (modificationsIterator) {
+                                // Initialization > Modification
+                                var modification = modifications[modificationsLength - (modificationsIterator -= 1) - 1];
+
+                                // Logic
+                                if (LDKF.isArrayLike(modification)) {
+                                    // Initialization > Modification (Length, Iterator)
+                                    var modificationLength = LDKF.arrayLikePrototypeLength(modification),
+                                        modificationIterator = modificationLength;
+
+                                    // Loop > Update > (Modification Iterator, Modified List)
+                                    while (modificationIterator) { modificationIterator -= 1; LDKF.objectPrototypeSetProperty(modifiedList, LDKF.toString(modifiedListLength + modificationIterator), LDKF.arrayLikePrototypeElementAt(modification, modificationIterator), STRICT = true); }
+
+                                    // Modification > Modified List > Length
+                                    LDKF.objectPrototypeSetProperty(modifiedList, "length", modifiedListLength += modificationLength, STRICT = true)
+                                }
+
+                                else {
+                                    // Update > Modified List
+                                    LDKF.objectPrototypeSetProperty(modifiedList, LDKF.toString(modifiedListLength), modification, STRICT = true);
+                                    LDKF.objectPrototypeSetProperty(modifiedList, "length", modifiedListLength += 1, STRICT = true)
+                                }
+                            }
+
+                            // Update > Modified List
+                            LDKF.arrayLikePrototypeLock(modifiedList);
+
+                            // Return
+                            return modifiedList
+                        }
+                    }
+
+                    else if (listLength == 1)
+                        // Return
+                        return LDKF.objectPrototypeGetProperty(list, '0', STRICT = true);
+
+                    else if (listLength) {
+                        // Update > List
+                        LDKF.arrayLikePrototypeLock(list);
+
+                        // Return
+                        return list
+                    }
+
+                    else
+                        // Return
+                        return null
                 };
 
-                // Get Nodes By CSS Selector [Source] --- CHECKPOINT (Lapys)
-                LapysDevelopmentKit.Functions.getNodesByCSSSelector = function getNodesByCSSSelector(cssSelectorSource, DOCUMENT) { return new LDKD.NodeList };
+                // Get HTML Elements By Class Attribute [Value]
+                LapysDevelopmentKit.Functions.getHTMLElementsByClassAttribute = function getHTMLElementsByClassAttribute(classAttributeValue, modifier, DOCUMENT) {
+                    // Return
+                    return LDKF.getDOMNodes(LDKF.documentPrototypeGetElementsByClassName, classAttributeValue, LDKF.getArgumentsLength(arguments) > 1 ? modifier : ANY, STRICT = DOCUMENT)
+                };
+
+                // Get HTML Elements By Tag Name
+                LapysDevelopmentKit.Functions.getHTMLElementsByTagName = function getHTMLElementsByTagName(tagName, modifier, DOCUMENT) {
+                    // Return
+                    return LDKF.getDOMNodes(LDKF.documentPrototypeGetElementsByTagName, tagName, LDKF.getArgumentsLength(arguments) > 1 ? modifier : ANY, STRICT = DOCUMENT);
+                };
+
+                // Get Nodes By CSS Selector [Source]
+                LapysDevelopmentKit.Functions.getNodesByCSSSelector = function getNodesByCSSSelector(cssSelectorSource, modifier, DOCUMENT) {
+                    // Return
+                    return !modifier || modifier == "first" ?
+                        LDKF.documentPrototypeQuerySelector(cssSelectorSource, STRICT = DOCUMENT) || null :
+                        LDKF.getDOMNodes(LDKF.documentPrototypeQuerySelectorAll, cssSelectorSource, LDKF.getArgumentsLength(arguments) > 1 ? modifier : ANY, STRICT = DOCUMENT)
+                };
 
                 // Get Property By Name --- WARN (Lapys) -> Defer to the `LapysDevelopmentKit.Functions.objectPrototypeGetProperty` method instead.
                 LapysDevelopmentKit.Functions.getPropertyByName = function getPropertyByName(object, propertyName) { return object ? object[propertyName] : undefined };
@@ -4377,6 +4589,7 @@
                     // Return
                     return LDKF.objectPrototypeInstanceOf(argument, LDKD.FunctionParameterList) ||
                         LDKF.objectPrototypeInstanceOf(argument, LDKD.NodeList) ||
+                        LDKF.objectPrototypeIsOfConstructor(argument, LDKO.array, STRICT = true) ||
                         LDKF.isNativeArrayLike(argument)
                 };
 
@@ -4485,7 +4698,7 @@
                 LapysDevelopmentKit.Functions.isNodeLike = function isNodeLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.node) || (!LDKC.Assertions.has_Node_Constructor || LDKT.isNodeLike(argument)) };
 
                 // Is Node List-Like
-                LapysDevelopmentKit.Functions.isNodeListLike = function isNodeListLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.nodeList) };
+                LapysDevelopmentKit.Functions.isNodeListLike = function isNodeListLike(argument) { return LDKF.objectPrototypeIsOfConstructor(argument, LDKO.nodeList) || (!LDKC.Assertions.has_NodeList_Constructor || LDKT.isNodeListLike(argument)) };
 
                 // Is Non-Constructible
                 LapysDevelopmentKit.Functions.isNonConstructible = function isNonConstructible(argument) { return LDKF.isNull(argument) || LDKF.isVoid(argument) };
@@ -7571,6 +7784,21 @@
                             return trimmed
                         };
 
+                        // Un-Escape Characters
+                        LapysDevelopmentKit.Functions.stringPrototypeUnescapeCharacters = function stringPrototypeUnescapeCharacters(string) {
+                            // Update > String
+                            string = LDKF.stringPrototypeReplaceAll(string, '\b', "\\b", STRICT = null, STRICT = 1);
+                            string = LDKF.stringPrototypeReplaceAll(string, '\f', "\\f", STRICT = null, STRICT = 1);
+                            string = LDKF.stringPrototypeReplaceAll(string, '\n', "\\n", STRICT = null, STRICT = 1);
+                            string = LDKF.stringPrototypeReplaceAll(string, '\r', "\\r", STRICT = null, STRICT = 1);
+                            string = LDKF.stringPrototypeReplaceAll(string, '\t', "\\t", STRICT = null, STRICT = 1);
+                            string = LDKF.stringPrototypeReplaceAll(string, '\v', "\\v", STRICT = null, STRICT = 1);
+                            string = LDKF.stringPrototypeReplaceAll(string, '\v', "\\v", STRICT = null, STRICT = 1);
+
+                            // Return
+                            return string
+                        };
+
                         // Upper
                         LapysDevelopmentKit.Functions.stringPrototypeUpper = function stringPrototypeUpper(string, STRING_LENGTH) {
                             // Initialization > String (Iterator, Lowercase)
@@ -7750,9 +7978,13 @@
                 };
 
                 // To Array --- NOTE (Lapys) -> Converts only array-like objects into pure `Array``s.
-                LapysDevelopmentKit.Functions.toArray = function toArray(arrayLike, ARRAY_LIKE_LENGTH) {
+                LapysDevelopmentKit.Functions.toArray = function toArray(arrayLike, ARRAY_LIKE_LENGTH, IS_ARGUMENTS_OBJECT) {
                     // Logic
-                    if (LDKF.isArray(arrayLike))
+                    if (IS_ARGUMENTS_OBJECT)
+                        // Return
+                        return LDKF.arrayPrototypeClone(arrayLike);
+
+                    else if (LDKF.isArray(arrayLike))
                         // Return
                         return arrayLike;
 
@@ -7793,6 +8025,48 @@
 
                     // Return
                     return number
+                };
+
+                // To Pretty String --- NOTE (Lapys) -> This routine is kinda odd because it`s really only useful in pretty-printing.
+                LapysDevelopmentKit.Functions.toPrettyString = function toPrettyString(argument) {
+                    // Logic
+                    if (LDKF.isString(argument))
+                        // Return
+                        return '"' + LDKF.stringPrototypeAbateFromFront(LDKF.stringPrototypeUnescapeCharacters(argument), 30, "...") + '"';
+
+                    else if (LDKF.isFunction(argument))
+                        // Return
+                        return LDKF.functionPrototypeHead(argument) + " { ... }";
+
+                    else if (LDKF.isObjectLike(argument))
+                        // Logic
+                        if (LDKF.isArray(argument))
+                            // Return
+                            return "[...]";
+
+                        else if (LDKF.isObject(argument))
+                            // Return
+                            return "{ ... }";
+
+                        else if (LDKF.isRegularExpression(argument))
+                            // Return
+                            return '/' + LDKF.stringPrototypeAbateFromFront(LDKF.stringPrototypeUnescapeCharacters(LDKF.regularExpressionPrototypeSource(argument)), 30, "...") + '/';
+
+                        else {
+                            // Initialization > Constructor
+                            var constructor = LDKF.objectPrototypeConstructor(argument);
+
+                            // Return
+                            return constructor === LDKO.object ? "{ ... }" : LDKF.functionPrototypeName(constructor) + " { ... }"
+                        }
+
+                    else if (LDKF.isSymbol(argument))
+                        // Return
+                        return "Symbol(...)";
+
+                    else
+                        // Return
+                        return LDKF.toString(argument)
                 };
 
                 // To String
@@ -9305,11 +9579,12 @@
                     .addAlternateCondition(function(constructorRoutine) { return LDKF.isObjectLike(constructorRoutine) && (LDKF.numberPrototypeIsNaN(LDKF.toNumber(constructorRoutine)) && LDKF.toString(constructorRoutine) == "[object HTMLDocument]") })
                     .requestForNativeConstructor();
 
-                LapysDevelopmentKit.Constants.Objects.document = LDKT.objectPrototypeConsiderNativeObjectOfObject(GLOBAL, "document", STRICT = null, STRICT = "`document` object") // NOTE (Lapys) -> At least the `document` object is consistent on ALL web environments.
-                    .addCondition(LDKT.isBrowserEnvironment)
-                    .addCondition(function(object) { return LDKF.objectPrototypeIsOfConstructor(object, LDKO.document, STRICT = true) })
-                    .addAlternateCondition(function(object) { return LDKF.isDocumentLike(object) })
-                    .requestForNativeObject();
+                LapysDevelopmentKit.Constants.Objects.document = LDKC.Assertions.isBrowserEnvironment ?
+                    LDKT.objectPrototypeConsiderNativeObjectOfObject(GLOBAL, "document", STRICT = null, STRICT = "`document` object") // NOTE (Lapys) -> At least the `document` object is consistent on ALL web environments.
+                        .addCondition(function(object) { return LDKF.objectPrototypeIsOfConstructor(object, LDKO.document, STRICT = true) })
+                        .addAlternateCondition(function(object) { return LDKF.isDocumentLike(object) })
+                        .requestForNativeObject() :
+                    undefined;
                     // ...
                     LapysDevelopmentKit.Constants.Assertions.has_Document_Constructor = LDKT.isConstructor(LDKO.document);
                     LapysDevelopmentKit.Constants.Assertions.has_HTMLDocument_Constructor = LDKT.isConstructor(LDKO.htmlDocument);
@@ -9324,11 +9599,57 @@
                                 .requestForNativeMethod() :
                             undefined;
 
+                        // Get Elements By Class Name
+                        LapysDevelopmentKit.Objects.documentPrototypeGetElementsByClassName = LDKT.request_document_Prototype() || LDKC.Objects.document ?
+                            LDKT.objectPrototypeConsiderNativeMethodOfObject(LDKT.request_document_Prototype() || LDKC.Objects.document, "getElementsByClassName")
+                                .addCondition(LDKT.isBrowserEnvironment)
+                                .addConditionalFallback({
+                                    condition: function(method, object) { return !LDKF.objectPrototypeHasProperty(object, "getElementsByClassName") || LDKF.isVoid(method) },
+                                    value: function getElementsByClassName(className) {
+                                        // Initialization > (Elements (Length), (HTML Collection) (Length, Iterator))
+                                        var elements = [], elementsLength = +0,
+                                            htmlCollection = LDKF.documentPrototypeGetElementsByTagName(className, STRICT = this),
+                                            htmlCollectionLength = LDKF.htmlCollectionPrototypeLength(htmlCollection),
+                                            htmlCollectionIterator = htmlCollectionLength;
+
+                                        // Loop
+                                        while (htmlCollectionIterator) {
+                                            // Initialization > HTML Element
+                                            var htmlElement = LDKF.htmlCollectionPrototypeItem(htmlCollection, htmlCollectionLength - (htmlCollectionIterator -= 1) - 1);
+
+                                            // Logic
+                                            if (className) {
+                                                // Logic
+                                                if (LDKF.elementPrototypeGetAttribute(htmlElement, "class") == className) {
+                                                    // Update > Elements (Length)
+                                                    elements[elementsLength] = htmlElement;
+                                                    elementsLength += 1
+                                                }
+                                            }
+
+                                            else if (LDKF.elementPrototypeHasAttribute(htmlElement, "class")) {
+                                                // Update > Elements (Length)
+                                                elements[elementsLength] = htmlElement;
+                                                elementsLength += 1
+                                            }
+                                        }
+
+                                        // Return
+                                        return elements
+                                    }
+                                })
+                                .requestForNativeMethod() :
+                            undefined;
+
                         // Get Elements By Tag Name
                         LapysDevelopmentKit.Objects.documentPrototypeGetElementsByTagName = LDKT.request_document_Prototype() || LDKC.Objects.document ?
-                            LDKT.objectPrototypeConsiderNativeMethodOfObject(LDKT.request_document_Prototype() || LDKC.Objects.document, "getElementsByTagName")
-                            .requestForNativeMethod() :
+                            LDKT.objectPrototypeConsiderNativeMethodOfObject(LDKT.request_document_Prototype() || LDKC.Objects.document, "getElementsByTagName", STRICT = null, STRICT = "`Document.prototype.getElementsByTagName` method")
+                                .addCondition(LDKT.isBrowserEnvironment)
+                                .requestForNativeMethod() :
                             undefined;
+
+                        // Query Selector --- CHECKPOINT (Lapys)
+                        // Query Selector All --- CHECKPOINT (Lapys)
 
                         // Register Element
                         LapysDevelopmentKit.Objects.documentPrototypeRegisterElement = LDKT.request_document_Prototype() || LDKC.Objects.document ?
@@ -9613,7 +9934,7 @@
                     LapysDevelopmentKit.Objects.htmlCollectionPrototype = LDKF.getPropertyByName(LDKO.htmlCollection, "prototype");
                         // Item
                         LapysDevelopmentKit.Objects.htmlCollectionPrototypeItem = LDKT.objectPrototypeConsiderNativeMethodOfObject(LDKF.isObjectLike(LDKO.htmlCollectionPrototype) ? LDKO.htmlCollectionPrototype : {}, "item", STRICT = null, STRICT = "`HTMLCollection.prototype.item` method")
-                            .addConditionalFallback({condition: function(method) { console.log(2019); return LDKF.isVoid(method) }, value: function item(index) { return this[index] || null } })
+                            .addConditionalFallback({condition: function(method) { return LDKF.isVoid(method) }, value: function item(index) { return this[index] || null } })
                             .requestForNativeMethod();
 
                         // Length [Accessor]
@@ -9887,6 +10208,13 @@
                         // Replace Child --- CHECKPOINT (Lapys)
 
                 // Node List --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Objects.nodeList = LDKT.objectPrototypeConsiderNativeConstructorOfObject(GLOBAL, "NodeList")
+                    .addCondition(LDKT.isBrowserEnvironment)
+                    .requestForNativeConstructor();
+
+                    // ...
+                    LapysDevelopmentKit.Constants.Assertions.has_NodeList_Constructor = LDKT.isConstructor(LDKO.nodeList);
+
                     // Prototype --- CHECKPOINT (Lapys)
                         // Item --- CHECKPOINT (Lapys)
 
@@ -10376,19 +10704,21 @@
                         // Timeout --- CHECKPOINT (Lapys)
                         // Video --- CHECKPOINT (Lapys)
                         // When --- CHECKPOINT (Lapys)
+
+                        // NOTE (Lapys) -> The following functions here are only suggested if performance is not a major concern; In its case: form over function.
                         // $a  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Parent Nodes Recursively (Ancestors) By Query Selector
-                        // $c  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Elements By Class Attribute Value
-                        LDKF.objectDefineProperty(GLOBAL, "$c", {configurable: true, enumerable: false, value: function $c(className) {}, writable: true});
+                        // $c --- NOTE (Lapys) -> Get Elements By Class Attribute Value
+                        LDKC.Assertions.isBrowserEnvironment && LDKF.objectDefineProperty(GLOBAL, "$c", {configurable: true, enumerable: false, value: function $c(className) { var length = LDKF.getArgumentsLength(arguments), iterator = length, modifiers = []; while (iterator -= 1) modifiers[iterator - 1] = arguments[iterator]; return LDKF.getHTMLElementsByClassAttribute(className, modifiers, STRICT = this === GLOBAL ? LDKC.Objects.document : this) }, writable: true});
 
                         // $d  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Immediate Children (Descendants) By Query Selector
                         // $i  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Elements By ID Attribute Value
                         // $n  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Next Sibling Nodes By Query Selector
                         // $p  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Previous Sibling Nodes By Query Selector
-                        // $t  --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Get Elements By Tag Name
-                        LDKF.objectDefineProperty(GLOBAL, "$t", {configurable: true, enumerable: false, value: function $t(tagName) {}, writable: true});
+                        // $t --- NOTE (Lapys) -> Get Elements By Tag Name
+                        LDKC.Assertions.isBrowserEnvironment && LDKF.objectDefineProperty(GLOBAL, "$t", {configurable: true, enumerable: false, value: function $t(tagName) { var length = LDKF.getArgumentsLength(arguments), iterator = length, modifiers = []; while (iterator -= 1) modifiers[iterator - 1] = arguments[iterator]; return LDKF.getHTMLElementsByTagName(tagName, modifiers, STRICT = this === GLOBAL ? LDKC.Objects.document : this) }, writable: true});
 
                         // $$ --- NOTE (Lapys) -> Get Nodes By Query Selector
-                        LDKF.objectDefineProperty(GLOBAL, "$$", {configurable: true, enumerable: false, value: function $$(selector) {}, writable: true});
+                        LDKC.Assertions.isBrowserEnvironment && LDKF.objectDefineProperty(GLOBAL, "$$", {configurable: true, enumerable: false, value: function $$(selector) { var length = LDKF.getArgumentsLength(arguments), iterator = length, modifiers = []; while (iterator -= 1) modifiers[iterator - 1] = arguments[iterator]; return LDKF.getNodesByCSSSelector(selector, modifiers, STRICT = this === GLOBAL ? LDKC.Objects.document : this)}, writable: true});
 
                 // Return
                 return +0
