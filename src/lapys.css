@@ -732,7 +732,10 @@
         progress,
         progress::-webkit-progress-bar,
         progress::-webkit-progress-value,
-        select { box-sizing: border-box }
+        select {
+            box-sizing: border-box;
+            *behavior: url(resources/htc/box-sizing.htc)
+        }
 
         /* <canvas> */
         canvas { -moz-user-select: none }
@@ -927,10 +930,7 @@
         }
 
         /* <html> */
-        html {
-            box-decoration-break: slice;
-            *behavior: url(resources/htc/box-sizing.htc)
-        }
+        html { box-decoration-break: slice }
 
         /* <h1> */
         h1 {
