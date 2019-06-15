@@ -37,7 +37,7 @@
                         --- private and public features are independent & separate but still communicate between each other (private being the main authority),
                         --- multiple solutions (often special-purpose) are deferred in favor of a single general-purpose solution when feasible,
                         --- syntax is explained well enough to be understood without bias/ context (through the code and not comments),
-                        --- and so on…
+                        --- and so on...
 
                 -- Over its years of development, the library is still a bare-bones version of what it could be.
 
@@ -58,8 +58,9 @@
     --- UPDATE REQUIRED ---
         #Lapys:
             - Also check for vendor-specific features.
-            - Utilize the `LapysDevelopmentKit.Functions.functionPrototypeApply` and `LapysDevelopmentKit.Functions.functionPrototypeCall` methods where possible.
-            - Target development environments (these environments may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
+            - Replace `Function.prototype.apply` and `Function.prototype.call` calls with the `LapysDevelopmentKit.Functions.functionPrototypeApply` and `LapysDevelopmentKit.Functions.functionPrototypeCall` methods.
+            - Spoof-proof `htc` file add-ons with LapysJS features (if possible).
+            - Target development environments (these may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
                 -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- Netscape Navigator 2 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- others...
@@ -174,7 +175,7 @@
                                     var arrayLikeIndex = arrayLikeLength - (arrayLikeIterator -= 1) - 1;
 
                                     // Logic > Return
-                                    if (!callback.call(target, LDKF.arrayLikePrototypeElementAt(this, LDKF.arrayLikePrototypeElementAt(this, arrayLikeIndex), arrayLikeIndex, this)));
+                                    if (!LDKF.functionPrototypeCall(callback, target, LDKF.arrayLikePrototypeElementAt(this, LDKF.arrayLikePrototypeElementAt(this, arrayLikeIndex), arrayLikeIndex, this)))
                                         return false
                                 }
 
@@ -482,8 +483,11 @@
                             return frame
                         };
 
-                        // Timestamp
-                        LapysDevelopmentKit.Data.ClockPrototype.timestamp = function timestamp() { return LDKC.has_Performance_Constructor ? LDKO.performancePrototypeNow.call(LDKC.Objects.performance) : LDKO.dateNow.call(LDKO.date) };
+                        // Timestamp --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Data.ClockPrototype.timestamp = function timestamp() {
+                            return LDKC.has_Performance_Constructor ? LDKO.performancePrototypeNow.call(LDKC.Objects.performance) : LDKO.dateNow.call(LDKO.date);
+                            return LDKC.has_Performance_Constructor ? LDKO.performancePrototypeNow.call(LDKC.Objects.performance) : LDKO.dateNow.call(LDKO.date)
+                        };
 
                         // Stop
                         LapysDevelopmentKit.Data.ClockPrototype.stop = function stop(frame) {
@@ -3460,6 +3464,9 @@
                             while (arrayLikeIterator) { arrayLikeIterator -= 1; LDKF.objectDefineProperty(arrayLike, arrayLikeIterator, {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(arrayLike, arrayLikeIterator, STRICT = true), writable: true}) }
                         }
                     };
+
+                // Assert
+                LapysDevelopmentKit.Functions.assert = function assert(expressionValue, onfail) { expressionValue || (LDKF.getArgumentsLength(arguments) > 1 ? onfail() : LDKF.throwAssertionFailError()) };
 
                 // Cancel Animation Frame
                 LapysDevelopmentKit.Functions.cancelAnimationFrame = function cancelAnimationFrame(frameID) { return LDKF.functionPrototypeCall(LDKO.cancelAnimationFrame, GLOBAL, frameID) };
@@ -10594,7 +10601,7 @@
                             // Prototype --- CHECKPOINT (Lapys)
 
                         // Assert
-                        LDKF.objectDefineProperty(GLOBAL, "assert", {configurable: true, enumerable: false, value: function assert(expressionValue, onfail) { expressionValue || (LDKF.getArgumentsLength(arguments) > 1 ? onfail() : LDKF.throwAssertionFailError()) }, writable: true});
+                        LDKF.objectDefineProperty(GLOBAL, "assert", {configurable: true, enumerable: false, value: function assert(expression, onfail) { return LDKF.assert.apply(LDKF, arguments) }, writable: true});
 
                         // Audio --- CHECKPOINT (Lapys)
                         // Boolean
@@ -10649,7 +10656,7 @@
                         LDKF.objectDefineProperty(GLOBAL, "num", {configurable: true, enumerable: false, value: function num(value) { return LDKF.number(value) }, writable: true});
 
                         // Object --- NOTE (Lapys) -> Not the constructor.
-                        LDKF.objectDefineProperty(GLOBAL, "obj", {configurable: true, enumerable: false, value: function num(value) { return LDKF.object(value) }, writable: true});
+                        LDKF.objectDefineProperty(GLOBAL, "obj", {configurable: true, enumerable: false, value: function obj(value) { return LDKF.object(value) }, writable: true});
                             // Concatenate --- CHECKPOINT (Lapys)
                             // Define Property --- CHECKPOINT (Lapys)
                             // Flatten --- CHECKPOINT (Lapys)

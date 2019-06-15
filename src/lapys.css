@@ -23,7 +23,9 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
+            - Prettify this stylesheet source using Prettify JS.
             - `behavior` properties` `url` value should be relative to the documents their injected from, not this current stylesheet.
+            - Separate native & vendor selectors in the `Universal Features` section.
             - Support vendor prefixes at end of development.
 */
 /* [Universal Features] */
