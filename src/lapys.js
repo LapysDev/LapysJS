@@ -90,23 +90,20 @@
         // Lapys Development Kit
         LapysDevelopmentKit = (function() {
             // Class > Lapys Development Kit
-            function LapysDevelopmentKit() {};
-                // Clone --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Which context will the `LapysDevelopmentKit` reference defer to? The local scope (the class definition or the variable) or the external declaration?
-                LapysDevelopmentKit.prototype.clone = function clone() { return LapysDevelopmentKit };
-
+            function LapysDevelopmentKit() {}
                 // Temporary Data
                 LapysDevelopmentKit.prototype.tmp = {};
 
             /* Definition > Lapys Development Kit */
             var LapysDevelopmentKit = new LapysDevelopmentKit;
                 // Constants
-                LapysDevelopmentKit.Constants = {Assertions: {}, Keywords: {}, Number: {}, Objects: {}, String: {}};
+                LapysDevelopmentKit.Constants = {Assertions: {}, Keywords: {}, Numbers: {}, Objects: {}, Strings: {}};
 
                 // Data
                 LapysDevelopmentKit.Data = {};
 
                 // Environment
-                LapysDevelopmentKit.Environment = {Data: {}, Type: null, State: "OK", Vendors: []};
+                LapysDevelopmentKit.Environment = {Data: {}, Global: null, Type: null, State: "OK", Vendors: []};
 
                 // Function
                 LapysDevelopmentKit.Functions = {
@@ -131,7 +128,14 @@
 
                         /* Modification > Prototype
                                 --- CHECKPOINT (Lapys) -> Do not forget to add the new `Array.prototype` properties
-                                --- NOTE (Lapys) -> Apart from not being constructed from the `Array` structure, the properties are also enumerable.
+                                --- NOTE (Lapys) -> We modify the prototype with array-like custom methods to allow array manipulation be consistent and intuitive with non-array objects.
+                                    - Example:
+                                        With the native `Array.prototype.concat` method:
+                                            `<LapysJS array-like object>.concat([...]) // returns [<LapysJS array-like object>, ...]`
+                                        With the custom-defined `concat` method:
+                                            `<LapysJS array-like object>.concat([...]) // returns <LapysJS array-like object> with the concatenated items`
+
+                                --- WARN (Lapys) -> Apart from not being constructed from the `Array` structure, the properties are also enumerable.
                                     - We also lock/ unlock the custom-defined array-likes.
                                     - References to re-used methods are stored in local variables.
                         */
@@ -143,23 +147,31 @@
                                 // Initialization > ((Concatenation) (Length), Iterator)
                                 var concatenation = new constructor,
                                     concatenationLength = LDKF.arrayLikePrototypeLength(this) || +0,
-                                    length = LDKF.getArgumentsLength(arguments), iterator = length;
+                                    length = LDKF.getArgumentsLength(arguments);
 
                                 // Update > Concatenation
-                                LDKF.arrayPrototypeConcatenate(concatenation, LDKF.toArray(this, STRICT = concatenationLength));
+                                LDKF.arrayLikePrototypeCopy(concatenation, LDKF.toArray(this, STRICT = concatenationLength), STRICT = +0, STRICT = concatenationLength, STRICT = true);
+
+                                // Modification > Concatenation > Length
                                 LDKF.objectPrototypeSetProperty(concatenation, "length", concatenationLength, STRICT = true);
 
-                                // Loop
-                                while (iterator) {
-                                    // Initialization > Array-Like (Length)
-                                    var arrayLike = arguments[length - (iterator -= 1) - 1], arrayLikeLength = LDKF.arrayLikePrototypeLength(arrayLike) || +0;
+                                // Logic
+                                if (length) {
+                                    // Initialization > Iterator
+                                    var iterator = length;
 
-                                    // Update > ...
-                                    concatenationLength += arrayLikeLength;
-                                    LDKF.arrayPrototypeConcatenate(concatenation, LDKF.toArray(arrayLike, STRICT = arrayLikeLength));
+                                    // Loop
+                                    while (iterator) {
+                                        // Initialization > Array-Like (Length)
+                                        var arrayLike = arguments[length - (iterator -= 1) - 1], arrayLikeLength = LDKF.arrayLikePrototypeLength(arrayLike) || +0;
 
-                                    // Modification > Concatenation > Length
-                                    LDKF.objectPrototypeSetProperty(concatenation, "length", concatenationLength, STRICT = true)
+                                        // Update > ...
+                                        concatenationLength += arrayLikeLength;
+                                        LDKF.arrayPrototypeConcatenate(concatenation, LDKF.toArray(arrayLike, STRICT = arrayLikeLength));
+
+                                        // Modification > Concatenation > Length
+                                        LDKF.objectPrototypeSetProperty(concatenation, "length", concatenationLength, STRICT = true)
+                                    }
                                 }
 
                                 // Update > Target
@@ -253,9 +265,6 @@
                                         return false
                                 }
 
-                                // Lock
-                                LDKF.arrayLikePrototypeLock(this);
-
                                 // Return
                                 return true
                             };
@@ -348,8 +357,9 @@
 
                             // Flat
                             var prototypeFlat = (prototype.flat = function flat() {
-                                // Constant > Flat Array
-                                var flatArray = LDKF.isArray(this) ? LDKF.arrayPrototypeClone(this) : LDKF.toArray(this);
+                                // Constant > Flat Array(-Like)
+                                var flatArray = LDKF.isArray(this) ? LDKF.arrayPrototypeClone(this) : LDKF.toArray(this),
+                                    flatArrayLike = new constructor;
 
                                 // Logic
                                 if (LDKF.getArgumentsLength(flatArray)) {
@@ -364,15 +374,14 @@
                                     // Update > Flat Array
                                     LDKF.arrayPrototypeFlatten(flatArray);
 
-                                // Initialization > Flat (Array-Like, Iterator)
-                                var flatArrayLike = new constructor,
-                                    flatArrayIterator = LDKF.arrayPrototypeLength(flatArray) || +0;
+                                // Constant > Flat Array Length
+                                var flatArrayLength = LDKF.arrayPrototypeLength(flatArray);
 
                                 // ...
-                                LDKF.objectPrototypeSetProperty(flatArrayLike, "length", flatArrayIterator, STRICT = true);
-                                while (flatArrayIterator) { flatArrayIterator -= 1; LDKF.arrayLikePrototypeSetIndex(flatArrayLike, flatArrayIterator, flatArray[flatArrayIterator], STRICT = true) }
+                                LDKF.objectPrototypeSetProperty(flatArrayLike, "length", flatArrayLength, STRICT = true);
 
                                 // Update > Flat Array-Like
+                                LDKF.arrayLikePrototypeCopy(flatArrayLike, flatArray, STRICT = +0, STRICT = flatArrayLength, STRICT = true);
                                 LDKF.arrayLikePrototypeLock(flatArrayLike);
 
                                 // Return
@@ -526,17 +535,50 @@
                                     LDKF.throwTypeError(LDKF.toPrettyString(callback) + " is not a function")
                             });
 
-                            // Pop --- CHECKPOINT (Lapys)
+                            // Pop
                             prototype.pop = function pop() {
-                                LDKF.arrayLikePrototypeLock(this)
+                                // Constant > Array-Like Length
+                                var arrayLikeLength = LDKF.arrayLikePrototypeLength(this);
+
+                                // Logic
+                                if (arrayLikeLength) {
+                                    // Constant > (Array-Like Index, Popped Array-Like Element)
+                                    var arrayLikeIndex = LDKF.toString(arrayLikeLength - 1),
+                                        poppedArrayLikeElement = LDKF.objectPrototypeGetProperty(this, arrayLikeIndex, STRICT = true);;
+
+                                    // Deletion, (Modification > Target > ...)
+                                    LDKF.objectDefineProperty(this, arrayLikeIndex, {configurable: true, enumerable: true, value: poppedArrayLikeElement, writable: true});
+                                    LDKF.objectPrototypeDeleteProperty(this, arrayLikeIndex);
+                                    LDKF.objectPrototypeSetProperty(this, "length", arrayLikeLength - 1, STRICT = true);
+
+                                    // Return
+                                    return poppedArrayLikeElement
+                                }
                             };
 
-                            // Push --- CHECKPOINT (Lapys)
+                            // Push
                             prototype.push = function push(items) {
-                                LDKF.arrayLikePrototypeLock(this)
+                                // Initialization > Array-Like (Length)
+                                var arrayLikeLength = LDKF.arrayLikePrototypeLength(this),
+                                    length = LDKF.getArgumentsLength(arguments);
+
+                                // Logic
+                                if (length) {
+                                    // Initialization > (Array-Like Length, Iterator)
+                                    var iterator = length;
+
+                                    // Loop > Modification > Target > ...
+                                    while (iterator) { LDKF.objectPrototypeDefineProperty(this, LDKF.toString(arrayLikeLength), {configurable: true, enumerable: true, value: arguments[length - (iterator -= 1) - 1], writable: false}); arrayLikeLength += 1 }
+
+                                    // Modification > Target > Length
+                                    LDKF.objectPrototypeSetProperty(arrayLikeLength, "length", arrayLikeLength, STRICT = true)
+                                }
+
+                                // Return
+                                return arrayLikeLength
                             };
 
-                            // Reduce --- CHECKPOINT (Lapys)
+                            // Reduce --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Continue cloning array methods.
                             prototype.reduce = function reduce(callback, value) {
                                 LDKF.arrayLikePrototypeLock(this)
                             };
@@ -546,9 +588,18 @@
                                 LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Reverse --- CHECKPOINT (Lapys)
+                            // Reverse
                             prototype.reverse = function reverse() {
-                                LDKF.arrayLikePrototypeLock(this)
+                                // Constant > Reversed Array
+                                var reversedArray = LDKF.arrayPrototypeReverse(LDKF.isArray(this) ? LDKF.arrayPrototypeClone(this) : LDKF.toArray(this));
+
+                                // Update > Target
+                                LDKF.arrayLikePrototypeUnlock(this);
+                                LDKF.arrayLikePrototypeCopy(this, reversedArray);
+                                LDKF.arrayLikePrototypeLock(this);
+
+                                // Return
+                                return this
                             };
 
                             // Shift --- CHECKPOINT (Lapys)
@@ -561,9 +612,27 @@
                                 LDKF.arrayLikePrototypeLock(this)
                             };
 
-                            // Some --- CHECKPOINT (Lapys)
+                            // Some
                             prototype.some = function some(callback, target) {
-                                LDKF.arrayLikePrototypeLock(this)
+                                // Initialization > Array-Like (Length, Iterator)
+                                var arrayLikeLength = LDKF.arrayLikePrototypeLength(this) || +0,
+                                    arrayLikeIterator = arrayLikeLength;
+
+                                // Update > Target
+                                (LDKF.getArgumentsLength(arguments) > 1) || (target = this);
+
+                                // Loop
+                                while (arrayLikeIterator) {
+                                    // Initialization > Array-Like Index
+                                    var arrayLikeIndex = arrayLikeLength - (arrayLikeIterator -= 1) - 1;
+
+                                    // Logic > Return
+                                    if (LDKF.functionPrototypeCall(callback, target, LDKF.arrayLikePrototypeElementAt(this, LDKF.arrayLikePrototypeElementAt(this, arrayLikeIndex), arrayLikeIndex, this)))
+                                        return true
+                                }
+
+                                // Return
+                                return false
                             };
 
                             // Sort --- CHECKPOINT (Lapys)
@@ -648,9 +717,10 @@
         /* Lapys Development Kit --- NOTE (Lapys) -> Building and integrating the LDK into JavaScript may be a major part of the LapysJS library. */
             /* Constants */
                 // Number > ...
-                LapysDevelopmentKit.Constants.Number.Infinity = 1 / +0;
-                LapysDevelopmentKit.Constants.Number.IntegerSize = 32;
-                LapysDevelopmentKit.Constants.Number.NaN = +0 / +0;
+                LapysDevelopmentKit.Constants.Numbers.Infinity = 1 / +0;
+                LapysDevelopmentKit.Constants.Numbers.IntegerSize = 32; // NOTE (Lapys) -> JavaScript integers are 53-bit as well.
+                LapysDevelopmentKit.Constants.Numbers.ReferenceSize = +0; // NOTE (Lapys) -> Assumed size of referrers in JavaScript (such as objects and symbols)
+                LapysDevelopmentKit.Constants.Numbers.NaN = +0 / +0;
 
                 /* Keywords > ... --- NOTE (Lapys) -> Store the keyword strings as arrays because older browsers defer to the `String.prototype.charAt` method (which is not yet available)
                         rather than syntactic string indexing (i.e.: the `[]` operation).
@@ -662,17 +732,17 @@
                 ];
 
                 // String > ... --- NOTE (Lapys) -> Define references for string manipulation methods (rather than hard-coding the methods with each value represented below).
-                LapysDevelopmentKit.Constants.String.alphabets = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
-                LapysDevelopmentKit.Constants.String.asciiCharacters = [' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', 'Ç', 'ü', 'é', 'â', 'ä', 'à', 'å', 'ç', 'ê', 'ë', 'è', 'ï', 'î', 'ì', 'Ä', 'Å', 'É', 'æ', 'Æ', 'ô', 'ö', 'ò', 'û', 'ù', 'ÿ', 'Ö', 'Ü', 'ø', '£', 'Ø', '×', 'ƒ', 'á', 'í', 'ó', 'ú', 'ñ', 'Ñ', 'ª', 'º', '¿', '®', '¬', '½', '¼', '¡', '«', '»', '░', '▒', '▓', '│', '┤', 'Á', 'Â', 'À', '©', '╣', '║', '╗', '╝', '¢', '¥', '┐', '└', '┴', '┬', '├', '─', '┼', 'ã', 'Ã', '╚', '╔', '╩', '╦', '╠', '═', '╬', '¤', 'ð', 'Ð', 'Ê', 'Ë', 'È', 'ı', 'Í', 'Î', 'Ï', '┘', '┌', '█', '▄', '¦', 'Ì', '▀', 'Ó', 'ß', 'Ô', 'Ò', 'õ', 'Õ', 'µ', 'þ', 'Þ', 'Ú', 'Û', 'Ù', 'ý', 'Ý', '¯', '´', '≡', '±', '‗', '¾', '¶', '§', '÷', '¸', '°', '¨', '·', '¹', '³', '²', '■', 'ñ', 'Ñ', '@', '¿', '?', '¡', '!', ':', '/', '\\', 'á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ä', 'ë', 'ï', 'ö', 'ü', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', '½', '¼', '¾', '¹', '³', '²', 'ƒ', '±', '×', '÷', '$', '£', '¥', '¢', '¤', '®', '©', 'ª', 'º', '°', '"', '\'', '(', ')', '[', ']', '{', '}', '«', '»', '\0', '\1', '\2', '\3', '\4', '\5', '\6', '\7', '\x08', '\x09', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x20', '\x21', '\x22', '\x23', '\x24', '\x25', '\x26', '\x27', '\x28', '\x29', '\x30', '\x31', '\u0127'];
-                LapysDevelopmentKit.Constants.String.binary = ['0', '1'];
-                LapysDevelopmentKit.Constants.String.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-                LapysDevelopmentKit.Constants.String.hexadecimal = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'];
-                LapysDevelopmentKit.Constants.String.languageCodes = ["aa", "aar", "ab", "abk", "ace", "ach", "ada", "ady", "ae", "af", "afa", "afh", "afr", "ain", "ak", "aka", "akk", "alb", "ale", "alt", "am", "amh", "an", "ang", "anp", "apa", "ar", "ara", "arc", "arg", "arm", "arn", "arp", "art", "arw", "as", "asm", "ast", "ath", "aus", "av", "ava", "ave", "awa", "ay", "aym", "az", "aze", "ba", "bad", "bai", "bak", "bal", "bam", "ban", "baq", "bas", "bat", "be", "bej", "bel", "bem", "ben", "ber", "bg", "bh", "bho", "bi", "bih", "bik", "bis", "bla", "bm", "bn", "bnt", "bo", "bod", "bos", "br", "bra", "bre", "bs", "btk", "bua", "bug", "bul", "bur", "byn", "ca", "cad", "cai", "car", "cat", "cau", "ce", "ceb", "cel", "ces", "ch", "cha", "chb", "che", "chg", "chi", "chk", "chm", "chn", "cho", "chp", "chr", "chu", "chv", "chy", "cmc", "cnr", "co", "cop", "cor", "cos", "cpe", "cpf", "cpp", "cr", "cre", "crh", "crp", "cs", "csb", "cu", "cus", "cv", "cy", "cym", "cze", "da", "dak", "dan", "dar", "day", "de", "del", "den", "deu", "dgr", "din", "div", "doi", "dra", "dsb", "dua", "dum", "dut", "dv", "dyu", "dz", "dzo", "ee", "efi", "egy", "eka", "el", "ell", "elx", "en", "eng", "enm", "eo", "epo", "es", "est", "et", "eu", "eus", "ewe", "ewo", "fa", "fan", "fao", "fas", "fat", "ff", "fi", "fij", "fil", "fin", "fiu", "fj", "fo", "fon", "fr", "fra", "fre", "frm", "fro", "frr", "frs", "fry", "ful", "fur", "fy", "ga", "gaa", "gay", "gba", "gd", "gem", "geo", "ger", "gez", "gil", "gl", "gla", "gle", "glg", "glv", "gmh", "gn", "goh", "gon", "gor", "got", "grb", "grc", "gre", "grn", "gsw", "gu", "guj", "gv", "gwi", "ha", "hai", "hat", "hau", "haw", "he", "heb", "her", "hi", "hil", "him", "hin", "hit", "hmn", "hmo", "ho", "hr", "hrv", "hsb", "ht", "hu", "hun", "hup", "hy", "hye", "hz", "ia", "iba", "ibo", "ice", "id", "ido", "ie", "ig", "ii", "iii", "ijo", "ik", "iku", "ile", "ilo", "ina", "inc", "ind", "ine", "inh", "io", "ipk", "ira", "iro", "is", "isl", "it", "ita", "iu", "ja", "jav", "jbo", "jpn", "jpr", "jrb", "jv", "ka", "kaa", "kab", "kac", "kal", "kam", "kan", "kar", "kas", "kat", "kau", "kaw", "kaz", "kbd", "kg", "kha", "khi", "khm", "kho", "ki", "kik", "kin", "kir", "kj", "kk", "kl", "km", "kmb", "kn", "ko", "kok", "kom", "kon", "kor", "kos", "kpe", "kr", "krc", "krl", "kro", "kru", "ks", "ku", "kua", "kum", "kur", "kut", "kv", "kw", "ky", "la", "lad", "lah", "lam", "lao", "lat", "lav", "lb", "lezlim", "lg", "li", "lin", "lit", "ln", "lo", "lol", "loz", "lt", "ltz", "lu", "lua", "lub", "lug", "lui", "lun", "luo", "lus", "lv", "mac", "mad", "mag", "mah", "mai", "mak", "mal", "man", "mao", "map", "mar", "mas", "may", "mdf", "mdr", "men", "mg", "mga", "mh", "mi", "mic", "min", "mis", "mk", "mkd", "mkh", "ml", "mlg", "mlt", "mn", "mnc", "mnl", "mno", "moh", "mon", "mos", "mr", "mri", "ms", "msa", "mt", "mul", "mun", "mus", "mwl", "mwr", "my", "mya", "myn", "myv", "na", "nah", "nai", "nap", "nau", "nav", "nb", "nbl", "nd", "nde", "ndo", "nds", "ne", "nep", "new", "ng", "nia", "nic", "niu", "nl", "nld", "nn", "nno", "no", "nob", "nog", "non", "nor", "nqo", "nr", "nso", "nub", "nv", "nwc", "ny", "nya", "nym", "nyn", "nyo", "nzi", "oc", "oci", "oj", "oji", "om", "or", "ori", "orm", "os", "osa", "oss", "ota", "oto", "pa", "paa", "pag", "pal", "pam", "pan", "pap", "pau", "pcm", "peo", "per", "phi", "phn", "pi", "pl", "pli", "pol", "pon", "por", "pra", "pro", "ps", "pt", "pus", "qaa", "qtz", "qu", "que", "raj", "rap", "rar", "rm", "rn", "ro", "roa", "roh", "rom", "ron", "ru", "rum", "run", "rup", "rus", "rw", "sa", "sad", "sag", "sah", "sai", "sal", "sam", "san", "sas", "sat", "sc", "scn", "sco", "sd", "sel", "sem", "sg", "sga", "sgn", "shn", "si", "sid", "sin", "sio", "sit", "sk", "sl", "sla", "slk", "slo", "slv", "sm", "sma", "sme", "smi", "smj", "smn", "smo", "sms", "sn", "sna", "snd", "snk", "so", "sog", "som", "son", "sot", "spa", "sq", "sqi", "sr", "srd", "srp", "srr", "ss", "ssa", "ssw", "st", "su", "suk", "sun", "sus", "sux", "sv", "sw", "swa", "swe", "sws", "syc", "syr", "ta", "tah", "tai", "tam", "tat", "te", "tel", "tem", "ter", "tet", "tg", "tgk", "tgl", "th", "tha", "ti", "tib", "tig", "tir", "tiv", "tk", "tkl", "tl", "tlh", "tli", "tmh", "tn", "to", "tog", "ton", "tpi", "tr", "ts", "tsi", "tsn", "tso", "tt", "tuk", "tum", "tup", "tur", "tut", "tvl", "tw", "twi", "ty", "tyv", "udm", "ug", "uga", "uig", "uk", "ukr", "umb", "und", "ur", "urd", "uz", "uzb", "vai", "venve", "vi", "vie", "vo", "vol", "vot", "wa", "wak", "wal", "war", "was", "wel", "wen", "wln", "wo", "wol", "xal", "xh", "xho", "yao", "yap", "yi", "yid", "yo", "yor", "ypk", "za", "zap", "zbl", "zen", "zgh", "zh", "zha", "zho", "znd", "zu", "zul", "zun", "zxx", "zza"];
-                LapysDevelopmentKit.Constants.String.lowercaseAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
-                LapysDevelopmentKit.Constants.String.octal = ['0', '1', '2', '3', '4', '5', '6', '7'];
-                LapysDevelopmentKit.Constants.String.uppercaseAlphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-                LapysDevelopmentKit.Constants.String.sortableCharacters = ['_', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '$'];
-                LapysDevelopmentKit.Constants.String.variableCharacters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z', '_', '$'];
+                LapysDevelopmentKit.Constants.Strings.alphabets = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
+                LapysDevelopmentKit.Constants.Strings.asciiCharacters = [' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', 'Ç', 'ü', 'é', 'â', 'ä', 'à', 'å', 'ç', 'ê', 'ë', 'è', 'ï', 'î', 'ì', 'Ä', 'Å', 'É', 'æ', 'Æ', 'ô', 'ö', 'ò', 'û', 'ù', 'ÿ', 'Ö', 'Ü', 'ø', '£', 'Ø', '×', 'ƒ', 'á', 'í', 'ó', 'ú', 'ñ', 'Ñ', 'ª', 'º', '¿', '®', '¬', '½', '¼', '¡', '«', '»', '░', '▒', '▓', '│', '┤', 'Á', 'Â', 'À', '©', '╣', '║', '╗', '╝', '¢', '¥', '┐', '└', '┴', '┬', '├', '─', '┼', 'ã', 'Ã', '╚', '╔', '╩', '╦', '╠', '═', '╬', '¤', 'ð', 'Ð', 'Ê', 'Ë', 'È', 'ı', 'Í', 'Î', 'Ï', '┘', '┌', '█', '▄', '¦', 'Ì', '▀', 'Ó', 'ß', 'Ô', 'Ò', 'õ', 'Õ', 'µ', 'þ', 'Þ', 'Ú', 'Û', 'Ù', 'ý', 'Ý', '¯', '´', '≡', '±', '‗', '¾', '¶', '§', '÷', '¸', '°', '¨', '·', '¹', '³', '²', '■', 'ñ', 'Ñ', '@', '¿', '?', '¡', '!', ':', '/', '\\', 'á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú', 'ä', 'ë', 'ï', 'ö', 'ü', 'Ä', 'Ë', 'Ï', 'Ö', 'Ü', '½', '¼', '¾', '¹', '³', '²', 'ƒ', '±', '×', '÷', '$', '£', '¥', '¢', '¤', '®', '©', 'ª', 'º', '°', '"', '\'', '(', ')', '[', ']', '{', '}', '«', '»', '\0', '\1', '\2', '\3', '\4', '\5', '\6', '\7', '\x08', '\x09', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x20', '\x21', '\x22', '\x23', '\x24', '\x25', '\x26', '\x27', '\x28', '\x29', '\x30', '\x31', '\u0127'];
+                LapysDevelopmentKit.Constants.Strings.binary = ['0', '1'];
+                LapysDevelopmentKit.Constants.Strings.digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                LapysDevelopmentKit.Constants.Strings.hexadecimal = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F'];
+                LapysDevelopmentKit.Constants.Strings.languageCodes = ["aa", "aar", "ab", "abk", "ace", "ach", "ada", "ady", "ae", "af", "afa", "afh", "afr", "ain", "ak", "aka", "akk", "alb", "ale", "alt", "am", "amh", "an", "ang", "anp", "apa", "ar", "ara", "arc", "arg", "arm", "arn", "arp", "art", "arw", "as", "asm", "ast", "ath", "aus", "av", "ava", "ave", "awa", "ay", "aym", "az", "aze", "ba", "bad", "bai", "bak", "bal", "bam", "ban", "baq", "bas", "bat", "be", "bej", "bel", "bem", "ben", "ber", "bg", "bh", "bho", "bi", "bih", "bik", "bis", "bla", "bm", "bn", "bnt", "bo", "bod", "bos", "br", "bra", "bre", "bs", "btk", "bua", "bug", "bul", "bur", "byn", "ca", "cad", "cai", "car", "cat", "cau", "ce", "ceb", "cel", "ces", "ch", "cha", "chb", "che", "chg", "chi", "chk", "chm", "chn", "cho", "chp", "chr", "chu", "chv", "chy", "cmc", "cnr", "co", "cop", "cor", "cos", "cpe", "cpf", "cpp", "cr", "cre", "crh", "crp", "cs", "csb", "cu", "cus", "cv", "cy", "cym", "cze", "da", "dak", "dan", "dar", "day", "de", "del", "den", "deu", "dgr", "din", "div", "doi", "dra", "dsb", "dua", "dum", "dut", "dv", "dyu", "dz", "dzo", "ee", "efi", "egy", "eka", "el", "ell", "elx", "en", "eng", "enm", "eo", "epo", "es", "est", "et", "eu", "eus", "ewe", "ewo", "fa", "fan", "fao", "fas", "fat", "ff", "fi", "fij", "fil", "fin", "fiu", "fj", "fo", "fon", "fr", "fra", "fre", "frm", "fro", "frr", "frs", "fry", "ful", "fur", "fy", "ga", "gaa", "gay", "gba", "gd", "gem", "geo", "ger", "gez", "gil", "gl", "gla", "gle", "glg", "glv", "gmh", "gn", "goh", "gon", "gor", "got", "grb", "grc", "gre", "grn", "gsw", "gu", "guj", "gv", "gwi", "ha", "hai", "hat", "hau", "haw", "he", "heb", "her", "hi", "hil", "him", "hin", "hit", "hmn", "hmo", "ho", "hr", "hrv", "hsb", "ht", "hu", "hun", "hup", "hy", "hye", "hz", "ia", "iba", "ibo", "ice", "id", "ido", "ie", "ig", "ii", "iii", "ijo", "ik", "iku", "ile", "ilo", "ina", "inc", "ind", "ine", "inh", "io", "ipk", "ira", "iro", "is", "isl", "it", "ita", "iu", "ja", "jav", "jbo", "jpn", "jpr", "jrb", "jv", "ka", "kaa", "kab", "kac", "kal", "kam", "kan", "kar", "kas", "kat", "kau", "kaw", "kaz", "kbd", "kg", "kha", "khi", "khm", "kho", "ki", "kik", "kin", "kir", "kj", "kk", "kl", "km", "kmb", "kn", "ko", "kok", "kom", "kon", "kor", "kos", "kpe", "kr", "krc", "krl", "kro", "kru", "ks", "ku", "kua", "kum", "kur", "kut", "kv", "kw", "ky", "la", "lad", "lah", "lam", "lao", "lat", "lav", "lb", "lezlim", "lg", "li", "lin", "lit", "ln", "lo", "lol", "loz", "lt", "ltz", "lu", "lua", "lub", "lug", "lui", "lun", "luo", "lus", "lv", "mac", "mad", "mag", "mah", "mai", "mak", "mal", "man", "mao", "map", "mar", "mas", "may", "mdf", "mdr", "men", "mg", "mga", "mh", "mi", "mic", "min", "mis", "mk", "mkd", "mkh", "ml", "mlg", "mlt", "mn", "mnc", "mnl", "mno", "moh", "mon", "mos", "mr", "mri", "ms", "msa", "mt", "mul", "mun", "mus", "mwl", "mwr", "my", "mya", "myn", "myv", "na", "nah", "nai", "nap", "nau", "nav", "nb", "nbl", "nd", "nde", "ndo", "nds", "ne", "nep", "new", "ng", "nia", "nic", "niu", "nl", "nld", "nn", "nno", "no", "nob", "nog", "non", "nor", "nqo", "nr", "nso", "nub", "nv", "nwc", "ny", "nya", "nym", "nyn", "nyo", "nzi", "oc", "oci", "oj", "oji", "om", "or", "ori", "orm", "os", "osa", "oss", "ota", "oto", "pa", "paa", "pag", "pal", "pam", "pan", "pap", "pau", "pcm", "peo", "per", "phi", "phn", "pi", "pl", "pli", "pol", "pon", "por", "pra", "pro", "ps", "pt", "pus", "qaa", "qtz", "qu", "que", "raj", "rap", "rar", "rm", "rn", "ro", "roa", "roh", "rom", "ron", "ru", "rum", "run", "rup", "rus", "rw", "sa", "sad", "sag", "sah", "sai", "sal", "sam", "san", "sas", "sat", "sc", "scn", "sco", "sd", "sel", "sem", "sg", "sga", "sgn", "shn", "si", "sid", "sin", "sio", "sit", "sk", "sl", "sla", "slk", "slo", "slv", "sm", "sma", "sme", "smi", "smj", "smn", "smo", "sms", "sn", "sna", "snd", "snk", "so", "sog", "som", "son", "sot", "spa", "sq", "sqi", "sr", "srd", "srp", "srr", "ss", "ssa", "ssw", "st", "su", "suk", "sun", "sus", "sux", "sv", "sw", "swa", "swe", "sws", "syc", "syr", "ta", "tah", "tai", "tam", "tat", "te", "tel", "tem", "ter", "tet", "tg", "tgk", "tgl", "th", "tha", "ti", "tib", "tig", "tir", "tiv", "tk", "tkl", "tl", "tlh", "tli", "tmh", "tn", "to", "tog", "ton", "tpi", "tr", "ts", "tsi", "tsn", "tso", "tt", "tuk", "tum", "tup", "tur", "tut", "tvl", "tw", "twi", "ty", "tyv", "udm", "ug", "uga", "uig", "uk", "ukr", "umb", "und", "ur", "urd", "uz", "uzb", "vai", "venve", "vi", "vie", "vo", "vol", "vot", "wa", "wak", "wal", "war", "was", "wel", "wen", "wln", "wo", "wol", "xal", "xh", "xho", "yao", "yap", "yi", "yid", "yo", "yor", "ypk", "za", "zap", "zbl", "zen", "zgh", "zh", "zha", "zho", "znd", "zu", "zul", "zun", "zxx", "zza"];
+                LapysDevelopmentKit.Constants.Strings.lowercaseAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+                LapysDevelopmentKit.Constants.Strings.octal = ['0', '1', '2', '3', '4', '5', '6', '7'];
+                LapysDevelopmentKit.Constants.Strings.uppercaseAlphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+                LapysDevelopmentKit.Constants.Strings.sortableCharacters = ['_', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '$'];
+                LapysDevelopmentKit.Constants.Strings.variableCharacters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z', '_', '$'];
 
             /* Data
                     --- WARN ---
@@ -2212,7 +2282,7 @@
                                 var array = arguments[length - (iterator -= 1) - 1], arrayLength = LDKF.arrayPrototypeLength(array);
 
                                 // Update > Largest Array Length
-                                largestArrayLength = largestArrayLength - ((largestArrayLength - arrayLength) & ((largestArrayLength - arrayLength) >> (LDKC.Number.IntegerSize - 1)));
+                                largestArrayLength = largestArrayLength - ((largestArrayLength - arrayLength) & ((largestArrayLength - arrayLength) >> (LDKC.Numbers.IntegerSize - 1)));
 
                                 // Logic --- NOTE (Lapys) -> There can be multiple largest arrays.
                                 if (arrayLength == largestArrayLength) {
@@ -3498,8 +3568,8 @@
 
                                                 else {
                                                     // Initialization > Index (A, B)
-                                                    var indexA = LDKF.arrayPrototypeIndexFrom(LDKC.String.sortableCharacters, elementACharacter),
-                                                        indexB = LDKF.arrayPrototypeIndexFrom(LDKC.String.sortableCharacters, elementBCharacter);
+                                                    var indexA = LDKF.arrayPrototypeIndexFrom(LDKC.Strings.sortableCharacters, elementACharacter),
+                                                        indexB = LDKF.arrayPrototypeIndexFrom(LDKC.Strings.sortableCharacters, elementBCharacter);
 
                                                     // Logic > Update > Selection
                                                     if (!~indexA || !~indexB) selection = elementACharacter > elementBCharacter ? elementA : elementB;
@@ -3656,6 +3726,21 @@
                     };
 
                 // Array-Like > Prototype
+                    // Copy
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeCopy = function arrayLikePrototypeCopy(arrayLike, arrayLikeToCopy, ARRAY_LIKE_LENGTH, ARRAY_LIKE_TO_COPY_LENGTH, SILENCE_EXCEPTIONS) {
+                        // Initialization > ...
+                        var arrayLikeIterator = ARRAY_LIKE_LENGTH || LDKF.arrayLikePrototypeLength(arrayLike),
+                            arrayLikeToCopyLength = ARRAY_LIKE_TO_COPY_LENGTH || LDKF.arrayLikePrototypeLength(arrayLikeToCopy),
+                            arrayLikeToCopyIterator = arrayLikeToCopyLength;
+
+                        // Logic > Loop > Update > ...
+                        if (arrayLikeIterator ^ (arrayLikeIterator - ((arrayLikeIterator - arrayLikeToCopyLength) & LDKF.numberPrototypeShiftRight(arrayLikeToCopyLength - arrayLikeIterator))))
+                            while (arrayLikeIterator ^ arrayLikeToCopyLength) { arrayLikeIterator -= 1; LDKF.objectPrototypeDeleteProperty(arrayLike, arrayLikeIterator) }
+
+                        // Loop > Update > ...
+                        while (arrayLikeToCopyIterator) { arrayLikeToCopyIterator -= 1; LDKF.arrayLikePrototypeSetIndex(arrayLike, arrayLikeToCopyIterator, LDKF.arrayLikePrototypeElementAt(arrayLikeToCopy, arrayLikeToCopyIterator, STRICT = SILENCE_EXCEPTIONS), STRICT = SILENCE_EXCEPTIONS) }
+                    };
+
                     // Element At --- CHECKPOINT (Lapys)
                     LapysDevelopmentKit.Functions.arrayLikePrototypeElementAt = function arrayLikePrototypeElementAt(arrayLike, index, SILENCE_EXCEPTIONS) {
                         // Logic > ...
@@ -3691,7 +3776,7 @@
                         // Logic > Return
                         if (LDKF.isArray(arrayLike)) return LDKF.arrayPrototypeLength(arrayLike);
                         else if (LDKF.isHTMLCollectionLike(arrayLike)) return LDKF.htmlCollectionPrototypeLength(arrayLike);
-                        else { try { return LDKM.int(LDKF.toNumber(arrayLike.length)) } catch (error) {} return LDKC.Number.NaN }
+                        else { try { return LDKM.int(LDKF.toNumber(arrayLike.length)) } catch (error) {} return LDKC.Numbers.NaN }
                     };
 
                     /* Lock
@@ -3728,7 +3813,7 @@
                             LDKF.objectDefineProperty(arrayLike, "length", {configurable: true, enumerable: false, value: arrayLikeLength, writable: true});
 
                             // Loop > Update > Array-Like (Iterator)
-                            while (arrayLikeIterator) { arrayLikeIterator -= 1; LDKF.objectDefineProperty(arrayLike, arrayLikeIterator, {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(arrayLike, arrayLikeIterator, STRICT = true), writable: true}) }
+                            while (arrayLikeIterator) { arrayLikeIterator -= 1; LDKF.objectDefineProperty(arrayLike, LDKF.toString(arrayLikeIterator), {configurable: true, enumerable: true, value: LDKF.objectPrototypeGetProperty(arrayLike, LDKF.toString(arrayLikeIterator), STRICT = true), writable: true}) }
                         }
                     };
 
@@ -5010,8 +5095,8 @@
                 // Is Object-Like
                 LapysDevelopmentKit.Functions.isObjectLike = function isObjectLike(argument) { return typeof argument == "object" && !LDKF.isNull(argument) };
 
-                // Is Primitive
-                LapysDevelopmentKit.Functions.isPrimitive = function isPrimitive(argument) { return !LDKF.isObjectLike(argument) };
+                // Is Primitive --- NOTE (Lapys) -> Assert if the Argument is a JavaScript value not defined (by standard) to contain structure-like behaviors.
+                LapysDevelopmentKit.Functions.isPrimitive = function isPrimitive(argument) { return LDKF.isBoolean(argument) || LDKF.isNull(argument) || LDKF.isNumber(argument) || LDKF.isString(argument) || LDKF.isVoid(argument) || LDKF.isFunction(argument) };
 
                 // Is Regular Expression --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Oddly enough, regular expression objects may be represented as primitive function types in legacy JavaScript environments (i.e.: `typeof /(?:)/ == "function"`).
                 LapysDevelopmentKit.Functions.isRegularExpression = function isRegularExpression(argument) {};
@@ -5269,7 +5354,7 @@
                         if (LDKF.isPrimitive(argument)) return LDKF.toNumber(argument);
                         else if (LDKF.isArray(argument)) return LDKF.arrayPrototypeLength(argument);
                         else if (LDKF.isArrayLike(argument)) return LDKF.arrayLikePrototypeLength(argument);
-                        else return LDKC.Number.NaN;
+                        else return LDKC.Numbers.NaN;
 
                     else
                         // Return
@@ -5340,7 +5425,7 @@
                                 --- NOTE (Lapys) -> Hopefully, right-shifting causes sign extension.
                                 --- WARN (Lapys) -> Only for integer overflow purposes.
                         */
-                        LapysDevelopmentKit.Functions.numberPrototypeShiftRight = function numberPrototypeShiftRight(number, length) { return number >> (LDKF.getArgumentsLength(arguments) > 1 ? length : LDKC.Number.IntegerSize - 1) };
+                        LapysDevelopmentKit.Functions.numberPrototypeShiftRight = function numberPrototypeShiftRight(number, length) { return number >> (LDKF.getArgumentsLength(arguments) > 1 ? length : LDKC.Numbers.IntegerSize - 1) };
 
                 /* Object */
                 LapysDevelopmentKit.Functions.object = function object(argument) { return LDKF.isObjectLike(argument) ? argument : LDKO.object(argument) };
@@ -5586,7 +5671,7 @@
                             } while (depthTreeIterator ^ recordedDepthTreeLength && !hasRecursiveReference);
 
                             // Update > Depth
-                            hasRecursiveReference && (depth = LDKC.Number.Infinity);
+                            hasRecursiveReference && (depth = LDKC.Numbers.Infinity);
 
                             // Return
                             return depth
@@ -5745,73 +5830,106 @@
                 // Set Timeout
                 LapysDevelopmentKit.Functions.setTimeout = function setTimeout(handler, delay) { return LDKO.setTimeoutCall === LDKO.functionPrototypeCall ? LDKF.functionPrototypeCall(LDKO.setTimeout, GLOBAL, handler, delay) : LDKO.setTimeout(handler, delay) };
 
+                /* Size Of
+                        --- CITE (Lapys) -> https://gist.github.com/zensh/4975495
+                        --- NOTE (Lapys) -> `sizeof` operator inspired from C. Returns size in bytes.
+                        --- WARN (Lapys) -> This method is only a rough approximation of the actual byte-size of JavaScript values based on the ECMAScript standards.
+                            - Accessors (i.e.: getters) are ignored while Methods are accounted for.
+                            - Performs a deep, recursive search for non-primitive values.
+                            - Property names are accounted for as well.
+
+                            This method is as inaccurate (but very consistent) as it gets, better to defer to other software currently until such an operation is added into the JavaScript programming language.
+                */
+                LapysDevelopmentKit.Functions.sizeof = function sizeof(argument, REFERENCES, REFERENCES_LENGTH) {
+                    // Logic
+                    if (LDKF.isConstructible(argument)) {
+                        // Initialization > (Argument Type, Byte Size)
+                        var argumentType = typeof argument, byteSize = +0;
+
+                        // Logic
+                        if (argumentType == "boolean")
+                            // Update > Byte Size
+                            byteSize = 4;
+
+                        else if (argumentType == "number")
+                            // Update > Byte Size
+                            byteSize = 8;
+
+                        else if (argumentType == "string")
+                            // Update > Byte Size
+                            byteSize = LDKF.stringPrototypeLength(argument) * 2;
+
+                        else if (argumentType == "symbol")
+                            // Update > Byte Size --- NOTE (Lapys) -> Assume Symbols are pointers.
+                            byteSize = LDKC.Numbers.ReferenceSize;
+
+                        else if (argumentType == "object" || LDKF.isFunction(argument)) {
+                            // Initialization > References (Length)
+                            var references = REFERENCES || [argument], referencesLength = REFERENCES ? LDKF.arrayPrototypeLength(references) : 1;
+
+                            // Loop --- NOTE (Lapys) -> To genuinely get the size of the function, we need a Disassembler to get which expressions and statements actually take up memory.
+                            LDKF.iterateObject(argument, function(propertyName) {
+                                // Constant > Iterator
+                                var iterator = this;
+
+                                // Logic
+                                if (LDKF.objectPrototypeHasOwnProperty(argument, propertyName)) {
+                                    // Initialization > (Property Value) Thrown Exception On Access
+                                    var propertyValue = ANY, propertyValueThrownExceptionOnAccess = false;
+
+                                    // Update > Byte Size --- UPDATE REQUIRED (Lapys) -> Should the value of its property name be accounted for as well?
+                                    byteSize += LDKF.sizeof(propertyName);
+
+                                    // Error Handling > Update > Property Value --- NOTE (Lapys)
+                                    try { propertyValue = argument[propertyName] } catch (error) { propertyValueThrownExceptionOnAccess = true }
+
+                                    // Logic
+                                    if (!propertyValueThrownExceptionOnAccess) {
+                                        // Initialization > Property Value Is (Primitive, Referenced)
+                                        var propertyValueIsPrimitive = !LDKF.isFunction(propertyValue) && LDKF.isPrimitive(propertyValue),
+                                            propertyValueIsReferenced = false;
+
+                                        // Logic
+                                        if (!propertyValueIsPrimitive) {
+                                            // Initialization > References Iterator
+                                            var referencesIterator = referencesLength;
+
+                                            // Loop > Update > ... --- NOTE (Lapys) -> Assert the property is a cyclic reference.
+                                            while (!propertyValueIsReferenced && referencesIterator) propertyValueIsReferenced = propertyValue === references[referencesIterator -= 1]
+                                        }
+
+                                        // Logic
+                                        if (!propertyValueIsReferenced) {
+                                            // Logic
+                                            if (propertyValueIsPrimitive)
+                                                // Update > Byte Size --- NOTE (Lapys) -> Primitive values within an object are stored within the object.
+                                                byteSize += LDKF.sizeof(propertyValue, STRICT = references);
+
+                                            else {
+                                                // Update > ... --- NOTE (Lapys) -> Assume non-primitive values are reference pointers.
+                                                byteSize += LDKC.Numbers.ReferenceSize;
+                                                references[referencesLength] = propertyValue; referencesLength += 1;
+                                                byteSize += LDKF.sizeof(propertyValue, STRICT = references)
+                                            }
+                                        }
+                                    }
+                                }
+                            }, STRICT = true);
+
+                            window.references = references
+                        }
+
+                        // Return
+                        return byteSize
+                    }
+
+                    else
+                        // Return
+                        return +0
+                };
+
                 /* String */
                     // Prototype
-                        // Abate
-                        LapysDevelopmentKit.Functions.stringPrototypeAbate = function stringPrototypeAbate(string, maximumStringLength, replacer, STRING_LENGTH) { return LDKF.stringPrototypeAbateFromFront(LDKF.stringPrototypeAbateFromBack(string, maximumStringLength, replacer, STRICT = STRING_LENGTH), maximumStringLength, replacer) };
-
-                        // Abate From Left --- NOTE (Lapys) -> This routine is kinda odd because it`s really only useful in pretty-printing.
-                        LapysDevelopmentKit.Functions.stringPrototypeAbateFromBack = function stringPrototypeAbateFromBack(string, maximumStringLength, replacer, STRING_LENGTH) {
-                            // Initialization > Abation --- NOTE (Lapys) -> Abation is not a valid English word.
-                            var abation = "";
-
-                            // Update > Replacer
-                            replacer || (replacer = "");
-
-                            // Logic
-                            if (maximumStringLength) {
-                                // Initialization > String (Length, Iterator)
-                                var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
-                                    stringIterator = stringLength;
-
-                                // Loop
-                                while (stringIterator) {
-                                    // Update > String Iterator
-                                    stringIterator -= 1;
-
-                                    // Logic > Update > ...
-                                    if ((stringLength - stringIterator - 1) ^ maximumStringLength) abation = LDKF.stringPrototypeCharacterAt(string, stringIterator) + abation;
-                                    else { abation = (LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string)) + abation; stringIterator = +0 }
-                                }
-                            }
-
-                            else
-                                // Update > Abation
-                                abation = LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string);
-
-                            // Return
-                            return abation
-                        };
-
-                        // Abate From Right
-                        LapysDevelopmentKit.Functions.stringPrototypeAbateFromFront = function stringPrototypeAbateFromFront(string, maximumStringLength, replacer, STRING_LENGTH) {
-                            // Initialization > Abation
-                            var abation = "";
-
-                            // Update > Replacer
-                            replacer || (replacer = "");
-
-                            // Logic
-                            if (maximumStringLength) {
-                                // Initialization > String (Iterator, Length)
-                                var stringIterator = +0,
-                                    stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
-
-                                // Loop
-                                while (stringIterator ^ stringLength)
-                                    // Logic > Update > (Abation, String Iterator)
-                                    if (stringIterator ^ maximumStringLength) { abation += LDKF.stringPrototypeCharacterAt(string, stringIterator); stringIterator += 1 }
-                                    else { abation += LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string); stringIterator = stringLength }
-                            }
-
-                            else
-                                // Update > Abation
-                                abation = LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string);
-
-                            // Return
-                            return abation
-                        };
-
                         // After
                         LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFromBack(string, substring, STRICT = STRING_LENGTH) };
 
@@ -6089,7 +6207,7 @@
                                                 Honestly, asserting the whole UTF character set was slowing down development with any text editor (including Notepad on Windows).
                                                 Although the speed detriment did not show on any development environment running this code block.
                                     */
-                                    switch (LDKF.stringPrototypeCharacterAt(string, index)) { case ' ': return 32; case '!': return 33; case '"': return 34; case '#': return 35; case '$': return 36; case '%': return 37; case '&': return 38; case '\'': return 39; case '(': return 40; case ')': return 41; case '*': return 42; case '+': return 43; case ',': return 44; case '-': return 45; case '.': return 46; case '/': return 47; case '0': return 48; case '1': return 49; case '2': return 50; case '3': return 51; case '4': return 52; case '5': return 53; case '6': return 54; case '7': return 55; case '8': return 56; case '9': return 57; case ':': return 58; case ';': return 59; case '<': return 60; case '=': return 61; case '>': return 62; case '?': return 63; case '@': return 64; case 'A': return 65; case 'B': return 66; case 'C': return 67; case 'D': return 68; case 'E': return 69; case 'F': return 70; case 'G': return 71; case 'H': return 72; case 'I': return 73; case 'J': return 74; case 'K': return 75; case 'L': return 76; case 'M': return 77; case 'N': return 78; case 'O': return 79; case 'P': return 80; case 'Q': return 81; case 'R': return 82; case 'S': return 83; case 'T': return 84; case 'U': return 85; case 'V': return 86; case 'W': return 87; case 'X': return 88; case 'Y': return 89; case 'Z': return 90; case '[': return 91; case '\\': return 92; case ']': return 93; case '^': return 94; case '_': return 95; case '`': return 96; case 'a': return 97; case 'b': return 98; case 'c': return 99; case 'd': return 100; case 'e': return 101; case 'f': return 102; case 'g': return 103; case 'h': return 104; case 'i': return 105; case 'j': return 106; case 'k': return 107; case 'l': return 108; case 'm': return 109; case 'n': return 110; case 'o': return 111; case 'p': return 112; case 'q': return 113; case 'r': return 114; case 's': return 115; case 't': return 116; case 'u': return 117; case 'v': return 118; case 'w': return 119; case 'x': return 120; case 'y': return 121; case 'z': return 122; case '{': return 123; case '|': return 124; case '}': return 125; case '~': return 126; case 'Ç': return 199; case 'ü': return 252; case 'é': return 233; case 'â': return 226; case 'ä': return 228; case 'à': return 224; case 'å': return 229; case 'ç': return 231; case 'ê': return 234; case 'ë': return 235; case 'è': return 232; case 'ï': return 239; case 'î': return 238; case 'ì': return 236; case 'Ä': return 196; case 'Å': return 197; case 'É': return 201; case 'æ': return 230; case 'Æ': return 198; case 'ô': return 244; case 'ö': return 246; case 'ò': return 242; case 'û': return 251; case 'ù': return 249; case 'ÿ': return 255; case 'Ö': return 214; case 'Ü': return 220; case 'ø': return 248; case '£': return 163; case 'Ø': return 216; case '×': return 215; case 'ƒ': return 402; case 'á': return 225; case 'í': return 237; case 'ó': return 243; case 'ú': return 250; case 'ñ': return 241; case 'Ñ': return 209; case 'ª': return 170; case 'º': return 186; case '¿': return 191; case '®': return 174; case '¬': return 172; case '½': return 189; case '¼': return 188; case '¡': return 161; case '«': return 171; case '»': return 187; case '░': return 9617; case '▒': return 9618; case '▓': return 9619; case '│': return 9474; case '┤': return 9508; case 'Á': return 193; case 'Â': return 194; case 'À': return 192; case '©': return 169; case '╣': return 9571; case '║': return 9553; case '╗': return 9559; case '╝': return 9565; case '¢': return 162; case '¥': return 165; case '┐': return 9488; case '└': return 9492; case '┴': return 9524; case '┬': return 9516; case '├': return 9500; case '─': return 9472; case '┼': return 9532; case 'ã': return 227; case 'Ã': return 195; case '╚': return 9562; case '╔': return 9556; case '╩': return 9577; case '╦': return 9574; case '╠': return 9568; case '═': return 9552; case '╬': return 9580; case '¤': return 164; case 'ð': return 240; case 'Ð': return 208; case 'Ê': return 202; case 'Ë': return 203; case 'È': return 200; case 'ı': return 305; case 'Í': return 205; case 'Î': return 206; case 'Ï': return 207; case '┘': return 9496; case '┌': return 9484; case '█': return 9608; case '▄': return 9604; case '¦': return 166; case 'Ì': return 204; case '▀': return 9600; case 'Ó': return 211; case 'ß': return 223; case 'Ô': return 212; case 'Ò': return 210; case 'õ': return 245; case 'Õ': return 213; case 'µ': return 181; case 'þ': return 254; case 'Þ': return 222; case 'Ú': return 218; case 'Û': return 219; case 'Ù': return 217; case 'ý': return 253; case 'Ý': return 221; case '¯': return 175; case '´': return 180; case '≡': return 8801; case '±': return 177; case '‗': return 8215; case '¾': return 190; case '¶': return 182; case '§': return 167; case '÷': return 247; case '¸': return 184; case '°': return 176; case '¨': return 168; case '·': return 183; case '¹': return 185; case '³': return 179; case '²': return 178; case '■': return 9632; case 'ñ': return 241; case 'Ñ': return 209; case '@': return 64; case '¿': return 191; case '?': return 63; case '¡': return 161; case '!': return 33; case ':': return 58; case '/': return 47; case '\\': return 92; case 'á': return 225; case 'é': return 233; case 'í': return 237; case 'ó': return 243; case 'ú': return 250; case 'Á': return 193; case 'É': return 201; case 'Í': return 205; case 'Ó': return 211; case 'Ú': return 218; case 'ä': return 228; case 'ë': return 235; case 'ï': return 239; case 'ö': return 246; case 'ü': return 252; case 'Ä': return 196; case 'Ë': return 203; case 'Ï': return 207; case 'Ö': return 214; case 'Ü': return 220; case '½': return 189; case '¼': return 188; case '¾': return 190; case '¹': return 185; case '³': return 179; case '²': return 178; case 'ƒ': return 402; case '±': return 177; case '×': return 215; case '÷': return 247; case '$': return 36; case '£': return 163; case '¥': return 165; case '¢': return 162; case '¤': return 164; case '®': return 174; case '©': return 169; case 'ª': return 170; case 'º': return 186; case '°': return 176; case '"': return 34; case '\'': return 39; case '(': return 40; case ')': return 41; case '[': return 91; case ']': return 93; case '{': return 123; case '}': return 125; case '«': return 171; case '»': return 187; case '': return 0; case '': return 1; case '': return 2; case '': return 3; case '': return 4; case '': return 5; case '': return 6; case '': return 7; case '': return 8; case '  ': return 9; case '': return 16; case '': return 17; case '': return 18; case '': return 19; case '': return 20; case '': return 21; case '': return 22; case '': return 23; case '': return 24; case '': return 25; case ' ': return 32; case '!': return 33; case '"': return 34; case '#': return 35; case '$': return 36; case '%': return 37; case '&': return 38; case '\'': return 39; case '(': return 40; case ')': return 41; case '0': return 48; case '1': return 49; case 'ħ': return 295; default: return LDKC.Number.NaN }
+                                    switch (LDKF.stringPrototypeCharacterAt(string, index)) { case ' ': return 32; case '!': return 33; case '"': return 34; case '#': return 35; case '$': return 36; case '%': return 37; case '&': return 38; case '\'': return 39; case '(': return 40; case ')': return 41; case '*': return 42; case '+': return 43; case ',': return 44; case '-': return 45; case '.': return 46; case '/': return 47; case '0': return 48; case '1': return 49; case '2': return 50; case '3': return 51; case '4': return 52; case '5': return 53; case '6': return 54; case '7': return 55; case '8': return 56; case '9': return 57; case ':': return 58; case ';': return 59; case '<': return 60; case '=': return 61; case '>': return 62; case '?': return 63; case '@': return 64; case 'A': return 65; case 'B': return 66; case 'C': return 67; case 'D': return 68; case 'E': return 69; case 'F': return 70; case 'G': return 71; case 'H': return 72; case 'I': return 73; case 'J': return 74; case 'K': return 75; case 'L': return 76; case 'M': return 77; case 'N': return 78; case 'O': return 79; case 'P': return 80; case 'Q': return 81; case 'R': return 82; case 'S': return 83; case 'T': return 84; case 'U': return 85; case 'V': return 86; case 'W': return 87; case 'X': return 88; case 'Y': return 89; case 'Z': return 90; case '[': return 91; case '\\': return 92; case ']': return 93; case '^': return 94; case '_': return 95; case '`': return 96; case 'a': return 97; case 'b': return 98; case 'c': return 99; case 'd': return 100; case 'e': return 101; case 'f': return 102; case 'g': return 103; case 'h': return 104; case 'i': return 105; case 'j': return 106; case 'k': return 107; case 'l': return 108; case 'm': return 109; case 'n': return 110; case 'o': return 111; case 'p': return 112; case 'q': return 113; case 'r': return 114; case 's': return 115; case 't': return 116; case 'u': return 117; case 'v': return 118; case 'w': return 119; case 'x': return 120; case 'y': return 121; case 'z': return 122; case '{': return 123; case '|': return 124; case '}': return 125; case '~': return 126; case 'Ç': return 199; case 'ü': return 252; case 'é': return 233; case 'â': return 226; case 'ä': return 228; case 'à': return 224; case 'å': return 229; case 'ç': return 231; case 'ê': return 234; case 'ë': return 235; case 'è': return 232; case 'ï': return 239; case 'î': return 238; case 'ì': return 236; case 'Ä': return 196; case 'Å': return 197; case 'É': return 201; case 'æ': return 230; case 'Æ': return 198; case 'ô': return 244; case 'ö': return 246; case 'ò': return 242; case 'û': return 251; case 'ù': return 249; case 'ÿ': return 255; case 'Ö': return 214; case 'Ü': return 220; case 'ø': return 248; case '£': return 163; case 'Ø': return 216; case '×': return 215; case 'ƒ': return 402; case 'á': return 225; case 'í': return 237; case 'ó': return 243; case 'ú': return 250; case 'ñ': return 241; case 'Ñ': return 209; case 'ª': return 170; case 'º': return 186; case '¿': return 191; case '®': return 174; case '¬': return 172; case '½': return 189; case '¼': return 188; case '¡': return 161; case '«': return 171; case '»': return 187; case '░': return 9617; case '▒': return 9618; case '▓': return 9619; case '│': return 9474; case '┤': return 9508; case 'Á': return 193; case 'Â': return 194; case 'À': return 192; case '©': return 169; case '╣': return 9571; case '║': return 9553; case '╗': return 9559; case '╝': return 9565; case '¢': return 162; case '¥': return 165; case '┐': return 9488; case '└': return 9492; case '┴': return 9524; case '┬': return 9516; case '├': return 9500; case '─': return 9472; case '┼': return 9532; case 'ã': return 227; case 'Ã': return 195; case '╚': return 9562; case '╔': return 9556; case '╩': return 9577; case '╦': return 9574; case '╠': return 9568; case '═': return 9552; case '╬': return 9580; case '¤': return 164; case 'ð': return 240; case 'Ð': return 208; case 'Ê': return 202; case 'Ë': return 203; case 'È': return 200; case 'ı': return 305; case 'Í': return 205; case 'Î': return 206; case 'Ï': return 207; case '┘': return 9496; case '┌': return 9484; case '█': return 9608; case '▄': return 9604; case '¦': return 166; case 'Ì': return 204; case '▀': return 9600; case 'Ó': return 211; case 'ß': return 223; case 'Ô': return 212; case 'Ò': return 210; case 'õ': return 245; case 'Õ': return 213; case 'µ': return 181; case 'þ': return 254; case 'Þ': return 222; case 'Ú': return 218; case 'Û': return 219; case 'Ù': return 217; case 'ý': return 253; case 'Ý': return 221; case '¯': return 175; case '´': return 180; case '≡': return 8801; case '±': return 177; case '‗': return 8215; case '¾': return 190; case '¶': return 182; case '§': return 167; case '÷': return 247; case '¸': return 184; case '°': return 176; case '¨': return 168; case '·': return 183; case '¹': return 185; case '³': return 179; case '²': return 178; case '■': return 9632; case 'ñ': return 241; case 'Ñ': return 209; case '@': return 64; case '¿': return 191; case '?': return 63; case '¡': return 161; case '!': return 33; case ':': return 58; case '/': return 47; case '\\': return 92; case 'á': return 225; case 'é': return 233; case 'í': return 237; case 'ó': return 243; case 'ú': return 250; case 'Á': return 193; case 'É': return 201; case 'Í': return 205; case 'Ó': return 211; case 'Ú': return 218; case 'ä': return 228; case 'ë': return 235; case 'ï': return 239; case 'ö': return 246; case 'ü': return 252; case 'Ä': return 196; case 'Ë': return 203; case 'Ï': return 207; case 'Ö': return 214; case 'Ü': return 220; case '½': return 189; case '¼': return 188; case '¾': return 190; case '¹': return 185; case '³': return 179; case '²': return 178; case 'ƒ': return 402; case '±': return 177; case '×': return 215; case '÷': return 247; case '$': return 36; case '£': return 163; case '¥': return 165; case '¢': return 162; case '¤': return 164; case '®': return 174; case '©': return 169; case 'ª': return 170; case 'º': return 186; case '°': return 176; case '"': return 34; case '\'': return 39; case '(': return 40; case ')': return 41; case '[': return 91; case ']': return 93; case '{': return 123; case '}': return 125; case '«': return 171; case '»': return 187; case '': return 0; case '': return 1; case '': return 2; case '': return 3; case '': return 4; case '': return 5; case '': return 6; case '': return 7; case '': return 8; case '  ': return 9; case '': return 16; case '': return 17; case '': return 18; case '': return 19; case '': return 20; case '': return 21; case '': return 22; case '': return 23; case '': return 24; case '': return 25; case ' ': return 32; case '!': return 33; case '"': return 34; case '#': return 35; case '$': return 36; case '%': return 37; case '&': return 38; case '\'': return 39; case '(': return 40; case ')': return 41; case '0': return 48; case '1': return 49; case 'ħ': return 295; default: return LDKC.Numbers.NaN }
                             }
 
                             else
@@ -6610,10 +6728,10 @@
                         };
 
                         // Is Alphabet
-                        LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.alphabets, string, STRICT = 52) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsAlphabet = function stringPrototypeIsAlphabet(string) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.alphabets, string, STRICT = 52) };
 
                         // Is ASCII Character
-                        LapysDevelopmentKit.Functions.stringPrototypeIsASCIICharacter = function stringPrototypeIsASCIICharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.asciiCharacters, string, STRICT = 315) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsASCIICharacter = function stringPrototypeIsASCIICharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.asciiCharacters, string, STRICT = 315) };
 
                         // Is Character Encoding --- MINIFY (Lapys) -> Hexadecimal is asserted as valid encoding.`
                         LapysDevelopmentKit.Functions.stringPrototypeIsCharacterEncoding = function stringPrototypeIsCharacterEncoding(string, STRING_LENGTH) { string = LDKF.stringPrototypeLower(LDKF.stringPrototypeRemoveAll(string, ' ', STRICT = STRING_LENGTH, STRICT = 1)); return string == "ascii" || string == "cp1047" || string == "cp37" || string == "cp437" || string == "cp720" || string == "cp737" || string == "cp850" || string == "cp852" || string == "cp855" || string == "cp857" || string == "cp858" || string == "cp860" || string == "cp861" || string == "cp862" || string == "cp863" || string == "cp865" || string == "cp866" || string == "cp869" || string == "cp872" || string == "cp930" || string == "euc-jis-2004" || string == "euc-jp" || string == "euc-kr" || string == "gbk" || string == "gb18030" || string == "gb2312" || string == "hexadecimal" || string == "hkscs" || string == "iso8859-1" || string == "iso8859-10" || string == "iso8859-11" || string == "iso8859-13" || string == "iso8859-14" || string == "iso8859-15" || string == "iso8859-16" || string == "iso8859-2" || string == "iso8859-3" || string == "iso8859-5" || string == "iso8859-6" || string == "iso8859-7" || string == "iso8859-8" || string == "iso8859-9" || string == "iso-2022-jp" || string == "iso-2022-jp-2004" || string == "iso-2022-kr" || string == "ksx1001" || string == "macroman" || string == "shift_jis-2004" || string == "shiftjis" || string == "utf-16" || string == "utf-32" || string == "utf-8" || string == "windows-1250" || string == "windows-1251" || string == "windows-1252" || string == "windows-1253" || string == "windows-1254" || string == "windows-1255" || string == "windows-1256" || string == "windows-1257" || string == "windows-1258" };
@@ -6800,7 +6918,7 @@
                         LapysDevelopmentKit.Functions.stringPrototypeIsDate = function stringPrototypeIsDate(string) { return true };
 
                         // Is Digit
-                        LapysDevelopmentKit.Functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.digits, string, STRICT = 10) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsDigit = function stringPrototypeIsDigit(string) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.digits, string, STRICT = 10) };
 
                         // Is DOM Element Tag Name
                         LapysDevelopmentKit.Functions.stringPrototypeIsDOMElementTagName = function stringPrototypeIsDOMElementTagName(string, STRING_LENGTH, USE_NATIVE_FEATURES) {
@@ -7033,7 +7151,7 @@
                         LapysDevelopmentKit.Functions.stringPrototypeIsJavaScriptSource = function stringPrototypeIsJavaScriptSource(string) { return true };
 
                         // Is Language Code
-                        LapysDevelopmentKit.Functions.stringPrototypeIsLanguageCode = function stringPrototypeIsLanguageCode(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.languageCodes, string, STRICT = 741) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsLanguageCode = function stringPrototypeIsLanguageCode(string) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.languageCodes, string, STRICT = 741) };
 
                         // Is Lower
                         LapysDevelopmentKit.Functions.stringPrototypeIsLower = function stringPrototypeIsLower(string, STRING_LENGTH) {
@@ -7048,7 +7166,7 @@
                         };
 
                         // Is Lower Character
-                        LapysDevelopmentKit.Functions.stringPrototypeIsLowerCharacter = function stringPrototypeIsLowerCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.lowercaseAlphabets, string, STRICT = 26) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsLowerCharacter = function stringPrototypeIsLowerCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.lowercaseAlphabets, string, STRICT = 26) };
 
                         /* Is Numeric Decimal
                                 --- NOTE (Lapys) -> If the String begins with a decimal, it is assumed the source is a zero-point decimal.
@@ -7546,13 +7664,13 @@
                         };
 
                         // Is Upper Character
-                        LapysDevelopmentKit.Functions.stringPrototypeIsUpperCharacter = function stringPrototypeIsUpperCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.uppercaseAlphabets, string, STRICT = 26) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsUpperCharacter = function stringPrototypeIsUpperCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.uppercaseAlphabets, string, STRICT = 26) };
 
                         // Is URL --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Functions.stringPrototypeIsURL = function stringPrototypeIsURL(string) { return true };
 
                         // Is Variable Character
-                        LapysDevelopmentKit.Functions.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.String.variableCharacters, string, STRICT = 64) };
+                        LapysDevelopmentKit.Functions.stringPrototypeIsVariableCharacter = function stringPrototypeIsVariableCharacter(string) { return LDKF.arrayPrototypeIncludes(LDKC.Strings.variableCharacters, string, STRICT = 64) };
 
                         // Is Variable Identifier
                         LapysDevelopmentKit.Functions.stringPrototypeIsVariableIdentifier = function stringPrototypeIsVariableIdentifier(string, STRING_LENGTH, USE_NATIVE_FEATURES) {
@@ -7616,10 +7734,10 @@
                             while (stringIterator) {
                                 // Initialization > (Character, Index)
                                 var character = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1),
-                                    index = LDKF.arrayPrototypeIndexFrom(LDKC.String.uppercaseAlphabets, character, STRICT = 26);
+                                    index = LDKF.arrayPrototypeIndexFrom(LDKC.Strings.uppercaseAlphabets, character, STRICT = 26);
 
                                 // Update > String Lowercase
-                                stringLowercase = (~index ? LDKC.String.lowercaseAlphabets[index] : character) + stringLowercase
+                                stringLowercase = (~index ? LDKC.Strings.lowercaseAlphabets[index] : character) + stringLowercase
                             }
 
                             // Return
@@ -8070,6 +8188,71 @@
                             return trimmed
                         };
 
+                        // Truncate
+                        LapysDevelopmentKit.Functions.stringPrototypeTruncate = function stringPrototypeTruncate(string, maximumStringLength, replacer, STRING_LENGTH) { return LDKF.stringPrototypeTruncateFromFront(LDKF.stringPrototypeTruncateFromBack(string, maximumStringLength, replacer, STRICT = STRING_LENGTH), maximumStringLength, replacer) };
+
+                        // Truncate From Left --- NOTE (Lapys) -> This routine is kinda odd because it`s really only useful in pretty-printing.
+                        LapysDevelopmentKit.Functions.stringPrototypeTruncateFromBack = function stringPrototypeTruncateFromBack(string, maximumStringLength, replacer, STRING_LENGTH) {
+                            // Initialization > Truncation
+                            var truncation = "";
+
+                            // Update > Replacer
+                            replacer || (replacer = "");
+
+                            // Logic
+                            if (maximumStringLength) {
+                                // Initialization > String (Length, Iterator)
+                                var stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string),
+                                    stringIterator = stringLength;
+
+                                // Loop
+                                while (stringIterator) {
+                                    // Update > String Iterator
+                                    stringIterator -= 1;
+
+                                    // Logic > Update > ...
+                                    if ((stringLength - stringIterator - 1) ^ maximumStringLength) truncation = LDKF.stringPrototypeCharacterAt(string, stringIterator) + truncation;
+                                    else { truncation = (LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string)) + truncation; stringIterator = +0 }
+                                }
+                            }
+
+                            else
+                                // Update > Truncation
+                                truncation = LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string);
+
+                            // Return
+                            return truncation
+                        };
+
+                        // Truncate From Right
+                        LapysDevelopmentKit.Functions.stringPrototypeTruncateFromFront = function stringPrototypeTruncateFromFront(string, maximumStringLength, replacer, STRING_LENGTH) {
+                            // Initialization > Truncation
+                            var truncation = "";
+
+                            // Update > Replacer
+                            replacer || (replacer = "");
+
+                            // Logic
+                            if (maximumStringLength) {
+                                // Initialization > String (Iterator, Length)
+                                var stringIterator = +0,
+                                    stringLength = STRING_LENGTH || LDKF.stringPrototypeLength(string);
+
+                                // Loop
+                                while (stringIterator ^ stringLength)
+                                    // Logic > Update > (Truncation, String Iterator)
+                                    if (stringIterator ^ maximumStringLength) { truncation += LDKF.stringPrototypeCharacterAt(string, stringIterator); stringIterator += 1 }
+                                    else { truncation += LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string); stringIterator = stringLength }
+                            }
+
+                            else
+                                // Update > Truncation
+                                truncation = LDKF.isString(replacer) ? replacer : LDKF.functionPrototypeCall(replacer, string);
+
+                            // Return
+                            return truncation
+                        };
+
                         // Un-Escape Characters
                         LapysDevelopmentKit.Functions.stringPrototypeUnescapeCharacters = function stringPrototypeUnescapeCharacters(string) {
                             // Update > String
@@ -8095,10 +8278,10 @@
                             while (stringIterator) {
                                 // Initialization > (Character, Index)
                                 var character = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1),
-                                    index = LDKF.arrayPrototypeIndexFrom(LDKC.String.lowercaseAlphabets, character, STRICT = 26);
+                                    index = LDKF.arrayPrototypeIndexFrom(LDKC.Strings.lowercaseAlphabets, character, STRICT = 26);
 
                                 // Update > String Lowercase
-                                stringLowercase = (~index ? LDKC.String.uppercaseAlphabets[index] : character) + stringLowercase
+                                stringLowercase = (~index ? LDKC.Strings.uppercaseAlphabets[index] : character) + stringLowercase
                             }
 
                             // Return
@@ -8318,7 +8501,7 @@
                     // Logic
                     if (LDKF.isString(argument))
                         // Return
-                        return '"' + LDKF.stringPrototypeAbateFromFront(LDKF.stringPrototypeUnescapeCharacters(argument), 30, "...") + '"';
+                        return '"' + LDKF.stringPrototypeTruncateFromFront(LDKF.stringPrototypeUnescapeCharacters(argument), 30, "...") + '"';
 
                     else if (LDKF.isFunction(argument))
                         // Return
@@ -8336,7 +8519,7 @@
 
                         else if (LDKF.isRegularExpression(argument))
                             // Return
-                            return '/' + LDKF.stringPrototypeAbateFromFront(LDKF.stringPrototypeUnescapeCharacters(LDKF.regularExpressionPrototypeSource(argument)), 30, "...") + '/';
+                            return '/' + LDKF.stringPrototypeTruncateFromFront(LDKF.stringPrototypeUnescapeCharacters(LDKF.regularExpressionPrototypeSource(argument)), 30, "...") + '/';
 
                         else {
                             // Initialization > Constructor
@@ -8399,7 +8582,23 @@
                     LapysDevelopmentKit.Information.Settings.IgnoreMissingFeatures = !!LDK.tmp.settings.universal || !!LDK.tmp.settings.ignoreMissingFeatures;
 
                     // Ignore Warnings
-                    LapysDevelopmentKit.Information.Settings.IgnoreWarnings = !LDK.tmp.settings.warn;
+                    LapysDevelopmentKit.Information.Settings.IgnoreWarnings = (function(warnings) {
+                        // Logic --- CHECKPOINT (Lapys)
+                        if (warnings)
+                            // Logic
+                            if (typeof warnings == "object") {
+                                var ignoredWarnings = [];
+                                if ("public-access" in warnings) {}
+                            }
+
+                            else
+                                // Return
+                                return !warnings;
+
+                        else
+                            // Return
+                            return true
+                    })(LDK.tmp.settings.warn);
 
                     // Public Mode --- NOTE (Lapys) -> Prevents spoof testing for native JavaScript features before integration into the Lapys Development Kit if set to `true`.
                     LapysDevelopmentKit.Information.Settings.PublicMode = !!LDK.tmp.settings.public;
@@ -9555,23 +9754,30 @@
                     LAPYS_JS.evaluationScope.throwTypeError = LDKF.throwTypeError;
 
                     // Load Vendor --- NOTE (Lapys) -> The capitalized parameters here are not argument flags, but rather constants.
-                    LAPYS_JS.loadVendor = function $loadVendor(VENDOR_NAME, VENDOR_GLOBAL, handler, IGNORE_WARNING) {
+                    LAPYS_JS.loadVendor = function $loadVendor(VENDOR_NAME, VENDOR_NAMESPACE, VENDOR_HANDLER) {
                         // Logic
                         if (LDKF.isString(VENDOR_NAME)) {
-                            // Update > ...
-                            LDKF.isConstructible(VENDOR_GLOBAL) || (VENDOR_GLOBAL = GLOBAL);
-                            LDKF.arrayPrototypeAddElementToFront(LDKE.Vendors, new LDKD.Vendor(VENDOR_NAME, VENDOR_GLOBAL));
+                            // Logic
+                            if (LDKF.isFunction(VENDOR_HANDLER)) {
+                                // Update > ...
+                                LDKF.isConstructible(VENDOR_NAMESPACE) || (VENDOR_NAMESPACE = GLOBAL);
+                                LDKF.arrayPrototypeAddElementToFront(LDKE.Vendors, new LDKD.Vendor(VENDOR_NAME, VENDOR_NAMESPACE));
 
-                            // Warn
-                            IGNORE_WARNING || LDKF.throwPublicAccessAllowedWarning();
+                                // Warn
+                                LDKF.throwPublicAccessAllowedWarning();
 
-                            // Return
-                            return LDKF.functionPrototypeCall(handler, VENDOR_GLOBAL, {private: LapysDevelopmentKit.clone()})
+                                // Return
+                                return LDKF.functionPrototypeCall(VENDOR_HANDLER, VENDOR_NAMESPACE, LapysDevelopmentKit)
+                            }
+
+                            else
+                                // Error
+                                LDKF.throwTypeError(LDKF.toPrettyString(VENDOR_HANDLER) + " must be a string")
                         }
 
                         else
                             // Error
-                            LDKF.throwTypeError("`\"" + LDKF.stringPrototypeAbateFromFront(LDKF.toString(VENDOR_NAME), 20, "...") + "\"` must be a string")
+                            LDKF.throwTypeError(LDKF.toPrettyString(VENDOR_NAME) + " must be a string")
                     };
 
                     // Processing Duration
@@ -9584,15 +9790,18 @@
                     LAPYS_JS.version = VERSION;
 
                     // Warnings
-                    LAPYS_JS.warnings = {
-                        classesNotSupported: false,
-                        consoleNotSupported: false,
-                        crossSiteRequestsNotSupported: false,
-                        customHTMLElementsNotSupported: false
-                    };
+                    LAPYS_JS.warnings = [];
+                        // ...
+                        LAPYS_JS.warnings.classesNotSupported = false;
+                        LAPYS_JS.warnings.consoleNotSupported = false;
+                        LAPYS_JS.warnings.crossSiteRequestsNotSupported = false;
+                        LAPYS_JS.warnings.customHTMLElementsNotSupported = false;
 
                 // Update > ...
                 LDKF.arrayPrototypeAddElementToFront(LDKE.Vendors, VENDOR);
+
+                // Modification > (Lapys Development Kit > Environment) > Global
+                LapysDevelopmentKit.Environment.Global = LAPYS_JS;
 
                 // Definition > LapysJS
                 try { LDKF.objectDefineProperty(GLOBAL, "LapysJS", {configurable: false, enumerable: false, value: LAPYS_JS, writable: false}) }
@@ -10188,7 +10397,7 @@
                 // Event Target
                 LapysDevelopmentKit.Objects.eventTarget = LDKT.objectPrototypeConsiderNativeConstructorOfObject(GLOBAL, "EventTarget").requestForNativeConstructor();
                     // ...
-                    LapysDevelopmentKit.Constants.has_EventTarget_Constructor = LDKT.isConstructor(LDKO.eventTarget);
+                    LapysDevelopmentKit.Constants.Assertions.has_EventTarget_Constructor = LDKT.isConstructor(LDKO.eventTarget);
 
                     // Prototype
                     LapysDevelopmentKit.Objects.eventTargetPrototype = LDKF.getPropertyByName(LDKO.eventTarget, "prototype");
@@ -10806,27 +11015,25 @@
                 /* Parse Settings */
                 function ParseSettings() {
                     // Logic --- NOTE (Lapys) -> Process the various configuration settings of the library.
-                    if (LDKI.Settings.DebugMode) {
-                        // Constant > Lapys Development Kit
-                        var $LapysDevelopmentKit = LapysDevelopmentKit.clone();
+                        // [Debug Mode]
+                        if (LDKI.Settings.DebugMode) {
+                            // Global > Lapys Development Kit
+                            LDKF.objectPrototypeSetProperty(GLOBAL, "LapysDevelopmentKit", LapysDevelopmentKit, STRICT = true);
+                                // ...
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDK", LapysDevelopmentKit, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKC", LapysDevelopmentKit.Constants, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKD", LapysDevelopmentKit.Data, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKE", LapysDevelopmentKit.Environment, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKF", LapysDevelopmentKit.Functions, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKI", LapysDevelopmentKit.Information, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKM", LapysDevelopmentKit.Mathematics, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKO", LapysDevelopmentKit.Objects, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKS", LapysDevelopmentKit.Storage, STRICT = true);
+                                LDKF.objectPrototypeSetProperty(GLOBAL, "LDKT", LapysDevelopmentKit.Test, STRICT = true);
 
-                        // Global > Lapys Development Kit
-                        GLOBAL.LapysDevelopmentKit = $LapysDevelopmentKit;
-                            // ...
-                            GLOBAL["LDK"] = $LapysDevelopmentKit;
-                            GLOBAL["LDKC"] = $LapysDevelopmentKit.Constants;
-                            GLOBAL["LDKD"] = $LapysDevelopmentKit.Data;
-                            GLOBAL["LDKE"] = $LapysDevelopmentKit.Environment;
-                            GLOBAL["LDKF"] = $LapysDevelopmentKit.Functions;
-                            GLOBAL["LDKI"] = $LapysDevelopmentKit.Information;
-                            GLOBAL["LDKM"] = $LapysDevelopmentKit.Mathematics;
-                            GLOBAL["LDKO"] = $LapysDevelopmentKit.Objects;
-                            GLOBAL["LDKS"] = $LapysDevelopmentKit.Storage;
-                            GLOBAL["LDKT"] = $LapysDevelopmentKit.Test;
-
-                        // Warn
-                        LDKF.throwPublicAccessAllowedWarning()
-                    }
+                            // Warn
+                            LDKF.throwPublicAccessAllowedWarning()
+                        }
                 }
 
                 /* Throw Warnings */

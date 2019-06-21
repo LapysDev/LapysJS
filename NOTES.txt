@@ -1,0 +1,4 @@
+Known Limitations
+- Can not spoof-proof the `Object` constructor.
+- Non-private method of allowing access to the Lapys Development Kit namespace.
+- The huge collection of features of the Lapys Development Kit might make the script file slow to parse and the object data slow to integrate within the host environment.

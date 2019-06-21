@@ -1,1 +1,0 @@
-General-purpose, minimalist and semantic JavaScript library.
