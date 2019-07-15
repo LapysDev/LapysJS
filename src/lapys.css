@@ -177,6 +177,29 @@
             [dir=rtl] ol,
             [dir=rtl] ul { margin: 8.4px 18px 8.4px 0 }
 
+        /* All, <address>, <article>, <aside>, <blockquote>, <body>, <center>, <dd>, <details>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <foreignObject>, <form>, <frame>, <frameset>, <header>, <hgroup>, <hr>, <html>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <layer>, <legend>, <listing>, <main>, <menu>, <nav>, <ol>, <optgroup>, <option>, <p>, <plaintext>, <pre>, <rt>, <section>, <summary>, <text>, <ul>, <xmp> */
+        ::after, ::before,
+        address,
+        article, aside,
+        blockquote,
+        body,
+        center,
+        dd, details, dir, div, dl, dt,
+        fieldset, figcaption, figure, footer, foreignObject, form, frame, frameset,
+        header, hgroup, hr, html, h1, h2, h3, h4, h5, h6,
+        iframe[seamless],
+        input::-webkit-input-speech-button, input::-webkit-list-button, input[type=range i]::-webkit-media-slider-thumb, input[type=search i]::-webkit-search-cancel-button, input[type=search i]::-webkit-search-decoration, input[type=search i]::-webkit-search-results-decoration, input[type=search i]::-webkit-slider-runnable-track, input[type=search i]::-webkit-slider-thumb, input[type=range i]::-webkit-slider-runnable-track,
+        layer, legend, listing,
+        main, menu,
+        nav,
+        ol, optgroup, option,
+        p, plaintext, pre,
+        ruby > rt,
+        section, summary,
+        text,
+        ul,
+        xmp { display: block }
+
         /* <a> */
         a { color: #0066CC }
 
@@ -206,28 +229,6 @@
         table, tbody, td, tfoot, th, thead, tr,
         ul,
         xmp { unicode-bidi: isolate }
-
-        /* <address>, <article>, <aside>, <blockquote>, <body>, <center>, <dd>, <details>, <dir>, <div>, <dl>, <dt>, <fieldset>, <figcaption>, <figure>, <footer>, <foreignObject>, <form>, <frame>, <frameset>, <header>, <hgroup>, <hr>, <html>, <h1>, <h2>, <h3>, <h4>, <h5>, <h6>, <input>, <layer>, <legend>, <listing>, <main>, <menu>, <nav>, <ol>, <optgroup>, <option>, <p>, <plaintext>, <pre>, <rt>, <section>, <summary>, <text>, <ul>, <xmp> */
-        address,
-        article, aside,
-        blockquote,
-        body,
-        center,
-        dd, details, dir, div, dl, dt,
-        fieldset, figcaption, figure, footer, foreignObject, form, frame, frameset,
-        header, hgroup, hr, html, h1, h2, h3, h4, h5, h6,
-        iframe[seamless],
-        input::-webkit-input-speech-button, input::-webkit-list-button, input[type=range i]::-webkit-media-slider-thumb, input[type=search i]::-webkit-search-cancel-button, input[type=search i]::-webkit-search-decoration, input[type=search i]::-webkit-search-results-decoration, input[type=search i]::-webkit-slider-runnable-track, input[type=search i]::-webkit-slider-thumb, input[type=range i]::-webkit-slider-runnable-track,
-        layer, legend, listing,
-        main, menu,
-        nav,
-        ol, optgroup, option,
-        p, plaintext, pre,
-        ruby > rt,
-        section, summary,
-        text,
-        ul,
-        xmp { display: block }
 
         /* <area> */
         area { cursor: pointer }
