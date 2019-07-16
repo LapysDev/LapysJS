@@ -49,13 +49,22 @@
             - All non-universal features are banned (e.g.: Arrow functions, class objects, REST parameters and so on).
             - Avoid naming an object property `constructor`, instead defer to `constructorRoutine`.
             - Avoid naming an object property `function`, instead defer to `routine`.
+            - Avoid the `break` statement in repetition structures; This encourages a first-entry, first-exit design.
             - Due to the ECMAScript standard supporting multiple zero types, it is a rule to explicitly & strictly differentiate between each of those values (e.g.: `-0` and `+0`) except in special cases.
+            - Memory management due to the JavaScript garbage collector should be kept to a minimum:
+                -- Avoid local function declarations.
+                -- Defer string literals instead of string concatenation.
+                -- Defer to parameter labels instead of the `arguments` object.
+                -- Limit evaluating function expressions.
+                -- Limit the amount of exceptions thrown.
+                -- Prevent coercing primitive values to objects.
+                -- Use of some native functions.
             - Inline function expressions are only allowed in:
                 -- Defining the `Main` function or
                 -- Defining a phase: `Initiate`, `Update`, `Reset` or `Terminate` or
                 -- If the alternative is less efficient/ preferable.
 
-                This is to keep the language somewhat universally readable and similar to other programming languages.
+            This is to keep the language somewhat universally readable and similar to other programming languages.
 
     --- UPDATE REQUIRED ---
         #Lapys:
@@ -74,7 +83,8 @@
     /* Global > ... */
     var ANY = {}; // NOTE (Lapys) -> Represents non-unique data; Can also represent the result of a failed process.
     var GLOBAL = this; // NOTE (Lapys) -> The global namespace of the current environment --- WARN (Lapys) -> May not reference the global object (e.g.: `global`, `window` e.t.c.)).
-    var STRICT = {}; // NOTE (Lapys) -> Represents an argument to a logical or non-essential function parameter; Also known as an Argument Flag.
+    var STRICT; // NOTE (Lapys) -> Represents an argument to a logical or non-essential function parameter; Also known as an Argument Flag.
+    var TMP; // NOTE (Lapys) -> Global variable for temporary data.
 
     /* Polyfills > ... */
     var undefined = void +0; // NOTE (Lapys) -> Should not be allowed but it is.
@@ -89,6 +99,7 @@
             LapysDevelopmentKit.Constants = new (function Constants() {});
                 // ...
                 LapysDevelopmentKit.Constants.Assertions = {};
+                LapysDevelopmentKit.Constants.Functions = {};
                 LapysDevelopmentKit.Constants.Keywords = {};
                 LapysDevelopmentKit.Constants.Numbers = {};
                 LapysDevelopmentKit.Constants.Objects = {};
@@ -103,7 +114,7 @@
             // Environment --- NOTE (Lapys) -> Data container about the current host environment/ runtime.
             LapysDevelopmentKit.Environment = new (function Environment() {});
 
-            // Functions
+            // Functions --- WARN (Lapys) -> Avoid using the functions within this namespace for high-frequency events.
             LapysDevelopmentKit.Functions = new (function Functions() {});
 
             // Information
@@ -156,6 +167,9 @@
                 // Function > Prototype > Prototype
                 LapysDevelopmentKit.Functions.functionPrototypePrototype = function functionPrototypePrototype(routine) { return routine.prototype };
 
+                // Is String
+                LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
+
                 // Object > Prototype > ((Delete, Get, Has, Set) Property, Is Of Constructor)
                 LapysDevelopmentKit.Functions.objectPrototypeDeleteProperty = function objectPrototypeDeleteProperty(object, propertyIdentifier, SILENCE_EXCEPTIONS) { try { return delete object[propertyIdentifier] } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY };
                 LapysDevelopmentKit.Functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, propertyIdentifier, SILENCE_EXCEPTIONS) { try { return object[propertyIdentifier] } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY };
@@ -169,15 +183,114 @@
                 // Throw Error
                 LapysDevelopmentKit.Functions.throwError = function throwError(error) { throw error };
 
+                // To String --- FLAG (Lapys)
+                LapysDevelopmentKit.Functions.toString = function toString(argument) {
+                    // Logic
+                    if (LDKF.isString(argument))
+                        // Return
+                        return argument
+                };
+
             /* Data */
+                // Enumeration
+                LapysDevelopmentKit.Data.Enumeration = function Enumeration() { var ENUMERATION = this; var argumentsIterator = LDKF.argumentsPrototypeLength(arguments); while (argumentsIterator) { argumentsIterator -= 1; ENUMERATION[LDKF.toString(arguments[argumentsIterator])] = argumentsIterator } return ENUMERATION };
+
                 // Safe String --- NOTE (Lapys) -> String type that does not rely on the `String.prototype.charAt` method to be universally compatible. --- MINIFY (Lapys)
                 LapysDevelopmentKit.Data.SafeString = function SafeString() { var argumentsIterator = LDKF.argumentsPrototypeLength(arguments); var safeString = this; safeString.length = argumentsIterator; while (argumentsIterator) safeString[argumentsIterator -= 1] = LDKF.argumentsPrototypeArgumentAt(arguments, argumentsIterator); return safeString };
 
+            /* Mathematics > [Integer] Power */
+            LapysDevelopmentKit.Mathematics.powInt = function powInt(base, exponent) { if (exponent) { var multiplier = base; while (exponent -= 1) base *= multiplier; return base } else return 1 };
+
             /* Constants */
+                // Assertions > ...
+                LapysDevelopmentKit.Constants.Assertions.ArraySortType = new LDKD.Enumeration("ASCII_SORT", "CUSTOM_SORT", "NATIVE_SORT");
+
+                // Functions > ...
+                LapysDevelopmentKit.Constants.Functions.ArrayASCIISortComparator = function ArrayASCIISortComparator(argumentA, argumentB) {
+                    // Constant > ((String (A, B)) (Length), Iterator)
+                    var STRING_A = LDKF.toString(argumentA), STRING_B = LDKF.toString(argumentB);
+                    var STRING_A_LENGTH = LDKF.stringPrototypeLength(STRING_A), STRING_B_LENGTH = LDKF.stringPrototypeLength(STRING_B);
+                    var LENGTH = LDKM.min(STRING_A_LENGTH, STRING_B_LENGTH);
+                    var iterator = +0;
+
+                    // Loop
+                    while (iterator ^ LENGTH) {
+                        // Constant > Character (A, B)
+                        var CHARACTER_A = LDKF.stringPrototypeCharacterAt(STRING_A, iterator), CHARACTER_B = LDKF.stringPrototypeCharacterAt(STRING_B, iterator);
+
+                        // Logic > Return
+                        if (CHARACTER_A > CHARACTER_B) return STRING_A;
+                        else if (CHARACTER_A < CHARACTER_B) return STRING_B;
+
+                        // Update > Iterator
+                        iterator += 1
+                    }
+
+                    // Return
+                    return STRING_A_LENGTH < STRING_B_LENGTH ? STRING_B : STRING_A
+                };
+                LapysDevelopmentKit.Constants.Functions.ArrayCustomSortComparator = function ArrayCustomSortComparator(argumentA, argumentB) {
+                    // Logic
+                    if ((LDKF.isBoolean(argumentA) || LDKF.isNumber(argumentA)) && (LDKF.isBoolean(argumentB) || LDKF.isNumber(argumentB)))
+                        // Return
+                        return LDKM.min(argumentA, argumentB);
+
+                    else {
+                        // Constant > Argument (A, B) Is String
+                        var ARGUMENT_A_IS_STRING = LDKF.isString(argumentA), ARGUMENT_B_IS_STRING = LDKF.isString(argumentB);
+
+                        // Logic
+                        if (ARGUMENT_A_IS_STRING && ARGUMENT_B_IS_STRING) {
+                            // Constant > ((Argument (A, B)) (Length), Iterator)
+                            var ARGUMENT_A_LENGTH = LDKF.stringPrototypeLength(argumentA), ARGUMENT_B_LENGTH = LDKF.stringPrototypeLength(argumentB);
+                            var LENGTH = LDKM.min(ARGUMENT_A_LENGTH, ARGUMENT_B_LENGTH);
+                            var iterator = +0;
+
+                            // Loop
+                            while (iterator ^ LENGTH) {
+                                // Constant > Character (A, B) (Index)
+                                var CHARACTER_A = LDKF.stringPrototypeCharacterAt(ARGUMENT_A, iterator), CHARACTER_B = LDKF.stringPrototypeCharacterAt(ARGUMENT_B, iterator);
+                                var CHARACTER_A_INDEX = LDKF.arrayPrototypeIndex(LDKC.Strings.SortableCharacters, CHARACTER_A), CHARACTER_B_INDEX = LDKF.arrayPrototypeIndex(LDKC.Strings.SortableCharacters, CHARACTER_B);
+
+                                // Logic > Return
+                                if (CHARACTER_A_INDEX > CHARACTER_B_INDEX) return argumentA;
+                                else if (CHARACTER_A_INDEX < CHARACTER_B_INDEX) return argumentB;
+
+                                // Update > Iterator
+                                iterator += 1
+                            }
+
+                            // Logic > Return
+                            return ARGUMENT_A_LENGTH < ARGUMENT_B_LENGTH ? ARGUMENT_B : ARGUMENT_A
+                        }
+                        else if (ARGUMENT_A_IS_STRING)
+                            // Return
+                            return argumentA;
+
+                        else if (ARGUMENT_B_IS_STRING)
+                            // Return
+                            return argumentB;
+
+                        else {
+                            // Constant > Argument (A, B) Is Null
+                            var ARGUMENT_A_IS_NULL = LDKF.isNull(argumentA), ARGUMENT_B_IS_NULL = LDKF.isNull(argumentB);
+
+                            // Logic > Return
+                            if (!(ARGUMENT_A_IS_NULL || LDKF.isVoid(argumentA))) return argumentA;
+                            else if (!(ARGUMENT_B_IS_NULL || LDKF.isVoid(argumentB))) return argumentB;
+                            else if (ARGUMENT_A_IS_NULL) return argumentA;
+                            else if (ARGUMENT_B_IS_NULL) return argumentB;
+                            else return argumentA
+                        }
+                    }
+                };
+                LapysDevelopmentKit.Constants.Functions.Return = function(argument) { return argument };
+
                 // Numbers > ...
                 LapysDevelopmentKit.Constants.Numbers.FrameRate = 1000 / 60; // NOTE (Lapys) -> Lock-time controlled asynchronous processes to 60 frames a second.
                 LapysDevelopmentKit.Constants.Numbers.Infinity = 1 / +0;
                 LapysDevelopmentKit.Constants.Numbers.IntegerSize = 32; // NOTE (Lapys) -> 32-bits for JavaScript engines, but most implementations use 53 bits.
+                LapysDevelopmentKit.Constants.Numbers.MaximumArrayLength = LDKM.powInt(2, 32) - 1; // NOTE (Lapys) -> Maximum length of array.
                 LapysDevelopmentKit.Constants.Numbers.NaN = +0 / +0;
                 LapysDevelopmentKit.Constants.Numbers.PointerSize = 4; // NOTE (Lapys) -> Assumed size of pointers/ referrers in JavaScript (e.g.: object properties).
 
@@ -185,7 +298,6 @@
                 LapysDevelopmentKit.Constants.Keywords["extends"] = new LDKD.SafeString('e', 'x', 't', 'e', 'n', 'd', 's');
 
                 // Strings > ...
-                GLOBAL.a = LapysDevelopmentKit.Constants.Strings;
                 LapysDevelopmentKit.Constants.Strings.Alphabets = ['a', 'A', 'b', 'B', 'c', 'C', 'd', 'D', 'e', 'E', 'f', 'F', 'g', 'G', 'h', 'H', 'i', 'I', 'j', 'J', 'k', 'K', 'l', 'L', 'm', 'M', 'n', 'N', 'o', 'O', 'p', 'P', 'q', 'Q', 'r', 'R', 's', 'S', 't', 'T', 'u', 'U', 'v', 'V', 'w', 'W', 'x', 'X', 'y', 'Y', 'z', 'Z'];
                 LapysDevelopmentKit.Constants.Strings.ASCIICharacters = ['\0', '\2', '\3', '\4', '\5', '\6', '\7', '\x08', '\t', '\n', '', '', '', '', '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '', '', '', '', '', '', ' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_', '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '', '€', '\x81', '‚', '\u0192', '„', '\u2026', '\u2020', '\u2021', 'ˆ', '\u2030', '\u0160', '\u2039', '\u0152', '', 'Ž', '', '\x90', '\u2018', '\u2019', '“', '”', '\u2022', '\u2013', '\u2014', '˜', '\u2122', '\u0161', '›', '\u0153', '', 'ž', '\u0178', ' ', '¡', '¢', '£', '¤', '¥', '¦', '§', '¨', '©', 'ª', '«', '¬', '­', '®', '¯', '°', '±', '²', '³', '´', 'µ', '¶', '·', '¸', '¹', 'º', '»', '¼', '½', '¾', '¿', 'À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', '×', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'Þ', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', '÷', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'þ'];
                 LapysDevelopmentKit.Constants.Strings.BinaryDigits = ['0', '1'];
@@ -204,9 +316,9 @@
 
             /* Data */
                 // Clock --- NOTE (Lapys) -> Structure type for asynchronous and multi-threaded processes.
-                LapysDevelopmentKit.Data.Clock = function Clock() { var CLOCK = this; CLOCK.timed = false; CLOCK.timeElapsed = +0; return CLOCK };
+                LapysDevelopmentKit.Data.Clock = function Clock() { this.timed = false; this.timeElapsed = +0 };
                     // Prototype
-                    LapysDevelopmentKit.Data.ClockPrototype = LapysDevelopmentKit.Data.Clock.prototype;
+                    LapysDevelopmentKit.Data.ClockPrototype = LDKD.Clock.prototype;
                         // Check
                         LapysDevelopmentKit.Data.ClockPrototype.check = function check(condition, ontrue, onfalse) { var evaluation, id; try { evaluation = condition() } catch (error) {} id = LDKF.functionPrototypeCall(LDKD.ClockPrototype.wind, this, function() { if (evaluation) { LDKF.functionPrototypeCall(LDKD.ClockPrototype.stop, id); ontrue() } else onfalse() }); return id };
 
@@ -218,7 +330,7 @@
                             // Logic
                             if (id) {
                                 // Constant > Clock Data Index
-                                var CLOCK_DATA_INDEX = LDKF.arrayPrototypeIndex(LDKS.Registry.ClockData, id, STRICT = function(clockData) { return clockData.id });
+                                var CLOCK_DATA_INDEX = LDKF.arrayPrototypeIndex(LDKS.Registry.ClockData, id, STRICT = LDKS.Registry.ClockDataLength, STRICT = function(clockData) { return clockData.id });
 
                                 // Logic
                                 if (~CLOCK_DATA_INDEX) {
@@ -353,7 +465,7 @@
                         };
 
                 // Iterator --- NOTE (Lapys) -> Semantic type for repetition-based function handlers.
-                LapysDevelopmentKit.Data.Iterator = function Iterator() {};
+                LapysDevelopmentKit.Data.Iterator = function Iterator() { this.done = true };
 
                 // Pseudo Integer --- NOTE (Lapys) -> Infinite width integer type.
                 LapysDevelopmentKit.Data.PseudoInteger = function PseudoInteger() {};
@@ -364,99 +476,378 @@
                 // Ranged Number --- NOTE (Lapys) -> Fixed-width number type.
                 LapysDevelopmentKit.Data.RangedNumber = function RangedNumber() {};
 
-                // Safe Array --- NOTE (Lapys) -> Infinite-length array type.
-                LapysDevelopmentKit.Constants.Numbers.SafeArrayLengthBreak = 5 - 1;
-                GLOBAL.SafeArray = LapysDevelopmentKit.Data.SafeArray = function SafeArray() {
-                    var SAFE_ARRAY = this;
-
-                    SAFE_ARRAY.depth = 1;
-                    SAFE_ARRAY.length = +0;
-                    SAFE_ARRAY.width = +0;
-
-                    Object.defineProperty(SAFE_ARRAY, "slice", {value: function slice() {}, writable: 1});
-                    Object.defineProperty(SAFE_ARRAY, "splice", {value: function splice() {}, writable: 1});
-
-                    return SAFE_ARRAY
+                /* Safe Array
+                        --- NOTE (Lapys) -> Infinite-length array type.
+                        --- WARN (Lapys) -> While the length is non-finite, the memory allocated is not.
+                */
+                LapysDevelopmentKit.Data.SafeArray = function SafeArray() {
+                    // Modification > Target > (Depth, (Maximum) Length, Width)
+                    this.depth = 1;
+                    this.MAXIMUM_LENGTH = LDKD.SafeArrayPrototype.MAXIMUM_LENGTH;
+                    this.length = +0;
+                    this.width = +0
                 };
                     // Prototype
-                    LapysDevelopmentKit.Data.SafeArrayPrototype = LapysDevelopmentKit.Data.SafeArray.prototype;
-                        // Element At
-                        LapysDevelopmentKit.Data.SafeArrayPrototype.elementAt = function elementAt(index) {
-                            // while ()
+                    LapysDevelopmentKit.Data.SafeArrayPrototype = LDKD.SafeArray.prototype;
+                        // Cut At
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeCutAt =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.cutAt = function cutAt(index) {
+                            // Constant > Safe Array (Length)
+                            var SAFE_ARRAY = this;
+                            var SAFE_ARRAY_LENGTH = SAFE_ARRAY.length;
+
+                            // Logic
+                            if (SAFE_ARRAY_LENGTH)
+                                // Logic
+                                if (index == SAFE_ARRAY_LENGTH)
+                                    // Update > Safe Array
+                                    SAFE_ARRAY.pop();
+
+                                else if (!index && SAFE_ARRAY_LENGTH == 1)
+                                    // Update > Safe Array
+                                    SAFE_ARRAY.free();
+
+                                else {
+                                    // (Loop > )Update > Safe Array
+                                    while (index ^ (SAFE_ARRAY_LENGTH - 1)) SAFE_ARRAY.setIndex(index, SAFE_ARRAY.elementAt(index += 1));
+                                    SAFE_ARRAY.pop()
+                                }
                         };
 
-                        // Push
-                        LapysDevelopmentKit.Data.SafeArrayPrototype.push = function push(element) {
+                        // Element At
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeElementAt =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.elementAt = function elementAt(index) {
+                            // Initialization > Safe Array (Depth)
+                            var safeArray = this;
+                            var safeArrayDepth = safeArray.depth;
+
+                            // Logic
+                            if (safeArrayDepth == 1)
+                                // Return
+                                return safeArray[index];
+
+                            else if (!index) {
+                                // Loop > Update > Safe Array; Return
+                                while (safeArrayDepth -= 1) safeArray = safeArray[index];
+                                return safeArray[index]
+                            }
+
+                            else {
+                                // Constant > Safe Array Maximum Length
+                                var SAFE_ARRAY_MAXIMUM_LENGTH = safeArray.MAXIMUM_LENGTH;
+
+                                // Initialization > Safe Array ((Former) Index (Length))
+                                var safeArrayIndexLength = +0;
+                                var safeArrayFormerIndex = +0, safeArrayIndex = +0;
+
+                                // Loop
+                                while (safeArrayDepth -= 1) {
+                                    // Constant > Safe Subarray Maximum Breadth
+                                    var SAFE_SUBARRAY_MAXIMUM_BREADTH = LDKM.powInt(SAFE_ARRAY_MAXIMUM_LENGTH, safeArrayDepth);
+
+                                    // Update > Safe Array (Former) Index
+                                    safeArrayFormerIndex = safeArrayIndex;
+                                    safeArrayIndex = +0;
+
+                                    // (Loop > )Update > Safe Array Index
+                                    while ((
+                                        (safeArrayIndex * SAFE_SUBARRAY_MAXIMUM_BREADTH) +
+                                        safeArrayIndexLength
+                                    ) <= index) safeArrayIndex += 1;
+                                    safeArrayIndex -= 1;
+
+                                    // Update > Safe Array (Index Length)
+                                    safeArrayIndexLength += safeArrayIndex * SAFE_SUBARRAY_MAXIMUM_BREADTH;
+                                    safeArray = safeArray[safeArrayIndex]
+                                }
+
+                                // (Loop > )Update > Safe Array Index
+                                safeArrayIndex = +0;
+                                while ((safeArrayIndex + safeArrayIndexLength) < index) safeArrayIndex += 1;
+
+                                // Return
+                                return safeArray[safeArrayIndex]
+                            }
+                        };
+
+                        // For Each
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeForeach =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.foreach = function foreach(handler) {
+                            // Initialization > Safe Array (Length)
+                            var SAFE_ARRAY = this;
+                            var safeArrayLength = SAFE_ARRAY.length, safeArrayIterator = safeArrayLength;
+
+                            // Loop
+                            while (safeArrayIterator) {
+                                // Constant > Safe Array Index
+                                var SAFE_ARRAY_INDEX = safeArrayLength - (safeArrayIterator -= 1) - 1;
+
+                                // Handler
+                                handler.call(SAFE_ARRAY, SAFE_ARRAY.elementAt(SAFE_ARRAY_INDEX), SAFE_ARRAY_INDEX)
+                            }
+                        };
+
+                        // Free
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeFree =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.free = function free(PERSIST_UNUSED_MEMORY) {
+                            // Constant > Safe Array
                             var SAFE_ARRAY = this;
 
-                            // OVERFLOW
-                            if (SAFE_ARRAY.length && !(SAFE_ARRAY.length % LDKC.Numbers.SafeArrayLengthBreak)) {
-                                // DEPTH INCREASE
-                                if (SAFE_ARRAY.length == (SAFE_ARRAY.width ** SAFE_ARRAY.depth)) {
-                                    // PARENT IS FULL
-                                    var safeArrayFirst = SAFE_ARRAY[+0], safeArrayIterator = SAFE_ARRAY.width;
+                            // Logic
+                            if (PERSIST_UNUSED_MEMORY) {
+                                // Initialization > Safe Array Index
+                                var safeArrayIndex = +0;
 
+                                // Loop > (Deletion; Update > Safe Array Index)
+                                while (LDKF.objectHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) {
+                                    delete SAFE_ARRAY[safeArrayIndex];
+                                    safeArrayIndex += 1
+                                }
+                            }
+
+                            // Deletion
+                            delete SAFE_ARRAY[+0];
+
+                            // Modification > Safe Array > (Depth, Length, Width)
+                            SAFE_ARRAY.depth = 1;
+                            SAFE_ARRAY.length = +0;
+                            SAFE_ARRAY.width = +0;
+                        };
+
+                        // Index --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeIndex =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.index = function index(element) {
+                            // Constant > Safe Array
+                            var SAFE_ARRAY = this;
+
+                            // Return
+                            return SAFE_ARRAY.depth == 1 ?
+                                LDKF.arrayPrototypeIndex(SAFE_ARRAY, element, STRICT = SAFE_ARRAY.length) :
+                                LDKF.arrayPrototypeIndex(SAFE_ARRAY, element, STRICT = SAFE_ARRAY.length, STRICT = function(element, index) { return SAFE_ARRAY.elementAt(index) })
+                        };
+
+                        // Maximum Length
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeMaximumLength =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.MAXIMUM_LENGTH = LDKC.Numbers.MaximumArrayLength;
+
+                        // Pop --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
+                        LapysDevelopmentKit.Data.SafeArrayPrototypePop =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.pop = function pop(PARENT, INDEX) {
+                            // Constant > Safe Array (Length)
+                            var SAFE_ARRAY = this;
+                            var SAFE_ARRAY_LENGTH = SAFE_ARRAY.length;
+
+                            // Logic
+                            if (SAFE_ARRAY_LENGTH == 1)
+                                // Update > Safe Array
+                                SAFE_ARRAY.free();
+
+                            else if (SAFE_ARRAY_LENGTH) {
+                                // Initialization > Safe Array (Depth, Has Parent)
+                                var safeArrayDepth = SAFE_ARRAY.depth;
+                                var SAFE_ARRAY_HAS_PARENT = LDKF.argumentsPrototypeLength(arguments);
+
+                                // Logic
+                                if (safeArrayDepth == 1) {
+                                    // Deletion; Modification > Safe Array > Width
+                                    delete SAFE_ARRAY[SAFE_ARRAY.length - 1];
+                                    SAFE_ARRAY.width -= 1;
+                                    (SAFE_ARRAY_HAS_PARENT && SAFE_ARRAY_LENGTH == 1) && delete PARENT[INDEX]
+                                }
+
+                                else {
+                                    // Initialization > Safe Array Index
+                                    var safeArrayIndex = +0;
+
+                                    // (Loop > )Update > Safe Array Index
+                                    while (LDKF.objectHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) safeArrayIndex += 1;
+                                    safeArrayIndex -= 1;
+
+                                    // Update > Safe Array
+                                    SAFE_ARRAY[safeArrayIndex].pop(STRICT = SAFE_ARRAY, STRICT = safeArrayIndex)
+                                }
+
+                                // Modification > Safe Array > (Length, Width)
+                                SAFE_ARRAY.length -= 1;
+                                (SAFE_ARRAY_HAS_PARENT && !SAFE_ARRAY.width) && (PARENT.width = PARENT.MAXIMUM_LENGTH);
+
+                                // (Loop > )Update > Safe Array Depth
+                                safeArrayDepth = 1;
+                                while (LDKM.powInt(SAFE_ARRAY.MAXIMUM_LENGTH, safeArrayDepth) < SAFE_ARRAY.length) safeArrayDepth += 1;
+
+                                // Logic
+                                if (LDKM.powInt(SAFE_ARRAY.MAXIMUM_LENGTH, safeArrayDepth) == SAFE_ARRAY.length) {
+                                    // Initialization > Safe (Array Iterator, Subarray)
+                                    var safeArrayIterator = SAFE_ARRAY.MAXIMUM_LENGTH;
+                                    var SAFE_SUBARRAY = SAFE_ARRAY[+0];
+
+                                    // Modification > Safe Array > Depth
+                                    SAFE_ARRAY.depth -= 1;
+
+                                    // Loop > Update > Safe Array (Iterator)
+                                    while (safeArrayIterator) { safeArrayIterator -= 1; SAFE_ARRAY[safeArrayIterator] = SAFE_SUBARRAY[safeArrayIterator] }
+                                }
+                            }
+                        };
+
+                        // Push --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
+                        LapysDevelopmentKit.Data.SafeArrayPrototypePush =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.push = function push(element) {
+                            // Constant > Safe Array
+                            var SAFE_ARRAY = this;
+
+                            // Logic --- NOTE (Lapys) -> The array (or its children/ containers) have overflown (reached a length greater than their maximum length).
+                            if (SAFE_ARRAY.length && !(SAFE_ARRAY.length % SAFE_ARRAY.MAXIMUM_LENGTH)) {
+                                // Logic --- NOTE (Lapys) -> Clamp all the array`s contents into a subarray that is the first element of the array.
+                                if (SAFE_ARRAY.length == LDKM.powInt(SAFE_ARRAY.width, SAFE_ARRAY.depth)) {
+                                    // Constant > Safe Array First; Initialization > Safe Array Iterator
+                                    var SAFE_ARRAY_FIRST = SAFE_ARRAY[+0];
+                                    var safeArrayIterator = SAFE_ARRAY.width;
+
+                                    // Update > Safe Array
                                     SAFE_ARRAY[+0] = new LDKD.SafeArray;
-                                    SAFE_ARRAY[+0][+0] = safeArrayFirst;
-                                    SAFE_ARRAY[+0].depth = SAFE_ARRAY.depth;
-                                    SAFE_ARRAY[+0].length = safeArrayIterator ** SAFE_ARRAY.depth;
-                                    SAFE_ARRAY[+0].width = safeArrayIterator;
-                                    while (safeArrayIterator -= 1) { SAFE_ARRAY[+0][safeArrayIterator] = SAFE_ARRAY[safeArrayIterator]; LDKF.objectPrototypeDeleteProperty(SAFE_ARRAY, safeArrayIterator) }
+                                    SAFE_ARRAY[+0][+0] = SAFE_ARRAY_FIRST;
 
-                                    // INCREASE THE DEPTH
+                                    // Modification > Safe Array > (Depth, (Maximum) Length, Width)
+                                    SAFE_ARRAY[+0].depth = SAFE_ARRAY.depth;
+                                    SAFE_ARRAY[+0].length = LDKM.powInt(safeArrayIterator, SAFE_ARRAY.depth);
+                                    SAFE_ARRAY[+0].MAXIMUM_LENGTH = SAFE_ARRAY.MAXIMUM_LENGTH;
+                                    SAFE_ARRAY[+0].width = safeArrayIterator;
+
+                                    // Loop > Update > Safe Array
+                                    while (safeArrayIterator -= 1) { SAFE_ARRAY[+0][safeArrayIterator] = SAFE_ARRAY[safeArrayIterator]; delete SAFE_ARRAY[safeArrayIterator] }
+
+                                    // Modification > Safe Array > Depth
                                     SAFE_ARRAY.depth += 1
                                 }
 
+                                // Modification > Safe Array > Width
                                 SAFE_ARRAY.width = +0
                             }
 
+                            // Logic
                             if (SAFE_ARRAY.depth == 1)
+                                // Update > Safe Array
                                 SAFE_ARRAY[SAFE_ARRAY.length] = element;
 
                             else {
+                                // Initialization > (Evaluation, Safe Array Index)
                                 var evaluation = true, safeArrayIndex = +0;
 
+                                // Loop
                                 while (evaluation) {
+                                    // Initialization > Safe Subarray
                                     var safeSubarray;
 
-                                    if (LDKF.objectPrototypeHasProperty(SAFE_ARRAY, safeArrayIndex)) {
+                                    // Logic --- NOTE (Lapys) -> Assert the width of the array.
+                                    if (LDKF.objectHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) {
+                                        // Update > Safe Subarray
                                         safeSubarray = SAFE_ARRAY[safeArrayIndex];
 
-                                        if (safeSubarray.length ^ (LDKC.Numbers.SafeArrayLengthBreak ** safeSubarray.depth)) {
+                                        // Logic
+                                        if (safeSubarray.length ^ LDKM.powInt(SAFE_ARRAY.MAXIMUM_LENGTH, safeSubarray.depth)) {
+                                            // Update > (Evaluation, Safe Subarray)
                                             evaluation = false;
                                             safeSubarray.push(element)
                                         }
 
                                         else
+                                            // Update > Safe Array Index
                                             safeArrayIndex += 1
                                     }
 
                                     else {
+                                        // Initialization > Safe Array Depth
                                         var safeArrayDepth = SAFE_ARRAY.depth - 1;
 
+                                        // Update > (Evaluation, Safe (Subarray, Array))
                                         evaluation = false;
-
                                         safeSubarray = new LDKD.SafeArray;
                                         SAFE_ARRAY[safeArrayIndex] = safeSubarray;
 
+                                        // Modification > Safe Subarray > (Depth, Maximum Length)
                                         safeSubarray.depth = safeArrayDepth;
+                                        safeSubarray.MAXIMUM_LENGTH = SAFE_ARRAY.MAXIMUM_LENGTH;
+
+                                        // Loop
                                         while (safeArrayDepth -= 1) {
+                                            // (Modification, Update) > ...
                                             safeSubarray[+0] = new LDKD.SafeArray;
                                             safeSubarray[+0].depth = safeArrayDepth;
+                                            safeSubarray[+0].MAXIMUM_LENGTH = SAFE_ARRAY.MAXIMUM_LENGTH;
                                             safeSubarray = safeSubarray[+0]
                                         }
 
+                                        // Update > Safe Array
                                         SAFE_ARRAY[safeArrayIndex].push(element)
                                     }
                                 }
                             }
 
+                            // Modification > Safe Array > (Length, Width)
                             SAFE_ARRAY.length += 1;
                             SAFE_ARRAY.width += 1
                         };
 
+                        // Resize
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeResize =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.resize = function resize(length) { var SAFE_ARRAY = this; while (length) { SAFE_ARRAY.push(undefined); length -= 1 } };
+
                         // Set Index
-                        LapysDevelopmentKit.Data.SafeArrayPrototype.setIndex = function setIndex(index, element) {};
+                        LapysDevelopmentKit.Data.SafeArrayPrototypeSetIndex =
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.setIndex = function setIndex(index, element) {
+                            // Initialization > Safe Array (Depth)
+                            var safeArray = this;
+                            var safeArrayDepth = safeArray.depth;
+
+                            // Logic
+                            if (safeArrayDepth == 1)
+                                // Return
+                                return (safeArray[index] = element);
+
+                            else if (!index) {
+                                // Loop > Update > Safe Array; Return
+                                while (safeArrayDepth -= 1) safeArray = safeArray[index];
+                                return (safeArray[index] = element)
+                            }
+
+                            else {
+                                // Constant > Safe Array Maximum Length
+                                var SAFE_ARRAY_MAXIMUM_LENGTH = safeArray.MAXIMUM_LENGTH;
+
+                                // Initialization > Safe Array ((Former) Index (Length))
+                                var safeArrayIndexLength = +0;
+                                var safeArrayFormerIndex = +0, safeArrayIndex = +0;
+
+                                // Loop
+                                while (safeArrayDepth -= 1) {
+                                    // Constant > Safe Subarray Maximum Breadth
+                                    var SAFE_SUBARRAY_MAXIMUM_BREADTH = LDKM.powInt(SAFE_ARRAY_MAXIMUM_LENGTH, safeArrayDepth);
+
+                                    // Update > Safe Array (Former) Index
+                                    safeArrayFormerIndex = safeArrayIndex;
+                                    safeArrayIndex = +0;
+
+                                    // (Loop > )Update > Safe Array Index
+                                    while ((
+                                        (safeArrayIndex * SAFE_SUBARRAY_MAXIMUM_BREADTH) +
+                                        safeArrayIndexLength
+                                    ) <= index) safeArrayIndex += 1;
+                                    safeArrayIndex -= 1;
+
+                                    // Update > Safe Array (Index Length)
+                                    safeArrayIndexLength += safeArrayIndex * SAFE_SUBARRAY_MAXIMUM_BREADTH;
+                                    safeArray = safeArray[safeArrayIndex]
+                                }
+
+                                // (Loop > )Update > Safe Array Index
+                                safeArrayIndex = +0;
+                                while ((safeArrayIndex + safeArrayIndexLength) < index) safeArrayIndex += 1;
+
+                                // Return
+                                return (safeArray[safeArrayIndex] = element)
+                            }
+                        };
 
                 // Safe Integer --- NOTE (Lapys) -> Performant `PseudoInteger` type.
                 LapysDevelopmentKit.Data.SafeInteger = function SafeInteger() {};
@@ -468,23 +859,345 @@
                 LapysDevelopmentKit.Data.Scope = function Scope() {};
 
                 // Vendor --- NOTE (Lapys) -> Container for data about third-party JavaScript software.
-                LapysDevelopmentKit.Data.Vendor = function Vendor(name, namespace) {};
+                LapysDevelopmentKit.Data.Vendor = function Vendor(name, namespace) { this.name = name; this.namespace = namespace };
+                    // Prototype
+                    LapysDevelopmentKit.Data.VendorPrototype = LDKD.Vendor.prototype;
+                        // To String
+                        LapysDevelopmentKit.Data.VendorPrototype.toString = function toString() { return LDKF.toString(LDKF.objectPrototypeHasProperty(this, "name") ? this.name : "") };
 
             /* Functions */
+                // Array-Like Prototype
+                    // Element At
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeElementAt = function arrayLikePrototypeElementAt(arrayLike, index) {
+                        // Logic > Return
+                        if (LDKF.objectPrototypeIsOfConstructor(arrayLike, LDKD.SafeArray)) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeElementAt, arrayLike, index);
+                        else if (LDKF.isMapLike(arrayLike)) return LDKF.mapLikePrototypeElementAt(arrayLike, index);
+                        else if (LDKF.isCSSNumericArray(arrayLike)) {
+                            // Logic
+                            if (index < LDKF.cssNumericArrayPrototypeLength(arrayLike)) {
+                                // Initialization > Element; Constant > Array Iterator
+                                var element = undefined; var ARRAY_ITERATOR = LDKF.cssNumericArrayPrototypeEntries(arrayLike);
+
+                                // Loop > Update > (Element, Index)
+                                while (index) { element = ARRAY_ITERATOR.next().value; index -= 1 }
+
+                                // Return
+                                return element
+                            }
+
+                            else
+                                // Return
+                                return undefined
+                        }
+                        else if (LDKF.isCSSRuleList(arrayLike)) return LDKF.cssRuleListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isCSSStyleDeclaration(arrayLike)) return LDKF.cssStyleDeclarationPrototypeItem(arrayLike, index);
+                        else if (LDKF.isDOMRectList(arrayLike)) return LDKF.domRectListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isDOMStringList(arrayLike)) return LDKF.domStringListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isDOMTokenList(arrayLike)) return LDKF.domTokenListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isFileList(arrayLike)) return LDKF.fileListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isHTMLAllCollection(arrayLike)) return LDKF.htmlAllCollectionPrototypeItem(arrayLike, index);
+
+                        else if (LDKF.isHTMLAllCollection(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isHTMLCollection(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isHTMLFormControlsCollection(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isHTMLOptionsCollection(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isMediaList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isMIMETypeArray(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isNamedNodeMap(arrayLike)) return LDKF.namedNodeMapPrototypeItem(arrayLike, index);
+                        else if (LDKF.isNodeList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isPluginArray(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isRadioNodeList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isSet(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isSourceBufferList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isStyleSheetList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isSVGLengthList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isSVGNumberList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isSVGPointList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isSVGStringList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isTextTrackCueList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isTextTrackList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isTouchList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isTypedArray(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isWeakSet(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.is_webkit_SpeechGrammerList(arrayLike)) return LDKF.functionPrototypeCall();
+                        else return arrayLike[index]
+                    };
+
+                    // Set Index
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeSetIndex = function arrayLikePrototypeSetIndex(arrayLike, index, element) {
+                        // Logic > Return
+                        if (LDKF.objectPrototypeIsOfConstructor(arrayLike, LDKD.SafeArray)) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeSetIndex, arrayLike, index, element);
+                        else return (arrayLike[index] = element)
+                    };
+
                 // Array > Prototype
                     // Index
-                    LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element, IMPERATIVE) {};
+                    LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element, ARRAY_LENGTH, IMPERATIVE) { return LDKF.functionPrototypeApply(LDKF.arrayPrototypeIndexFrom, LDKF, arguments) };
 
-                    // Sort --- NOTE (Lapys) -> ASCII sort, custom sort, native sort?
+                    // Index From
+                    LapysDevelopmentKit.Functions.arrayPrototypeIndexFrom = function arrayPrototypeIndexFrom(array, element, ARRAY_LENGTH, IMPERATIVE) {
+                        // Update > (Array Length, Imperative)
+                        ARRAY_LENGTH = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
+                        IMPERATIVE = IMPERATIVE || LDKC.Functions.Return;
+
+                        // Logic
+                        if (ARRAY_LENGTH) {
+                            // Constant > Gradient Stop (Indexes, Length)
+                            var GRADIENT_STOP_INDEXES = [], GRADIENT_STOP_LENGTH = LDKM.int(ARRAY_LENGTH / 4);
+
+                            // Initialization > Array (Index, Iterator)
+                            var arrayIndex = -1, arrayIterator = ARRAY_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+
+                            // Loop
+                            while (!~arrayIndex && arrayIterator) {
+                                // Update > (Array Iterator, Gradient Stop Indexes)
+                                arrayIterator -= 1;
+                                GRADIENT_STOP_INDEXES[+0] = ARRAY_LENGTH - arrayIterator;
+                                GRADIENT_STOP_INDEXES[1] = ARRAY_LENGTH - GRADIENT_STOP_LENGTH - arrayIterator;
+                                GRADIENT_STOP_INDEXES[2] = arrayIterator + GRADIENT_STOP_LENGTH;
+                                GRADIENT_STOP_INDEXES[3] = arrayIterator;
+
+                                // Update > Array Index
+                                (
+                                    ((IMPERATIVE(array[GRADIENT_STOP_INDEXES[+0]], GRADIENT_STOP_INDEXES[+0]) === element) && (arrayIndex = GRADIENT_STOP_INDEXES[+0] + 1)) ||
+                                    ((IMPERATIVE(array[GRADIENT_STOP_INDEXES[1]], GRADIENT_STOP_INDEXES[1]) === element) && (arrayIndex = GRADIENT_STOP_INDEXES[1] + 1)) ||
+                                    ((IMPERATIVE(array[GRADIENT_STOP_INDEXES[2]], GRADIENT_STOP_INDEXES[2]) === element) && (arrayIndex = GRADIENT_STOP_INDEXES[2] + 1)) ||
+                                    ((IMPERATIVE(array[GRADIENT_STOP_INDEXES[3]], GRADIENT_STOP_INDEXES[3]) === element) && (arrayIndex = GRADIENT_STOP_INDEXES[3] + 1))
+                                ) && (arrayIndex -= 1)
+                            }
+
+                            // Return
+                            return arrayIndex
+                        }
+
+                        // Return
+                        return -1
+                    };
+
+                    /* Sort
+                            --- NOTE (Lapys) -> Utilizes the TimSort [https://en.wikipedia.org/wiki/Timsort] algorithm
+                            --- WARN (Lapys) -> The `SORT_TYPE` flag only denotes the comparator to be used when sorting (the `COMPARATOR` argument).
+                    */
+                    LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(array, SORT_TYPE, COMPARATOR) {
+                        // Logic
+                        switch ((LDKF.argumentsPrototypeLength(arguments) || 1) == 1 ? LDKC.Assertions.ArraySortType["CUSTOM_SORT"] : SORT_TYPE) {
+                            // [Custom Sort]
+                            case LDKC.Assertions.ArraySortType["CUSTOM_SORT"]:
+                                var ARRAY_LENGTH = LDKF.arrayPrototypeLength(array);
+                                var arrayIterator = ARRAY_LENGTH;
+
+                                while (arrayIterator) {
+                                    var ELEMENT = array[ARRAY_LENGTH - (arrayIterator -= 1) - 1];
+                                }
+
+                                // ...
+                                break;
+
+                            // [ASCII Sort], [Native Sort], ...
+                            case LDKC.Assertions.ArraySortType["ASCII_SORT"]: return LDKF.arrayPrototypeSort(array, STRICT = LDKC.Assertions.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Fucntions.ArrayASCIISortComparator);
+                            case LDKC.Assertions.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeCall(LDKO.arrayPrototypeSort, array);
+                            default: return LDKF.arrayPrototypeSort(array, STRICT = LDKC.Assertions.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Functions.ArrayCustomSortComparator)
+                        }
+                    };
+
+                    LapysDevelopmentKit.Constants.Numbers.ArrayTimSortRun = 32;
+
+                    LapysDevelopmentKit.Constants.Functions.ArrayInsertionSort = function ArrayInsertionSort(array, elementA, elementB) {
+                        var arrayIterator = elementA + 1;
+                        while (arrayIterator ^ elementB) {
+                            var arrayIndex = arrayIterator - 1;
+                            TMP = array[arrayIterator];
+
+                            // while (array[])
+                            arrayIterator += 1
+                        }
+                    };
+
+// // this function sorts array from left index to
+// // to right index which is of size atmost RUN
+// void insertionSort(int arr[], int left, int right)
+// {
+//     for (int i = left + 1; i <= right; i++)
+//     {
+//         int temp = arr[i];
+//         int j = i - 1;
+//         while (arr[j] > temp && j >= left)
+//         {
+//             arr[j+1] = arr[j];
+//             j--;
+//         }
+//         arr[j+1] = temp;
+//     }
+// }
+
+// // merge function merges the sorted runs
+// void merge(int arr[], int l, int m, int r)
+// {
+//     // original array is broken in two parts
+//     // left and right array
+//     int len1 = m - l + 1, len2 = r - m;
+//     int left[len1], right[len2];
+//     for (int i = 0; i < len1; i++)
+//         left[i] = arr[l + i];
+//     for (int i = 0; i < len2; i++)
+//         right[i] = arr[m + 1 + i];
+
+//     int i = 0;
+//     int j = 0;
+//     int k = l;
+
+//     // after comparing, we merge those two array
+//     // in larger sub array
+//     while (i < len1 && j < len2)
+//     {
+//         if (left[i] <= right[j])
+//         {
+//             arr[k] = left[i];
+//             i++;
+//         }
+//         else
+//         {
+//             arr[k] = right[j];
+//             j++;
+//         }
+//         k++;
+//     }
+
+//     // copy remaining elements of left, if any
+//     while (i < len1)
+//     {
+//         arr[k] = left[i];
+//         k++;
+//         i++;
+//     }
+
+//     // copy remaining element of right, if any
+//     while (j < len2)
+//     {
+//         arr[k] = right[j];
+//         k++;
+//         j++;
+//     }
+// }
+
+// // iterative Timsort function to sort the
+// // array[0...n-1] (similar to merge sort)
+// void timSort(int arr[], int n)
+// {
+//     // Sort individual subarrays of size RUN
+//     for (int i = 0; i < n; i+=RUN)
+//         insertionSort(arr, i, min((i+31), (n-1)));
+
+//     // start merging from size RUN (or 32). It will merge
+//     // to form size 64, then 128, 256 and so on ....
+//     for (int size = RUN; size < n; size = 2*size)
+//     {
+//         // pick starting point of left sub array. We
+//         // are going to merge arr[left..left+size-1]
+//         // and arr[left+size, left+2*size-1]
+//         // After every merge, we increase left by 2*size
+//         for (int left = 0; left < n; left += 2*size)
+//         {
+//             // find ending point of left sub array
+//             // mid+1 is starting point of right sub array
+//             int mid = left + size - 1;
+//             int right = min((left + 2*size - 1), (n-1));
+
+//             // merge sub array arr[left.....mid] &
+//             // arr[mid+1....right]
+//             merge(arr, left, mid, right);
+//         }
+//     }
+// }
+
+                // Is Boolean
+                LapysDevelopmentKit.Functions.isBoolean = function isBoolean(argument) { return typeof argument == "boolean" };
+
+                // Is Constructible
+                LapysDevelopmentKit.Functions.isConstructible = function isConstructible(argument) { return !LDKF.isNull(argument) && !LDKF.isVoid(argument) };
+
+                // Is Map-Like
+                LapysDevelopmentKit.Functions.isMapLike = function isMapLike(argument) { return LDKF.isAudioParamMap(arrayLike) || LDKF.isMap(arrayLike) || LDKF.isMediaKeyStatusMap(arrayLike) || LDKF.isMIDIInputMap(arrayLike) || LDKF.isMIDIOutputMap(arrayLike) };
 
                 // Is Null
                 LapysDevelopmentKit.Functions.isNull = function isNull(argument) { return argument === null };
+
+                // Is Number
+                LapysDevelopmentKit.Functions.isNumber = function isNumber(argument) { return typeof argument == "number" };
+
+                // Is Symbol
+                LapysDevelopmentKit.Functions.isSymbol = function isSymbol(argument) { return typeof argument == "symbol" };
+
+                // Is Void --- WARN (Lapys) -> `HTMLAllCollection` objects are asserted as `true`.
+                LapysDevelopmentKit.Functions.isVoid = function isVoid(argument) { return typeof argument == "undefined" };
+
+                // Map-Like > Prototype > Element At
+                LapysDevelopmentKit.Functions.mapLikePrototypeElementAt = function mapLikePrototypeElementAt(mapLike, index) {
+                    // Logic
+                    if (index < LDKF.mapPrototypeSize(mapLike)) {
+                        // Initialization > Element; Constant > Map Iterator
+                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(mapLike);
+
+                        // Loop > Update > (Element, Index)
+                        while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
+
+                        // Return
+                        return element
+                    }
+
+                    else
+                        // Return
+                        return undefined
+                };
+
+                // To Number
+                LapysDevelopmentKit.Functions.toNumber = function toNumber(argument) {
+                    // Logic > Return
+                    if (LDKF.isNumber(argument)) return argument;
+                    else if (LDKF.isNull(argument)) return +0;
+                    else if (LDKF.isBoolean(argument) || LDKF.isString(argument)) return +argument;
+                    else if (LDKF.isVoid(argument)) return LDKC.Numbers.NaN;
+                    else if (LDKF.isSymbol(argument)) return LDKF.toNumber(LDKF.toString(argument));
+                    else /*if (LDKF.isObjectLike(argument))*/ return LDKO.number(argument)
+                };
+
+            /* Mathematics */
+                // Ceiling
+                LapysDevelopmentKit.Mathematics.ceil = function ceil(number) { var integer = LDKM.int(number); return integer + (number > integer) };
+
+                // Integer
+                LapysDevelopmentKit.Mathematics.int = function int(number) { return number - number % 1 };
+
+                // Maximum
+                LapysDevelopmentKit.Mathematics.max = function max(numberA, numberB) { return numberA > numberB ? numberA : numberB };
+
+                // Minimum
+                LapysDevelopmentKit.Mathematics.min = function min(numberA, numberB) { return numberA < numberB ? numberA : numberB };
+
+                // Percent
+                LapysDevelopmentKit.Mathematics.perc = function perc(base, exponent) { return +!!exponent && (base * (exponent / 100)) };
+
+                // Round
+                LapysDevelopmentKit.Mathematics.round = function round(number) { var integer = LDKM.int(number); return integer + (number - integer >= .5) };
 
             /* Storage */
                 // Registry
                     // Clock Data ...
                     LapysDevelopmentKit.Storage.Registry.ClockData = [];
                     LapysDevelopmentKit.Storage.Registry.ClockDataLength = +0;
+
+    GLOBAL.LapysDevelopmentKit = LapysDevelopmentKit;
+    GLOBAL.LDK = LapysDevelopmentKit;
+    GLOBAL.LDKC = LDKC;
+    GLOBAL.LDKD = LDKD;
+    GLOBAL.LDKE = LDKE;
+    GLOBAL.LDKI = LDKI;
+    GLOBAL.LDKF = LDKF;
+    GLOBAL.LDKM = LDKM;
+    GLOBAL.LDKO = LDKO;
+    GLOBAL.LDKS = LDKS;
+
     // Return
     return +0
 })();
