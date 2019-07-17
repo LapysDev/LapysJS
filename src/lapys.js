@@ -155,14 +155,16 @@
     /* Modification */
         /* Lapys Development Kit */
             /* Functions --- NOTE (Lapys) -> Fortunately, these objects manage their own properties; They are spoof-proof. */
-                // Arguments > Prototype > (Argument At, Callee, Length)
+                // Arguments > Prototype > (Argument At, Callee, Length, Set Index)
                 LapysDevelopmentKit.Functions.argumentsPrototypeArgumentAt = function argumentsPrototypeArgumentAt(argumentListObject, index) { return argumentListObject[index] };
                 LapysDevelopmentKit.Functions.argumentsPrototypeCallee = function argumentsPrototypeCallee(argumentListObject) { return argumentListObject.callee };
                 LapysDevelopmentKit.Functions.argumentsPrototypeLength = function argumentsPrototypeLength(argumentListObject) { return argumentListObject.length };
+                LapysDevelopmentKit.Functions.argumentsPrototypeSetIndex = function argumentsPrototypeSetIndex(argumentListObject, index, argument) { return (argumentListObject[index] = argument) };
 
-                // Array > Prototype > (Element At, Length)
+                // Array > Prototype > (Element At, Length, Set Index)
                 LapysDevelopmentKit.Functions.arrayPrototypeElementAt = function arrayPrototypeElementAt(array, index) { return array[index] };
                 LapysDevelopmentKit.Functions.arrayPrototypeLength = function arrayPrototypeLength(array) { return array.length };
+                LapysDevelopmentKit.Functions.arrayPrototypeSetIndex = function arrayPrototypeSetIndex(array, index, element) { return (array[index] = element) };
 
                 // Function > Prototype > Prototype
                 LapysDevelopmentKit.Functions.functionPrototypePrototype = function functionPrototypePrototype(routine) { return routine.prototype };
@@ -865,30 +867,21 @@
                         // To String
                         LapysDevelopmentKit.Data.VendorPrototype.toString = function toString() { return LDKF.toString(LDKF.objectPrototypeHasProperty(this, "name") ? this.name : "") };
 
-            /* Functions */
-                // Array-Like Prototype
+            /* Functions
+                    --- NOTE ---
+                        #Lapys: Some of the methods defined here have the suffix `Like` or `Variant` attached to their names to signify the method performs type assertion for a general assortment of object types.
+                            The wordings used are different:
+                                - `Like` to denote it performs type assertion.
+                                - `Variant` to denote it performs the exact same operations on a numerable set of types.
+            */
+                // Array-Like Prototype --- WARN (Lapys) -> The methods defined here throw no exceptions when they fail.
                     // Element At
                     LapysDevelopmentKit.Functions.arrayLikePrototypeElementAt = function arrayLikePrototypeElementAt(arrayLike, index) {
                         // Logic > Return
                         if (LDKF.objectPrototypeIsOfConstructor(arrayLike, LDKD.SafeArray)) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeElementAt, arrayLike, index);
-                        else if (LDKF.isMapLike(arrayLike)) return LDKF.mapLikePrototypeElementAt(arrayLike, index);
-                        else if (LDKF.isCSSNumericArray(arrayLike)) {
-                            // Logic
-                            if (index < LDKF.cssNumericArrayPrototypeLength(arrayLike)) {
-                                // Initialization > Element; Constant > Array Iterator
-                                var element = undefined; var ARRAY_ITERATOR = LDKF.cssNumericArrayPrototypeEntries(arrayLike);
-
-                                // Loop > Update > (Element, Index)
-                                while (index) { element = ARRAY_ITERATOR.next().value; index -= 1 }
-
-                                // Return
-                                return element
-                            }
-
-                            else
-                                // Return
-                                return undefined
-                        }
+                        else if (LDKF.isArray(arrayLike) || LDKF.isSourceBufferList(arrayLike) || LDKF.isTextTrackCueList(arrayLike) || LDKF.isTextTrackList(arrayLike) || LDKF.isTypedArray(arrayLike)) return arrayLike[index]
+                        else if (LDKF.isMapVariant(arrayLike)) return LDKF.mapVariantPrototypeElementAt(arrayLike, index);
+                        else if (LDKF.isCSSNumericArray(arrayLike)) return LDKF.cssNumericArrayPrototypeElementAt(arrayLike, index);
                         else if (LDKF.isCSSRuleList(arrayLike)) return LDKF.cssRuleListPrototypeItem(arrayLike, index);
                         else if (LDKF.isCSSStyleDeclaration(arrayLike)) return LDKF.cssStyleDeclarationPrototypeItem(arrayLike, index);
                         else if (LDKF.isDOMRectList(arrayLike)) return LDKF.domRectListPrototypeItem(arrayLike, index);
@@ -896,39 +889,41 @@
                         else if (LDKF.isDOMTokenList(arrayLike)) return LDKF.domTokenListPrototypeItem(arrayLike, index);
                         else if (LDKF.isFileList(arrayLike)) return LDKF.fileListPrototypeItem(arrayLike, index);
                         else if (LDKF.isHTMLAllCollection(arrayLike)) return LDKF.htmlAllCollectionPrototypeItem(arrayLike, index);
-
-                        else if (LDKF.isHTMLAllCollection(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isHTMLCollection(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isHTMLFormControlsCollection(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isHTMLOptionsCollection(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isMediaList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isMIMETypeArray(arrayLike)) return LDKF.functionPrototypeCall();
+                        else if (LDKF.isHTMLCollection(arrayLike)) return LDKF.htmlCollectionPrototypeItem(arrayLike, index);
+                        else if (LDKF.isHTMLFormControlsCollection(arrayLike)) return LDKF.htmlFormControlsCollectionPrototypeItem(arrayLike, index);
+                        else if (LDKF.isHTMLOptionsCollection(arrayLike)) return LDKF.htmlOptionsCollectionPrototypeItem(arrayLike, index);
+                        else if (LDKF.isMediaList(arrayLike)) return LDKF.mediaListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isMIMETypeArray(arrayLike)) return LDKF.mimeTypeArrayPrototypeItem(arrayLike, index);
                         else if (LDKF.isNamedNodeMap(arrayLike)) return LDKF.namedNodeMapPrototypeItem(arrayLike, index);
-                        else if (LDKF.isNodeList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isPluginArray(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isRadioNodeList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isSet(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isSourceBufferList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isStyleSheetList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isSVGLengthList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isSVGNumberList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isSVGPointList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isSVGStringList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isTextTrackCueList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isTextTrackList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isTouchList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isTypedArray(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.isWeakSet(arrayLike)) return LDKF.functionPrototypeCall();
-                        else if (LDKF.is_webkit_SpeechGrammerList(arrayLike)) return LDKF.functionPrototypeCall();
-                        else return arrayLike[index]
+                        else if (LDKF.isNodeList(arrayLike)) return LDKF.nodeListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isPluginArray(arrayLike)) return LDKF.pluginArrayPrototypeItem(arrayLike, index);
+                        else if (LDKF.isRadioNodeList(arrayLike)) return LDKF.radioNodeListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isSet(arrayLike)) return LDKF.setPrototypeElementAt(arrayLike, index);
+                        else if (LDKF.isStylePropertyMap(arrayLike)) return LDKF.stylePropertyMapPrototypeElementAt(arrayLike, index);
+                        else if (LDKF.isStyleSheetList(arrayLike)) return LDKF.styleSheetListPrototypeItem(arrayLike, index);
+                        else if (LDKF.isSVGLengthList(arrayLike)) return LDKF.svgLengthListPrototypeGetItem(arrayLike, index);
+                        else if (LDKF.isSVGNumberList(arrayLike)) return LDKF.svgNumberListPrototypeGetItem(arrayLike, index);
+                        else if (LDKF.isSVGPointList(arrayLike)) return LDKF.svgPointListPrototypeGetItem(arrayLike, index);
+                        else if (LDKF.isSVGStringList(arrayLike)) return LDKF.svgStringListPrototypeGetItem(arrayLike, index);
+                        else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.svgTransformListPrototypeGetItem(arrayLike, index);
+                        else if (LDKF.isTouchList(arrayLike)) return LDKF.touchListPrototypeItem(arrayLike, index);
+                        else if (LDKF.is_webkit_SpeechGrammerList(arrayLike)) return LDKF._webkit_SpeechGrammarListPrototype(arrayLike, index)
                     };
 
                     // Set Index
-                    LapysDevelopmentKit.Functions.arrayLikePrototypeSetIndex = function arrayLikePrototypeSetIndex(arrayLike, index, element) {
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeSetIndex = function arrayLikePrototypeSetIndex(arrayLike, index, value) {
                         // Logic > Return
-                        if (LDKF.objectPrototypeIsOfConstructor(arrayLike, LDKD.SafeArray)) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeSetIndex, arrayLike, index, element);
-                        else return (arrayLike[index] = element)
+                        if (LDKF.objectPrototypeIsOfConstructor(arrayLike, LDKD.SafeArray)) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeSetIndex, arrayLike, index);
+                        else if (LDKF.isArray(arrayLike) || LDKF.isSourceBufferList(arrayLike) || LDKF.isTextTrackCueList(arrayLike) || LDKF.isTextTrackList(arrayLike) || LDKF.isTypedArray(arrayLike)) return (arrayLike[index] = value);
+                        else if (LDKF.isCSSStyleDeclaration(arrayLike)) return LDKF.cssStyleDeclarationPrototypeSetIndex(arrayLike, index, value);
+                        else if (LDKF.isMap(arrayLike)) return LDKF.mapPrototypeSetIndex(arrayLike, index, value);
+                        else if (LDKF.isSet(arrayLike)) return LDKF.setPrototypeSetIndex(arrayLike, index, value);
+                        else if (LDKF.isStylePropertyMap(arrayLike)) return LDKF.stylePropertyMapPrototypeSetIndex(arrayLike, index);
+                        else if (LDKF.isSVGLengthList(arrayLike)) return LDKF.svgLengthListPrototypeRemoveItem(arrayLike, index);
+                        else if (LDKF.isSVGNumberList(arrayLike)) return LDKF.svgNumberListPrototypeRemoveItem(arrayLike, index);
+                        else if (LDKF.isSVGPointList(arrayLike)) return LDKF.svgPointListPrototypeRemoveItem(arrayLike, index);
+                        else if (LDKF.isSVGStringList(arrayLike)) return LDKF.svgStringListPrototypeRemoveItem(arrayLike, index);
+                        else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.svgTransformListPrototypeRemoveItem(arrayLike, index)
                     };
 
                 // Array > Prototype
@@ -1110,6 +1105,29 @@
 //         }
 //     }
 // }
+                // CSS Numeric Array > Prototype
+                    // Element At
+                    LapysDevelopmentKit.Functions.cssNumericArrayPrototypeElementAt = function cssNumericArrayPrototypeElementAt(cssNumericArray, index) {
+                        // Logic
+                        if (index < LDKF.cssNumericArrayPrototypeLength(cssNumericArray)) {
+                            // Initialization > Element; Constant > Array Iterator
+                            var element = undefined; var ARRAY_ITERATOR = LDKF.cssNumericArrayPrototypeEntries(cssNumericArray);
+
+                            // Loop > Update > (Element, Index)
+                            while (index) { element = ARRAY_ITERATOR.next().value; index -= 1 }
+
+                            // Return
+                            return element[1]
+                        }
+
+                        else
+                            // Return
+                            return undefined
+                    };
+
+                // CSS Style Declaration > Prototype
+                    // Set Index
+                    LapysDevelopmentKit.Functions.cssStyleDeclarationPrototypeSetIndex = function cssStyleDeclarationPrototypeSetIndex(cssStyleDeclaration, index, value) { (index < LDKF.cssStyleDeclarationPrototypeLength(cssStyleDeclaration)) && LDKF.cssStyleDeclarationPrototypeSetProperty(LDKF.cssStyleDeclarationPrototypeItem(cssStyleDeclaration, index), value) };
 
                 // Is Boolean
                 LapysDevelopmentKit.Functions.isBoolean = function isBoolean(argument) { return typeof argument == "boolean" };
@@ -1117,8 +1135,8 @@
                 // Is Constructible
                 LapysDevelopmentKit.Functions.isConstructible = function isConstructible(argument) { return !LDKF.isNull(argument) && !LDKF.isVoid(argument) };
 
-                // Is Map-Like
-                LapysDevelopmentKit.Functions.isMapLike = function isMapLike(argument) { return LDKF.isAudioParamMap(arrayLike) || LDKF.isMap(arrayLike) || LDKF.isMediaKeyStatusMap(arrayLike) || LDKF.isMIDIInputMap(arrayLike) || LDKF.isMIDIOutputMap(arrayLike) };
+                // Is Map-Variant
+                LapysDevelopmentKit.Functions.isMapVariant = function isMapVariant(argument) { return LDKF.isAudioParamMap(arrayLike) || LDKF.isMap(arrayLike) || LDKF.isMediaKeyStatusMap(arrayLike) || LDKF.isMIDIInputMap(arrayLike) || LDKF.isMIDIOutputMap(arrayLike) };
 
                 // Is Null
                 LapysDevelopmentKit.Functions.isNull = function isNull(argument) { return argument === null };
@@ -1132,24 +1150,118 @@
                 // Is Void --- WARN (Lapys) -> `HTMLAllCollection` objects are asserted as `true`.
                 LapysDevelopmentKit.Functions.isVoid = function isVoid(argument) { return typeof argument == "undefined" };
 
-                // Map-Like > Prototype > Element At
-                LapysDevelopmentKit.Functions.mapLikePrototypeElementAt = function mapLikePrototypeElementAt(mapLike, index) {
+                // Map > Prototype
+                LapysDevelopmentKit.Functions.mapPrototypeSetIndex = function mapPrototypeSetIndex(map, index, value) {
                     // Logic
-                    if (index < LDKF.mapPrototypeSize(mapLike)) {
+                    if (index < LDKF.mapPrototypeSize(map)) {
                         // Initialization > Element; Constant > Map Iterator
-                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(mapLike);
+                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(map);
 
                         // Loop > Update > (Element, Index)
                         while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
 
                         // Return
-                        return element
+                        return LDKF.mapPrototypeSet(map, element[+0], value)
                     }
 
                     else
                         // Return
                         return undefined
                 };
+
+                // Map-Variant > Prototype > Element At
+                LapysDevelopmentKit.Functions.mapVariantPrototypeElementAt = function mapVariantPrototypeElementAt(mapVariant, index) {
+                    // Logic
+                    if (index < LDKF.mapPrototypeSize(mapVariant)) {
+                        // Initialization > Element; Constant > Map Iterator
+                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(mapVariant);
+
+                        // Loop > Update > (Element, Index)
+                        while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
+
+                        // Return
+                        return element[1]
+                    }
+
+                    else
+                        // Return
+                        return undefined
+                };
+
+                // Set > Prototype
+                    // Element At
+                    LapysDevelopmentKit.Functions.setPrototypeElementAt = function setPrototypeElementAt(set, index) {
+                        // Logic
+                        if (index < LDKF.setPrototypeSize(set)) {
+                            // Initialization > Element; Constant > Set Iterator
+                            var element = undefined; var SET_ITERATOR = LDKF.setPrototypeEntries(set);
+
+                            // Loop > Update > (Element, Index)
+                            while (index) { element = SET_ITERATOR.next().value; index -= 1 }
+
+                            // Return
+                            return element[1]
+                        }
+
+                        else
+                            // Return
+                            return undefined
+                    };
+
+                    // Set Index
+                    LapysDevelopmentKit.Functions.setPrototypeSetIndex = function setPrototypeSetIndex(set, index, value) {
+                        // Logic
+                        if (index < LDKF.setPrototypeSize(arrayLike)) {
+                            // Initialization > Element; Constant > Set Iterator
+                            var element = undefined; var SET_ITERATOR = LDKF.setPrototypeEntries(arrayLike);
+
+                            // Loop > Update > (Element, Index)
+                            while (index) { element = SET_ITERATOR.next().value; index -= 1 }
+
+                            // Deletion; Update > Array-Like
+                            LDKF.setPrototypeDelete(arrayLike, element[1]);
+                            LDKF.setPrototypeAdd(arrayLike, value)
+                        }
+                    };
+
+                // Style Property Map > Prototype
+                    // Element At
+                    LapysDevelopmentKit.Functions.stylePropertyMapPrototypeElementAt = function stylePropertyMapPrototypeElementAt(stylePropertyMap, index) {
+                        // Logic
+                        if (index < LDKF.mapPrototypeSize(stylePropertyMap)) {
+                            // Initialization > Element; Constant > Map Iterator
+                            var element = undefined; var MAP_ITERATOR = LDKF.stylePropertyMapPrototypeEntries(stylePropertyMap);
+
+                            // Loop > Update > (Element, Index)
+                            while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
+
+                            // Return
+                            return element[1]
+                        }
+
+                        else
+                            // Return
+                            return undefined
+                    };
+
+                    // Set Index
+                    LapysDevelopmentKit.Functions.stylePropertyMapPrototypeSetIndex = function stylePropertyMapPrototypeSetIndex(stylePropertyMap, index, value) {
+                        // Logic
+                        if (index < LDKF.stylePropertyMapPrototypeSize(stylePropertyMap)) {
+                            // Initialization > Element; Constant > Map Iterator
+                            var element = undefined; var MAP_ITERATOR = LDKF.stylePropertyMapPrototypeEntries(stylePropertyMap);
+
+                            // Loop > Update > (Element, Index)
+                            while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
+
+                            // Return
+                            return LDKF.stylePropertyMapPrototypeSet(stylePropertyMap, element[+0], value)
+                        }
+
+                        else
+                            // Return
+                            return undefined
+                    };
 
                 // To Number
                 LapysDevelopmentKit.Functions.toNumber = function toNumber(argument) {
