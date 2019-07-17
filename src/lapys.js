@@ -99,6 +99,7 @@
             LapysDevelopmentKit.Constants = new (function Constants() {});
                 // ...
                 LapysDevelopmentKit.Constants.Assertions = {};
+                LapysDevelopmentKit.Constants.Data = {};
                 LapysDevelopmentKit.Constants.Functions = {};
                 LapysDevelopmentKit.Constants.Keywords = {};
                 LapysDevelopmentKit.Constants.Numbers = {};
@@ -152,7 +153,7 @@
     var LDKO = LapysDevelopmentKit.Objects;
     var LDKS = LapysDevelopmentKit.Storage;
 
-    /* Modification */
+    /* [Pre-]Modification --- NOTE (Lapys) -> Required features that must be hoisted. */
         /* Lapys Development Kit */
             /* Functions --- NOTE (Lapys) -> Fortunately, these objects manage their own properties; They are spoof-proof. */
                 // Arguments > Prototype > (Argument At, Callee, Length, Set Index)
@@ -164,7 +165,8 @@
                 // Array > Prototype > (Element At, Length, Set Index)
                 LapysDevelopmentKit.Functions.arrayPrototypeElementAt = function arrayPrototypeElementAt(array, index) { return array[index] };
                 LapysDevelopmentKit.Functions.arrayPrototypeLength = function arrayPrototypeLength(array) { return array.length };
-                LapysDevelopmentKit.Functions.arrayPrototypeSetIndex = function arrayPrototypeSetIndex(array, index, element) { return (array[index] = element) };
+                LapysDevelopmentKit.Functions.arrayPrototypeSetIndex = function arrayPrototypeSetIndex(array, index, element) { array[index] = element };
+                LapysDevelopmentKit.Functions.arrayPrototypeResize = function arrayPrototypeResize(array, length) { array.length = length };
 
                 // Function > Prototype > Prototype
                 LapysDevelopmentKit.Functions.functionPrototypePrototype = function functionPrototypePrototype(routine) { return routine.prototype };
@@ -193,19 +195,24 @@
                         return argument
                 };
 
-            /* Data */
-                // Enumeration
-                LapysDevelopmentKit.Data.Enumeration = function Enumeration() { var ENUMERATION = this; var argumentsIterator = LDKF.argumentsPrototypeLength(arguments); while (argumentsIterator) { argumentsIterator -= 1; ENUMERATION[LDKF.toString(arguments[argumentsIterator])] = argumentsIterator } return ENUMERATION };
-
-                // Safe String --- NOTE (Lapys) -> String type that does not rely on the `String.prototype.charAt` method to be universally compatible. --- MINIFY (Lapys)
-                LapysDevelopmentKit.Data.SafeString = function SafeString() { var argumentsIterator = LDKF.argumentsPrototypeLength(arguments); var safeString = this; safeString.length = argumentsIterator; while (argumentsIterator) safeString[argumentsIterator -= 1] = LDKF.argumentsPrototypeArgumentAt(arguments, argumentsIterator); return safeString };
+            /* Data
+                    : Array Imperative --- NOTE (Lapys) -> Container for array-like access & manipulation functions.
+                    : Enumeration --- NOTE (Lapys) -> List of enumerable options represented as integers, labeled as strings.
+                    : Safe String --- NOTE (Lapys) -> String type that does not rely on the `String.prototype.charAt` method to be universally compatible. --- MINIFY (Lapys)
+            */
+            LapysDevelopmentKit.Data.ArrayImperative = function ArrayImperative(accessor, mutator, allocator) { this.at = accessor; this.resize = allocator; this.setIndex = mutator };
+            LapysDevelopmentKit.Data.Enumeration = function Enumeration() { var ENUMERATION = this; var argumentsIterator = LDKF.argumentsPrototypeLength(arguments); while (argumentsIterator) { argumentsIterator -= 1; ENUMERATION[LDKF.toString(arguments[argumentsIterator])] = argumentsIterator } return ENUMERATION };
+            LapysDevelopmentKit.Data.SafeString = function SafeString() { var argumentsIterator = LDKF.argumentsPrototypeLength(arguments); var safeString = this; safeString.length = argumentsIterator; while (argumentsIterator) safeString[argumentsIterator -= 1] = LDKF.argumentsPrototypeArgumentAt(arguments, argumentsIterator); return safeString };
 
             /* Mathematics > [Integer] Power */
             LapysDevelopmentKit.Mathematics.powInt = function powInt(base, exponent) { if (exponent) { var multiplier = base; while (exponent -= 1) base *= multiplier; return base } else return 1 };
 
+    /* Modification */
+        /* Lapys Development Kit */
             /* Constants */
-                // Assertions > ...
-                LapysDevelopmentKit.Constants.Assertions.ArraySortType = new LDKD.Enumeration("ASCII_SORT", "CUSTOM_SORT", "NATIVE_SORT");
+                // Data > ...
+                LapysDevelopmentKit.Constants.Data.ArrayImperative = new LDKD.ArrayImperative(LDKF.arrayPrototypeElementAt, LDKF.arrayPrototypeSetIndex, LDKF.arrayPrototypeResize);
+                LapysDevelopmentKit.Constants.Data.ArraySortType = new LDKD.Enumeration("ASCII_SORT", "CUSTOM_SORT", "NATIVE_SORT");
 
                 // Functions > ...
                 LapysDevelopmentKit.Constants.Functions.ArrayASCIISortComparator = function ArrayASCIISortComparator(argumentA, argumentB) {
@@ -317,6 +324,9 @@
                 LapysDevelopmentKit.Constants.Strings.VariableCharacters = ['$', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
 
             /* Data */
+                // Assertion ---  NOTE (Lapys) -> ???
+                LapysDevelopmentKit.Data.Assertion = function Assertion() {};
+
                 // Clock --- NOTE (Lapys) -> Structure type for asynchronous and multi-threaded processes.
                 LapysDevelopmentKit.Data.Clock = function Clock() { this.timed = false; this.timeElapsed = +0 };
                     // Prototype
@@ -492,7 +502,6 @@
                     // Prototype
                     LapysDevelopmentKit.Data.SafeArrayPrototype = LDKD.SafeArray.prototype;
                         // Cut At
-                        LapysDevelopmentKit.Data.SafeArrayPrototypeCutAt =
                         LapysDevelopmentKit.Data.SafeArrayPrototype.cutAt = function cutAt(index) {
                             // Constant > Safe Array (Length)
                             var SAFE_ARRAY = this;
@@ -503,16 +512,16 @@
                                 // Logic
                                 if (index == SAFE_ARRAY_LENGTH)
                                     // Update > Safe Array
-                                    SAFE_ARRAY.pop();
+                                    LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypePop, SAFE_ARRAY);
 
                                 else if (!index && SAFE_ARRAY_LENGTH == 1)
                                     // Update > Safe Array
-                                    SAFE_ARRAY.free();
+                                    LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeFree, SAFE_ARRAY);
 
                                 else {
                                     // (Loop > )Update > Safe Array
-                                    while (index ^ (SAFE_ARRAY_LENGTH - 1)) SAFE_ARRAY.setIndex(index, SAFE_ARRAY.elementAt(index += 1));
-                                    SAFE_ARRAY.pop()
+                                    while (index ^ (SAFE_ARRAY_LENGTH - 1)) LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeSetIndex, SAFE_ARRAY, index, LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeElementAt, SAFE_ARRAY, index += 1));
+                                    LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypePop, SAFE_ARRAY)
                                 }
                         };
 
@@ -573,7 +582,6 @@
                         };
 
                         // For Each
-                        LapysDevelopmentKit.Data.SafeArrayPrototypeForeach =
                         LapysDevelopmentKit.Data.SafeArrayPrototype.foreach = function foreach(handler) {
                             // Initialization > Safe Array (Length)
                             var SAFE_ARRAY = this;
@@ -581,11 +589,9 @@
 
                             // Loop
                             while (safeArrayIterator) {
-                                // Constant > Safe Array Index
+                                // Constant > Safe Array Index; Handler
                                 var SAFE_ARRAY_INDEX = safeArrayLength - (safeArrayIterator -= 1) - 1;
-
-                                // Handler
-                                handler.call(SAFE_ARRAY, SAFE_ARRAY.elementAt(SAFE_ARRAY_INDEX), SAFE_ARRAY_INDEX)
+                                LDKF.functionPrototypeCall(handler, SAFE_ARRAY, SAFE_ARRAY.elementAt(SAFE_ARRAY_INDEX), SAFE_ARRAY_INDEX)
                             }
                         };
 
@@ -601,7 +607,7 @@
                                 var safeArrayIndex = +0;
 
                                 // Loop > (Deletion; Update > Safe Array Index)
-                                while (LDKF.objectHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) {
+                                while (LDKF.objectPrototypeHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) {
                                     delete SAFE_ARRAY[safeArrayIndex];
                                     safeArrayIndex += 1
                                 }
@@ -617,7 +623,6 @@
                         };
 
                         // Index --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
-                        LapysDevelopmentKit.Data.SafeArrayPrototypeIndex =
                         LapysDevelopmentKit.Data.SafeArrayPrototype.index = function index(element) {
                             // Constant > Safe Array
                             var SAFE_ARRAY = this;
@@ -625,11 +630,10 @@
                             // Return
                             return SAFE_ARRAY.depth == 1 ?
                                 LDKF.arrayPrototypeIndex(SAFE_ARRAY, element, STRICT = SAFE_ARRAY.length) :
-                                LDKF.arrayPrototypeIndex(SAFE_ARRAY, element, STRICT = SAFE_ARRAY.length, STRICT = function(element, index) { return SAFE_ARRAY.elementAt(index) })
+                                LDKF.arrayPrototypeIndex(SAFE_ARRAY, element, STRICT = SAFE_ARRAY.length, STRICT = LDKC.Data.SafeArrayImperative)
                         };
 
                         // Maximum Length
-                        LapysDevelopmentKit.Data.SafeArrayPrototypeMaximumLength =
                         LapysDevelopmentKit.Data.SafeArrayPrototype.MAXIMUM_LENGTH = LDKC.Numbers.MaximumArrayLength;
 
                         // Pop --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
@@ -642,7 +646,7 @@
                             // Logic
                             if (SAFE_ARRAY_LENGTH == 1)
                                 // Update > Safe Array
-                                SAFE_ARRAY.free();
+                                LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeFree, SAFE_ARRAY);
 
                             else if (SAFE_ARRAY_LENGTH) {
                                 // Initialization > Safe Array (Depth, Has Parent)
@@ -662,11 +666,11 @@
                                     var safeArrayIndex = +0;
 
                                     // (Loop > )Update > Safe Array Index
-                                    while (LDKF.objectHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) safeArrayIndex += 1;
+                                    while (LDKF.objectPrototypeHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) safeArrayIndex += 1;
                                     safeArrayIndex -= 1;
 
                                     // Update > Safe Array
-                                    SAFE_ARRAY[safeArrayIndex].pop(STRICT = SAFE_ARRAY, STRICT = safeArrayIndex)
+                                    LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypePop, SAFE_ARRAY[safeArrayIndex], STRICT = SAFE_ARRAY, STRICT = safeArrayIndex)
                                 }
 
                                 // Modification > Safe Array > (Length, Width)
@@ -742,7 +746,7 @@
                                     var safeSubarray;
 
                                     // Logic --- NOTE (Lapys) -> Assert the width of the array.
-                                    if (LDKF.objectHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) {
+                                    if (LDKF.objectPrototypeHasOwnProperty(SAFE_ARRAY, safeArrayIndex)) {
                                         // Update > Safe Subarray
                                         safeSubarray = SAFE_ARRAY[safeArrayIndex];
 
@@ -750,7 +754,7 @@
                                         if (safeSubarray.length ^ LDKM.powInt(SAFE_ARRAY.MAXIMUM_LENGTH, safeSubarray.depth)) {
                                             // Update > (Evaluation, Safe Subarray)
                                             evaluation = false;
-                                            safeSubarray.push(element)
+                                            LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypePush, safeSubarray, element)
                                         }
 
                                         else
@@ -781,7 +785,7 @@
                                         }
 
                                         // Update > Safe Array
-                                        SAFE_ARRAY[safeArrayIndex].push(element)
+                                        LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypePush, SAFE_ARRAY[safeArrayIndex], element)
                                     }
                                 }
                             }
@@ -793,7 +797,7 @@
 
                         // Resize
                         LapysDevelopmentKit.Data.SafeArrayPrototypeResize =
-                        LapysDevelopmentKit.Data.SafeArrayPrototype.resize = function resize(length) { var SAFE_ARRAY = this; while (length) { SAFE_ARRAY.push(undefined); length -= 1 } };
+                        LapysDevelopmentKit.Data.SafeArrayPrototype.resize = function resize(length) { var SAFE_ARRAY = this, SAFE_ARRAY_LENGTH = SAFE_ARRAY.length; length = LDKM.max(+0, length - SAFE_ARRAY_LENGTH); while (length) { LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypePush, SAFE_ARRAY, undefined); length -= 1 } };
 
                         // Set Index
                         LapysDevelopmentKit.Data.SafeArrayPrototypeSetIndex =
@@ -846,10 +850,17 @@
                                 safeArrayIndex = +0;
                                 while ((safeArrayIndex + safeArrayIndexLength) < index) safeArrayIndex += 1;
 
-                                // Return
-                                return (safeArray[safeArrayIndex] = element)
+                                // Update > Safe Array
+                                safeArray[safeArrayIndex] = element
                             }
                         };
+
+                    // ...
+                    LapysDevelopmentKit.Constants.Data.SafeArrayImperative = new LDKD.ArrayImperative(
+                        function SafeArrayPrototypeElementAt(safeArray, index) { return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeElementAt, safeArray, index) },
+                        function SafeArrayPrototypeSetIndex(safeArray, index, element) { return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeSetIndex, safeArray, index, element) },
+                        function SafeArrayPrototypeResize(safeArray, length) { return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeResize, safeArray, length) }
+                    );
 
                 // Safe Integer --- NOTE (Lapys) -> Performant `PseudoInteger` type.
                 LapysDevelopmentKit.Data.SafeInteger = function SafeInteger() {};
@@ -878,7 +889,7 @@
                     // Element At
                     LapysDevelopmentKit.Functions.arrayLikePrototypeElementAt = function arrayLikePrototypeElementAt(arrayLike, index) {
                         // Logic > Return
-                        if (LDKF.objectPrototypeIsOfConstructor(arrayLike, LDKD.SafeArray)) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeElementAt, arrayLike, index);
+                        if (arrayLike instanceof LDKD.SafeArray) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeElementAt, arrayLike, index);
                         else if (LDKF.isArray(arrayLike) || LDKF.isSourceBufferList(arrayLike) || LDKF.isTextTrackCueList(arrayLike) || LDKF.isTextTrackList(arrayLike) || LDKF.isTypedArray(arrayLike)) return arrayLike[index]
                         else if (LDKF.isMapVariant(arrayLike)) return LDKF.mapVariantPrototypeElementAt(arrayLike, index);
                         else if (LDKF.isCSSNumericArray(arrayLike)) return LDKF.cssNumericArrayPrototypeElementAt(arrayLike, index);
@@ -913,7 +924,7 @@
                     // Set Index
                     LapysDevelopmentKit.Functions.arrayLikePrototypeSetIndex = function arrayLikePrototypeSetIndex(arrayLike, index, value) {
                         // Logic > Return
-                        if (LDKF.objectPrototypeIsOfConstructor(arrayLike, LDKD.SafeArray)) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeSetIndex, arrayLike, index);
+                        if (arrayLike instanceof LDKD.SafeArray) return LDKF.functionPrototypeCall(LDKD.SafeArrayPrototypeSetIndex, arrayLike, index);
                         else if (LDKF.isArray(arrayLike) || LDKF.isSourceBufferList(arrayLike) || LDKF.isTextTrackCueList(arrayLike) || LDKF.isTextTrackList(arrayLike) || LDKF.isTypedArray(arrayLike)) return (arrayLike[index] = value);
                         else if (LDKF.isCSSStyleDeclaration(arrayLike)) return LDKF.cssStyleDeclarationPrototypeSetIndex(arrayLike, index, value);
                         else if (LDKF.isMap(arrayLike)) return LDKF.mapPrototypeSetIndex(arrayLike, index, value);
@@ -926,7 +937,7 @@
                         else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.svgTransformListPrototypeRemoveItem(arrayLike, index)
                     };
 
-                // Array > Prototype
+                // Array > Prototype --- NOTE (Lapys) -> Imperatives assert how the specified array will be accessed/ modified.
                     // Index
                     LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element, ARRAY_LENGTH, IMPERATIVE) { return LDKF.functionPrototypeApply(LDKF.arrayPrototypeIndexFrom, LDKF, arguments) };
 
@@ -934,7 +945,7 @@
                     LapysDevelopmentKit.Functions.arrayPrototypeIndexFrom = function arrayPrototypeIndexFrom(array, element, ARRAY_LENGTH, IMPERATIVE) {
                         // Update > (Array Length, Imperative)
                         ARRAY_LENGTH = ARRAY_LENGTH || LDKF.arrayPrototypeLength(array);
-                        IMPERATIVE = IMPERATIVE || LDKC.Functions.Return;
+                        IMPERATIVE = IMPERATIVE || LDKC.Data.ArrayImperative;
 
                         // Logic
                         if (ARRAY_LENGTH) {
@@ -976,9 +987,9 @@
                     */
                     LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(array, SORT_TYPE, COMPARATOR) {
                         // Logic
-                        switch ((LDKF.argumentsPrototypeLength(arguments) || 1) == 1 ? LDKC.Assertions.ArraySortType["CUSTOM_SORT"] : SORT_TYPE) {
+                        switch ((LDKF.argumentsPrototypeLength(arguments) || 1) == 1 ? LDKC.Data.ArraySortType["CUSTOM_SORT"] : SORT_TYPE) {
                             // [Custom Sort]
-                            case LDKC.Assertions.ArraySortType["CUSTOM_SORT"]:
+                            case LDKC.Data.ArraySortType["CUSTOM_SORT"]:
                                 var ARRAY_LENGTH = LDKF.arrayPrototypeLength(array);
                                 var arrayIterator = ARRAY_LENGTH;
 
@@ -990,9 +1001,9 @@
                                 break;
 
                             // [ASCII Sort], [Native Sort], ...
-                            case LDKC.Assertions.ArraySortType["ASCII_SORT"]: return LDKF.arrayPrototypeSort(array, STRICT = LDKC.Assertions.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Fucntions.ArrayASCIISortComparator);
-                            case LDKC.Assertions.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeCall(LDKO.arrayPrototypeSort, array);
-                            default: return LDKF.arrayPrototypeSort(array, STRICT = LDKC.Assertions.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Functions.ArrayCustomSortComparator)
+                            case LDKC.Data.ArraySortType["ASCII_SORT"]: return LDKF.arrayPrototypeSort(array, STRICT = LDKC.Data.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Fucntions.ArrayASCIISortComparator);
+                            case LDKC.Data.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeCall(LDKO.arrayPrototypeSort, array);
+                            default: return LDKF.arrayPrototypeSort(array, STRICT = LDKC.Data.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Functions.ArrayCustomSortComparator)
                         }
                     };
 
@@ -1129,6 +1140,19 @@
                     // Set Index
                     LapysDevelopmentKit.Functions.cssStyleDeclarationPrototypeSetIndex = function cssStyleDeclarationPrototypeSetIndex(cssStyleDeclaration, index, value) { (index < LDKF.cssStyleDeclarationPrototypeLength(cssStyleDeclaration)) && LDKF.cssStyleDeclarationPrototypeSetProperty(LDKF.cssStyleDeclarationPrototypeItem(cssStyleDeclaration, index), value) };
 
+                // Function > Prototype
+                    // Apply --- WARN (Lapys) -> Still references the `Function.prototype.apply.call` method which is not spoof-proof.
+                    LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(routine, that, argumentListObject) { return LDKO.functionPrototypeApply.call(routine, that, argumentListObject) };
+
+                    // Asynchronous Apply
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousApply = function functionPrototypeAsynchronousApply(routine, that, argumentListObject) { var animationFrameId = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(animationFrameId); LDKF.functionPrototypeApply(routine, that, argumentListObject) }) };
+
+                    // Asynchronous Call
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousCall = function functionPrototypeAsynchronousCall(routine, that, argumentA) { var argumentList = arguments, animationFrameId = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(animationFrameId); LDKF.functionPrototypeApply(LDKF.functionPrototypeCall, LDKF, argumentList) }) };
+
+                    // Call
+                    LapysDevelopmentKit.Functions.functionPrototypeCall = function functionPrototypeCall(routine, that, argumentA) { var argumentsIterator = LDKM.max(+0, LDKF.argumentsPrototypeLength(arguments) - 2), argumentList = [argumentA]; while (argumentsIterator -= 1) { argumentList[argumentsIterator] = arguments[argumentsIterator + 2] } return LDKF.functionPrototypeApply(routine, that, argumentList) };
+
                 // Is Boolean
                 LapysDevelopmentKit.Functions.isBoolean = function isBoolean(argument) { return typeof argument == "boolean" };
 
@@ -1187,6 +1211,9 @@
                         // Return
                         return undefined
                 };
+
+                // Object > Prototype > Has Own Property
+                LapysDevelopmentKit.Functions.objectPrototypeHasOwnProperty = function objectPrototypeHasOwnProperty(object, propertyIdentifier) { return LDKF.functionPrototypeCall(LDKO.objectPrototypeHasOwnProperty, object, propertyIdentifier) };
 
                 // Set > Prototype
                     // Element At
@@ -1292,6 +1319,13 @@
 
                 // Round
                 LapysDevelopmentKit.Mathematics.round = function round(number) { var integer = LDKM.int(number); return integer + (number - integer >= .5) };
+
+            /* Objects */
+                // Function > Prototype > Apply --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Objects.functionPrototypeApply = Function.prototype.apply;
+
+                // Object > Prototype > Has Own Property --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Objects.objectPrototypeHasOwnProperty = Object.prototype.hasOwnProperty;
 
             /* Storage */
                 // Registry
