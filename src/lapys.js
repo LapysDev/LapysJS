@@ -79,6 +79,9 @@
 
     --- UPDATE REQUIRED ---
         #Lapys:
+            - Blur all elements when main window is blurred.
+            - Lookup CSS rules from the `document.styleSheets[0].cssRules` form.
+            - Lookup DOM updates with the `MutationObserver` API.
             - Target development environments (these may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
                 -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- Netscape Navigator 2 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
@@ -184,9 +187,11 @@
             LapysDevelopmentKit.Functions.objectPrototypeSetProperty = function objectPrototypeSetProperty(object, propertyIdentifier, propertyValue, SILENCE_EXCEPTIONS) { try { return object[propertyIdentifier] = propertyValue } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY };
 
             LapysDevelopmentKit.Functions.functionPrototypePrototype = function functionPrototypePrototype(routine) { return routine.prototype };
+
+            LapysDevelopmentKit.Functions.stringPrototypeLength = function stringPrototypeLength(string) { return string.length };
+
             LapysDevelopmentKit.Functions.getArgumentsLength = function getArgumentsLength(ArgumentListObject) { return /*LDKF.argumentsPrototypeLength(ArgumentListObject) || */ArgumentListObject.length };
             LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
-            LapysDevelopmentKit.Functions.stringPrototypeLength = function stringPrototypeLength(string) { return string.length };
             LapysDevelopmentKit.Functions.throwError = function throwError(error) { throw error };
             LapysDevelopmentKit.Functions.toString = function toString(argument) { return LDKF.isString(argument) ? argument : LDKO.string(argument) };
 
@@ -463,6 +468,7 @@
                     };
 
                 // Array > Prototype --- NOTE (Lapys) -> Imperatives assert how the specified array will be accessed/ modified.
+                    // Count --- CHECKPOINT (Lapys)
                     // Index
                     LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element, ARRAY_LENGTH, IMPERATIVE) { return LDKF.functionPrototypeApply(LDKF.arrayPrototypeIndexFrom, LDKF, arguments) };
 
@@ -747,9 +753,10 @@
                     // After
                     LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFromFront(string, substring, STRICT = STRING_LENGTH) };
 
-                    // After Character
+                    // After Character --- CHECKPOINT (Lapys)
                     LapysDevelopmentKit.Functions.stringPrototypeAfterCharacter = function stringPrototypeAfterCharacter(string, character, STRING_LENGTH) { return LDKF.stringPrototypeAfterCharacterFromFront(string, character, STRICT = STRING_LENGTH) };
 
+                    // After Character From --- CHECKPOINT (Lapys)
                     // After Character From Back
                     LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromBack = function stringPrototypeAfterCharacterFromBack(string, character, STRING_LENGTH) {
                         // Update > String Length
@@ -793,9 +800,10 @@
                     // Before
                     LapysDevelopmentKit.Functions.stringPrototypeBefore = function stringPrototypeBefore(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeBeforeFromBack(string, substring, STRICT = STRING_LENGTH) };
 
-                    // Before Character
+                    // Before Character --- CHECKPOINT (Lapys)
                     LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacter = function stringPrototypeBeforeCharacter(string, character, STRING_LENGTH) { return LDKF.stringPrototypeBeforeCharacterFromBack(string, character, STRICT = STRING_LENGTH) };
 
+                    // Before Character From --- CHECKPOINT (Lapys)
                     // Before Character From Back
                     LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromBack = function stringPrototypeBeforeCharacterFromBack(string, character, STRING_LENGTH) {
                         // Update > String Length
@@ -842,6 +850,7 @@
                     // Character Code At
                     LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(string, index) { return LDKF.functionPrototypeCall(LDKO.stringPrototypeCharacterCodeAt, string, index) || -1 };
 
+                    // Count --- CHECKPOINT (Lapys)
                     // Cut Left
                     // Cut Right
 
@@ -1355,6 +1364,10 @@
                     }
                 };
                     // Add --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Types.BigNumberAdd
+                    LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB) {
+                        if (BigNumberA.mantissa.length || BigNumberB.mantissa.length) {}
+                    };
 
                     // From Number
                     LapysDevelopmentKit.Types.BigNumberFromNumber =

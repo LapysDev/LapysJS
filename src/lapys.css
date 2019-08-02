@@ -553,12 +553,15 @@
                 /* Webkit : Full Page Media */
                 body:-webkit-full-page-media { background-color: #363636 }
 
-        /* <body>, <button>, <input>, <keygen>, <select>, <textarea> */
+        /* <body>, <button>, <dl>, <input>, <keygen>, <ol>, <select>, <textarea>, <ul> */
         body, button,
+        dl,
         input,
         keygen, keygen::-webkit-keygen-select,
+        ol,
         select,
-        textarea { margin: 0 }
+        textarea,
+        ul { margin: 0 }
 
         /* <body>, <embed>, <html>, <iframe>, <input>, <object> */
         body:focus,
@@ -742,6 +745,9 @@
 
         /* <canvas> */
         canvas { -moz-user-select: none }
+
+        /* <canvas>, <img>, <svg>, <video> */
+        canvas, img, svg, video { background-color: transparent }
 
         /* <canvas>, <video> */
         canvas, video {
@@ -1881,4 +1887,7 @@
 
         * | ::-moz-html-canvas-content { transform: translate(0) !important }
 
-/* [Custom Features] --- UPDATE REQUIRED (Lapys) */
+/* [Custom Features] */
+    /* <p> */
+        /* [All] */
+        p * { font-family: inherit }
