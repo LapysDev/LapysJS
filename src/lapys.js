@@ -11,7 +11,8 @@
                 function(variableParameter, ConstantParameter, FLAG_PARAMETER) {}
             };
 
-            $Public and Private Data
+            $Public Data
+            Private Data
             _Native Name_
 
     --- NOTE ---
@@ -82,6 +83,7 @@
             - Blur all elements when main window is blurred.
             - Lookup CSS rules from the `document.styleSheets[0].cssRules` form.
             - Lookup DOM updates with the `MutationObserver` API.
+            - Fix the naming of variables within functions.
             - Target development environments (these may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
                 -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- Netscape Navigator 2 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
@@ -175,25 +177,25 @@
             LapysDevelopmentKit.Functions.argumentsPrototypeLength = function argumentsPrototypeLength(ArgumentListObject) { return ArgumentListObject.length };
             LapysDevelopmentKit.Functions.argumentsPrototypeSetIndex = function argumentsPrototypeSetIndex(ArgumentListObject, Index, Argument) { return (ArgumentListObject[Index] = Argument) };
 
-            LapysDevelopmentKit.Functions.arrayPrototypeElementAt = function arrayPrototypeElementAt(Array, index) { return Array[index] };
+            LapysDevelopmentKit.Functions.arrayPrototypeElementAt = function arrayPrototypeElementAt(Array, Index) { return Array[Index] };
             LapysDevelopmentKit.Functions.arrayPrototypeLength = function arrayPrototypeLength(Array) { return Array.length };
             LapysDevelopmentKit.Functions.arrayPrototypeSetIndex = function arrayPrototypeSetIndex(Array, Index, Element) { Array[Index] = Element };
             LapysDevelopmentKit.Functions.arrayPrototypeResize = function arrayPrototypeResize(Array, Length) { Array.length = Length };
 
-            LapysDevelopmentKit.Functions.objectPrototypeDeleteProperty = function objectPrototypeDeleteProperty(object, propertyIdentifier, SILENCE_EXCEPTIONS) { try { return delete object[propertyIdentifier] } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY };
-            LapysDevelopmentKit.Functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(object, propertyIdentifier, SILENCE_EXCEPTIONS) { try { return object[propertyIdentifier] } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY };
-            LapysDevelopmentKit.Functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(object, propertyIdentifier, SILENCE_EXCEPTIONS) { try { return propertyIdentifier in object } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY };
-            LapysDevelopmentKit.Functions.objectPrototypeIsOfConstructor = function objectPrototypeGetProperty(object, constructor, SILENCE_EXCEPTIONS) { try { return object instanceof constructor } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY }
-            LapysDevelopmentKit.Functions.objectPrototypeSetProperty = function objectPrototypeSetProperty(object, propertyIdentifier, propertyValue, SILENCE_EXCEPTIONS) { try { return object[propertyIdentifier] = propertyValue } catch (error) { SILENCE_EXCEPTIONS || LDKF.throwError(error) } return ANY };
+            LapysDevelopmentKit.Functions.objectPrototypeDeleteProperty = function objectPrototypeDeleteProperty(Object, PropertyIdentifier, IGNORE_EXCEPTIONS) { try { return delete Object[PropertyIdentifier] } catch (Error) { IGNORE_EXCEPTIONS || LDKF.throwError(Error) } return ANY };
+            LapysDevelopmentKit.Functions.objectPrototypeGetProperty = function objectPrototypeGetProperty(Object, PropertyIdentifier, IGNORE_EXCEPTIONS) { try { return Object[PropertyIdentifier] } catch (Error) { IGNORE_EXCEPTIONS || LDKF.throwError(Error) } return ANY };
+            LapysDevelopmentKit.Functions.objectPrototypeHasProperty = function objectPrototypeHasProperty(Object, PropertyIdentifier, IGNORE_EXCEPTIONS) { try { return PropertyIdentifier in Object } catch (Error) { IGNORE_EXCEPTIONS || LDKF.throwError(Error) } return ANY };
+            LapysDevelopmentKit.Functions.objectPrototypeIsOfConstructor = function objectPrototypeIsOfConstructor(Object, Constructor, IGNORE_EXCEPTIONS) { try { return Object instanceof Constructor } catch (Error) { IGNORE_EXCEPTIONS || LDKF.throwError(Error) } return ANY }
+            LapysDevelopmentKit.Functions.objectPrototypeSetProperty = function objectPrototypeSetProperty(Object, PropertyIdentifier, PropertyValue, IGNORE_EXCEPTIONS) { try { return Object[PropertyIdentifier] = PropertyValue } catch (Error) { IGNORE_EXCEPTIONS || LDKF.throwError(Error) } return ANY };
 
-            LapysDevelopmentKit.Functions.functionPrototypePrototype = function functionPrototypePrototype(routine) { return routine.prototype };
+            LapysDevelopmentKit.Functions.functionPrototypePrototype = function functionPrototypePrototype(Routine) { return Routine.prototype };
 
-            LapysDevelopmentKit.Functions.stringPrototypeLength = function stringPrototypeLength(string) { return string.length };
+            LapysDevelopmentKit.Functions.stringPrototypeLength = function stringPrototypeLength(String) { return String.length };
 
             LapysDevelopmentKit.Functions.getArgumentsLength = function getArgumentsLength(ArgumentListObject) { return /*LDKF.argumentsPrototypeLength(ArgumentListObject) || */ArgumentListObject.length };
-            LapysDevelopmentKit.Functions.isString = function isString(argument) { return typeof argument == "string" };
-            LapysDevelopmentKit.Functions.throwError = function throwError(error) { throw error };
-            LapysDevelopmentKit.Functions.toString = function toString(argument) { return LDKF.isString(argument) ? argument : LDKO.string(argument) };
+            LapysDevelopmentKit.Functions.isString = function isString(Argument) { return typeof Argument == "string" };
+            LapysDevelopmentKit.Functions.throwError = function throwError(Error) { throw Error };
+            LapysDevelopmentKit.Functions.toString = function toString(Argument) { return LDKF.isString(Argument) ? Argument : LDKO.string(Argument) };
 
             /* Types > --- REDACT (Lapys)
                     : Array Imperative --- NOTE (Lapys) -> Container for array-like access & manipulation functions.
@@ -201,10 +203,10 @@
                     : Enumeration --- NOTE (Lapys) -> List of enumerable options represented as integers, labeled as strings.
                     : Safe String --- NOTE (Lapys) -> String type that does not rely on the `String.prototype.charAt` method to be universally compatible. --- MINIFY (Lapys)
             */
-            LapysDevelopmentKit.Types.ArrayImperative = function ArrayImperative(accessor, mutator, requester, allocator) { this.getIndex = accessor; this.getLength = requester; this.setIndex = mutator; this.setLength = allocator };
+            LapysDevelopmentKit.Types.ArrayImperative = function ArrayImperative(Accessor, Mutator, Requester, Allocator) { this.getIndex = Accessor; this.getLength = Requester; this.setIndex = Mutator; this.setLength = Allocator };
             LapysDevelopmentKit.Types.Clock = function Clock() { this.timed = false; this.timeElapsed = +0 };
-            LapysDevelopmentKit.Types.Enumeration = function Enumeration(values) { var argumentsIterator = LDKF.getArgumentsLength(arguments); while (argumentsIterator) { argumentsIterator -= 1; this[LDKF.toString(arguments[argumentsIterator])] = argumentsIterator } return this };
-            LapysDevelopmentKit.Types.SafeString = function SafeString(characters) { var argumentsIterator = LDKF.getArgumentsLength(arguments); this.length = argumentsIterator; while (argumentsIterator) { argumentsIterator -= 1; this[argumentsIterator] = arguments[argumentsIterator] } };
+            LapysDevelopmentKit.Types.Enumeration = function Enumeration(Values) { var argumentsIterator = LDKF.getArgumentsLength(arguments); while (argumentsIterator) { argumentsIterator -= 1; this[LDKF.toString(arguments[argumentsIterator])] = argumentsIterator } return this };
+            LapysDevelopmentKit.Types.SafeString = function SafeString(Characters) { var argumentsIterator = LDKF.getArgumentsLength(arguments); this.length = argumentsIterator; while (argumentsIterator) { argumentsIterator -= 1; this[argumentsIterator] = arguments[argumentsIterator] } };
 
     /* Modification */
         /* Lapys Development Kit */
@@ -214,9 +216,9 @@
                 LapysDevelopmentKit.Constants.Data.ArraySortType = new LDKT.Enumeration("ASCII_SORT", "CUSTOM_SORT", "NATIVE_SORT");
                 LapysDevelopmentKit.Constants.Data.Clock = new LDKT.Clock;
 
-                LapysDevelopmentKit.Constants.Data.ArrayASCIISortComparator = function ArrayASCIISortComparator(argumentA, argumentB) {
+                LapysDevelopmentKit.Constants.Data.ArrayASCIISortComparator = function ArrayASCIISortComparator(ArgumentA, ArgumentB) {
                     // Constant > ((String (A, B)) (Length), Iterator)
-                    var STRING_A = LDKF.toString(argumentA), STRING_B = LDKF.toString(argumentB);
+                    var STRING_A = LDKF.toString(ArgumentA), STRING_B = LDKF.toString(ArgumentB);
                     var STRING_A_LENGTH = LDKF.stringPrototypeLength(STRING_A), STRING_B_LENGTH = LDKF.stringPrototypeLength(STRING_B);
                     var LENGTH = LDKM.min(STRING_A_LENGTH, STRING_B_LENGTH);
                     var iterator = +0;
@@ -237,20 +239,20 @@
                     // Return
                     return STRING_A_LENGTH < STRING_B_LENGTH ? STRING_B : STRING_A
                 };
-                LapysDevelopmentKit.Constants.Data.ArrayCustomSortComparator = function ArrayCustomSortComparator(argumentA, argumentB) {
+                LapysDevelopmentKit.Constants.Data.ArrayCustomSortComparator = function ArrayCustomSortComparator(ArgumentA, ArgumentB) {
                     // Logic
-                    if ((LDKF.isBoolean(argumentA) || LDKF.isNumber(argumentA)) && (LDKF.isBoolean(argumentB) || LDKF.isNumber(argumentB)))
+                    if ((LDKF.isBoolean(ArgumentA) || LDKF.isNumber(ArgumentA)) && (LDKF.isBoolean(ArgumentB) || LDKF.isNumber(ArgumentB)))
                         // Return
-                        return LDKM.min(argumentA, argumentB);
+                        return LDKM.min(ArgumentA, ArgumentB);
 
                     else {
                         // Constant > Argument (A, B) Is String
-                        var ARGUMENT_A_IS_STRING = LDKF.isString(argumentA), ARGUMENT_B_IS_STRING = LDKF.isString(argumentB);
+                        var ARGUMENT_A_IS_STRING = LDKF.isString(ArgumentA), ARGUMENT_B_IS_STRING = LDKF.isString(ArgumentB);
 
                         // Logic
                         if (ARGUMENT_A_IS_STRING && ARGUMENT_B_IS_STRING) {
                             // Constant > ((Argument (A, B)) (Length), Iterator)
-                            var ARGUMENT_A_LENGTH = LDKF.stringPrototypeLength(argumentA), ARGUMENT_B_LENGTH = LDKF.stringPrototypeLength(argumentB);
+                            var ARGUMENT_A_LENGTH = LDKF.stringPrototypeLength(ArgumentA), ARGUMENT_B_LENGTH = LDKF.stringPrototypeLength(ArgumentB);
                             var LENGTH = LDKM.min(ARGUMENT_A_LENGTH, ARGUMENT_B_LENGTH);
                             var iterator = +0;
 
@@ -261,8 +263,8 @@
                                 var CHARACTER_A_INDEX = LDKF.arrayPrototypeIndex(LDKC.Strings.SortableCharacters, CHARACTER_A), CHARACTER_B_INDEX = LDKF.arrayPrototypeIndex(LDKC.Strings.SortableCharacters, CHARACTER_B);
 
                                 // Logic > Return
-                                if (CHARACTER_A_INDEX > CHARACTER_B_INDEX) return argumentA;
-                                else if (CHARACTER_A_INDEX < CHARACTER_B_INDEX) return argumentB;
+                                if (CHARACTER_A_INDEX > CHARACTER_B_INDEX) return ArgumentA;
+                                else if (CHARACTER_A_INDEX < CHARACTER_B_INDEX) return ArgumentB;
 
                                 // Update > Iterator
                                 iterator += 1
@@ -273,64 +275,64 @@
                         }
                         else if (ARGUMENT_A_IS_STRING)
                             // Return
-                            return argumentA;
+                            return ArgumentA;
 
                         else if (ARGUMENT_B_IS_STRING)
                             // Return
-                            return argumentB;
+                            return ArgumentB;
 
                         else {
                             // Constant > Argument (A, B) Is Null
-                            var ARGUMENT_A_IS_NULL = LDKF.isNull(argumentA), ARGUMENT_B_IS_NULL = LDKF.isNull(argumentB);
+                            var ARGUMENT_A_IS_NULL = LDKF.isNull(ArgumentA), ARGUMENT_B_IS_NULL = LDKF.isNull(ArgumentB);
 
                             // Logic > Return
-                            if (!(ARGUMENT_A_IS_NULL || LDKF.isVoid(argumentA))) return argumentA;
-                            else if (!(ARGUMENT_B_IS_NULL || LDKF.isVoid(argumentB))) return argumentB;
-                            else if (ARGUMENT_A_IS_NULL) return argumentA;
-                            else if (ARGUMENT_B_IS_NULL) return argumentB;
-                            else return argumentA
+                            if (!(ARGUMENT_A_IS_NULL || LDKF.isVoid(ArgumentA))) return ArgumentA;
+                            else if (!(ARGUMENT_B_IS_NULL || LDKF.isVoid(ArgumentB))) return ArgumentB;
+                            else if (ARGUMENT_A_IS_NULL) return ArgumentA;
+                            else if (ARGUMENT_B_IS_NULL) return ArgumentB;
+                            else return ArgumentA
                         }
                     }
                 };
-                LapysDevelopmentKit.Constants.Data.ArrayInsertionSort = function ArrayInsertionSort(array, startIndex, endIndex, COMPARATOR, IMPERATIVE) {
+                LapysDevelopmentKit.Constants.Data.ArrayInsertionSort = function ArrayInsertionSort(Array, StartIndex, EndIndex, COMPARATOR, IMPERATIVE) {
                     // Update > (Comparator, Imperative)
                     COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
                     IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
 
                     // Initialization > Array Iterator
-                    var arrayIterator = startIndex + 1;
+                    var arrayIterator = StartIndex + 1;
 
                     // Loop
-                    while (arrayIterator ^ endIndex) {
+                    while (arrayIterator ^ EndIndex) {
                         // Initialization > Array Index
                         var arrayIndex = arrayIterator - 1;
 
                         // Update > Temporary
-                        TMP = IMPERATIVE.getIndex(array, arrayIterator);
+                        TMP = IMPERATIVE.getIndex(Array, arrayIterator);
 
                         // Loop
-                        while (COMPARATOR(IMPERATIVE.getIndex(array, arrayIndex), TMP) === TMP && arrayIndex >= startIndex) {
+                        while (COMPARATOR(IMPERATIVE.getIndex(Array, arrayIndex), TMP) === TMP && arrayIndex >= StartIndex) {
                             // Update > Array (Index)
-                            IMPERATIVE.setIndex(array, arrayIndex + 1, IMPERATIVE.getIndex(array, arrayIndex));
+                            IMPERATIVE.setIndex(Array, arrayIndex + 1, IMPERATIVE.getIndex(Array, arrayIndex));
                             arrayIndex -= 1
                         }
 
                         // Update > Array (Iterator)
-                        IMPERATIVE.setIndex(array, arrayIndex + 1, TMP);
+                        IMPERATIVE.setIndex(Array, arrayIndex + 1, TMP);
                         arrayIterator += 1
                     }
                 };
-                LapysDevelopmentKit.Constants.Data.ArrayTimSort = function ArrayTimSort(array, COMPARATOR, IMPERATIVE) {
+                LapysDevelopmentKit.Constants.Data.ArrayTimSort = function ArrayTimSort(Array, COMPARATOR, IMPERATIVE) {
                     // Update > (Comparator, Imperative)
                     COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
                     IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
 
                     // Constant > Array Length; Initialization > Array Iterator
-                    var ARRAY_LENGTH = IMPERATIVE.getLength(array);
+                    var ARRAY_LENGTH = IMPERATIVE.getLength(Array);
                     var arrayIterator = +0;
 
                     // Loop > Update > Array (Iterator) --- NOTE (Lapys) -> Sort individual ranges of the array.
-                    while (arrayIterator < ARRAY_LENGTH) { LDKC.Data.ArrayInsertionSort(array, arrayIterator, LDKM.min(arrayIterator + (LDKC.Numbers.ArrayTimSortRun - 1), ARRAY_LENGTH - 1), STRICT = COMPARATOR, STRICT = IMPERATIVE); arrayIterator += LDKC.Numbers.ArrayTimSortRun }
+                    while (arrayIterator < ARRAY_LENGTH) { LDKC.Data.ArrayInsertionSort(Array, arrayIterator, LDKM.min(arrayIterator + (LDKC.Numbers.ArrayTimSortRun - 1), ARRAY_LENGTH - 1), STRICT = COMPARATOR, STRICT = IMPERATIVE); arrayIterator += LDKC.Numbers.ArrayTimSortRun }
 
                     var arraySize = LDKC.Numbers.ArrayTimSortRun;
                     while (arraySize < ARRAY_LENGTH) {
@@ -339,7 +341,7 @@
                         while (arrayStartIndex < ARRAY_LENGTH) {
                             var arraySplitIndex = arrayStartIndex + arraySize - 1;
                             var arrayEndIndex = LDKM.min((arrayStartIndex + (arraySize * 2)) - 1, ARRAY_LENGTH - 1);
-                            LDKC.Data.ArrayTimSortMerge(array, arrayStartIndex, arraySplitIndex, arrayEndIndex, STRICT = COMPARATOR, STRICT = IMPERATIVE);
+                            LDKC.Data.ArrayTimSortMerge(Array, arrayStartIndex, arraySplitIndex, arrayEndIndex, STRICT = COMPARATOR, STRICT = IMPERATIVE);
                             arrayStartIndex += arraySize * 2
                         }
 
@@ -347,20 +349,20 @@
                     }
                 };
                     // UPDATE REQUIRED (Lapys) -> Currently inaccurate.
-                    LapysDevelopmentKit.Constants.Data.ArrayTimSortMerge = function ArrayTimSortMerge(array, startIndex, splitIndex, endIndex, COMPARATOR, IMPERATIVE) {
+                    LapysDevelopmentKit.Constants.Data.ArrayTimSortMerge = function ArrayTimSortMerge(Array, StartIndex, SplitIndex, EndIndex, COMPARATOR, IMPERATIVE) {
                         // Update > (Comparator, Imperative)
                         COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
                         IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
 
                         // : Initialization > (End, Start) (Array) Iterator
                         // : Constant > (End, Start) Array (Length)
-                        var arrayIterator, endArrayIterator = +0, startArrayIterator = startIndex;
-                        var END_ARRAY = [], END_ARRAY_LENGTH = endIndex - splitIndex;
-                        var START_ARRAY = [], START_ARRAY_LENGTH = splitIndex - startIndex + 1;
+                        var arrayIterator, endArrayIterator = +0, startArrayIterator = StartIndex;
+                        var END_ARRAY = [], END_ARRAY_LENGTH = EndIndex - SplitIndex;
+                        var START_ARRAY = [], START_ARRAY_LENGTH = SplitIndex - StartIndex + 1;
 
                         // (Loop > )Update > (End, Start) Array (Iterator)
-                        arrayIterator = +0; while (arrayIterator ^ START_ARRAY_LENGTH) { IMPERATIVE.setIndex(START_ARRAY, arrayIterator, IMPERATIVE.getIndex(array, arrayIterator + startIndex)); arrayIterator += 1 }
-                        arrayIterator = +0; while (arrayIterator ^ END_ARRAY_LENGTH) { IMPERATIVE.setIndex(END_ARRAY, arrayIterator, IMPERATIVE.getIndex(array, arrayIterator + 1 + splitIndex)); arrayIterator += 1 }
+                        arrayIterator = +0; while (arrayIterator ^ START_ARRAY_LENGTH) { IMPERATIVE.setIndex(START_ARRAY, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator + StartIndex)); arrayIterator += 1 }
+                        arrayIterator = +0; while (arrayIterator ^ END_ARRAY_LENGTH) { IMPERATIVE.setIndex(END_ARRAY, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator + 1 + SplitIndex)); arrayIterator += 1 }
 
                         // Update > Array Iterator; Loop
                         arrayIterator = +0;
@@ -374,8 +376,8 @@
                         }
 
                         // Loop > Update > (Array, (End, Start) (Array Iterator))
-                        while (arrayIterator ^ START_ARRAY_LENGTH) { IMPERATIVE.setIndex(array, startArrayIterator, IMPERATIVE.getIndex(START_ARRAY, arrayIterator)); arrayIterator += 1; startArrayIterator += 1 }
-                        while (endArrayIterator ^ END_ARRAY_LENGTH) { IMPERATIVE.setIndex(array, startArrayIterator, IMPERATIVE.getIndex(END_ARRAY, endArrayIterator)); endArrayIterator += 1; startArrayIterator += 1 }
+                        while (arrayIterator ^ START_ARRAY_LENGTH) { IMPERATIVE.setIndex(Array, startArrayIterator, IMPERATIVE.getIndex(START_ARRAY, arrayIterator)); arrayIterator += 1; startArrayIterator += 1 }
+                        while (endArrayIterator ^ END_ARRAY_LENGTH) { IMPERATIVE.setIndex(Array, startArrayIterator, IMPERATIVE.getIndex(END_ARRAY, endArrayIterator)); endArrayIterator += 1; startArrayIterator += 1 }
                     };
 
                 // Numbers > ...
@@ -417,65 +419,103 @@
             */
                 // Array-Like Prototype --- WARN (Lapys) -> The methods defined here throw no exceptions when they fail.
                     // Element At
-                    LapysDevelopmentKit.Functions.arrayLikePrototypeElementAt = function arrayLikePrototypeElementAt(arrayLike, index) {
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeElementAt = function arrayLikePrototypeElementAt(ArrayLike, Index) {
                         // Logic > Return
-                        if (arrayLike instanceof LDKT.BigArray) return LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeElementAt, arrayLike, index);
-                        else if (LDKF.isArray(arrayLike) || LDKF.isSourceBufferList(arrayLike) || LDKF.isTextTrackCueList(arrayLike) || LDKF.isTextTrackList(arrayLike) || LDKF.isTypedArray(arrayLike)) return arrayLike[index]
-                        else if (LDKF.isMapVariant(arrayLike)) return LDKF.mapVariantPrototypeElementAt(arrayLike, index);
-                        else if (LDKF.isCSSNumericArray(arrayLike)) return LDKF.cssNumericArrayPrototypeElementAt(arrayLike, index);
-                        else if (LDKF.isCSSRuleList(arrayLike)) return LDKF.cssRuleListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isCSSStyleDeclaration(arrayLike)) return LDKF.cssStyleDeclarationPrototypeItem(arrayLike, index);
-                        else if (LDKF.isDOMRectList(arrayLike)) return LDKF.domRectListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isDOMStringList(arrayLike)) return LDKF.domStringListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isDOMTokenList(arrayLike)) return LDKF.domTokenListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isFileList(arrayLike)) return LDKF.fileListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isHTMLAllCollection(arrayLike)) return LDKF.htmlAllCollectionPrototypeItem(arrayLike, index);
-                        else if (LDKF.isHTMLCollection(arrayLike)) return LDKF.htmlCollectionPrototypeItem(arrayLike, index);
-                        else if (LDKF.isHTMLFormControlsCollection(arrayLike)) return LDKF.htmlFormControlsCollectionPrototypeItem(arrayLike, index);
-                        else if (LDKF.isHTMLOptionsCollection(arrayLike)) return LDKF.htmlOptionsCollectionPrototypeItem(arrayLike, index);
-                        else if (LDKF.isMediaList(arrayLike)) return LDKF.mediaListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isMIMETypeArray(arrayLike)) return LDKF.mimeTypeArrayPrototypeItem(arrayLike, index);
-                        else if (LDKF.isNamedNodeMap(arrayLike)) return LDKF.namedNodeMapPrototypeItem(arrayLike, index);
-                        else if (LDKF.isNodeList(arrayLike)) return LDKF.nodeListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isPluginArray(arrayLike)) return LDKF.pluginArrayPrototypeItem(arrayLike, index);
-                        else if (LDKF.isRadioNodeList(arrayLike)) return LDKF.radioNodeListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isSet(arrayLike)) return LDKF.setPrototypeElementAt(arrayLike, index);
-                        else if (LDKF.isStylePropertyMap(arrayLike)) return LDKF.stylePropertyMapPrototypeElementAt(arrayLike, index);
-                        else if (LDKF.isStyleSheetList(arrayLike)) return LDKF.styleSheetListPrototypeItem(arrayLike, index);
-                        else if (LDKF.isSVGLengthList(arrayLike)) return LDKF.svgLengthListPrototypeGetItem(arrayLike, index);
-                        else if (LDKF.isSVGNumberList(arrayLike)) return LDKF.svgNumberListPrototypeGetItem(arrayLike, index);
-                        else if (LDKF.isSVGPointList(arrayLike)) return LDKF.svgPointListPrototypeGetItem(arrayLike, index);
-                        else if (LDKF.isSVGStringList(arrayLike)) return LDKF.svgStringListPrototypeGetItem(arrayLike, index);
-                        else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.svgTransformListPrototypeGetItem(arrayLike, index);
-                        else if (LDKF.isTouchList(arrayLike)) return LDKF.touchListPrototypeItem(arrayLike, index);
-                        else if (LDKF.is_webkit_SpeechGrammerList(arrayLike)) return LDKF._webkit_SpeechGrammarListPrototype(arrayLike, index)
+                        if (ArrayLike instanceof LDKT.BigArray) return LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, ArrayLike, Index);
+                        else if (LDKF.isArray(ArrayLike) || LDKF.isSourceBufferList(ArrayLike) || LDKF.isTextTrackCueList(ArrayLike) || LDKF.isTextTrackList(ArrayLike) || LDKF.isTypedArray(ArrayLike)) return ArrayLike[Index];
+                        else if (LDKF.isMapVariant(ArrayLike)) return LDKF.mapVariantPrototypeElementAt(ArrayLike, Index);
+                        else if (LDKF.isCSSNumericArray(ArrayLike)) return LDKF.cssNumericArrayPrototypeElementAt(ArrayLike, Index);
+                        else if (LDKF.isCSSRuleList(ArrayLike)) return LDKF.cssRuleListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isCSSStyleDeclaration(ArrayLike)) return LDKF.cssStyleDeclarationPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isDOMRectList(ArrayLike)) return LDKF.domRectListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isDOMStringList(ArrayLike)) return LDKF.domStringListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isDOMTokenList(ArrayLike)) return LDKF.domTokenListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isFileList(ArrayLike)) return LDKF.fileListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isHTMLAllCollection(ArrayLike)) return LDKF.htmlAllCollectionPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isHTMLCollection(ArrayLike)) return LDKF.htmlCollectionPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isHTMLFormControlsCollection(ArrayLike)) return LDKF.htmlFormControlsCollectionPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isHTMLOptionsCollection(ArrayLike)) return LDKF.htmlOptionsCollectionPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isMediaList(ArrayLike)) return LDKF.mediaListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isMIMETypeArray(ArrayLike)) return LDKF.mimeTypeArrayPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isNamedNodeMap(ArrayLike)) return LDKF.namedNodeMapPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isNodeList(ArrayLike)) return LDKF.nodeListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isPluginArray(ArrayLike)) return LDKF.pluginArrayPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isRadioNodeList(ArrayLike)) return LDKF.radioNodeListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isSet(ArrayLike)) return LDKF.setPrototypeElementAt(ArrayLike, Index);
+                        else if (LDKF.isStylePropertyMap(ArrayLike)) return LDKF.stylePropertyMapPrototypeElementAt(ArrayLike, Index);
+                        else if (LDKF.isStyleSheetList(ArrayLike)) return LDKF.styleSheetListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.isSVGLengthList(ArrayLike)) return LDKF.svgLengthListPrototypeGetItem(ArrayLike, Index);
+                        else if (LDKF.isSVGNumberList(ArrayLike)) return LDKF.svgNumberListPrototypeGetItem(ArrayLike, Index);
+                        else if (LDKF.isSVGPointList(ArrayLike)) return LDKF.svgPointListPrototypeGetItem(ArrayLike, Index);
+                        else if (LDKF.isSVGStringList(ArrayLike)) return LDKF.svgStringListPrototypeGetItem(ArrayLike, Index);
+                        else if (LDKF.isSVGTransformList(ArrayLike)) return LDKF.svgTransformListPrototypeGetItem(ArrayLike, Index);
+                        else if (LDKF.isTouchList(ArrayLike)) return LDKF.touchListPrototypeItem(ArrayLike, Index);
+                        else if (LDKF.is_webkit_SpeechGrammerList(ArrayLike)) return LDKF._webkit_SpeechGrammarListPrototype(ArrayLike, Index)
                     };
 
                     // Set Index
-                    LapysDevelopmentKit.Functions.arrayLikePrototypeSetIndex = function arrayLikePrototypeSetIndex(arrayLike, index, value) {
+                    LapysDevelopmentKit.Functions.arrayLikePrototypeSetIndex = function arrayLikePrototypeSetIndex(ArrayLike, Index, Value) {
                         // Logic > Return
-                        if (arrayLike instanceof LDKT.BigArray) return LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeSetIndex, arrayLike, index);
-                        else if (LDKF.isArray(arrayLike) || LDKF.isSourceBufferList(arrayLike) || LDKF.isTextTrackCueList(arrayLike) || LDKF.isTextTrackList(arrayLike) || LDKF.isTypedArray(arrayLike)) return (arrayLike[index] = value);
-                        else if (LDKF.isCSSStyleDeclaration(arrayLike)) return LDKF.cssStyleDeclarationPrototypeSetIndex(arrayLike, index, value);
-                        else if (LDKF.isMap(arrayLike)) return LDKF.mapPrototypeSetIndex(arrayLike, index, value);
-                        else if (LDKF.isSet(arrayLike)) return LDKF.setPrototypeSetIndex(arrayLike, index, value);
-                        else if (LDKF.isStylePropertyMap(arrayLike)) return LDKF.stylePropertyMapPrototypeSetIndex(arrayLike, index);
-                        else if (LDKF.isSVGLengthList(arrayLike)) return LDKF.svgLengthListPrototypeRemoveItem(arrayLike, index);
-                        else if (LDKF.isSVGNumberList(arrayLike)) return LDKF.svgNumberListPrototypeRemoveItem(arrayLike, index);
-                        else if (LDKF.isSVGPointList(arrayLike)) return LDKF.svgPointListPrototypeRemoveItem(arrayLike, index);
-                        else if (LDKF.isSVGStringList(arrayLike)) return LDKF.svgStringListPrototypeRemoveItem(arrayLike, index);
-                        else if (LDKF.isSVGTransformList(arrayLike)) return LDKF.svgTransformListPrototypeRemoveItem(arrayLike, index)
+                        if (ArrayLike instanceof LDKT.BigArray) return LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeSetIndex, ArrayLike, Index);
+                        else if (LDKF.isArray(ArrayLike) || LDKF.isSourceBufferList(ArrayLike) || LDKF.isTextTrackCueList(ArrayLike) || LDKF.isTextTrackList(ArrayLike) || LDKF.isTypedArray(ArrayLike)) return (ArrayLike[Index] = Value);
+                        else if (LDKF.isCSSStyleDeclaration(ArrayLike)) return LDKF.cssStyleDeclarationPrototypeSetIndex(ArrayLike, Index, Value);
+                        else if (LDKF.isMap(ArrayLike)) return LDKF.mapPrototypeSetIndex(ArrayLike, Index, Value);
+                        else if (LDKF.isSet(ArrayLike)) return LDKF.setPrototypeSetIndex(ArrayLike, Index, Value);
+                        else if (LDKF.isStylePropertyMap(ArrayLike)) return LDKF.stylePropertyMapPrototypeSetIndex(ArrayLike, Index, Value);
+                        else if (LDKF.isSVGLengthList(ArrayLike)) return LDKF.svgLengthListPrototypeReplaceItem(ArrayLike, Index, Value);
+                        else if (LDKF.isSVGNumberList(ArrayLike)) return LDKF.svgNumberListPrototypeReplaceItem(ArrayLike, Index, Value);
+                        else if (LDKF.isSVGPointList(ArrayLike)) return LDKF.svgPointListPrototypeReplaceItem(ArrayLike, Index, Value);
+                        else if (LDKF.isSVGStringList(ArrayLike)) return LDKF.svgStringListPrototypeReplaceItem(ArrayLike, Index, Value);
+                        else if (LDKF.isSVGTransformList(ArrayLike)) return LDKF.svgTransformListPrototypeReplaceItem(ArrayLike, Inde, Valuex)
                     };
 
                 // Array > Prototype --- NOTE (Lapys) -> Imperatives assert how the specified array will be accessed/ modified.
-                    // Count --- CHECKPOINT (Lapys)
+                    // Clone
+                    LapysDevelopmentKit.Functions.arrayPrototypeClone = function arrayPrototypeClone(Array, IMPERATIVE) {
+                        // Constant > Array Clone; Initialization > Array Iterator
+                        var ARRAY_CLONE; var arrayIterator = IMPERATIVE.getLength(Array);
+
+                        // Logic > ... > Update > Array Clone
+                        if (Array instanceof LDKT.BigArray) ARRAY_CLONE = new LDKT.BigArray(null, STRICT = Array.MAXIMUM_LENGTH);
+                        else try { ARRAY_CLONE = new (LDKF.objectPrototypeConstructor(Array)) } catch (Error) { ARRAY_CLONE = [] }
+
+                        // Loop > Update > Array (Iterator, Clone)
+                        while (arrayIterator) { arrayIterator -= 1; IMPERATIVE.setIndex(ARRAY_CLONE, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator)) }
+
+                        // Return
+                        return ARRAY_CLONE
+                    };
+
+                    // Count
+                    LapysDevelopmentKit.Functions.arrayPrototypeCount = function arrayPrototypeCount(Array, Element, ARRAY_LENGTH, IMPERATIVE) {
+                        // Update > (Array Length, Imperative)
+                        ARRAY_LENGTH || (ARRAY_LENGTH = LDKF.arrayPrototypeLength(Array));
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+
+                        // Logic
+                        if (ARRAY_LENGTH) {
+                            // Initialization > (Array Iterator, Element Count)
+                            var arrayIterator = ARRAY_LENGTH, elementCount = +0;
+
+                            // Loop > Update > Element Count
+                            while (arrayIterator) (IMPERATIVE.getIndex(Array, arrayIterator -= 1) === Element) && (elementCount += 1);
+
+                            // Return
+                            return elementCount
+                        }
+
+                        else
+                            // Return
+                            return +0
+                    };
+
                     // Index
-                    LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(array, element, ARRAY_LENGTH, IMPERATIVE) { return LDKF.functionPrototypeApply(LDKF.arrayPrototypeIndexFrom, LDKF, arguments) };
+                    LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(Array, Element, ARRAY_LENGTH, IMPERATIVE) { return LDKF.arrayPrototypeIndexFrom(Array, Element, STRICT = ARRAY_LENGTH, STRICT = IMPERATIVE) };
 
                     // Index From
-                    LapysDevelopmentKit.Functions.arrayPrototypeIndexFrom = function arrayPrototypeIndexFrom(array, element, ARRAY_LENGTH, IMPERATIVE) {
+                    LapysDevelopmentKit.Functions.arrayPrototypeIndexFrom = function arrayPrototypeIndexFrom(Array, Element, ARRAY_LENGTH, IMPERATIVE) {
                         // Update > (Array Length, Imperative)
-                        ARRAY_LENGTH || (ARRAY_LENGTH = LDKF.arrayPrototypeLength(array));
+                        ARRAY_LENGTH || (ARRAY_LENGTH = LDKF.arrayPrototypeLength(Array));
                         IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
 
                         // Logic
@@ -496,10 +536,10 @@
                                 GRADIENT_STOP_INDEXES[3] = arrayIterator;
 
                                 // Logic > Update > Array Index
-                                if (IMPERATIVE.getIndex(array, GRADIENT_STOP_INDEXES[+0]) === element) arrayIndex = GRADIENT_STOP_INDEXES[+0];
-                                else if (IMPERATIVE.getIndex(array, GRADIENT_STOP_INDEXES[1]) === element) arrayIndex = GRADIENT_STOP_INDEXES[1];
-                                else if (IMPERATIVE.getIndex(array, GRADIENT_STOP_INDEXES[2]) === element) arrayIndex = GRADIENT_STOP_INDEXES[2];
-                                else if (IMPERATIVE.getIndex(array, GRADIENT_STOP_INDEXES[3]) === element) arrayIndex = GRADIENT_STOP_INDEXES[3]
+                                if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[+0]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[+0];
+                                else if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[1]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[1];
+                                else if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[2]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[2];
+                                else if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[3]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[3]
                             }
 
                             // Return
@@ -515,35 +555,35 @@
                             --- WARN (Lapys) -> The `SORT_TYPE` flag only denotes the comparator to be used when sorting (the `COMPARATOR` argument).
                                 In the case of `NATIVE_SORT`-ing, the array specified will not have any `ArrayImperative` data on it.
                     */
-                    LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(array, SORT_TYPE, COMPARATOR, IMPERATIVE) {
+                    LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(Array, SORT_TYPE, COMPARATOR, IMPERATIVE) {
                         // Logic
                         switch (SORT_TYPE) {
                             /*
                                 : [ASCII Sort] --- NOTE (Lapys) -> Changes the comparator to prefer ASCII code precedence.
                                 : [Native Sort] --- NOTE (Lapys) -> Uses the native sorting algorithm proffered.
                             */
-                            case LDKC.Data.ArraySortType["ASCII_SORT"]: return LDKF.arrayPrototypeSort(array, STRICT = LDKC.Data.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Data.ArrayASCIISortComparator, STRICT = IMPERATIVE);
-                            case LDKC.Data.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeApply(LDKO.arrayPrototypeSort, array); break;
+                            case LDKC.Data.ArraySortType["ASCII_SORT"]: return LDKF.arrayPrototypeSort(Array, STRICT = LDKC.Data.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Data.ArrayASCIISortComparator, STRICT = IMPERATIVE);
+                            case LDKC.Data.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeApply(LDKO.arrayPrototypeSort, Array); break;
 
                             // [Custom Sort] --- NOTE (Lapys) -> Defaults to the library`s chosen comparator & sorting algorithm.
                             default: case LDKC.Data.ArraySortType["CUSTOM_SORT"]:
                                 // Update > (Array, Comparator, Imperative)
                                 COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
                                 IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
-                                LDKC.Data.ArrayTimSort(array, STRICT = COMPARATOR, STRICT = IMPERATIVE);
+                                LDKC.Data.ArrayTimSort(Array, STRICT = COMPARATOR, STRICT = IMPERATIVE);
 
                                 // Return
-                                return array
+                                return Array
                         }
                     };
 
                 // CSS Numeric Array > Prototype
                     // Element At
-                    LapysDevelopmentKit.Functions.cssNumericArrayPrototypeElementAt = function cssNumericArrayPrototypeElementAt(cssNumericArray, index) {
+                    LapysDevelopmentKit.Functions.cssNumericArrayPrototypeElementAt = function cssNumericArrayPrototypeElementAt(CSSNumericArray, index) {
                         // Logic
-                        if (index < LDKF.cssNumericArrayPrototypeLength(cssNumericArray)) {
+                        if (index < LDKF.cssNumericArrayPrototypeLength(CSSNumericArray)) {
                             // Initialization > Element; Constant > Array Iterator
-                            var element = undefined; var ARRAY_ITERATOR = LDKF.cssNumericArrayPrototypeEntries(cssNumericArray);
+                            var element = undefined; var ARRAY_ITERATOR = LDKF.cssNumericArrayPrototypeEntries(CSSNumericArray);
 
                             // Loop > Update > (Element, Index)
                             while (index) { element = ARRAY_ITERATOR.next().value; index -= 1 }
@@ -559,67 +599,84 @@
 
                 // CSS Style Declaration > Prototype
                     // Set Index
-                    LapysDevelopmentKit.Functions.cssStyleDeclarationPrototypeSetIndex = function cssStyleDeclarationPrototypeSetIndex(cssStyleDeclaration, index, value) { (index < LDKF.cssStyleDeclarationPrototypeLength(cssStyleDeclaration)) && LDKF.cssStyleDeclarationPrototypeSetProperty(LDKF.cssStyleDeclarationPrototypeItem(cssStyleDeclaration, index), value) };
+                    LapysDevelopmentKit.Functions.cssStyleDeclarationPrototypeSetIndex = function cssStyleDeclarationPrototypeSetIndex(CSSStyleDeclaration, Index, Value) { (Index < LDKF.cssStyleDeclarationPrototypeLength(CSSStyleDeclaration)) && LDKF.cssStyleDeclarationPrototypeSetProperty(LDKF.cssStyleDeclarationPrototypeItem(CSSStyleDeclaration, Index), Value) };
 
                 // Evaluate
-                LapysDevelopmentKit.Functions["eval"] = function evaluate(source, STRICT_EVALUATION) { STRICT_EVALUATION || (source = "(function() { return " + source + " })()"); return LDKF.functionPrototypeCall(LDKO.eval, GLOBAL, source) };
+                LapysDevelopmentKit.Functions["eval"] = function evaluate(Source, STRICT_EVALUATION) { STRICT_EVALUATION || (Source = "(function() { return " + Source + " })()"); return LDKF.functionPrototypeMonoadicCall(LDKO.eval, GLOBAL, Source) };
 
-                // Function > Prototype
-                    // Apply --- WARN (Lapys) -> Still references the `Function.prototype.apply.call` method which is not spoof-proof.
-                    LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(routine, that, ArgumentListObject) { return ArgumentListObject ? LDKO.functionPrototypeApply.call(routine, that, ArgumentListObject) : LDKO.functionPrototypeApply.call(routine, that) };
+                /* Function > Prototype
+                        --- WARN ---
+                            #Lapys:
+                                - The `LapysDevelopmentKit.Functions.functionPrototypeApply` method references the non spoof-proof method `Function.prototype.apply.call`.
+                                - The `LapysDevelopmentKit.Functions.functionPrototype...Call` method references the non spoof-proof method `Function.prototype.call.call`.
+                */
+                    // Apply
+                    LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(Routine, That, ArgumentListObject) { return ArgumentListObject ? LDKO.functionPrototypeApply.call(Routine, That, ArgumentListObject) : LDKO.functionPrototypeApply.call(Routine, That) };
 
                     // Asynchronous Apply
-                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousApply = function functionPrototypeAsynchronousApply(routine, that, ArgumentListObject) { var animationFrameId = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(animationFrameId); LDKF.functionPrototypeApply(routine, that, ArgumentListObject) }) };
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousApply = function functionPrototypeAsynchronousApply(Routine, That, ArgumentListObject) { var ANIMATION_FRAME_ID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(ANIMATION_FRAME_ID); LDKF.functionPrototypeApply(Routine, That, ArgumentListObject) }) };
 
                     // Asynchronous Call
-                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousCall = function functionPrototypeAsynchronousCall(routine, that, argumentA) { var argumentList = arguments, animationFrameId = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(animationFrameId); LDKF.functionPrototypeApply(LDKF.functionPrototypeCall, LDKF, argumentList) }) };
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousCall = function functionPrototypeAsynchronousCall(Routine, That, Argument) { var ARGUMENT_LIST = arguments, ANIMATION_FRAME_ID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(ANIMATION_FRAME_ID); LDKF.functionPrototypeApply(LDKF.functionPrototypeCall, LDKF, ARGUMENT_LIST) }) };
+
+                    // Dyadic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeDyadicCall = function functionPrototypeDyadicCall(Routine, That, ArgumentA, ArgumentB) { return LDKO.functionPrototypeCall.call(Routine, That, ArgumentA, ArgumentB) };
 
                     // Call
-                    LapysDevelopmentKit.Functions.functionPrototypeCall = function functionPrototypeCall(routine, that, argumentA) {
+                    LapysDevelopmentKit.Functions.functionPrototypeCall = function functionPrototypeCall(Routine, That, Argument) {
                         // Constant > Arguments Length
                         var ARGUMENTS_LENGTH = LDKF.getArgumentsLength(arguments);
 
                         // Logic > ...
-                        if (ARGUMENTS_LENGTH) { var argumentsIterator = LDKM.max(+0, LDKF.getArgumentsLength(arguments) - 2); var argumentList = [argumentA]; while (argumentsIterator -= 1) { argumentList[argumentsIterator] = arguments[argumentsIterator + 2] } return LDKF.functionPrototypeApply(routine, that, argumentList) }
-                        else return LDKF.functionPrototypeApply(routine, that)
+                        if (ARGUMENTS_LENGTH) { var argumentsIterator = LDKM.max(+0, LDKF.getArgumentsLength(arguments) - 2); var ARGUMENT_LIST = [Argument]; while (argumentsIterator -= 1) { ARGUMENT_LIST[argumentsIterator] = arguments[argumentsIterator + 2] } return LDKF.functionPrototypeApply(Routine, That, ARGUMENT_LIST) }
+                        else return LDKF.functionPrototypeApply(Routine, That)
                     };
 
+                    // Monoadic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeMonoadicCall = function functionPrototypeMonoadicCall(Routine, That, Argument) { return LDKO.functionPrototypeCall.call(Routine, That, Argument) };
+
+                    // Niladic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeNiladicCall = function functionPrototypeNiladicCall(Routine, That) { return LDKO.functionPrototypeCall.call(Routine, That) };
+
+                    // Triadic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeTriadicCall = function functionPrototypeTriadicCall(Routine, That, ArgumentA, ArgumentB, ArgumentC) { return LDKO.functionPrototypeCall.call(Routine, That, ArgumentA, ArgumentB, ArgumentC) };
+
                 // Is Big Integer
-                LapysDevelopmentKit.Functions.isBigInt = function isBigInt(argument) { return typeof argument == "bigint" };
+                LapysDevelopmentKit.Functions.isBigInt = function isBigInt(Argument) { return typeof Argument == "bigint" };
 
                 // Is Boolean
-                LapysDevelopmentKit.Functions.isBoolean = function isBoolean(argument) { return typeof argument == "boolean" };
+                LapysDevelopmentKit.Functions.isBoolean = function isBoolean(Argument) { return typeof Argument == "boolean" };
 
                 // Is Constructible
-                LapysDevelopmentKit.Functions.isConstructible = function isConstructible(argument) { return !LDKF.isNull(argument) && !LDKF.isVoid(argument) };
+                LapysDevelopmentKit.Functions.isConstructible = function isConstructible(Argument) { return !LDKF.isNull(Argument) && !LDKF.isVoid(Argument) };
 
                 // Is Map-Variant
-                LapysDevelopmentKit.Functions.isMapVariant = function isMapVariant(argument) { return LDKF.isAudioParamMap(arrayLike) || LDKF.isMap(arrayLike) || LDKF.isMediaKeyStatusMap(arrayLike) || LDKF.isMIDIInputMap(arrayLike) || LDKF.isMIDIOutputMap(arrayLike) };
+                LapysDevelopmentKit.Functions.isMapVariant = function isMapVariant(Argument) { return LDKF.isAudioParamMap(arrayLike) || LDKF.isMap(arrayLike) || LDKF.isMediaKeyStatusMap(arrayLike) || LDKF.isMIDIInputMap(arrayLike) || LDKF.isMIDIOutputMap(arrayLike) };
 
                 // Is Null
-                LapysDevelopmentKit.Functions.isNull = function isNull(argument) { return argument === null };
+                LapysDevelopmentKit.Functions.isNull = function isNull(Argument) { return Argument === null };
 
                 // Is Number
-                LapysDevelopmentKit.Functions.isNumber = function isNumber(argument) { return typeof argument == "number" };
+                LapysDevelopmentKit.Functions.isNumber = function isNumber(Argument) { return typeof Argument == "number" };
 
                 // Is Symbol
-                LapysDevelopmentKit.Functions.isSymbol = function isSymbol(argument) { return typeof argument == "symbol" };
+                LapysDevelopmentKit.Functions.isSymbol = function isSymbol(Argument) { return typeof Argument == "symbol" };
 
                 // Is Void --- WARN (Lapys) -> `HTMLAllCollection` objects are asserted as `true`.
-                LapysDevelopmentKit.Functions.isVoid = function isVoid(argument) { return typeof argument == "undefined" };
+                LapysDevelopmentKit.Functions.isVoid = function isVoid(Argument) { return typeof Argument == "undefined" };
 
                 // Map > Prototype
-                LapysDevelopmentKit.Functions.mapPrototypeSetIndex = function mapPrototypeSetIndex(map, index, value) {
+                LapysDevelopmentKit.Functions.mapPrototypeSetIndex = function mapPrototypeSetIndex(Map, index, Value) {
                     // Logic
-                    if (index < LDKF.mapPrototypeSize(map)) {
+                    if (index < LDKF.mapPrototypeSize(Map)) {
                         // Initialization > Element; Constant > Map Iterator
-                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(map);
+                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(Map);
 
                         // Loop > Update > (Element, Index)
                         while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
 
                         // Return
-                        return LDKF.mapPrototypeSet(map, element[+0], value)
+                        return LDKF.mapPrototypeSet(Map, element[+0], Value)
                     }
 
                     else
@@ -628,14 +685,14 @@
                 };
 
                 // Map-Variant > Prototype > Element At
-                LapysDevelopmentKit.Functions.mapVariantPrototypeElementAt = function mapVariantPrototypeElementAt(mapVariant, index) {
+                LapysDevelopmentKit.Functions.mapVariantPrototypeElementAt = function mapVariantPrototypeElementAt(MapVariant, Index) {
                     // Logic
-                    if (index < LDKF.mapPrototypeSize(mapVariant)) {
+                    if (Index < LDKF.mapPrototypeSize(MapVariant)) {
                         // Initialization > Element; Constant > Map Iterator
-                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(mapVariant);
+                        var element = undefined; var MAP_ITERATOR = LDKF.mapPrototypeEntries(MapVariant);
 
                         // Loop > Update > (Element, Index)
-                        while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
+                        while (Index) { element = MAP_ITERATOR.next().value; Index -= 1 }
 
                         // Return
                         return element[1]
@@ -648,19 +705,19 @@
 
                 // Number > Prototype
                     // Is Finite
-                    LapysDevelopmentKit.Functions.numberPrototypeIsFinite = function numberPrototypeIsFinite(number) { return number !== LDKC.Numbers["Infinity"] && number !== -LDKC.Numbers["Infinity"] };
+                    LapysDevelopmentKit.Functions.numberPrototypeIsFinite = function numberPrototypeIsFinite(Number) { return Number !== LDKC.Numbers["Infinity"] && Number !== -LDKC.Numbers["Infinity"] };
 
                     // Is Integer
                     LapysDevelopmentKit.Functions.numberPrototypeIsInteger = function numberPrototypeIsInteger(Number) { return Number === LDKM.int(Number) };
 
                     // Is Not-A-Number
-                    LapysDevelopmentKit.Functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(number) { return number !== number };
+                    LapysDevelopmentKit.Functions.numberPrototypeIsNaN = function numberPrototypeIsNaN(Number) { return Number !== Number };
 
                     // Is Overflown
-                    LapysDevelopmentKit.Functions.numberPrototypeIsOverflown = function numberPrototypeIsOverflown(number) { return number >= LDKC.Numbers.MaximumIntegerValue || number <= -LDKC.Numbers.MaximumIntegerValue };
+                    LapysDevelopmentKit.Functions.numberPrototypeIsOverflown = function numberPrototypeIsOverflown(Number) { return Number >= LDKC.Numbers.MaximumIntegerValue || Number <= -LDKC.Numbers.MaximumIntegerValue };
 
                     // Is Safe
-                    LapysDevelopmentKit.Functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(number) { return LDKF.numberPrototypeIsFinite(number) && !LDKF.numberPrototypeIsNaN(number) && !LDKF.numberPrototypeIsOverflown(number) };
+                    LapysDevelopmentKit.Functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(Number) { return LDKF.numberPrototypeIsFinite(Number) && !LDKF.numberPrototypeIsNaN(Number) && !LDKF.numberPrototypeIsOverflown(Number) };
 
                 // Number-Like
                     // Add
@@ -702,16 +759,22 @@
                                 return NumberLikeA + NumberLikeB
                     };
 
-                // Object > Prototype > Has Own Property
-                LapysDevelopmentKit.Functions.objectPrototypeHasOwnProperty = function objectPrototypeHasOwnProperty(object, propertyIdentifier) { return LDKF.functionPrototypeCall(LDKO.objectPrototypeHasOwnProperty, object, propertyIdentifier) };
+                    // Prototype > ... --- CHECKPOINT (Lapys)
+
+                // Object > Prototype
+                    // Constructor --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Functions.objectPrototypeConstructor = function objectPrototypeConstructor(Object) { return Object.constructor };
+
+                    // Has Own Property
+                    LapysDevelopmentKit.Functions.objectPrototypeHasOwnProperty = function objectPrototypeHasOwnProperty(Object, PropertyIdentifier) { return LDKF.functionPrototypeMonoadicCall(LDKO.objectPrototypeHasOwnProperty, Object, PropertyIdentifier) };
 
                 // Set > Prototype
                     // Element At
-                    LapysDevelopmentKit.Functions.setPrototypeElementAt = function setPrototypeElementAt(set, index) {
+                    LapysDevelopmentKit.Functions.setPrototypeElementAt = function setPrototypeElementAt(Set, index) {
                         // Logic
-                        if (index < LDKF.setPrototypeSize(set)) {
+                        if (index < LDKF.setPrototypeSize(Set)) {
                             // Initialization > Element; Constant > Set Iterator
-                            var element = undefined; var SET_ITERATOR = LDKF.setPrototypeEntries(set);
+                            var element = undefined; var SET_ITERATOR = LDKF.setPrototypeEntries(Set);
 
                             // Loop > Update > (Element, Index)
                             while (index) { element = SET_ITERATOR.next().value; index -= 1 }
@@ -726,18 +789,18 @@
                     };
 
                     // Set Index
-                    LapysDevelopmentKit.Functions.setPrototypeSetIndex = function setPrototypeSetIndex(set, index, value) {
+                    LapysDevelopmentKit.Functions.setPrototypeSetIndex = function setPrototypeSetIndex(Set, index, Value) {
                         // Logic
-                        if (index < LDKF.setPrototypeSize(arrayLike)) {
+                        if (index < LDKF.setPrototypeSize(Set)) {
                             // Initialization > Element; Constant > Set Iterator
-                            var element = undefined; var SET_ITERATOR = LDKF.setPrototypeEntries(arrayLike);
+                            var element = undefined; var SET_ITERATOR = LDKF.setPrototypeEntries(Set);
 
                             // Loop > Update > (Element, Index)
                             while (index) { element = SET_ITERATOR.next().value; index -= 1 }
 
                             // Deletion; Update > Array-Like
-                            LDKF.setPrototypeDelete(arrayLike, element[1]);
-                            LDKF.setPrototypeAdd(arrayLike, value)
+                            LDKF.setPrototypeDelete(Set, element[1]);
+                            LDKF.setPrototypeAdd(Set, Value)
                         }
                     };
 
@@ -751,108 +814,535 @@
                                     which allows it to trim the string if it leads/ trails with any of the array's character elements (in any order).
                 */
                     // After
-                    LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFromFront(string, substring, STRICT = STRING_LENGTH) };
+                    LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(String, Substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFrom(String, Substring, STRICT = STRING_LENGTH) };
 
-                    // After Character --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacter = function stringPrototypeAfterCharacter(string, character, STRING_LENGTH) { return LDKF.stringPrototypeAfterCharacterFromFront(string, character, STRICT = STRING_LENGTH) };
+                    // After Character
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacter = function stringPrototypeAfterCharacter(String, Character, STRING_LENGTH) { return LDKF.stringPrototypeAfterCharacterFrom(String, Character, STRICT = STRING_LENGTH) };
 
-                    // After Character From --- CHECKPOINT (Lapys)
-                    // After Character From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromBack = function stringPrototypeAfterCharacterFromBack(string, character, STRING_LENGTH) {
+                    // After Character From
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFrom = function stringPrototypeAfterCharacterFrom(String, Character, STRING_LENGTH) {
                         // Update > String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(string));
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+
+                        // Constant > Gradient Stop Length
+                        var GRADIENT_STOP_LENGTH = LDKM.int(STRING_LENGTH / 4);
+
+                        // Initialization > (After, String Iterator)
+                        var after = ""; var stringIterator = STRING_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+
+                        // Loop
+                        while (stringIterator) {
+                            // Update > String Iterator
+                            stringIterator -= 1;
+
+                            // Logic > ...
+                            if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) == Character) { var stringIndex = STRING_LENGTH - stringIterator; while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = +0 }
+                            else if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) == Character) { var stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = +0 }
+                            else if (LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) == Character) { var stringIndex = stringIterator + GRADIENT_STOP_LENGTH; while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = +0 }
+                            else if (LDKF.stringPrototypeCharacterAt(String, stringIterator) == Character) { var stringIndex = stringIterator; while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = +0 }
+                        }
+
+                        // Return
+                        return after
+                    };
+
+                    // After Character From Back
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromBack = function stringPrototypeAfterCharacterFromBack(String, Character, STRING_LENGTH) {
+                        // Update > String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
 
                         // Initialization > (After, String (Has Indexed Character, Iterator))
                         var after = ""; var stringHasIndexedCharacter = false, stringIterator = STRING_LENGTH;
 
                         // Loop > Update > (After, String Has Indexed Character)
-                        while (stringIterator) stringHasIndexedCharacter ? after += LDKF.stringPrototypeCharacterAt(string, STRING_LENGTH - (stringIterator -= 1) - 1) : stringHasIndexedCharacter = LDKF.stringPrototypeCharacterAt(string, STRING_LENGTH - (stringIterator -= 1) - 1) == character;
+                        while (stringIterator) stringHasIndexedCharacter ? after += LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1) : stringHasIndexedCharacter = LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1) == Character;
 
                         // Return
                         return after
                     };
 
                     // After Character From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromFront = function stringPrototypeAfterCharacterFromFront(string, character, STRING_LENGTH) {
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromFront = function stringPrototypeAfterCharacterFromFront(String, Character, STRING_LENGTH) {
                         // Update > String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(string));
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
 
                         // Initialization > (After, String (Has Indexed Character, Iterator))
                         var after = ""; var stringHasIndexedCharacter = false, stringIterator = STRING_LENGTH;
 
                         // Loop > ...
-                        while (stringIterator) { var stringCharacter = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1); stringCharacter == character ? stringIterator = +0 : after = stringCharacter + after }
+                        while (stringIterator) { var stringCharacter = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1); stringCharacter == Character ? stringIterator = +0 : after = stringCharacter + after }
 
                         // Return
                         return after
                     };
 
+                    // After From
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterFrom = function stringPrototypeAfterFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                        // Update > (Sub)String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                        // Logic
+                        if (SUBSTRING_LENGTH == 1)
+                            // Return
+                            return LDKF.stringPrototypeAfterCharacterFrom(String, Substring, STRICT = STRING_LENGTH);
+
+                        else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                            // Constant > Gradient Stop Length
+                            var GRADIENT_STOP_LENGTH = LDKM.int(STRING_LENGTH / 4);
+
+                            // Initialization > (After, String Iterator, Substring First Character)
+                            var after = ""; var stringIterator = STRING_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+                            var SubstringFirstCharacter = LDKF.stringPrototypeFirst(Substring);
+
+                            // Loop
+                            while (stringIterator) {
+                                // Update > String Iterator
+                                stringIterator -= 1;
+
+                                // Logic
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) == SubstringFirstCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = STRING_LENGTH - stringIterator, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while ((stringIndex ^ (STRING_LENGTH - 1)) && substringIterator)
+                                        // Logic > ...
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex += 1) != LDKF.stringPrototypeCharacterAt(Substring, SUBSTRING_LENGTH - (substringIterator -= 1) - 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = null }
+                                }
+
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) == SubstringFirstCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while ((stringIndex ^ (STRING_LENGTH - 1)) && substringIterator)
+                                        // Logic > ...
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex += 1) != LDKF.stringPrototypeCharacterAt(Substring, SUBSTRING_LENGTH - (substringIterator -= 1) - 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = null }
+                                }
+
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) == SubstringFirstCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = stringIterator + GRADIENT_STOP_LENGTH, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while ((stringIndex ^ (STRING_LENGTH - 1)) && substringIterator)
+                                        // Logic > ...
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex += 1) != LDKF.stringPrototypeCharacterAt(Substring, SUBSTRING_LENGTH - (substringIterator -= 1) - 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = null }
+                                }
+
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, stringIterator) == SubstringFirstCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = stringIterator, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while ((stringIndex ^ (STRING_LENGTH - 1)) && substringIterator)
+                                        // Logic > ...
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex += 1) != LDKF.stringPrototypeCharacterAt(Substring, SUBSTRING_LENGTH - (substringIterator -= 1) - 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, stringIndex += 1); stringIterator = null }
+                                }
+                            }
+
+                            // Return
+                            return after
+                        }
+
+                        else
+                            // Return
+                            return ""
+                    };
+
                     // After From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterFromBack = function stringPrototypeAfterFromBack(string, substring, STRING_LENGTH) {
-                        LDKF.isString(substring) && (substring = [substring]);
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterFromBack = function stringPrototypeAfterFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                        // Update > (Sub)String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                        // Logic
+                        if (SUBSTRING_LENGTH == 1)
+                            // Return
+                            return LDKF.stringPrototypeAfterCharacterFromBack(String, Substring, STRICT = STRING_LENGTH);
+
+                        else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                            // Initialization > (After, String Iterator)
+                            var after = ""; var stringIterator = STRING_LENGTH;
+
+                            // Loop
+                            while (stringIterator ^ SUBSTRING_LENGTH) {
+                                // Logic
+                                if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1) == LDKF.stringPrototypeFirst(Substring)) {
+                                    // Initialization > Substring Iterator
+                                    var substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while (substringIterator) {
+                                        // Update > String Iterator
+                                        stringIterator -= 1;
+
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator - 1) != LDKF.stringPrototypeCharacterAt(Substring, SUBSTRING_LENGTH - (substringIterator -= 1) - 1)) {
+                                            // Update > (Sub)String Iterator
+                                            stringIterator += SUBSTRING_LENGTH - substringIterator - 1;
+                                            substringIterator = +0
+                                        }
+
+                                        else if (!substringIterator) {
+                                            // (Loop > )Update > ...
+                                            while (stringIterator) after += LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1);
+                                            stringIterator = SUBSTRING_LENGTH
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return after
+                        }
+
+                        else
+                            // Return
+                            return ""
                     };
 
                     // After From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterFromFront = function stringPrototypeAfterFromFront(string, substring, STRING_LENGTH) {
-                        LDKF.isString(substring) && (substring = [substring]);
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterFromFront = function stringPrototypeAfterFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                        // Update > (Sub)String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                        // Logic
+                        if (SUBSTRING_LENGTH == 1)
+                            // Return
+                            return LDKF.stringPrototypeAfterCharacterFromFront(String, Substring, STRICT = STRING_LENGTH);
+
+                        else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                            // Initialization > (After, String Iterator)
+                            var after = ""; var stringIterator = STRING_LENGTH;
+
+                            // Loop
+                            while (stringIterator ^ SUBSTRING_LENGTH) {
+                                // Logic
+                                if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH)) {
+                                    // Initialization > Substring Iterator
+                                    var substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while (substringIterator) {
+                                        // Update > String Iterator
+                                        stringIterator -= 1;
+
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) {
+                                            // Update > (Sub)String Iterator
+                                            stringIterator += SUBSTRING_LENGTH - substringIterator - 1;
+                                            substringIterator = +0
+                                        }
+
+                                        else if (!substringIterator) {
+                                            // (Loop > )Update > ...
+                                            stringIterator = (STRING_LENGTH - stringIterator) - SUBSTRING_LENGTH;
+                                            while (stringIterator) after += LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1);
+                                            stringIterator = SUBSTRING_LENGTH
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return after
+                        }
+
+                        else
+                            // Return
+                            return ""
+                    };
+
+                    // After Index
+                    LapysDevelopmentKit.Functions.stringPrototypeAfterIndex = function stringPrototypeAfterIndex(String, index, STRING_LENGTH) {
+                        // Initialization > After
+                        var after = "";
+
+                        // Loop > (Update > ...)
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        while (index ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, index += 1);
+
+                        // Return
+                        return after
                     };
 
                     // Before
-                    LapysDevelopmentKit.Functions.stringPrototypeBefore = function stringPrototypeBefore(string, substring, STRING_LENGTH) { return LDKF.stringPrototypeBeforeFromBack(string, substring, STRICT = STRING_LENGTH) };
+                    LapysDevelopmentKit.Functions.stringPrototypeBefore = function stringPrototypeBefore(String, Substring, STRING_LENGTH) { return LDKF.stringPrototypeBeforeFromBack(String, Substring, STRICT = STRING_LENGTH) };
 
-                    // Before Character --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacter = function stringPrototypeBeforeCharacter(string, character, STRING_LENGTH) { return LDKF.stringPrototypeBeforeCharacterFromBack(string, character, STRICT = STRING_LENGTH) };
+                    // Before Character
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacter = function stringPrototypeBeforeCharacter(String, Character, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeBeforeCharacterFrom(String, Character, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
 
-                    // Before Character From --- CHECKPOINT (Lapys)
-                    // Before Character From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromBack = function stringPrototypeBeforeCharacterFromBack(string, character, STRING_LENGTH) {
+                    // Before Character From
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFrom = function stringPrototypeBeforeCharacterFrom(String, Character, STRING_LENGTH) {
                         // Update > String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(string));
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+
+                        // Constant > Gradient Stop Length
+                        var GRADIENT_STOP_LENGTH = LDKM.int(STRING_LENGTH / 4);
+
+                        // Initialization > (Before, String Iterator)
+                        var before = ""; var stringIterator = STRING_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+
+                        // Loop
+                        while (stringIterator) {
+                            // Update > String Iterator
+                            stringIterator -= 1;
+
+                            // Logic > ...
+                            if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) == Character) { var stringIndex = STRING_LENGTH - stringIterator; while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = +0 }
+                            else if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) == Character) { var stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = +0 }
+                            else if (LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) == Character) { var stringIndex = stringIterator + GRADIENT_STOP_LENGTH; while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = +0 }
+                            else if (LDKF.stringPrototypeCharacterAt(String, stringIterator) == Character) { var stringIndex = stringIterator; while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = +0 }
+                        }
+
+                        // Return
+                        return before
+                    };
+
+                    // Before Character From Back
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromBack = function stringPrototypeBeforeCharacterFromBack(String, Character, STRING_LENGTH) {
+                        // Update > String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
 
                         // Initialization > (Before, String Iterator)
                         var before = ""; var stringIterator = STRING_LENGTH;
 
                         // Loop > ...
-                        while (stringIterator) { var stringCharacter = LDKF.stringPrototypeCharacterAt(string, STRING_LENGTH - (stringIterator -= 1) - 1); stringCharacter == character ? stringIterator = +0 : before += stringCharacter }
+                        while (stringIterator) { var STRING_CHARACTER = LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1); STRING_CHARACTER == Character ? stringIterator = +0 : before += STRING_CHARACTER }
 
                         // Return
                         return before
                     };
 
                     // Before Character From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromFront = function stringPrototypeBeforeCharacterFromFront(string, character, STRING_LENGTH) {
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromFront = function stringPrototypeBeforeCharacterFromFront(String, Character, STRING_LENGTH) {
                         // Update > String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(string));
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
 
                         // Initialization > (Before, String Iterator)
                         var before = ""; var stringHasIndexedCharacter = false, stringIterator = STRING_LENGTH;
 
                         // Loop > Update > (Before | String Has Indexed Character)
-                        while (stringIterator) stringHasIndexedCharacter ? before = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) + before : stringHasIndexedCharacter = LDKF.stringPrototypeCharacterAt(string, stringIterator -= 1) == character;
+                        while (stringIterator) stringHasIndexedCharacter ? before = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + before : stringHasIndexedCharacter = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == Character;
 
                         // Return
                         return before
                     };
 
+                    // Before From
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFrom = function stringPrototypeBeforeFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                        // Update > (Sub)String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                        // Logic
+                        if (SUBSTRING_LENGTH == 1)
+                            // Return
+                            return LDKF.stringPrototypeBeforeCharacterFrom(String, Substring, STRICT = STRING_LENGTH);
+
+                        else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                            // Constant > Gradient Stop Length
+                            var GRADIENT_STOP_LENGTH = LDKM.int(STRING_LENGTH / 4);
+
+                            // Initialization > (Before, String Iterator, Substring Last Character)
+                            var before = ""; var stringIterator = STRING_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+                            var SubstringLastCharacter = LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH);
+
+                            // Loop
+                            while (stringIterator) {
+                                // Update > String Iterator
+                                stringIterator -= 1;
+
+                                // Logic
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) == SubstringLastCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = STRING_LENGTH - stringIterator, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop > Logic > ...
+                                    while  (stringIndex && substringIterator)
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = null }
+                                }
+
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) == SubstringLastCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop > Logic > ...
+                                    while  (stringIndex && substringIterator)
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = null }
+                                }
+
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) == SubstringLastCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = stringIterator + GRADIENT_STOP_LENGTH, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop > Logic > ...
+                                    while  (stringIndex && substringIterator)
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = null }
+                                }
+
+                                if (!LDKF.isNull(stringIterator) && LDKF.stringPrototypeCharacterAt(String, stringIterator) == SubstringLastCharacter) {
+                                    // Initialization > (String Index, Substring Iterator)
+                                    var stringIndex = stringIterator, substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop > Logic > ...
+                                    while  (stringIndex && substringIterator)
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) substringIterator = +0;
+                                        else if (!substringIterator) { while (stringIndex) before = LDKF.stringPrototypeCharacterAt(String, stringIndex -= 1) + before; stringIterator = null }
+                                }
+                            }
+
+                            // Return
+                            return before
+                        }
+
+                        else
+                            // Return
+                            return ""
+                    };
+
                     // Before From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFromBack = function stringPrototypeBeforeFromBack(string, substring, STRING_LENGTH) {
-                        LDKF.isString(substring) && (substring = [substring]);
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFromBack = function stringPrototypeBeforeFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                        // Update > (Sub)String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                        // Logic
+                        if (SUBSTRING_LENGTH == 1)
+                            // Return
+                            return LDKF.stringPrototypeBeforeCharacterFromBack(String, Substring, STRICT = STRING_LENGTH);
+
+                        else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                            // Initialization > (Before, String Iterator)
+                            var before = ""; var stringIterator = STRING_LENGTH;
+
+                            // Loop
+                            while (stringIterator ^ SUBSTRING_LENGTH) {
+                                // Logic
+                                if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1) == LDKF.stringPrototypeFirst(Substring)) {
+                                    // Initialization > Substring Iterator
+                                    var substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while (substringIterator) {
+                                        // Update > String Iterator
+                                        stringIterator -= 1;
+
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator - 1) != LDKF.stringPrototypeCharacterAt(Substring, SUBSTRING_LENGTH - (substringIterator -= 1) - 1)) {
+                                            // Update > (Sub)String Iterator
+                                            stringIterator += SUBSTRING_LENGTH - substringIterator - 1;
+                                            substringIterator = +0
+                                        }
+
+                                        else if (!substringIterator) {
+                                            // (Loop > )Update > ...
+                                            stringIterator = (STRING_LENGTH - stringIterator) - SUBSTRING_LENGTH;
+                                            while (stringIterator) before = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + before;
+                                            stringIterator = SUBSTRING_LENGTH
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return before
+                        }
+
+                        else
+                            // Return
+                            return ""
                     };
 
                     // Before From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFromFront = function stringPrototypeBeforeFromFront(string, substring, STRING_LENGTH) {
-                        LDKF.isString(substring) && (substring = [substring]);
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFromFront = function stringPrototypeBeforeFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                        // Update > (Sub)String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                        // Logic
+                        if (SUBSTRING_LENGTH == 1)
+                            // Return
+                            return LDKF.stringPrototypeBeforeCharacterFromFront(String, Substring, STRICT = STRING_LENGTH);
+
+                        else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                            // Initialization > (Before, String Iterator)
+                            var before = ""; var stringIterator = STRING_LENGTH;
+
+                            // Loop
+                            while (stringIterator ^ SUBSTRING_LENGTH) {
+                                // Logic
+                                if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH)) {
+                                    // Initialization > Substring Iterator
+                                    var substringIterator = SUBSTRING_LENGTH - 1;
+
+                                    // Loop
+                                    while (substringIterator) {
+                                        // Update > String Iterator
+                                        stringIterator -= 1;
+
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) {
+                                            // Update > (Sub)String Iterator
+                                            stringIterator += SUBSTRING_LENGTH - substringIterator - 1;
+                                            substringIterator = +0
+                                        }
+
+                                        else if (!substringIterator) {
+                                            // (Loop > )Update >
+                                            while (stringIterator) before = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + before;
+                                            stringIterator = SUBSTRING_LENGTH
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Return
+                            return before
+                        }
+
+                        else
+                            // Return
+                            return ""
+                    };
+
+                    // Before Index
+                    LapysDevelopmentKit.Functions.stringPrototypeBeforeIndex = function stringPrototypeBeforeIndex(String, index) {
+                        // Initialization > Before
+                        var before = "";
+
+                        // Loop > Update > Before
+                        while (index) before = LDKF.stringPrototypeCharacterAt(String, index -= 1) + before;
+
+                        // Return
+                        return before
                     };
 
                     // Character At
-                    LapysDevelopmentKit.Functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(string, index) { return string[index] || LDKF.functionPrototypeCall(LDKO.stringPrototypeCharacterAt, string, index) || null };
+                    LapysDevelopmentKit.Functions.stringPrototypeCharacterAt = function stringPrototypeCharacterAt(String, Index) { return String[Index] || LDKF.functionPrototypeMonoadicCall(LDKO.stringPrototypeCharacterAt, String, Index) || null };
 
                     // Character Code At
-                    LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(string, index) { return LDKF.functionPrototypeCall(LDKO.stringPrototypeCharacterCodeAt, string, index) || -1 };
+                    LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(String, Index) { return LDKF.functionPrototypeMonoadicCall(LDKO.stringPrototypeCharacterCodeAt, String, Index) || -1 };
 
                     // Count --- CHECKPOINT (Lapys)
                     // Cut Left
                     // Cut Right
+
+                    // First
+                    LapysDevelopmentKit.Functions.stringPrototypeFirst = function stringPrototypeFirst(String) { return String ? LDKF.stringPrototypeCharacterAt(String, +0) : null };
+
+                    // Last
+                    LapysDevelopmentKit.Functions.stringPrototypeLast = function stringPrototypeLast(String, STRING_LENGTH) { return String ? LDKF.stringPrototypeCharacterAt(String, (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - 1) : null };
 
                     // Remove
                     // Remove From Back
@@ -862,13 +1352,52 @@
                     // Replace From Back
                     // Replace From Front
 
+                    // Substring At --- WARN (Lapys) -> For development & testing purposes only.
+                    LapysDevelopmentKit.Functions.stringPrototypeSubstringAt = function stringPrototypeSubstringAt(String, Index, substringLength, IGNORE_EXCEPTIONS) {
+                        // Initialization > Substring (After, Before)
+                        var substringAfter = "", substringBefore = "";
+
+                        // Logic
+                        if (IGNORE_EXCEPTIONS) {
+                            // : Constant > String Length
+                            // : Initialization > Substring Iterator
+                            var STRING_LENGTH = LDKF.stringPrototypeLength(String);
+                            var substringIterator = +0;
+
+                            // Initialization > Update Substring (After, Before)
+                            var updateSubstringAfter = true, updateSubstringBefore = true;
+
+                            // Loop
+                            while (substringIterator ^ substringLength) {
+                                // Logic > Update > (Update) Substring (After, Before)
+                                if (updateSubstringAfter) { substringAfter += LDKF.stringPrototypeCharacterAt(String, Index + substringIterator + 1); ((Index + substringIterator + 1) ^ (STRING_LENGTH - 1)) || (updateSubstringAfter = false) }
+                                if (updateSubstringBefore) { substringBefore = LDKF.stringPrototypeCharacterAt(String, Index - substringIterator - 1) + substringBefore; (Index - substringIterator - 1) || (updateSubstringBefore = false) }
+
+                                // Update > Substring Iterator
+                                substringIterator += 1
+                            }
+                        }
+
+                        else
+                            // Loop
+                            while (substringLength) {
+                                // Update > Substring (After, Before, Length)
+                                substringAfter = LDKF.stringPrototypeCharacterAt(String, Index + substringLength) + substringAfter;
+                                substringBefore += LDKF.stringPrototypeCharacterAt(String, Index - substringLength);
+                                substringLength -= 1
+                            }
+
+                        // Return
+                        return substringBefore + LDKF.stringPrototypeCharacterAt(String, Index) + substringAfter
+                    };
+
                 // Style Property Map > Prototype
                     // Element At
-                    LapysDevelopmentKit.Functions.stylePropertyMapPrototypeElementAt = function stylePropertyMapPrototypeElementAt(stylePropertyMap, index) {
+                    LapysDevelopmentKit.Functions.stylePropertyMapPrototypeElementAt = function stylePropertyMapPrototypeElementAt(StylePropertyMap, index) {
                         // Logic
-                        if (index < LDKF.mapPrototypeSize(stylePropertyMap)) {
+                        if (index < LDKF.stylePropertyMapPrototypeSize(StylePropertyMap)) {
                             // Initialization > Element; Constant > Map Iterator
-                            var element = undefined; var MAP_ITERATOR = LDKF.stylePropertyMapPrototypeEntries(stylePropertyMap);
+                            var element = undefined; var MAP_ITERATOR = LDKF.stylePropertyMapPrototypeEntries(StylePropertyMap);
 
                             // Loop > Update > (Element, Index)
                             while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
@@ -883,17 +1412,17 @@
                     };
 
                     // Set Index
-                    LapysDevelopmentKit.Functions.stylePropertyMapPrototypeSetIndex = function stylePropertyMapPrototypeSetIndex(stylePropertyMap, index, value) {
+                    LapysDevelopmentKit.Functions.stylePropertyMapPrototypeSetIndex = function stylePropertyMapPrototypeSetIndex(StylePropertyMap, index, Value) {
                         // Logic
-                        if (index < LDKF.stylePropertyMapPrototypeSize(stylePropertyMap)) {
+                        if (index < LDKF.stylePropertyMapPrototypeSize(StylePropertyMap)) {
                             // Initialization > Element; Constant > Map Iterator
-                            var element = undefined; var MAP_ITERATOR = LDKF.stylePropertyMapPrototypeEntries(stylePropertyMap);
+                            var element = undefined; var MAP_ITERATOR = LDKF.stylePropertyMapPrototypeEntries(StylePropertyMap);
 
                             // Loop > Update > (Element, Index)
                             while (index) { element = MAP_ITERATOR.next().value; index -= 1 }
 
                             // Return
-                            return LDKF.stylePropertyMapPrototypeSet(stylePropertyMap, element[+0], value)
+                            return LDKF.stylePropertyMapPrototypeSet(StylePropertyMap, element[+0], Value)
                         }
 
                         else
@@ -902,24 +1431,24 @@
                     };
 
                 // To Number
-                LapysDevelopmentKit.Functions.toNumber = function toNumber(argument) {
+                LapysDevelopmentKit.Functions.toNumber = function toNumber(Argument) {
                     // Logic > Return
-                    if (LDKF.isNumber(argument)) return argument;
-                    else if (LDKF.isNull(argument)) return +0;
-                    else if (LDKF.isBoolean(argument) || LDKF.isString(argument)) return +argument;
-                    else if (LDKF.isVoid(argument)) return LDKC.Numbers.NaN;
-                    else if (LDKF.isSymbol(argument)) return LDKF.toNumber(LDKF.toString(argument));
-                    else /*if (LDKF.isObjectLike(argument))*/ return LDKO.number(argument)
+                    if (LDKF.isNumber(Argument)) return Argument;
+                    else if (LDKF.isNull(Argument)) return +0;
+                    else if (LDKF.isBoolean(Argument) || LDKF.isString(Argument)) return +Argument;
+                    else if (LDKF.isVoid(Argument)) return LDKC.Numbers.NaN;
+                    else if (LDKF.isSymbol(Argument)) return LDKF.toNumber(LDKF.toString(Argument));
+                    else /*if (LDKF.isObjectLike(Argument))*/ return LDKO.number(Argument)
                 };
 
             /* Mathematics --- REDACT (Lapys) */
-            LapysDevelopmentKit.Mathematics.ceil = function ceil(number) { var integer = LDKM.int(number); return integer + (number > integer) };
-            LapysDevelopmentKit.Mathematics.int = function int(number) { return number - number % 1 };
-            LapysDevelopmentKit.Mathematics.max = function max(numberA, numberB) { return numberA > numberB ? numberA : numberB };
-            LapysDevelopmentKit.Mathematics.min = function min(numberA, numberB) { return numberA < numberB ? numberA : numberB };
-            LapysDevelopmentKit.Mathematics.perc = function perc(base, exponent) { return +!!exponent && (base * (exponent / 100)) };
-            LapysDevelopmentKit.Mathematics.powInt = function powInt(base, exponent) { if (exponent) { var multiplier = base; while (exponent -= 1) base *= multiplier; return base } else return 1 };
-            LapysDevelopmentKit.Mathematics.round = function round(number) { var integer = LDKM.int(number); return integer + (number - integer >= .5) };
+            LapysDevelopmentKit.Mathematics.ceil = function ceil(Number) { var integer = LDKM.int(Number); return integer + (Number > integer) };
+            LapysDevelopmentKit.Mathematics.int = function int(Number) { return Number - Number % 1 };
+            LapysDevelopmentKit.Mathematics.max = function max(NumberA, NumberB) { return NumberA > NumberB ? NumberA : NumberB };
+            LapysDevelopmentKit.Mathematics.min = function min(NumberA, NumberB) { return NumberA < NumberB ? NumberA : NumberB };
+            LapysDevelopmentKit.Mathematics.perc = function perc(Base, Exponent) { return +!!Exponent && (Base * (Exponent / 100)) };
+            LapysDevelopmentKit.Mathematics.powInt = function powInt(Base, exponent) { if (exponent) { var MULTIPLIER = Base; while (exponent -= 1) Base *= MULTIPLIER; return Base } else return 1 };
+            LapysDevelopmentKit.Mathematics.round = function round(Number) { var INTEGER = LDKM.int(Number); return INTEGER + (Number - INTEGER >= .5) };
 
             /* Objects */
                 // Evaluate --- CHECKPOINT (Lapys)
@@ -931,6 +1460,9 @@
                     LapysDevelopmentKit.Objects.functionPrototype = LDKO["function"].prototype;
                         // Apply --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Objects.functionPrototypeApply = LDKO.functionPrototype.apply;
+
+                        // Call --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Objects.functionPrototypeCall = LDKO.functionPrototype.call;
 
                 // Object --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Objects.object = Object;
@@ -997,14 +1529,14 @@
 
                                 else {
                                     // (Loop > )Update > Big Array
-                                    while (index ^ (BIG_ARRAY_LENGTH - 1)) LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeSetIndex, BIG_ARRAY, index, LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeElementAt, BIG_ARRAY, index += 1));
+                                    while (index ^ (BIG_ARRAY_LENGTH - 1)) LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, BIG_ARRAY, index, LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BIG_ARRAY, index += 1));
                                     LDKF.functionPrototypeApply(LDKT.BigArrayPrototypePop, BIG_ARRAY)
                                 }
                         };
 
                         // Element At
                         LapysDevelopmentKit.Types.BigArrayPrototypeElementAt =
-                        LapysDevelopmentKit.Types.BigArrayPrototype.elementAt = function elementAt(index) {
+                        LapysDevelopmentKit.Types.BigArrayPrototype.elementAt = function elementAt(Index) {
                             // Initialization > Big Array (Depth)
                             var bigArray = this;
                             var bigArrayDepth = bigArray.depth;
@@ -1012,12 +1544,12 @@
                             // Logic
                             if (bigArrayDepth == 1)
                                 // Return
-                                return bigArray[index];
+                                return bigArray[Index];
 
-                            else if (!index) {
+                            else if (!Index) {
                                 // Loop > Update > Big Array; Return
-                                while (bigArrayDepth -= 1) bigArray = bigArray[index];
-                                return bigArray[index]
+                                while (bigArrayDepth -= 1) bigArray = bigArray[Index];
+                                return bigArray[Index]
                             }
 
                             else {
@@ -1041,7 +1573,7 @@
                                     while ((
                                         (bigArrayIndex * SAFE_SUBARRAY_MAXIMUM_BREADTH) +
                                         bigArrayIndexLength
-                                    ) <= index) bigArrayIndex += 1;
+                                    ) <= Index) bigArrayIndex += 1;
                                     bigArrayIndex -= 1;
 
                                     // Update > Big Array (Index Length)
@@ -1051,7 +1583,7 @@
 
                                 // (Loop > )Update > Big Array Index
                                 bigArrayIndex = +0;
-                                while ((bigArrayIndex + bigArrayIndexLength) < index) bigArrayIndex += 1;
+                                while ((bigArrayIndex + bigArrayIndexLength) < Index) bigArrayIndex += 1;
 
                                 // Return
                                 return bigArray[bigArrayIndex]
@@ -1059,7 +1591,7 @@
                         };
 
                         // For Each
-                        LapysDevelopmentKit.Types.BigArrayPrototype.foreach = function foreach(handler) {
+                        LapysDevelopmentKit.Types.BigArrayPrototype.foreach = function foreach(Handler) {
                             // Initialization > Big Array (Length)
                             var BIG_ARRAY = this;
                             var bigArrayLength = BIG_ARRAY.length, bigArrayIterator = bigArrayLength;
@@ -1068,7 +1600,7 @@
                             while (bigArrayIterator) {
                                 // Constant > Big Array Index; Handler
                                 var BIG_ARRAY_INDEX = bigArrayLength - (bigArrayIterator -= 1) - 1;
-                                LDKF.functionPrototypeCall(handler, BIG_ARRAY, BIG_ARRAY.elementAt(BIG_ARRAY_INDEX), BIG_ARRAY_INDEX)
+                                LDKF.functionPrototypeDyadicCall(Handler, BIG_ARRAY, BIG_ARRAY.elementAt(BIG_ARRAY_INDEX), BIG_ARRAY_INDEX)
                             }
                         };
 
@@ -1099,21 +1631,21 @@
                             BIG_ARRAY.width = +0;
                         };
 
-                        // Index --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
-                        LapysDevelopmentKit.Types.BigArrayPrototype.index = function index(element) {
+                        // Index
+                        LapysDevelopmentKit.Types.BigArrayPrototype.index = function index(Element) {
                             // Constant > Big Array
                             var BIG_ARRAY = this;
 
                             // Return
                             return BIG_ARRAY.depth == 1 ?
-                                LDKF.arrayPrototypeIndex(BIG_ARRAY, element, STRICT = BIG_ARRAY.length) :
-                                LDKF.arrayPrototypeIndex(BIG_ARRAY, element, STRICT = BIG_ARRAY.length, STRICT = LDKC.Data.BigArrayImperative)
+                                LDKF.arrayPrototypeIndex(BIG_ARRAY, Element, STRICT = BIG_ARRAY.length) :
+                                LDKF.arrayPrototypeIndex(BIG_ARRAY, Element, STRICT = BIG_ARRAY.length, STRICT = LDKC.Data.BigArrayImperative)
                         };
 
                         // Maximum Length
                         LapysDevelopmentKit.Types.BigArrayPrototype.MAXIMUM_LENGTH = LDKC.Numbers.MaximumArrayLength;
 
-                        // Pop --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
+                        // Pop
                         LapysDevelopmentKit.Types.BigArrayPrototypePop =
                         LapysDevelopmentKit.Types.BigArrayPrototype.pop = function pop(PARENT, INDEX) {
                             // Constant > Big Array (Length)
@@ -1147,7 +1679,7 @@
                                     bigArrayIndex -= 1;
 
                                     // Update > Big Array
-                                    LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePop, BIG_ARRAY[bigArrayIndex], STRICT = BIG_ARRAY, STRICT = bigArrayIndex)
+                                    LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypePop, BIG_ARRAY[bigArrayIndex], STRICT = BIG_ARRAY, STRICT = bigArrayIndex)
                                 }
 
                                 // Modification > Big Array > (Length, Width)
@@ -1173,9 +1705,9 @@
                             }
                         };
 
-                        // Push --- FLAG (Lapys) -> Utilize the `LapysDevelopmentKit.Functions.functionPrototypeCall` method.
+                        // Push
                         LapysDevelopmentKit.Types.BigArrayPrototypePush =
-                        LapysDevelopmentKit.Types.BigArrayPrototype.push = function push(element) {
+                        LapysDevelopmentKit.Types.BigArrayPrototype.push = function push(Element) {
                             // Constant > Big Array
                             var BIG_ARRAY = this;
 
@@ -1211,7 +1743,7 @@
                             // Logic
                             if (BIG_ARRAY.depth == 1)
                                 // Update > Big Array
-                                BIG_ARRAY[BIG_ARRAY.length] = element;
+                                BIG_ARRAY[BIG_ARRAY.length] = Element;
 
                             else {
                                 // Initialization > (Evaluation, Big Array Index)
@@ -1231,7 +1763,7 @@
                                         if (safeSubarray.length ^ LDKM.powInt(BIG_ARRAY.MAXIMUM_LENGTH, safeSubarray.depth)) {
                                             // Update > (Evaluation, Safe Subarray)
                                             evaluation = false;
-                                            LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, safeSubarray, element)
+                                            LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, safeSubarray, Element)
                                         }
 
                                         else
@@ -1262,7 +1794,7 @@
                                         }
 
                                         // Update > Big Array
-                                        LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, BIG_ARRAY[bigArrayIndex], element)
+                                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_ARRAY[bigArrayIndex], Element)
                                     }
                                 }
                             }
@@ -1274,24 +1806,32 @@
 
                         // Resize
                         LapysDevelopmentKit.Types.BigArrayPrototypeResize =
-                        LapysDevelopmentKit.Types.BigArrayPrototype.resize = function resize(length) { var BIG_ARRAY = this, BIG_ARRAY_LENGTH = BIG_ARRAY.length; if (length ^ BIG_ARRAY_LENGTH) { var bigArrayIterator; if (length > BIG_ARRAY_LENGTH) { bigArrayIterator = length - BIG_ARRAY_LENGTH; this.length = length; while (bigArrayIterator) { LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, BIG_ARRAY, undefined); bigArrayIterator -= 1 } } else { bigArrayIterator = BIG_ARRAY_LENGTH - length; this.length -= bigArrayIterator; while (bigArrayIterator) { LDKF.functionPrototypeApply(LDKT.BigArrayPrototypePop, BIG_ARRAY); bigArrayIterator -= 1 } } } };
+                        LapysDevelopmentKit.Types.BigArrayPrototype.resize = function resize(Length) { var BIG_ARRAY = this, BIG_ARRAY_LENGTH = BIG_ARRAY.length; if (Length ^ BIG_ARRAY_LENGTH) { var bigArrayIterator; if (Length > BIG_ARRAY_LENGTH) { bigArrayIterator = Length - BIG_ARRAY_LENGTH; this.length = Length; while (bigArrayIterator) { LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_ARRAY, undefined); bigArrayIterator -= 1 } } else { bigArrayIterator = BIG_ARRAY_LENGTH - Length; this.length -= bigArrayIterator; while (bigArrayIterator) { LDKF.functionPrototypeApply(LDKT.BigArrayPrototypePop, BIG_ARRAY); bigArrayIterator -= 1 } } } };
 
                         // Set Index
                         LapysDevelopmentKit.Types.BigArrayPrototypeSetIndex =
-                        LapysDevelopmentKit.Types.BigArrayPrototype.setIndex = function setIndex(index, element) {
+                        LapysDevelopmentKit.Types.BigArrayPrototype.setIndex = function setIndex(Index, Element) {
                             // Initialization > Big Array (Depth)
                             var bigArray = this;
                             var bigArrayDepth = bigArray.depth;
 
                             // Logic
                             if (bigArrayDepth == 1)
-                                // Return
-                                return (bigArray[index] = element);
+                                // Logic
+                                if (Index < bigArray.MAXIMUM_LENGTH)
+                                    // Return
+                                    return (bigArray[Index] = Element);
 
-                            else if (!index) {
+                                else {
+                                    // (Loop > )Update > Big Array
+                                    while (bigArray.length ^ Index) LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, bigArray, undefined);
+                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, bigArray, Element)
+                                }
+
+                            else if (!Index) {
                                 // Loop > Update > Big Array; Return
-                                while (bigArrayDepth -= 1) bigArray = bigArray[index];
-                                return (bigArray[index] = element)
+                                while (bigArrayDepth -= 1) bigArray = bigArray[Index];
+                                return (bigArray[Index] = Element)
                             }
 
                             else {
@@ -1315,7 +1855,7 @@
                                     while ((
                                         (bigArrayIndex * SAFE_SUBARRAY_MAXIMUM_BREADTH) +
                                         bigArrayIndexLength
-                                    ) <= index) bigArrayIndex += 1;
+                                    ) <= Index) bigArrayIndex += 1;
                                     bigArrayIndex -= 1;
 
                                     // Update > Big Array (Index Length)
@@ -1325,19 +1865,19 @@
 
                                 // (Loop > )Update > Big Array Index
                                 bigArrayIndex = +0;
-                                while ((bigArrayIndex + bigArrayIndexLength) < index) bigArrayIndex += 1;
+                                while ((bigArrayIndex + bigArrayIndexLength) < Index) bigArrayIndex += 1;
 
-                                // Update > Big Array
-                                bigArray[bigArrayIndex] = element
+                                // Return
+                                return (bigArray[bigArrayIndex] = Element)
                             }
                         };
 
                     // ...
                     LapysDevelopmentKit.Constants.Data.BigArrayImperative = new LDKT.ArrayImperative(
-                        function BigArrayPrototypeElementAt(bigArray, index) { return LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeElementAt, bigArray, index) },
-                        function BigArrayPrototypeSetIndex(bigArray, index, element) { return LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeSetIndex, bigArray, index, element) },
-                        function BigArrayPrototypeLength(bigArray) { return bigArray.length },
-                        function BigArrayPrototypeResize(bigArray, length) { return LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeResize, bigArray, length) }
+                        function BigArrayPrototypeElementAt(BigArray, Index) { return LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BigArray, Index) },
+                        function BigArrayPrototypeSetIndex(BigArray, Index, Element) { return LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, BigArray, Index, Element) },
+                        function BigArrayPrototypeLength(BigArray) { return BigArray.length },
+                        function BigArrayPrototypeResize(BigArray, Length) { return LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeResize, BigArray, Length) }
                     );
 
                 /* Big Number
@@ -1345,6 +1885,7 @@
                         --- NOTE (Lapys) -> Arbitrary-precision number.
                 */
                 LapysDevelopmentKit.Types.BigNumber = function BigNumber(Value) {
+                    // Logic
                     if (Value) {
                         // Constant > Big Number
                         var BIG_NUMBER = LDKT.BigNumberFromNumber(Value);
@@ -1357,16 +1898,25 @@
                     else {
                         // (Modification, Update) > Target > (Characteristics, Mantissa)
                         this.characteristics = new LDKT.BigArray;
-                        LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, this.characteristics, '0');
+                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.characteristics, '0');
 
                         this.mantissa = new LDKT.BigArray;
-                        LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, this.mantissa, '0')
+                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.mantissa, '0')
                     }
                 };
                     // Add --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Types.BigNumberAdd
-                    LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB) {
-                        if (BigNumberA.mantissa.length || BigNumberB.mantissa.length) {}
+                    LapysDevelopmentKit.Types.BigNumberAdd =
+                    LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB, PARSE_AS_SOURCE) {
+                        // Constant > Addition
+                        var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
+
+                        // Logic
+                        if (BigNumberA.mantissa.length || BigNumberB.mantissa.length) {
+
+                        }
+
+                        // Return
+                        return ADDITION
                     };
 
                     // From Number
@@ -1402,12 +1952,12 @@
                                 var characteristicsIterator = CHARACTERISTICS_LENGTH;
 
                                 // Loop > Update > ...
-                                while (characteristicsIterator) LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.characteristics, LDKF.stringPrototypeCharacterAt(CHARACTERISTICS, CHARACTERISTICS_LENGTH - (characteristicsIterator -= 1) - 1))
+                                while (characteristicsIterator) LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.characteristics, LDKF.stringPrototypeCharacterAt(CHARACTERISTICS, CHARACTERISTICS_LENGTH - (characteristicsIterator -= 1) - 1))
                             }
 
                             else
                                 // Update > (Big Number > Characteristics)
-                                LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.characteristics, '0');
+                                LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.characteristics, '0');
 
                             // Logic
                             if (MANTISSA) {
@@ -1417,12 +1967,12 @@
                                 var mantissaIterator = MANTISSA_LENGTH;
 
                                 // Loop > Update > ...
-                                while (mantissaIterator) LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.mantissa, LDKF.stringPrototypeCharacterAt(MANTISSA, MANTISSA_LENGTH - (mantissaIterator -= 1) - 1))
+                                while (mantissaIterator) LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.mantissa, LDKF.stringPrototypeCharacterAt(MANTISSA, MANTISSA_LENGTH - (mantissaIterator -= 1) - 1))
                             }
 
                             else
                                 // Update > (Big Number > Mantissa)
-                                LDKF.functionPrototypeCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.mantissa, '0');
+                                LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.mantissa, '0');
                         }
 
                         // Return
@@ -1436,6 +1986,24 @@
 
                     // Prototype
                     LapysDevelopmentKit.Types.BigNumberPrototype = LapysDevelopmentKit.Types.BigNumber.prototype;
+                        // Add
+                        LapysDevelopmentKit.Types.BigNumberPrototypeAdd =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.add = function add(Number) { return LDKT.BigNumberAdd(this, Number, STRICT = true) };
+
+                        // Copy
+                        LapysDevelopmentKit.Types.BigNumberPrototypeCopy =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.copy = function copy(Number, CONVERT_TO_BIG_NUMBER) {
+                            // Update > Number
+                            CONVERT_TO_BIG_NUMBER && (Number = LDKT.BigNumberFromNumber(Number));
+
+                            // Modification > Target > (Characteristics, Mantissa)
+                            this.characteristics = Number.characteristics;
+                            this.mantissa = Number.mantissa;
+
+                            // Return
+                            return this
+                        };
+
                         // Is Overflown
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsOverflown =
                         LapysDevelopmentKit.Types.BigNumberPrototype.isOverflown = function isOverflown() { return LDKT.BigNumberLesserThanOrEqualTo(this, -LDKC.Numbers.MaximumIntegerValue) || LDKT.BigNumberGreaterThanOrEqualTo(this, LDKC.Numbers.MaximumIntegerValue) };
@@ -1452,11 +2020,11 @@
 
                             // ... --- NOTE (Lapys) -> Concatenate the characteristics component.
                             var characteristicsIterator = this.characteristics.length;
-                            while (characteristicsIterator) string = LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeElementAt, this.characteristics, characteristicsIterator -= 1) + string;
+                            while (characteristicsIterator) string = LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, this.characteristics, characteristicsIterator -= 1) + string;
 
                             // ... --- NOTE (Lapys) -> Concatenate the mantissa component.
                             var MANTISSA_LENGTH = this.mantissa.length;
-                            if (MANTISSA_LENGTH) { var mantissaIterator = MANTISSA_LENGTH; string += '.'; while (mantissaIterator) string += LDKF.functionPrototypeCall(LDKT.BigArrayPrototypeElementAt, this.mantissa, MANTISSA_LENGTH - (mantissaIterator -= 1) - 1) }
+                            if (MANTISSA_LENGTH) { var mantissaIterator = MANTISSA_LENGTH; string += '.'; while (mantissaIterator) string += LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, this.mantissa, MANTISSA_LENGTH - (mantissaIterator -= 1) - 1) }
 
                             // Return
                             return string
@@ -1466,7 +2034,7 @@
                     // Prototype
                     LapysDevelopmentKit.Types.ClockPrototype = LDKT.Clock.prototype;
                         // Check
-                        LapysDevelopmentKit.Types.ClockPrototype.check = function check(condition, ontrue, onfalse) { var evaluation, id; try { evaluation = condition() } catch (error) {} id = LDKF.functionPrototypeCall(LDKT.ClockPrototype.wind, this, function() { if (evaluation) { LDKF.functionPrototypeApply(LDKT.ClockPrototype.stop, id); ontrue() } else onfalse() }); return id };
+                        LapysDevelopmentKit.Types.ClockPrototype.check = function check(Condition, Ontrue, Onfalse) { var evaluation, id; try { evaluation = Condition() } catch (error) {} id = LDKF.functionPrototypeMonoadicCall(LDKT.ClockPrototype.wind, this, function() { if (evaluation) { LDKF.functionPrototypeApply(LDKT.ClockPrototype.stop, id); Ontrue() } else Onfalse() }); return id };
 
                         // Measure
                         LapysDevelopmentKit.Types.ClockPrototype.measure = function measure() { return LDKC.Assertions.has_Performance_Constructor ? LDKF.functionPrototypeApply(LDKO.performancePrototypeNow, LDKC.Objects.performance) : LDKF.functionPrototypeApply(LDKO.dateNow, LDKO.date) };
@@ -1553,7 +2121,7 @@
                             // Logic
                             if (CLOCK.timed) {
                                 // Clock > Check
-                                LDKF.functionPrototypeCall(LDKT.ClockPrototype.check, CLOCK, function() { return !CLOCK.timed }, function() {}, function() { CLOCK.timeElapsed += LDKC.Constants.Number.FrameRate })
+                                LDKF.functionPrototypeTriadicCall(LDKT.ClockPrototype.check, CLOCK, function() { return !CLOCK.timed }, function() {}, function() { CLOCK.timeElapsed += LDKC.Constants.Number.FrameRate })
 
                                 // Return
                                 return true
