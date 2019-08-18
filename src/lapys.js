@@ -476,7 +476,7 @@
                         var ARRAY_CLONE; var arrayIterator = IMPERATIVE.getLength(Array);
 
                         // Logic > ... > Update > Array Clone
-                        if (Array instanceof LDKT.BigArray) ARRAY_CLONE = new LDKT.BigArray(null, STRICT = Array.MAXIMUM_LENGTH);
+                        if (Array instanceof LDKT.BigArray) ARRAY_CLONE = new LDKT.BigArray(Array.length, Array.MAXIMUM_LENGTH);
                         else try { ARRAY_CLONE = new (LDKF.objectPrototypeConstructor(Array)) } catch (Error) { ARRAY_CLONE = [] }
 
                         // Loop > Update > Array (Iterator, Clone)
@@ -550,6 +550,20 @@
                         return -1
                     };
 
+                    // Push
+                    LapysDevelopmentKit.Functions.arrayPrototypePush = function arrayPrototypePush(Array, Element, ARRAY_LENGTH, IMPERATIVE) {
+                        // Update > (Imperative, Array Length)
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                        ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
+
+                        // Update > Array
+                        IMPERATIVE.setLength(Array, ARRAY_LENGTH + 1);
+                        IMPERATIVE.setIndex(Array, ARRAY_LENGTH, Element);
+
+                        // Return --- NOTE (Lapys) -> Assume array-like `push` methods are standard.
+                        return ARRAY_LENGTH + 1
+                    };
+
                     /* Sort
                             --- NOTE (Lapys) -> Utilizes the TimSort [https://en.wikipedia.org/wiki/Timsort] algorithm.
                             --- WARN (Lapys) -> The `SORT_TYPE` flag only denotes the comparator to be used when sorting (the `COMPARATOR` argument).
@@ -563,7 +577,7 @@
                                 : [Native Sort] --- NOTE (Lapys) -> Uses the native sorting algorithm proffered.
                             */
                             case LDKC.Data.ArraySortType["ASCII_SORT"]: return LDKF.arrayPrototypeSort(Array, STRICT = LDKC.Data.ArraySortType["CUSTOM_SORT"], STRICT = LDKC.Data.ArrayASCIISortComparator, STRICT = IMPERATIVE);
-                            case LDKC.Data.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeApply(LDKO.arrayPrototypeSort, Array); break;
+                            case LDKC.Data.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeNiladicCall(LDKO.arrayPrototypeSort, Array); break;
 
                             // [Custom Sort] --- NOTE (Lapys) -> Defaults to the library`s chosen comparator & sorting algorithm.
                             default: case LDKC.Data.ArraySortType["CUSTOM_SORT"]:
@@ -575,6 +589,27 @@
                                 // Return
                                 return Array
                         }
+                    };
+
+                    // Unshift
+                    LapysDevelopmentKit.Functions.arrayPrototypeUnshift = function arrayPrototypeUnshift(Array, Element, ARRAY_LENGTH, IMPERATIVE) {
+                        // Update > (Imperative, Array Length)
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                        ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
+
+                        // Update > Array
+                        IMPERATIVE.setLength(Array, ARRAY_LENGTH + 1);
+                        IMPERATIVE.setIndex(Array, ARRAY_LENGTH, IMPERATIVE.getIndex(Array, ARRAY_LENGTH - 1));
+
+                        // Initialization > Array Iterator; Update > Array
+                        var arrayIterator = ARRAY_LENGTH;
+                        while (arrayIterator ^ 1) IMPERATIVE.setIndex(Array, arrayIterator -= 1, IMPERATIVE.getIndex(Array, arrayIterator - 1));
+
+                        // Update > Array
+                        IMPERATIVE.setIndex(Array, +0, Element);
+
+                        // Return --- NOTE (Lapys) -> Assume array-like `push` methods are standard.
+                        return ARRAY_LENGTH + 1
                     };
 
                 // CSS Numeric Array > Prototype
@@ -609,6 +644,7 @@
                             #Lapys:
                                 - The `LapysDevelopmentKit.Functions.functionPrototypeApply` method references the non spoof-proof method `Function.prototype.apply.call`.
                                 - The `LapysDevelopmentKit.Functions.functionPrototype...Call` method references the non spoof-proof method `Function.prototype.call.call`.
+                                    - Each method does not have its asynchronous counterpart as it is not deemed necessary as of writing.
                 */
                     // Apply
                     LapysDevelopmentKit.Functions.functionPrototypeApply = function functionPrototypeApply(Routine, That, ArgumentListObject) { return ArgumentListObject ? LDKO.functionPrototypeApply.call(Routine, That, ArgumentListObject) : LDKO.functionPrototypeApply.call(Routine, That) };
@@ -629,7 +665,7 @@
 
                         // Logic > ...
                         if (ARGUMENTS_LENGTH) { var argumentsIterator = LDKM.max(+0, LDKF.getArgumentsLength(arguments) - 2); var ARGUMENT_LIST = [Argument]; while (argumentsIterator -= 1) { ARGUMENT_LIST[argumentsIterator] = arguments[argumentsIterator + 2] } return LDKF.functionPrototypeApply(Routine, That, ARGUMENT_LIST) }
-                        else return LDKF.functionPrototypeApply(Routine, That)
+                        else return LDKF.functionPrototypeNiladicCall(Routine, That)
                     };
 
                     // Monoadic Call
@@ -727,8 +763,8 @@
                             if (NumberLikeA instanceof LDKT.BigNumber)
                                 // Logic > Return
                                 if (NumberLikeB instanceof LDKT.BigNumber) return LDKT.BigNumberAdd(NumberLikeA, NumberLikeB);
-                                else if (NumberLikeB instanceof LDKT.RangedNumber) return LDKT.BigNumberAdd(NumberLikeA, LDKT.BigNumberFromNumber(LDKF.functionPrototypeApply(LDKT.RangedNumberPrototypeToNumber, NumberLikeB)));
-                                else if (NumberLikeB instanceof LDKT.SafeNumber) return LDKT.BigNumberAdd(NumberLikeA, LDKF.functionPrototypeApply(LDKT.SafeNumberPrototypeToBigNumber, NumberLikeB));
+                                else if (NumberLikeB instanceof LDKT.RangedNumber) return LDKT.BigNumberAdd(NumberLikeA, LDKT.BigNumberFromNumber(LDKF.functionPrototypeNiladicCall(LDKT.RangedNumberPrototypeToNumber, NumberLikeB)));
+                                else if (NumberLikeB instanceof LDKT.SafeNumber) return LDKT.BigNumberAdd(NumberLikeA, LDKF.functionPrototypeNiladicCall(LDKT.SafeNumberPrototypeToBigNumber, NumberLikeB));
                                 else return LDKT.BigNumberAdd(NumberLikeA, LDKT.BigNumberFromNumber(NumberLikeB));
                             else if (NumberLikeB instanceof LDKT.BigNumber)
                                 // Return
@@ -1505,7 +1541,7 @@
                     if (Length > +0) {
                         // Initialization > Iterator; Loop > ...
                         var iterator = Length;
-                        while (iterator) { iterator -= 1; LDKF.functionPrototypeApply(LDKT.BigArrayPrototypePush, this) }
+                        while (iterator) { iterator -= 1; LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypePush, this) }
                     }
                 };
                     // Prototype
@@ -1521,16 +1557,16 @@
                                 // Logic
                                 if (index == BIG_ARRAY_LENGTH)
                                     // Update > Big Array
-                                    LDKF.functionPrototypeApply(LDKT.BigArrayPrototypePop, BIG_ARRAY);
+                                    LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypePop, BIG_ARRAY);
 
                                 else if (!index && BIG_ARRAY_LENGTH == 1)
                                     // Update > Big Array
-                                    LDKF.functionPrototypeApply(LDKT.BigArrayPrototypeFree, BIG_ARRAY);
+                                    LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypeFree, BIG_ARRAY);
 
                                 else {
                                     // (Loop > )Update > Big Array
                                     while (index ^ (BIG_ARRAY_LENGTH - 1)) LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, BIG_ARRAY, index, LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BIG_ARRAY, index += 1));
-                                    LDKF.functionPrototypeApply(LDKT.BigArrayPrototypePop, BIG_ARRAY)
+                                    LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypePop, BIG_ARRAY)
                                 }
                         };
 
@@ -1655,7 +1691,7 @@
                             // Logic
                             if (BIG_ARRAY_LENGTH == 1)
                                 // Update > Big Array
-                                LDKF.functionPrototypeApply(LDKT.BigArrayPrototypeFree, BIG_ARRAY);
+                                LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypeFree, BIG_ARRAY);
 
                             else if (BIG_ARRAY_LENGTH) {
                                 // Initialization > Big Array (Depth, Has Parent)
@@ -1806,7 +1842,41 @@
 
                         // Resize
                         LapysDevelopmentKit.Types.BigArrayPrototypeResize =
-                        LapysDevelopmentKit.Types.BigArrayPrototype.resize = function resize(Length) { var BIG_ARRAY = this, BIG_ARRAY_LENGTH = BIG_ARRAY.length; if (Length ^ BIG_ARRAY_LENGTH) { var bigArrayIterator; if (Length > BIG_ARRAY_LENGTH) { bigArrayIterator = Length - BIG_ARRAY_LENGTH; this.length = Length; while (bigArrayIterator) { LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_ARRAY, undefined); bigArrayIterator -= 1 } } else { bigArrayIterator = BIG_ARRAY_LENGTH - Length; this.length -= bigArrayIterator; while (bigArrayIterator) { LDKF.functionPrototypeApply(LDKT.BigArrayPrototypePop, BIG_ARRAY); bigArrayIterator -= 1 } } } };
+                        LapysDevelopmentKit.Types.BigArrayPrototype.resize = function resize(Length) {
+                            // Constant > Big Array (Length)
+                            var BIG_ARRAY = this, BIG_ARRAY_LENGTH = BIG_ARRAY.length;
+
+                            // Logic
+                            if (Length ^ BIG_ARRAY_LENGTH) {
+                                // Initialization > Big Array Iterator
+                                var bigArrayIterator;
+
+                                // Logic
+                                if (Length > BIG_ARRAY_LENGTH) {
+                                    // Update > Big Array Iterator
+                                    bigArrayIterator = Length - BIG_ARRAY_LENGTH;
+
+                                    // Loop
+                                    while (bigArrayIterator) {
+                                        // Update > Big Array (Iterator)
+                                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_ARRAY, undefined);
+                                        bigArrayIterator -= 1
+                                    }
+                                }
+
+                                else {
+                                    // Update > Big Array IterTOR
+                                    bigArrayIterator = BIG_ARRAY_LENGTH - Length;
+
+                                    // Loop
+                                    while (bigArrayIterator) {
+                                        // Update > Big Array (Iterator)
+                                        LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypePop, BIG_ARRAY);
+                                        bigArrayIterator -= 1
+                                    }
+                                }
+                            }
+                        };
 
                         // Set Index
                         LapysDevelopmentKit.Types.BigArrayPrototypeSetIndex =
@@ -1817,16 +1887,8 @@
 
                             // Logic
                             if (bigArrayDepth == 1)
-                                // Logic
-                                if (Index < bigArray.MAXIMUM_LENGTH)
-                                    // Return
-                                    return (bigArray[Index] = Element);
-
-                                else {
-                                    // (Loop > )Update > Big Array
-                                    while (bigArray.length ^ Index) LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, bigArray, undefined);
-                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, bigArray, Element)
-                                }
+                                // Return
+                                return (bigArray[Index] = Element);
 
                             else if (!Index) {
                                 // Loop > Update > Big Array; Return
@@ -1907,12 +1969,140 @@
                     // Add --- CHECKPOINT (Lapys)
                     LapysDevelopmentKit.Types.BigNumberAdd =
                     LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB, PARSE_AS_SOURCE) {
-                        // Constant > Addition
-                        var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
+                        // Constant
+                            // (Addition) (Characteristics)
+                            var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
+                            var ADDITION_CHARACTERISTICS = ADDITION.characteristics;
 
-                        // Logic
-                        if (BigNumberA.mantissa.length || BigNumberB.mantissa.length) {
+                            // Big Number A (Characteristics, Mantissa)
+                            var BIG_NUMBER_A_CHARACTERISTICS = ADDITION === BigNumberA ? ADDITION_CHARACTERISTICS : BigNumberA.characteristics;
+                            var BIG_NUMBER_A_MANTISSA = BigNumberA.mantissa;
+                                // Length
+                                var BIG_NUMBER_A_MANTISSA_LENGTH = BIG_NUMBER_A_MANTISSA.length;
 
+                            // Big Number B (Characteristics, Mantissa)
+                            var BIG_NUMBER_B_CHARACTERISTICS = BigNumberB.characteristics;
+                            var BIG_NUMBER_B_MANTISSA = BigNumberB.mantissa;
+                                // (Overflow) Length
+                                var BIG_NUMBER_B_MANTISSA_LENGTH = BIG_NUMBER_B_MANTISSA.length;
+                                var BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH = +0;
+
+                        // Logic --- NOTE (Lapys) -> Update the mantissa component.
+                        if (BIG_NUMBER_A_MANTISSA_LENGTH || BIG_NUMBER_B_MANTISSA_LENGTH) {
+                            // [Setup]
+                                // : Constant > Addition Mantissa
+                                // : Initialization > Big Number Mantissa Length Difference
+                                var ADDITION_MANTISSA = ADDITION === BigNumberA ? BIG_NUMBER_A_MANTISSA : ADDITION.mantissa;
+                                var bigNumberMantissaLengthDifference = LDKM.abs(BIG_NUMBER_A_MANTISSA_LENGTH - BIG_NUMBER_B_MANTISSA_LENGTH);
+
+                                // Update > Big Number B Mantissa Overflow Length
+                                BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH = bigNumberMantissaLengthDifference;
+
+                                // Loop --- NOTE (Lapys) -> Pad the mantissa's to match
+                                while (bigNumberMantissaLengthDifference) {
+                                    // Update
+                                        // Big Number B Mantissa (Length)
+                                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_NUMBER_B_MANTISSA, '0', STRICT = BIG_NUMBER_B_MANTISSA_LENGTH, STRICT = LDKC.Data.BigArrayImperative);
+                                        BIG_NUMBER_B_MANTISSA_LENGTH += 1;
+
+                                        // Big Number Mantissa Length Difference
+                                        bigNumberMantissaLengthDifference -= 1
+                                }
+
+                            // [Process]
+                                // Initialization > (Addition Mantissa Carry, Big Number Mantissa Iterator)
+                                var additionMantissaCarry = false; // NOTE (Lapys) -> The carry digit is either `0` or `1`.
+                                var bigNumberMantissaIterator = BIG_NUMBER_A_MANTISSA_LENGTH; // NOTE (Lapys) -> Either way, both mantissa lengths are equal.
+
+                                // Loop
+                                while (bigNumberMantissaIterator) {
+                                    // Update > Big Number Mantissa Iterator
+                                    bigNumberMantissaIterator -= 1;
+
+                                    // Initialization
+                                        // Addition Mantissa Digit --- NOTE (Lapys) -> Result of parsing both digits.
+                                        var additionMantissaDigit;
+
+                                        // Big Number (A, B) Mantissa Digit
+                                        var bigNumberAMantissaDigit = LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BIG_NUMBER_A_MANTISSA, bigNumberMantissaIterator);
+                                        var bigNumberBMantissaDigit = LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BIG_NUMBER_B_MANTISSA, bigNumberMantissaIterator);
+
+                                    // [Parse Mantissa Carry Digit] Logic
+                                    if (additionMantissaCarry) {
+                                        // Update > Addition Mantissa Carry
+                                        additionMantissaCarry = false;
+
+                                        // Logic > Update > (Addition Mantissa Carry | Big Number A Mantissa Digit)
+                                        switch (bigNumberAMantissaDigit) {
+                                            case '1': bigNumberAMantissaDigit = '2'; break; case '2': bigNumberAMantissaDigit = '3'; break; case '3': bigNumberAMantissaDigit = '4'; break; case '4': bigNumberAMantissaDigit = '5'; break; case '5': bigNumberAMantissaDigit = '6'; break; case '6': bigNumberAMantissaDigit = '7'; break; case '7': bigNumberAMantissaDigit = '8'; break; case '8': bigNumberAMantissaDigit = '9'; break;
+                                            default: additionMantissaCarry = true
+                                        }
+                                    }
+
+                                    // [Parse Mantissa Digits] Logic > ... Update > Addition Mantissa Digit
+                                    if (additionMantissaCarry)
+                                        // Logic > ... --- NOTE (Lapys) -> If Number A`s mantissa digit overflows when adding carry digits.
+                                        switch ('9') {
+                                            case bigNumberAMantissaDigit: additionMantissaDigit = bigNumberBMantissaDigit; break;
+                                            case bigNumberBMantissaDigit: additionMantissaDigit = bigNumberAMantissaDigit
+                                        }
+
+                                    else if (bigNumberAMantissaDigit === '0')
+                                        additionMantissaDigit = bigNumberBMantissaDigit;
+
+                                    else if (bigNumberBMantissaDigit === '0')
+                                        additionMantissaDigit = bigNumberAMantissaDigit;
+
+                                    else
+                                        // [Parse Mantissa Digits] Logic --- WARN (Lapys) -> Not the best method of parsing digit-by-digit addition but it is clear & consistent.
+                                        switch (bigNumberAMantissaDigit) {
+                                            case '1': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '2'; break; case '2': additionMantissaDigit = '3'; break; case '3': additionMantissaDigit = '4'; break; case '4': additionMantissaDigit = '5'; break; case '5': additionMantissaDigit = '6'; break; case '6': additionMantissaDigit = '7'; break; case '7': additionMantissaDigit = '8'; break; case '8': additionMantissaDigit = '9'; break;
+                                                case '9': additionMantissaCarry = true; additionMantissaDigit = '0';
+                                            } break;
+                                            case '2': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '3'; break; case '2': additionMantissaDigit = '4'; break; case '3': additionMantissaDigit = '5'; break; case '4': additionMantissaDigit = '6'; break; case '5': additionMantissaDigit = '7'; break; case '6': additionMantissaDigit = '8'; break; case '7': additionMantissaDigit = '9'; break;
+                                                case '8': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '1'
+                                            } break;
+                                            case '3': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '4'; break; case '2': additionMantissaDigit = '5'; break; case '3': additionMantissaDigit = '6'; break; case '4': additionMantissaDigit = '7'; break; case '5': additionMantissaDigit = '8'; break; case '6': additionMantissaDigit = '9'; break;
+                                                case '7': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '2'
+                                            } break;
+                                            case '4': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '5'; break; case '2': additionMantissaDigit = '6'; break; case '3': additionMantissaDigit = '7'; break; case '4': additionMantissaDigit = '8'; break; case '5': additionMantissaDigit = '9'; break;
+                                                case '6': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '3'
+                                            } break;
+                                            case '5': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '6'; break; case '2': additionMantissaDigit = '7'; break; case '3': additionMantissaDigit = '8'; break; case '4': additionMantissaDigit = '9'; break;
+                                                case '5': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '4'
+                                            } break;
+                                            case '6': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '7'; break; case '2': additionMantissaDigit = '8'; break; case '3': additionMantissaDigit = '9'; break;
+                                                case '4': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '5'
+                                            } break;
+                                            case '7': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '8'; break; case '2': additionMantissaDigit = '9'; break;
+                                                case '3': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '4': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '5'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '6'
+                                            } break;
+                                            case '8': switch (bigNumberBMantissaDigit) {
+                                                case '1': additionMantissaDigit = '9'; break;
+                                                case '2': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '3': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '4': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '5'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '6'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '7'
+                                            } break;
+                                            case '9': switch (bigNumberBMantissaDigit) { case '1': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '2': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '3': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '4': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '5'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '6'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '7'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '8' }
+                                        }
+
+                                    // Update > Addition Mantissa
+                                    LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, ADDITION_MANTISSA, bigNumberMantissaIterator, additionMantissaDigit)
+                                }
+
+                            // [Finish-Up]
+                                // Update > Big Number B Mantissa --- NOTE (Lapys) -> Reset the padded mantissa if it's not the source.
+                                (ADDITION_MANTISSA === BIG_NUMBER_B_MANTISSA) || (
+                                    BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH &&
+                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeResize, BIG_NUMBER_B_MANTISSA, BIG_NUMBER_B_MANTISSA_LENGTH - BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH)
+                                );
+
+                            // console.log(BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH)
                         }
 
                         // Return
@@ -2010,7 +2200,7 @@
 
                         // To Number
                         LapysDevelopmentKit.Types.BigNumberPrototypeToNumber =
-                        LapysDevelopmentKit.Types.BigNumberPrototype.toNumber = function toNumber() { return LDKF.functionPrototypeApply(LDKT.BigNumberPrototypeIsOverflown, this) ? this : LDKF.toNumber(LDKF.functionPrototypeApply(LDKT.BigNumberPrototypeToString, this)) };
+                        LapysDevelopmentKit.Types.BigNumberPrototype.toNumber = function toNumber() { return LDKF.functionPrototypeNiladicCall(LDKT.BigNumberPrototypeIsOverflown, this) ? this : LDKF.toNumber(LDKF.functionPrototypeNiladicCall(LDKT.BigNumberPrototypeToString, this)) };
 
                         // To String
                         LapysDevelopmentKit.Types.BigNumberPrototypeToString =
@@ -2034,10 +2224,10 @@
                     // Prototype
                     LapysDevelopmentKit.Types.ClockPrototype = LDKT.Clock.prototype;
                         // Check
-                        LapysDevelopmentKit.Types.ClockPrototype.check = function check(Condition, Ontrue, Onfalse) { var evaluation, id; try { evaluation = Condition() } catch (error) {} id = LDKF.functionPrototypeMonoadicCall(LDKT.ClockPrototype.wind, this, function() { if (evaluation) { LDKF.functionPrototypeApply(LDKT.ClockPrototype.stop, id); Ontrue() } else Onfalse() }); return id };
+                        LapysDevelopmentKit.Types.ClockPrototype.check = function check(Condition, Ontrue, Onfalse) { var evaluation, id; try { evaluation = Condition() } catch (error) {} id = LDKF.functionPrototypeMonoadicCall(LDKT.ClockPrototype.wind, this, function() { if (evaluation) { LDKF.functionPrototypeNiladicCall(LDKT.ClockPrototype.stop, id); Ontrue() } else Onfalse() }); return id };
 
                         // Measure
-                        LapysDevelopmentKit.Types.ClockPrototype.measure = function measure() { return LDKC.Assertions.has_Performance_Constructor ? LDKF.functionPrototypeApply(LDKO.performancePrototypeNow, LDKC.Objects.performance) : LDKF.functionPrototypeApply(LDKO.dateNow, LDKO.date) };
+                        LapysDevelopmentKit.Types.ClockPrototype.measure = function measure() { return LDKC.Assertions.has_Performance_Constructor ? LDKF.functionPrototypeNiladicCall(LDKO.performancePrototypeNow, LDKC.Objects.performance) : LDKF.functionPrototypeNiladicCall(LDKO.dateNow, LDKO.date) };
 
                         // Stop
                         LapysDevelopmentKit.Types.ClockPrototype.stop = function stop(id) {
@@ -2088,7 +2278,7 @@
                             // Constant > Clock Data
                             var CLOCK_DATA = {
                                 id: LDKR.Lists.ClockDataLength + 1,
-                                hasDelay: (LDKF.getArgumentsLength(arguments) || 1) == 1,
+                                hasDelay: (LDKF.getArgumentsLength(arguments) || 1) ^ 1,
                                 referenceID: null
                             };
 
@@ -2144,7 +2334,7 @@
                             // Constant > Clock Data
                             var CLOCK_DATA = {
                                 id: LDKR.Lists.ClockDataLength + 1,
-                                hasInterval: (LDKF.getArgumentsLength(arguments) || 1) == 1,
+                                hasInterval: (LDKF.getArgumentsLength(arguments) || 1) ^ 1,
                                 referenceID: null
                             };
 
@@ -2223,7 +2413,7 @@
 
                         // To String
                         LapysDevelopmentKit.Types.SafeNumberPrototypeToString =
-                        LapysDevelopmentKit.Types.SafeNumber.prototype.toString = function toString() { var VALUE = this.value; return VALUE instanceof LDKT.BigNumber ? LDKF.functionPrototypeApply(LDKT.BigNumberPrototypeToString, VALUE) : LDKF.toString(VALUE) };
+                        LapysDevelopmentKit.Types.SafeNumber.prototype.toString = function toString() { var VALUE = this.value; return VALUE instanceof LDKT.BigNumber ? LDKF.functionPrototypeNiladicCall(LDKT.BigNumberPrototypeToString, VALUE) : LDKF.toString(VALUE) };
 
                 // Scope --- NOTE (Lapys) -> Semantic type for context-based storage.
                 LapysDevelopmentKit.Types.Scope = function Scope() {};
