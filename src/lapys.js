@@ -15,6 +15,9 @@
             Private Data
             _Native Name_
 
+    --- CONSIDERATIONS ---
+        #Lapys: Is the comma operator allowed for less expensive/ repetitive code?
+
     --- NOTE ---
         #Lapys:
             - Details:
@@ -68,6 +71,7 @@
                 -- If the alternative is less efficient/ preferable.
             - Memory management due to the JavaScript garbage collector should be kept to a minimum:
                 -- Avoid local function declarations.
+                -- Avoid unnecessary property/ variable definition/ initialization.
                 -- Defer string literals instead of string concatenation.
                 -- Defer to parameter labels instead of the `arguments` object.
                 -- Limit evaluating function expressions.
@@ -1478,6 +1482,7 @@
                 };
 
             /* Mathematics --- REDACT (Lapys) */
+            LapysDevelopmentKit.Mathematics.abs = function abs(Number) { return Number < +0 ? -Number : Number };
             LapysDevelopmentKit.Mathematics.ceil = function ceil(Number) { var integer = LDKM.int(Number); return integer + (Number > integer) };
             LapysDevelopmentKit.Mathematics.int = function int(Number) { return Number - Number % 1 };
             LapysDevelopmentKit.Mathematics.max = function max(NumberA, NumberB) { return NumberA > NumberB ? NumberA : NumberB };
@@ -1527,8 +1532,7 @@
 
                 /* Big Array
                         --- NOTE (Lapys) -> Arbitrary-length array type.
-                        --- WARN (Lapys) -> The length is algorithmically infinite,
-                            implementation-restricted (`Number.MAX_SAFE_INTEGER`), theoretically memory-limited.
+                        --- WARN (Lapys) -> The length is algorithmically infinite, but implementation-restricted (`Number.MAX_SAFE_INTEGER`) and theoretically memory-limited.
                 */
                 LapysDevelopmentKit.Types.BigArray = function BigArray(Length, MaximumLength) {
                     // Modification > Target > (Depth, (Maximum) Length, Width)
@@ -1945,24 +1949,25 @@
                 /* Big Number
                         --- CITE (Lapys) -> https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic
                         --- NOTE (Lapys) -> Arbitrary-precision number.
+                        --- WARN (Lapys) ->
+                            - The implementation of `BigNumber``s here are implicitly limited due to maximum size of it`s storage mechanism (which is `BigArray``s).
+                                `String``s could have been used instead to store the digits, but it was decided for `BigNumber``s to scale with the practical limits of `BigArray``s.
+                            - Does not support native `BigInt``s.
                 */
                 LapysDevelopmentKit.Types.BigNumber = function BigNumber(Value) {
-                    // Logic
+                    // Logic > ...
                     if (Value) {
-                        // Constant > Big Number
                         var BIG_NUMBER = LDKT.BigNumberFromNumber(Value);
 
-                        // Modification > Target > (Characteristics, Mantissa)
                         this.characteristics = BIG_NUMBER.characteristics;
                         this.mantissa = BIG_NUMBER.mantissa
                     }
 
                     else {
-                        // (Modification, Update) > Target > (Characteristics, Mantissa)
                         this.characteristics = new LDKT.BigArray;
-                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.characteristics, '0');
-
                         this.mantissa = new LDKT.BigArray;
+
+                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.characteristics, '0');
                         LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.mantissa, '0')
                     }
                 };
@@ -1970,44 +1975,39 @@
                     LapysDevelopmentKit.Types.BigNumberAdd =
                     LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB, PARSE_AS_SOURCE) {
                         // Constant
-                            // (Addition) (Characteristics)
+                            // (Addition) (Characteristics, Mantissa Carry)
                             var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
-                            var ADDITION_CHARACTERISTICS = ADDITION.characteristics;
 
-                            // Big Number A (Characteristics, Mantissa)
+                            var ADDITION_CHARACTERISTICS = ADDITION.characteristics;
+                            var ADDITION_MANTISSA_CARRY = false;
+
+                            // Big Number A (Characteristics, Mantissa (Length))
                             var BIG_NUMBER_A_CHARACTERISTICS = ADDITION === BigNumberA ? ADDITION_CHARACTERISTICS : BigNumberA.characteristics;
                             var BIG_NUMBER_A_MANTISSA = BigNumberA.mantissa;
-                                // Length
                                 var BIG_NUMBER_A_MANTISSA_LENGTH = BIG_NUMBER_A_MANTISSA.length;
 
-                            // Big Number B (Characteristics, Mantissa)
+                            // Big Number B (Characteristics, Mantissa (Length))
                             var BIG_NUMBER_B_CHARACTERISTICS = BigNumberB.characteristics;
                             var BIG_NUMBER_B_MANTISSA = BigNumberB.mantissa;
-                                // (Overflow) Length
                                 var BIG_NUMBER_B_MANTISSA_LENGTH = BIG_NUMBER_B_MANTISSA.length;
-                                var BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH = +0;
 
                         // Logic --- NOTE (Lapys) -> Update the mantissa component.
                         if (BIG_NUMBER_A_MANTISSA_LENGTH || BIG_NUMBER_B_MANTISSA_LENGTH) {
-                            // [Setup]
-                                // : Constant > Addition Mantissa
-                                // : Initialization > Big Number Mantissa Length Difference
-                                var ADDITION_MANTISSA = ADDITION === BigNumberA ? BIG_NUMBER_A_MANTISSA : ADDITION.mantissa;
-                                var bigNumberMantissaLengthDifference = LDKM.abs(BIG_NUMBER_A_MANTISSA_LENGTH - BIG_NUMBER_B_MANTISSA_LENGTH);
+                            // Initialization > Mantissa Length Difference
+                            var mantissaLengthDifference = BIG_NUMBER_A_MANTISSA_LENGTH - BIG_NUMBER_B_MANTISSA_LENGTH;
 
-                                // Update > Big Number B Mantissa Overflow Length
-                                BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH = bigNumberMantissaLengthDifference;
+                            // Constant > (Addition, Smaller) Mantissa
+                            var ADDITION_MANTISSA = ADDITION === BigNumberA ? BIG_NUMBER_A_MANTISSA : ADDITION.mantissa;
+                            var SMALLER_MANTISSA = mantissaLengthDifference < +0 ? (mantissaLengthDifference = -mantissaLengthDifference, BIG_NUMBER_A_MANTISSA) : BIG_NUMBER_B_MANTISSA;
 
-                                // Loop --- NOTE (Lapys) -> Pad the mantissa's to match
-                                while (bigNumberMantissaLengthDifference) {
-                                    // Update
-                                        // Big Number B Mantissa (Length)
-                                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_NUMBER_B_MANTISSA, '0', STRICT = BIG_NUMBER_B_MANTISSA_LENGTH, STRICT = LDKC.Data.BigArrayImperative);
-                                        BIG_NUMBER_B_MANTISSA_LENGTH += 1;
+                            // Loop --- NOTE (Lapys) -> Pad the mantissa's to match
+                            while (mantissaLengthDifference) {
+                                LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, SMALLER_MANTISSA, '0');
+                                mantissaLengthDifference -= 1
+                            }
 
-                                        // Big Number Mantissa Length Difference
-                                        bigNumberMantissaLengthDifference -= 1
-                                }
+                            // Update > Addition Mantissa
+                            (ADDITION === BIG_NUMBER_A) || LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeResize, ADDITION_MANTISSA, BIG_NUMBER_A_MANTISSA_LENGTH);
 
                             // [Process]
                                 // Initialization > (Addition Mantissa Carry, Big Number Mantissa Iterator)
@@ -2091,25 +2091,21 @@
                                             case '9': switch (bigNumberBMantissaDigit) { case '1': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '2': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '3': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '4': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '5'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '6'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '7'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '8' }
                                         }
 
-                                    // Update > Addition Mantissa
-                                    LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, ADDITION_MANTISSA, bigNumberMantissaIterator, additionMantissaDigit)
+                                    // Update > Addition Mantissa (Carry)
+                                    LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, ADDITION_MANTISSA, bigNumberMantissaIterator, additionMantissaDigit);
+                                    ADDITION_MANTISSA_CARRY = additionMantissaCarry && !bigNumberMantissaIterator
                                 }
-
-                            // [Finish-Up]
-                                // Update > Big Number B Mantissa --- NOTE (Lapys) -> Reset the padded mantissa if it's not the source.
-                                (ADDITION_MANTISSA === BIG_NUMBER_B_MANTISSA) || (
-                                    BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH &&
-                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeResize, BIG_NUMBER_B_MANTISSA, BIG_NUMBER_B_MANTISSA_LENGTH - BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH)
-                                );
-
-                            // console.log(BIG_NUMBER_B_MANTISSA_OVERFLOW_LENGTH)
                         }
+
+                        // [Setup]
+                        // [Process]
+                        // [Finish-Up]
 
                         // Return
                         return ADDITION
                     };
 
-                    // From Number
+                    // From Number --- WARN (Lapys) -> Assumes the argument is only of type `BigNumber` or `Number`.
                     LapysDevelopmentKit.Types.BigNumberFromNumber =
                     LapysDevelopmentKit.Types.BigNumber.fromNumber = function fromNumber(Number) {
                         // Constant > Big Number
@@ -2374,7 +2370,9 @@
                 /* Ranged Number
                         --- CHECKPOINT (Lapys)
                         --- NOTE (Lapys) -> Fixed-width number type.
-                        --- WARN (Lapys) -> Maximum width is restricted to the environment`s maximum numeric value.
+                        --- WARN (Lapys) ->
+                            - Maximum width is restricted to the environment`s maximum numeric value.
+                            - Does not support native `BigInt``s.
                 */
                 LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) { this["[[MaximumValue]]"] = MaximumValue; this["[[MinimumValue]]"] = MinimumValue; this.value = Value || +0 };
                     // Add --- CHECKPOINT (Lapys)
@@ -2384,10 +2382,13 @@
                         LapysDevelopmentKit.Types.RangedNumberPrototypeToNumber =
                         LapysDevelopmentKit.Types.RangedNumber.prototype.toNumber = function toNumber() { return this.value };
 
-                /* Safe Number --- NOTE (Lapys) -> Defers between the `BigNumber` and `Number` types for performance. */
+                /* Safe Number
+                        --- NOTE (Lapys) -> Defers between the `BigNumber` and `Number` types for performance.
+                        --- WARN (Lapys) -> Does not support `BigInt``s.
+                */
                 LapysDevelopmentKit.Types.SafeNumber = function SafeNumber(Value) { this.value = Value ? LDKT.SafeNumberFromNumber(Value).value : +0 };
                     // Add --- CHECKPOINT (Lapys)
-                    // From Number
+                    // From Number --- WARN (Lapys) -> Assumes the argument is only of type `BigNumber` or `Number`.
                     LapysDevelopmentKit.Types.SafeNumberFromNumber =
                     LapysDevelopmentKit.Types.SafeNumber.fromNumber = function fromNumber(Number) {
                         // Constant > Safe Number
