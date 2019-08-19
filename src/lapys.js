@@ -64,6 +64,7 @@
             - Avoid naming an object property `constructor`, instead defer to `constructorRoutine`.
             - Avoid naming an object property `function`, instead defer to `routine`.
             - Avoid the `break` statement in repetition structures; This encourages a first-entry, first-exit design.
+            - Digits must be represented as character strings (with collective digits denoted as an `Array` or `BigArray` (usually within a `BigNumber`)); Digits do not have an exclusive type or wrapper class.
             - Due to the ECMAScript standard supporting multiple zero types, it is a rule to explicitly & strictly differentiate between each of those values (e.g.: `-0` and `+0`) except in special cases.
             - Inline function expressions are only allowed in:
                 -- Defining the `Main` function or
@@ -89,7 +90,7 @@
             - Lookup DOM updates with the `MutationObserver` API.
             - Fix the naming of variables within functions.
             - Target development environments (these may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
-                -- Internet Explorer 4 (browser) --- NOTE (Lapys) -> Deprecated.
+                -- Internet Explorer 3 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- Netscape Navigator 2 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- others...
 */
@@ -202,7 +203,7 @@
             LapysDevelopmentKit.Functions.toString = function toString(Argument) { return LDKF.isString(Argument) ? Argument : LDKO.string(Argument) };
 
             /* Types > --- REDACT (Lapys)
-                    : Array Imperative --- NOTE (Lapys) -> Container for array-like access & manipulation functions.
+                    : Array Imperative --- NOTE (Lapys) -> Container for array-like basic access & manipulation functions.
                     : Clock --- NOTE (Lapys) -> Structure type for asynchronous and multi-threaded processes.
                     : Enumeration --- NOTE (Lapys) -> List of enumerable options represented as integers, labeled as strings.
                     : Safe String --- NOTE (Lapys) -> String type that does not rely on the `String.prototype.charAt` method to be universally compatible. --- MINIFY (Lapys)
@@ -219,6 +220,7 @@
                 LapysDevelopmentKit.Constants.Data.ArrayImperative = new LDKT.ArrayImperative(LDKF.arrayPrototypeElementAt, LDKF.arrayPrototypeSetIndex, LDKF.arrayPrototypeLength, LDKF.arrayPrototypeResize);
                 LapysDevelopmentKit.Constants.Data.ArraySortType = new LDKT.Enumeration("ASCII_SORT", "CUSTOM_SORT", "NATIVE_SORT");
                 LapysDevelopmentKit.Constants.Data.Clock = new LDKT.Clock;
+                LapysDevelopmentKit.Constants.Data.NumberComponent = new LDKT.Enumeration("CHARACTERISTICS", "MANTISSA");
 
                 LapysDevelopmentKit.Constants.Data.ArrayASCIISortComparator = function ArrayASCIISortComparator(ArgumentA, ArgumentB) {
                     // Constant > ((String (A, B)) (Length), Iterator)
@@ -403,7 +405,7 @@
                 LapysDevelopmentKit.Constants.Strings.BinaryDigits = ['0', '1'];
                 LapysDevelopmentKit.Constants.Strings.CSSCharacterSequences = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', "\\!", "\\\"", "\\#", "\\$", "\\%", "\\&", "\\'", "\\(", "\\)", "\\*", "\\+", "\\,", "\\.", "\\/", "\\0", "\\1", "\\2", "\\3", "\\4", "\\5", "\\6", "\\7", "\\8", "\\9", "\\:", "\\:", "\\;", "\\<", "\\=", "\\>", "\\?", "\\@", "\\A", "\\B", "\\C", "\\D", "\\E", "\\F", "\\G", "\\H", "\\I", "\\J", "\\K", "\\L", "\\M", "\\N", "\\O", "\\P", "\\Q", "\\R", "\\S", "\\T", "\\U", "\\V", "\\W", "\\X", "\\Y", "\\Z", "\\[", "\\\\", "\\]", "\\^", "\\_", "\\`", "\\a", "\\b", "\\c", "\\d", "\\e", "\\f", "\\g", "\\h", "\\i", "\\j", "\\k", "\\l", "\\m", "\\n", "\\o", "\\p", "\\q", "\\r", "\\s", "\\t", "\\u", "\\v", "\\w", "\\x", "\\y", "\\z", "\\{", "\\|", "\\}", "\\~", '_', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
                 LapysDevelopmentKit.Constants.Strings.DecimalDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-                LapysDevelopmentKit.Constants.Strings.HexadecimalDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f'];
+                LapysDevelopmentKit.Constants.Strings.HexadecimalDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
                 LapysDevelopmentKit.Constants.Strings.HTMLElementTagNames = ['a', "address", 'b', "blockquote", "body", "br", "cite", "code", "dd", "dl", "dt", "em", "form", "h1", "h2", "h3", "h4", "h5", "h6", "head", "hr", "html", 'i', "img", "input", "kbd", "li", "link", "meta", "ol", "option", 'p', "pre", "select", "strong", "textarea", "title", "ul", "var"];
                 LapysDevelopmentKit.Constants.Strings.LanguageCodes = ["aa", "aar", "ab", "abk", "ace", "ach", "ada", "ady", "ae", "af", "afa", "afh", "afr", "ain", "ak", "aka", "akk", "alb", "ale", "alt", "am", "amh", "an", "ang", "anp", "apa", "ar", "ara", "arc", "arg", "arm", "arn", "arp", "art", "arw", "as", "asm", "ast", "ath", "aus", "av", "ava", "ave", "awa", "ay", "aym", "az", "aze", "ba", "bad", "bai", "bak", "bal", "bam", "ban", "baq", "bas", "bat", "be", "bej", "bel", "bem", "ben", "ber", "bg", "bh", "bho", "bi", "bih", "bik", "bis", "bla", "bm", "bn", "bnt", "bo", "bod", "bos", "br", "bra", "bre", "bs", "btk", "bua", "bug", "bul", "bur", "byn", "ca", "cad", "cai", "car", "cat", "cau", "ce", "ceb", "cel", "ces", "ch", "cha", "chb", "che", "chg", "chi", "chk", "chm", "chn", "cho", "chp", "chr", "chu", "chv", "chy", "cmc", "cnr", "co", "cop", "cor", "cos", "cpe", "cpf", "cpp", "cr", "cre", "crh", "crp", "cs", "csb", "cu", "cus", "cv", "cy", "cym", "cze", "da", "dak", "dan", "dar", "day", "de", "del", "den", "deu", "dgr", "din", "div", "doi", "dra", "dsb", "dua", "dum", "dut", "dv", "dyu", "dz", "dzo", "ee", "efi", "egy", "eka", "el", "ell", "elx", "en", "eng", "enm", "eo", "epo", "es", "est", "et", "eu", "eus", "ewe", "ewo", "fa", "fan", "fao", "fas", "fat", "ff", "fi", "fij", "fil", "fin", "fiu", "fj", "fo", "fon", "fr", "fra", "fre", "frm", "fro", "frr", "frs", "fry", "ful", "fur", "fy", "ga", "gaa", "gay", "gba", "gd", "gem", "geo", "ger", "gez", "gil", "gl", "gla", "gle", "glg", "glv", "gmh", "gn", "goh", "gon", "gor", "got", "grb", "grc", "gre", "grn", "gsw", "gu", "guj", "gv", "gwi", "ha", "hai", "hat", "hau", "haw", "he", "heb", "her", "hi", "hil", "him", "hin", "hit", "hmn", "hmo", "ho", "hr", "hrv", "hsb", "ht", "hu", "hun", "hup", "hy", "hye", "hz", "ia", "iba", "ibo", "ice", "id", "ido", "ie", "ig", "ii", "iii", "ijo", "ik", "iku", "ile", "ilo", "ina", "inc", "ind", "ine", "inh", "io", "ipk", "ira", "iro", "is", "isl", "it", "ita", "iu", "ja", "jav", "jbo", "jpn", "jpr", "jrb", "jv", "ka", "kaa", "kab", "kac", "kal", "kam", "kan", "kar", "kas", "kat", "kau", "kaw", "kaz", "kbd", "kg", "kha", "khi", "khm", "kho", "ki", "kik", "kin", "kir", "kj", "kk", "kl", "km", "kmb", "kn", "ko", "kok", "kom", "kon", "kor", "kos", "kpe", "kr", "krc", "krl", "kro", "kru", "ks", "ku", "kua", "kum", "kur", "kut", "kv", "kw", "ky", "la", "lad", "lah", "lam", "lao", "lat", "lav", "lb", "lezlim", "lg", "li", "lin", "lit", "ln", "lo", "lol", "loz", "lt", "ltz", "lu", "lua", "lub", "lug", "lui", "lun", "luo", "lus", "lv", "mac", "mad", "mag", "mah", "mai", "mak", "mal", "man", "mao", "map", "mar", "mas", "may", "mdf", "mdr", "men", "mg", "mga", "mh", "mi", "mic", "min", "mis", "mk", "mkd", "mkh", "ml", "mlg", "mlt", "mn", "mnc", "mnl", "mno", "moh", "mon", "mos", "mr", "mri", "ms", "msa", "mt", "mul", "mun", "mus", "mwl", "mwr", "my", "mya", "myn", "myv", "na", "nah", "nai", "nap", "nau", "nav", "nb", "nbl", "nd", "nde", "ndo", "nds", "ne", "nep", "new", "ng", "nia", "nic", "niu", "nl", "nld", "nn", "nno", "no", "nob", "nog", "non", "nor", "nqo", "nr", "nso", "nub", "nv", "nwc", "ny", "nya", "nym", "nyn", "nyo", "nzi", "oc", "oci", "oj", "oji", "om", "or", "ori", "orm", "os", "osa", "oss", "ota", "oto", "pa", "paa", "pag", "pal", "pam", "pan", "pap", "pau", "pcm", "peo", "per", "phi", "phn", "pi", "pl", "pli", "pol", "pon", "por", "pra", "pro", "ps", "pt", "pus", "qaa", "qtz", "qu", "que", "raj", "rap", "rar", "rm", "rn", "ro", "roa", "roh", "rom", "ron", "ru", "rum", "run", "rup", "rus", "rw", "sa", "sad", "sag", "sah", "sai", "sal", "sam", "san", "sas", "sat", "sc", "scn", "sco", "sd", "sel", "sem", "sg", "sga", "sgn", "shn", "si", "sid", "sin", "sio", "sit", "sk", "sl", "sla", "slk", "slo", "slv", "sm", "sma", "sme", "smi", "smj", "smn", "smo", "sms", "sn", "sna", "snd", "snk", "so", "sog", "som", "son", "sot", "spa", "sq", "sqi", "sr", "srd", "srp", "srr", "ss", "ssa", "ssw", "st", "su", "suk", "sun", "sus", "sux", "sv", "sw", "swa", "swe", "sws", "syc", "syr", "ta", "tah", "tai", "tam", "tat", "te", "tel", "tem", "ter", "tet", "tg", "tgk", "tgl", "th", "tha", "ti", "tib", "tig", "tir", "tiv", "tk", "tkl", "tl", "tlh", "tli", "tmh", "tn", "to", "tog", "ton", "tpi", "tr", "ts", "tsi", "tsn", "tso", "tt", "tuk", "tum", "tup", "tur", "tut", "tvl", "tw", "twi", "ty", "tyv", "udm", "ug", "uga", "uig", "uk", "ukr", "umb", "und", "ur", "urd", "uz", "uzb", "vai", "venve", "vi", "vie", "vo", "vol", "vot", "wa", "wak", "wal", "war", "was", "wel", "wen", "wln", "wo", "wol", "xal", "xh", "xho", "yao", "yap", "yi", "yid", "yo", "yor", "ypk", "za", "zap", "zbl", "zen", "zgh", "zh", "zha", "zho", "znd", "zu", "zul", "zun", "zxx", "zza"];
                 LapysDevelopmentKit.Constants.Strings.LowercaseAlphabets = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -473,7 +475,10 @@
                         else if (LDKF.isSVGTransformList(ArrayLike)) return LDKF.svgTransformListPrototypeReplaceItem(ArrayLike, Inde, Valuex)
                     };
 
-                // Array > Prototype --- NOTE (Lapys) -> Imperatives assert how the specified array will be accessed/ modified.
+                /* Array > Prototype
+                        --- NOTE (Lapys) -> Imperatives assert how the specified array will be accessed/ modified.
+                        --- WARN (Lapys) -> Not all methods use imperatives.
+                */
                     // Clone
                     LapysDevelopmentKit.Functions.arrayPrototypeClone = function arrayPrototypeClone(Array, IMPERATIVE) {
                         // Constant > Array Clone; Initialization > Array Iterator
@@ -554,6 +559,22 @@
                         return -1
                     };
 
+                    // Pop
+                    LapysDevelopmentKit.Functions.arrayPrototypePop = function arrayPrototypePop(Array, ARRAY_LENGTH, IMPERATIVE) {
+                        // Logic
+                        if (ARRAY_LENGTH !== -0 || ARRAY_LENGTH !== +0) {
+                            // Update > (Imperative, Array Length)
+                            IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                            ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
+
+                            // Logic > ...
+                            if (ARRAY_LENGTH) { IMPERATIVE.setLength(Array, ARRAY_LENGTH - 1); return ARRAY_LENGTH - 1 }
+                        }
+
+                        // Return
+                        return +0
+                    };
+
                     // Push
                     LapysDevelopmentKit.Functions.arrayPrototypePush = function arrayPrototypePush(Array, Element, ARRAY_LENGTH, IMPERATIVE) {
                         // Update > (Imperative, Array Length)
@@ -566,6 +587,32 @@
 
                         // Return --- NOTE (Lapys) -> Assume array-like `push` methods are standard.
                         return ARRAY_LENGTH + 1
+                    };
+
+                    // Shift
+                    LapysDevelopmentKit.Functions.arrayPrototypeShift = function arrayPrototypeShift(Array, ARRAY_LENGTH, IMPERATIVE) {
+                        // Logic
+                        if (ARRAY_LENGTH !== -0 || ARRAY_LENGTH !== +0) {
+                            // Update > (Imperative, Array Length)
+                            IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                            ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
+
+                            // Logic
+                            if (ARRAY_LENGTH) {
+                                // Initialization > Array Iterator
+                                var arrayIterator = ARRAY_LENGTH;
+
+                                // (Loop > )Update > Array
+                                while (arrayIterator -= 1) IMPERATIVE.setIndex(Array, ARRAY_LENGTH - arrayIterator - 1, IMPERATIVE.getIndex(Array, ARRAY_LENGTH - arrayIterator));
+                                IMPERATIVE.setLength(Array, ARRAY_LENGTH - 1);
+
+                                // Return
+                                return ARRAY_LENGTH - 1
+                            }
+                        }
+
+                        // Return
+                        return +0
                     };
 
                     /* Sort
@@ -601,13 +648,16 @@
                         IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
                         ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
 
-                        // Update > Array
-                        IMPERATIVE.setLength(Array, ARRAY_LENGTH + 1);
-                        IMPERATIVE.setIndex(Array, ARRAY_LENGTH, IMPERATIVE.getIndex(Array, ARRAY_LENGTH - 1));
+                        // Logic
+                        if (ARRAY_LENGTH) {
+                            // Update > Array
+                            IMPERATIVE.setLength(Array, ARRAY_LENGTH + 1);
+                            IMPERATIVE.setIndex(Array, ARRAY_LENGTH, IMPERATIVE.getIndex(Array, ARRAY_LENGTH - 1));
 
-                        // Initialization > Array Iterator; Update > Array
-                        var arrayIterator = ARRAY_LENGTH;
-                        while (arrayIterator ^ 1) IMPERATIVE.setIndex(Array, arrayIterator -= 1, IMPERATIVE.getIndex(Array, arrayIterator - 1));
+                            // Initialization > Array Iterator; Update > Array
+                            var arrayIterator = ARRAY_LENGTH;
+                            while (arrayIterator ^ 1) IMPERATIVE.setIndex(Array, arrayIterator -= 1, IMPERATIVE.getIndex(Array, arrayIterator - 1));
+                        }
 
                         // Update > Array
                         IMPERATIVE.setIndex(Array, +0, Element);
@@ -639,6 +689,81 @@
                 // CSS Style Declaration > Prototype
                     // Set Index
                     LapysDevelopmentKit.Functions.cssStyleDeclarationPrototypeSetIndex = function cssStyleDeclarationPrototypeSetIndex(CSSStyleDeclaration, Index, Value) { (Index < LDKF.cssStyleDeclarationPrototypeLength(CSSStyleDeclaration)) && LDKF.cssStyleDeclarationPrototypeSetProperty(LDKF.cssStyleDeclarationPrototypeItem(CSSStyleDeclaration, Index), Value) };
+
+                // Digit --- NOTE (Lapys) -> The global variable `TMP` represents the carry flag.
+                    // Add
+                    LapysDevelopmentKit.Functions.digitAdd = function digitAdd(DigitA, DigitB, BASE) {
+                        // Initialization > Addition
+                        var addition;
+
+                        // Constant > ...
+                        var DIGITS = LDKF.getDigitsFromBase(BASE || 10);
+                        var DIGITS_LENGTH = DIGITS.length;
+
+                        var DIGIT_A_ENDIAN = LDKF.arrayPrototypeIndex(DIGITS, DigitA, STRICT = DIGITS_LENGTH);
+                        var DIGIT_B_ENDIAN = LDKF.arrayPrototypeIndex(DIGITS, DigitB, STRICT = DIGITS_LENGTH);
+
+                        // Logic > Update > (Addition, ...)
+                        if (DIGIT_A_ENDIAN + DIGIT_B_ENDIAN < DIGITS_LENGTH) { addition = DIGITS[DIGIT_A_ENDIAN + DIGIT_B_ENDIAN]; TMP = false }
+                        else { addition = DIGITS[(DIGIT_A_ENDIAN + DIGIT_B_ENDIAN) - DIGITS_LENGTH]; TMP = true }
+
+                        // Return
+                        return addition
+                    };
+
+                    // Divide
+                    // Multiply
+                    // Subtract
+
+                // Digits
+                    // Add
+                    LapysDevelopmentKit.Functions.digitsAdd = function digitsAdd(DigitsA, DigitsB, IMPERATIVE, COMPONENT) {
+                        COMPONENT || (COMPONENT = LDKC.Data.NumberComponent["CHARACTERISTICS"]);
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+
+                        var addition;
+                        var smallerDigits, smallerDigitsLengthDifference;
+
+                        var DIGITS_A_LENGTH = IMPERATIVE.getLength(DigitsA);
+                        var DIGITS_B_LENGTH = IMPERATIVE.getLength(DigitsB);
+
+                        if (DIGITS_A_LENGTH ^ DIGITS_B_LENGTH) {
+                            var digitsLengthDifference = DIGITS_A_LENGTH - DIGITS_B_LENGTH;
+
+                            if (digitsLengthDifference < +0) { digitsLengthDifference = -digitsLengthDifference; smallerDigits = DigitsA }
+                            else smallerDigits = DigitsB;
+
+                            smallerDigitsLengthDifference = digitsLengthDifference;
+
+                            // Loop
+                            while (digitsLengthDifference) {
+                                digitsLengthDifference -= 1;
+                                switch (COMPONENT) {
+                                    case LDKC.Data.NumberComponent["CHARACTERISTICS"]: LDKF.arrayPrototypeUnshift(smallerDigits, '0', STRICT = null, STRICT = IMPERATIVE); break;
+                                    case LDKC.Data.NumberComponent["MANTISSA"]: LDKF.arrayPrototypePush(smallerDigits, '0', STRICT = null, STRICT = IMPERATIVE)
+                                }
+                            }
+                        }
+
+                        // Loop
+                        while (smallerDigitsLengthDifference) {
+                            smallerDigitsLengthDifference -= 1;
+                            switch (COMPONENT) {
+                                case LDKC.Data.NumberComponent["CHARACTERISTICS"]: LDKF.arrayPrototypeShift(smallerDigits, STRICT = null, STRICT = IMPERATIVE); break;
+                                case LDKC.Data.NumberComponent["MANTISSA"]: LDKF.arrayPrototypePop(smallerDigits, STRICT = null, STRICT = IMPERATIVE)
+                            }
+                        }
+
+                        // Return
+                        return addition
+                    };
+
+                    // Compare
+                    // Divide
+                    // Modulo
+                    // Multiply
+                    // Power
+                    // Subtract
 
                 // Evaluate
                 LapysDevelopmentKit.Functions["eval"] = function evaluate(Source, STRICT_EVALUATION) { STRICT_EVALUATION || (Source = "(function() { return " + Source + " })()"); return LDKF.functionPrototypeMonoadicCall(LDKO.eval, GLOBAL, Source) };
@@ -680,6 +805,15 @@
 
                     // Triadic Call
                     LapysDevelopmentKit.Functions.functionPrototypeTriadicCall = function functionPrototypeTriadicCall(Routine, That, ArgumentA, ArgumentB, ArgumentC) { return LDKO.functionPrototypeCall.call(Routine, That, ArgumentA, ArgumentB, ArgumentC) };
+
+                /* Get Digits From Base
+                        --- MINIFY (Lapys)
+                        --- WARN ---
+                            #Lapys:
+                                - Non-common radixes are assumed to use alphanumeric digits.
+                                - This method does not recognize a myriad of non-standard number systems (e.g.: The sexagesimal number system).
+                */
+                LapysDevelopmentKit.Functions.getDigitsFromBase = function getDigitsFromBase(base) { switch (base) { case 2: return LDKC.Strings.BinaryDigits; case 8: return LDKC.Strings.OctalDigits; case 10: return LDKC.Strings.DecimalDigits; case 16: return LDKC.Strings.HexadecimalDigits; default: var DIGITS = []; if (base == 1 || base == 3 || base == 4 || base == 5 || base == 7 || base == 9) while (base) { base -= 1; switch (base) { case -0: case +0: DIGITS[base] = '0'; break; case 1: DIGITS[base] = '1'; break; case 2: DIGITS[base] = '2'; break; case 3: DIGITS[base] = '3'; break; case 4: DIGITS[base] = '4'; break; case 5: DIGITS[base] = '5'; break; case 6: DIGITS[base] = '6'; break; case 7: DIGITS[base] = '7'; break; case 8: DIGITS[base] = '8'; break; case 9: DIGITS[base] = '9' } } else if (base < 37) { var ALPHABET_DIGIT_COUNT = 26, DECIMAL_DIGIT_COUNT = 10; var alphabetDigitIterator = ALPHABET_DIGIT_COUNT, decimalDigitIterator = DECIMAL_DIGIT_COUNT; var digitsLength = +0; while (base) { base -= 1; decimalDigitIterator ? DIGITS[digitsLength] = LDKC.Strings.DecimalDigits[DECIMAL_DIGIT_COUNT - (decimalDigitIterator -= 1) - 1] : DIGITS[digitsLength] = LDKC.Strings.UppercaseAlphabets[ALPHABET_DIGIT_COUNT - (alphabetDigitIterator -= 1) - 1]; digitsLength += 1 } } return DIGITS } };
 
                 // Is Big Integer
                 LapysDevelopmentKit.Functions.isBigInt = function isBigInt(Argument) { return typeof Argument == "bigint" };
@@ -1974,132 +2108,8 @@
                     // Add --- CHECKPOINT (Lapys)
                     LapysDevelopmentKit.Types.BigNumberAdd =
                     LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB, PARSE_AS_SOURCE) {
-                        // Constant
-                            // (Addition) (Characteristics, Mantissa Carry)
-                            var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
-
-                            var ADDITION_CHARACTERISTICS = ADDITION.characteristics;
-                            var ADDITION_MANTISSA_CARRY = false;
-
-                            // Big Number A (Characteristics, Mantissa (Length))
-                            var BIG_NUMBER_A_CHARACTERISTICS = ADDITION === BigNumberA ? ADDITION_CHARACTERISTICS : BigNumberA.characteristics;
-                            var BIG_NUMBER_A_MANTISSA = BigNumberA.mantissa;
-                                var BIG_NUMBER_A_MANTISSA_LENGTH = BIG_NUMBER_A_MANTISSA.length;
-
-                            // Big Number B (Characteristics, Mantissa (Length))
-                            var BIG_NUMBER_B_CHARACTERISTICS = BigNumberB.characteristics;
-                            var BIG_NUMBER_B_MANTISSA = BigNumberB.mantissa;
-                                var BIG_NUMBER_B_MANTISSA_LENGTH = BIG_NUMBER_B_MANTISSA.length;
-
-                        // Logic --- NOTE (Lapys) -> Update the mantissa component.
-                        if (BIG_NUMBER_A_MANTISSA_LENGTH || BIG_NUMBER_B_MANTISSA_LENGTH) {
-                            // Initialization > Mantissa Length Difference
-                            var mantissaLengthDifference = BIG_NUMBER_A_MANTISSA_LENGTH - BIG_NUMBER_B_MANTISSA_LENGTH;
-
-                            // Constant > (Addition, Smaller) Mantissa
-                            var ADDITION_MANTISSA = ADDITION === BigNumberA ? BIG_NUMBER_A_MANTISSA : ADDITION.mantissa;
-                            var SMALLER_MANTISSA = mantissaLengthDifference < +0 ? (mantissaLengthDifference = -mantissaLengthDifference, BIG_NUMBER_A_MANTISSA) : BIG_NUMBER_B_MANTISSA;
-
-                            // Loop --- NOTE (Lapys) -> Pad the mantissa's to match
-                            while (mantissaLengthDifference) {
-                                LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, SMALLER_MANTISSA, '0');
-                                mantissaLengthDifference -= 1
-                            }
-
-                            // Update > Addition Mantissa
-                            (ADDITION === BIG_NUMBER_A) || LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeResize, ADDITION_MANTISSA, BIG_NUMBER_A_MANTISSA_LENGTH);
-
-                            // [Process]
-                                // Initialization > (Addition Mantissa Carry, Big Number Mantissa Iterator)
-                                var additionMantissaCarry = false; // NOTE (Lapys) -> The carry digit is either `0` or `1`.
-                                var bigNumberMantissaIterator = BIG_NUMBER_A_MANTISSA_LENGTH; // NOTE (Lapys) -> Either way, both mantissa lengths are equal.
-
-                                // Loop
-                                while (bigNumberMantissaIterator) {
-                                    // Update > Big Number Mantissa Iterator
-                                    bigNumberMantissaIterator -= 1;
-
-                                    // Initialization
-                                        // Addition Mantissa Digit --- NOTE (Lapys) -> Result of parsing both digits.
-                                        var additionMantissaDigit;
-
-                                        // Big Number (A, B) Mantissa Digit
-                                        var bigNumberAMantissaDigit = LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BIG_NUMBER_A_MANTISSA, bigNumberMantissaIterator);
-                                        var bigNumberBMantissaDigit = LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BIG_NUMBER_B_MANTISSA, bigNumberMantissaIterator);
-
-                                    // [Parse Mantissa Carry Digit] Logic
-                                    if (additionMantissaCarry) {
-                                        // Update > Addition Mantissa Carry
-                                        additionMantissaCarry = false;
-
-                                        // Logic > Update > (Addition Mantissa Carry | Big Number A Mantissa Digit)
-                                        switch (bigNumberAMantissaDigit) {
-                                            case '1': bigNumberAMantissaDigit = '2'; break; case '2': bigNumberAMantissaDigit = '3'; break; case '3': bigNumberAMantissaDigit = '4'; break; case '4': bigNumberAMantissaDigit = '5'; break; case '5': bigNumberAMantissaDigit = '6'; break; case '6': bigNumberAMantissaDigit = '7'; break; case '7': bigNumberAMantissaDigit = '8'; break; case '8': bigNumberAMantissaDigit = '9'; break;
-                                            default: additionMantissaCarry = true
-                                        }
-                                    }
-
-                                    // [Parse Mantissa Digits] Logic > ... Update > Addition Mantissa Digit
-                                    if (additionMantissaCarry)
-                                        // Logic > ... --- NOTE (Lapys) -> If Number A`s mantissa digit overflows when adding carry digits.
-                                        switch ('9') {
-                                            case bigNumberAMantissaDigit: additionMantissaDigit = bigNumberBMantissaDigit; break;
-                                            case bigNumberBMantissaDigit: additionMantissaDigit = bigNumberAMantissaDigit
-                                        }
-
-                                    else if (bigNumberAMantissaDigit === '0')
-                                        additionMantissaDigit = bigNumberBMantissaDigit;
-
-                                    else if (bigNumberBMantissaDigit === '0')
-                                        additionMantissaDigit = bigNumberAMantissaDigit;
-
-                                    else
-                                        // [Parse Mantissa Digits] Logic --- WARN (Lapys) -> Not the best method of parsing digit-by-digit addition but it is clear & consistent.
-                                        switch (bigNumberAMantissaDigit) {
-                                            case '1': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '2'; break; case '2': additionMantissaDigit = '3'; break; case '3': additionMantissaDigit = '4'; break; case '4': additionMantissaDigit = '5'; break; case '5': additionMantissaDigit = '6'; break; case '6': additionMantissaDigit = '7'; break; case '7': additionMantissaDigit = '8'; break; case '8': additionMantissaDigit = '9'; break;
-                                                case '9': additionMantissaCarry = true; additionMantissaDigit = '0';
-                                            } break;
-                                            case '2': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '3'; break; case '2': additionMantissaDigit = '4'; break; case '3': additionMantissaDigit = '5'; break; case '4': additionMantissaDigit = '6'; break; case '5': additionMantissaDigit = '7'; break; case '6': additionMantissaDigit = '8'; break; case '7': additionMantissaDigit = '9'; break;
-                                                case '8': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '1'
-                                            } break;
-                                            case '3': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '4'; break; case '2': additionMantissaDigit = '5'; break; case '3': additionMantissaDigit = '6'; break; case '4': additionMantissaDigit = '7'; break; case '5': additionMantissaDigit = '8'; break; case '6': additionMantissaDigit = '9'; break;
-                                                case '7': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '2'
-                                            } break;
-                                            case '4': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '5'; break; case '2': additionMantissaDigit = '6'; break; case '3': additionMantissaDigit = '7'; break; case '4': additionMantissaDigit = '8'; break; case '5': additionMantissaDigit = '9'; break;
-                                                case '6': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '3'
-                                            } break;
-                                            case '5': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '6'; break; case '2': additionMantissaDigit = '7'; break; case '3': additionMantissaDigit = '8'; break; case '4': additionMantissaDigit = '9'; break;
-                                                case '5': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '4'
-                                            } break;
-                                            case '6': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '7'; break; case '2': additionMantissaDigit = '8'; break; case '3': additionMantissaDigit = '9'; break;
-                                                case '4': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '5'
-                                            } break;
-                                            case '7': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '8'; break; case '2': additionMantissaDigit = '9'; break;
-                                                case '3': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '4': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '5'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '6'
-                                            } break;
-                                            case '8': switch (bigNumberBMantissaDigit) {
-                                                case '1': additionMantissaDigit = '9'; break;
-                                                case '2': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '3': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '4': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '5'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '6'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '7'
-                                            } break;
-                                            case '9': switch (bigNumberBMantissaDigit) { case '1': additionMantissaCarry = true; additionMantissaDigit = '0'; break; case '2': additionMantissaCarry = true; additionMantissaDigit = '1'; break; case '3': additionMantissaCarry = true; additionMantissaDigit = '2'; break; case '4': additionMantissaCarry = true; additionMantissaDigit = '3'; break; case '5': additionMantissaCarry = true; additionMantissaDigit = '4'; break; case '6': additionMantissaCarry = true; additionMantissaDigit = '5'; break; case '7': additionMantissaCarry = true; additionMantissaDigit = '6'; break; case '8': additionMantissaCarry = true; additionMantissaDigit = '7'; break; case '9': additionMantissaCarry = true; additionMantissaDigit = '8' }
-                                        }
-
-                                    // Update > Addition Mantissa (Carry)
-                                    LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, ADDITION_MANTISSA, bigNumberMantissaIterator, additionMantissaDigit);
-                                    ADDITION_MANTISSA_CARRY = additionMantissaCarry && !bigNumberMantissaIterator
-                                }
-                        }
-
-                        // [Setup]
-                        // [Process]
-                        // [Finish-Up]
+                        // Constant > Addition
+                        var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
 
                         // Return
                         return ADDITION
