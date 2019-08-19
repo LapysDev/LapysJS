@@ -106,7 +106,7 @@
     var GLOBAL; // NOTE (Lapys) -> The global namespace of the current environment.
     var SETTINGS = {}; // NOTE (Lapys) -> Namespace for script directives which determine how the library will be installed.
     var STRICT; // NOTE (Lapys) -> Represents an argument to a logical or non-essential function parameter; Also known as an Argument Flag.
-    var TMP; // NOTE (Lapys) -> Global variable for temporary data.
+    var TMP; // NOTE (Lapys) -> Global variable for critical, temporary data (may be used in denoting status or swapping values).
 
     /* Polyfills > ... */
     var undefined = void +0; // NOTE (Lapys) -> Should not be allowed but it is.
@@ -182,6 +182,7 @@
             LapysDevelopmentKit.Functions.argumentsPrototypeLength = function argumentsPrototypeLength(ArgumentListObject) { return ArgumentListObject.length };
             LapysDevelopmentKit.Functions.argumentsPrototypeSetIndex = function argumentsPrototypeSetIndex(ArgumentListObject, Index, Argument) { return (ArgumentListObject[Index] = Argument) };
 
+            // : NOTE (Lapys) -> Array methods are similar to array imperative methods and therefore will not provide imperatives as a modifier.
             LapysDevelopmentKit.Functions.arrayPrototypeElementAt = function arrayPrototypeElementAt(Array, Index) { return Array[Index] };
             LapysDevelopmentKit.Functions.arrayPrototypeLength = function arrayPrototypeLength(Array) { return Array.length };
             LapysDevelopmentKit.Functions.arrayPrototypeSetIndex = function arrayPrototypeSetIndex(Array, Index, Element) { Array[Index] = Element };
@@ -479,17 +480,23 @@
                         --- NOTE (Lapys) -> Imperatives assert how the specified array will be accessed/ modified.
                         --- WARN (Lapys) -> Not all methods use imperatives.
                 */
-                    // Clone
-                    LapysDevelopmentKit.Functions.arrayPrototypeClone = function arrayPrototypeClone(Array, IMPERATIVE) {
+                    // Clone --- NOTE (Lapys) -> Retroactively the standard for creating similar array-likes from another array-like`s constructor.
+                    LapysDevelopmentKit.Functions.arrayPrototypeClone = function arrayPrototypeClone(Array, IS_EMPTY, IMPERATIVE) {
                         // Constant > Array Clone; Initialization > Array Iterator
                         var ARRAY_CLONE; var arrayIterator = IMPERATIVE.getLength(Array);
 
                         // Logic > ... > Update > Array Clone
-                        if (Array instanceof LDKT.BigArray) ARRAY_CLONE = new LDKT.BigArray(Array.length, Array.MAXIMUM_LENGTH);
+                        if (Array instanceof LDKT.BigArray) ARRAY_CLONE = new LDKT.BigArray(null, Array.MAXIMUM_LENGTH);
                         else try { ARRAY_CLONE = new (LDKF.objectPrototypeConstructor(Array)) } catch (Error) { ARRAY_CLONE = [] }
 
-                        // Loop > Update > Array (Iterator, Clone)
-                        while (arrayIterator) { arrayIterator -= 1; IMPERATIVE.setIndex(ARRAY_CLONE, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator)) }
+                        // Logic
+                        if (!IS_EMPTY) {
+                            // Update > Array Clone
+                            IMPERATIVE.setLength(ARRAY_CLONE, arrayIterator);
+
+                            // Loop > Update > Array (Iterator, Clone)
+                            while (arrayIterator) { arrayIterator -= 1; IMPERATIVE.setIndex(ARRAY_CLONE, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator)) }
+                        }
 
                         // Return
                         return ARRAY_CLONE
@@ -693,61 +700,115 @@
                 // Digit --- NOTE (Lapys) -> The global variable `TMP` represents the carry flag.
                     // Add
                     LapysDevelopmentKit.Functions.digitAdd = function digitAdd(DigitA, DigitB, BASE) {
-                        // Initialization > Addition
+                        // Update > Base
+                        BASE || (BASE = 10);
+
+                        // : Initialization > Addition
+                        // : Constant > Digits
                         var addition;
+                        var DIGITS = LDKF.getDigitsFromBase(BASE);
 
-                        // Constant > ...
-                        var DIGITS = LDKF.getDigitsFromBase(BASE || 10);
-                        var DIGITS_LENGTH = DIGITS.length;
-
-                        var DIGIT_A_ENDIAN = LDKF.arrayPrototypeIndex(DIGITS, DigitA, STRICT = DIGITS_LENGTH);
-                        var DIGIT_B_ENDIAN = LDKF.arrayPrototypeIndex(DIGITS, DigitB, STRICT = DIGITS_LENGTH);
+                        var DIGIT_A_ENDIAN = LDKF.arrayPrototypeIndex(DIGITS, DigitA, STRICT = BASE);
+                        var DIGIT_B_ENDIAN = LDKF.arrayPrototypeIndex(DIGITS, DigitB, STRICT = BASE);
 
                         // Logic > Update > (Addition, ...)
-                        if (DIGIT_A_ENDIAN + DIGIT_B_ENDIAN < DIGITS_LENGTH) { addition = DIGITS[DIGIT_A_ENDIAN + DIGIT_B_ENDIAN]; TMP = false }
-                        else { addition = DIGITS[(DIGIT_A_ENDIAN + DIGIT_B_ENDIAN) - DIGITS_LENGTH]; TMP = true }
+                        if (DIGIT_A_ENDIAN + DIGIT_B_ENDIAN < BASE) { addition = DIGITS[DIGIT_A_ENDIAN + DIGIT_B_ENDIAN]; TMP = false }
+                        else { addition = DIGITS[(DIGIT_A_ENDIAN + DIGIT_B_ENDIAN) - BASE]; TMP = true }
 
                         // Return
                         return addition
                     };
 
                     // Divide
+                    // Increment
+                    LapysDevelopmentKit.Functions.digitIncrement = function digitIncrement(Digit, BASE) {
+                        // Update > Base
+                        BASE || (BASE = 10);
+
+                        // Constant > (Digits, Digit Endian)
+                        var DIGITS = LDKF.getDigitsFromBase(BASE);
+                        var DIGIT_ENDIAN = LDKF.arrayPrototypeIndex(DIGITS, Digit, STRICT = BASE);
+
+                        // Logic > ...
+                        if (DIGIT_ENDIAN + 1 == BASE) { TMP = true; return DIGITS[+0] }
+                        else { TMP = false; return DIGITS[DIGIT_ENDIAN + 1] }
+                    };
+
                     // Multiply
                     // Subtract
 
                 // Digits
-                    // Add
-                    LapysDevelopmentKit.Functions.digitsAdd = function digitsAdd(DigitsA, DigitsB, IMPERATIVE, COMPONENT) {
+                    // Add --- WARN (Lapys) -> Can not perform source addition.
+                    LapysDevelopmentKit.Functions.digitsAdd = function digitsAdd(DigitsA, DigitsB, BASE, IMPERATIVE, COMPONENT) {
+                        // Update > (Base, Component, Imperative, ...)
+                        BASE || (BASE = 10);
                         COMPONENT || (COMPONENT = LDKC.Data.NumberComponent["CHARACTERISTICS"]);
                         IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                        TMP = false;
 
+                        // Initialization > (Addition, ...)
                         var addition;
+                        var digitsALength = IMPERATIVE.getLength(DigitsA), digitsBLength = IMPERATIVE.getLength(DigitsB);
                         var smallerDigits, smallerDigitsLengthDifference;
 
-                        var DIGITS_A_LENGTH = IMPERATIVE.getLength(DigitsA);
-                        var DIGITS_B_LENGTH = IMPERATIVE.getLength(DigitsB);
+                        // Constant > (Base Digits, ...)
+                        var BASE_DIGITS = LDKF.getDigitsFromBase(BASE);
+                        var LAST_BASE_DIGIT = BASE_DIGITS[BASE - 1];
 
-                        if (DIGITS_A_LENGTH ^ DIGITS_B_LENGTH) {
-                            var digitsLengthDifference = DIGITS_A_LENGTH - DIGITS_B_LENGTH;
+                        // Logic
+                        if (digitsALength ^ digitsBLength) {
+                            // Initialization > Digits Length Difference
+                            var digitsLengthDifference = digitsALength - digitsBLength;
 
+                            // Logic > Update > ...
                             if (digitsLengthDifference < +0) { digitsLengthDifference = -digitsLengthDifference; smallerDigits = DigitsA }
                             else smallerDigits = DigitsB;
 
+                            // Update > Smaller Digits Length Difference
                             smallerDigitsLengthDifference = digitsLengthDifference;
 
-                            // Loop
+                            // Loop --- NOTE (Lapys) -> Pad the digits to be of equal length.
                             while (digitsLengthDifference) {
+                                // Update > Digits Length Difference
                                 digitsLengthDifference -= 1;
+
+                                // Logic > Update > Smaller Digits
                                 switch (COMPONENT) {
                                     case LDKC.Data.NumberComponent["CHARACTERISTICS"]: LDKF.arrayPrototypeUnshift(smallerDigits, '0', STRICT = null, STRICT = IMPERATIVE); break;
                                     case LDKC.Data.NumberComponent["MANTISSA"]: LDKF.arrayPrototypePush(smallerDigits, '0', STRICT = null, STRICT = IMPERATIVE)
                                 }
                             }
+
+                            // Update > Digits (A | B) Length
+                            smallerDigits === DigitsA ? digitsALength += smallerDigitsLengthDifference : digitsBLength += smallerDigitsLengthDifference
                         }
 
+                        // Initialization > Iterator
+                        var iterator = digitsALength || digitsBLength;
+
+                        // Update > Addition
+                        addition = LDKF.arrayPrototypeClone(DigitsA || DigitsB, STRICT = true, STRICT = IMPERATIVE);
+                        IMPERATIVE.setLength(addition, iterator);
+
                         // Loop
+                        while (iterator) {
+                            // : Update > Iterator
+                            // : Initialization > Digit (A, B)
+                            iterator -= 1;
+                            var digitA = IMPERATIVE.getIndex(DigitsA, iterator), digitB = IMPERATIVE.getIndex(DigitsB, iterator);
+
+                            // Logic > Update > (Addition, ...)
+                            if (digitA === LAST_BASE_DIGIT && TMP) IMPERATIVE.setIndex(addition, iterator, digitB, STRICT = BASE);
+                            else if (digitB === LAST_BASE_DIGIT && TMP) IMPERATIVE.setIndex(addition, iterator, digitA, STRICT = BASE);
+                            else { TMP && (digitA = LDKF.digitIncrement(digitA)); IMPERATIVE.setIndex(addition, iterator, LDKF.digitAdd(digitA, digitB), STRICT = BASE) }
+                        }
+
+                        // Loop --- NOTE (Lapys) -> Reset the digits to their original length.
                         while (smallerDigitsLengthDifference) {
+                            // Update > Smaller Digits Length Difference
                             smallerDigitsLengthDifference -= 1;
+
+                            // Logic > Update > Smaller Digits
                             switch (COMPONENT) {
                                 case LDKC.Data.NumberComponent["CHARACTERISTICS"]: LDKF.arrayPrototypeShift(smallerDigits, STRICT = null, STRICT = IMPERATIVE); break;
                                 case LDKC.Data.NumberComponent["MANTISSA"]: LDKF.arrayPrototypePop(smallerDigits, STRICT = null, STRICT = IMPERATIVE)
@@ -760,6 +821,26 @@
 
                     // Compare
                     // Divide
+                    // Increment
+                    LapysDevelopmentKit.Functions.digitsIncrement = function digitsIncrement(Digits, BASE, IMPERATIVE) {
+                        // Update > (Base, Imperative, ...)
+                        BASE || (BASE = 10);
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.BigArrayImperative);
+                        TMP = false;
+
+                        // Initialization > Digits Iterator
+                        var digitsIterator = IMPERATIVE.getLength(Digits);
+
+                        // Logic
+                        if (digitsIterator)
+                            // Loop > Update > Digits (Iterator)
+                            do { digitsIterator -= 1; IMPERATIVE.setIndex(Digits, digitsIterator, LDKF.digitIncrement(IMPERATIVE.getIndex(Digits, digitsIterator), STRICT = BASE)) }
+                            while (digitsIterator && TMP);
+
+                        // Return
+                        return Digits
+                    };
+
                     // Modulo
                     // Multiply
                     // Power
@@ -890,7 +971,7 @@
                     // Is Overflown
                     LapysDevelopmentKit.Functions.numberPrototypeIsOverflown = function numberPrototypeIsOverflown(Number) { return Number >= LDKC.Numbers.MaximumIntegerValue || Number <= -LDKC.Numbers.MaximumIntegerValue };
 
-                    // Is Safe
+                    // Is Safe --- NOTE (Lapys) -> Numbers redacted to scientific notation in string form are implicitly also not safe.
                     LapysDevelopmentKit.Functions.numberPrototypeIsSafe = function numberPrototypeIsSafe(Number) { return LDKF.numberPrototypeIsFinite(Number) && !LDKF.numberPrototypeIsNaN(Number) && !LDKF.numberPrototypeIsOverflown(Number) };
 
                 // Number-Like
@@ -1509,8 +1590,20 @@
                     LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(String, Index) { return LDKF.functionPrototypeMonoadicCall(LDKO.stringPrototypeCharacterCodeAt, String, Index) || -1 };
 
                     // Count --- CHECKPOINT (Lapys)
+                    // Cut At
                     // Cut Left
                     // Cut Right
+                    LapysDevelopmentKit.Functions.stringPrototypeCutRight = function stringPrototypeCutRight(String, Length, STRING_LENGTH) {
+                        // Initialization > (Cut, String Iterator)
+                        var cut = "";
+                        var stringIterator = (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - Length;
+
+                        // Logic > Loop > Update > Cut
+                        if (stringIterator > -0) while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + cut;
+
+                        // Return
+                        return cut
+                    };
 
                     // First
                     LapysDevelopmentKit.Functions.stringPrototypeFirst = function stringPrototypeFirst(String) { return String ? LDKF.stringPrototypeCharacterAt(String, +0) : null };
@@ -1684,6 +1777,26 @@
                 };
                     // Prototype
                     LapysDevelopmentKit.Types.BigArrayPrototype = LDKT.BigArray.prototype;
+                        // Copy
+                        LapysDevelopmentKit.Types.BigArrayPrototypeCopy =
+                        LapysDevelopmentKit.Types.BigArrayPrototype.copy = function copy(BigArray, BIG_ARRAY_LENGTH) {
+                            // : Constant > Big Array
+                            // : Initialization > Big Array Iterator
+                            var BIG_ARRAY = this;
+                            var bigArrayIterator = BIG_ARRAY_LENGTH || BigArray.length;
+
+                            // Deletion; Update > Big Array
+                            LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeFree, BIG_ARRAY, STRICT = false);
+                            LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeResize, BIG_ARRAY, bigArrayIterator);
+
+                            // Loop
+                            while (bigArrayIterator) {
+                                // Update > Big Array (Iterator)
+                                bigArrayIterator -= 1;
+                                LDKF.functionPrototypeDyadicCall(LDKT.BigArrayPrototypeSetIndex, BIG_ARRAY, bigArrayIterator, LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BigArray, bigArrayIterator))
+                            }
+                        };
+
                         // Cut At
                         LapysDevelopmentKit.Types.BigArrayPrototype.cutAt = function cutAt(index) {
                             // Constant > Big Array (Length)
@@ -2105,14 +2218,71 @@
                         LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.mantissa, '0')
                     }
                 };
-                    // Add --- CHECKPOINT (Lapys)
+                    // Add
                     LapysDevelopmentKit.Types.BigNumberAdd =
                     LapysDevelopmentKit.Types.BigNumber.add = function add(BigNumberA, BigNumberB, PARSE_AS_SOURCE) {
                         // Constant > Addition
                         var ADDITION = PARSE_AS_SOURCE ? BigNumberA : new LDKT.BigNumber;
 
+                        // Update > (Addition > Mantissa)
+                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeCopy, ADDITION.mantissa, LDKF.digitsAdd(BigNumberA.mantissa, BigNumberB.mantissa, STRICT = 10, STRICT = LDKC.Data.BigArrayImperative, STRICT = LDKC.Data.NumberComponent["MANTISSA"]));
+
+                        // Update > (Addition > Characteristics)
+                        TMP && LDKF.digitsIncrement(ADDITION.characteristics, STRICT = 10, STRICT = LDKC.Data.BigArrayImperative);
+                        TMP && LDKF.arrayPrototypeUnshift(ADDITION.characteristics, LDKF.getDigitsFromBase(10)[1], STRICT = null, STRICT = LDKC.Data.BigArrayImperative);
+
+                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeCopy, ADDITION.characteristics, LDKF.digitsAdd(BigNumberA.characteristics, BigNumberB.characteristics, STRICT = 10, STRICT = LDKC.Data.BigArrayImperative, STRICT = LDKC.Data.NumberComponent["CHARACTERISTICS"]));
+
+                        TMP && LDKF.arrayPrototypeUnshift(ADDITION.characteristics, LDKF.getDigitsFromBase(10)[1], STRICT = null, STRICT = LDKC.Data.BigArrayImperative);
+
                         // Return
                         return ADDITION
+                    };
+
+                    // Equal --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Precision tolerance is not taken into account.
+                    LapysDevelopmentKit.Types.BigNumberEquals =
+                    LapysDevelopmentKit.Types.BigNumber.equals = function equals(BigNumberA, BigNumberB) {
+                        // Constant > Big Number A (Characteristics, Mantissa) Length
+                        var BIG_NUMBER_A_CHARACTERISTICS_LENGTH = BigNumberA.characteristics.length;
+                        var BIG_NUMBER_A_MANTISSA_LENGTH = BigNumberA.mantissa.length;
+
+                        // Logic
+                        if (
+                            BIG_NUMBER_A_CHARACTERISTICS_LENGTH == BigNumberB.characteristics.length &&
+                            BIG_NUMBER_A_MANTISSA_LENGTH == BigNumberB.mantissa.length
+                        ) {
+                            // Initialization > Characteristics Iterator; Loop
+                            var characteristicsIterator = BIG_NUMBER_A_CHARACTERISTICS_LENGTH;
+                            while (characteristicsIterator) {
+                                // Update > Characteristics Iterator
+                                characteristicsIterator -= 1;
+
+                                // Logic > Return
+                                if (
+                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BigNumberA.characteristics, characteristicsIterator) !==
+                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BigNumberB.characteristics, characteristicsIterator)
+                                ) return false
+                            }
+
+                            // Initialization > Mantissa Iterator; Loop
+                            var mantissaIterator = BIG_NUMBER_A_CHARACTERISTICS_LENGTH;
+                            while (mantissaIterator) {
+                                // Update > Mantissa Iterator
+                                mantissaIterator -= 1;
+
+                                // Logic > Return
+                                if (
+                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BigNumberA.mantissa, mantissaIterator) !==
+                                    LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, BigNumberB.mantissa, mantissaIterator)
+                                ) return false
+                            }
+
+                            // Return
+                            return true
+                        }
+
+                        // Return
+                        return false
                     };
 
                     // From Number --- WARN (Lapys) -> Assumes the argument is only of type `BigNumber` or `Number`.
@@ -2124,11 +2294,28 @@
                         // Logic
                         if (Number instanceof LDKT.BigNumber) {
                             // Modification > Big Number > (Characteristics, Mantissa)
-                            BIG_NUMBER.characteristics = LDKF.arrayPrototypeClone(Number.characteristics, STRICT = LDKC.Data.BigArrayImperative);
-                            BIG_NUMBER.mantissa = LDKF.arrayPrototypeClone(Number.mantissa, STRICT = LDKC.Data.BigArrayImperative)
+                            LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeCopy, BIG_NUMBER.characteristics, Number.characteristics);
+                            LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeCopy, BIG_NUMBER.mantissa, Number.mantissa)
                         }
 
-                        else {
+                        else if (LDKF.isBigInt(Number)) {
+                            // Update > Number
+                            Number = LDKF.toString(Number);
+
+                            // : Constant > Characteristics Length
+                            // : Initialization > Characteristics Iterator
+                            var CHARACTERISTICS_LENGTH = LDKF.stringPrototypeLength(Number);
+                            var characteristicsIterator = CHARACTERISTICS_LENGTH;
+
+                            // Modification > Big Number > Characteristics
+                            BIG_NUMBER.characteristics.length = +0;
+
+                            // Loop > Update > (Big Number > Characteristics)
+                            while (characteristicsIterator)
+                                LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_NUMBER.characteristics, LDKF.stringPrototypeCharacterAt(Number, CHARACTERISTICS_LENGTH - (characteristicsIterator -= 1) - 1))
+                        }
+
+                        else if (LDKF.numberPrototypeIsSafe(Number)) {
                             // Update > Number
                             Number = LDKF.numberPrototypeIsInteger(Number) ? LDKF.toString(Number) + ".0" : LDKF.toString(Number);
 
@@ -2176,6 +2363,22 @@
                     };
 
                     // Lesser Than --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Types.BigNumberLesserThan = function lesserThan(BigNumberA, BigNumberB) {
+                        var BIG_NUMBER_A_CHARACTERISTICS_LENGTH = BigNumberA.characteristics.length;
+                        var BIG_NUMBER_B_CHARACTERISTICS_LENGTH = BigNumberB.characteristics.length;
+
+                        if (BIG_NUMBER_A_CHARACTERISTICS_LENGTH < BIG_NUMBER_B_CHARACTERISTICS_LENGTH) {
+                            var BIG_NUMBER_A_MANTISSA_LENGTH = BigNumberA.mantissa.length;
+                            var BIG_NUMBER_B_MANTISSA_LENGTH = BigNumberB.mantissa.length;
+                        }
+
+                        else if (BIG_NUMBER_A_CHARACTERISTICS_LENGTH == BIG_NUMBER_B_CHARACTERISTICS_LENGTH)
+                            return true;
+
+                        else
+                            return false
+                    };
+
                     // Lesser Than Or Equal To --- CHECKPOINT (Lapys)
                     // Greater Than --- CHECKPOINT (Lapys)
                     // Greater Than Or Equal To --- CHECKPOINT (Lapys)
@@ -2199,6 +2402,26 @@
                             // Return
                             return this
                         };
+
+                        // Is Equal To
+                        LapysDevelopmentKit.Types.BigNumberPrototypeIsEqualTo =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.isEqualTo = function isEqualTo(BigNumber) { return LDKT.BigNumberEquals(this, BigNumber) };
+
+                        // Is Greater Than
+                        LapysDevelopmentKit.Types.BigNumberPrototypeIsGreaterThan =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.isGreaterThan = function isGreaterThan(BigNumber) { return LDKT.BigNumberGreaterThan(this, BigNumber) };
+
+                        // Is Greater Than
+                        LapysDevelopmentKit.Types.BigNumberPrototypeIsGreaterThanOrEqualTo =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.isGreaterThanOrEqualTo = function isGreaterThanOrEqualTo(BigNumber) { return LDKT.BigNumberGreaterThanOrEqualTo(this, BigNumber) };
+
+                        // Is Lesser Than
+                        LapysDevelopmentKit.Types.BigNumberPrototypeIsLesserThan =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.isLesserThan = function isLesserThan(BigNumber) { return LDKT.BigNumberLesserThan(this, BigNumber) };
+
+                        // Is Lesser Than
+                        LapysDevelopmentKit.Types.BigNumberPrototypeIsLesserThanOrEqualTo =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.isLesserThanOrEqualTo = function isLesserThanOrEqualTo(BigNumber) { return LDKT.BigNumberLesserThanOrEqualTo(this, BigNumber) };
 
                         // Is Overflown
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsOverflown =
