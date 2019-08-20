@@ -528,6 +528,9 @@
                             return +0
                     };
 
+                    // Includes
+                    LapysDevelopmentKit.Functions.arrayPrototypeIncludes = function arrayPrototypeIncludes(Array, Element, ARRAY_LENGTH, IMPERATIVE) { return !!~LDKF.arrayPrototypeIndexFrom(Array, Element, STRICT = ARRAY_LENGTH, STRICT = IMPERATIVE) };
+
                     // Index
                     LapysDevelopmentKit.Functions.arrayPrototypeIndex = function arrayPrototypeIndex(Array, Element, ARRAY_LENGTH, IMPERATIVE) { return LDKF.arrayPrototypeIndexFrom(Array, Element, STRICT = ARRAY_LENGTH, STRICT = IMPERATIVE) };
 
@@ -590,8 +593,70 @@
                         return -1
                     };
 
-                    // Insert At --- CHECKPOINT (Lapys)
-                    // Instance --- CHECKPOINT (Lapys)
+                    // Insert At
+                    LapysDevelopmentKit.Functions.arrayPrototypeInsertAt = function arrayPrototypeInsertAt(Array, Element, Index, ARRAY_LENGTH, IMPERATIVE) {
+                        // Update > (Imperative, Array Length)
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                        ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
+
+                        // Logic
+                        if (ARRAY_LENGTH) {
+                            // Initialization > Array Iterator
+                            var arrayIterator = ARRAY_LENGTH + 1;
+
+                            // (Loop > )Update > ...
+                            IMPERATIVE.setLength(Array, ARRAY_LENGTH + 1);
+                            while (arrayIterator ^ Index) { arrayIterator -= 1; IMPERATIVE.setIndex(Array, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator - 1)) }
+                            IMPERATIVE.setIndex(Array, Index, Element)
+                        }
+
+                        else
+                            // Update > Array
+                            IMPERATIVE.setIndex(Array, +0, Element);
+
+                        // Return
+                        return Array
+                    };
+
+                    // Instance
+                    LapysDevelopmentKit.Functions.arrayPrototypeInstance = function arrayPrototypeInstance(Array, ARRAY_LENGTH, IMPERATIVE) {
+                        // Update > (Imperative, Array Length)
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                        ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
+
+                        // Logic
+                        if (ARRAY_LENGTH) {
+                            // Initialization > Array (Indexed (Length), Instances, Iterator, ...)
+                            var arrayIndexed = [], arrayIndexedLength = +0;
+                            var arrayInstances = [];
+                            var arrayIterator = ARRAY_LENGTH;
+
+                            var instanceValueOf = function valueOf() { return this.element };
+
+                            // Loop
+                            while (arrayIterator) {
+                                // Constant > Element
+                                var ELEMENT = IMPERATIVE.getIndex(Array, arrayIterator -= 1);
+
+                                // Logic
+                                if (!LDKF.arrayPrototypeIncludes(arrayIndexed, ELEMENT, STRICT = arrayIndexedLength)) {
+                                    // Update > Array Indexed
+                                    arrayIndexed[arrayIndexedLength] = ELEMENT;
+                                    arrayIndexedLength +=1;
+
+                                    // Update > Array Instances
+                                    LDKF.arrayPrototypePush(arrayInstances, {count: LDKF.arrayPrototypeCount(Array, ELEMENT, STRICT = ARRAY_LENGTH, STRICT = IMPERATIVE), element: ELEMENT, valueOf: instanceValueOf})
+                                }
+                            }
+
+                            // Return
+                            return arrayInstances
+                        }
+
+                        else
+                            // Return
+                            return {}
+                    };
 
                     // Pop
                     LapysDevelopmentKit.Functions.arrayPrototypePop = function arrayPrototypePop(Array, ARRAY_LENGTH, IMPERATIVE) {
@@ -2402,6 +2467,7 @@
 
                     // Modulo --- CHECKPOINT (Lapys)
                     // Multiply --- CHECKPOINT (Lapys)
+                    // Power --- CHECKPOINT (Lapys)
                     // Subtract --- CHECKPOINT (Lapys)
 
                     // Prototype
@@ -2424,6 +2490,9 @@
                             return this
                         };
 
+                        // Decrement --- CHECKPOINT (Lapys)
+                        // Divide --- CHECKPOINT (Lapys)
+
                         // Has Significant Characteristics
                         LapysDevelopmentKit.Types.BigNumberPrototypeHasSignificantCharacteristics =
                         LapysDevelopmentKit.Types.BigNumberPrototype.hasSignificantCharacteristics = function hasSignificantCharacteristics() { var CHARACTERISTICS = this.characteristics; return !(CHARACTERISTICS.length == 1 && LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, CHARACTERISTICS, +0) === '0') };
@@ -2431,6 +2500,8 @@
                         // Has Significant Mantissa
                         LapysDevelopmentKit.Types.BigNumberPrototypeHasSignificantMantissa =
                         LapysDevelopmentKit.Types.BigNumberPrototype.hasSignificantMantissa = function hasSignificantMantissa() { var MANTISSA = this.mantissa; return !(MANTISSA.length == 1 && LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeElementAt, MANTISSA, +0) === '0') };
+
+                        // Increment --- CHECKPOINT (Lapys)
 
                         // Is Equal To
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsEqualTo =
@@ -2456,6 +2527,12 @@
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsOverflown =
                         LapysDevelopmentKit.Types.BigNumberPrototype.isOverflown = function isOverflown() { return LDKT.BigNumberLesserThanOrEqualTo(this, -LDKC.Numbers.MaximumIntegerValue) || LDKT.BigNumberGreaterThanOrEqualTo(this, LDKC.Numbers.MaximumIntegerValue) };
 
+                        // Modulo --- CHECKPOINT (Lapys)
+                        // Multiply --- CHECKPOINT (Lapys)
+                        // Power --- CHECKPOINT (Lapys)
+                        // Sign --- CHECKPOINT (Lapys)
+                        // Subtract --- CHECKPOINT (Lapys)
+
                         // To Number
                         LapysDevelopmentKit.Types.BigNumberPrototypeToNumber =
                         LapysDevelopmentKit.Types.BigNumberPrototype.toNumber = function toNumber() { return LDKF.functionPrototypeNiladicCall(LDKT.BigNumberPrototypeIsOverflown, this) ? this : LDKF.toNumber(LDKF.functionPrototypeNiladicCall(LDKT.BigNumberPrototypeToString, this)) };
@@ -2477,6 +2554,8 @@
                             // Return
                             return string
                         };
+
+                        // Unsign --- CHECKPOINT (Lapys)
 
                 // Clock
                     // Prototype
@@ -2636,13 +2715,60 @@
                             - Maximum width is restricted to the environment`s maximum numeric value.
                             - Does not support native `BigInt``s.
                 */
-                LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) { this["[[MaximumValue]]"] = MaximumValue; this["[[MinimumValue]]"] = MinimumValue; this.value = Value || +0 };
+                LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) { this.MAXIMUM_VALUE = MaximumValue; this.MINIMUM_VALUE = MinimumValue; this.value = Value || +0 };
                     // Add --- CHECKPOINT (Lapys)
+                    // Divide --- CHECKPOINT (Lapys)
+                    // Equal --- CHECKPOINT (Lapys)
+                    // Greater Than --- CHECKPOINT (Lapys)
+                    // Greater Than Or Equal To --- CHECKPOINT (Lapys)
+                    // Lesser Than --- CHECKPOINT (Lapys)
+                    // Lesser Than Or Equal To --- CHECKPOINT (Lapys)
+                    // Modulo --- CHECKPOINT (Lapys)
+                    // Multiply --- CHECKPOINT (Lapys)
+                    // Power --- CHECKPOINT (Lapys)
+                    // Sign --- CHECKPOINT (Lapys)
+                    // Subtract --- CHECKPOINT (Lapys)
+                    // Unsign --- CHECKPOINT (Lapys)
+
                     // Prototype
-                        // From Number --- CHECKPOINT (Lapys)
+                        // Add --- CHECKPOINT (Lapys)
+                        // Decrement --- CHECKPOINT (Lapys)
+                        // Divide --- CHECKPOINT (Lapys)
+
+                        // From Number
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeFromNumber =
+                        LapysDevelopmentKit.Types.RangedNumber.prototype.fromNumber = function fromNumber(Number) {
+                            // Constant > Ranged Number
+                            var RANGED_NUMBER = new LDKT.RangedNumber(LDKC.Numbers.Infinity, -LDKC.Numbers.Infinity);
+
+                            // Logic > ...
+                            if (Number instanceof LDKT.RangedNumber) { RANGED_NUMBER.MAXIMUM_VALUE = Number.MAXIMUM_VALUE; RANGED_NUMBER.MINIMUM_VALUE = Number.MINIMUM_VALUE; RANGED_NUMBER.value = Number.value }
+                            else if (LDKF.isBigInt(Number)) RANGED_NUMBER.value = Number;
+                            else if (LDKF.numberPrototypeIsSafe(Number)) RANGED_NUMBER.value = Number;
+
+                            return RANGED_NUMBER
+                        };
+
+                        // Increment --- CHECKPOINT (Lapys)
+                        // Is Equal To --- CHECKPOINT (Lapys)
+                        // Is Greater Than --- CHECKPOINT (Lapys)
+                        // Is Greater Than Or Equal To --- CHECKPOINT (Lapys)
+                        // Is Lesser Than --- CHECKPOINT (Lapys)
+                        // Is Lesser Than Or Equal To --- CHECKPOINT (Lapys)
+                        // Modulo --- CHECKPOINT (Lapys)
+                        // Multiply --- CHECKPOINT (Lapys)
+                        // Power --- CHECKPOINT (Lapys)
+                        // Sign --- CHECKPOINT (Lapys)
+                        // Subtract --- CHECKPOINT (Lapys)
+                        // Unsign --- CHECKPOINT (Lapys)
+
                         // To Number
                         LapysDevelopmentKit.Types.RangedNumberPrototypeToNumber =
                         LapysDevelopmentKit.Types.RangedNumber.prototype.toNumber = function toNumber() { return this.value };
+
+                        // To String
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeToString =
+                        LapysDevelopmentKit.Types.RangedNumber.prototype.toString = function toString() { return LDKF.toString(this.value) };
 
                 /* Safe Number
                         --- NOTE (Lapys) -> Defers between the `BigNumber` and `Number` types for performance.
