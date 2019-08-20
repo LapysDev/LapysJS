@@ -539,30 +539,22 @@
 
                         // Logic
                         if (ARRAY_LENGTH) {
-                            // Constant > Gradient Stop (Indexes, Length)
-                            var GRADIENT_STOP_INDEXES = [], GRADIENT_STOP_LENGTH = LDKM.int(ARRAY_LENGTH / 4);
-
-                            // Initialization > Array (Index, Iterator)
-                            var arrayIndex = -1, arrayIterator = ARRAY_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+                            // : Constant > Gradient Stop Length
+                            // : Initialization > Array Iterator
+                            var GRADIENT_STOP_LENGTH = LDKM.int(ARRAY_LENGTH / 4);
+                            var arrayIterator = ARRAY_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
 
                             // Loop
-                            while (!~arrayIndex && arrayIterator) {
-                                // Update > (Array Iterator, Gradient Stop Indexes)
+                            while (arrayIterator) {
+                                // Update > Array Iterator
                                 arrayIterator -= 1;
-                                GRADIENT_STOP_INDEXES[+0] = ARRAY_LENGTH - arrayIterator;
-                                GRADIENT_STOP_INDEXES[1] = ARRAY_LENGTH - GRADIENT_STOP_LENGTH - arrayIterator;
-                                GRADIENT_STOP_INDEXES[2] = arrayIterator + GRADIENT_STOP_LENGTH;
-                                GRADIENT_STOP_INDEXES[3] = arrayIterator;
 
-                                // Logic > Update > Array Index
-                                if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[+0]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[+0];
-                                else if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[1]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[1];
-                                else if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[2]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[2];
-                                else if (IMPERATIVE.getIndex(Array, GRADIENT_STOP_INDEXES[3]) === Element) arrayIndex = GRADIENT_STOP_INDEXES[3]
+                                // Logic > ... --- NOTE (Lapys) -> Each block here represents a stop index within the gradient search.
+                                if (IMPERATIVE.getIndex(Array, ARRAY_LENGTH - arrayIterator) === Element) return ARRAY_LENGTH - arrayIterator;
+                                else if (IMPERATIVE.getIndex(Array, ARRAY_LENGTH - GRADIENT_STOP_LENGTH - arrayIterator) === Element) return ARRAY_LENGTH - GRADIENT_STOP_LENGTH - arrayIterator;
+                                else if (IMPERATIVE.getIndex(Array, arrayIterator + GRADIENT_STOP_LENGTH) === Element) return arrayIterator + GRADIENT_STOP_LENGTH;
+                                else if (IMPERATIVE.getIndex(Array, arrayIterator) === Element) return arrayIterator
                             }
-
-                            // Return
-                            return arrayIndex
                         }
 
                         // Return
@@ -1712,11 +1704,54 @@
 
                     // Index From
                     LapysDevelopmentKit.Functions.stringPrototypeIndexFrom = function stringPrototypeIndexFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                        // Update > (Sub)String Length
+                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
 
+                        // Logic
+                        if (STRING_LENGTH) {
+                            // Constant > (Gradient Stop Length, Substring (First, Last) Character)
+                            var GRADIENT_STOP_LENGTH = LDKM.int(STRING_LENGTH / 4);
+
+                            var SUBSTRING_FIRST_CHARACTER = LDKF.stringPrototypeFirst(Substring);
+                            var SUBSTRING_LAST_CHARACTER = LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH);
+
+                            // Initialization > String (Index, Iterator)
+                            var stringIndex = -1, stringIterator = STRING_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+
+                            // Loop
+                            while (!~stringIndex && stringIterator) {
+                                // Update > String Iterator
+                                stringIterator -= 1;
+
+                                // Logic > ... --- NOTE (Lapys) -> Each block here represents a stop index within the gradient search.
+                                if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = STRING_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = STRING_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+
+                                if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+
+                                if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) === SUBSTRING_FIRST_CHARACTER) { stringIndex = stringIterator + GRADIENT_STOP_LENGTH; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) === SUBSTRING_LAST_CHARACTER) { stringIndex = stringIterator + GRADIENT_STOP_LENGTH; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+
+                                if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+                            }
+
+                            // Return
+                            return stringIndex
+                        }
+
+                        // Return
+                        return -1
                     };
 
-                    // Index From Back
+                    // Index From Back --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Functions.stringPrototypeIndexFromBack = function stringPrototypeIndexFromBack() {};
+
                     // Index From Front
+                    LapysDevelopmentKit.Functions.stringPrototypeIndexFromFront = function stringPrototypeIndexFromFront() {};
+
                     // Instance Characters
                     LapysDevelopmentKit.Functions.stringPrototypeInstanceCharacters = function stringPrototypeInstanceCharacters(String, STRING_LENGTH) { return LDKF.arrayPrototypeInstance(String, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
 
@@ -1731,7 +1766,7 @@
                     LapysDevelopmentKit.Functions.stringPrototypeReplace = function stringPrototypeReplace(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
 
                     // Replace From
-                    LapysDevelopmentKit.Functions.stringPrototypeReplaceFrom = function stringPrototypeReplaceFrom(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH) {
+                    LapysDevelopmentKit.Functions.stringPrototypeReplaceFrom = function stringPrototypeReplaceFrom(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH, SUBSTRING_INDEX) {
                         STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
                         SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
 
