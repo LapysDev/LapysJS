@@ -2136,6 +2136,9 @@
                         LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.characteristics, '0');
                         LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, this.mantissa, '0')
                     }
+
+                    // Modification > Target > Signed
+                    this.signed = false
                 };
                     // Add
                     LapysDevelopmentKit.Types.BigNumberAdd =
@@ -2371,8 +2374,8 @@
                     };
 
                     // Lesser Than Or Equal To
-                    LapysDevelopmentKit.Types.BigNumberLesserThanOrEqualTo =
-                    LapysDevelopmentKit.Types.BigNumber.lesserThanOrEqualTo = function lesserThanOrEqualTo(BigNumberA, BigNumberB) { return LDKT.BigNumberEquals(BigNumberA, BigNumberB) || LDKT.BigNumberLesserThan(BigNumberA, BigNumberB) };
+                    LapysDevelopmentKit.Types.BigNumberLesserThanOrEquals =
+                    LapysDevelopmentKit.Types.BigNumber.lesserThanOrEquals = function lesserThanOrEquals(BigNumberA, BigNumberB) { return LDKT.BigNumberEquals(BigNumberA, BigNumberB) || LDKT.BigNumberLesserThan(BigNumberA, BigNumberB) };
 
                     // Greater Than
                     LapysDevelopmentKit.Types.BigNumberGreaterThan =
@@ -2462,8 +2465,8 @@
                     };
 
                     // Greater Than Or Equal To
-                    LapysDevelopmentKit.Types.BigNumberGreaterThanOrEqualTo =
-                    LapysDevelopmentKit.Types.BigNumber.greaterThanOrEqualTo = function greaterThanOrEqualTo(BigNumberA, BigNumberB) { return LDKT.BigNumberEquals(BigNumberA, BigNumberB) || LDKT.BigNumberGreaterThan(BigNumberA, BigNumberB) };
+                    LapysDevelopmentKit.Types.BigNumberGreaterThanOrEquals =
+                    LapysDevelopmentKit.Types.BigNumber.greaterThanOrEquals = function greaterThanOrEquals(BigNumberA, BigNumberB) { return LDKT.BigNumberEquals(BigNumberA, BigNumberB) || LDKT.BigNumberGreaterThan(BigNumberA, BigNumberB) };
 
                     // Modulo --- CHECKPOINT (Lapys)
                     // Multiply --- CHECKPOINT (Lapys)
@@ -2474,24 +2477,26 @@
                     LapysDevelopmentKit.Types.BigNumberPrototype = LapysDevelopmentKit.Types.BigNumber.prototype;
                         // Add
                         LapysDevelopmentKit.Types.BigNumberPrototypeAdd =
-                        LapysDevelopmentKit.Types.BigNumberPrototype.add = function add(Number) { return LDKT.BigNumberAdd(this, Number, STRICT = true) };
+                        LapysDevelopmentKit.Types.BigNumberPrototype.add = function add(BigNumber) { return LDKT.BigNumberAdd(this, BigNumber, STRICT = true) };
 
                         // Copy
                         LapysDevelopmentKit.Types.BigNumberPrototypeCopy =
-                        LapysDevelopmentKit.Types.BigNumberPrototype.copy = function copy(Number, CONVERT_TO_BIG_NUMBER) {
-                            // Update > Number
-                            CONVERT_TO_BIG_NUMBER && (Number = LDKT.BigNumberFromNumber(Number));
+                        LapysDevelopmentKit.Types.BigNumberPrototype.copy = function copy(BigNumber, CONVERT_TO_BIG_NUMBER) {
+                            // Update > Big Number
+                            CONVERT_TO_BIG_NUMBER && (BigNumber = LDKT.BigNumberFromNumber(BigNumber));
 
                             // Modification > Target > (Characteristics, Mantissa)
-                            this.characteristics = Number.characteristics;
-                            this.mantissa = Number.mantissa;
+                            this.characteristics = BigNumber.characteristics;
+                            this.mantissa = BigNumber.mantissa;
 
                             // Return
                             return this
                         };
 
                         // Decrement --- CHECKPOINT (Lapys)
-                        // Divide --- CHECKPOINT (Lapys)
+                        // Divide
+                        LapysDevelopmentKit.Types.BigNumberPrototypeDivide =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.divide = function divide(BigNumber) { return LDKT.BigNumberDivide(this, BigNumber, STRICT = true) };
 
                         // Has Significant Characteristics
                         LapysDevelopmentKit.Types.BigNumberPrototypeHasSignificantCharacteristics =
@@ -2513,7 +2518,7 @@
 
                         // Is Greater Than
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsGreaterThanOrEqualTo =
-                        LapysDevelopmentKit.Types.BigNumberPrototype.isGreaterThanOrEqualTo = function isGreaterThanOrEqualTo(BigNumber) { return LDKT.BigNumberGreaterThanOrEqualTo(this, BigNumber) };
+                        LapysDevelopmentKit.Types.BigNumberPrototype.isGreaterThanOrEqualTo = function isGreaterThanOrEqualTo(BigNumber) { return LDKT.BigNumberGreaterThanOrEquals(this, BigNumber) };
 
                         // Is Lesser Than
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsLesserThan =
@@ -2521,17 +2526,34 @@
 
                         // Is Lesser Than
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsLesserThanOrEqualTo =
-                        LapysDevelopmentKit.Types.BigNumberPrototype.isLesserThanOrEqualTo = function isLesserThanOrEqualTo(BigNumber) { return LDKT.BigNumberLesserThanOrEqualTo(this, BigNumber) };
+                        LapysDevelopmentKit.Types.BigNumberPrototype.isLesserThanOrEqualTo = function isLesserThanOrEqualTo(BigNumber) { return LDKT.BigNumberLesserThanOrEquals(this, BigNumber) };
 
                         // Is Overflown
                         LapysDevelopmentKit.Types.BigNumberPrototypeIsOverflown =
                         LapysDevelopmentKit.Types.BigNumberPrototype.isOverflown = function isOverflown() { return LDKT.BigNumberLesserThanOrEqualTo(this, -LDKC.Numbers.MaximumIntegerValue) || LDKT.BigNumberGreaterThanOrEqualTo(this, LDKC.Numbers.MaximumIntegerValue) };
 
-                        // Modulo --- CHECKPOINT (Lapys)
-                        // Multiply --- CHECKPOINT (Lapys)
-                        // Power --- CHECKPOINT (Lapys)
-                        // Sign --- CHECKPOINT (Lapys)
-                        // Subtract --- CHECKPOINT (Lapys)
+                        // Modulo
+                        LapysDevelopmentKit.Types.BigNumberPrototypeModulo =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.modulo = function modulo(BigNumber) { return LDKT.BigNumberModulo(this, BigNumber, STRICT = true) };
+
+                        // Multiply
+                        LapysDevelopmentKit.Types.BigNumberPrototypeMultiply =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.multiply = function multiply(BigNumber) { return LDKT.BigNumberMultiply(this, BigNumber, STRICT = true) };
+
+                        // Power
+                        LapysDevelopmentKit.Types.BigNumberPrototypePower =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.power = function power(BigNumber) { return LDKT.BigNumberPower(this, BigNumber, STRICT = true) };
+
+                        // Sign
+                        LapysDevelopmentKit.Types.BigNumberPrototypeSign =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.sign = function sign(BigNumber) { this.signed = true; return this };
+
+                        // Signed
+                        LapysDevelopmentKit.Types.BigNumberPrototype.signed = false;
+
+                        // Subtract
+                        LapysDevelopmentKit.Types.BigNumberPrototypeSubtract =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.subtract = function subtract(BigNumber) { return LDKT.BigNumberSubtract(this, BigNumber, STRICT = true) };
 
                         // To Number
                         LapysDevelopmentKit.Types.BigNumberPrototypeToNumber =
@@ -2555,7 +2577,9 @@
                             return string
                         };
 
-                        // Unsign --- CHECKPOINT (Lapys)
+                        // Unsign
+                        LapysDevelopmentKit.Types.BigNumberPrototypeUnsign =
+                        LapysDevelopmentKit.Types.BigNumberPrototype.unsign = function unsign(BigNumber) { this.signed = false; return this };
 
                 // Clock
                     // Prototype
@@ -2708,15 +2732,12 @@
                 /* Iterator --- NOTE (Lapys) -> Semantic type for repetition-based function handlers. */
                 LapysDevelopmentKit.Types.Iterator = function Iterator() { this.done = true };
 
-                /* Ranged Number
-                        --- CHECKPOINT (Lapys)
-                        --- NOTE (Lapys) -> Fixed-width number type.
-                        --- WARN (Lapys) ->
-                            - Maximum width is restricted to the environment`s maximum numeric value.
-                            - Does not support native `BigInt``s.
-                */
-                LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) { this.MAXIMUM_VALUE = MaximumValue; this.MINIMUM_VALUE = MinimumValue; this.value = Value || +0 };
+                /* Ranged Number --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Fixed-width number type. */
+                LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) {};
                     // Add --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Types.RangedNumberAdd =
+                    LapysDevelopmentKit.Types.RangedNumber.add = function add(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {};
+
                     // Divide --- CHECKPOINT (Lapys)
                     // Equal --- CHECKPOINT (Lapys)
                     // Greater Than --- CHECKPOINT (Lapys)
@@ -2731,13 +2752,20 @@
                     // Unsign --- CHECKPOINT (Lapys)
 
                     // Prototype
-                        // Add --- CHECKPOINT (Lapys)
+                    LapysDevelopmentKit.Types.RangedNumberPrototype = LapysDevelopmentKit.Types.RangedNumber.prototype;
+                        // Add
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeAdd =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.add = function add(RangedNumber) { return LDKT.RangedNumberAdd(this, RangedNumber, STRICT = true) };
+
                         // Decrement --- CHECKPOINT (Lapys)
-                        // Divide --- CHECKPOINT (Lapys)
+
+                        // Divide
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeDivide =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.divide = function divide(RangedNumber) { return LDKT.RangedNumberDivide(this, RangedNumber, STRICT = true) };
 
                         // From Number
                         LapysDevelopmentKit.Types.RangedNumberPrototypeFromNumber =
-                        LapysDevelopmentKit.Types.RangedNumber.prototype.fromNumber = function fromNumber(Number) {
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.fromNumber = function fromNumber(Number) {
                             // Constant > Ranged Number
                             var RANGED_NUMBER = new LDKT.RangedNumber(LDKC.Numbers.Infinity, -LDKC.Numbers.Infinity);
 
@@ -2750,25 +2778,61 @@
                         };
 
                         // Increment --- CHECKPOINT (Lapys)
-                        // Is Equal To --- CHECKPOINT (Lapys)
-                        // Is Greater Than --- CHECKPOINT (Lapys)
-                        // Is Greater Than Or Equal To --- CHECKPOINT (Lapys)
-                        // Is Lesser Than --- CHECKPOINT (Lapys)
-                        // Is Lesser Than Or Equal To --- CHECKPOINT (Lapys)
-                        // Modulo --- CHECKPOINT (Lapys)
-                        // Multiply --- CHECKPOINT (Lapys)
-                        // Power --- CHECKPOINT (Lapys)
-                        // Sign --- CHECKPOINT (Lapys)
-                        // Subtract --- CHECKPOINT (Lapys)
-                        // Unsign --- CHECKPOINT (Lapys)
+
+                        // Is Equal To
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsEqualTo =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.isEqualTo = function isEqualTo(RangedNumber) { return LDKT.RangedNumberEquals(this, RangedNumber) };
+
+                        // Is Greater Than
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsGreaterThan =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.isGreaterThan = function isGreaterThan(RangedNumber) { return LDKT.RangedNumberGreaterThan(this, RangedNumber) };
+
+                        // Is Greater Than Or Equal To
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsGreaterThanOrEqualTo =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.isGreaterThanOrEqualTo = function isGreaterThanOrEqualTo(RangedNumber) { return LDKT.RangedNumberGreaterThanOrEquals(this, RangedNumber) };
+
+                        // Is Lesser Than
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsLesserThan =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.isLesserThan = function isLesserThan(RangedNumber) { return LDKT.RangedNumberLesserThan(this, RangedNumber) };
+
+                        // Is Lesser Than Or Equal To
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsLesserThanOrEqualTo =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.isLesserThanOrEqualTo = function isLesserThanOrEqualTo(RangedNumber) { return LDKT.RangedNumberLesserThanOrEquals(this, RangedNumber) };
+
+                        // Modulo
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeModulo =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.modulo = function modulo(RangedNumber) { return LDKT.RangedNumberModulo(this, RangedNumber, STRICT = true) };
+
+                        // Multiply
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeMultiply =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.multiply = function multiply(RangedNumber) { return LDKT.RangedNumberMultiply(this, RangedNumber, STRICT = true) };
+
+                        // Power
+                        LapysDevelopmentKit.Types.RangedNumberPrototypePower =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.power = function power(RangedNumber) { return LDKT.RangedNumberPower(this, RangedNumber, STRICT = true) };
+
+                        // Sign
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeSign =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.sign = function sign() { this.signed = true; return this };
+
+                        // Signed
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.signed = false;
+
+                        // Subtract
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeSubtract =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.subtract = function subtract(RangedNumber) { return LDKT.RangedNumberSubtract(this, RangedNumber, STRICT = true) };
+
+                        // Unsign
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeUnsign =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.unsign = function unsign() { this.signed = false; return this };
 
                         // To Number
                         LapysDevelopmentKit.Types.RangedNumberPrototypeToNumber =
-                        LapysDevelopmentKit.Types.RangedNumber.prototype.toNumber = function toNumber() { return this.value };
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.toNumber = function toNumber() { return this.value };
 
                         // To String
                         LapysDevelopmentKit.Types.RangedNumberPrototypeToString =
-                        LapysDevelopmentKit.Types.RangedNumber.prototype.toString = function toString() { return LDKF.toString(this.value) };
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.toString = function toString() { return LDKF.toString(this.value) };
 
                 /* Safe Number
                         --- NOTE (Lapys) -> Defers between the `BigNumber` and `Number` types for performance.
