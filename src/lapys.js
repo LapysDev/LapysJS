@@ -1630,10 +1630,12 @@
             /* Mathematics --- REDACT (Lapys) */
             LapysDevelopmentKit.Mathematics.abs = function abs(Number) { return Number < +0 ? -Number : Number };
             LapysDevelopmentKit.Mathematics.ceil = function ceil(Number) { var integer = LDKM.int(Number); return integer + (Number > integer) };
+            LapysDevelopmentKit.Mathematics.clamp = function clamp(Number, Minimum, Maximum) { return LDKM.min(LDKM.max(Number, Minimum), Maximum) };
             LapysDevelopmentKit.Mathematics.int = function int(Number) { return Number - Number % 1 };
             LapysDevelopmentKit.Mathematics.max = function max(NumberA, NumberB) { return NumberA > NumberB ? NumberA : NumberB };
             LapysDevelopmentKit.Mathematics.min = function min(NumberA, NumberB) { return NumberA < NumberB ? NumberA : NumberB };
             LapysDevelopmentKit.Mathematics.perc = function perc(Base, Exponent) { return +!!Exponent && (Base * (Exponent / 100)) };
+            LapysDevelopmentKit.Mathematics.pow = Math.pow; // CHECKPOINT (Lapys)
             LapysDevelopmentKit.Mathematics.powInt = function powInt(Base, exponent) { if (exponent) { var MULTIPLIER = Base; while (exponent -= 1) Base *= MULTIPLIER; return Base } else return 1 };
             LapysDevelopmentKit.Mathematics.round = function round(Number) { var INTEGER = LDKM.int(Number); return INTEGER + (Number - INTEGER >= .5) };
 
@@ -2732,107 +2734,246 @@
                 /* Iterator --- NOTE (Lapys) -> Semantic type for repetition-based function handlers. */
                 LapysDevelopmentKit.Types.Iterator = function Iterator() { this.done = true };
 
-                /* Ranged Number --- CHECKPOINT (Lapys) --- NOTE (Lapys) -> Fixed-width number type. */
-                LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) {};
-                    // Add --- CHECKPOINT (Lapys)
-                    LapysDevelopmentKit.Types.RangedNumberAdd =
-                    LapysDevelopmentKit.Types.RangedNumber.add = function add(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {};
+                /* Ranged Number --- NOTE (Lapys) -> Fixed-width number type. */
+                LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) {
+                    // Logic
+                    if (MinimumValue instanceof LDKT.RangedNumber) {
+                        // Constant > Ranged Number
+                        var RANGED_NUMBER = LDKT.RangedNumberFromNumber(MinimumValue);
 
-                    // Divide --- CHECKPOINT (Lapys)
-                    // Equal --- CHECKPOINT (Lapys)
-                    // Greater Than --- CHECKPOINT (Lapys)
-                    // Greater Than Or Equal To --- CHECKPOINT (Lapys)
-                    // Lesser Than --- CHECKPOINT (Lapys)
-                    // Lesser Than Or Equal To --- CHECKPOINT (Lapys)
-                    // Modulo --- CHECKPOINT (Lapys)
-                    // Multiply --- CHECKPOINT (Lapys)
-                    // Power --- CHECKPOINT (Lapys)
-                    // Sign --- CHECKPOINT (Lapys)
-                    // Subtract --- CHECKPOINT (Lapys)
-                    // Unsign --- CHECKPOINT (Lapys)
+                        // Modification > Target > (Clamped, ..., Value)
+                        this.clamped = RANGED_NUMBER.clamped;
+                        this.MAXIMUM_VALUE = RANGED_NUMBER.MAXIMUM_VALUE;
+                        this.MINIMUM_VALUE = RANGED_NUMBER.MINIMUM_VALUE;
+                        this.value = RANGED_NUMBER.value
+                    }
+
+                    else {
+                        // Modification > Target > (Clamped, ..., Value)
+                        this.clamped = true;
+                        this.MAXIMUM_VALUE = LDKC.Numbers["Infinity"];
+                        this.MINIMUM_VALUE = -LDKC.Numbers["Infinity"];
+                        this.value = Value || +0
+                    }
+                };
+                    // Add
+                    LapysDevelopmentKit.Types.RangedNumberAdd =
+                    LapysDevelopmentKit.Types.RangedNumber.add = function add(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                        // Constant > Addition
+                        var ADDITION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+
+                        // ...
+                        ADDITION.value = RangedNumberA.value + RangedNumberB.value;
+                        ADDITION.clamped ? LDKT.RangedNumberClamp(ADDITION) : LDKT.RangedNumberOverflow(ADDITION);
+
+                        // Return
+                        return ADDITION
+                    };
+
+                    // Clamp
+                    LapysDevelopmentKit.Types.RangedNumberClamp = function clamp(RangedNumber) {
+                        // Constant > Ranged Number (Maximum, Minimum) Value
+                        var RANGED_NUMBER_MAXIMUM_VALUE = RangedNumber.MAXIMUM_VALUE;
+                        var RANGED_NUMBER_MINIMUM_VALUE = RangedNumber.MINIMUM_VALUE;
+
+                        // Initialization > Ranged Number Value
+                        var rangedNumberValue = RangedNumber.value;
+
+                        // Logic
+                        if (RANGED_NUMBER_MAXIMUM_VALUE > RANGED_NUMBER_MINIMUM_VALUE)
+                            // Logic > Update > Ranged Number Value
+                            if (rangedNumberValue < RANGED_NUMBER_MINIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MINIMUM_VALUE;
+                            else if (rangedNumberValue > RANGED_NUMBER_MAXIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MAXIMUM_VALUE;
+
+                        // Return
+                        return RangedNumber
+                    };
+
+                    // Divide
+                    LapysDevelopmentKit.Types.RangedNumberDivide =
+                    LapysDevelopmentKit.Types.RangedNumber.divide = function divide(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                        // Constant > Division
+                        var DIVISION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+
+                        // ...
+                        DIVISION.value = RangedNumberA.value / RangedNumberB.value;
+                        DIVISION.clamped ? LDKT.RangedNumberClamp(DIVISION) : LDKT.RangedNumberOverflow(DIVISION);
+
+                        // Return
+                        return DIVISION
+                    };
+
+                    // Equals
+                    LapysDevelopmentKit.Types.RangedNumberEquals =
+                    LapysDevelopmentKit.Types.RangedNumber.equals = function equals(RangedNumberA, RangedNumberB) { return RangedNumberA.value == RangedNumberB.value };
+
+                    // From Number
+                    LapysDevelopmentKit.Types.RangedNumberFromNumber =
+                    LapysDevelopmentKit.Types.RangedNumber.fromNumber = function fromNumber(Number) {
+                        // Constant > Ranged Number
+                        var RANGED_NUMBER = new LDKT.RangedNumber;
+
+                        // Logic > ...
+                        if (Number instanceof LDKT.RangedNumber) { RANGED_NUMBER.clamped = Number.clamped; RANGED_NUMBER.MAXIMUM_VALUE = Number.MAXIMUM_VALUE; RANGED_NUMBER.MINIMUM_VALUE = Number.MINIMUM_VALUE; RANGED_NUMBER.value = Number.value }
+                        else if (LDKF.isBigInt(Number)) RANGED_NUMBER.value = Number;
+                        else if (LDKF.numberPrototypeIsSafe(Number)) RANGED_NUMBER.value = Number;
+
+                        // Return
+                        return RANGED_NUMBER
+                    };
+
+                    // Greater Than
+                    LapysDevelopmentKit.Types.RangedNumberGreaterThan =
+                    LapysDevelopmentKit.Types.RangedNumber.greaterThan = function greaterThan(RangedNumberA, RangedNumberB) { return RangedNumberA.value > RangedNumberB.value };
+
+                    // Greater Than Or Equal To
+                    LapysDevelopmentKit.Types.RangedNumberGreaterThanOrEquals =
+                    LapysDevelopmentKit.Types.RangedNumber.greaterThanOrEquals = function greaterThanOrEquals(RangedNumberA, RangedNumberB) { return RangedNumberA.value >= RangedNumberB.value };
+
+                    // Lesser Than
+                    LapysDevelopmentKit.Types.RangedNumberLesserThan =
+                    LapysDevelopmentKit.Types.RangedNumber.lesserThan = function lesserThan(RangedNumberA, RangedNumberB) { return RangedNumberA.value < RangedNumberB.value };
+
+                    // Lesser Than Or Equal To
+                    LapysDevelopmentKit.Types.RangedNumberLesserThanOrEquals =
+                    LapysDevelopmentKit.Types.RangedNumber.lesserThanOrEquals = function lesserThanOrEquals(RangedNumberA, RangedNumberB) { return RangedNumberA.value <= RangedNumberB.value };
+
+                    // Modulo
+                    LapysDevelopmentKit.Types.RangedNumberModulo =
+                    LapysDevelopmentKit.Types.RangedNumber.modulo = function modulo(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                        // Constant > Modulus
+                        var MODULUS = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+
+                        // ...
+                        MODULUS.value = RangedNumberA.value % RangedNumberB.value;
+                        MODULUS.clamped ? LDKT.RangedNumberClamp(MODULUS) : LDKT.RangedNumberOverflow(MODULUS);
+
+                        // Return
+                        return MODULUS
+                    };
+
+                    // Multiply
+                    LapysDevelopmentKit.Types.RangedNumberMultiply =
+                    LapysDevelopmentKit.Types.RangedNumber.multiply = function multiply(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                        // Constant > Multiplication
+                        var MULTIPLICATION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+
+                        // ...
+                        MULTIPLICATION.value = RangedNumberA.value * RangedNumberB.value;
+                        MULTIPLICATION.clamped ? LDKT.RangedNumberClamp(MULTIPLICATION) : LDKT.RangedNumberOverflow(MULTIPLICATION);
+
+                        // Return
+                        return MULTIPLICATION
+                    };
+
+                    // Overflow
+                    LapysDevelopmentKit.Types.RangedNumberOverflow = function overflow(RangedNumber) {
+                        // Constant > Ranged Number (Maximum, Minimum) Value
+                        var RANGED_NUMBER_MAXIMUM_VALUE = RangedNumber.MAXIMUM_VALUE;
+                        var RANGED_NUMBER_MINIMUM_VALUE = RangedNumber.MINIMUM_VALUE;
+
+                        // Initialization > Ranged Number Value
+                        var rangedNumberValue = RangedNumber.value;
+
+                        // Logic
+                        if (RANGED_NUMBER_MAXIMUM_VALUE > RANGED_NUMBER_MINIMUM_VALUE)
+                            // Logic > Update > Ranged Number Value
+                            if (rangedNumberValue < RANGED_NUMBER_MINIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MAXIMUM_VALUE - rangedNumberValue;
+                            else if (rangedNumberValue > RANGED_NUMBER_MAXIMUM_VALUE) rangedNumberValue = RANGED_NUMBER_MINIMUM_VALUE + rangedNumberValue;
+
+                        // Return
+                        return RangedNumber
+                    };
+
+                    // Power
+                    LapysDevelopmentKit.Types.RangedNumberPower =
+                    LapysDevelopmentKit.Types.RangedNumber.power = function power(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                        // Constant > Power
+                        var POWER = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+
+                        // ...
+                        POWER.value = LDKM.pow(RangedNumberA.value, RangedNumberB.value);
+                        POWER.clamped ? LDKT.RangedNumberClamp(POWER) : LDKT.RangedNumberOverflow(POWER);
+
+                        // Return
+                        return POWER
+                    };
+
+                    // Sign
+                    LapysDevelopmentKit.Types.RangedNumberSign =
+                    LapysDevelopmentKit.Types.RangedNumber.sign = function sign(RangedNumber, PARSE_AS_SOURCE) {
+                        // Constant > Ranged Number
+                        var RANGED_NUMBER;
+
+                        // Logic > ...
+                        if (PARSE_AS_SOURCE) RANGED_NUMBER = RangedNumber;
+                        else if (RANGED_NUMBER) { RANGED_NUMBER = new LDKT.RangedNumber; LDKF.functionPrototypeMonoadicCall(LDKT.RangedNumberPrototypeCopy, RANGED_NUMBER, RangedNumber) }
+
+                        // ...
+                        (RANGED_NUMBER.value > -0) && (RANGED_NUMBER.value = -RANGED_NUMBER.value);
+                        RANGED_NUMBER.clamped ? LDKT.RangedNumberClamp(RANGED_NUMBER) : LDKT.RangedNumberOverflow(RANGED_NUMBER);
+
+                        // Return
+                        return RANGED_NUMBER
+                    };
+
+                    // Subtract
+                    LapysDevelopmentKit.Types.RangedNumberSubtract =
+                    LapysDevelopmentKit.Types.RangedNumber.subtract = function subtract(RangedNumberA, RangedNumberB, PARSE_AS_SOURCE) {
+                        // Constant > Subtraction
+                        var SUBTRACTION = PARSE_AS_SOURCE ? RangedNumberA : new LDKT.RangedNumber;
+
+                        // ...
+                        SUBTRACTION.value = RangedNumberA.value - RangedNumberB.value;
+                        SUBTRACTION.clamped ? LDKT.RangedNumberClamp(SUBTRACTION) : LDKT.RangedNumberOverflow(SUBTRACTION);
+
+                        // Return
+                        return SUBTRACTION
+                    };
+
+                    // Unsign
+                    LapysDevelopmentKit.Types.RangedNumberUnsign =
+                    LapysDevelopmentKit.Types.RangedNumber.unsign = function unsign(RangedNumber, PARSE_AS_SOURCE) {
+                        // Constant > Ranged Number
+                        var RANGED_NUMBER;
+
+                        // Logic > ...
+                        if (PARSE_AS_SOURCE) RANGED_NUMBER = RangedNumber;
+                        else if (RANGED_NUMBER) { RANGED_NUMBER = new LDKT.RangedNumber; LDKF.functionPrototypeMonoadicCall(LDKT.RangedNumberPrototypeCopy, RANGED_NUMBER, RangedNumber) }
+
+                        // ...
+                        (RANGED_NUMBER.value < +0) && (RANGED_NUMBER.value = -RANGED_NUMBER.value);
+                        RANGED_NUMBER.clamped ? LDKT.RangedNumberClamp(RANGED_NUMBER) : LDKT.RangedNumberOverflow(RANGED_NUMBER);
+
+                        // Return
+                        return RANGED_NUMBER
+                    };
 
                     // Prototype
                     LapysDevelopmentKit.Types.RangedNumberPrototype = LapysDevelopmentKit.Types.RangedNumber.prototype;
-                        // Add
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeAdd =
+                        // ...
                         LapysDevelopmentKit.Types.RangedNumberPrototype.add = function add(RangedNumber) { return LDKT.RangedNumberAdd(this, RangedNumber, STRICT = true) };
-
-                        // Decrement --- CHECKPOINT (Lapys)
-
-                        // Divide
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeDivide =
+                        LapysDevelopmentKit.Types.RangedNumberPrototypeCopy =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.copy = function copy(RangedNumber) { this.MAXIMUM_VALUE = RangedNumber.MAXIMUM_VALUE; this.MINIMUM_VALUE = RangedNumber.MINIMUM_VALUE; this.value = RangedNumber.value };
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.decrement = function decrement() { this.value -= 1; LDKT.RangedNumberClamp(this); return this };
                         LapysDevelopmentKit.Types.RangedNumberPrototype.divide = function divide(RangedNumber) { return LDKT.RangedNumberDivide(this, RangedNumber, STRICT = true) };
-
-                        // From Number
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeFromNumber =
-                        LapysDevelopmentKit.Types.RangedNumberPrototype.fromNumber = function fromNumber(Number) {
-                            // Constant > Ranged Number
-                            var RANGED_NUMBER = new LDKT.RangedNumber(LDKC.Numbers.Infinity, -LDKC.Numbers.Infinity);
-
-                            // Logic > ...
-                            if (Number instanceof LDKT.RangedNumber) { RANGED_NUMBER.MAXIMUM_VALUE = Number.MAXIMUM_VALUE; RANGED_NUMBER.MINIMUM_VALUE = Number.MINIMUM_VALUE; RANGED_NUMBER.value = Number.value }
-                            else if (LDKF.isBigInt(Number)) RANGED_NUMBER.value = Number;
-                            else if (LDKF.numberPrototypeIsSafe(Number)) RANGED_NUMBER.value = Number;
-
-                            return RANGED_NUMBER
-                        };
-
-                        // Increment --- CHECKPOINT (Lapys)
-
-                        // Is Equal To
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsEqualTo =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.increment = function increment() { this.value += 1; LDKT.RangedNumberClamp(this); return this };
                         LapysDevelopmentKit.Types.RangedNumberPrototype.isEqualTo = function isEqualTo(RangedNumber) { return LDKT.RangedNumberEquals(this, RangedNumber) };
-
-                        // Is Greater Than
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsGreaterThan =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.isGreaterThan = function isGreaterThan(RangedNumber) { return LDKT.RangedNumberGreaterThan(this, RangedNumber) };
-
-                        // Is Greater Than Or Equal To
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsGreaterThanOrEqualTo =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.isGreaterThanOrEqualTo = function isGreaterThanOrEqualTo(RangedNumber) { return LDKT.RangedNumberGreaterThanOrEquals(this, RangedNumber) };
-
-                        // Is Lesser Than
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsLesserThan =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.isLesserThan = function isLesserThan(RangedNumber) { return LDKT.RangedNumberLesserThan(this, RangedNumber) };
-
-                        // Is Lesser Than Or Equal To
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeIsLesserThanOrEqualTo =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.isLesserThanOrEqualTo = function isLesserThanOrEqualTo(RangedNumber) { return LDKT.RangedNumberLesserThanOrEquals(this, RangedNumber) };
-
-                        // Modulo
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeModulo =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.modulo = function modulo(RangedNumber) { return LDKT.RangedNumberModulo(this, RangedNumber, STRICT = true) };
-
-                        // Multiply
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeMultiply =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.multiply = function multiply(RangedNumber) { return LDKT.RangedNumberMultiply(this, RangedNumber, STRICT = true) };
-
-                        // Power
-                        LapysDevelopmentKit.Types.RangedNumberPrototypePower =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.power = function power(RangedNumber) { return LDKT.RangedNumberPower(this, RangedNumber, STRICT = true) };
-
-                        // Sign
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeSign =
-                        LapysDevelopmentKit.Types.RangedNumberPrototype.sign = function sign() { this.signed = true; return this };
-
-                        // Signed
-                        LapysDevelopmentKit.Types.RangedNumberPrototype.signed = false;
-
-                        // Subtract
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeSubtract =
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.sign = function sign() { return LDKT.RangedNumberSign(this, STRICT = true) };
                         LapysDevelopmentKit.Types.RangedNumberPrototype.subtract = function subtract(RangedNumber) { return LDKT.RangedNumberSubtract(this, RangedNumber, STRICT = true) };
-
-                        // Unsign
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeUnsign =
-                        LapysDevelopmentKit.Types.RangedNumberPrototype.unsign = function unsign() { this.signed = false; return this };
-
-                        // To Number
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.unsign = function unsign() { return LDKT.RangedNumberUnsign(this, STRICT = true) };
                         LapysDevelopmentKit.Types.RangedNumberPrototypeToNumber =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.toNumber = function toNumber() { return this.value };
-
-                        // To String
-                        LapysDevelopmentKit.Types.RangedNumberPrototypeToString =
                         LapysDevelopmentKit.Types.RangedNumberPrototype.toString = function toString() { return LDKF.toString(this.value) };
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.value = +0;
+                        LapysDevelopmentKit.Types.RangedNumberPrototype.valueOf = function valueOf() { return LDKF.functionPrototypeNiladicCall(LDKT.RangedNumberPrototypeToNumber, this) };
 
                 /* Safe Number
                         --- NOTE (Lapys) -> Defers between the `BigNumber` and `Number` types for performance.
