@@ -8,15 +8,13 @@
         #Lapys:
             class ConstructorName {
                 var CONSTANT; var variable;
+
                 function(variableParameter, ConstantParameter, FLAG_PARAMETER) {}
+                function Constant(...) {}
+                function variable(...) {}
             };
 
-            $Public Data
-            Private Data
             _Native Name_
-
-    --- CONSIDERATIONS ---
-        #Lapys: Is the comma operator allowed for less expensive/ repetitive code?
 
     --- NOTE ---
         #Lapys:
@@ -42,17 +40,16 @@
                 -- The library makes an effort to use only native features of JavaScript to allow for universal compatibility with legacy & modern host environments.
 
                     It also avoids liberal use of vendor-specific (or environment-restricted) features & APIs.
-                    This is mainly due to subtle inconsistencies in the adaptation of the ECMAScript standard for JavaScript in consumer software and custom runtimes
+                    This is mainly due to "subtle" inconsistencies in the adaptation of the ECMAScript standard for JavaScript in consumer software and custom runtimes
                     (Hence the need for conditional comments (by Microsoft), fallbacks, polyfills, shims & shivs (by John Resig and Sam Ruby) and so on).
 
-                    Of course, this supports the concept of spoof-proofing [https://en.m.wikipedia.org/wiki/Spoofing_attack] which is a prevention discipline that prevents
-                    data being masqueraded and falsified.
+                    Of course, this supports the concept of spoof-proofing [https://en.m.wikipedia.org/wiki/Spoofing_attack] which is a discipline that prevents data being masqueraded and falsified.
                     Unfortunately, the JavaScript language adoption is limited in the context of its everyday-use APIs and spoofing;
                     which leads to most versions of the language being impossible to spoof-proof.
 
                     Conversely, this decision supports the design standards of the Lapys Development Kit into JavaScript such as:
                         --- software to be executed has four phases: Initiate, Update, Reset, Terminate (also known as RIUT),
-                        --- private and public features are independent & separate but still communicate between each other (private being the main authority),
+                        --- private and public features are independent & separate but still communicable (private being the main authority),
                         --- multiple solutions (often special-purpose) are deferred in favor of a single general-purpose solution when feasible,
                         --- and so on...
 
@@ -60,27 +57,28 @@
         #Lapys:
             - All expressions/ statements/ values must be intentional (avoid the methodologies of Sloppy Mode in JavaScript [https://developer.mozilla.org/en-US/docs/Glossary/Sloppy_mode]).
             - All features must be alphabetically defined & ordered for readability if feasible.
-            - All non-universal features are banned (e.g.: Arrow functions, class objects, REST parameters and so on).
+            - All non-universal features are banned (e.g.: APIs, classes, lambdas, REST features and so on).
             - Avoid naming an object property `constructor`, instead defer to `constructorRoutine`.
             - Avoid naming an object property `function`, instead defer to `routine`.
             - Avoid the `break` statement in repetition structures; This encourages a first-entry, first-exit design.
-            - Digits must be represented as character strings (with collective digits denoted as an `Array` or `BigArray` (usually within a `BigNumber`)); Digits do not have an exclusive type or wrapper class.
             - Due to the ECMAScript standard supporting multiple zero types, it is a rule to explicitly & strictly differentiate between each of those values (e.g.: `-0` and `+0`) except in special cases.
             - Inline function expressions are only allowed in:
                 -- Defining the `Main` function or
                 -- Defining a phase: `Initiate`, `Update`, `Reset` or `Terminate` or
                 -- If the alternative is less efficient/ preferable.
-            - Memory management due to the JavaScript garbage collector should be kept to a minimum:
+            - Memory management via the JavaScript garbage collector should be kept to a minimum:
                 -- Avoid local function declarations.
                 -- Avoid unnecessary property/ variable definition/ initialization.
                 -- Defer string literals instead of string concatenation.
                 -- Defer to parameter labels instead of the `arguments` object.
                 -- Limit evaluating function expressions.
-                -- Limit the amount of exceptions thrown.
+                -- Limit the liberal use of explicit exceptions handlers (e.g: the `try... catch` block).
+                -- Limit the use of object literals.
                 -- Prevent coercing primitive values to objects.
                 -- Use of some native functions.
             - Minimum number size should be 32 bits.
-            - Private functions should not strictly assert or modify its parameters.
+            - Non-literal digits must be represented as character strings (with collective digits denoted as an `Array` or `BigArray` (usually within a `BigNumber`)); Digits do not have an exclusive type or wrapper class.
+            - Private functions should not strictly assert its parameters.
 
             This is to keep the language somewhat universally readable and similar to other programming languages.
 
@@ -89,11 +87,15 @@
             - Blur all elements when main window is blurred.
             - Lookup CSS rules from the `document.styleSheets[0].cssRules` form.
             - Lookup DOM updates with the `MutationObserver` API.
-            - Fix the naming of variables within functions.
             - Target development environments (these may lack a core (and/ or modern) JavaScript feature or not work for unknown reasons...):
                 -- Internet Explorer 3 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- Netscape Navigator 2 - 4 (browser) --- NOTE (Lapys) -> Deprecated.
                 -- others...
+
+    --- WARN ---
+        #Lapys:
+            The constant & constructor parameter naming convention are similar which may lead to unwanted conflicts.
+            Unfortunately there is no feature to specify constant parameters within the function signature explicitly in JavaScript.
 */
 +(function Main() {
     /* Constants > ... */
@@ -110,59 +112,19 @@
     var TMP; // NOTE (Lapys) -> Global variable for critical, temporary data (may be used in denoting status or swapping values).
 
     /* Polyfills > ... */
-    var undefined = void +0; // NOTE (Lapys) -> Should not be allowed but it is.
+    var undefined = void +0; // WARN (Lapys) -> Should not be legal but it is.
 
-    /* Namespace > ... */
-    var LapysDevelopmentKit = new (function LapysDevelopmentKit() {
-        // Constant > Lapys Development Kit
-        var LapysDevelopmentKit = this;
-
-        // Modification > Lapys Development Kit
-            // Constants
-            LapysDevelopmentKit.Constants = new (function Constants() {});
-                // ...
-                LapysDevelopmentKit.Constants.Assertions = {};
-                LapysDevelopmentKit.Constants.Data = {};
-                LapysDevelopmentKit.Constants.Keywords = {};
-                LapysDevelopmentKit.Constants.Numbers = {};
-                LapysDevelopmentKit.Constants.Objects = {};
-                LapysDevelopmentKit.Constants.Strings = {};
-
-            // Environment --- NOTE (Lapys) -> Data container about the current host environment/ runtime.
-            LapysDevelopmentKit.Environment = new (function Environment() {});
-
-            // Functions --- WARN (Lapys) -> Avoid using the functions within this namespace for high-frequency events.
-            LapysDevelopmentKit.Functions = new (function Functions() {});
-
-            // Information
-            LapysDevelopmentKit.Information = new (function Information() {});
-                // Directives --- NOTE (Lapys) -> Compile-time directives that influence the code.
-                LapysDevelopmentKit.Information.Directives = {DebugMode: false, IgnoreMissingFeatures: false};
-
-                // Messages
-                LapysDevelopmentKit.Information.Messages = {Debugging: {}, Error: {}};
-
-            // Mathematics
-            LapysDevelopmentKit.Mathematics = new (function Mathematics() {});
-
-            // Objects --- NOTE (Lapys) -> Native structures & values.
-            LapysDevelopmentKit.Objects = new (function Objects() {});
-
-            // Records
-            LapysDevelopmentKit.Records = new (function Records() {});
-                // ...
-                LapysDevelopmentKit.Records.Lists = {};
-                LapysDevelopmentKit.Records.Values = {};
-
-            /* Types
-                    --- NOTE (Lapys) -> Namespace for custom-defined data types.
-                    --- WARN (Lapys) -> Type assertion & exception handling will not be utilized for speed in performance.
-            */
-            LapysDevelopmentKit.Types = new (function Types() {});
-
-        // Return
-        return LapysDevelopmentKit
-    });
+    /* Namespace > Lapys Development Kit */
+    var LapysDevelopmentKit = {
+        Constants: {Assertions: {}, Data: {}, Keywords: {}, Numbers: {}, Objects: {}, Strings: {}},
+        Environment: {},
+        Functions: {},
+        Information: {Directives: {DebugMode: false, IgnoreMissingFeatures: false}, Messages: {Debugging: {}, Error: {}}},
+        Mathematics: {},
+        Objects: {},
+        Records: {Lists: {}, Values: {}},
+        Types: {}
+    };
 
     /* Shorthands */
     var LDK = LapysDevelopmentKit;
@@ -177,7 +139,7 @@
 
     /* [Pre-]Modification --- NOTE (Lapys) -> Required features that must be hoisted first. */
         /* Lapys Development Kit */
-            /* Functions --- NOTE (Lapys) -> Fortunately, these objects manage their own properties; They are spoof-proof. --- REDACT (Lapys) */
+            /* Functions --- NOTE (Lapys) -> Fortunately, these objects manage their own properties; They are genuinely spoof-proof. --- REDACT (Lapys) */
             LapysDevelopmentKit.Functions.argumentsPrototypeArgumentAt = function argumentsPrototypeArgumentAt(ArgumentListObject, Index) { return ArgumentListObject[Index] };
             LapysDevelopmentKit.Functions.argumentsPrototypeCallee = function argumentsPrototypeCallee(ArgumentListObject) { return ArgumentListObject.callee };
             LapysDevelopmentKit.Functions.argumentsPrototypeLength = function argumentsPrototypeLength(ArgumentListObject) { return ArgumentListObject.length };
@@ -213,7 +175,7 @@
             */
             LapysDevelopmentKit.Types.ArrayImperative = function ArrayImperative(Accessor, Mutator, Requester, Allocator) { this.getIndex = Accessor; this.getLength = Requester; this.setIndex = Mutator; this.setLength = Allocator };
             LapysDevelopmentKit.Types.Clock = function Clock() { this.timed = false; this.timeElapsed = +0 };
-            LapysDevelopmentKit.Types.Enumeration = function Enumeration(Values) { var argumentsIterator = LDKF.getArgumentsLength(arguments); while (argumentsIterator) { argumentsIterator -= 1; this[LDKF.toString(arguments[argumentsIterator])] = argumentsIterator } return this };
+            LapysDevelopmentKit.Types.Enumeration = function Enumeration(Values) { var argumentsIterator = LDKF.getArgumentsLength(arguments); while (argumentsIterator) { argumentsIterator -= 1; this[LDKF.toString(arguments[argumentsIterator])] = argumentsIterator + 1 } return this };
             LapysDevelopmentKit.Types.SafeString = function SafeString(Characters) { var argumentsIterator = LDKF.getArgumentsLength(arguments); this.length = argumentsIterator; while (argumentsIterator) { argumentsIterator -= 1; this[argumentsIterator] = arguments[argumentsIterator] } };
 
     /* Modification */
@@ -224,6 +186,7 @@
                 LapysDevelopmentKit.Constants.Data.ArraySortType = new LDKT.Enumeration("ASCII_SORT", "CUSTOM_SORT", "NATIVE_SORT");
                 LapysDevelopmentKit.Constants.Data.Clock = new LDKT.Clock;
                 LapysDevelopmentKit.Constants.Data.NumberComponent = new LDKT.Enumeration("CHARACTERISTICS", "MANTISSA");
+                LapysDevelopmentKit.Constants.Data.SourceTypes = new LDKT.Enumeration("abap", "actionscript", "apl", "applescript", "arduino", "arff", "asciidoc", "asm", "asp", "autohotkey", "autoit", "bash", "basic", "batch", "bison", "brainfuck", "bro", 'c', "c#", "c++", "cil", "clojure", "cmake", "coffeescript", "crystal", "csp", "css", 'd', "dart", "diff", "django", "docker", "eiffel", "elixir", "elm", "erb", "erlang", "f#", "flow", "fortran", "gherkin", "git", "glsl", "gml", "go", "graphql", "haml", "haskell", "haxe", "hcl", "html", "html", "http", "java", "javascript", "json", "kotlin", "less", "lisp", "livescript", "lua", "makefile", "markdown", "markup", "mathml", "matlab", "objective-c", "ocaml", "open-cl", "pascal", "perl", "php", "powershell", "processing", "python", 'q', 'r', "regex", "ruby", "rust", "sass", "scala", "shell", "sql", "svg", "swift", "tcl", "typescript", "vlm", "xml", "yaml");
                 LapysDevelopmentKit.Constants.Data.StringImperative = new LDKT.ArrayImperative(LDKF.stringPrototypeCharacterAt, null, LDKF.stringPrototypeLength, null);
 
                 LapysDevelopmentKit.Constants.Data.ArrayASCIISortComparator = function ArrayASCIISortComparator(ArgumentA, ArgumentB) {
@@ -666,8 +629,17 @@
                             IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
                             ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
 
-                            // Logic > ...
-                            if (ARRAY_LENGTH) { IMPERATIVE.setLength(Array, ARRAY_LENGTH - 1); return ARRAY_LENGTH - 1 }
+                            // Logic
+                            if (ARRAY_LENGTH) {
+                                // Constant > Popped Element
+                                var POPPED_ELEMENT = IMPERATIVE.getIndex(Array, ARRAY_LENGTH - 1);
+
+                                // Update > Array
+                                IMPERATIVE.setLength(Array, ARRAY_LENGTH - 1);
+
+                                // Return
+                                return POPPED_ELEMENT
+                            }
                         }
 
                         // Return
@@ -698,6 +670,9 @@
 
                             // Logic
                             if (ARRAY_LENGTH) {
+                                // Constant > Shifted Element
+                                var SHIFTED_ELEMENT = IMPERATIVE.getIndex(Array, +0);
+
                                 // Initialization > Array Iterator
                                 var arrayIterator = ARRAY_LENGTH;
 
@@ -706,7 +681,7 @@
                                 IMPERATIVE.setLength(Array, ARRAY_LENGTH - 1);
 
                                 // Return
-                                return ARRAY_LENGTH - 1
+                                return SHIFTED_ELEMENT
                             }
                         }
 
@@ -957,10 +932,21 @@
                     // Asynchronous Call
                     LapysDevelopmentKit.Functions.functionPrototypeAsynchronousCall = function functionPrototypeAsynchronousCall(Routine, That, Argument) { var ARGUMENT_LIST = arguments, ANIMATION_FRAME_ID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(ANIMATION_FRAME_ID); LDKF.functionPrototypeApply(LDKF.functionPrototypeCall, LDKF, ARGUMENT_LIST) }) };
 
-                    // Dyadic Call
-                    LapysDevelopmentKit.Functions.functionPrototypeDyadicCall = function functionPrototypeDyadicCall(Routine, That, ArgumentA, ArgumentB) { return LDKO.functionPrototypeCall.call(Routine, That, ArgumentA, ArgumentB) };
+                    // Asynchronous Dyadic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousDyadicCall = function functionPrototypeAsynchronousDyadicCall(Routine, That, ArgumentA, ArgumentB) { var ANIMATION_FRAME_ID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(ANIMATION_FRAME_ID); LDKF.functionPrototypeDyadicCall(Routine, That, ArgumentA, ArgumentB) }) };
 
-                    // Call
+                    // Asynchronous Monadic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousMonoadicCall = function functionPrototypeAsynchronousMonoadicCall(Routine, That, Argument) { var ANIMATION_FRAME_ID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(ANIMATION_FRAME_ID); LDKF.functionPrototypeMonoadicCall(Routine, That, Argument) }) };
+
+                    // Asynchronous Niladic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousNiladicCall = function functionPrototypeAsynchronousNiladicCall(Routine, That) { var ANIMATION_FRAME_ID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(ANIMATION_FRAME_ID); LDKF.functionPrototypeNiladicCall(Routine, That) }) };
+
+                    // Asynchronous Triadic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeAsynchronousTriadicCall = function functionPrototypeAsynchronousTriadicCall(Routine, That, ArgumentA, ArgumentB, ArgumentC) { var ANIMATION_FRAME_ID = LDKF.requestAnimationFrame(function() { LDKF.cancelAnimationFrame(ANIMATION_FRAME_ID); LDKF.functionPrototypeTriadicCall(Routine, That, ArgumentA, ArgumentB, ArgumentC) }) };
+
+                    // Body --- CHECKPOINT (Lapys)
+
+                    // Call --- WARN (Lapys) -> Semantics only. Less redundant to use the `LapysDevelopmentKit.Functions.functionPrototypeAsynchronousApply` method instead.
                     LapysDevelopmentKit.Functions.functionPrototypeCall = function functionPrototypeCall(Routine, That, Argument) {
                         // Constant > Arguments Length
                         var ARGUMENTS_LENGTH = LDKF.getArgumentsLength(arguments);
@@ -970,11 +956,26 @@
                         else return LDKF.functionPrototypeNiladicCall(Routine, That)
                     };
 
+                    // Dyadic Call
+                    LapysDevelopmentKit.Functions.functionPrototypeDyadicCall = function functionPrototypeDyadicCall(Routine, That, ArgumentA, ArgumentB) { return LDKO.functionPrototypeCall.call(Routine, That, ArgumentA, ArgumentB) };
+
+                    // Head --- CHECKPOINT (Lapys)
+                    // Is Arrow Function --- CHECKPOINT (Lapys)
+                    // Is Asynchronous Function --- CHECKPOINT (Lapys)
+                    // Is Asynchronous Generator Function --- CHECKPOINT (Lapys)
+                    // Is Generator Function --- CHECKPOINT (Lapys)
+                    // Is Native Function --- CHECKPOINT (Lapys)
+
                     // Monoadic Call
                     LapysDevelopmentKit.Functions.functionPrototypeMonoadicCall = function functionPrototypeMonoadicCall(Routine, That, Argument) { return LDKO.functionPrototypeCall.call(Routine, That, Argument) };
 
                     // Niladic Call
                     LapysDevelopmentKit.Functions.functionPrototypeNiladicCall = function functionPrototypeNiladicCall(Routine, That) { return LDKO.functionPrototypeCall.call(Routine, That) };
+
+                    // Parameters --- CHECKPOINT (Lapys)
+                    // Parameter Source --- CHECKPOINT (Lapys)
+                    // To Source String --- CHECKPOINT (Lapys)
+                    // To String --- CHECKPOINT (Lapys)
 
                     // Triadic Call
                     LapysDevelopmentKit.Functions.functionPrototypeTriadicCall = function functionPrototypeTriadicCall(Routine, That, ArgumentA, ArgumentB, ArgumentC) { return LDKO.functionPrototypeCall.call(Routine, That, ArgumentA, ArgumentB, ArgumentC) };
@@ -1109,473 +1110,621 @@
                         }
                     };
 
-                /* String > Prototype
-                        --- NOTE ---
-                            #Lapys: While substrings are primarily strings, they can also be array types.
-                                Denoting a substring as an array type allows each method below assert the substring as its elements.
-
-                                For example:
-                                    The `LapysDevelopmentKit.Functions.stringPrototypeTrim` method has its `substring` parameter default to the array `['\0', '\n', ' ']`
-                                    which allows it to trim the string if it leads/ trails with any of the array's character elements (in any order).
-                */
-                    // After
-                    LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(String, Substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFrom(String, Substring, STRICT = STRING_LENGTH) };
-
-                    // After Character
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacter = function stringPrototypeAfterCharacter(String, Character, STRING_LENGTH) { return LDKF.stringPrototypeAfterCharacterFrom(String, Character, STRICT = STRING_LENGTH) };
-
-                    // After Character From
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFrom = function stringPrototypeAfterCharacterFrom(String, Character, STRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexCharacterFrom(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
-
-                    // After Character From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromBack = function stringPrototypeAfterCharacterFromBack(String, Character, STRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexCharacterFromBack(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
-
-                    // After Character From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromFront = function stringPrototypeAfterCharacterFromFront(String, Character, STRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexCharacterFromFront(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
-
-                    // After From
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterFrom = function stringPrototypeAfterFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
-
-                    // After From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterFromBack = function stringPrototypeAfterFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexFromBack(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
-
-                    // After From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterFromFront = function stringPrototypeAfterFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexFromFront(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
-
-                    // After Index
-                    LapysDevelopmentKit.Functions.stringPrototypeAfterIndex = function stringPrototypeAfterIndex(String, index, STRING_LENGTH) {
-                        // Initialization > After
-                        var after = "";
-
-                        // Loop > (Update > ...)
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                        while (index ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, index += 1);
-
-                        // Return
-                        return after
+                // String
+                    // Assert As Source --- CONSIDERATION (Lapys) -> Should there be an assertion method?
+                    // Parse As Source [Tokens] --- WARN (Lapys) -> These methods do not assert the source to be valid.
+                    LapysDevelopmentKit.Functions.stringParseAsSource = function stringParseAsSource(Source, SourceType, SOURCE_LENGTH) {
+                        // Logic > Return
+                        switch (SourceType || LDKC.Data.SourceTypes["javascript"]) {
+                            case LDKC.Data.SourceTypes["css"]: return LDKF.stringParseCSSSource(Source, STRICT = SOURCE_LENGTH);
+                            case LDKC.Data.SourceTypes["html"]: return LDKF.stringParseHTMLSource(Source, STRICT = SOURCE_LENGTH);
+                            case LDKC.Data.SourceTypes["javascript"]: return LDKF.stringParseJavaScriptSource(Source, STRICT = SOURCE_LENGTH);
+                            default: return []
+                        }
                     };
+                        // CSS
+                        LapysDevelopmentKit.Functions.stringParseCSSSource = function stringParseCSSSource(Source, SOURCE_LENGTH) {};
 
-                    // Before
-                    LapysDevelopmentKit.Functions.stringPrototypeBefore = function stringPrototypeBefore(String, Substring, STRING_LENGTH) { return LDKF.stringPrototypeBeforeFromBack(String, Substring, STRICT = STRING_LENGTH) };
+                        // HTML
+                        LapysDevelopmentKit.Functions.stringParseHTMLSource = function stringParseHTMLSource(Source, SOURCE_LENGTH) {};
 
-                    // Before Character
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacter = function stringPrototypeBeforeCharacter(String, Character, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeBeforeCharacterFrom(String, Character, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+                        // JavaScript
+                        LapysDevelopmentKit.Constants.Data.StringSourceTokenDelimiters = new LDKT.Enumeration("curly-braces", "double-quoted-string", "multiline-comment", "parenthesis", "regular-expression", "single-quoted-string", "singleline-comment", "square-braces", "template-string");
 
-                    // Before Character From
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFrom = function stringPrototypeBeforeCharacterFrom(String, Character, STRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexCharacterFrom(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+                        LapysDevelopmentKit.Functions.stringParseJavaScriptSource = function stringParseJavaScriptSource(Source, SOURCE_LENGTH) {
+                            // Update > Source Length
+                            SOURCE_LENGTH || (SOURCE_LENGTH = LDKF.stringPrototypeLength(Source));
 
-                    // Before Character From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromBack = function stringPrototypeBeforeCharacterFromBack(String, Character, STRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexCharacterFromBack(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+                            // Constant > (Tokens, ...)
+                            var TOKEN_DELIMITERS = LapysDevelopmentKit.Constants.Data.StringSourceTokenDelimiters;
+                            var TOKENS = [];
 
-                    // Before Character From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromFront = function stringPrototypeBeforeCharacterFromFront(String, Character, STRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexCharacterFromFront(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+                            // Initialization > (Current Token, ...) --- NOTE (Lapys) -> Parse the source`s tokens.
+                            var currentToken = new LDKT.Token; // NOTE (Lapys) -> The first token is actually the source itself.
+                            var tokenDelimiterHierarchy = [], tokenDelimiterHierarchyDepth = +0;
 
-                    // Before From
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFrom = function stringPrototypeBeforeFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+                            // Initialization > Source Iterator; Loop
+                            var sourceIterator = SOURCE_LENGTH;
+                            while (sourceIterator) {
+                                // Constant > Character
+                                var CHARACTER = LDKF.stringPrototypeCharacterAt(Source, SOURCE_LENGTH - (sourceIterator -= 1) - 1);
 
-                    // Before From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFromBack = function stringPrototypeBeforeFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexFromBack(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+                                // Initialization > (Current (Super Token, Token Delimiter), Next Token)
+                                var currentSupertoken = currentToken.supertoken;
+                                var currentTokenDelimiter = tokenDelimiterHierarchyDepth ? tokenDelimiterHierarchy[tokenDelimiterHierarchyDepth - 1] : +null;
 
-                    // Before From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeFromFront = function stringPrototypeBeforeFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexFromFront(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+                                var nextToken = currentToken;
+                                var nextTokenDelimiter = currentTokenDelimiter;
+                                var nextTokenDelimiterCharacterSequence = null;
 
-                    // Before Index
-                    LapysDevelopmentKit.Functions.stringPrototypeBeforeIndex = function stringPrototypeBeforeIndex(String, index) {
-                        // Initialization > Before
-                        var before = "";
+                                if (!(
+                                    currentTokenDelimiter == TOKEN_DELIMITERS["double-quoted-string"] ||
+                                    currentTokenDelimiter == TOKEN_DELIMITERS["multiline-comment"] ||
+                                    currentTokenDelimiter == TOKEN_DELIMITERS["regular-expression"] ||
+                                    currentTokenDelimiter == TOKEN_DELIMITERS["single-quoted-string"] ||
+                                    currentTokenDelimiter == TOKEN_DELIMITERS["singleline-comment"] ||
+                                    currentTokenDelimiter == TOKEN_DELIMITERS["template-string"]
+                                ))
+                                    if (CHARACTER == '"') { nextTokenDelimiter = TOKEN_DELIMITERS["double-quoted-string"]; nextTokenDelimiterCharacterSequence = CHARACTER }
+                                    else if (CHARACTER == '\'') { nextTokenDelimiter = TOKEN_DELIMITERS["single-quoted-string"]; nextTokenDelimiterCharacterSequence = CHARACTER }
+                                    else if (CHARACTER == '(') { nextTokenDelimiter = TOKEN_DELIMITERS["parenthesis"]; nextTokenDelimiterCharacterSequence = CHARACTER }
+                                    else if (
+                                        CHARACTER == '/' &&
+                                        (
+                                            sourceIterator && (
+                                                LDKF.stringPrototypeCharacterAt(Source, SOURCE_LENGTH - sourceIterator) != '*' &&
+                                                LDKF.stringPrototypeCharacterAt(Source, SOURCE_LENGTH - sourceIterator) != '/'
+                                            )
+                                        )
+                                    ) { nextTokenDelimiter = TOKEN_DELIMITERS["regular-expression"]; nextTokenDelimiterCharacterSequence = CHARACTER }
+                                    else if (CHARACTER == '[') { nextTokenDelimiter = TOKEN_DELIMITERS["square-braces"]; nextTokenDelimiterCharacterSequence = CHARACTER }
+                                    else if (CHARACTER == '`') { nextTokenDelimiter = TOKEN_DELIMITERS["template-string"]; nextTokenDelimiterCharacterSequence = CHARACTER }
+                                    else if (CHARACTER == '{') { nextTokenDelimiter = TOKEN_DELIMITERS["curly-braces"]; nextTokenDelimiterCharacterSequence = CHARACTER }
+                                    else if (CHARACTER == '*' && LDKF.stringPrototypeCharacterAt(Source, SOURCE_LENGTH - sourceIterator - 2) == '/') { nextTokenDelimiter = TOKEN_DELIMITERS["multiline-comment"]; nextTokenDelimiterCharacterSequence = "/*" }
+                                    else if (CHARACTER == '/' && LDKF.stringPrototypeCharacterAt(Source, SOURCE_LENGTH - sourceIterator - 2) == '/') { nextTokenDelimiter = TOKEN_DELIMITERS["singleline-comment"]; nextTokenDelimiterCharacterSequence = "//" }
 
-                        // Loop > Update > Before
-                        while (index) before = LDKF.stringPrototypeCharacterAt(String, index -= 1) + before;
+                                if (!LDKF.isNull(nextTokenDelimiterCharacterSequence)) {
+                                    var subtoken = new LDKT.Token;
 
-                        // Return
-                        return before
-                    };
+                                    currentToken.addSubtoken(subtoken);
+                                    subtoken.source = nextTokenDelimiterCharacterSequence;
+                                    nextToken = subtoken;
 
-                    // Character Code At
-                    LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(String, Index) { return LDKF.functionPrototypeMonoadicCall(LDKO.stringPrototypeCharacterCodeAt, String, Index) || -1 };
+                                    tokenDelimiterHierarchy[tokenDelimiterHierarchyDepth] = nextTokenDelimiter;
+                                    tokenDelimiterHierarchyDepth += 1
+                                }
 
-                    // Count
-                    LapysDevelopmentKit.Functions.stringPrototypeCount = function stringPrototypeCount(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
-                        // Update > (Sub)String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+                                else if (
+                                    (CHARACTER == '}' && currentTokenDelimiter == TOKEN_DELIMITERS["curly-braces"]) ||
+                                    (CHARACTER == ')' && currentTokenDelimiter == TOKEN_DELIMITERS["parenthesis"]) ||
+                                    (CHARACTER == ']' && currentTokenDelimiter == TOKEN_DELIMITERS["square-braces"]) ||
 
-                        // Initialization > Count
-                        var count = +0;
+                                    (CHARACTER == '\n' && currentTokenDelimiter == TOKEN_DELIMITERS["singleline-comment"]) ||
+                                    ((CHARACTER == '/' && LDKF.stringPrototypeCharacterAt(Source, SOURCE_LENGTH - sourceIterator - 2) == '*') && currentTokenDelimiter == TOKEN_DELIMITERS["multiline-comment"])
+                                ) {
+                                    nextToken = currentToken.supertoken;
+                                    tokenDelimiterHierarchyDepth -= 1
+                                }
 
-                        // Logic
-                        if (SUBSTRING_LENGTH ^ 1) {
+                                else if (
+                                    (CHARACTER == '"' && currentTokenDelimiter == TOKEN_DELIMITERS["double-quoted-string"]) ||
+                                    (CHARACTER == '`' && currentTokenDelimiter == TOKEN_DELIMITERS["regular-expression"]) ||
+                                    (CHARACTER == '\'' && currentTokenDelimiter == TOKEN_DELIMITERS["single-quoted-string"]) ||
+                                    (CHARACTER == '`' && currentTokenDelimiter == TOKEN_DELIMITERS["template-string"])
+                                ) {
+                                    var CHARACTER_IS_ESCAPED = false;
+
+                                    var iterator = SOURCE_LENGTH - sourceIterator - 1;
+                                    while (iterator) {
+                                        iterator -= 1;
+                                        LDKF.stringPrototypeCharacterAt(Source, iterator) == '\\' ? CHARACTER_IS_ESCAPED = !CHARACTER_IS_ESCAPED : iterator = +0
+                                    }
+
+                                    if (!CHARACTER_IS_ESCAPED) {
+                                        nextToken = currentToken.supertoken;
+                                        tokenDelimiterHierarchyDepth -= 1
+                                    }
+                                }
+
+                                // (Loop > )Modification > [Token] > Source
+                                currentToken.source += CHARACTER;
+                                while (!LDKF.isNull(currentSupertoken)) { currentSupertoken.source += CHARACTER; currentSupertoken = currentSupertoken.supertoken }
+
+                                // Update > Current Token
+                                currentToken = nextToken
+                            }
+
+                            // Update > Current Token
+                            (currentToken.source == Source) || (currentToken = currentToken.supertoken);
+
+                            // Constant > Current Token Subtokens --- NOTE (Lapys) -> After parsing, the current token becomes the first ancestor/ god token that was initialized.
+                            var CURRENT_TOKEN_SUBTOKENS = currentToken.subtokens;
+                            var CURRENT_TOKEN_SUBTOKENS_LENGTH = currentToken.subtokenCount;
+                            var currentTokenSubtokensIterator = CURRENT_TOKEN_SUBTOKENS_LENGTH;
+
+                            // Loop > Update > Tokens
+                            while (currentTokenSubtokensIterator) {
+                                // Constant > Current Token Subtoken
+                                var CURRENT_TOKEN_SUBTOKEN = CURRENT_TOKEN_SUBTOKENS[CURRENT_TOKEN_SUBTOKENS_LENGTH - (currentTokenSubtokensIterator -= 1) - 1];
+
+                                // Modification > Current Token Subtoken > Super Token --- NOTE (Lapys) -> Remove all references to the ancestor/ god token.
+                                CURRENT_TOKEN_SUBTOKEN.supertoken = null;
+
+                                // Update > Tokens
+                                LDKF.arrayPrototypePush(TOKENS, CURRENT_TOKEN_SUBTOKEN)
+                            }
+
+                            // Return
+                            return TOKENS
+                        };
+
+                    /* String > Prototype
+                            --- NOTE ---
+                                #Lapys: While substrings are primarily strings, they can also be array types.
+                                    Denoting a substring as an array type allows each method below assert the substring as its elements.
+
+                                    For example:
+                                        The `LapysDevelopmentKit.Functions.stringPrototypeTrim` method has its `substring` parameter default to the array `['\0', '\n', ' ']`
+                                        which allows it to trim the string if it leads/ trails with any of the array's character elements (in any order).
+                    */
+                        // After
+                        LapysDevelopmentKit.Functions.stringPrototypeAfter = function stringPrototypeAfter(String, Substring, STRING_LENGTH) { return LDKF.stringPrototypeAfterFrom(String, Substring, STRICT = STRING_LENGTH) };
+
+                        // After Character
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterCharacter = function stringPrototypeAfterCharacter(String, Character, STRING_LENGTH) { return LDKF.stringPrototypeAfterCharacterFrom(String, Character, STRICT = STRING_LENGTH) };
+
+                        // After Character From
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFrom = function stringPrototypeAfterCharacterFrom(String, Character, STRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexCharacterFrom(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
+
+                        // After Character From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromBack = function stringPrototypeAfterCharacterFromBack(String, Character, STRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexCharacterFromBack(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
+
+                        // After Character From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterCharacterFromFront = function stringPrototypeAfterCharacterFromFront(String, Character, STRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexCharacterFromFront(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
+
+                        // After From
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterFrom = function stringPrototypeAfterFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
+
+                        // After From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterFromBack = function stringPrototypeAfterFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexFromBack(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
+
+                        // After From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterFromFront = function stringPrototypeAfterFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String)); var stringIndex = LDKF.stringPrototypeIndexFromFront(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeAfterIndex(String, stringIndex, STRICT = STRING_LENGTH) : null };
+
+                        // After Index
+                        LapysDevelopmentKit.Functions.stringPrototypeAfterIndex = function stringPrototypeAfterIndex(String, index, STRING_LENGTH) {
+                            // Initialization > After
+                            var after = "";
+
+                            // Loop > (Update > ...)
+                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                            while (index ^ (STRING_LENGTH - 1)) after += LDKF.stringPrototypeCharacterAt(String, index += 1);
+
+                            // Return
+                            return after
+                        };
+
+                        // Before
+                        LapysDevelopmentKit.Functions.stringPrototypeBefore = function stringPrototypeBefore(String, Substring, STRING_LENGTH) { return LDKF.stringPrototypeBeforeFromBack(String, Substring, STRICT = STRING_LENGTH) };
+
+                        // Before Character
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacter = function stringPrototypeBeforeCharacter(String, Character, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeBeforeCharacterFrom(String, Character, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Before Character From
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFrom = function stringPrototypeBeforeCharacterFrom(String, Character, STRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexCharacterFrom(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+
+                        // Before Character From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromBack = function stringPrototypeBeforeCharacterFromBack(String, Character, STRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexCharacterFromBack(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+
+                        // Before Character From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeCharacterFromFront = function stringPrototypeBeforeCharacterFromFront(String, Character, STRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexCharacterFromFront(String, Character, STRICT = STRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+
+                        // Before From
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeFrom = function stringPrototypeBeforeFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+
+                        // Before From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeFromBack = function stringPrototypeBeforeFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexFromBack(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+
+                        // Before From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeFromFront = function stringPrototypeBeforeFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { var stringIndex = LDKF.stringPrototypeIndexFromFront(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH); return ~stringIndex ? LDKF.stringPrototypeBeforeIndex(String, stringIndex) : null };
+
+                        // Before Index
+                        LapysDevelopmentKit.Functions.stringPrototypeBeforeIndex = function stringPrototypeBeforeIndex(String, index) {
+                            // Initialization > Before
+                            var before = "";
+
+                            // Loop > Update > Before
+                            while (index) before = LDKF.stringPrototypeCharacterAt(String, index -= 1) + before;
+
+                            // Return
+                            return before
+                        };
+
+                        // Character Code At
+                        LapysDevelopmentKit.Functions.stringPrototypeCharacterCodeAt = function stringPrototypeCharacterCodeAt(String, Index) { return LDKF.functionPrototypeMonoadicCall(LDKO.stringPrototypeCharacterCodeAt, String, Index) || -1 };
+
+                        // Count
+                        LapysDevelopmentKit.Functions.stringPrototypeCount = function stringPrototypeCount(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                            // Update > (Sub)String Length
+                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                            SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                            // Initialization > Count
+                            var count = +0;
+
                             // Logic
-                            if (String == Substring)
-                                // Update > Count
-                                count = 1;
+                            if (SUBSTRING_LENGTH ^ 1) {
+                                // Logic
+                                if (String == Substring)
+                                    // Update > Count
+                                    count = 1;
 
-                            else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                                else if (STRING_LENGTH > SUBSTRING_LENGTH) {
+                                    // Initialization > String Iterator
+                                    var stringIterator = STRING_LENGTH;
+
+                                    // Loop
+                                    while (stringIterator)
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH)) {
+                                            // Initialization > Substring Iterator
+                                            var substringIterator = SUBSTRING_LENGTH - 1;
+
+                                            // Loop
+                                            while (stringIterator && substringIterator)
+                                                // Logic
+                                                if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) {
+                                                    // Update > (Sub)String Iterator
+                                                    stringIterator += SUBSTRING_LENGTH - substringIterator - 1;
+                                                    substringIterator = +0
+                                                }
+
+                                                else if (!substringIterator) {
+                                                    // Update > (String Iterator, Count)
+                                                    stringIterator += SUBSTRING_LENGTH - 1;
+                                                    count += 1;
+                                                }
+                                        }
+                                }
+                            }
+
+                            else {
                                 // Initialization > String Iterator
                                 var stringIterator = STRING_LENGTH;
 
-                                // Loop
-                                while (stringIterator)
-                                    // Logic
-                                    if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH)) {
-                                        // Initialization > Substring Iterator
-                                        var substringIterator = SUBSTRING_LENGTH - 1;
-
-                                        // Loop
-                                        while (stringIterator && substringIterator)
-                                            // Logic
-                                            if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator -= 1)) {
-                                                // Update > (Sub)String Iterator
-                                                stringIterator += SUBSTRING_LENGTH - substringIterator - 1;
-                                                substringIterator = +0
-                                            }
-
-                                            else if (!substringIterator) {
-                                                // Update > (String Iterator, Count)
-                                                stringIterator += SUBSTRING_LENGTH - 1;
-                                                count += 1;
-                                            }
-                                    }
+                                // Loop > Update > Count
+                                while (stringIterator) (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == Substring) && (count += 1)
                             }
-                        }
 
-                        else {
-                            // Initialization > String Iterator
-                            var stringIterator = STRING_LENGTH;
-
-                            // Loop > Update > Count
-                            while (stringIterator) (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == Substring) && (count += 1)
-                        }
-
-                        // Return
-                        return count
-                    };
-
-                    // Cut At
-                    LapysDevelopmentKit.Functions.stringPrototypeCutAt = function stringPrototypeCutAt(String, Index, STRING_LENGTH) {
-                        // Initialization > (Cut, String Iterator)
-                        var cut = "";
-                        var stringIterator = STRING_LENGTH || LDKF.stringPrototypeLength(String);
-
-                        // Loop > Update > (String Iterator, Cut)
-                        while (stringIterator) { stringIterator -= 1; (stringIterator === Index) || (cut = LDKF.stringPrototypeCharacterAt(String, stringIterator) + cut) }
-
-                        // Return
-                        return cut
-                    };
-
-                    // Cut Left
-                    LapysDevelopmentKit.Functions.stringPrototypeCutLeft = function stringPrototypeCutLeft(String, Length, STRING_LENGTH) {
-                        // Initialization > (Cut, String Iterator)
-                        var cut = "";
-                        var stringIterator = (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - Length;
-
-                        // Logic > Loop > Update > Cut
-                        if (stringIterator > -0) while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, (stringIterator -= 1) + Length) + cut;
-
-                        // Return
-                        return cut
-                    };
-
-                    // Cut Right
-                    LapysDevelopmentKit.Functions.stringPrototypeCutRight = function stringPrototypeCutRight(String, Length, STRING_LENGTH) {
-                        // Initialization > (Cut, String Iterator)
-                        var cut = "";
-                        var stringIterator = (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - Length;
-
-                        // Logic > Loop > Update > Cut
-                        if (stringIterator > -0) while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + cut;
-
-                        // Return
-                        return cut
-                    };
-
-                    // Cut Through
-                    LapysDevelopmentKit.Functions.stringPrototypeCutThrough = function stringPrototypeCutThrough(String, StartIndex, EndIndex, STRING_LENGTH) {
-                        // Initialization > (Cut, String Iterator)
-                        var cut = "";
-                        var stringIterator;
-
-                        // (Loop > )Update > ...
-                        stringIterator = (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - EndIndex;
-                        while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, EndIndex + (stringIterator -= 1)) + cut;
-
-                        // (Loop > )Update > ...
-                        stringIterator = StartIndex;
-                        while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + cut;
-
-                        // Return
-                        return cut
-                    };
-
-                    // First
-                    LapysDevelopmentKit.Functions.stringPrototypeFirst = function stringPrototypeFirst(String) { return String ? LDKF.stringPrototypeCharacterAt(String, +0) : null };
-
-                    // Includes
-                    LapysDevelopmentKit.Functions.stringPrototypeIncludes = function stringPrototypeIncludes(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return !!~LDKF.stringPrototypeIndex(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
-
-                    // Includes Character
-                    LapysDevelopmentKit.Functions.stringPrototypeIncludesCharacter = function stringPrototypeIncludesCharacter(String, Character, STRING_LENGTH, SUBSTRING_LENGTH) { return !!~LDKF.stringPrototypeIndexCharacter(String, Character, STRICT = STRING_LENGTH) };
-
-                    // Index Character
-                    LapysDevelopmentKit.Functions.stringPrototypeIndexCharacter = function stringPrototypeIndexCharacter(String, Character, STRING_LENGTH) { return LDKF.stringPrototypeIndexCharacterFrom(String, Character, STRICT = STRING_LENGTH) };
-
-                    // Index Character From
-                    LapysDevelopmentKit.Functions.stringPrototypeIndexCharacterFrom = function stringPrototypeIndexCharacterFrom(String, Character, STRING_LENGTH) { return LDKF.arrayPrototypeIndexFrom(String, Character, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
-
-                    // Index Character From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeIndexCharacterFromBack = function stringPrototypeIndexCharacterFromBack(String, Character, STRING_LENGTH) { return LDKF.arrayPrototypeIndexFromBack(String, Character, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
-
-                    // Index Character From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeIndexCharacterFromFront = function stringPrototypeIndexCharacterFromFront(String, Character, STRING_LENGTH) { return LDKF.arrayPrototypeIndexFromFront(String, Character, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
-
-                    // Index
-                    LapysDevelopmentKit.Functions.stringPrototypeIndex = function stringPrototypeIndex(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
-
-                    // Index From
-                    LapysDevelopmentKit.Functions.stringPrototypeIndexFrom = function stringPrototypeIndexFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
-                        // Logic
-                        if (String == Substring)
                             // Return
-                            return +0;
+                            return count
+                        };
 
-                        else {
-                            // Update > (Sub)String Length
-                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                            SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+                        // Cut At
+                        LapysDevelopmentKit.Functions.stringPrototypeCutAt = function stringPrototypeCutAt(String, Index, STRING_LENGTH) {
+                            // Initialization > (Cut, String Iterator)
+                            var cut = "";
+                            var stringIterator = STRING_LENGTH || LDKF.stringPrototypeLength(String);
 
+                            // Loop > Update > (String Iterator, Cut)
+                            while (stringIterator) { stringIterator -= 1; (stringIterator === Index) || (cut = LDKF.stringPrototypeCharacterAt(String, stringIterator) + cut) }
+
+                            // Return
+                            return cut
+                        };
+
+                        // Cut Left
+                        LapysDevelopmentKit.Functions.stringPrototypeCutLeft = function stringPrototypeCutLeft(String, Length, STRING_LENGTH) {
+                            // Initialization > (Cut, String Iterator)
+                            var cut = "";
+                            var stringIterator = (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - Length;
+
+                            // Logic > Loop > Update > Cut
+                            if (stringIterator > -0) while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, (stringIterator -= 1) + Length) + cut;
+
+                            // Return
+                            return cut
+                        };
+
+                        // Cut Right
+                        LapysDevelopmentKit.Functions.stringPrototypeCutRight = function stringPrototypeCutRight(String, Length, STRING_LENGTH) {
+                            // Initialization > (Cut, String Iterator)
+                            var cut = "";
+                            var stringIterator = (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - Length;
+
+                            // Logic > Loop > Update > Cut
+                            if (stringIterator > -0) while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + cut;
+
+                            // Return
+                            return cut
+                        };
+
+                        // Cut Through
+                        LapysDevelopmentKit.Functions.stringPrototypeCutThrough = function stringPrototypeCutThrough(String, StartIndex, EndIndex, STRING_LENGTH) {
+                            // Initialization > (Cut, String Iterator)
+                            var cut = "";
+                            var stringIterator;
+
+                            // (Loop > )Update > ...
+                            stringIterator = (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - EndIndex;
+                            while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, EndIndex + (stringIterator -= 1)) + cut;
+
+                            // (Loop > )Update > ...
+                            stringIterator = StartIndex;
+                            while (stringIterator) cut = LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) + cut;
+
+                            // Return
+                            return cut
+                        };
+
+                        // First
+                        LapysDevelopmentKit.Functions.stringPrototypeFirst = function stringPrototypeFirst(String) { return String ? LDKF.stringPrototypeCharacterAt(String, +0) : null };
+
+                        // Includes
+                        LapysDevelopmentKit.Functions.stringPrototypeIncludes = function stringPrototypeIncludes(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return !!~LDKF.stringPrototypeIndex(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Includes Character
+                        LapysDevelopmentKit.Functions.stringPrototypeIncludesCharacter = function stringPrototypeIncludesCharacter(String, Character, STRING_LENGTH, SUBSTRING_LENGTH) { return !!~LDKF.stringPrototypeIndexCharacter(String, Character, STRICT = STRING_LENGTH) };
+
+                        // Index Character
+                        LapysDevelopmentKit.Functions.stringPrototypeIndexCharacter = function stringPrototypeIndexCharacter(String, Character, STRING_LENGTH) { return LDKF.stringPrototypeIndexCharacterFrom(String, Character, STRICT = STRING_LENGTH) };
+
+                        // Index Character From
+                        LapysDevelopmentKit.Functions.stringPrototypeIndexCharacterFrom = function stringPrototypeIndexCharacterFrom(String, Character, STRING_LENGTH) { return LDKF.arrayPrototypeIndexFrom(String, Character, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
+
+                        // Index Character From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeIndexCharacterFromBack = function stringPrototypeIndexCharacterFromBack(String, Character, STRING_LENGTH) { return LDKF.arrayPrototypeIndexFromBack(String, Character, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
+
+                        // Index Character From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeIndexCharacterFromFront = function stringPrototypeIndexCharacterFromFront(String, Character, STRING_LENGTH) { return LDKF.arrayPrototypeIndexFromFront(String, Character, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
+
+                        // Index
+                        LapysDevelopmentKit.Functions.stringPrototypeIndex = function stringPrototypeIndex(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Index From
+                        LapysDevelopmentKit.Functions.stringPrototypeIndexFrom = function stringPrototypeIndexFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
                             // Logic
-                            if (STRING_LENGTH) {
-                                // Constant > (Gradient Stop Length, Substring (First, Last) Character)
-                                var GRADIENT_STOP_LENGTH = LDKM.int(STRING_LENGTH / 4);
+                            if (String == Substring)
+                                // Return
+                                return +0;
 
-                                var SUBSTRING_FIRST_CHARACTER = LDKF.stringPrototypeFirst(Substring);
-                                var SUBSTRING_LAST_CHARACTER = LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH);
+                            else {
+                                // Update > (Sub)String Length
+                                STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                                SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
 
-                                // Initialization > String (Index, Iterator)
-                                var stringIndex = -1, stringIterator = STRING_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
+                                // Logic
+                                if (STRING_LENGTH) {
+                                    // Constant > (Gradient Stop Length, Substring (First, Last) Character)
+                                    var GRADIENT_STOP_LENGTH = LDKM.int(STRING_LENGTH / 4);
 
-                                // Loop --- NOTE (Lapys) -> Unlike the `LapysDevelopmentKit.Functions.stringPrototypeIndexFromBack` and `LapysDevelopmentKit.Functions.stringPrototypeIndexFromFront` methods, there is some iteration redundancies that could be manually optimized.
-                                while (!~stringIndex && stringIterator) {
-                                    // Update > String Iterator
-                                    stringIterator -= 1;
+                                    var SUBSTRING_FIRST_CHARACTER = LDKF.stringPrototypeFirst(Substring);
+                                    var SUBSTRING_LAST_CHARACTER = LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH);
 
-                                    // Logic > ... --- NOTE (Lapys) -> Each block here represents a stop index within the gradient search.
-                                    if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = STRING_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
-                                    if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = STRING_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+                                    // Initialization > String (Index, Iterator)
+                                    var stringIndex = -1, stringIterator = STRING_LENGTH - ((GRADIENT_STOP_LENGTH * 3) - 1);
 
-                                    if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
-                                    if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+                                    // Loop --- NOTE (Lapys) -> Unlike the `LapysDevelopmentKit.Functions.stringPrototypeIndexFromBack` and `LapysDevelopmentKit.Functions.stringPrototypeIndexFromFront` methods, there is some iteration redundancies that could be manually optimized.
+                                    while (!~stringIndex && stringIterator) {
+                                        // Update > String Iterator
+                                        stringIterator -= 1;
 
-                                    if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) === SUBSTRING_FIRST_CHARACTER) { stringIndex = stringIterator + GRADIENT_STOP_LENGTH; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
-                                    if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) === SUBSTRING_LAST_CHARACTER) { stringIndex = stringIterator + GRADIENT_STOP_LENGTH; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+                                        // Logic > ... --- NOTE (Lapys) -> Each block here represents a stop index within the gradient search.
+                                        if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = STRING_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                        if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = STRING_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
 
-                                    if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
-                                    if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+                                        if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                        if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = STRING_LENGTH - GRADIENT_STOP_LENGTH - stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+
+                                        if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) === SUBSTRING_FIRST_CHARACTER) { stringIndex = stringIterator + GRADIENT_STOP_LENGTH; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                        if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator + GRADIENT_STOP_LENGTH) === SUBSTRING_LAST_CHARACTER) { stringIndex = stringIterator + GRADIENT_STOP_LENGTH; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+
+                                        if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator) === SUBSTRING_FIRST_CHARACTER) { stringIndex = stringIterator; var substringIterator = SUBSTRING_LENGTH; while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } }
+                                        if (!~stringIndex && LDKF.stringPrototypeCharacterAt(String, stringIterator) === SUBSTRING_LAST_CHARACTER) { stringIndex = stringIterator; var substringIterator = SUBSTRING_LENGTH - 1; while (substringIterator) { substringIterator -= 1; if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { substringIterator = +0; stringIndex = -1 } else if (!substringIterator) stringIndex -= SUBSTRING_LENGTH - 1 } }
+                                    }
+
+                                    // Return
+                                    return stringIndex
                                 }
 
                                 // Return
-                                return stringIndex
-                            }
-
-                            // Return
-                            return -1
-                        }
-                    };
-
-                    // Index From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeIndexFromBack = function stringPrototypeIndexFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
-                        // Logic
-                        if (String == Substring)
-                            // Return
-                            return +0;
-
-                        else {
-                            // Update > (Sub)String Length
-                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                            SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
-
-                            // Logic
-                            if (STRING_LENGTH) {
-                                // Constant > Substring First Character
-                                var SUBSTRING_FIRST_CHARACTER = LDKF.stringPrototypeFirst(Substring);
-
-                                // Initialization > String Index
-                                var stringIndex = -1, stringIterator = STRING_LENGTH;
-
-                                // Loop
-                                while (!~stringIndex && (stringIterator ^ (SUBSTRING_LENGTH - 1)))
-                                    // Logic
-                                    if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1) == SUBSTRING_FIRST_CHARACTER) {
-                                        // Initialization > Substring Iterator
-                                        var substringIterator = SUBSTRING_LENGTH;
-
-                                        // (Loop > )Update > ...
-                                        stringIndex = STRING_LENGTH - stringIterator - 1;
-                                        while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } else if (!substringIterator) stringIterator = SUBSTRING_LENGTH - 1
-                                    }
-
-                                // Return
-                                return stringIndex
-                            }
-
-                            else
-                                // Return
                                 return -1
-                        }
-                    };
+                            }
+                        };
 
-                    // Index From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeIndexFromFront = function stringPrototypeIndexFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
-                        // Logic
-                        if (String == Substring)
-                            // Return
-                            return +0;
-
-                        else {
-                            // Update > (Sub)String Length
-                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                            SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
-
+                        // Index From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeIndexFromBack = function stringPrototypeIndexFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
                             // Logic
-                            if (STRING_LENGTH) {
-                                // : Constant > Substring Last Character
-                                // : Initialization > String (Index, Iterator)
-                                var SUBSTRING_LAST_CHARACTER = LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH);
-                                var stringIndex = -1, stringIterator = STRING_LENGTH;
+                            if (String == Substring)
+                                // Return
+                                return +0;
 
-                                // Loop
-                                while (!~stringIndex && (stringIterator ^ (SUBSTRING_LENGTH - 1)))
-                                    // Logic
-                                    if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == SUBSTRING_LAST_CHARACTER) {
-                                        // Initialization > Substring Iterator
-                                        var substringIterator = SUBSTRING_LENGTH - 1;
+                            else {
+                                // Update > (Sub)String Length
+                                STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                                SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
 
-                                        // Update > String Index
-                                        stringIndex = stringIterator;
+                                // Logic
+                                if (STRING_LENGTH) {
+                                    // Constant > Substring First Character
+                                    var SUBSTRING_FIRST_CHARACTER = LDKF.stringPrototypeFirst(Substring);
 
-                                        // Loop
-                                        while (substringIterator) {
-                                            // Update >  Substring Iterator
-                                            substringIterator -= 1;
+                                    // Initialization > String Index
+                                    var stringIndex = -1, stringIterator = STRING_LENGTH;
 
-                                            // Logic > Update > String (Index, Iterator)
-                                            if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = +0 }
-                                            else if (!substringIterator) { stringIterator = SUBSTRING_LENGTH - 1; stringIndex -= stringIterator }
+                                    // Loop
+                                    while (!~stringIndex && (stringIterator ^ (SUBSTRING_LENGTH - 1)))
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(String, STRING_LENGTH - (stringIterator -= 1) - 1) == SUBSTRING_FIRST_CHARACTER) {
+                                            // Initialization > Substring Iterator
+                                            var substringIterator = SUBSTRING_LENGTH;
+
+                                            // (Loop > )Update > ...
+                                            stringIndex = STRING_LENGTH - stringIterator - 1;
+                                            while (substringIterator -= 1) if (LDKF.stringPrototypeCharacterAt(String, stringIndex + substringIterator) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = 1 } else if (!substringIterator) stringIterator = SUBSTRING_LENGTH - 1
                                         }
-                                    }
 
+                                    // Return
+                                    return stringIndex
+                                }
+
+                                else
+                                    // Return
+                                    return -1
+                            }
+                        };
+
+                        // Index From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeIndexFromFront = function stringPrototypeIndexFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) {
+                            // Logic
+                            if (String == Substring)
                                 // Return
-                                return stringIndex
+                                return +0;
+
+                            else {
+                                // Update > (Sub)String Length
+                                STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                                SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                                // Logic
+                                if (STRING_LENGTH) {
+                                    // : Constant > Substring Last Character
+                                    // : Initialization > String (Index, Iterator)
+                                    var SUBSTRING_LAST_CHARACTER = LDKF.stringPrototypeLast(Substring, STRICT = SUBSTRING_LENGTH);
+                                    var stringIndex = -1, stringIterator = STRING_LENGTH;
+
+                                    // Loop
+                                    while (!~stringIndex && (stringIterator ^ (SUBSTRING_LENGTH - 1)))
+                                        // Logic
+                                        if (LDKF.stringPrototypeCharacterAt(String, stringIterator -= 1) == SUBSTRING_LAST_CHARACTER) {
+                                            // Initialization > Substring Iterator
+                                            var substringIterator = SUBSTRING_LENGTH - 1;
+
+                                            // Update > String Index
+                                            stringIndex = stringIterator;
+
+                                            // Loop
+                                            while (substringIterator) {
+                                                // Update >  Substring Iterator
+                                                substringIterator -= 1;
+
+                                                // Logic > Update > String (Index, Iterator)
+                                                if (LDKF.stringPrototypeCharacterAt(String, stringIndex - (SUBSTRING_LENGTH - substringIterator - 1)) != LDKF.stringPrototypeCharacterAt(Substring, substringIterator)) { stringIndex = -1; substringIterator = +0 }
+                                                else if (!substringIterator) { stringIterator = SUBSTRING_LENGTH - 1; stringIndex -= stringIterator }
+                                            }
+                                        }
+
+                                    // Return
+                                    return stringIndex
+                                }
+
+                                else
+                                    // Return
+                                    return -1
+                            }
+                        };
+
+                        // Insert At
+                        LapysDevelopmentKit.Functions.stringPrototypeInsertAt = function stringPrototypeInsertAt(String, Substring, Index, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeBeforeIndex(String, Index) + Substring + LDKF.stringPrototypeAfterIndex(String, Index - 1, STRICT = (STRING_LENGTH || LDKF.stringPrototypeLength(String))) };
+
+                        // Instance Characters
+                        LapysDevelopmentKit.Functions.stringPrototypeInstanceCharacters = function stringPrototypeInstanceCharacters(String, STRING_LENGTH) { return LDKF.arrayPrototypeInstance(String, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
+
+                        // Last
+                        LapysDevelopmentKit.Functions.stringPrototypeLast = function stringPrototypeLast(String, STRING_LENGTH) { return String ? LDKF.stringPrototypeCharacterAt(String, (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - 1) : null };
+
+                        // Remove
+                        LapysDevelopmentKit.Functions.stringPrototypeRemove = function stringPrototypeRemove(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeRemoveFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Remove From
+                        LapysDevelopmentKit.Functions.stringPrototypeRemoveFrom = function stringPrototypeRemoveFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFrom(String, Substring, "", STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Remove From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeRemoveFromBack = function stringPrototypeRemoveFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFromBack(String, Substring, "", STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Remove From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeRemoveFromFront = function stringPrototypeRemoveFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFromFront(String, Substring, "", STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Replace
+                        LapysDevelopmentKit.Functions.stringPrototypeReplace = function stringPrototypeReplace(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
+
+                        // Replace From
+                        LapysDevelopmentKit.Functions.stringPrototypeReplaceFrom = function stringPrototypeReplaceFrom(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH) {
+                            // Update > (Sub)String Length
+                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                            SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                            // Initialization > String Index
+                            var stringIndex = LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH);
+
+                            // Return
+                            return ~stringIndex ? LDKF.stringPrototypeInsertAt(LDKF.stringPrototypeCutThrough(String, stringIndex, stringIndex + SUBSTRING_LENGTH, STRICT = STRING_LENGTH), Substitute, stringIndex, STRICT = STRING_LENGTH - SUBSTRING_LENGTH, STRICT = SUBSTRING_LENGTH) : String
+                        };
+
+                        // Replace From Back
+                        LapysDevelopmentKit.Functions.stringPrototypeReplaceFromBack = function stringPrototypeReplaceFromBack(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH, SUBSTRING_INDEX) {
+                            // Update > (Sub)String Length
+                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                            SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                            // Initialization > String Index
+                            var stringIndex = LDKF.stringPrototypeIndexFromBack(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH);
+
+                            // Return
+                            return ~stringIndex ? LDKF.stringPrototypeInsertAt(LDKF.stringPrototypeCutThrough(String, stringIndex, stringIndex + SUBSTRING_LENGTH, STRICT = STRING_LENGTH), Substitute, stringIndex, STRICT = STRING_LENGTH - SUBSTRING_LENGTH, STRICT = SUBSTRING_LENGTH) : String
+                        };
+
+                        // Replace From Front
+                        LapysDevelopmentKit.Functions.stringPrototypeReplaceFromFront = function stringPrototypeReplaceFromFront(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH, SUBSTRING_INDEX) {
+                            // Update > (Sub)String Length
+                            STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
+                            SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
+
+                            // Initialization > String Index
+                            var stringIndex = LDKF.stringPrototypeIndexFromFront(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH);
+
+                            // Return
+                            return ~stringIndex ? LDKF.stringPrototypeInsertAt(LDKF.stringPrototypeCutThrough(String, stringIndex, stringIndex + SUBSTRING_LENGTH, STRICT = STRING_LENGTH), Substitute, stringIndex, STRICT = STRING_LENGTH - SUBSTRING_LENGTH, STRICT = SUBSTRING_LENGTH) : String
+                        };
+
+                        // Substring At --- WARN (Lapys) -> For development & testing purposes only.
+                        LapysDevelopmentKit.Functions.stringPrototypeSubstringAt = function stringPrototypeSubstringAt(String, Index, substringLength, IGNORE_EXCEPTIONS) {
+                            // Initialization > Substring (After, Before)
+                            var substringAfter = "", substringBefore = "";
+
+                            // Logic
+                            if (IGNORE_EXCEPTIONS) {
+                                // : Constant > String Length
+                                // : Initialization > Substring Iterator
+                                var STRING_LENGTH = LDKF.stringPrototypeLength(String);
+                                var substringIterator = +0;
+
+                                // Initialization > Update Substring (After, Before)
+                                var updateSubstringAfter = true, updateSubstringBefore = true;
+
+                                // Loop
+                                while (substringIterator ^ substringLength) {
+                                    // Logic > Update > (Update) Substring (After, Before)
+                                    if (updateSubstringAfter) { substringAfter += LDKF.stringPrototypeCharacterAt(String, Index + substringIterator + 1); ((Index + substringIterator + 1) ^ (STRING_LENGTH - 1)) || (updateSubstringAfter = false) }
+                                    if (updateSubstringBefore) { substringBefore = LDKF.stringPrototypeCharacterAt(String, Index - substringIterator - 1) + substringBefore; (Index - substringIterator - 1) || (updateSubstringBefore = false) }
+
+                                    // Update > Substring Iterator
+                                    substringIterator += 1
+                                }
                             }
 
                             else
-                                // Return
-                                return -1
-                        }
-                    };
+                                // Loop
+                                while (substringLength) {
+                                    // Update > Substring (After, Before, Length)
+                                    substringAfter = LDKF.stringPrototypeCharacterAt(String, Index + substringLength) + substringAfter;
+                                    substringBefore += LDKF.stringPrototypeCharacterAt(String, Index - substringLength);
+                                    substringLength -= 1
+                                }
 
-                    // Insert At
-                    LapysDevelopmentKit.Functions.stringPrototypeInsertAt = function stringPrototypeInsertAt(String, Substring, Index, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeBeforeIndex(String, Index) + Substring + LDKF.stringPrototypeAfterIndex(String, Index - 1, STRICT = (STRING_LENGTH || LDKF.stringPrototypeLength(String))) };
-
-                    // Instance Characters
-                    LapysDevelopmentKit.Functions.stringPrototypeInstanceCharacters = function stringPrototypeInstanceCharacters(String, STRING_LENGTH) { return LDKF.arrayPrototypeInstance(String, STRICT = STRING_LENGTH, STRICT = LDKC.Data.StringImperative) };
-
-                    // Last
-                    LapysDevelopmentKit.Functions.stringPrototypeLast = function stringPrototypeLast(String, STRING_LENGTH) { return String ? LDKF.stringPrototypeCharacterAt(String, (STRING_LENGTH || LDKF.stringPrototypeLength(String)) - 1) : null };
-
-                    // Remove
-                    LapysDevelopmentKit.Functions.stringPrototypeRemove = function stringPrototypeRemove(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeRemoveFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
-
-                    // Remove From
-                    LapysDevelopmentKit.Functions.stringPrototypeRemoveFrom = function stringPrototypeRemoveFrom(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFrom(String, Substring, "", STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
-
-                    // Remove From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeRemoveFromBack = function stringPrototypeRemoveFromBack(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFromBack(String, Substring, "", STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
-
-                    // Remove From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeRemoveFromFront = function stringPrototypeRemoveFromFront(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFromFront(String, Substring, "", STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
-
-                    // Replace
-                    LapysDevelopmentKit.Functions.stringPrototypeReplace = function stringPrototypeReplace(String, Substring, STRING_LENGTH, SUBSTRING_LENGTH) { return LDKF.stringPrototypeReplaceFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH) };
-
-                    // Replace From
-                    LapysDevelopmentKit.Functions.stringPrototypeReplaceFrom = function stringPrototypeReplaceFrom(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH) {
-                        // Update > (Sub)String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
-
-                        // Initialization > String Index
-                        var stringIndex = LDKF.stringPrototypeIndexFrom(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH);
-
-                        // Return
-                        return ~stringIndex ? LDKF.stringPrototypeInsertAt(LDKF.stringPrototypeCutThrough(String, stringIndex, stringIndex + SUBSTRING_LENGTH, STRICT = STRING_LENGTH), Substitute, stringIndex, STRICT = STRING_LENGTH - SUBSTRING_LENGTH, STRICT = SUBSTRING_LENGTH) : String
-                    };
-
-                    // Replace From Back
-                    LapysDevelopmentKit.Functions.stringPrototypeReplaceFromBack = function stringPrototypeReplaceFromBack(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH, SUBSTRING_INDEX) {
-                        // Update > (Sub)String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
-
-                        // Initialization > String Index
-                        var stringIndex = LDKF.stringPrototypeIndexFromBack(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH);
-
-                        // Return
-                        return ~stringIndex ? LDKF.stringPrototypeInsertAt(LDKF.stringPrototypeCutThrough(String, stringIndex, stringIndex + SUBSTRING_LENGTH, STRICT = STRING_LENGTH), Substitute, stringIndex, STRICT = STRING_LENGTH - SUBSTRING_LENGTH, STRICT = SUBSTRING_LENGTH) : String
-                    };
-
-                    // Replace From Front
-                    LapysDevelopmentKit.Functions.stringPrototypeReplaceFromFront = function stringPrototypeReplaceFromFront(String, Substring, Substitute, STRING_LENGTH, SUBSTRING_LENGTH, SUBSTRING_INDEX) {
-                        // Update > (Sub)String Length
-                        STRING_LENGTH || (STRING_LENGTH = LDKF.stringPrototypeLength(String));
-                        SUBSTRING_LENGTH || (SUBSTRING_LENGTH = LDKF.stringPrototypeLength(Substring));
-
-                        // Initialization > String Index
-                        var stringIndex = LDKF.stringPrototypeIndexFromFront(String, Substring, STRICT = STRING_LENGTH, STRICT = SUBSTRING_LENGTH);
-
-                        // Return
-                        return ~stringIndex ? LDKF.stringPrototypeInsertAt(LDKF.stringPrototypeCutThrough(String, stringIndex, stringIndex + SUBSTRING_LENGTH, STRICT = STRING_LENGTH), Substitute, stringIndex, STRICT = STRING_LENGTH - SUBSTRING_LENGTH, STRICT = SUBSTRING_LENGTH) : String
-                    };
-
-                    // Substring At --- WARN (Lapys) -> For development & testing purposes only.
-                    LapysDevelopmentKit.Functions.stringPrototypeSubstringAt = function stringPrototypeSubstringAt(String, Index, substringLength, IGNORE_EXCEPTIONS) {
-                        // Initialization > Substring (After, Before)
-                        var substringAfter = "", substringBefore = "";
-
-                        // Logic
-                        if (IGNORE_EXCEPTIONS) {
-                            // : Constant > String Length
-                            // : Initialization > Substring Iterator
-                            var STRING_LENGTH = LDKF.stringPrototypeLength(String);
-                            var substringIterator = +0;
-
-                            // Initialization > Update Substring (After, Before)
-                            var updateSubstringAfter = true, updateSubstringBefore = true;
-
-                            // Loop
-                            while (substringIterator ^ substringLength) {
-                                // Logic > Update > (Update) Substring (After, Before)
-                                if (updateSubstringAfter) { substringAfter += LDKF.stringPrototypeCharacterAt(String, Index + substringIterator + 1); ((Index + substringIterator + 1) ^ (STRING_LENGTH - 1)) || (updateSubstringAfter = false) }
-                                if (updateSubstringBefore) { substringBefore = LDKF.stringPrototypeCharacterAt(String, Index - substringIterator - 1) + substringBefore; (Index - substringIterator - 1) || (updateSubstringBefore = false) }
-
-                                // Update > Substring Iterator
-                                substringIterator += 1
-                            }
-                        }
-
-                        else
-                            // Loop
-                            while (substringLength) {
-                                // Update > Substring (After, Before, Length)
-                                substringAfter = LDKF.stringPrototypeCharacterAt(String, Index + substringLength) + substringAfter;
-                                substringBefore += LDKF.stringPrototypeCharacterAt(String, Index - substringLength);
-                                substringLength -= 1
-                            }
-
-                        // Return
-                        return substringBefore + LDKF.stringPrototypeCharacterAt(String, Index) + substringAfter
-                    };
+                            // Return
+                            return substringBefore + LDKF.stringPrototypeCharacterAt(String, Index) + substringAfter
+                        };
 
                 // Style Property Map > Prototype
                     // Element At
@@ -1675,9 +1824,6 @@
                 LapysDevelopmentKit.Records.Lists.ClockDataLength = +0;
 
             /* Types */
-                /* Assertion ---  NOTE (Lapys) -> ??? */
-                LapysDevelopmentKit.Types.Assertion = function Assertion() {};
-
                 /* Big Array
                         --- NOTE (Lapys) -> Arbitrary-length array type.
                         --- WARN (Lapys) -> The length is algorithmically infinite, but implementation-restricted (`Number.MAX_SAFE_INTEGER`) and theoretically memory-limited.
@@ -2583,7 +2729,7 @@
                         LapysDevelopmentKit.Types.BigNumberPrototypeUnsign =
                         LapysDevelopmentKit.Types.BigNumberPrototype.unsign = function unsign(BigNumber) { this.signed = false; return this };
 
-                // Clock
+                /* Clock */
                     // Prototype
                     LapysDevelopmentKit.Types.ClockPrototype = LDKT.Clock.prototype;
                         // Check
@@ -2730,9 +2876,6 @@
                             // Return
                             return CLOCK_DATA.id
                         };
-
-                /* Iterator --- NOTE (Lapys) -> Semantic type for repetition-based function handlers. */
-                LapysDevelopmentKit.Types.Iterator = function Iterator() { this.done = true };
 
                 /* Ranged Number --- NOTE (Lapys) -> Fixed-width number type. */
                 LapysDevelopmentKit.Types.RangedNumber = function RangedNumber(MinimumValue, MaximumValue, Value) {
@@ -3009,23 +3152,33 @@
                         LapysDevelopmentKit.Types.SafeNumberPrototypeToString =
                         LapysDevelopmentKit.Types.SafeNumber.prototype.toString = function toString() { var VALUE = this.value; return VALUE instanceof LDKT.BigNumber ? LDKF.functionPrototypeNiladicCall(LDKT.BigNumberPrototypeToString, VALUE) : LDKF.toString(VALUE) };
 
-                // Scope --- NOTE (Lapys) -> Semantic type for context-based storage.
-                LapysDevelopmentKit.Types.Scope = function Scope() {};
-
-                // Vendor --- NOTE (Lapys) -> Container for data about third-party JavaScript software.
-                LapysDevelopmentKit.Types.Vendor = function Vendor(name, namespace) { this.name = name; this.namespace = namespace };
+                /* Token --- NOTE (Lapys) -> Semantic type for string source parsing. */
+                LapysDevelopmentKit.Types.Token = function Token(Source) { this.source = Source || ""; this.subtokens = null };
                     // Prototype
-                    LapysDevelopmentKit.Types.VendorPrototype = LDKT.Vendor.prototype;
+                    LapysDevelopmentKit.Types.TokenPrototype = LapysDevelopmentKit.Types.Token.prototype;
+                        // Add Subtoken
+                        LapysDevelopmentKit.Types.TokenPrototype.addSubtoken = function addSubtoken(Token) { if (LDKF.isNull(this.subtokens)) { this.subtokenCount = 1; this.subtokens = [Token] } else { this.subtokens[this.subtokenCount] = Token; this.subtokenCount += 1 } Token.supertoken = this };
+
+                        // Subtoken(s, Count)
+                        LapysDevelopmentKit.Types.TokenPrototype.subtokenCount = +0;
+                        LapysDevelopmentKit.Types.TokenPrototype.subtokens = [];
+
+                        // Super Token
+                        LapysDevelopmentKit.Types.TokenPrototype.supertoken = null;
+
                         // To String
-                        LapysDevelopmentKit.Types.VendorPrototype.toString = function toString() { return LDKF.toString(LDKF.objectPrototypeHasProperty(this, "name") ? this.name : "") };
+                        LapysDevelopmentKit.Types.TokenPrototype.toString = function toString() { return this.source };
 
-            /* Environment > ... */
-            (function LapysDevelopmentKitEnvironmentModule() {
-                // Error Handling > Update > Global
-                try { GLOBAL = LDKO["function"]("return this")() || LDKF.eval("this") }
-                catch (error) { GLOBAL = typeof self == "undefined" ? (typeof window == "undefined" ? (typeof global == "undefined" ? undefined : global) : window) : self }
-            })();
+                /* Vendor --- NOTE (Lapys) -> Container for data about third-party JavaScript software. */
+                LapysDevelopmentKit.Types.Vendor = function Vendor(name, namespace) { this.name = name; this.namespace = namespace };
+                    // Prototype > To String
+                    LapysDevelopmentKit.Types.Vendor.prototype.toString = function toString() { return LDKF.toString(LDKF.objectPrototypeHasProperty(this, "name") ? this.name : "") };
 
+        /* Update > Global */
+        try { GLOBAL = LDKO["function"]("return this")() || LDKF.eval("this") }
+        catch (error) { GLOBAL = typeof self == "undefined" ? (typeof window == "undefined" ? (typeof global == "undefined" ? undefined : global) : window) : self }
+
+    /* ... --- CHECKPOINT (Lapys) -> Update this */
     GLOBAL.LapysDevelopmentKit = LapysDevelopmentKit;
     GLOBAL.LDK = LapysDevelopmentKit;
     GLOBAL.LDKC = LDKC;
