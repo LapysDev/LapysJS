@@ -172,7 +172,7 @@
             LapysDevelopmentKit.Functions.isNumber = function isNumber(Argument) { return typeof Argument == "number" };
             LapysDevelopmentKit.Functions.isString = function isString(Argument) { return typeof Argument == "string" };
             LapysDevelopmentKit.Functions.throwError = function throwError(Error) { throw Error };
-            LapysDevelopmentKit.Functions.toString = function toString(Argument) { return LDKF.isString(Argument) ? Argument : LDKO.string(Argument) };
+            LapysDevelopmentKit.Functions.toString = function toString(Argument) { try { return LDKF.isString(Argument) ? Argument : LDKO.string(Argument) } catch (error) {} return LDKF.functionPrototypeNiladicCall(LDKO.objectPrototypeToString, Argument) };
 
             /* Types > --- REDACT (Lapys)
                     : Array Imperative --- NOTE (Lapys) -> Container for array-like basic access & manipulation functions.
@@ -190,7 +190,7 @@
             /* Constants */
                 // Data > ... --- MINIFY (Lapys) --- NOTE (Lapys) -> Functions and values are defined separately here. --- REDACT (Lapys)
                 LapysDevelopmentKit.Constants.Data.ArrayImperative = new LDKT.ArrayImperative(LDKF.arrayPrototypeElementAt, LDKF.arrayPrototypeSetIndex, LDKF.arrayPrototypeLength, LDKF.arrayPrototypeResize);
-                LapysDevelopmentKit.Constants.Data.ArraySortType = new LDKT.Enumeration("ASCII_SORT", "CUSTOM_SORT", "NATIVE_SORT");
+                LapysDevelopmentKit.Constants.Data.ArraySortType = new LDKT.Enumeration("BUBBLE", "GRADIENT_STOP", "INSERTION", "NATIVE", "TIM");
                 LapysDevelopmentKit.Constants.Data.Clock = new LDKT.Clock;
                 LapysDevelopmentKit.Constants.Data.NumberComponent = new LDKT.Enumeration("CHARACTERISTICS", "MANTISSA");
                 LapysDevelopmentKit.Constants.Data.SourceTypes = new LDKT.Enumeration("abap", "actionscript", "apl", "applescript", "arduino", "arff", "asciidoc", "asm", "asp", "autohotkey", "autoit", "bash", "basic", "batch", "bison", "brainfuck", "bro", 'c', "c#", "c++", "cil", "clojure", "cmake", "coffeescript", "crystal", "csp", "css", 'd', "dart", "diff", "django", "docker", "eiffel", "elixir", "elm", "erb", "erlang", "f#", "flow", "fortran", "gherkin", "git", "glsl", "gml", "go", "graphql", "haml", "haskell", "haxe", "hcl", "html", "html", "http", "java", "javascript", "json", "kotlin", "less", "lisp", "livescript", "lua", "makefile", "markdown", "markup", "mathml", "matlab", "objective-c", "ocaml", "open-cl", "pascal", "perl", "php", "powershell", "processing", "python", 'q', 'r', "regex", "ruby", "rust", "sass", "scala", "shell", "sql", "svg", "swift", "tcl", "typescript", "vlm", "xml", "yaml");
@@ -201,31 +201,42 @@
                     LapysDevelopmentKit.Constants.Data.StringJavaScriptSourceTokenDelimiters = new LDKT.Enumeration("arrow-function", "function", FLAG = 10 + 1);
 
                 LapysDevelopmentKit.Constants.Data.ArrayASCIISortComparator = function ArrayASCIISortComparator(ArgumentA, ArgumentB) {
-                    // Constant > ((String (A, B)) (Length), Iterator)
-                    var STRING_A = LDKF.toString(ArgumentA), STRING_B = LDKF.toString(ArgumentB);
-                    var STRING_A_LENGTH = LDKF.stringPrototypeLength(STRING_A), STRING_B_LENGTH = LDKF.stringPrototypeLength(STRING_B);
-                    var LENGTH = LDKM.min(STRING_A_LENGTH, STRING_B_LENGTH);
-                    var iterator = +0;
+                    // Logic
+                    if (ArgumentA == ArgumentB)
+                        // Return
+                        return ArgumentA;
 
-                    // Loop
-                    while (iterator ^ LENGTH) {
-                        // Constant > Character (A, B)
-                        var CHARACTER_A = LDKF.stringPrototypeCharacterAt(STRING_A, iterator), CHARACTER_B = LDKF.stringPrototypeCharacterAt(STRING_B, iterator);
+                    else {
+                        // Constant > ((String (A, B)) (Length), Iterator)
+                        var STRING_A = LDKF.toString(ArgumentA), STRING_B = LDKF.toString(ArgumentB);
+                        var STRING_A_LENGTH = LDKF.stringPrototypeLength(STRING_A), STRING_B_LENGTH = LDKF.stringPrototypeLength(STRING_B);
+                        var LENGTH = LDKM.min(STRING_A_LENGTH, STRING_B_LENGTH);
+                        var iterator = +0;
 
-                        // Logic > Return
-                        if (CHARACTER_A > CHARACTER_B) return STRING_A;
-                        else if (CHARACTER_A < CHARACTER_B) return STRING_B;
+                        // Loop
+                        while (iterator ^ LENGTH) {
+                            // Constant > Character (A, B)
+                            var CHARACTER_A = LDKF.stringPrototypeCharacterAt(STRING_A, iterator), CHARACTER_B = LDKF.stringPrototypeCharacterAt(STRING_B, iterator);
 
-                        // Update > Iterator
-                        iterator += 1
+                            // Logic > Return
+                            if (CHARACTER_A > CHARACTER_B) return STRING_A;
+                            else if (CHARACTER_A < CHARACTER_B) return STRING_B;
+
+                            // Update > Iterator
+                            iterator += 1
+                        }
+
+                        // Return
+                        return STRING_A_LENGTH < STRING_B_LENGTH ? STRING_B : STRING_A
                     }
-
-                    // Return
-                    return STRING_A_LENGTH < STRING_B_LENGTH ? STRING_B : STRING_A
                 };
                 LapysDevelopmentKit.Constants.Data.ArrayCustomSortComparator = function ArrayCustomSortComparator(ArgumentA, ArgumentB) {
                     // Logic
-                    if ((LDKF.isBoolean(ArgumentA) || LDKF.isNumber(ArgumentA)) && (LDKF.isBoolean(ArgumentB) || LDKF.isNumber(ArgumentB)))
+                    if (ArgumentA === ArgumentB)
+                        // Return
+                        return ArgumentA;
+
+                    else if ((LDKF.isBoolean(ArgumentA) || LDKF.isNumber(ArgumentA)) && (LDKF.isBoolean(ArgumentB) || LDKF.isNumber(ArgumentB)))
                         // Return
                         return LDKM.min(ArgumentA, ArgumentB);
 
@@ -257,6 +268,7 @@
                             // Logic > Return
                             return ARGUMENT_A_LENGTH < ARGUMENT_B_LENGTH ? ARGUMENT_B : ARGUMENT_A
                         }
+
                         else if (ARGUMENT_A_IS_STRING)
                             // Return
                             return ArgumentA;
@@ -296,6 +308,7 @@
 
                         // Loop
                         while (COMPARATOR(IMPERATIVE.getIndex(Array, arrayIndex), TMP) === TMP && arrayIndex >= StartIndex) {
+                            swap();
                             // Update > Array (Index)
                             IMPERATIVE.setIndex(Array, arrayIndex + 1, IMPERATIVE.getIndex(Array, arrayIndex));
                             arrayIndex -= 1
@@ -307,62 +320,9 @@
                     }
                 };
                 LapysDevelopmentKit.Constants.Data.ArrayTimSort = function ArrayTimSort(Array, COMPARATOR, IMPERATIVE) {
-                    // Update > (Comparator, Imperative)
-                    COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
-                    IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
-
-                    // Constant > Array Length; Initialization > Array Iterator
-                    var ARRAY_LENGTH = IMPERATIVE.getLength(Array);
-                    var arrayIterator = +0;
-
-                    // Loop > Update > Array (Iterator) --- NOTE (Lapys) -> Sort individual ranges of the array.
-                    while (arrayIterator < ARRAY_LENGTH) { LDKC.Data.ArrayInsertionSort(Array, arrayIterator, LDKM.min(arrayIterator + (LDKC.Numbers.ArrayTimSortRun - 1), ARRAY_LENGTH - 1), FLAG = COMPARATOR, FLAG = IMPERATIVE); arrayIterator += LDKC.Numbers.ArrayTimSortRun }
-
-                    var arraySize = LDKC.Numbers.ArrayTimSortRun;
-                    while (arraySize < ARRAY_LENGTH) {
-                        var arrayStartIndex = +0;
-
-                        while (arrayStartIndex < ARRAY_LENGTH) {
-                            var arraySplitIndex = arrayStartIndex + arraySize - 1;
-                            var arrayEndIndex = LDKM.min((arrayStartIndex + (arraySize * 2)) - 1, ARRAY_LENGTH - 1);
-                            LDKC.Data.ArrayTimSortMerge(Array, arrayStartIndex, arraySplitIndex, arrayEndIndex, FLAG = COMPARATOR, FLAG = IMPERATIVE);
-                            arrayStartIndex += arraySize * 2
-                        }
-
-                        arraySize *= 2
-                    }
                 };
-                    // UPDATE REQUIRED (Lapys) -> Currently inaccurate.
-                    LapysDevelopmentKit.Constants.Data.ArrayTimSortMerge = function ArrayTimSortMerge(Array, StartIndex, SplitIndex, EndIndex, COMPARATOR, IMPERATIVE) {
-                        // Update > (Comparator, Imperative)
-                        COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
-                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
-
-                        // : Initialization > (End, Start) (Array) Iterator
-                        // : Constant > (End, Start) Array (Length)
-                        var arrayIterator, endArrayIterator = +0, startArrayIterator = StartIndex;
-                        var END_ARRAY = [], END_ARRAY_LENGTH = EndIndex - SplitIndex;
-                        var START_ARRAY = [], START_ARRAY_LENGTH = SplitIndex - StartIndex + 1;
-
-                        // (Loop > )Update > (End, Start) Array (Iterator)
-                        arrayIterator = +0; while (arrayIterator ^ START_ARRAY_LENGTH) { IMPERATIVE.setIndex(START_ARRAY, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator + StartIndex)); arrayIterator += 1 }
-                        arrayIterator = +0; while (arrayIterator ^ END_ARRAY_LENGTH) { IMPERATIVE.setIndex(END_ARRAY, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator + 1 + SplitIndex)); arrayIterator += 1 }
-
-                        // Update > Array Iterator; Loop
-                        arrayIterator = +0;
-                        while ((arrayIterator ^ START_ARRAY_LENGTH) && (endArrayIterator ^ END_ARRAY_LENGTH))  {
-                            // Logic > Update > (Array, (End | Start) Array Iterator)
-                            if (COMPARATOR(IMPERATIVE.getIndex(START_ARRAY, arrayIterator), IMPERATIVE.getIndex(END_ARRAY, endArrayIterator)) === IMPERATIVE.getIndex(START_ARRAY, arrayIterator)) { IMPERATIVE.setIndex(array, startArrayIterator, IMPERATIVE.getIndex(START_ARRAY, arrayIterator)); arrayIterator += 1 }
-                            else { IMPERATIVE.setIndex(array, startArrayIterator, IMPERATIVE.getIndex(END_ARRAY, endArrayIterator)); endArrayIterator += 1 }
-
-                            // Update > Start Array Iterator
-                            startArrayIterator += 1
-                        }
-
-                        // Loop > Update > (Array, (End, Start) (Array Iterator))
-                        while (arrayIterator ^ START_ARRAY_LENGTH) { IMPERATIVE.setIndex(Array, startArrayIterator, IMPERATIVE.getIndex(START_ARRAY, arrayIterator)); arrayIterator += 1; startArrayIterator += 1 }
-                        while (endArrayIterator ^ END_ARRAY_LENGTH) { IMPERATIVE.setIndex(Array, startArrayIterator, IMPERATIVE.getIndex(END_ARRAY, endArrayIterator)); endArrayIterator += 1; startArrayIterator += 1 }
-                    };
+                    // ...
+                    LapysDevelopmentKit.Constants.Data.ArrayTimSortMerge = function ArrayTimSortMerge(Array, StartIndex, SplitIndex, EndIndex, COMPARATOR, IMPERATIVE) {};
 
                 // Numbers > ...
                 LapysDevelopmentKit.Constants.Numbers.ArrayTimSortRun = 32;
@@ -481,11 +441,31 @@
                         return ARRAY_CLONE
                     };
 
+                    // Copy
+                    LapysDevelopmentKit.Functions.arrayPrototypeCopy = function arrayPrototypeCopy(Array, CopyArray, COPY_ARRAY_LENGTH, IMPERATIVE) {
+                        // Logic
+                        if (Array !== CopyArray) {
+                            // Update > ...
+                            IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                            COPY_ARRAY_LENGTH || (COPY_ARRAY_LENGTH = IMPERATIVE.getLength(CopyArray));
+
+                            // : Initialization > Array Iterator
+                            // : (Loop > )Update > Array (Iterator)
+                            var arrayIterator = COPY_ARRAY_LENGTH;
+
+                            IMPERATIVE.setLength(Array, arrayIterator);
+                            while (arrayIterator) { arrayIterator -= 1; IMPERATIVE.setIndex(Array, arrayIterator, IMPERATIVE.getIndex(CopyArray, arrayIterator)) }
+                        }
+
+                        // Return
+                        return Array
+                    };
+
                     // Count
                     LapysDevelopmentKit.Functions.arrayPrototypeCount = function arrayPrototypeCount(Array, Element, ARRAY_LENGTH, IMPERATIVE) {
-                        // Update > (Array Length, Imperative)
-                        ARRAY_LENGTH || (ARRAY_LENGTH = LDKF.arrayPrototypeLength(Array));
+                        // Update > ...
                         IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                        ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
 
                         // Logic
                         if (ARRAY_LENGTH) {
@@ -705,29 +685,80 @@
                     /* Sort
                             --- CHECKPOINT (Lapys)
                             --- NOTE (Lapys) -> Utilizes the TimSort [https://en.wikipedia.org/wiki/Timsort] algorithm.
-                            --- WARN (Lapys) -> The `SORT_TYPE` flag only denotes the comparator to be used when sorting (the `COMPARATOR` argument).
-                                In the case of `NATIVE_SORT`-ing, the array specified will not have any `ArrayImperative` data on it.
+                            --- WARN (Lapys) -> The native sort method is not trusted to be an in-place algorithm, so the sorted array is copied by the (source) array to subvert misinformation.
                     */
-                    LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(Array, SORT_TYPE, COMPARATOR, IMPERATIVE) {
+                    window.swap = function swap() { swaps += 1 };
+                    window.swaps = +0;
+                    window.log = function log(evaluation) { console.log.apply(console, arguments); return evaluation };
+                    LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(Array, StartIndex, EndIndex, SORT_TYPE, COMPARATOR, IMPERATIVE) {
+                        // Update > ...
+                        COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                        SORT_TYPE || (SORT_TYPE = LDKC.Data.ArraySortType["GRADIENT_STOP"]);
+
                         // Logic
                         switch (SORT_TYPE) {
-                            /*
-                                : [ASCII Sort] --- NOTE (Lapys) -> Changes the comparator to prefer ASCII code precedence.
-                                : [Native Sort] --- NOTE (Lapys) -> Uses the native sorting algorithm proffered.
-                            */
-                            case LDKC.Data.ArraySortType["ASCII_SORT"]: return LDKF.arrayPrototypeSort(Array, FLAG = LDKC.Data.ArraySortType["CUSTOM_SORT"], FLAG = LDKC.Data.ArrayASCIISortComparator, FLAG = IMPERATIVE);
-                            case LDKC.Data.ArraySortType["NATIVE_SORT"]: return LDKF.functionPrototypeNiladicCall(LDKO.arrayPrototypeSort, Array); break;
+                            case LDKC.Data.ArraySortType["BUBBLE"]:
+                                var arrayIterator = EndIndex;
 
-                            // [Custom Sort] --- NOTE (Lapys) -> Defaults to the library`s chosen comparator & sorting algorithm.
-                            default: case LDKC.Data.ArraySortType["CUSTOM_SORT"]:
-                                // Update > (Array, Comparator, Imperative)
-                                COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
-                                IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
-                                LDKC.Data.ArrayTimSort(Array, FLAG = COMPARATOR, FLAG = IMPERATIVE);
+                                while (arrayIterator ^ StartIndex) {
+                                    var arrayIndex = arrayIterator -= 1;
 
-                                // Return
-                                return Array
+                                    while (arrayIndex ^ StartIndex) {
+                                        var CURRENT_ELEMENT = IMPERATIVE.getIndex(Array, arrayIndex);
+                                        var PREVIOUS_ELEMENT = IMPERATIVE.getIndex(Array, arrayIndex - 1);
+
+                                        if (COMPARATOR(CURRENT_ELEMENT, PREVIOUS_ELEMENT) === PREVIOUS_ELEMENT)
+                                            arrayIndex = StartIndex;
+
+                                        else {
+                                            swap();
+
+                                            IMPERATIVE.setIndex(Array, arrayIndex - 1, CURRENT_ELEMENT);
+                                            IMPERATIVE.setIndex(Array, arrayIndex, PREVIOUS_ELEMENT);
+
+                                            arrayIndex -= 1;
+                                            arrayIterator = EndIndex // NOTE (Lapys) -> Could be improved
+                                        }
+                                    }
+                                }
+
+                                // ...
+                                break;
+
+                            case LDKC.Data.ArraySortType["GRADIENT_STOP"]: // NOTE (Lapys) -> Splits the array into stops and utilizes a fast sorting algorithm.
+                                var arrayIterator = EndIndex;
+                                var stopLength = 2;
+
+                                while (arrayIterator ^ StartIndex) {
+                                    var stopIterator = stopLength;
+                                    arrayIterator -= stopLength;
+
+                                    if (arrayIterator > StartIndex)
+                                        LDKF.arrayPrototypeSort(Array, arrayIterator - stopLength < StartIndex ? StartIndex : arrayIterator, arrayIterator + stopLength, FLAG = LDKC.Data.ArraySortType["INSERTION"], FLAG = COMPARATOR, FLAG = IMPERATIVE);
+
+                                    else {
+                                        if (EndIndex < stopLength * 2)
+                                            arrayIterator = StartIndex;
+
+                                        else {
+                                            swap();
+                                            arrayIterator = EndIndex;
+                                            stopLength *= 2
+                                        }
+                                    }
+                                }
+
+                                // ...
+                                break;
+
+                            case LDKC.Data.ArraySortType["INSERTION"]: LDKC.Data.ArrayInsertionSort(Array, StartIndex, EndIndex, FLAG = COMPARATOR, FLAG = IMPERATIVE); break;
+                            case LDKC.Data.ArraySortType["NATIVE"]: LDKF.arrayPrototypeCopy(Array, LDKF.functionPrototypeMonoadicCall(IMPERATIVE === LDKC.Data.TypedArrayImperative ? LDKO.typedArrayPrototypeSort : LDKO.arrayPrototypeSort, Array, COMPARATOR), FLAG = EndIndex, FLAG = IMPERATIVE); break;
+                            case LDKC.Data.ArraySortType["TIM"]: LDKC.Data.ArrayTimSort(Array/*, ...*/)
                         }
+
+                        // Return
+                        return Array
                     };
 
                     // Unshift
@@ -928,7 +959,7 @@
                     // Subtract
 
                 // Evaluate
-                LapysDevelopmentKit.Functions["eval"] = function evaluate(Source, STRICT_EVALUATION) { STRICT_EVALUATION || (Source = "(function() { return " + Source + " })()"); return LDKF.functionPrototypeMonoadicCall(LDKO.eval, GLOBAL, Source) };
+                LapysDevelopmentKit.Functions["eval"] = function evaluate(Source, RAW_EVALUATION) { RAW_EVALUATION || (Source = "(function() { return " + Source + " })()"); return LDKF.functionPrototypeMonoadicCall(LDKO.eval, GLOBAL, Source) };
 
                 /* Function > Prototype
                         --- WARN ---
@@ -1014,11 +1045,18 @@
                 // Is Constructible
                 LapysDevelopmentKit.Functions.isConstructible = function isConstructible(Argument) { return !LDKF.isNull(Argument) && !LDKF.isVoid(Argument) };
 
+                // Is Function --- CHECKPOINT (Lapys)
+                LapysDevelopmentKit.Functions.isFunction = function isFunction(Argument) { return typeof Argument == "function" };
+
                 // Is Map-Variant
                 LapysDevelopmentKit.Functions.isMapVariant = function isMapVariant(Argument) { return LDKF.isAudioParamMap(arrayLike) || LDKF.isMap(arrayLike) || LDKF.isMediaKeyStatusMap(arrayLike) || LDKF.isMIDIInputMap(arrayLike) || LDKF.isMIDIOutputMap(arrayLike) };
 
                 // Is Null
                 LapysDevelopmentKit.Functions.isNull = function isNull(Argument) { return Argument === null };
+
+                // Is Object(-Like)
+                LapysDevelopmentKit.Functions.isObject = function isObject(Argument) { return typeof Argument == "object" };
+                LapysDevelopmentKit.Functions.isObjectLike = function isObjectLike(Argument) { return !(LDKF.isBigInt(Argument) || LDKF.isBoolean(Argument) || LDKF.isFunction(Argument) || LDKF.isNumber(Argument) || LDKF.isNull(Argument) || LDKF.isString(Argument) || LDKF.isSymbol(Argument) || LDKF.isVoid(Argument)) };
 
                 // Is Symbol
                 LapysDevelopmentKit.Functions.isSymbol = function isSymbol(Argument) { return typeof Argument == "symbol" };
@@ -1124,28 +1162,28 @@
                     };
 
                 // String
-                    // Assert As Source --- CONSIDERATION (Lapys) -> Should there be an assertion method?
-                    /* Parse As Source [Tokens]
+                    // Assert As Source --- CONSIDERATION (Lapys) -> Should there be a source validation method?
+                    /* Tokenize As Source [Tokens]
                             --- WARN (Lapys) -> These methods do not assert the source to be valid.
                                 The `TMP` variable may be used.
                     */
-                    LapysDevelopmentKit.Functions.stringParseAsSource = function stringParseAsSource(Source, SourceType, SOURCE_LENGTH) {
+                    LapysDevelopmentKit.Functions.stringTokenizeAsSource = function stringTokenizeAsSource(Source, SourceType, SOURCE_LENGTH) {
                         // Logic > Return
                         switch (SourceType || LDKC.Data.SourceTypes["javascript"]) {
-                            case LDKC.Data.SourceTypes["css"]: return LDKF.stringParseCSSSource(Source, FLAG = SOURCE_LENGTH);
-                            case LDKC.Data.SourceTypes["html"]: return LDKF.stringParseHTMLSource(Source, FLAG = SOURCE_LENGTH);
-                            case LDKC.Data.SourceTypes["javascript"]: return LDKF.stringParseJavaScriptSource(Source, FLAG = SOURCE_LENGTH);
+                            case LDKC.Data.SourceTypes["css"]: return LDKF.stringTokenizeCSSSource(Source, FLAG = SOURCE_LENGTH);
+                            case LDKC.Data.SourceTypes["html"]: return LDKF.stringTokenizeHTMLSource(Source, FLAG = SOURCE_LENGTH);
+                            case LDKC.Data.SourceTypes["javascript"]: return LDKF.stringTokenizeJavaScriptSource(Source, FLAG = SOURCE_LENGTH);
                             default: return []
                         }
                     };
-                        // CSS --- CHECKPOINT (Lapys) -> Parse blocks, comments, functions and rules.
-                        LapysDevelopmentKit.Functions.stringParseCSSSource = function stringParseCSSSource(Source, SOURCE_LENGTH) {};
+                        // CSS --- CHECKPOINT (Lapys) -> Tokenize blocks, comments, functions and rules.
+                        LapysDevelopmentKit.Functions.stringTokenizeCSSSource = function stringTokenizeCSSSource(Source, SOURCE_LENGTH) {};
 
-                        // HTML --- CHECKPOINT (Lapys) -> Parse (conditional) comments, tags and unicode as tokens.
-                        LapysDevelopmentKit.Functions.stringParseHTMLSource = function stringParseHTMLSource(Source, SOURCE_LENGTH) {};
+                        // HTML --- CHECKPOINT (Lapys) -> Tokenize (conditional) comments, tags and unicode as tokens.
+                        LapysDevelopmentKit.Functions.stringTokenizeHTMLSource = function stringTokenizeHTMLSource(Source, SOURCE_LENGTH) {};
 
-                        // JavaScript --- CHECKPOINT (Lapys) -> Parse functions as tokens.
-                        LapysDevelopmentKit.Functions.stringParseJavaScriptSource = function stringParseJavaScriptSource(Source, SOURCE_LENGTH, STARTING_INDEX, PARSING_MODE) {
+                        // JavaScript --- CHECKPOINT (Lapys) -> Tokenize functions as tokens.
+                        LapysDevelopmentKit.Functions.stringTokenizeJavaScriptSource = function stringTokenizeJavaScriptSource(Source, SOURCE_LENGTH, STARTING_INDEX, PARSING_MODE) {
                             // Update > ...
                             PARSING_MODE || (PARSING_MODE = LDKC.Data.StringJavaScriptSourceParsingModes["read-all-tokens"]);
                             SOURCE_LENGTH || (SOURCE_LENGTH = LDKF.stringPrototypeLength(Source));
@@ -1216,7 +1254,7 @@
 
                                             else if (PARSING_MODE ^ PARSING_MODES["arrow-function-look-ahead"]) {
                                                 if (CHARACTER == '(') {
-                                                    LDKF.stringParseJavaScriptSource(Source, FLAG = SOURCE_LENGTH, FLAG = SOURCE_LENGTH - sourceIterator - 1, FLAG = PARSING_MODES["arrow-function-look-ahead"]);
+                                                    LDKF.stringTokenizeJavaScriptSource(Source, FLAG = SOURCE_LENGTH, FLAG = SOURCE_LENGTH - sourceIterator - 1, FLAG = PARSING_MODES["arrow-function-look-ahead"]);
 
                                                     if (TMP) { nextTokenDelimiter = COMPOUND_TOKENS_DELIMITERS["arrow-function"]; nextTokenDelimiterCharacterSequence = CHARACTER }
                                                 }
@@ -1884,7 +1922,7 @@
                     else if (LDKF.isBoolean(Argument) || LDKF.isString(Argument)) return +Argument;
                     else if (LDKF.isVoid(Argument)) return LDKC.Numbers.NaN;
                     else if (LDKF.isSymbol(Argument)) return LDKF.toNumber(LDKF.toString(Argument));
-                    else /*if (LDKF.isObjectLike(Argument))*/ return LDKO.number(Argument)
+                    else if (LDKF.isObjectLike(Argument)) return LDKO.number(Argument)
                 };
 
             /* Mathematics --- REDACT (Lapys) */
@@ -1900,6 +1938,9 @@
             LapysDevelopmentKit.Mathematics.round = function round(Number) { var INTEGER = LDKM.int(Number); return INTEGER + (Number - INTEGER >= .5) };
 
             /* Objects */
+                // Array > Prototype
+                    // Sort --- CHECKPOINT (Lapys)
+
                 // Evaluate --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Objects.eval = eval;
 
@@ -1920,6 +1961,9 @@
                         // Has Own Property --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Objects.objectPrototypeHasOwnProperty = LDKO.objectPrototype.hasOwnProperty;
 
+                        // To String --- CHECKPOINT (Lapys)
+                        LapysDevelopmentKit.Objects.objectPrototypeToString = LDKO.objectPrototype.toString;
+
                 // String --- CHECKPOINT (Lapys)
                 LapysDevelopmentKit.Objects.string = String;
                     // Prototype
@@ -1928,6 +1972,9 @@
                         // : Character Code At --- CHECKPOINT (Lapys)
                         LapysDevelopmentKit.Objects.stringPrototypeCharacterAt = LDKO.stringPrototype.charAt;
                         LapysDevelopmentKit.Objects.stringPrototypeCharacterCodeAt = LDKO.stringPrototype.charCodeAt;
+
+                // Typed Array > Prototype
+                    // Sort --- CHECKPOINT (Lapys)
 
             /* Records */
                 // Lists --- REDACT (Lapys)
@@ -2278,35 +2325,42 @@
                             var BIG_ARRAY = this, BIG_ARRAY_LENGTH = BIG_ARRAY.length;
 
                             // Logic
-                            if (Length ^ BIG_ARRAY_LENGTH) {
-                                // Initialization > Big Array Iterator
-                                var bigArrayIterator;
-
+                            if (Length) {
                                 // Logic
-                                if (Length > BIG_ARRAY_LENGTH) {
-                                    // Update > Big Array Iterator
-                                    bigArrayIterator = Length - BIG_ARRAY_LENGTH;
+                                if (Length ^ BIG_ARRAY_LENGTH) {
+                                    // Initialization > Big Array Iterator
+                                    var bigArrayIterator;
 
-                                    // Loop
-                                    while (bigArrayIterator) {
-                                        // Update > Big Array (Iterator)
-                                        LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_ARRAY, undefined);
-                                        bigArrayIterator -= 1
+                                    // Logic
+                                    if (Length > BIG_ARRAY_LENGTH) {
+                                        // Update > Big Array Iterator
+                                        bigArrayIterator = Length - BIG_ARRAY_LENGTH;
+
+                                        // Loop
+                                        while (bigArrayIterator) {
+                                            // Update > Big Array (Iterator)
+                                            LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypePush, BIG_ARRAY, undefined);
+                                            bigArrayIterator -= 1
+                                        }
                                     }
-                                }
 
-                                else {
-                                    // Update > Big Array IterTOR
-                                    bigArrayIterator = BIG_ARRAY_LENGTH - Length;
+                                    else {
+                                        // Update > Big Array IterTOR
+                                        bigArrayIterator = BIG_ARRAY_LENGTH - Length;
 
-                                    // Loop
-                                    while (bigArrayIterator) {
-                                        // Update > Big Array (Iterator)
-                                        LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypePop, BIG_ARRAY);
-                                        bigArrayIterator -= 1
+                                        // Loop
+                                        while (bigArrayIterator) {
+                                            // Update > Big Array (Iterator)
+                                            LDKF.functionPrototypeNiladicCall(LDKT.BigArrayPrototypePop, BIG_ARRAY);
+                                            bigArrayIterator -= 1
+                                        }
                                     }
                                 }
                             }
+
+                            else
+                                // Update > Big Array
+                                LDKF.functionPrototypeMonoadicCall(LDKT.BigArrayPrototypeFree, BIG_ARRAY, FLAG = false)
                         };
 
                         // Set Index
@@ -3305,7 +3359,8 @@
     GLOBAL.LDKT = LDKT;
 
     /* Polyfills --- CHECKPOINT (Lapys) -> Basically shim and shiv all missing IE features. */
-        // Array > Of
+        // Array.of
+        // HTMLCanvasElement.toBlob
 
     // Return
     return +0
