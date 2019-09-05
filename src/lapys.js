@@ -230,6 +230,40 @@
                         return STRING_A_LENGTH < STRING_B_LENGTH ? STRING_B : STRING_A
                     }
                 };
+                LapysDevelopmentKit.Constants.Data.ArrayBubbleSort = function ArrayBubbleSort(Array, StartIndex, EndIndex, COMPARATOR, IMPERATIVE) {
+                    // Initialization > Array Iterator
+                    var arrayIterator = EndIndex;
+
+                    // Loop
+                    while (arrayIterator ^ StartIndex) {
+                        // Initialization > Array Index
+                        var arrayIndex = arrayIterator -= 1;
+
+                        // Loop
+                        while (arrayIndex ^ StartIndex) {
+                            // Constant > (Current, Previous) Element
+                            var CURRENT_ELEMENT = IMPERATIVE.getIndex(Array, arrayIndex);
+                            var PREVIOUS_ELEMENT = IMPERATIVE.getIndex(Array, arrayIndex - 1);
+
+                            // Logic
+                            if (COMPARATOR(CURRENT_ELEMENT, PREVIOUS_ELEMENT) === PREVIOUS_ELEMENT)
+                                // Update > Array Index
+                                arrayIndex = StartIndex;
+
+                            else {
+                                // Update > (Array) (Index, Iterator)
+                                IMPERATIVE.setIndex(Array, arrayIndex - 1, CURRENT_ELEMENT);
+                                IMPERATIVE.setIndex(Array, arrayIndex, PREVIOUS_ELEMENT);
+
+                                arrayIndex -= 1;
+                                arrayIterator = EndIndex // NOTE (Lapys) -> Could be optimized by determining the amount needed to increment the Array Iterator.
+                            }
+                        }
+                    }
+
+                    // Return
+                    return Array
+                };
                 LapysDevelopmentKit.Constants.Data.ArrayCustomSortComparator = function ArrayCustomSortComparator(ArgumentA, ArgumentB) {
                     // Logic
                     if (ArgumentA === ArgumentB)
@@ -308,7 +342,6 @@
 
                         // Loop
                         while (COMPARATOR(IMPERATIVE.getIndex(Array, arrayIndex), TMP) === TMP && arrayIndex >= StartIndex) {
-                            swap();
                             // Update > Array (Index)
                             IMPERATIVE.setIndex(Array, arrayIndex + 1, IMPERATIVE.getIndex(Array, arrayIndex));
                             arrayIndex -= 1
@@ -319,10 +352,51 @@
                         arrayIterator += 1
                     }
                 };
-                LapysDevelopmentKit.Constants.Data.ArrayTimSort = function ArrayTimSort(Array, COMPARATOR, IMPERATIVE) {
+                LapysDevelopmentKit.Constants.Data.ArrayMergeSort = function ArrayMergeSort(Array, StartIndex, EndIndex, COMPARATOR, IMPERATIVE) {
+                    // Update > ...
+                    IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+                    COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
+
+                    // Logic
+                    if (((EndIndex - StartIndex) || 1) == 1)
+                        // Return
+                        return Array;
+
+                    else {
+                        // Constant > (Merged Array, ..., Split Index)
+                        var SPLIT_INDEX = LDKM.floor((EndIndex - StartIndex) / 2);
+
+                        var ARRAY_BEGINNING_LENGTH = SPLIT_INDEX - StartIndex;
+                        var ARRAY_BEGINNING = LDKC.Data.ArrayMergeSort(LDKF.arrayPrototypeSlice(LDKF.arrayPrototypeClone(Array, FLAG = false, FLAG = IMPERATIVE), StartIndex, SPLIT_INDEX, FLAG = IMPERATIVE), +0, ARRAY_BEGINNING_LENGTH, FLAG = COMPARATOR, FLAG = IMPERATIVE);
+
+                        var ARRAY_END_LENGTH = EndIndex - SPLIT_INDEX;
+                        var ARRAY_END = LDKC.Data.ArrayMergeSort(LDKF.arrayPrototypeSlice(LDKF.arrayPrototypeClone(Array, FLAG = false, FLAG = IMPERATIVE), SPLIT_INDEX, EndIndex, FLAG = IMPERATIVE), +0, ARRAY_END_LENGTH, FLAG = COMPARATOR, FLAG = IMPERATIVE);
+
+                        var MERGED_ARRAY = LDKF.arrayPrototypeClone(Array, FLAG = false, FLAG = IMPERATIVE);
+
+                        // Initialization > (Merged Array Index, ...)
+                        var arrayBeginningIterator = ARRAY_BEGINNING_LENGTH;
+                        var arrayEndIterator = ARRAY_END_LENGTH;
+
+                        var mergedArrayIndex = +0;
+
+                        console.log([...ARRAY_BEGINNING], [...ARRAY_END]);
+
+                        // Loop
+                        while (arrayBeginningIterator && arrayEndIterator) {
+                            // Constant > Array (Beginning Element)
+                            var ARRAY_BEGINNING_ELEMENT = IMPERATIVE.getIndex(ARRAY_BEGINNING, ARRAY_BEGINNING_LENGTH - (arrayBeginningIterator -= 1) - 1);
+                            var ARRAY_END_ELEMENT = IMPERATIVE.getIndex(ARRAY_END, ARRAY_END_LENGTH - (arrayEndIterator -= 1) - 1);
+
+                            // Update > Merged Array Index
+                            mergedArrayIndex += 2
+                        }
+
+                        // Return
+                        return MERGED_ARRAY
+                    }
                 };
-                    // ...
-                    LapysDevelopmentKit.Constants.Data.ArrayTimSortMerge = function ArrayTimSortMerge(Array, StartIndex, SplitIndex, EndIndex, COMPARATOR, IMPERATIVE) {};
+                LapysDevelopmentKit.Constants.Data.ArrayTimSort = function ArrayTimSort(Array, StartIndex, EndIndex, COMPARATOR, IMPERATIVE) {};
 
                 // Numbers > ...
                 LapysDevelopmentKit.Constants.Numbers.ArrayTimSortRun = 32;
@@ -421,6 +495,9 @@
                 */
                     // Clone --- NOTE (Lapys) -> Retroactively the standard for creating similar array-likes from another array-like`s constructor.
                     LapysDevelopmentKit.Functions.arrayPrototypeClone = function arrayPrototypeClone(Array, IS_EMPTY, IMPERATIVE) {
+                        // Update > ...
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+
                         // Constant > Array Clone; Initialization > Array Iterator
                         var ARRAY_CLONE; var arrayIterator = IMPERATIVE.getLength(Array);
 
@@ -439,6 +516,28 @@
 
                         // Return
                         return ARRAY_CLONE
+                    };
+
+                    // Concatenate
+                    LapysDevelopmentKit.Functions.arrayPrototypeConcatenate = function arrayPrototypeConcatenate(Array, ConcatenationArray, ARRAY_LENGTH, CONCATENATION_ARRAY_LENGTH, IMPERATIVE) {
+                        // Update > ...
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+
+                        // Initialization > Concatenation Array Iterator
+                        var concatenationArrayIterator = CONCATENATION_ARRAY_LENGTH || IMPERATIVE.getLength(ConcatenationArray);
+
+                        // Logic
+                        if (concatenationArrayIterator) {
+                            // Update > ...
+                            ARRAY_LENGTH || (ARRAY_LENGTH = IMPERATIVE.getLength(Array));
+
+                            // (Loop > )Update > ...
+                            IMPERATIVE.setLength(Array, ARRAY_LENGTH + concatenationArrayIterator);
+                            while (concatenationArrayIterator) { concatenationArrayIterator -= 1; IMPERATIVE.setIndex(Array, ARRAY_LENGTH + concatenationArrayIterator, IMPERATIVE.getIndex(ConcatenationArray, concatenationArrayIterator)) }
+                        }
+
+                        // Return
+                        return Array
                     };
 
                     // Copy
@@ -682,14 +781,29 @@
                         return +0
                     };
 
+                    // Slice
+                    LapysDevelopmentKit.Functions.arrayPrototypeSlice = function arrayPrototypeSlice(Array, StartIndex, EndIndex, IMPERATIVE) {
+                        // Update > ...
+                        IMPERATIVE || (IMPERATIVE = LDKC.Data.ArrayImperative);
+
+                        // : Constant > Array Length
+                        // : Initialization > Array Iterator
+                        var ARRAY_LENGTH = EndIndex - StartIndex;
+                        var arrayIterator = +0;
+
+                        // (Loop > )Update > Array
+                        while (arrayIterator ^ ARRAY_LENGTH) { IMPERATIVE.setIndex(Array, arrayIterator, IMPERATIVE.getIndex(Array, arrayIterator + StartIndex)); arrayIterator += 1 }
+                        IMPERATIVE.setLength(Array, ARRAY_LENGTH);
+
+                        // Return
+                        return Array
+                    };
+
                     /* Sort
-                            --- CHECKPOINT (Lapys)
+                            --- CHECKPOINT (Lapys) -> Merge Sort and Tim Sort.
                             --- NOTE (Lapys) -> Utilizes the TimSort [https://en.wikipedia.org/wiki/Timsort] algorithm.
                             --- WARN (Lapys) -> The native sort method is not trusted to be an in-place algorithm, so the sorted array is copied by the (source) array to subvert misinformation.
                     */
-                    window.swap = function swap() { swaps += 1 };
-                    window.swaps = +0;
-                    window.log = function log(evaluation) { console.log.apply(console, arguments); return evaluation };
                     LapysDevelopmentKit.Functions.arrayPrototypeSort = function arrayPrototypeSort(Array, StartIndex, EndIndex, SORT_TYPE, COMPARATOR, IMPERATIVE) {
                         // Update > ...
                         COMPARATOR || (COMPARATOR = LDKC.Data.ArrayCustomSortComparator);
@@ -698,63 +812,40 @@
 
                         // Logic
                         switch (SORT_TYPE) {
-                            case LDKC.Data.ArraySortType["BUBBLE"]:
-                                var arrayIterator = EndIndex;
+                            // [Gradient Stop Sort] --- NOTE (Lapys) -> Custom sort algorithm that splits the array into stops and utilizes a fast sorting algorithm -- May be similar to the Merge Sort or Tim Sort algorithm although slower.
+                            case LDKC.Data.ArraySortType["GRADIENT_STOP"]:
+                                // Logic; ...
+                                if (((EndIndex - StartIndex) || 1) ^ 1) {
+                                    // Initialization > (Array Iterator, Stop Length)
+                                    var arrayIterator = EndIndex;
+                                    var stopLength = 2;
 
-                                while (arrayIterator ^ StartIndex) {
-                                    var arrayIndex = arrayIterator -= 1;
+                                    // Loop
+                                    while (arrayIterator ^ StartIndex) {
+                                        // Initialization > Stop Iterator
+                                        var stopIterator = stopLength;
 
-                                    while (arrayIndex ^ StartIndex) {
-                                        var CURRENT_ELEMENT = IMPERATIVE.getIndex(Array, arrayIndex);
-                                        var PREVIOUS_ELEMENT = IMPERATIVE.getIndex(Array, arrayIndex - 1);
+                                        // Update > Array Iterator
+                                        arrayIterator -= stopLength;
 
-                                        if (COMPARATOR(CURRENT_ELEMENT, PREVIOUS_ELEMENT) === PREVIOUS_ELEMENT)
-                                            arrayIndex = StartIndex;
+                                        // Logic
+                                        if (arrayIterator > StartIndex)
+                                            // Update > Array
+                                            LDKF.arrayPrototypeSort(Array, arrayIterator - stopLength < StartIndex ? StartIndex : arrayIterator, arrayIterator + stopLength, FLAG = LDKC.Data.ArraySortType["INSERTION"], FLAG = COMPARATOR, FLAG = IMPERATIVE);
 
-                                        else {
-                                            swap();
-
-                                            IMPERATIVE.setIndex(Array, arrayIndex - 1, CURRENT_ELEMENT);
-                                            IMPERATIVE.setIndex(Array, arrayIndex, PREVIOUS_ELEMENT);
-
-                                            arrayIndex -= 1;
-                                            arrayIterator = EndIndex // NOTE (Lapys) -> Could be improved
-                                        }
+                                        else
+                                            // Logic > Update > (Array Iterator, ...)
+                                            if (EndIndex < stopLength * 2) arrayIterator = StartIndex;
+                                            else { arrayIterator = EndIndex; stopLength *= 2 }
                                     }
-                                }
+                                } break;
 
-                                // ...
-                                break;
-
-                            case LDKC.Data.ArraySortType["GRADIENT_STOP"]: // NOTE (Lapys) -> Splits the array into stops and utilizes a fast sorting algorithm.
-                                var arrayIterator = EndIndex;
-                                var stopLength = 2;
-
-                                while (arrayIterator ^ StartIndex) {
-                                    var stopIterator = stopLength;
-                                    arrayIterator -= stopLength;
-
-                                    if (arrayIterator > StartIndex)
-                                        LDKF.arrayPrototypeSort(Array, arrayIterator - stopLength < StartIndex ? StartIndex : arrayIterator, arrayIterator + stopLength, FLAG = LDKC.Data.ArraySortType["INSERTION"], FLAG = COMPARATOR, FLAG = IMPERATIVE);
-
-                                    else {
-                                        if (EndIndex < stopLength * 2)
-                                            arrayIterator = StartIndex;
-
-                                        else {
-                                            swap();
-                                            arrayIterator = EndIndex;
-                                            stopLength *= 2
-                                        }
-                                    }
-                                }
-
-                                // ...
-                                break;
-
+                            // ...
+                            case LDKC.Data.ArraySortType["BUBBLE"]: LDKC.Data.ArrayBubbleSort(Array, StartIndex, EndIndex, FLAG = COMPARATOR, FLAG = IMPERATIVE); break;
                             case LDKC.Data.ArraySortType["INSERTION"]: LDKC.Data.ArrayInsertionSort(Array, StartIndex, EndIndex, FLAG = COMPARATOR, FLAG = IMPERATIVE); break;
+                            case LDKC.Data.ArraySortType["MERGE"]: LDKC.Data.ArrayMergeSort(Array, StartIndex, EndIndex, FLAG = COMPARATOR, FLAG = IMPERATIVE); break;
                             case LDKC.Data.ArraySortType["NATIVE"]: LDKF.arrayPrototypeCopy(Array, LDKF.functionPrototypeMonoadicCall(IMPERATIVE === LDKC.Data.TypedArrayImperative ? LDKO.typedArrayPrototypeSort : LDKO.arrayPrototypeSort, Array, COMPARATOR), FLAG = EndIndex, FLAG = IMPERATIVE); break;
-                            case LDKC.Data.ArraySortType["TIM"]: LDKC.Data.ArrayTimSort(Array/*, ...*/)
+                            case LDKC.Data.ArraySortType["TIM"]: LDKC.Data.ArrayTimSort(Array, StartIndex, EndIndex, FLAG = COMPARATOR, FLAG = IMPERATIVE)
                         }
 
                         // Return
@@ -1929,7 +2020,8 @@
             LapysDevelopmentKit.Mathematics.abs = function abs(Number) { return Number < +0 ? -Number : Number };
             LapysDevelopmentKit.Mathematics.ceil = function ceil(Number) { var integer = LDKM.int(Number); return integer + (Number > integer) };
             LapysDevelopmentKit.Mathematics.clamp = function clamp(Number, Minimum, Maximum) { return LDKM.min(LDKM.max(Number, Minimum), Maximum) };
-            LapysDevelopmentKit.Mathematics.int = function int(Number) { return Number - Number % 1 };
+            LapysDevelopmentKit.Mathematics.floor = function floor(Number) { return Number - Number % 1 };
+            LapysDevelopmentKit.Mathematics.int = function int(Number) { return LDKM.floor(Number) };
             LapysDevelopmentKit.Mathematics.max = function max(NumberA, NumberB) { return NumberA > NumberB ? NumberA : NumberB };
             LapysDevelopmentKit.Mathematics.min = function min(NumberA, NumberB) { return NumberA < NumberB ? NumberA : NumberB };
             LapysDevelopmentKit.Mathematics.perc = function perc(Base, Exponent) { return +!!Exponent && (Base * (Exponent / 100)) };
